@@ -59,7 +59,7 @@ module.exports = (function () {
     function splitResultToStepDefinitions (result) {
         var pieces = result
         .replace(/\u001b\[.*?m/g, '')                              // Replace color characters
-        .split(new RegExp(os.EOL + '{2}'));                        // Split on new-lines
+        .split(/\r\n?|\n{2}/);                                     // Split on new-lines
 
         return _.filter(pieces, function (piece) {                 // Filter out everything that isn't a step definition
             return !!(/^this\.(Given|Then|When)[\s\S]*\}\);$/m.exec(piece));
