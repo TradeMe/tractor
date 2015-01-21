@@ -1,8 +1,5 @@
 'use strict';
 
-// Config:
-var config = require('../../../../server/utils/get-config')
-
 // Utilities:
 var _ = require('lodash');
 
@@ -12,15 +9,23 @@ var io = require('socket.io-client');
 // Module:
 var Core = require('../Core');
 
-var RealTimeService = function RealTimeService () {
+var RealTimeService = function RealTimeService (
+    ConfigService
+) {
     return {
         connect: connect
     };
 
     function connect (room, events) {
-        var room = io.connect('http://localhost:' + config.port + '/' + room, { forceNew: true });
-        _.each(events, function (handler, name) {
-            room.on(name, handler);
+        ConfigService.getConfig()
+        .then(function (config) {
+            var url = 'http://localhost:' + config.port + '/' + room;
+            var connection = io.connect(url, {
+              forceNew: true
+            });
+            _.each(events, function (handler, event) {
+                connection.on(event, handler);
+            });
         });
     }
 };
