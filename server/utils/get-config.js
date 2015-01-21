@@ -3,4 +3,7 @@
 // Utilities:
 var _ = require('lodash');
 
-module.exports = _.defaults(require('../../tractor.conf'), require('../default.conf.js'));
+// Dependencies:
+var path = require('path');
+
+module.exports = _.defaults(require(path.join(process.cwd() + '/tractor.conf')), require('../default.conf.js'));
