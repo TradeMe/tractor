@@ -1,0 +1,38 @@
+.file-tree {
+    background: rgba(250, 250, 250, 1);
+
+    width: 20%;
+    padding-left: 1rem;
+}
+
+.file-tree__file-list {
+    margin-top: -0.5rem;
+}
+
+.file-tree__file-list--javascript {
+    list-style-image: url('./images/js.png');
+}
+
+.file-tree__file-list--gherkin {
+    list-style-image: url('./images/gherkin.png');
+}
+
+.file-tree__file-list-file {
+    margin-bottom: 0.25rem;
+    font-family: 'Corbert';
+    cursor: pointer;
+}
+
+.file-tree__file-list-file span {
+   transition: transform 0.5s;
+}
+
+.file-tree__file-list-file:hover, .file-tree__file-list-file.active {
+    font-weight: bolder;
+    letter-spacing: -0.5px;
+}
+
+.file-tree__file-list-file.active span {
+    transform: translateX(20px);
+    display: block;
+}

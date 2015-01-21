@@ -1,0 +1,20 @@
+#!/usr/bin/env node
+'use strict';
+
+// Dependencies:
+var tractor = require('commander');
+
+tractor
+.version('0.0.1')
+
+tractor
+.command('init')
+.description('initialise tractor in a project')
+.action(require('../server/cli/init/')());
+
+tractor
+.command('start')
+.description('Start the tractor server')
+.action(require('../server/cli/start/')());
+
+tractor.parse(process.argv);

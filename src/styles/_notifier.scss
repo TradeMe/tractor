@@ -1,0 +1,63 @@
+tractor-notifier {
+    position: absolute;
+    top: 2rem;
+    right: 0.5rem;
+    width: 45%;
+}
+
+.notifier__notifications {
+    list-style: none;
+}
+
+.notifier__notification  {
+    position: relative;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+    line-height: 2rem;
+    letter-spacing: 1px;
+    font-size: 1rem;
+    word-break: break-all;
+}
+
+.notifier__notification--info {
+    background: rgba(245, 245, 245, 0.9);
+}
+
+.notifier__notification--error {
+    background: rgba(255, 50, 50, 0.9);
+    color: rgba(245, 245, 245, 1);
+}
+
+.notifier__notification-message {
+    display: inline-block;
+    white-space: pre;
+    word-break: break-word;
+}
+
+.notifier__notification-dismiss {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    bottom: 0;
+    height: 2rem;
+    width: 2rem;
+
+    -webkit-appearance: none;
+    appearance: none;
+    border: none;
+    outline: none;
+    background-color: #6e6e6e;
+    background-image: url(./images/dismiss.png);
+
+    transition: all 0.1s;
+    transform: scale(1);
+
+    &:hover {
+        background-color: rgba(130, 130, 130, 1);
+        transform: scale(1.125);
+    }
+
+    &:active {
+        transform: scale(1.25);
+    }
+}

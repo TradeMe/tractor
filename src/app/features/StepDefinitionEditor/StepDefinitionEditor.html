@@ -1,0 +1,78 @@
+<section class="file-tree">
+    <h3>Step Definition files:</h3>
+    <ul class='file-tree__file-list file-tree__file-list--javascript'>
+        <li ng-repeat="stepDefinitionFileName in stepDefinitionEditor.stepDefinitionFileNames"
+            ng-click="stepDefinitionEditor.openStepDefinitionFile(stepDefinitionFileName)"
+            ng-class="{ true: 'active' }[stepDefinitionFileName === stepDefinitionEditor.stepDefinition.name + '.step.js']"
+            class="file-tree__file-list--file">
+            <span>{{ stepDefinitionFileName }}</span>
+        </li>
+    </ul>
+</section>
+
+<section class="file-options" ng-if="stepDefinitionEditor.stepDefinition">
+    <h2 class="file-options__name">{{ stepDefinitionEditor.stepDefinition.name }}</h2>
+    <div>
+        <tractor-action class="file-options__save-file" model="stepDefinitionEditor" action="Save step definition file"></tractor-action>
+    </div>
+</section>
+
+<section class="file-editor" ng-if="stepDefinitionEditor.stepDefinition">
+    <section class="file-editor__container">
+        <h3>Available components:</h3>
+        <ul>
+            <li ng-repeat="component in stepDefinitionEditor.stepDefinition.availableComponents" ng-if="stepDefinitionEditor.stepDefinition.components.indexOf(component) === -1">
+                <span> {{ component.name }} </spam>
+                <tractor-action model="stepDefinitionEditor.stepDefinition" action="Add component" argument="component.name"></tractor-action>
+            </li>
+        </ul>
+    </section>
+
+    <section ng-if="stepDefinitionEditor.stepDefinition.componentInstances">
+        <section class="file-editor__container">
+            <h3>Active components:</h3>
+            <ul>
+                <li ng-repeat="component in stepDefinitionEditor.stepDefinition.componentInstances">
+                    <span> {{ component.component.name }} </span>
+                    <tractor-action model="stepDefinitionEditor.stepDefinition" action="Remove component" argument="component" icon="remove"></tractor-action>
+                </li>
+            </ul>
+        </section>
+
+        <section class="file-editor__container">
+            <h3>Tasks:</h3>
+
+            <ul>
+                <li class="file-editor__list-item" ng-repeat="task in stepDefinitionEditor.stepDefinition.step.tasks">
+                    <tractor-action model="stepDefinitionEditor.stepDefinition.step" action="Remove task" argument="task"  icon="remove"></tractor-action>
+
+                    <tractor-select label="Component" model="task" options="stepDefinitionEditor.stepDefinition.componentInstances" as="name"></tractor-select>
+                    <tractor-select label="Action" model="task" options="task.component.component.actions" as="name"></tractor-select>
+                    <div ng-repeat="argument in task.arguments">
+                        <tractor-literal-input name="argument.name" model="argument.value">
+                    </div>
+                </li>
+            </ul>
+
+            <tractor-action model="stepDefinitionEditor.stepDefinition.step" action="Add task"></tractor-action>
+        </section>
+
+        <section  class="file-editor__container">
+            <h3>Expectations:</h3>
+
+            <ul>
+                <li class="file-editor__list-item" ng-repeat="expectation in stepDefinitionEditor.stepDefinition.step.expectations">
+                    <tractor-action model="stepDefinitionEditor.stepDefinition.step" action="Remove expectation" argument="expectation" icon="remove"></tractor-action>
+
+                    <tractor-select label="Component" model="expectation" options="stepDefinitionEditor.stepDefinition.componentInstances" as="name"></tractor-select>
+                    <tractor-select label="Action" model="expectation" options="expectation.component.component.actions" as="name"></tractor-select>
+                    <tractor-literal-input ng-repeat="argument in expectation.arguments" name="argument.name" model="argument.value"></tractor-literal-input>
+                    <tractor-literal-input name="'Expected result'" model="expectation.expectedResult"></tractor-literal-input>
+                </li>
+            </ul>
+
+            <tractor-action model="stepDefinitionEditor.stepDefinition.step" action="Add expectation"></tractor-action>
+        </section>
+
+    </section>
+</section>

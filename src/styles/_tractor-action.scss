@@ -1,0 +1,61 @@
+tractor-action {
+    display: inline-block;
+    height: 3.5rem;
+    padding: 0 0.5rem;
+}
+
+tractor-action[icon] {
+   width: 2rem;
+   height: 2rem;
+}
+
+tractor-action[icon] button {
+   width: 2rem;
+   height: 2rem;
+   transition: all 0.1s;
+   transform: scale(1);
+}
+
+tractor-action[icon] button:hover {
+   transform: scale(1.125);
+}
+
+tractor-action[icon] button:active {
+   transform: scale(1.25);
+}
+
+tractor-action button {
+    -webkit-appearance: none;
+    appearance: none;
+    border: none;
+    outline: none;
+
+    font-family: "CodePro";
+
+    line-height: 2rem;
+    font-size: 1.25rem;
+    margin-top: 1.5rem;
+
+    padding: 0;
+
+    color: rgba(245, 245, 245, 1);
+    background: rgba(110, 110, 110, 1);
+}
+
+tractor-action button span {
+    transition: all 0.1s;
+    transform: scale(0.8);
+    display: block;
+}
+
+tractor-action button:hover {
+    background: rgba(130, 130, 130, 1);
+}
+
+tractor-action button:hover span {
+    transform: scale(0.9);
+}
+
+tractor-action button:active span {
+    transform: scale(1);
+}

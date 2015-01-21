@@ -1,0 +1,30 @@
+.as-sortable-item, .as-sortable-placeholder {
+    margin-bottom: 1rem;
+    list-style: none;
+}
+
+.as-sortable-item {
+    position: relative;
+}
+
+.as-sortable-item-handle {
+}
+
+.as-sortable-placeholder {
+    border: 1px dashed rgba(170, 170, 170, 1);
+    box-sizing: border-box;
+    background-color: rgba(230, 230, 230, 1);
+}
+
+.as-sortable-drag {
+    opacity: .8;
+    position: relative;
+}
+
+.as-sortable-drag li{
+    position: relative;
+}
+
+.as-sortable-drag li * {
+    display: inline-block;
+}
