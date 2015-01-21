@@ -1,0 +1,53 @@
+@import '../../node_modules/normalize.css/normalize.css';
+@import '../../node_modules/ng-sortable/dist/ng-sortable.css';
+
+@import 'file-editor';
+@import 'file-options';
+@import 'file-tree';
+@import 'fonts';
+@import 'header';
+@import 'notifier';
+@import 'sortable';
+@import 'typography';
+@import 'tractor-action';
+@import 'tractor-input';
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    min-width: 1200px;
+    min-height: 800px;
+}
+
+body div[ui-view], main {
+    width: 100%;
+}
+
+header {
+    height: 14.5%;
+}
+
+main {
+    height: 85.5%;
+}
+
+main > section {
+    float: left;
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.hidden {
+    display: none !important;
+}

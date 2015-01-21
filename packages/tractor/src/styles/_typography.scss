@@ -1,0 +1,57 @@
+body {
+    font-family: "Corbert";
+    font-size: 0.875rem;
+    line-height: 0.875rem;
+}
+h1 {
+    font-family: "Bebas";
+    font-size: 7rem;
+    line-height: 7rem;
+    margin-top: 1.75rem;
+    margin-bottom: 0.875rem;
+}
+h2 {
+    font-family: "Bebas";
+    font-size: 3.5rem;
+    line-height: 3.5rem;
+    margin-top: 1.75rem;
+    margin-bottom: 0.875rem;
+}
+h3 {
+    font-family: "Bebas";
+    font-size: 1.75rem;
+    line-height: 1.75rem;
+    margin-top: 0.875rem;
+    margin-bottom: 0.875rem;
+}
+h4 {
+    font-family: "CodePro";
+    font-size: 0.875rem;
+    line-height: 0.875rem;
+    margin-top: 0.875rem;
+    margin-bottom: 0.875rem;
+}
+p, ul, ol, pre, table, blockquote {
+    margin-top: 0.875rem;
+    margin-bottom: 0.875rem;
+}
+
+hr {
+    border: 1px solid;
+    margin: -1px 0;
+}
+ul ul, ol ol, ul ol, ol ul {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+b, strong, em, small, code {
+    line-height: 1;
+}
+sup, sub {
+    vertical-align: baseline;
+    position: relative;
+    top: -0.4em;
+}
+sub {
+    top: 0.4em;
+}

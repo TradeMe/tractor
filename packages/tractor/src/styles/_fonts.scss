@@ -1,0 +1,35 @@
+@font-face {
+    font-family: 'Bebas';
+    src: url('./fonts/bebasneue_bold-webfont.eot');
+    src: url('./fonts/bebasneue_bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('./fonts/bebasneue_bold-webfont.woff2') format('woff2'),
+         url('./fonts/bebasneue_bold-webfont.woff') format('woff'),
+         url('./fonts/bebasneue_bold-webfont.ttf') format('truetype'),
+         url('./fonts/bebasneue_bold-webfont.svg#bebas_neuebold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'CodePro';
+    src: url('./fonts/Code_Pro_Demo-webfont.eot');
+    src: url('./fonts/Code_Pro_Demo-webfont.eot?#iefix') format('embedded-opentype'),
+         url('./fonts/Code_Pro_Demo-webfont.woff2') format('woff2'),
+         url('./fonts/Code_Pro_Demo-webfont.woff') format('woff'),
+         url('./fonts/Code_Pro_Demo-webfont.ttf') format('truetype'),
+         url('./fonts/Code_Pro_Demo-webfont.svg#code_pro_demoregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Corbert';
+    src: url('./fonts/Corbert-Regular-webfont.eot');
+    src: url('./fonts/Corbert-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('./fonts/Corbert-Regular-webfont.woff2') format('woff2'),
+         url('./fonts/Corbert-Regular-webfont.woff') format('woff'),
+         url('./fonts/Corbert-Regular-webfont.ttf') format('truetype'),
+         url('./fonts/Corbert-Regular-webfont.svg#corbertregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}

@@ -1,0 +1,11 @@
+<div>
+    <label>{{ label }}: </label>
+    <select ng-if="as"
+            ng-model="model[property]"
+            ng-options="option as option[as] for option in selectOptions">
+    </select>
+    <select ng-if="!as"
+            ng-model="model[property]"
+            ng-options="option for option in selectOptions">
+    </select>
+<div>

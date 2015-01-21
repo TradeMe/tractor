@@ -1,0 +1,21 @@
+<header>
+    <tractor-action model="controlPanel" action="Run protractor"></tractor-action>
+
+    <nav>
+        <ul>
+            <li ui-sref-active="active">
+                <a ui-sref=".component-editor">Components</a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref=".gherkin-editor">Gherkins</a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref=".step-definition-editor">Step Definitions</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+<main ui-view></main>
+
+<tractor-notifier></tractor-notifier>

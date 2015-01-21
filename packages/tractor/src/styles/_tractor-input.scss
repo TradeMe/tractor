@@ -1,0 +1,51 @@
+tractor-variable-input,
+tractor-text-input,
+tractor-literal-input,
+tractor-select,
+tractor-step-input {
+    line-height: 3.5rem;
+    height: 3.5rem;
+    display: block;
+    padding: 0 0.5rem;
+    margin-bottom: 1px;
+}
+
+tractor-variable-input label,
+tractor-text-input label,
+tractor-literal-input label,
+tractor-select label,
+tractor-step-input label {
+    font-family: "CodePro";
+    font-size: 1rem;
+    line-height: 1rem;
+    display: block;
+    padding: 0.25rem 0;
+}
+
+tractor-variable-input input,
+tractor-text-input input,
+tractor-literal-input input,
+tractor-select select,
+tractor-step-input input {
+    font-family: "Corbert";
+    display: block;
+    border: none;
+    border-bottom: 1px solid rgba(200, 200, 200, 1);
+    background: rgba(255, 255, 255, 1);
+    height: 2rem;
+    line-height: 2rem;
+    font-size: 1.25rem;
+    width: 100%;
+    padding-left: 1rem;
+}
+
+tractor-variable-input input:active,
+tractor-text-input input:active,
+tractor-literal-input input:active,
+tractor-step-input input:active,
+tractor-variable-input input:focus,
+tractor-text-input input:focus,
+tractor-literal-input input:focus,
+tractor-step-input input:focus {
+    outline: none;
+}

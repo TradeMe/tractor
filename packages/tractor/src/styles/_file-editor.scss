@@ -1,0 +1,83 @@
+.file-editor {
+    width: 80%;
+    height: 86%;
+}
+
+.file-editor ul,
+.file-editor ol {
+    padding-left: 3rem;
+    list-style: none;
+    display: block;
+    position: relative;
+}
+
+.file-editor__list-item {
+    position: relative;
+    padding: 1.5rem;
+    margin-right: 1rem;
+    margin-bottom: 1rem;
+    background: rgba(230, 230, 230, 1);
+}
+
+.file-editor__list-item .file-editor__list-item {
+    background: rgba(210, 210, 210, 1);
+}
+
+.file-editor tractor-variable-input,
+.file-editor tractor-text-input,
+.file-editor tractor-literal-input,
+.file-editor tractor-select,
+.file-editor tractor-action,
+.file-editor tractor-step-input {
+    font-size: 0;
+    display: inline-block;
+}
+
+.file-editor section > tractor-action:last-child {
+    height: 2.5rem;
+}
+
+.file-editor section > tractor-action:last-child {
+    padding-left: 3rem;
+}
+
+.file-editor section > tractor-action:last-child button {
+    margin-top: 0;
+}
+
+.file-editor li > tractor-action:first-of-type {
+    position: absolute;
+    top: -0.5rem;
+    left: -0.5rem;
+    padding: 0;
+}
+
+.file-editor li > tractor-action:first-of-type button {
+    background-image: url('./images/remove.png')
+}
+
+.file-editor li > tractor-action:first-of-type button {
+    margin-top: 0;
+}
+
+.file-editor__main-bar {
+    position: fixed;
+    top: 13.5%;
+    right: 20%;
+}
+
+.file-editor__container {
+    padding-left: 1rem;
+    margin-right: 1rem;
+    margin-bottom: 1rem;
+}
+
+.file-editor__sort-handle {
+    position: absolute;
+    top: -0.5rem;
+    right: -0.5rem;
+    width: 2rem;
+    height: 2rem;
+    background: rgba(110, 110, 110, 1);
+    background-image: url('./images/sortable.png')
+}
