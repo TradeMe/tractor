@@ -46,6 +46,8 @@ module.exports = (function () {
           application.get('/open-gherkin-file', openFile('features', false, true));
           application.get('/open-step-definition-file', openFile('step_definitions', true));
 
+          application.get('/get-config', require('./actions/get-config'));
+
           application.post('/save-component-file', require('./actions/save-component-file'));
           application.post('/save-gherkin-file', require('./actions/save-gherkin-file'));
           application.post('/save-step-definition-file', require('./actions/save-step-definition-file'));

@@ -6,6 +6,7 @@ var chalk = require('chalk');
 module.exports = (function () {
     return {
         info: info,
+        warn: warn,
         important: important,
         success: success,
         error: error
@@ -13,6 +14,10 @@ module.exports = (function () {
 
     function info (message) {
         console.log(chalk.bold(' INFO: ') + ' ' + chalk.white(message));
+    }
+
+    function warn (message) {
+        console.log(chalk.bold.black.bgYellow(' WARNING: ') + ' ' + chalk.yellow(message));
     }
 
     function important (message) {

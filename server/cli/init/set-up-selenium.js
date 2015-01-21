@@ -12,7 +12,6 @@ module.exports = function () {
     log.info('Setting up Selenium...');
     return exec(constants.SELENIUM_UPDATE_COMMAND)
     .then(function () {
-        console.log(arguments);
         log.success('Selenium setup complete.');
     });
 };

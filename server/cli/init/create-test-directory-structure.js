@@ -1,6 +1,7 @@
 'use strict';
 
 // Utilities:
+var _ = require('lodash');
 var constants = require('../../constants');
 var log = require('../../utils/logging');
 var Promise = require('bluebird');
@@ -9,34 +10,40 @@ var Promise = require('bluebird');
 var fs = Promise.promisifyAll(require('fs'));
 var path = require('path');
 
+// Errors:
+var TestDirectoryAlreadyExistsError = require('../../Errors/TestDirectoryAlreadyExistsError');
+
 module.exports = (function () {
 	  return function (testDirectory) {
-				return createRootFolder(testDirectory)
+				return createRootDirectory(testDirectory)
 				.then(function () {
-						return createSubfolders(testDirectory);
+						return createSubDirectories(testDirectory);
 				});
 		}
 
-		function createRootFolder (testDirectory) {
+		function createRootDirectory (testDirectory) {
 				log.info('Creating directory structure...');
 				return fs.mkdirAsync(testDirectory)
 				.catch(Promise.OperationalError, function (e) {
 						if (e && e.cause && e.cause.code === 'EEXIST') {
-								log.error('"' + testDirectory + '" directory already exists.');
-								process.exit(1);
+							  throw new TestDirectoryAlreadyExistsError('"' + testDirectory + '" directory already exists.');
 						}
 				});
 		}
 
-		function createSubfolders (testDirectory) {
-			return Promise.all([
-					fs.mkdirAsync(path.join(testDirectory, constants.FEATURES_DIR)),
-					fs.mkdirAsync(path.join(testDirectory, constants.STEP_DEFINITIONS_DIR)),
-					fs.mkdirAsync(path.join(testDirectory, constants.COMPONENTS_DIR)),
-					fs.mkdirAsync(path.join(testDirectory, constants.SUPPORT_DIR))
-			])
-			.then(function () {
-					log.success('Directory structure created.');
-			});
+		function createSubDirectories (testDirectory) {
+				var createDirectories = _.map([
+						constants.FEATURES_DIR,
+						constants.STEP_DEFINITIONS_DIR,
+						constants.COMPONENTS_DIR,
+						constants.SUPPORT_DIR
+				], function (dir) {
+					  return fs.mkdirAsync(path.join(testDirectory, dir));
+				});
+				
+				return Promise.all(createDirectories)
+				.then(function () {
+						log.success('Directory structure created.');
+				});
 		}
 })();

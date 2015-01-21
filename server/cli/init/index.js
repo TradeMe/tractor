@@ -5,6 +5,10 @@ var config = require('../../utils/get-config.js');
 
 // Utilities:
 var log = require('../../utils/logging');
+var Promise = require('bluebird');
+
+// Errors:
+var TestDirectoryAlreadyExistsError = require('../../Errors/TestDirectoryAlreadyExistsError');
 
 module.exports = function () {
   	return function () {
@@ -17,14 +21,17 @@ module.exports = function () {
 
 		    var testDirectory = config.testDirectory;
 
-    		createTestDirectoryStructure(testDirectory)
+  		  createTestDirectoryStructure(testDirectory)
 		    .then(function () {
 			      return createBaseTestFiles(testDirectory);
     		})
-		    .then(function () {
-			      return installTractorDependenciesLocally();
-    		})
-		    .then(function () {
+        .catch(TestDirectoryAlreadyExistsError, function (e) {
+            log.warn(e.message + ' No need to create folder structure or files...');
+        })
+        .then(function () {
+            return installTractorDependenciesLocally()
+        })
+        .then(function () {
 			      return setUpSelenium();
     		})
 		    .then(function () {

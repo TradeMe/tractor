@@ -35,5 +35,5 @@ gulp.task('bundle', function() {
 
 function getBundleName () {
     var app = require('../package.json');
-    return app.version + '.' + app.name + '.' + 'min';
+    return app.name + '.' + 'min';
 };

@@ -26,6 +26,7 @@ require('./features/StepDefinitionEditor/Services/StepDefinitionFileService');
 require('./features/StepDefinitionEditor/StepDefinitionEditorController');
 
 require('./Core/Core');
+require('./Core/Services/ConfigService');
 require('./Core/Services/ErrorInterceptor');
 require('./Core/Services/RealTimeService');
 
