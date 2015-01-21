@@ -1,8 +1,17 @@
 {
   "name": "tractor",
-  "version": "0.0.1",
-  "private": true,
-  "scripts": {},
+  "version": "0.1.0",
+  "author": "Craig Spence <craig@trademe.co.nz>",
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/TradeMe/tractor.git"
+  },
+  "bugs": {
+    "url" : "https://github.com/TradeMe/tractor/issues",
+    "email" : "craig@trademe.co.nz"
+  },
+
+  "license": "MIT",
   "engines": {
     "node": ">=0.10"
   },
