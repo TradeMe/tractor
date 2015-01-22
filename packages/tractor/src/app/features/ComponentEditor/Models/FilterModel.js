@@ -10,7 +10,7 @@ var ComponentEditor = require('../ComponentEditor');
 // Dependencies:
 require('../../../Core/Services/ASTCreatorService');
 
-var FilterModel = function (ASTCreatorService) {
+var createFilterModelConstructor = function (ASTCreatorService) {
     var ast = ASTCreatorService;
 
     var DEFAULTS = {
@@ -21,21 +21,31 @@ var FilterModel = function (ASTCreatorService) {
     var FilterModel = function FilterModel (element) {
         Object.defineProperties(this, {
             element: {
-                get: function () { return element; }
+                get: function () {
+                    return element;
+                }
             },
 
             ast: {
-                get: function () { return toAST.call(this, false); }
+                get: function () {
+                    return toAST.call(this, false);
+                }
             },
             allAst: {
-                get: function () { return toAST.call(this, true); }
+                get: function () {
+                    return toAST.call(this, true);
+                }
             },
 
             isAll: {
-                get: function () { return this.type === 'options' || this.type === 'repeater'; }
+                get: function () {
+                    return this.type === 'options' || this.type === 'repeater';
+                }
             },
             isText: {
-                get: function () { return this.type === 'text'; }
+                get: function () {
+                    return this.type === 'text';
+                }
             }
         });
 
@@ -49,7 +59,9 @@ var FilterModel = function (ASTCreatorService) {
         this[property] = value || DEFAULTS[property];
     };
 
-    var toAST = function (all) {
+    return FilterModel;
+
+    function toAST (all) {
         var byIdentifier = ast.createIdentifier('by');
         var locatorLiteral = ast.createLiteral(this.locator);
         if (!all) {
@@ -75,7 +87,7 @@ var FilterModel = function (ASTCreatorService) {
                 var textIndexOfMemberExpresion = ast.createMemberExpression(textIdentifier, ast.createIdentifier('indexOf'));
                 var textIndexOfCallExpression = ast.createCallExpression(textIndexOfMemberExpresion, [ast.createLiteral(this.locator)]);
                 var negativeOneUnaryExpression = ast.createUnaryExpression(ast.UnaryOperators.NEGATION, ast.createLiteral(1), true);
-                var textFoundBinaryExpression = ast.createBinaryExpression(ast.BinaryOperators.STRICT_INEQUALITY, textIndexOfCallExpression, negativeOneUnaryExpression)
+                var textFoundBinaryExpression = ast.createBinaryExpression(ast.BinaryOperators.STRICT_INEQUALITY, textIndexOfCallExpression, negativeOneUnaryExpression);
                 var checkFoundTextReturnStatement = ast.createReturnStatement(textFoundBinaryExpression);
                 var checkFoundTextBodyBlockStatement = ast.createBlockStatement([checkFoundTextReturnStatement]);
                 var checkFoundTextFunctionExpression = ast.createFunctionExpression(null, [textIdentifier], checkFoundTextBodyBlockStatement);
@@ -85,11 +97,9 @@ var FilterModel = function (ASTCreatorService) {
                 return ast.createFunctionExpression(null, [elementIdentifier], getTextThenBodyBlockStatement);
             }
         }
-    };
-
-    return FilterModel;
+    }
 };
 
 ComponentEditor.factory('FilterModel', function (ASTCreatorService) {
-    return FilterModel(ASTCreatorService);
+    return createFilterModelConstructor(ASTCreatorService);
 });

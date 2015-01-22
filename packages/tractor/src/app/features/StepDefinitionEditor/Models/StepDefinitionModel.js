@@ -10,7 +10,7 @@ var StepDefinitionEditor = require('../StepDefinitionEditor');
 require('../../../Core/Services/ASTCreatorService');
 require('./ComponentInstanceModel');
 
-var StepDefinitionModel = function (
+var createStepDefinitionModelConstructor = function (
     ASTCreatorService,
     ComponentInstanceModel
 ) {
@@ -25,7 +25,9 @@ var StepDefinitionModel = function (
         this.componentInstances = [];
 
         Object.defineProperty(this, 'ast', {
-            get: function () { return this.toAST(); }
+            get: function () {
+                return this.toAST();
+            }
         });
     };
 
@@ -47,7 +49,9 @@ var StepDefinitionModel = function (
 
     StepDefinitionModel.prototype.toAST = function () {
         var moduleBody = _.chain(this.componentInstances)
-        .map(function (component) { return component.ast; })
+        .map(function (component) {
+            return component.ast;
+        })
         .flatten().value();
 
         moduleBody.push(this.step.ast);
@@ -70,5 +74,5 @@ StepDefinitionEditor.factory('StepDefinitionModel', function (
     ASTCreatorService,
     ComponentInstanceModel
 ) {
-    return StepDefinitionModel(ASTCreatorService, ComponentInstanceModel);
+    return createStepDefinitionModelConstructor(ASTCreatorService, ComponentInstanceModel);
 });

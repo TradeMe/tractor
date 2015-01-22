@@ -1,12 +1,11 @@
 'use strict';
 
 // Utilities:
-var _ = require('lodash');
 var fs = require('fs');
 var Promise = require('bluebird');
 
 // Dependencies:
-require('angular');
+var angular = require('angular');
 require('angular-sanitize');
 require('angular-ui-router');
 require('angular-sortable');
@@ -49,12 +48,16 @@ angular.module('tractor', [
     $stateProvider
     .state('tractor', {
         url: '/',
+        /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/features/ControlPanel/ControlPanel.html', 'utf8'),
+        /* eslint-enable no-path-concat */
         controller: 'ControlPanelController as controlPanel'
     })
     .state('tractor.component-editor', {
         url: 'component-editor',
+        /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/features/ComponentEditor/ComponentEditor.html', 'utf8'),
+        /* eslint-enable no-path-concat */
         controller: 'ComponentEditorController as componentEditor',
         resolve: {
             componentFileNames: function (ComponentFileService) {
@@ -64,7 +67,9 @@ angular.module('tractor', [
     })
     .state('tractor.gherkin-editor', {
         url: 'gherkin-editor',
+        /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/features/GherkinEditor/GherkinEditor.html', 'utf8'),
+        /* eslint-enable no-path-concat */
         controller: 'GherkinEditorController as gherkinEditor',
         resolve: {
             gherkinFileNames: function (GherkinFileService) {
@@ -74,10 +79,12 @@ angular.module('tractor', [
     })
     .state('tractor.step-definition-editor', {
         url: 'step-definition-editor',
+        /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/features/StepDefinitionEditor/StepDefinitionEditor.html', 'utf8'),
+        /* eslint-enable no-path-concat */
         controller: 'StepDefinitionEditorController as stepDefinitionEditor',
         resolve: {
-            stepDefinitionFileNames:function (StepDefinitionFileService) {
+            stepDefinitionFileNames: function (StepDefinitionFileService) {
                 return StepDefinitionFileService.getStepDefinitionFileNames();
             },
             components: function (ComponentFileService) {

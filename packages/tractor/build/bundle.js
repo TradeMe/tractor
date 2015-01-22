@@ -3,6 +3,7 @@
 var config      = require('./config.js');
 
 var gulp        = require('gulp');
+var eslint      = require('gulp-eslint');
 var browserify  = require('browserify');
 var source      = require('vinyl-source-stream');
 var buffer      = require('vinyl-buffer');
@@ -14,6 +15,10 @@ var browserSync = require('browser-sync');
 var error = require('./utilities/error-handler');
 
 gulp.task('bundle', function() {
+    gulp.src(['src/**/*.js'])
+    .pipe(eslint())
+    .pipe(eslint.format())
+
     return browserify({
         entries: [config.appDir + 'app.js']
     })

@@ -10,30 +10,50 @@ var StepDefinitionEditor = require('../StepDefinitionEditor');
 require('../../../Core/Services/ASTCreatorService');
 require('../../ComponentEditor/Models/ArgumentModel');
 
-var TaskModel = function (
+var createTaskModelConstructor = function (
     ASTCreatorService,
     ArgumentModel
 ) {
     var ast = ASTCreatorService;
 
     var TaskModel = function TaskModel (step) {
+        var component;
+        var action;
+        var args;
+
         Object.defineProperties(this, {
             step: {
-                get: function () { return step; }
+                get: function () {
+                    return step;
+                }
             },
             component: {
-                get: function () { return this._component; },
-                set: setComponent
+                get: function () {
+                    return component;
+                },
+                set: function (newComponent) {
+                    component = newComponent;
+                    this.action = _.first(this.component.component.actions);
+                }
             },
             action: {
-                get: function () { return this._action; },
-                set: setAction
+                get: function () {
+                    return action;
+                },
+                set: function (newAction) {
+                    action = newAction;
+                    args = parseArguments.call(this);
+                }
             },
             arguments: {
-                get: function () { return this._arguments; }
+                get: function () {
+                    return args;
+                }
             },
             ast: {
-                get: function () { return toAST.call(this); }
+                get: function () {
+                    return toAST.call(this);
+                }
             }
         });
 
@@ -41,24 +61,9 @@ var TaskModel = function (
         this.action = _.first(this.component.component.actions);
     };
 
-    var setComponent = function (component) {
-        this._component = component;
-        this.action = _.first(this.component.component.actions);
-    };
+    return TaskModel;
 
-    var setAction = function (action) {
-        this._action = action;
-        this._arguments = _.map(this.action.parameters, function (parameter) {
-            var argument = new ArgumentModel();
-            var argumentName = parameter.name;
-            argumentName = argumentName.replace(/([A-Z])/g, ' $1');
-            argumentName = argumentName.charAt(0).toUpperCase() + argumentName.slice(1).toLowerCase();
-            argument.name = argumentName;
-            return argument;
-        });
-    };
-
-    var toAST = function () {
+    function toAST () {
         var argumentValues = _.map(this.arguments, function (argument) {
             return argument.ast;
         });
@@ -66,14 +71,23 @@ var TaskModel = function (
         var taskMemberExpression = ast.createMemberExpression(ast.createIdentifier(this.component.name), this.action.nameIdentifier);
         var taskCallExpression = ast.createCallExpression(taskMemberExpression, argumentValues);
         return ast.createExpressionStatement(taskCallExpression);
-    };
+    }
 
-    return TaskModel;
+    function parseArguments () {
+        return _.map(this.action.parameters, function (parameter) {
+            var argument = new ArgumentModel();
+            var argumentName = parameter.name;
+            argumentName = argumentName.replace(/([A-Z])/g, ' $1');
+            argumentName = argumentName.charAt(0).toUpperCase() + argumentName.slice(1).toLowerCase();
+            argument.name = argumentName;
+            return argument;
+        });
+    }
 };
 
 StepDefinitionEditor.factory('TaskModel', function (
     ASTCreatorService,
     ArgumentModel
 ) {
-    return TaskModel(ASTCreatorService, ArgumentModel);
+    return createTaskModelConstructor(ASTCreatorService, ArgumentModel);
 });

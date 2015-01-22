@@ -42,16 +42,20 @@ var StepParserService = function StepParserService (
                 var tasksDeclaration = _.first(statement.declarations);
                 assert(tasksDeclaration.id.name === 'tasks');
                 TaskParserService.parse(step, tasksDeclaration.init);
-            } catch (e) { notTasks = true; }
+            } catch (e) {
+                notTasks = true;
+            }
 
             try {
                 var expectations = _.first(statement.expression.callee.object.arguments).elements;
                 _.each(expectations, function (expectation) {
                     assert(!(expectation.name && expectation.name === 'tasks'));
-                    var expectation = ExpectationParserService.parse(step, expectation);
+                    expectation = ExpectationParserService.parse(step, expectation);
                     step.expectations.push(expectation);
                 });
-            } catch (e) { notExpectations = true; }
+            } catch (e) {
+                notExpectations = true;
+            }
 
             if (notTasks && notExpectations) {
                 console.log(statement, index);

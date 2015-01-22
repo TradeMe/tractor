@@ -11,7 +11,7 @@ require('../../../Core/Services/ASTCreatorService');
 require('./ExpectationModel');
 require('./TaskModel');
 
-var StepModel = function (
+var createStepModelConstructor = function (
     ASTCreatorService,
     ExpectationModel,
     TaskModel
@@ -24,16 +24,24 @@ var StepModel = function (
 
         Object.defineProperties(this, {
             stepDefinition: {
-                get: function () { return stepDefinition; }
+                get: function () {
+                    return stepDefinition;
+                }
             },
             tasks: {
-                get: function () { return tasks; }
+                get: function () {
+                    return tasks;
+                }
             },
             expectations: {
-                get: function () { return expectations; }
+                get: function () {
+                    return expectations;
+                }
             },
             ast: {
-                get: function () { return toAST.call(this); }
+                get: function () {
+                    return toAST.call(this);
+                }
             }
         });
     };
@@ -56,18 +64,24 @@ var StepModel = function (
         _.remove(this.expectations, expectation);
     };
 
-    var toAST = function () {
+    return StepModel;
+
+    function toAST () {
         var thisStep = ast.createMemberExpression(ast.createThisExpression(), ast.createIdentifier(this.type));
         var stepRegexLiteral = ast.createLiteral(this.regex);
         var stepDoneIdentifier = ast.createIdentifier('done');
 
-        var expectationASTs = _.map(this.expectations, function (expectation) { return expectation.ast; });
+        var expectationASTs = _.map(this.expectations, function (expectation) {
+            return expectation.ast;
+        });
         var promisesArrayExpression = ast.createArrayExpression(expectationASTs);
 
-        var taskASTs = _.map(this.tasks, function (task) { return task.ast; });
+        var taskASTs = _.map(this.tasks, function (task) {
+            return task.ast;
+        });
         var firstTask = _.first(taskASTs);
 
-        _.each(_.rest(taskASTs), function (taskAST, index) {
+        _.each(_.rest(taskASTs), function (taskAST) {
             var thenIdentifier = ast.createIdentifier('then');
             var promiseThenMemberExpression = ast.createMemberExpression(firstTask.expression, thenIdentifier);
 
@@ -115,16 +129,13 @@ var StepModel = function (
         var stepFunctionExpression = ast.createFunctionExpression(null, [stepDoneIdentifier], stepBlockStatement);
         var stepCallExpression = ast.createCallExpression(thisStep, [stepRegexLiteral, stepFunctionExpression]);
         return ast.createExpressionStatement(stepCallExpression);
-    };
-
-    return StepModel;
+    }
 };
-
 
 StepDefinitionEditor.factory('StepModel', function (
     ASTCreatorService,
     ExpectationModel,
     TaskModel
 ) {
-    return StepModel(ASTCreatorService, ExpectationModel, TaskModel);
+    return createStepModelConstructor(ASTCreatorService, ExpectationModel, TaskModel);
 });

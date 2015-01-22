@@ -18,11 +18,11 @@ var StepInputDirective = function (ValidationService, StepDeclarationModel) {
     var validateExampleVariableNames = function ($scope, property, value) {
         var validations = StepDeclarationModel.getExampleVariableNames(value)
         .map(function (variable) {
-            return ValidationService.validateVariableName(variable)
+            return ValidationService.validateVariableName(variable);
         });
 
         Promise.all(validations)
-        .then(function (result) {
+        .then(function () {
             $scope.model.setValidValue($scope.property, value);
         });
     };
@@ -33,7 +33,9 @@ var StepInputDirective = function (ValidationService, StepDeclarationModel) {
             label: '@',
             model: '='
         },
+        /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/../TextInput/TextInput.html', 'utf8'),
+        /* eslint-enable no-path-concat */
         link: function ($scope) {
             $scope.$watch('model', function () {
                 $scope.property = camelcase($scope.label);

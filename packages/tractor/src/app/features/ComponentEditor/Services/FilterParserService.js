@@ -28,7 +28,9 @@ var FilterParserService = function FilterParserService (FilterModel) {
             var locatorLiteral = _.first(astObject.arguments);
             filter.locator = locatorLiteral.value;
             filter.type = astObject.callee.property.name;
-        } catch (e) { notModelBindingCSSOptionsRepeater = true; }
+        } catch (e) {
+            notModelBindingCSSOptionsRepeater = true;
+        }
 
         try {
             if (notModelBindingCSSOptionsRepeater) {
@@ -39,7 +41,9 @@ var FilterParserService = function FilterParserService (FilterModel) {
                 filter.locator = locatorLiteral.value;
                 filter.type = 'text';
             }
-        } catch (e) { notText = true; }
+        } catch (e) {
+            notText = true;
+        }
 
         try {
             if (notText) {
@@ -47,7 +51,9 @@ var FilterParserService = function FilterParserService (FilterModel) {
                 filter.locator = '' + astObject.value;
                 filter.type = 'text';
             }
-        } catch (e) { notAllIndex = true; }
+        } catch (e) {
+            notAllIndex = true;
+        }
 
         try {
             if (notAllIndex) {
@@ -58,7 +64,9 @@ var FilterParserService = function FilterParserService (FilterModel) {
                 filter.locator = locatorLiteral.value;
                 filter.type = 'text';
             }
-        } catch (e) { notAllString = true }
+        } catch (e) {
+            notAllString = true;
+        }
 
         if (notModelBindingCSSOptionsRepeater && notText && notAllIndex && notAllString) {
             console.log(astObject);

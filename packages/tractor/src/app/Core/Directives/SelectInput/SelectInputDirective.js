@@ -18,7 +18,9 @@ var SelectInputDirective = function () {
             options: '=',
             as: '@'
         },
+        /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/SelectInput.html', 'utf8'),
+        /* eslint-enable no-path-concat */
         link: function ($scope) {
             $scope.$watch('options', function () {
                 $scope.property = camelcase($scope.label);

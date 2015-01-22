@@ -49,7 +49,7 @@ var ComponentEditorController = (function () {
 
         var exists = _.contains(componentFileNames, name);
 
-        if (!exists || (exists && this.$window.confirm('This will overwrite "' + name + '". Continue?'))) {
+        if (!exists || exists && this.$window.confirm('This will overwrite "' + name + '". Continue?')) {
             this.componentFileService.saveComponentFile(ast, name)
             .then(function () {
                 if (!exists) {

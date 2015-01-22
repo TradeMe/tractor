@@ -1,0 +1,34 @@
+env:
+    node: true
+    browser: true
+
+rules:
+    brace-style: [2, "1tbs"]
+    camelcase: true
+    comma-style: [2, "last"]
+    complexity: [1, 4]
+    default-case: 2
+    func-style: 0
+    guard-for-in: 2
+    handle-callback-err: 2
+    no-bitwise: 2
+    no-div-regex: 2
+    no-extra-parens: 2
+    no-floating-decimal: 2
+    no-lonely-if: 2
+    no-multiple-empty-lines: [2, { max: 1 }]
+    no-nested-ternary: 2
+    no-new-require: 2
+    no-plusplus: 2
+    no-process-env: 2
+    no-self-compare: 2
+    no-shadow: 0
+    no-undefined: 2
+    no-use-before-define: [2, "nofunc"]
+    no-void: 2
+    quotes: [2, "single"]
+    radix: 2
+    space-after-keywords: [2, "always"]
+    space-before-blocks: 2
+    spaced-line-comment: [2, "always"]
+    wrap-iife: [2, "inside"]

@@ -6,13 +6,17 @@ var ComponentEditor = require('../ComponentEditor');
 // Dependencies:
 require('../../../Core/Services/ASTCreatorService');
 
-var BrowserModel = function (ASTCreatorService) {
+var createBrowserModelConstructor = function (ASTCreatorService) {
     var ast = ASTCreatorService;
 
     var BrowserModel = function BrowserModel () {
         Object.defineProperty(this, 'name', {
-            get: function () { return this.nameIdentifier.name; },
-            set: function (name) { this.nameIdentifier.name = name; }
+            get: function () {
+                return this.nameIdentifier.name;
+            },
+            set: function (name) {
+                this.nameIdentifier.name = name;
+            }
         });
 
         this.nameIdentifier = ast.createIdentifier('browser');
@@ -67,5 +71,5 @@ var BrowserModel = function (ASTCreatorService) {
 };
 
 ComponentEditor.factory('BrowserModel', function (ASTCreatorService) {
-    return BrowserModel(ASTCreatorService);
+    return createBrowserModelConstructor(ASTCreatorService);
 });

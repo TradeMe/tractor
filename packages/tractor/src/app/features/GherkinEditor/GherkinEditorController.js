@@ -50,7 +50,7 @@ var GherkinEditorController = (function () {
 
         var exists = _.contains(gherkinFileNames, name);
 
-        if (!exists || (exists && this.$window.confirm('This will overwrite "' + name + '". Continue?'))) {
+        if (!exists || exists && this.$window.confirm('This will overwrite "' + name + '". Continue?')) {
             this.gherkinFileService.saveGherkinFile(name, feature)
             .then(function () {
                 if (!exists) {

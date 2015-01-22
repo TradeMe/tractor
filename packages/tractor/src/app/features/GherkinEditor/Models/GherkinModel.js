@@ -9,7 +9,7 @@ var GherkinEditor = require('../GherkinEditor');
 // Dependencies:
 require('./ScenarioModel');
 
-var GherkinModel = function (
+var createGherkinModelConstructor = function (
     ScenarioModel,
     GherkinIndent,
     GherkinNewLine
@@ -26,10 +26,14 @@ var GherkinModel = function (
 
         Object.defineProperties(this, {
             scenarios: {
-                get: function () { return scenarios; }
+                get: function () {
+                    return scenarios;
+                }
             },
             feature: {
-                get: function () { return toFeature.call(this); }
+                get: function () {
+                    return toFeature.call(this);
+                }
             }
         });
 
@@ -51,8 +55,9 @@ var GherkinModel = function (
         this[property] = value || DEFAULTS[property];
     };
 
+    return GherkinModel;
 
-    var toFeature = function () {
+    function toFeature () {
         var feature = 'Feature: ' + this.name;
 
         var inOrderTo = GherkinIndent + 'In order to ' + this.inOrderTo;
@@ -65,9 +70,7 @@ var GherkinModel = function (
 
         var lines = _.flatten([feature, inOrderTo, asA, iWant, scenarios]);
         return lines.join(GherkinNewLine);
-    };
-
-    return GherkinModel;
+    }
 };
 
 GherkinEditor.factory('GherkinModel', function (
@@ -75,5 +78,5 @@ GherkinEditor.factory('GherkinModel', function (
     GherkinIndent,
     GherkinNewLine
 ) {
-    return GherkinModel(ScenarioModel, GherkinIndent, GherkinNewLine);
+    return createGherkinModelConstructor(ScenarioModel, GherkinIndent, GherkinNewLine);
 });

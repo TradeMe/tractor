@@ -17,7 +17,7 @@ var VariableInputDirective = function (ValidationService) {
     var validateVariableName = function ($scope, value) {
         if (value) {
             ValidationService.validateVariableName(value, $scope.class)
-            .then(function (result) {
+            .then(function () {
                 $scope.model.validateName($scope.model, value);
             });
         } else {
@@ -32,9 +32,11 @@ var VariableInputDirective = function (ValidationService) {
             model: '=',
             class: '@'
         },
+        /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/../TextInput/TextInput.html', 'utf8'),
+        /* eslint-enable no-path-concat */
 
-        link: function ($scope, $el, attributes) {
+        link: function ($scope) {
             $scope.$watch('model', function () {
                 $scope.property = camelcase($scope.label);
                 $scope.blur = _.curry(validateVariableName)($scope);

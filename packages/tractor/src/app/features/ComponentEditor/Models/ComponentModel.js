@@ -2,7 +2,6 @@
 
 // Utilities:
 var _ = require('lodash');
-var assert = require('assert');
 
 // Module:
 var ComponentEditor = require('../ComponentEditor');
@@ -13,7 +12,7 @@ require('./BrowserModel');
 require('./ElementModel');
 require('./ActionModel');
 
-var ComponentModel = function (
+var createComponentModelConstructor = function (
     ASTCreatorService,
     BrowserModel,
     ElementModel,
@@ -33,23 +32,37 @@ var ComponentModel = function (
 
         Object.defineProperties(this, {
             name: {
-                get: function () { return this.nameIdentifier.name; },
-                set: function (name) { this.nameIdentifier.name = name; }
+                get: function () {
+                    return this.nameIdentifier.name;
+                },
+                set: function (name) {
+                    this.nameIdentifier.name = name;
+                }
             },
             browser: {
-                get: function () { return browser; }
+                get: function () {
+                    return browser;
+                }
             },
             domElements: {
-                get: function () { return domElements; }
+                get: function () {
+                    return domElements;
+                }
             },
             actions: {
-                get: function () { return actions; }
+                get: function () {
+                    return actions;
+                }
             },
             elements: {
-                get: function () { return elements; }
+                get: function () {
+                    return elements;
+                }
             },
             ast: {
-                get: function () { return toAST.call(this); }
+                get: function () {
+                    return toAST.call(this);
+                }
             }
         });
 
@@ -69,7 +82,7 @@ var ComponentModel = function (
     };
 
     ComponentModel.prototype.addAction = function () {
-        var action = new ActionModel(this)
+        var action = new ActionModel(this);
         this.actions.push(action);
         action.addInteraction();
     };
@@ -89,37 +102,41 @@ var ComponentModel = function (
         return nameToCheck;
     };
 
-    var getAllNames = function (reject) {
+    return ComponentModel;
+
+    function getAllNames (reject) {
         var objects = [this, this.elements, this.actions];
         return _.chain(objects).flatten().compact().reject(function (object) {
             return object === reject;
         }).map(function (object) {
             return object.name;
         }).compact().value();
-    };
+    }
 
-    var toAST = function () {
-        var elementASTs = _.map(this.domElements, function (element) { return element.ast; });
+    function toAST () {
+        var elementASTs = _.map(this.domElements, function (element) {
+            return element.ast;
+        });
         var constructorBlockExpression = ast.createBlockStatement(elementASTs);
         var constructorFunctionExpression = ast.createFunctionExpression(this.nameIdentifier, null, constructorBlockExpression);
         var constructorVariableDeclarator = ast.createVariableDeclarator(this.nameIdentifier, constructorFunctionExpression);
         var constructorVariableDeclaration = ast.createVariableDeclaration([constructorVariableDeclarator]);
 
-        var actionASTs = _.map(this.actions, function (action) { return action.ast; });
+        var actionASTs = _.map(this.actions, function (action) {
+            return action.ast;
+        });
         var moduleReturnStatement = ast.createReturnStatement(this.nameIdentifier);
         var moduleBody = _.chain([constructorVariableDeclaration, actionASTs, moduleReturnStatement]).flatten().compact().value();
         var moduleBlockStatement = ast.createBlockStatement(moduleBody);
         var moduleFunctionExpression = ast.createFunctionExpression(null, null, moduleBlockStatement);
-        var moduleCallExpression =  ast.createCallExpression(moduleFunctionExpression);
+        var moduleCallExpression = ast.createCallExpression(moduleFunctionExpression);
 
         var moduleExportsMemberExpression = ast.createMemberExpression(ast.createIdentifier('module'), ast.createIdentifier('exports'));
         var componentModuleAssignmentExpression = ast.createAssignmentExpression(moduleExportsMemberExpression, ast.AssignmentOperators.ASSIGNMENT, moduleCallExpression);
         var componentModuleExpressionStatement = ast.createExpressionStatement(componentModuleAssignmentExpression);
 
         return ast.createProgram([componentModuleExpressionStatement]);
-    };
-
-    return ComponentModel;
+    }
 };
 
 ComponentEditor.factory('ComponentModel', function (
@@ -128,5 +145,5 @@ ComponentEditor.factory('ComponentModel', function (
     ElementModel,
     ActionModel
 ) {
-    return ComponentModel(ASTCreatorService, BrowserModel, ElementModel, ActionModel);
+    return createComponentModelConstructor(ASTCreatorService, BrowserModel, ElementModel, ActionModel);
 });

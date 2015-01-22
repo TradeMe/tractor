@@ -9,7 +9,7 @@ var ComponentEditor = require('../ComponentEditor');
 // Dependencies:
 require('../../../Core/Services/ASTCreatorService');
 
-var ParameterModel = function (ASTCreatorService) {
+var createParameterModelConstructor = function (ASTCreatorService) {
     var ast = ASTCreatorService;
 
     var DEFAULTS = {
@@ -19,14 +19,22 @@ var ParameterModel = function (ASTCreatorService) {
     var ParameterModel = function ParameterModel (action) {
         Object.defineProperties(this, {
             action: {
-                get: function () { return action; }
+                get: function () {
+                    return action;
+                }
             },
             name: {
-                get: function () { return this.nameIdentifier.name; },
-                set: function (name) { this.nameIdentifier.name = name; }
+                get: function () {
+                    return this.nameIdentifier.name;
+                },
+                set: function (name) {
+                    this.nameIdentifier.name = name;
+                }
             },
             ast: {
-                get: function () { return toAST.call(this); }
+                get: function () {
+                    return toAST.call(this);
+                }
             }
         });
 
@@ -44,23 +52,22 @@ var ParameterModel = function (ASTCreatorService) {
         return nameToCheck;
     };
 
-    var getAllNames = function (reject) {
+    return ParameterModel;
+
+    function getAllNames (reject) {
         return _.chain(this.action.parameters)
         .reject(function (object) {
             return object === reject;
         }).map(function (object) {
             return object.name;
         }).value();
-    };
+    }
 
-    var toAST = function () {
+    function toAST () {
         return this.nameIdentifier;
-    };
-
-    return ParameterModel;
+    }
 };
 
-
 ComponentEditor.factory('ParameterModel', function (ASTCreatorService) {
-    return ParameterModel(ASTCreatorService);
+    return createParameterModelConstructor(ASTCreatorService);
 });

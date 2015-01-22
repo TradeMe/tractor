@@ -36,7 +36,11 @@ var ElementParserService = function ElementParserService (
                 elementCallExpression = elementCallExpression.callee.object;
             } catch (e) { }
 
-            parse(component, { expression: { right: elementCallExpressionCallee.object } }, element);
+            parse(component, {
+                expression: {
+                    right: elementCallExpressionCallee.object
+                }
+            }, element);
         } catch (e) { }
 
         var notFirstElementBy = false;
@@ -51,7 +55,9 @@ var ElementParserService = function ElementParserService (
             var filterAST = _.first(elementCallExpression.arguments);
             var filter = FilterParserService.parse(element, filterAST);
             element.filters.push(filter);
-        } catch (e) { notFirstElementBy = true }
+        } catch (e) {
+            notFirstElementBy = true;
+        }
 
         try {
             if (notFirstElementBy) {
@@ -61,7 +67,9 @@ var ElementParserService = function ElementParserService (
                 var filter = FilterParserService.parse(element, filterAllAST);
                 element.filters.push(filter);
             }
-        } catch (e) { notFirstElementAllBy = true; }
+        } catch (e) {
+            notFirstElementAllBy = true;
+        }
 
         try {
             if (notFirstElementAllBy) {
@@ -70,7 +78,9 @@ var ElementParserService = function ElementParserService (
                 var filter = FilterParserService.parse(element, filterAST);
                 element.filters.push(filter);
             }
-        } catch (e) { notElementBy = true; }
+        } catch (e) {
+            notElementBy = true;
+        }
 
         try {
             if (notElementBy) {
@@ -79,7 +89,9 @@ var ElementParserService = function ElementParserService (
                 var filter = FilterParserService.parse(element, filterAllAST);
                 element.filters.push(filter);
             }
-        } catch (e) { notElementAllBy = true; }
+        } catch (e) {
+            notElementAllBy = true;
+        }
 
         try {
             if (notElementAllBy) {
@@ -88,7 +100,9 @@ var ElementParserService = function ElementParserService (
                 var filter = FilterParserService.parse(element, filterAST);
                 element.filters.push(filter);
             }
-        } catch (e) { notElementFilter = true; }
+        } catch (e) {
+            notElementFilter = true;
+        }
 
         try {
             if (notElementFilter) {
@@ -97,7 +111,9 @@ var ElementParserService = function ElementParserService (
                 var filter = FilterParserService.parse(element, filterAST);
                 element.filters.push(filter);
             }
-        } catch (e) { notElementGet = true; }
+        } catch (e) {
+            notElementGet = true;
+        }
 
         if (notFirstElementBy && notFirstElementAllBy && notElementBy && notElementAllBy && notElementFilter && notElementGet) {
             console.log(astObject);

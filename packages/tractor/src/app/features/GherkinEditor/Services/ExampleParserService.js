@@ -14,7 +14,7 @@ var ExampleParserService = function ExampleParserService (ExampleModel) {
         parse: parse
     };
 
-    function parse (tokens) {
+    function parse (scenario, tokens) {
         var example = new ExampleModel(scenario);
 
         _.each(scenario.exampleVariables, function (variable, index) {

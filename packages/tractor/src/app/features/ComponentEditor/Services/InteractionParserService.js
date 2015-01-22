@@ -30,7 +30,9 @@ var InteractionParserService = function InteractionParserService (
 
         try {
             assert(astObject.argument.callee.object.callee);
-            parse(action, { argument: astObject.argument.callee.object });
+            parse(action, {
+                argument: astObject.argument.callee.object
+            });
         } catch (e) { }
 
         var interactionCallExpression;
@@ -39,14 +41,18 @@ var InteractionParserService = function InteractionParserService (
             var wrappedThenFunctionExpression = _.first(astObject.argument.arguments);
             var interactionResolveExpressionStatement = _.first(wrappedThenFunctionExpression.body.body);
             interactionCallExpression = _.first(interactionResolveExpressionStatement.expression.arguments);
-        } catch (e) { notFirstWrappedPromiseInteraction = true; }
+        } catch (e) {
+            notFirstWrappedPromiseInteraction = true;
+        }
 
         try {
             if (notFirstWrappedPromiseInteraction) {
                 interactionCallExpression = astObject.argument;
                 assert(!interactionCallExpression.callee.object.callee);
             }
-        } catch (e) { notFirstOwnPromiseInteraction = true; }
+        } catch (e) {
+            notFirstOwnPromiseInteraction = true;
+        }
 
         try {
             if (notFirstOwnPromiseInteraction) {
@@ -57,7 +63,9 @@ var InteractionParserService = function InteractionParserService (
                 var interactionResolveExpressionStatement = _.first(wrappedResolveFunctionExpression.body.body);
                 interactionCallExpression = _.first(interactionResolveExpressionStatement.expression.arguments);
             }
-        } catch (e) { notWrappedPromiseInteraction = true; }
+        } catch (e) {
+            notWrappedPromiseInteraction = true;
+        }
 
         try {
             if (notWrappedPromiseInteraction) {
@@ -66,7 +74,9 @@ var InteractionParserService = function InteractionParserService (
                 var interactionReturnStatement = _.first(wrappedThenFunctionExpression.body.body);
                 interactionCallExpression = interactionReturnStatement.argument;
             }
-        } catch (e) { notOwnPromiseInteraction = true; }
+        } catch (e) {
+            notOwnPromiseInteraction = true;
+        }
 
         try {
             if (interactionCallExpression.callee.object.name === 'browser') {
@@ -88,7 +98,9 @@ var InteractionParserService = function InteractionParserService (
             });
             interaction.methodInstance.setArguments(args);
             action.interactions.push(interaction);
-        } catch (e) { notValidInteraction = true; }
+        } catch (e) {
+            notValidInteraction = true;
+        }
 
         if (notFirstWrappedPromiseInteraction && notFirstOwnPromiseInteraction && notWrappedPromiseInteraction && notOwnPromiseInteraction && notValidInteraction) {
             console.log(astObject);
