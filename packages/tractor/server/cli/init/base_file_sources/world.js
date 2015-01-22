@@ -1,3 +1,6 @@
+/*global browser:true, protractor:true, By:true, expect:true, Promise:true */
+'use strict';
+
 var CustomWorld = (function () {
     var chai = require('chai');
     var chaiAsPromised = require('chai-as-promised');
@@ -14,8 +17,9 @@ var CustomWorld = (function () {
 })();
 
 module.exports = function () {
-    return this.World = function (callback) {
+    this.World = function (callback) {
         var w = new CustomWorld();
         return callback(w);
     };
+    return this.World;
 };

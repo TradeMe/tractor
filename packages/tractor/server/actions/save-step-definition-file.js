@@ -12,7 +12,7 @@ var Promise = require('bluebird');
 // Dependencies:
 var fs = Promise.promisifyAll(require('fs'));
 var path = require('path');
-var escodegen = require('escodegen')
+var escodegen = require('escodegen');
 
 // Errors:
 var GenerateJavaScriptError = require('../Errors/GenerateJavaScriptError');
@@ -54,7 +54,7 @@ module.exports = (function () {
             } catch (error) {
                 reject(new GenerateJavaScriptError('That is not a valid JavaScript AST.'));
             }
-        })
+        });
     }
 
     function rebuildRegExps (object) {

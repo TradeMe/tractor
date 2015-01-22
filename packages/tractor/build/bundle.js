@@ -15,7 +15,7 @@ var browserSync = require('browser-sync');
 var error = require('./utilities/error-handler');
 
 gulp.task('bundle', function() {
-    gulp.src(['src/**/*.js'])
+    gulp.src(['src/**/*.js', 'server/**/*.js'])
     .pipe(eslint())
     .pipe(eslint.format())
 

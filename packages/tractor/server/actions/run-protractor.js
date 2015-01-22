@@ -3,9 +3,6 @@
 // Config:
 var config = require('../utils/get-config');
 
-// Utilities:
-var log = require('../utils/logging');
-
 // Dependencies:
 var path = require('path');
 var spawn = require('child_process').spawn;
@@ -23,14 +20,14 @@ module.exports = function (sockets) {
         var protractor = spawn('node', [protractorPath, e2ePath]);
 
         protractor.stdout.on('data', function (data) {
-            data =  formatData(trim(stripcolorcodes(data.toString())));
+            data = formatData(trim(stripcolorcodes(data.toString())));
             if (data.length) {
                 socket.emit('protractor-out', data);
             }
         });
 
         protractor.stderr.on('data', function (data) {
-            data =  trim(stripcolorcodes(data.toString()));
+            data = trim(stripcolorcodes(data.toString()));
             if (data.length) {
                 socket.emit('protractor-err', data);
             }
@@ -50,4 +47,4 @@ module.exports = function (sockets) {
         data = data.replace(/ at http.*/g, '.');
         return data;
     }
-}
+};
