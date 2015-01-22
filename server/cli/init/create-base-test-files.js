@@ -33,7 +33,7 @@ module.exports = (function () {
         return fs.readFileAsync(path.join(__dirname, constants.PROTRACTOR_CONF_SOURCE_FILE_PATH))
         .then(function (protractorConfSource) {
             protractorConfSource = protractorConfSource.toString();
-            protractorConfSource = protractorConfSource.replace(/%%SUPPORT%%/, constants.SUPPORT_DIR)
+            protractorConfSource = protractorConfSource.replace(/%%SUPPORT%%/, constants.SUPPORT_DIR);
             protractorConfSource = protractorConfSource.replace(/%%STEP_DEFINITIONS%%/, constants.STEP_DEFINITIONS_DIR);
             return fs.writeFileAsync(path.join(testDirectory, constants.PROTRACTOR_CONF_FILE_NAME), protractorConfSource);
         })

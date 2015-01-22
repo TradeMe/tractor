@@ -4,12 +4,11 @@
 var config = require('../utils/get-config');
 
 // Utilities:
-var log = require('../utils/logging');
 var constants = require('../constants');
 var Promise = require('bluebird');
 
 // Dependencies:
-var escodegen = require('escodegen')
+var escodegen = require('escodegen');
 var fs = Promise.promisifyAll(require('fs'));
 var path = require('path');
 

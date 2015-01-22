@@ -8,11 +8,11 @@ var log = require('./utils/logging');
 
 // Dependencies:
 var bodyParser = require('body-parser');
-var cors       = require('cors');
-var express    = require('express');
-var http       = require('http');
-var io         = require('socket.io');
-var path       = require('path');
+var cors = require('cors');
+var express = require('express');
+var http = require('http');
+var io = require('socket.io');
+var path = require('path');
 
 module.exports = (function () {
       var server = init();

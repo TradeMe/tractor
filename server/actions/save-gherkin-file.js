@@ -10,7 +10,6 @@ var log = require('../utils/logging');
 var Promise = require('bluebird');
 
 // Dependencies:
-var cucumber = require('cucumber');
 var exec = Promise.promisify(require('child_process').exec);
 var fs = Promise.promisifyAll(require('fs'));
 var os = require('os');
@@ -55,38 +54,48 @@ module.exports = (function () {
         });
     };
 
-
     function splitResultToStepDefinitions (result) {
         var pieces = result
-        .replace(/\u001b\[.*?m/g, '')                              // Replace color characters
-        .split(/\r\n?|\n{2}/);                                     // Split on new-lines
-
-        return _.filter(pieces, function (piece) {                 // Filter out everything that isn't a step definition
-            return !!(/^this\.(Given|Then|When)[\s\S]*\}\);$/m.exec(piece));
+        // Split on new-lines:
+        .split(/\r\n?|\n{2}/)
+        // Replace color characters:
+        .replace(/\u001b\[.*?m/g, '');
+        // Filter out everything that isn't a step definition:
+        return _.filter(pieces, function (piece) {
+            return !!/^this\.(Given|Then|When)[\s\S]*\}\);$/m.exec(piece);
         });
     }
 
     function createCapitalCaseName (string) {
-        return string.split(' ')                                 // Split on the spaces
+        // Split on the spaces:
+        return string.split(' ')
         .map(function (part) {
-            return part.charAt(0).toUpperCase() + part.slice(1); // Uppercase each word
+            // Uppercase each word:
+            return part.charAt(0).toUpperCase() + part.slice(1);
         })
-        .join('');                                               // Rejoin
+        // Rejoin:
+        .join('');
     }
 
     function createStepDefinitionName (stepDefinition) {
-        var type = /^this\.(Given|Then|When)/.exec(stepDefinition) // Find the type of the step definition
-        var match = /\^(.*)\$/.exec(stepDefinition);               // Pull out the regex from the step definition
+        // Find the type of the step definition:
+        var type = /^this\.(Given|Then|When)/.exec(stepDefinition);
+        // Pull out the regex from the step definition:
+        var match = /\^(.*)\$/.exec(stepDefinition);
         return type[1] + createCapitalCaseName(match[1]);
     }
 
     function formatStepDefinitionCode (stepDefinition) {
-        var code = stepDefinition.split(os.EOL)                    // Split on new lines
+        // Split on new lines:
+        var code = stepDefinition.split(os.EOL)
         .map(function (line) {
-            return '    ' + line;                                  // Add some indentation
+            // Add some indentation:
+            return '    ' + line;
         })
-        .join(os.EOL);                                             // Rejoin with new lines
+        // Rejoin with new lines:
+        .join(os.EOL);
 
-        return 'module.exports = function () {' + os.EOL + code + os.EOL + '};' // Wrap in a `module.exports`
+        // Wrap in a `module.exports`:
+        return 'module.exports = function () {' + os.EOL + code + os.EOL + '};';
     }
 })();

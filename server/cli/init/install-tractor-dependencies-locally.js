@@ -23,7 +23,7 @@ module.exports = (function () {
             dependencies = filterModules(installed, dependencies);
             return installDependencies(dependencies);
         });
-    }
+    };
 
     function getInstalled () {
         log.info('Checking installed npm dependencies...');
@@ -33,7 +33,7 @@ module.exports = (function () {
 
     function filterModules (installed, dependencies) {
         return _.filter(dependencies, function (dependency) {
-            return !(new RegExp(dependency, 'gm').test(installed));
+            return !new RegExp(dependency, 'gm').test(installed);
         });
     }
 
@@ -46,7 +46,7 @@ module.exports = (function () {
 
         return Promise.all(modules.map(function (module) {
             log.info('Installing ' + module + '...');
-            return exec('npm install ' + module)
+            return exec('npm install --save-dev --save-exact ' + module)
             .then(function () {
                 log.success('Installed ' + module + '.');
             })

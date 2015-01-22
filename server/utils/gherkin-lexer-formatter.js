@@ -14,10 +14,14 @@ module.exports = (function () {
 
         Object.defineProperties(this, {
             lastFeature: {
-                get: function () { return _.last(this.features); }
+                get: function () {
+                    return _.last(this.features);
+                }
             },
             lastElement: {
-                get: function () { return _.last(this.lastFeature.elements); }
+                get: function () {
+                    return _.last(this.lastFeature.elements);
+                }
             }
         });
 
