@@ -32,9 +32,11 @@ var TaskParserService = function TaskParserService (
         var taskCallExpression;
 
         try {
-            assert(astObject.callee.object.name && astObject.callee.property.name)
+            assert(astObject.callee.object.name && astObject.callee.property.name);
             taskCallExpression = astObject;
-        } catch (e) { notFirstTask = true; }
+        } catch (e) {
+            notFirstTask = true;
+        }
 
         try {
             if (notFirstTask) {
@@ -42,7 +44,9 @@ var TaskParserService = function TaskParserService (
                 var taskReturnStatement = _.first(thenFunctionExpression.body.body);
                 taskCallExpression = taskReturnStatement.argument;
             }
-        } catch (e) { notTask = true; }
+        } catch (e) {
+            notTask = true;
+        }
 
         try {
             task.component = _.find(task.step.stepDefinition.componentInstances, function (componentInstance) {
@@ -55,7 +59,9 @@ var TaskParserService = function TaskParserService (
                 task.arguments[index].value = argument.value;
             });
             step.tasks.push(task);
-        } catch (e) { notValidTask = true; }
+        } catch (e) {
+            notValidTask = true;
+        }
 
         if (notFirstTask && notTask && notValidTask) {
             console.log(astObject);

@@ -10,24 +10,35 @@ var ComponentEditor = require('../ComponentEditor');
 require('../../../Core/Services/ASTCreatorService');
 require('./ArgumentModel');
 
-var MethodModel = function (ASTCreatorService, ArgumentModel) {
+var createMethodModelConstructor = function (ASTCreatorService, ArgumentModel) {
     var ast = ASTCreatorService;
 
     var MethodModel = function MethodModel (interaction, method) {
-        this._args = getArguments.call(this, method);
+        var args = getArguments.call(this, method);
 
         Object.defineProperties(this, {
             interaction: {
-                get: function () { return interaction; }
+                get: function () {
+                    return interaction;
+                }
             },
             name: {
-                get: function () { return this.nameIdentifier.name; }
+                get: function () {
+                    return this.nameIdentifier.name;
+                }
             },
             arguments: {
-                get: function () { return this._args; }
+                get: function () {
+                    return args;
+                },
+                set: function (newArgs) {
+                    args = newArgs;
+                }
             },
             returns: {
-                get: function () { return method.returns; }
+                get: function () {
+                    return method.returns;
+                }
             }
         });
 
@@ -38,22 +49,18 @@ var MethodModel = function (ASTCreatorService, ArgumentModel) {
         }
     };
 
-    var getArguments = function (method) {
+    return MethodModel;
+
+    function getArguments (method) {
         return _.map(method.arguments, function (argument) {
             return new ArgumentModel(this, argument);
         }, this);
-    };
-
-    MethodModel.prototype.setArguments = function (args) {
-        this._args = args;
-    };
-
-    return MethodModel;
+    }
 };
 
 ComponentEditor.factory('MethodModel', function (
     ASTCreatorService,
     ArgumentModel
 ) {
-    return MethodModel(ASTCreatorService, ArgumentModel);
+    return createMethodModelConstructor(ASTCreatorService, ArgumentModel);
 });

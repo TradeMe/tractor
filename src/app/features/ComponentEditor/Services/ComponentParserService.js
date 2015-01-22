@@ -42,7 +42,9 @@ var ComponentParserService = function ComponentParserService (
                     component.elements.push(domElement);
                     component.domElements.push(domElement);
                 });
-            } catch (e) { notElement = true; }
+            } catch (e) {
+                notElement = true;
+            }
 
             try {
                 if (notElement) {
@@ -50,13 +52,17 @@ var ComponentParserService = function ComponentParserService (
                     assert(action);
                     component.actions.push(action);
                 }
-            } catch (e) { notAction = true; }
+            } catch (e) {
+                notAction = true;
+            }
 
             try {
                 if (notAction) {
                     assert(statement.argument.name === component.name);
                 }
-            } catch (e) { notReturn = true; }
+            } catch (e) {
+                notReturn = true;
+            }
 
             if (notElement && notAction && notReturn) {
                 console.log(statement, index);

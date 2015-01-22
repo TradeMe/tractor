@@ -2,7 +2,6 @@
 
 // Utilities:
 var angular = require('angular');
-var WebSocket = require('ws');
 
 var Core = angular.module('Core', []);
 

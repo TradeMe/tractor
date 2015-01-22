@@ -30,13 +30,15 @@ var ScenarioParserService = function ScenarioParserService (
             var notStep = false;
 
             try {
-                var stepDeclaration = StepDeclarationParserService.parse(stepDeclaration);
-                assert(stepDeclaration);
-                scenario.stepDeclarations.push(stepDeclaration);
-            } catch (e) { notStep = true; }
+                var parsedStepDeclaration = StepDeclarationParserService.parse(stepDeclaration);
+                assert(parsedStepDeclaration);
+                scenario.stepDeclarations.push(parsedStepDeclaration);
+            } catch (e) {
+                notStep = true;
+            }
 
             if (notStep) {
-                console.log(step, index);
+                console.log(stepDeclaration, index);
             }
         });
 
@@ -44,14 +46,16 @@ var ScenarioParserService = function ScenarioParserService (
             var notExample = false;
 
             try {
-                var example = ExampleParserService.parse(scenario, example);
-                assert(example);
-                scenario.examples.push(example);
+                var parsedExample = ExampleParserService.parse(scenario, example);
+                assert(parsedExample);
+                scenario.examples.push(parsedExample);
 
-            } catch (e) { notExample = true; }
+            } catch (e) {
+                notExample = true;
+            }
 
             if (notExample) {
-                console.log(element, index);
+                console.log(example, index);
             }
         });
 

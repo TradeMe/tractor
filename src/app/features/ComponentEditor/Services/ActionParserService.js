@@ -41,13 +41,17 @@ var ActionParserService = function ActionParserService (
             try {
                 var selfVariableDeclarator = _.first(statement.declarations);
                 assert(selfVariableDeclarator.id.name === 'self');
-            } catch (e) { notSelf = true; }
+            } catch (e) {
+                notSelf = true;
+            }
 
             try {
                 if (notSelf) {
                     InteractionParserService.parse(action, statement);
                 }
-            } catch (e) { notInteraction = true; }
+            } catch (e) {
+                notInteraction = true;
+            }
 
             if (notSelf && notInteraction) {
                 console.log(statement, index);

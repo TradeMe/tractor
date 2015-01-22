@@ -6,7 +6,7 @@ var _ = require('lodash');
 // Module:
 var Core = require('../Core');
 
-var ASTCreatorService =  function () {
+var ASTCreatorService = function () {
     var VariableDeclarationKinds = {
         VAR: 'var'
     };
@@ -49,7 +49,7 @@ var ASTCreatorService =  function () {
         createMemberExpression: createMemberExpression,
 
         createIdentifier: createIdentifier,
-        createLiteral: createLiteral,
+        createLiteral: createLiteral
     };
 
     function createProgram (statements) {

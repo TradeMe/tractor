@@ -2,7 +2,6 @@
 
 // Utilities:
 var _ = require('lodash');
-var assert = require('assert');
 
 // Module:
 var ComponentEditor = require('../ComponentEditor');
@@ -12,7 +11,7 @@ require('../../../Core/Services/ASTCreatorService');
 require('./ParameterModel');
 require('./InteractionModel');
 
-var ActionModel = function (
+var createActionModelConstructor = function (
     ASTCreatorService,
     ParameterModel,
     InteractionModel
@@ -29,20 +28,32 @@ var ActionModel = function (
 
         Object.defineProperties(this, {
             component: {
-                get: function () { return component; }
+                get: function () {
+                    return component;
+                }
             },
             name: {
-                get: function () { return this.nameIdentifier.name; },
-                set: function (name) { this.nameIdentifier.name = name; }
+                get: function () {
+                    return this.nameIdentifier.name;
+                },
+                set: function (name) {
+                    this.nameIdentifier.name = name;
+                }
             },
             interactions: {
-                get: function () { return interactions; }
+                get: function () {
+                    return interactions;
+                }
             },
             parameters: {
-                get: function () { return parameters; }
+                get: function () {
+                    return parameters;
+                }
             },
             ast: {
-                get: function () { return toAST.call(this); }
+                get: function () {
+                    return toAST.call(this);
+                }
             }
         });
 
@@ -68,10 +79,12 @@ var ActionModel = function (
     };
 
     ActionModel.prototype.validateName = function (action, name) {
-        this.name = this.component.validateName(action, name || DEFAULT_NAME);
+        this.name = this.component.validateName(action, name || DEFAULTS.name);
     };
 
-    var toAST = function () {
+    return ActionModel;
+
+    function toAST () {
         var prototypeIdentifier = ast.createIdentifier('prototype');
         var prototypeMemberExpression = ast.createMemberExpression(this.component.nameIdentifier, prototypeIdentifier);
         var actionMemberExpression = ast.createMemberExpression(prototypeMemberExpression, this.nameIdentifier);
@@ -81,7 +94,9 @@ var ActionModel = function (
         var selfVariableDeclarator = ast.createVariableDeclarator(selfIdentifier, thisExpression);
         var selfVariableDeclaration = ast.createVariableDeclaration([selfVariableDeclarator]);
 
-        var interactionASTs = _.map(this.interactions, function (interaction) { return interaction.ast; });
+        var interactionASTs = _.map(this.interactions, function (interaction) {
+            return interaction.ast;
+        });
         var firstInteraction = _.first(interactionASTs);
 
         _.each(_.rest(interactionASTs), function (interactionAST, index) {
@@ -106,16 +121,16 @@ var ActionModel = function (
             firstInteraction.argument = ast.createCallExpression(promiseThenMemberExpression, [interactionResultFunctionExpression]);
         }, this);
 
-        var parameters = _.map(this.parameters, function (parameter) { return parameter.ast; });
+        var parameters = _.map(this.parameters, function (parameter) {
+            return parameter.ast;
+        });
         var actionBlockStatement = ast.createBlockStatement([selfVariableDeclaration, firstInteraction]);
         var actionFunctionExpression = ast.createFunctionExpression(null, parameters, actionBlockStatement);
 
         var actionAssignmentExpression = ast.createAssignmentExpression(actionMemberExpression, ast.AssignmentOperators.ASSIGNMENT, actionFunctionExpression);
 
         return ast.createExpressionStatement(actionAssignmentExpression);
-    };
-
-    return ActionModel;
+    }
 };
 
 ComponentEditor.factory('ActionModel', function (
@@ -123,5 +138,5 @@ ComponentEditor.factory('ActionModel', function (
     ParameterModel,
     InteractionModel
 ) {
-    return ActionModel(ASTCreatorService, ParameterModel, InteractionModel);
+    return createActionModelConstructor(ASTCreatorService, ParameterModel, InteractionModel);
 });

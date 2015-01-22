@@ -2,7 +2,6 @@
 
 // Utilities:
 var _ = require('lodash');
-var assert = require('assert');
 var toLiteral = require('../../../utilities/toLiteral');
 
 // Module:
@@ -12,7 +11,7 @@ var ComponentEditor = require('../ComponentEditor');
 require('../../../Core/Services/ASTCreatorService');
 require('./FilterModel');
 
-var ElementModel = function (
+var createElementModelConstructor = function (
     ASTCreatorService,
     FilterModel
 ) {
@@ -27,15 +26,21 @@ var ElementModel = function (
 
         Object.defineProperties(this, {
             component: {
-                get: function () { return component; }
+                get: function () {
+                    return component;
+                }
             },
 
             filters: {
-                get: function () { return filters; }
+                get: function () {
+                    return filters;
+                }
             },
 
             ast: {
-                get: function () { return toAST.call(this); }
+                get: function () {
+                    return toAST.call(this);
+                }
             }
         });
 
@@ -52,50 +57,6 @@ var ElementModel = function (
 
     ElementModel.prototype.validateName = function (element, name) {
         this.name = this.component.validateName(element, name ? name : DEFAULTS.name);
-    };
-
-    var toAST = function () {
-        var elementCallExpression;
-        var elementIdentifier = ast.createIdentifier('element');
-        var allIdentifier = ast.createIdentifier('all');
-        _.each(this.filters, function (filter, index) {
-            var elementCallExpressionCallee;
-            if (elementCallExpression) {
-                var previousFilter = this.filters[index - 1];
-                if (previousFilter.isAll) {
-                    var getIdentifier = ast.createIdentifier('get');
-                    var locatorLiteral = toLiteral(filter.locator);
-                    if (_.isNumber(locatorLiteral)) {
-                        elementCallExpressionCallee = ast.createMemberExpression(elementCallExpression, getIdentifier);
-                        elementCallExpression = ast.createCallExpression(elementCallExpressionCallee, [filter.allAst]);
-                    } else {
-                        var filterIdentifier = ast.createIdentifier('filter');
-                        elementCallExpressionCallee = ast.createMemberExpression(elementCallExpression, filterIdentifier);
-                        elementCallExpression = ast.createCallExpression(elementCallExpressionCallee, [filter.allAst]);
-                        elementCallExpressionCallee = ast.createMemberExpression(elementCallExpression, getIdentifier);
-                        elementCallExpression = ast.createCallExpression(elementCallExpressionCallee, [ast.createLiteral(0)]);
-                    }
-                } else {
-                    if (filter.isAll) {
-                        elementCallExpressionCallee = ast.createMemberExpression(elementCallExpression, allIdentifier);
-                    } else {
-                        elementCallExpressionCallee = ast.createMemberExpression(elementCallExpression, elementIdentifier);
-                    }
-                    elementCallExpression = ast.createCallExpression(elementCallExpressionCallee, [filter.ast]);
-                }
-            } else {
-                if (filter.isAll) {
-                    elementCallExpressionCallee = ast.createMemberExpression(elementIdentifier, allIdentifier);
-                } else {
-                    elementCallExpressionCallee = elementIdentifier;
-                }
-                elementCallExpression = ast.createCallExpression(elementCallExpressionCallee, [filter.ast]);
-            }
-        }, this);
-
-        var thisElementMemberExpression = ast.createMemberExpression(ast.createThisExpression(), ast.createIdentifier(this.name));
-        var elementAssignmentExpression = ast.createAssignmentExpression(thisElementMemberExpression, ast.AssignmentOperators.ASSIGNMENT, elementCallExpression);
-        return ast.createExpressionStatement(elementAssignmentExpression);
     };
 
     ElementModel.prototype.methods = [{
@@ -170,11 +131,55 @@ var ElementModel = function (
     }];
 
     return ElementModel;
+
+    function toAST () {
+        var elementCallExpression;
+        var elementIdentifier = ast.createIdentifier('element');
+        var allIdentifier = ast.createIdentifier('all');
+        _.each(this.filters, function (filter, index) {
+            var elementCallExpressionCallee;
+            if (elementCallExpression) {
+                var previousFilter = this.filters[index - 1];
+                if (previousFilter.isAll) {
+                    var getIdentifier = ast.createIdentifier('get');
+                    var locatorLiteral = toLiteral(filter.locator);
+                    if (_.isNumber(locatorLiteral)) {
+                        elementCallExpressionCallee = ast.createMemberExpression(elementCallExpression, getIdentifier);
+                        elementCallExpression = ast.createCallExpression(elementCallExpressionCallee, [filter.allAst]);
+                    } else {
+                        var filterIdentifier = ast.createIdentifier('filter');
+                        elementCallExpressionCallee = ast.createMemberExpression(elementCallExpression, filterIdentifier);
+                        elementCallExpression = ast.createCallExpression(elementCallExpressionCallee, [filter.allAst]);
+                        elementCallExpressionCallee = ast.createMemberExpression(elementCallExpression, getIdentifier);
+                        elementCallExpression = ast.createCallExpression(elementCallExpressionCallee, [ast.createLiteral(0)]);
+                    }
+                } else {
+                    if (filter.isAll) {
+                        elementCallExpressionCallee = ast.createMemberExpression(elementCallExpression, allIdentifier);
+                    } else {
+                        elementCallExpressionCallee = ast.createMemberExpression(elementCallExpression, elementIdentifier);
+                    }
+                    elementCallExpression = ast.createCallExpression(elementCallExpressionCallee, [filter.ast]);
+                }
+            } else {
+                if (filter.isAll) {
+                    elementCallExpressionCallee = ast.createMemberExpression(elementIdentifier, allIdentifier);
+                } else {
+                    elementCallExpressionCallee = elementIdentifier;
+                }
+                elementCallExpression = ast.createCallExpression(elementCallExpressionCallee, [filter.ast]);
+            }
+        }, this);
+
+        var thisElementMemberExpression = ast.createMemberExpression(ast.createThisExpression(), ast.createIdentifier(this.name));
+        var elementAssignmentExpression = ast.createAssignmentExpression(thisElementMemberExpression, ast.AssignmentOperators.ASSIGNMENT, elementCallExpression);
+        return ast.createExpressionStatement(elementAssignmentExpression);
+    }
 };
 
 ComponentEditor.factory('ElementModel', function (
     ASTCreatorService,
     FilterModel
 ) {
-    return ElementModel(ASTCreatorService, FilterModel);
+    return createElementModelConstructor(ASTCreatorService, FilterModel);
 });

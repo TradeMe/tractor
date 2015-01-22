@@ -6,7 +6,7 @@ var _ = require('lodash');
 // Module:
 var GherkinEditor = require('../GherkinEditor');
 
-var StepDeclarationModel =  function () {
+var createStepDeclarationModelConstructor = function () {
     var DEFAULTS = {
         step: 'something happens'
     };
@@ -14,7 +14,9 @@ var StepDeclarationModel =  function () {
     var StepDeclarationModel = function StepDeclarationModel () {
         Object.defineProperties(this, {
             feature: {
-                get: function () { return toFeature.call(this); }
+                get: function () {
+                    return toFeature.call(this);
+                }
             }
         });
 
@@ -39,13 +41,13 @@ var StepDeclarationModel =  function () {
         }).value();
     });
 
-    var toFeature = function () {
-        return this.type + ' ' + this.step;
-    };
-
     return StepDeclarationModel;
+
+    function toFeature () {
+        return this.type + ' ' + this.step;
+    }
 };
 
 GherkinEditor.factory('StepDeclarationModel', function () {
-    return StepDeclarationModel();
+    return createStepDeclarationModelConstructor();
 });

@@ -1,8 +1,5 @@
 'use strict';
 
-// Utilities:
-var _ = require('lodash');
-
 // Module:
 var ComponentEditor = require('../ComponentEditor');
 
@@ -15,7 +12,7 @@ var ArgumentParserService = function ArgumentParserService (ArgumentModel) {
     };
 
     function parse (method, argument, astObject) {
-        var argument = new ArgumentModel(method, argument);
+        argument = new ArgumentModel(method, argument);
 
         argument.value = astObject.name || astObject.value;
 

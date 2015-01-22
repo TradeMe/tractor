@@ -11,39 +11,63 @@ var StepDefinitionEditor = require('../StepDefinitionEditor');
 require('../../../Core/Services/ASTCreatorService');
 require('../../ComponentEditor/Models/ArgumentModel');
 
-var ExpectationModel = function (
+var createExpectationModelConstructor = function (
     ASTCreatorService,
     Argument
 ) {
     var ast = ASTCreatorService;
 
     var DEFAULTS = {
-        expectation: 'expected',
+        expectation: 'expected'
     };
 
     var ExpectationModel = function ExpectationModel (step) {
+        var component;
+        var action;
+        var args;
+
         Object.defineProperties(this, {
             step: {
-                get: function () { return step; }
+                get: function () {
+                    return step;
+                }
             },
             component: {
-                get: function () { return this._component },
-                set: setComponent
+                get: function () {
+                    return component;
+                },
+                set: function (newComponent) {
+                    component = newComponent;
+                    this.action = _.first(this.component.component.actions);
+                }
             },
             action: {
-                get: function () { return this._action; },
-                set: setAction
+                get: function () {
+                    return action;
+                },
+                set: function (newAction) {
+                    action = newAction;
+                    args = parseArguments.call(this);
+                }
             },
             arguments: {
-                get: function () { return this._arguments; }
+                get: function () {
+                    return args;
+                }
             },
             expectedResult: {
-                get: function () { return this.expectedResultLiteral.value; },
-                set: function (value) { this.expectedResultLiteral.value = value; }
+                get: function () {
+                    return this.expectedResultLiteral.value;
+                },
+                set: function (value) {
+                    this.expectedResultLiteral.value = value;
+                }
             },
 
             ast: {
-                get: function () { return toAST.call(this); }
+                get: function () {
+                    return toAST.call(this);
+                }
             }
         });
 
@@ -51,24 +75,9 @@ var ExpectationModel = function (
         this.expectedResultLiteral = ast.createLiteral(DEFAULTS.expectation);
     };
 
-    var setComponent = function (component) {
-        this._component = component;
-        this.action = _.first(this.component.component.actions);
-    };
+    return ExpectationModel;
 
-    var setAction = function (action) {
-        this._action = action;
-        this._arguments = _.map(this.action.parameters, function (parameter) {
-            var argument = new Argument();
-            var argumentName = parameter.name;
-            argumentName = argumentName.replace(/([A-Z])/g, ' $1');
-            argumentName = argumentName.charAt(0).toUpperCase() + argumentName.slice(1).toLowerCase();
-            argument.name = argumentName;
-            return argument;
-        });
-    };
-
-    var toAST = function () {
+    function toAST () {
         var argumentValues = _.map(this.arguments, function (argument) {
             return argument.ast;
         });
@@ -86,14 +95,23 @@ var ExpectationModel = function (
         } else {
             return ast.createCallExpression(equalMemberExpression, [this.expectedResultLiteral]);
         }
-    };
+    }
 
-    return ExpectationModel;
+    function parseArguments () {
+        return _.map(this.action.parameters, function (parameter) {
+            var argument = new Argument();
+            var argumentName = parameter.name;
+            argumentName = argumentName.replace(/([A-Z])/g, ' $1');
+            argumentName = argumentName.charAt(0).toUpperCase() + argumentName.slice(1).toLowerCase();
+            argument.name = argumentName;
+            return argument;
+        });
+    }
 };
 
 StepDefinitionEditor.factory('ExpectationModel', function (
     ASTCreatorService,
     ArgumentModel
 ) {
-    return ExpectationModel(ASTCreatorService, ArgumentModel);
+    return createExpectationModelConstructor(ASTCreatorService, ArgumentModel);
 });

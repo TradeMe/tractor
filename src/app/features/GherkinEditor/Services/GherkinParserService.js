@@ -32,10 +32,12 @@ var GherkinParserService = function GherkinParserService (
             var notScenario = false;
 
             try {
-                var scenario = ScenarioParserService.parse(gherkin, element);
-                assert(scenario);
-                gherkin.scenarios.push(scenario);
-            } catch (e) { notScenario = true; }
+                var parsedScenario = ScenarioParserService.parse(gherkin, element);
+                assert(parsedScenario);
+                gherkin.scenarios.push(parsedScenario);
+            } catch (e) {
+                notScenario = true;
+            }
 
             if (notScenario) {
                 console.log(element, index);

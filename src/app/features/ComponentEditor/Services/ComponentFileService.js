@@ -2,12 +2,13 @@
 
 // Utilities:
 var _ = require('lodash');
+var Promise = require('bluebird');
 
 // Module:
 var ComponentEditor = require('../ComponentEditor');
 
 // Dependencies:
-require('./ComponentParserService')
+require('./ComponentParserService');
 
 var ComponentFileService = function ComponentFileService (
     $http,
@@ -46,7 +47,7 @@ var ComponentFileService = function ComponentFileService (
                 return _.map(results, function (result) {
                     return ComponentParserService.parse(result.ast);
                 });
-            })
+            });
         });
     }
 };

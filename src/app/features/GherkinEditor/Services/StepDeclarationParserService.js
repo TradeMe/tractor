@@ -1,8 +1,5 @@
 'use strict';
 
-// Utilities:
-var _ = require('lodash');
-
 // Module:
 var GherkinEditor = require('../GherkinEditor');
 

@@ -18,7 +18,9 @@ var ActionDirective = function () {
             argument: '=',
             icon: '@'
         },
+        /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/Action.html', 'utf8'),
+        /* eslint-enable no-path-concat */
         link: function ($scope) {
             $scope.method = camelcase($scope.action);
         }

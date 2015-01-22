@@ -10,7 +10,7 @@ var GherkinEditor = require('../GherkinEditor');
 require('./StepDeclarationModel');
 require('./ExampleModel');
 
-var ScenarioModel = (function (
+var createScenarioModelConstructor = function (
     StepDeclarationModel,
     ExampleModel,
     GherkinIndent,
@@ -26,28 +26,28 @@ var ScenarioModel = (function (
 
         Object.defineProperties(this, {
             stepDeclarations: {
-                get: function () { return stepDeclarations; }
+                get: function () {
+                    return stepDeclarations;
+                }
             },
             examples: {
-                get: function () { return examples; }
+                get: function () {
+                    return examples;
+                }
             },
             exampleVariables: {
-                get: function () { return getExampleVariables(this.stepDeclarations); }
+                get: function () {
+                    return getExampleVariables(this.stepDeclarations);
+                }
             },
             feature: {
-                get: function () { return toFeature.call(this); }
+                get: function () {
+                    return toFeature.call(this);
+                }
             }
         });
 
         this.name = DEFAULTS.name;
-    };
-
-    var getExampleVariables = function (stepDeclarations) {
-        return _.chain(stepDeclarations)
-        .pluck('step')
-        .map(StepDeclarationModel.getExampleVariableNames)
-        .flatten()
-        .unique().value();
     };
 
     ScenarioModel.prototype.addStepDeclaration = function () {
@@ -70,7 +70,17 @@ var ScenarioModel = (function (
         this[property] = value || DEFAULTS[property];
     };
 
-    var toFeature = function () {
+    return ScenarioModel;
+
+    function getExampleVariables (stepDeclarations) {
+        return _.chain(stepDeclarations)
+        .pluck('step')
+        .map(StepDeclarationModel.getExampleVariableNames)
+        .flatten()
+        .unique().value();
+    }
+
+    function toFeature () {
         var scenario = 'Scenario' + (this.examples.length ? ' Outline' : '') + ': ' + this.name;
 
         var stepDeclarations = _.map(this.stepDeclarations, function (stepDeclaration) {
@@ -90,10 +100,8 @@ var ScenarioModel = (function (
 
         lines = _.flatten(lines);
         return lines.join(GherkinNewLine);
-    };
-
-    return ScenarioModel;
-});
+    }
+};
 
 GherkinEditor.factory('ScenarioModel', function (
     StepDeclarationModel,
@@ -101,5 +109,5 @@ GherkinEditor.factory('ScenarioModel', function (
     GherkinIndent,
     GherkinNewLine
 ) {
-    return ScenarioModel(StepDeclarationModel, ExampleModel, GherkinIndent, GherkinNewLine);
+    return createScenarioModelConstructor(StepDeclarationModel, ExampleModel, GherkinIndent, GherkinNewLine);
 });

@@ -10,48 +10,62 @@ var ComponentEditor = require('../ComponentEditor');
 require('../../../Core/Services/ASTCreatorService');
 require('./MethodModel');
 
-var InteractionModel = function (
+var createInteractionModelConstructor = function (
     ASTCreatorService,
     MethodModel
 ) {
     var ast = ASTCreatorService;
 
     var InteractionModel = function InteractionModel (action) {
+        var element;
+        var method;
+        var methodInstance;
+
         Object.defineProperties(this, {
             action: {
-                get: function () { return action; }
+                get: function () {
+                    return action;
+                }
             },
             element: {
-                get: function () { return this._element; },
-                set: setElement
+                get: function () {
+                    return element;
+                },
+                set: function (newElement) {
+                    element = newElement;
+                    this.method = _.first(element.methods);
+                }
             },
             method: {
-                get: function () { return this._method; },
-                set: setMethod
+                get: function () {
+                    return method;
+                },
+                set: function (newMethod) {
+                    method = newMethod;
+                    methodInstance = new MethodModel(this, this.method);
+                }
             },
             methodInstance: {
-                get: function () { return this._methodInstance; }
+                get: function () {
+                    return methodInstance;
+                }
             },
             arguments: {
-                get: function () { return this._methodInstance.arguments; }
+                get: function () {
+                    return methodInstance.arguments;
+                }
             },
             ast: {
-                get: function () { return toAST.call(this); }
+                get: function () {
+                    return toAST.call(this);
+                }
             }
         });
     };
 
-    var setElement = function (element) {
-        this._element = element;
-        this.method = _.first(element.methods);
-    };
+    return InteractionModel;
 
-    var setMethod = function (method) {
-        this._method = method;
-        this._methodInstance = new MethodModel(this, this.method);
-    };
-
-    var toAST = function () {
+    function toAST () {
         var argumentValues = _.map(this.methodInstance.arguments, function (argument) {
             return argument.ast;
         });
@@ -81,14 +95,12 @@ var InteractionModel = function (
         this.resultFunctionExpression = ast.createFunctionExpression();
 
         return interactionReturnStatement;
-    };
-
-    return InteractionModel;
+    }
 };
 
 ComponentEditor.factory('InteractionModel', function (
     ASTCreatorService,
     MethodModel
 ) {
-    return InteractionModel(ASTCreatorService, MethodModel);
+    return createInteractionModelConstructor(ASTCreatorService, MethodModel);
 });

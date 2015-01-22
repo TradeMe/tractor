@@ -34,27 +34,36 @@ var StepDefinitionParserService = function StepDefinitionParserService (
                 var step = StepParserService.parse(stepDefinition, statement);
                 assert(step);
                 stepDefinition.step = step;
-            } catch (e) { notStepDefinition = true; }
+            } catch (e) {
+                notStepDefinition = true;
+            }
+
+            var declarator;
+            var name;
 
             try {
                 if (notStepDefinition) {
-                    var declarator = _.first(statement.declarations);
-                    var name = declarator.init.callee.name;
+                    declarator = _.first(statement.declarations);
+                    name = declarator.init.callee.name;
                     assert(name === 'require');
                 }
-            } catch (e) { notComponentConstructorRequire = true; }
+            } catch (e) {
+                notComponentConstructorRequire = true;
+            }
 
             try {
                 if (notComponentConstructorRequire) {
-                    var declarator = _.first(statement.declarations);
-                    var name = declarator.init.callee.name;
+                    declarator = _.first(statement.declarations);
+                    name = declarator.init.callee.name;
                     assert(name !== 'require');
                     stepDefinition.addComponent(name);
                 }
-            } catch (e) { notComponent = true; }
+            } catch (e) {
+                notComponent = true;
+            }
 
             if (notStepDefinition && notComponentConstructorRequire && notComponent) {
-                console.log(statement, index)
+                console.log(statement, index);
             }
         });
 

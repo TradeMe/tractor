@@ -10,7 +10,7 @@ var ComponentEditor = require('../ComponentEditor');
 // Dependencies:
 require('../../../Core/Services/ASTCreatorService');
 
-var ArgumentModel = function (ASTCreatorService) {
+var createArgumentModelConstructor = function (ASTCreatorService) {
     var ast = ASTCreatorService;
 
     var DEFAULTS = {
@@ -22,27 +22,37 @@ var ArgumentModel = function (ASTCreatorService) {
     var ArgumentModel = function ArgumentModel (method, argument) {
         Object.defineProperties(this, {
             method: {
-                get: function () { return method || null; }
+                get: function () {
+                    return method || null;
+                }
             },
             optional: {
-                get: function () { return argument ? argument.optional : false; }
+                get: function () {
+                    return argument ? argument.optional : false;
+                }
             },
             default: {
-                get: function () { return this.optional ? null : DEFAULTS[this.type]; }
+                get: function () {
+                    return this.optional ? null : DEFAULTS[this.type];
+                }
             },
             ast: {
-                get: function () { return toAST.call(this); }
+                get: function () {
+                    return toAST.call(this);
+                }
             }
         });
 
         if (argument) {
             this.name = argument.name;
-            this.type = argument.type
+            this.type = argument.type;
         }
         this.value = this.default;
     };
 
-    var toAST = function () {
+    return ArgumentModel;
+
+    function toAST () {
         var literal = toLiteral(this.value);
 
         var parameter = null;
@@ -67,11 +77,9 @@ var ArgumentModel = function (ASTCreatorService) {
         } else {
             return ast.createLiteral(null);
         }
-    };
-
-    return ArgumentModel;
+    }
 };
 
 ComponentEditor.factory('ArgumentModel', function (ASTCreatorService) {
-    return ArgumentModel(ASTCreatorService);
+    return createArgumentModelConstructor(ASTCreatorService);
 });
