@@ -14,7 +14,30 @@ var Core = require('../../Core');
 require('../../Services/ValidationService');
 
 var VariableInputDirective = function (ValidationService) {
-    var validateVariableName = function ($scope, value) {
+    return {
+        restrict: 'E',
+
+        scope: {
+            label: '@',
+            model: '=',
+            class: '@'
+        },
+
+        /* eslint-disable no-path-concat */
+        template: fs.readFileSync(__dirname + '/../TextInput/TextInput.html', 'utf8'),
+        /* eslint-enable no-path-concat */
+
+        link: link
+    };
+
+    function link ($scope) {
+        $scope.$watch('model', function () {
+            $scope.property = camelcase($scope.label);
+            $scope.blur = _.partial(validateVariableName, $scope);
+        });
+    }
+
+    function validateVariableName ($scope, value) {
         if (value) {
             ValidationService.validateVariableName(value, $scope.class)
             .then(function () {
@@ -25,24 +48,6 @@ var VariableInputDirective = function (ValidationService) {
         }
     };
 
-    return {
-        restrict: 'E',
-        scope: {
-            label: '@',
-            model: '=',
-            class: '@'
-        },
-        /* eslint-disable no-path-concat */
-        template: fs.readFileSync(__dirname + '/../TextInput/TextInput.html', 'utf8'),
-        /* eslint-enable no-path-concat */
-
-        link: function ($scope) {
-            $scope.$watch('model', function () {
-                $scope.property = camelcase($scope.label);
-                $scope.blur = _.curry(validateVariableName)($scope);
-            });
-        }
-    };
 };
 
 Core.directive('tractorVariableInput', VariableInputDirective);

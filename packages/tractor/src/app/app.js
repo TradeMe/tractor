@@ -7,6 +7,7 @@ var Promise = require('bluebird');
 // Dependencies:
 var angular = require('angular');
 require('angular-sanitize');
+require('angular-mocks');
 require('angular-ui-router');
 require('angular-sortable');
 

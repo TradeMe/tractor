@@ -8,24 +8,37 @@ var fs = require('fs');
 var Core = require('../../Core');
 
 var LiteralInputDirective = function () {
-    var validateValue = function ($scope) {
-        $scope.model = $scope.model || ($scope.optional ? '' : 'null');
-    };
-
     return {
         restrict: 'E',
+
         scope: {
             model: '=',
             name: '=',
             optional: '='
         },
+
         /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/LiteralInput.html', 'utf8'),
         /* eslint-enable no-path-concat */
-        link: function ($scope) {
-            $scope.blur = _.curry(validateValue)($scope);
-        }
+
+        link: link
     };
+
+    function link ($scope) {
+        if (_.isUndefined($scope.model)) {
+            throw new Error('The "tractor-literal-input" directive requires an "model" attribute.');
+        }
+
+        if (_.isUndefined($scope.name)) {
+            throw new Error('The "tractor-literal-input" directive requires a "name" attribute.');
+        }
+
+        $scope.blur = _.partial(validateValue, $scope);
+    }
+
+    function validateValue ($scope) {
+        $scope.model = $scope.model || ($scope.optional ? '' : 'null');
+    }
 };
 
 Core.directive('tractorLiteralInput', LiteralInputDirective);

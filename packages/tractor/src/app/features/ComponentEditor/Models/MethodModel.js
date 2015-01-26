@@ -48,7 +48,7 @@ var createMethodModelConstructor = function (ASTCreatorService, ArgumentModel) {
             this[this.returns] = method[this.returns];
         }
     };
-
+    
     return MethodModel;
 
     function getArguments (method) {
