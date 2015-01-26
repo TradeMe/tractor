@@ -96,7 +96,7 @@ var InteractionParserService = function InteractionParserService (
                 assert(arg);
                 return arg;
             });
-            interaction.methodInstance.setArguments(args);
+            interaction.methodInstance.arguments = args;
             action.interactions.push(interaction);
         } catch (e) {
             notValidInteraction = true;
