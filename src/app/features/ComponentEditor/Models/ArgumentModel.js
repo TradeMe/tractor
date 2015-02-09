@@ -82,6 +82,9 @@ var createArgumentModelConstructor = function (
     }
 };
 
-ComponentEditor.factory('ArgumentModel', function (ASTCreatorService) {
-    return createArgumentModelConstructor(ASTCreatorService);
+ComponentEditor.factory('ArgumentModel', function (
+    ASTCreatorService,
+    StringToLiteralService
+) {
+    return createArgumentModelConstructor(ASTCreatorService, StringToLiteralService);
 });

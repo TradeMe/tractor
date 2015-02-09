@@ -47,6 +47,9 @@ var createExampleModelConstructor = function (
     }
 };
 
-GherkinEditor.factory('ExampleModel', function (GherkinIndent) {
-    return createExampleModelConstructor(GherkinIndent);
+GherkinEditor.factory('ExampleModel', function (
+    StringToLiteralService,
+    GherkinIndent
+) {
+    return createExampleModelConstructor(StringToLiteralService, GherkinIndent);
 });
