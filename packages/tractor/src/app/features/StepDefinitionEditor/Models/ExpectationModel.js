@@ -112,7 +112,8 @@ var createExpectationModelConstructor = function (
 
 StepDefinitionEditor.factory('ExpectationModel', function (
     ASTCreatorService,
+    StringToLiteralService,
     ArgumentModel
 ) {
-    return createExpectationModelConstructor(ASTCreatorService, ArgumentModel);
+    return createExpectationModelConstructor(ASTCreatorService, StringToLiteralService, ArgumentModel);
 });

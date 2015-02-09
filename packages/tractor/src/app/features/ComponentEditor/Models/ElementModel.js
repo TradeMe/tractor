@@ -180,7 +180,8 @@ var createElementModelConstructor = function (
 
 ComponentEditor.factory('ElementModel', function (
     ASTCreatorService,
+    StringToLiteralService,
     FilterModel
 ) {
-    return createElementModelConstructor(ASTCreatorService, FilterModel);
+    return createElementModelConstructor(ASTCreatorService, StringToLiteralService, FilterModel);
 });

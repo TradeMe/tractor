@@ -103,6 +103,9 @@ var createFilterModelConstructor = function (
     }
 };
 
-ComponentEditor.factory('FilterModel', function (ASTCreatorService) {
-    return createFilterModelConstructor(ASTCreatorService);
+ComponentEditor.factory('FilterModel', function (
+    ASTCreatorService,
+    StringToLiteralService
+) {
+    return createFilterModelConstructor(ASTCreatorService, StringToLiteralService);
 });
