@@ -1,6 +1,7 @@
 'use strict';
 
 // Utilities:
+var _ = require('lodash');
 var fs = require('fs');
 
 // Dependencies:
@@ -14,10 +15,10 @@ var SelectInputDirective = function () {
         restrict: 'E',
 
         scope: {
-            as: '@',
-            label: '@',
             model: '=',
-            options: '='
+            label: '@',
+            options: '=',
+            as: '@'
         },
 
         /* eslint-disable no-path-concat */
@@ -28,10 +29,28 @@ var SelectInputDirective = function () {
     };
 
     function link ($scope) {
+        if (_.isUndefined($scope.model)) {
+            throw new Error('The "tractor-select" directive requires a "model" attribute.');
+        }
+
+        if (_.isUndefined($scope.label)) {
+            throw new Error('The "tractor-select" directive requires a "label" attribute.');
+        }
+
+        $scope.property = camelcase($scope.label);
+        $scope.selectOptions = getOptionsFromProperty($scope);
+
+        if (_.isUndefined($scope.selectOptions) && _.isUndefined($scope.options)) {
+            throw new Error('The "tractor-select" directive requires an "options" attribute, or a "label" attribute that matches a set of options on the "model".');
+        }
+
         $scope.$watch('options', function () {
-            $scope.property = camelcase($scope.label);
-            $scope.selectOptions = $scope.options || $scope.model[$scope.property + 's'];
+            $scope.selectOptions = $scope.options || getOptionsFromProperty($scope);
         });
+    }
+
+    function getOptionsFromProperty ($scope) {
+        return $scope.model[$scope.property + 's'];
     }
 };
 

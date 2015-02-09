@@ -26,7 +26,7 @@ var LiteralInputDirective = function () {
 
     function link ($scope) {
         if (_.isUndefined($scope.model)) {
-            throw new Error('The "tractor-literal-input" directive requires an "model" attribute.');
+            throw new Error('The "tractor-literal-input" directive requires a "model" attribute.');
         }
 
         if (_.isUndefined($scope.name)) {

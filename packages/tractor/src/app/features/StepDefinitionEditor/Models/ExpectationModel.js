@@ -2,17 +2,18 @@
 
 // Utilities:
 var _ = require('lodash');
-var toLiteral = require('../../../utilities/toLiteral');
 
 // Module:
 var StepDefinitionEditor = require('../StepDefinitionEditor');
 
 // Dependencies:
 require('../../../Core/Services/ASTCreatorService');
+require('../../../Core/Services/StringToLiteralService');
 require('../../ComponentEditor/Models/ArgumentModel');
 
 var createExpectationModelConstructor = function (
     ASTCreatorService,
+    StringToLiteralService,
     Argument
 ) {
     var ast = ASTCreatorService;
@@ -72,7 +73,7 @@ var createExpectationModelConstructor = function (
         });
 
         this.component = _.first(this.step.stepDefinition.componentInstances);
-        this.expectedResultLiteral = ast.createLiteral(DEFAULTS.expectation);
+        this.expectedResultLiteral = ast.literal(DEFAULTS.expectation);
     };
 
     return ExpectationModel;
@@ -82,18 +83,18 @@ var createExpectationModelConstructor = function (
             return argument.ast;
         });
 
-        var actionMemberExpression = ast.createMemberExpression(ast.createIdentifier(this.component.name), this.action.nameIdentifier);
-        var actionCallExpression = ast.createCallExpression(actionMemberExpression, argumentValues);
-        var expectCallExpression = ast.createCallExpression(ast.createIdentifier('expect'), [actionCallExpression]);
-        var toMemberExpression = ast.createMemberExpression(expectCallExpression, ast.createIdentifier('to'));
-        var eventuallyMemberExpression = ast.createMemberExpression(toMemberExpression, ast.createIdentifier('eventually'));
-        var equalMemberExpression = ast.createMemberExpression(eventuallyMemberExpression, ast.createIdentifier('equal'));
+        var actionMemberExpression = ast.memberExpression(ast.identifier(this.component.name), this.action.nameIdentifier);
+        var actionCallExpression = ast.callExpression(actionMemberExpression, argumentValues);
+        var expectCallExpression = ast.callExpression(ast.identifier('expect'), [actionCallExpression]);
+        var toMemberExpression = ast.memberExpression(expectCallExpression, ast.identifier('to'));
+        var eventuallyMemberExpression = ast.memberExpression(toMemberExpression, ast.identifier('eventually'));
+        var equalMemberExpression = ast.memberExpression(eventuallyMemberExpression, ast.identifier('equal'));
 
-        var expectedResultLiteral = toLiteral(this.expectedResult);
+        var expectedResultLiteral = StringToLiteralService.toLiteral(this.expectedResult);
         if (expectedResultLiteral) {
-            return ast.createCallExpression(equalMemberExpression, [ast.createLiteral(expectedResultLiteral)]);
+            return ast.callExpression(equalMemberExpression, [ast.literal(expectedResultLiteral)]);
         } else {
-            return ast.createCallExpression(equalMemberExpression, [this.expectedResultLiteral]);
+            return ast.callExpression(equalMemberExpression, [this.expectedResultLiteral]);
         }
     }
 

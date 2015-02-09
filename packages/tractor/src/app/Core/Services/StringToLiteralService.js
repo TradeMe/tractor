@@ -1,9 +1,17 @@
 'use strict';
 
+// Utilities:
 var _ = require('lodash');
 
-module.exports = (function () {
-    return function (value) {
+// Module:
+var Core = require('../Core');
+
+var StringToLiteralService = function () {
+    return {
+        toLiteral: toLiteral
+    };
+
+    function toLiteral (value) {
         var boolean = toBoolean(value);
         var number = toNumber(value);
         var nil = toNull(value);
@@ -14,7 +22,7 @@ module.exports = (function () {
         } else if (nil === null) {
             return nil;
         }
-    };
+    }
 
     function toBoolean (value) {
         if (value === 'true') {
@@ -36,4 +44,6 @@ module.exports = (function () {
             return null;
         }
     }
-})();
+};
+
+Core.service('StringToLiteralService', StringToLiteralService);

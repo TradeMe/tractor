@@ -29,58 +29,58 @@ var ASTCreatorService = function () {
         UnaryOperators: UnaryOperators,
         BinaryOperators: BinaryOperators,
 
-        createProgram: createProgram,
+        program: program,
 
-        createBlockStatement: createBlockStatement,
-        createExpressionStatement: createExpressionStatement,
-        createReturnStatement: createReturnStatement,
+        blockStatement: blockStatement,
+        expressionStatement: expressionStatement,
+        returnStatement: returnStatement,
 
-        createVariableDeclaration: createVariableDeclaration,
-        createVariableDeclarator: createVariableDeclarator,
+        variableDeclaration: variableDeclaration,
+        variableDeclarator: variableDeclarator,
 
-        createThisExpression: createThisExpression,
-        createArrayExpression: createArrayExpression,
-        createFunctionExpression: createFunctionExpression,
-        createUnaryExpression: createUnaryExpression,
-        createBinaryExpression: createBinaryExpression,
-        createAssignmentExpression: createAssignmentExpression,
-        createNewExpression: createNewExpression,
-        createCallExpression: createCallExpression,
-        createMemberExpression: createMemberExpression,
+        thisExpression: thisExpression,
+        arrayExpression: arrayExpression,
+        functionExpression: functionExpression,
+        unaryExpression: unaryExpression,
+        binaryExpression: binaryExpression,
+        assignmentExpression: assignmentExpression,
+        newExpression: newExpression,
+        callExpression: callExpression,
+        memberExpression: memberExpression,
 
-        createIdentifier: createIdentifier,
-        createLiteral: createLiteral
+        identifier: identifier,
+        literal: literal
     };
 
-    function createProgram (statements) {
+    function program (body) {
         return {
             type: 'Program',
-            body: statements || []
+            body: body || []
         };
     }
 
-    function createBlockStatement (body) {
+    function blockStatement (body) {
         return {
             type: 'BlockStatement',
             body: body || []
         };
     }
 
-    function createExpressionStatement (expression) {
+    function expressionStatement (expression) {
         return {
             type: 'ExpressionStatement',
             expression: expression
         };
     }
 
-    function createReturnStatement (arg) {
+    function returnStatement (argument) {
         return {
             type: 'ReturnStatement',
-            argument: arg
+            argument: argument
         };
     }
 
-    function createVariableDeclaration (declarations, kind) {
+    function variableDeclaration (declarations, kind) {
         return {
             type: 'VariableDeclaration',
             declarations: declarations || [],
@@ -88,7 +88,7 @@ var ASTCreatorService = function () {
         };
     }
 
-    function createVariableDeclarator (id, init) {
+    function variableDeclarator (id, init) {
         return {
             type: 'VariableDeclarator',
             id: id,
@@ -96,42 +96,42 @@ var ASTCreatorService = function () {
         };
     }
 
-    function createThisExpression () {
+    function thisExpression () {
         return {
             type: 'ThisExpression'
         };
     }
 
-    function createArrayExpression (elements) {
+    function arrayExpression (elements) {
         return {
             type: 'ArrayExpression',
             elements: elements || []
         };
     }
 
-    function createFunctionExpression (id, params, body, defaults, rest, generator, expression) {
+    function functionExpression (id, params, body, defaults, rest, generator, expression) {
         return {
             type: 'FunctionExpression',
             id: id,
             params: params || [],
             body: body,
             defaults: defaults || [],
-            rest: null,
+            rest: rest || null,
             generator: !!generator,
             expression: !!expression
         };
     }
 
-    function createUnaryExpression (operator, argument, isPrefix) {
+    function unaryExpression (operator, argument, prefix) {
         return {
             type: 'UnaryExpression',
             operator: operator,
             argument: argument,
-            prefix: isPrefix
+            prefix: !!prefix
         };
     }
 
-    function createBinaryExpression (operator, left, right) {
+    function binaryExpression (operator, left, right) {
         return {
             type: 'BinaryExpression',
             operator: operator,
@@ -140,7 +140,7 @@ var ASTCreatorService = function () {
         };
     }
 
-    function createAssignmentExpression (left, operator, right) {
+    function assignmentExpression (left, operator, right) {
         return {
             type: 'AssignmentExpression',
             left: left,
@@ -149,7 +149,7 @@ var ASTCreatorService = function () {
         };
     }
 
-    function createNewExpression (callee, args) {
+    function newExpression (callee, args) {
         return {
             type: 'NewExpression',
             callee: callee,
@@ -157,7 +157,7 @@ var ASTCreatorService = function () {
         };
     }
 
-    function createCallExpression (callee, args) {
+    function callExpression (callee, args) {
         return {
             type: 'CallExpression',
             callee: callee,
@@ -165,7 +165,7 @@ var ASTCreatorService = function () {
         };
     }
 
-    function createMemberExpression (object, property, computed) {
+    function memberExpression (object, property, computed) {
         return  {
             type: 'MemberExpression',
             object: object,
@@ -174,14 +174,14 @@ var ASTCreatorService = function () {
         };
     }
 
-    function createIdentifier (name) {
+    function identifier (name) {
         return {
             type: 'Identifier',
             name: name
         };
     }
 
-    function createLiteral (value) {
+    function literal (value) {
         var literal = {
             type: 'Literal',
             value: value

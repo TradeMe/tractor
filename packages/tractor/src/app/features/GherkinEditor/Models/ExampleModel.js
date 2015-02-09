@@ -2,12 +2,17 @@
 
 // Utilities:
 var _ = require('lodash');
-var toLiteral = require('../../../utilities/toLiteral');
 
 // Module:
 var GherkinEditor = require('../GherkinEditor');
 
-var createExampleModelConstructor = function (GherkinIndent) {
+// Dependencies:
+require('../../../Core/Services/StringToLiteralService');
+
+var createExampleModelConstructor = function (
+    StringToLiteralService,
+    GherkinIndent
+) {
     var ExampleModel = function ExampleModel (scenario) {
         var values = {};
 
@@ -35,7 +40,7 @@ var createExampleModelConstructor = function (GherkinIndent) {
     function toFeature () {
         var values = '| ' + _.map(this.scenario.exampleVariables, function (variable) {
            var value = this.values[variable];
-           var literal = toLiteral(value);
+           var literal = StringToLiteralService.toLiteral(value);
            return !_.isUndefined(literal) ? literal : '"' + value + '"';
         }, this).join(' | ') + ' |';
         return GherkinIndent + GherkinIndent + GherkinIndent + values;

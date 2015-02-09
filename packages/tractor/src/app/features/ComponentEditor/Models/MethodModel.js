@@ -42,13 +42,13 @@ var createMethodModelConstructor = function (ASTCreatorService, ArgumentModel) {
             }
         });
 
-        this.nameIdentifier = ast.createIdentifier(method.name);
+        this.nameIdentifier = ast.identifier(method.name);
 
         if (this.returns) {
             this[this.returns] = method[this.returns];
         }
     };
-    
+
     return MethodModel;
 
     function getArguments (method) {

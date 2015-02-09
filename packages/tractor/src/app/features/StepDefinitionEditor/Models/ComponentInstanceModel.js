@@ -32,15 +32,15 @@ var createComponentInstanceModelConstructor = function (ASTCreatorService) {
     return ComponentInstanceModel;
 
     function toAST () {
-        var requirePathLiteral = ast.createLiteral('../components/' + this.component.name + '.component');
-        var requireCallExpression = ast.createCallExpression(ast.createIdentifier('require'), [requirePathLiteral]);
-        var importDeclarator = ast.createVariableDeclarator(this.component.nameIdentifier, requireCallExpression);
-        var importDeclaration = ast.createVariableDeclaration([importDeclarator]);
+        var requirePathLiteral = ast.literal('../components/' + this.component.name + '.component');
+        var requireCallExpression = ast.callExpression(ast.identifier('require'), [requirePathLiteral]);
+        var importDeclarator = ast.variableDeclarator(this.component.nameIdentifier, requireCallExpression);
+        var importDeclaration = ast.variableDeclaration([importDeclarator]);
 
-        var newComponentNewStatement = ast.createNewExpression(this.component.nameIdentifier);
-        var newComponentIdentifier = ast.createIdentifier(this.name);
-        var newComponentDeclarator = ast.createVariableDeclarator(newComponentIdentifier, newComponentNewStatement);
-        var newComponentDeclaration = ast.createVariableDeclaration([newComponentDeclarator]);
+        var newComponentNewStatement = ast.newExpression(this.component.nameIdentifier);
+        var newComponentIdentifier = ast.identifier(this.name);
+        var newComponentDeclarator = ast.variableDeclarator(newComponentIdentifier, newComponentNewStatement);
+        var newComponentDeclaration = ast.variableDeclaration([newComponentDeclarator]);
         return [importDeclaration, newComponentDeclaration];
     }
 };

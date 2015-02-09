@@ -2,17 +2,18 @@
 
 // Utilities:
 var _ = require('lodash');
-var toLiteral = require('../../../utilities/toLiteral');
 
 // Module:
 var ComponentEditor = require('../ComponentEditor');
 
 // Dependencies:
 require('../../../Core/Services/ASTCreatorService');
+require('../../../Core/Services/StringToLiteralService');
 
-var createArgumentModelConstructor = function (ASTCreatorService) {
-    var ast = ASTCreatorService;
-
+var createArgumentModelConstructor = function (
+    ASTCreatorService,
+    StringToLiteralService
+) {
     var DEFAULTS = {
         string: 'argument',
         number: 12345,
@@ -53,8 +54,9 @@ var createArgumentModelConstructor = function (ASTCreatorService) {
     return ArgumentModel;
 
     function toAST () {
-        var literal = toLiteral(this.value);
+        var ast = ASTCreatorService;
 
+        var literal = StringToLiteralService.toLiteral(this.value);
         var parameter = null;
         var result = null;
         if (this.method) {
@@ -69,13 +71,13 @@ var createArgumentModelConstructor = function (ASTCreatorService) {
         }
 
         if (!_.isUndefined(literal)) {
-            return ast.createLiteral(literal);
+            return ast.literal(literal);
         } else if (parameter || result) {
-            return ast.createIdentifier(this.value);
+            return ast.identifier(this.value);
         } else if (this.value) {
-            return ast.createLiteral(this.value);
+            return ast.literal(this.value);
         } else {
-            return ast.createLiteral(null);
+            return ast.literal(null);
         }
     }
 };
