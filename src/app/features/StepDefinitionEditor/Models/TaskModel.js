@@ -68,9 +68,9 @@ var createTaskModelConstructor = function (
             return argument.ast;
         });
 
-        var taskMemberExpression = ast.createMemberExpression(ast.createIdentifier(this.component.name), this.action.nameIdentifier);
-        var taskCallExpression = ast.createCallExpression(taskMemberExpression, argumentValues);
-        return ast.createExpressionStatement(taskCallExpression);
+        var taskMemberExpression = ast.memberExpression(ast.identifier(this.component.name), this.action.nameIdentifier);
+        var taskCallExpression = ast.callExpression(taskMemberExpression, argumentValues);
+        return ast.expressionStatement(taskCallExpression);
     }
 
     function parseArguments () {

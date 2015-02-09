@@ -20,8 +20,8 @@ var StepInputDirective = function (ValidationService, StepDeclarationModel) {
         restrict: 'E',
 
         scope: {
-            label: '@',
-            model: '='
+            model: '=',
+            label: '@'
         },
 
         /* eslint-disable no-path-concat */
@@ -32,6 +32,14 @@ var StepInputDirective = function (ValidationService, StepDeclarationModel) {
     };
 
     function link ($scope) {
+        if (_.isUndefined($scope.model)) {
+            throw new Error('The "tractor-step-input" directive requires a "model" attribute.');
+        }
+
+        if (_.isUndefined($scope.label)) {
+            throw new Error('The "tractor-step-input" directive requires a "label" attribute.');
+        }
+
         $scope.$watch('model', function () {
             $scope.property = camelcase($scope.label);
             $scope.blur = _.partial(validateExampleVariableNames, $scope);
@@ -39,7 +47,7 @@ var StepInputDirective = function (ValidationService, StepDeclarationModel) {
     }
 
     function validateExampleVariableNames ($scope, value) {
-        var variableNames = StepDeclarationModel.getExampleVariableNames(value)
+        var variableNames = StepDeclarationModel.getExampleVariableNames(value);
         var validations = _.map(variableNames, function (variableName) {
             return ValidationService.validateVariableName(variableName);
         });
@@ -48,8 +56,7 @@ var StepInputDirective = function (ValidationService, StepDeclarationModel) {
         .then(function () {
             $scope.model.setValidValue($scope.property, value);
         });
-    };
-
+    }
 };
 
 Core.directive('tractorStepInput', StepInputDirective);

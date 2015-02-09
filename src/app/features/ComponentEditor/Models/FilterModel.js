@@ -2,17 +2,18 @@
 
 // Utilities:
 var _ = require('lodash');
-var toLiteral = require('../../../utilities/toLiteral');
 
 // Module:
 var ComponentEditor = require('../ComponentEditor');
 
 // Dependencies:
 require('../../../Core/Services/ASTCreatorService');
+require('../../../Core/Services/StringToLiteralService');
 
-var createFilterModelConstructor = function (ASTCreatorService) {
-    var ast = ASTCreatorService;
-
+var createFilterModelConstructor = function (
+    ASTCreatorService,
+    StringToLiteralService
+) {
     var DEFAULTS = {
         type: 'model',
         locator: 'locator'
@@ -62,39 +63,41 @@ var createFilterModelConstructor = function (ASTCreatorService) {
     return FilterModel;
 
     function toAST (all) {
-        var byIdentifier = ast.createIdentifier('by');
-        var locatorLiteral = ast.createLiteral(this.locator);
+        var ast = ASTCreatorService;
+
+        var byIdentifier = ast.identifier('by');
+        var locatorLiteral = ast.literal(this.locator);
         if (!all) {
             if (!this.isText) {
-                var byMemberExpression = ast.createMemberExpression(byIdentifier, ast.createIdentifier(this.type));
-                return ast.createCallExpression(byMemberExpression, [locatorLiteral]);
+                var byMemberExpression = ast.memberExpression(byIdentifier, ast.identifier(this.type));
+                return ast.callExpression(byMemberExpression, [locatorLiteral]);
             } else {
-                var cssContainingTextIdentifier = ast.createIdentifier('cssContainingText');
-                var byMemberExpression = ast.createMemberExpression(byIdentifier, cssContainingTextIdentifier);
-                var allSelectorLiteral = ast.createLiteral('*');
-                return ast.createCallExpression(byMemberExpression, [allSelectorLiteral, locatorLiteral]);
+                var cssContainingTextIdentifier = ast.identifier('cssContainingText');
+                var byMemberExpression = ast.memberExpression(byIdentifier, cssContainingTextIdentifier);
+                var allSelectorLiteral = ast.literal('*');
+                return ast.callExpression(byMemberExpression, [allSelectorLiteral, locatorLiteral]);
             }
         } else {
-            var locator = toLiteral(this.locator);
+            var locator = StringToLiteralService.toLiteral(this.locator);
             if (_.isNumber(locator)) {
-                return ast.createLiteral(locator);
+                return ast.literal(locator);
             } else {
-                var elementIdentifier = ast.createIdentifier('element');
-                var elementGetTextMemberExpression = ast.createMemberExpression(elementIdentifier, ast.createIdentifier('getText'));
-                var getTextCallExpression = ast.createCallExpression(elementGetTextMemberExpression);
-                var getTextThenMemberExpression = ast.createMemberExpression(getTextCallExpression, ast.createIdentifier('then'));
-                var textIdentifier = ast.createIdentifier('text');
-                var textIndexOfMemberExpresion = ast.createMemberExpression(textIdentifier, ast.createIdentifier('indexOf'));
-                var textIndexOfCallExpression = ast.createCallExpression(textIndexOfMemberExpresion, [ast.createLiteral(this.locator)]);
-                var negativeOneUnaryExpression = ast.createUnaryExpression(ast.UnaryOperators.NEGATION, ast.createLiteral(1), true);
-                var textFoundBinaryExpression = ast.createBinaryExpression(ast.BinaryOperators.STRICT_INEQUALITY, textIndexOfCallExpression, negativeOneUnaryExpression);
-                var checkFoundTextReturnStatement = ast.createReturnStatement(textFoundBinaryExpression);
-                var checkFoundTextBodyBlockStatement = ast.createBlockStatement([checkFoundTextReturnStatement]);
-                var checkFoundTextFunctionExpression = ast.createFunctionExpression(null, [textIdentifier], checkFoundTextBodyBlockStatement);
-                var getTextThenCallExpression = ast.createCallExpression(getTextThenMemberExpression, [checkFoundTextFunctionExpression]);
-                var getTextThenReturnStatement = ast.createReturnStatement(getTextThenCallExpression);
-                var getTextThenBodyBlockStatement = ast.createBlockStatement([getTextThenReturnStatement]);
-                return ast.createFunctionExpression(null, [elementIdentifier], getTextThenBodyBlockStatement);
+                var elementIdentifier = ast.identifier('element');
+                var elementGetTextMemberExpression = ast.memberExpression(elementIdentifier, ast.identifier('getText'));
+                var getTextCallExpression = ast.callExpression(elementGetTextMemberExpression);
+                var getTextThenMemberExpression = ast.memberExpression(getTextCallExpression, ast.identifier('then'));
+                var textIdentifier = ast.identifier('text');
+                var textIndexOfMemberExpresion = ast.memberExpression(textIdentifier, ast.identifier('indexOf'));
+                var textIndexOfCallExpression = ast.callExpression(textIndexOfMemberExpresion, [ast.literal(this.locator)]);
+                var negativeOneUnaryExpression = ast.unaryExpression(ast.UnaryOperators.NEGATION, ast.literal(1), true);
+                var textFoundBinaryExpression = ast.binaryExpression(ast.BinaryOperators.STRICT_INEQUALITY, textIndexOfCallExpression, negativeOneUnaryExpression);
+                var checkFoundTextReturnStatement = ast.returnStatement(textFoundBinaryExpression);
+                var checkFoundTextBodyBlockStatement = ast.blockStatement([checkFoundTextReturnStatement]);
+                var checkFoundTextFunctionExpression = ast.functionExpression(null, [textIdentifier], checkFoundTextBodyBlockStatement);
+                var getTextThenCallExpression = ast.callExpression(getTextThenMemberExpression, [checkFoundTextFunctionExpression]);
+                var getTextThenReturnStatement = ast.returnStatement(getTextThenCallExpression);
+                var getTextThenBodyBlockStatement = ast.blockStatement([getTextThenReturnStatement]);
+                return ast.functionExpression(null, [elementIdentifier], getTextThenBodyBlockStatement);
             }
         }
     }

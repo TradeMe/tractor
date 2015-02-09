@@ -19,7 +19,7 @@ var createBrowserModelConstructor = function (ASTCreatorService) {
             }
         });
 
-        this.nameIdentifier = ast.createIdentifier('browser');
+        this.nameIdentifier = ast.identifier('browser');
     };
 
     BrowserModel.prototype.methods = [{

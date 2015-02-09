@@ -66,7 +66,7 @@ var createComponentModelConstructor = function (
             }
         });
 
-        this.nameIdentifier = ast.createIdentifier(this.validateName(this, DEFAULTS.name));
+        this.nameIdentifier = ast.identifier(this.validateName(this, DEFAULTS.name));
     };
 
     ComponentModel.prototype.addElement = function () {
@@ -117,25 +117,25 @@ var createComponentModelConstructor = function (
         var elementASTs = _.map(this.domElements, function (element) {
             return element.ast;
         });
-        var constructorBlockExpression = ast.createBlockStatement(elementASTs);
-        var constructorFunctionExpression = ast.createFunctionExpression(this.nameIdentifier, null, constructorBlockExpression);
-        var constructorVariableDeclarator = ast.createVariableDeclarator(this.nameIdentifier, constructorFunctionExpression);
-        var constructorVariableDeclaration = ast.createVariableDeclaration([constructorVariableDeclarator]);
+        var constructorBlockExpression = ast.blockStatement(elementASTs);
+        var constructorFunctionExpression = ast.functionExpression(this.nameIdentifier, null, constructorBlockExpression);
+        var constructorVariableDeclarator = ast.variableDeclarator(this.nameIdentifier, constructorFunctionExpression);
+        var constructorVariableDeclaration = ast.variableDeclaration([constructorVariableDeclarator]);
 
         var actionASTs = _.map(this.actions, function (action) {
             return action.ast;
         });
-        var moduleReturnStatement = ast.createReturnStatement(this.nameIdentifier);
+        var moduleReturnStatement = ast.returnStatement(this.nameIdentifier);
         var moduleBody = _.chain([constructorVariableDeclaration, actionASTs, moduleReturnStatement]).flatten().compact().value();
-        var moduleBlockStatement = ast.createBlockStatement(moduleBody);
-        var moduleFunctionExpression = ast.createFunctionExpression(null, null, moduleBlockStatement);
-        var moduleCallExpression = ast.createCallExpression(moduleFunctionExpression);
+        var moduleBlockStatement = ast.blockStatement(moduleBody);
+        var moduleFunctionExpression = ast.functionExpression(null, null, moduleBlockStatement);
+        var moduleCallExpression = ast.callExpression(moduleFunctionExpression);
 
-        var moduleExportsMemberExpression = ast.createMemberExpression(ast.createIdentifier('module'), ast.createIdentifier('exports'));
-        var componentModuleAssignmentExpression = ast.createAssignmentExpression(moduleExportsMemberExpression, ast.AssignmentOperators.ASSIGNMENT, moduleCallExpression);
-        var componentModuleExpressionStatement = ast.createExpressionStatement(componentModuleAssignmentExpression);
+        var moduleExportsMemberExpression = ast.memberExpression(ast.identifier('module'), ast.identifier('exports'));
+        var componentModuleAssignmentExpression = ast.assignmentExpression(moduleExportsMemberExpression, ast.AssignmentOperators.ASSIGNMENT, moduleCallExpression);
+        var componentModuleExpressionStatement = ast.expressionStatement(componentModuleAssignmentExpression);
 
-        return ast.createProgram([componentModuleExpressionStatement]);
+        return ast.program([componentModuleExpressionStatement]);
     }
 };
 

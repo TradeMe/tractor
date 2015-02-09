@@ -15,8 +15,8 @@ var TextInputDirective = function () {
         restrict: 'E',
 
         scope: {
-            label: '@',
-            model: '='
+            model: '=',
+            label: '@'
         },
 
         /* eslint-disable no-path-concat */
@@ -27,10 +27,22 @@ var TextInputDirective = function () {
     };
 
     function link ($scope) {
-        $scope.$watch('model', function () {
-            $scope.property = camelcase($scope.label);
-            $scope.blur = _.bind($scope.model.setValidValue, $scope.model, $scope.property);
-        });
+        if (_.isUndefined($scope.model)) {
+            throw new Error('The "tractor-text-input" directive requires a "model" attribute.');
+        }
+
+        $scope.model.setValidValue = $scope.model.setValidValue || _.noop;
+
+        if (_.isUndefined($scope.label)) {
+            throw new Error('The "tractor-text-input" directive requires a "label" attribute.');
+        }
+
+        $scope.property = camelcase($scope.label);
+        $scope.blur = _.partial(validateValue, $scope);
+    }
+
+    function validateValue ($scope, value) {
+        $scope.model.setValidValue($scope.property, value);
     }
 };
 

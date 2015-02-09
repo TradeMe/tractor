@@ -67,14 +67,14 @@ var createStepModelConstructor = function (
     return StepModel;
 
     function toAST () {
-        var thisStep = ast.createMemberExpression(ast.createThisExpression(), ast.createIdentifier(this.type));
-        var stepRegexLiteral = ast.createLiteral(this.regex);
-        var stepDoneIdentifier = ast.createIdentifier('done');
+        var thisStep = ast.memberExpression(ast.thisExpression(), ast.identifier(this.type));
+        var stepRegexLiteral = ast.literal(this.regex);
+        var stepDoneIdentifier = ast.identifier('done');
 
         var expectationASTs = _.map(this.expectations, function (expectation) {
             return expectation.ast;
         });
-        var promisesArrayExpression = ast.createArrayExpression(expectationASTs);
+        var promisesArrayExpression = ast.arrayExpression(expectationASTs);
 
         var taskASTs = _.map(this.tasks, function (task) {
             return task.ast;
@@ -82,40 +82,40 @@ var createStepModelConstructor = function (
         var firstTask = _.first(taskASTs);
 
         _.each(_.rest(taskASTs), function (taskAST) {
-            var thenIdentifier = ast.createIdentifier('then');
-            var promiseThenMemberExpression = ast.createMemberExpression(firstTask.expression, thenIdentifier);
+            var thenIdentifier = ast.identifier('then');
+            var promiseThenMemberExpression = ast.memberExpression(firstTask.expression, thenIdentifier);
 
-            var taskReturnStatement = ast.createReturnStatement(taskAST.expression);
-            var taskBlockStatement = ast.createBlockStatement([taskReturnStatement]);
-            var taskFunctionExpression = ast.createFunctionExpression(null, null, taskBlockStatement);
+            var taskReturnStatement = ast.returnStatement(taskAST.expression);
+            var taskBlockStatement = ast.blockStatement([taskReturnStatement]);
+            var taskFunctionExpression = ast.functionExpression(null, null, taskBlockStatement);
 
-            firstTask.expression = ast.createCallExpression(promiseThenMemberExpression, [taskFunctionExpression]);
+            firstTask.expression = ast.callExpression(promiseThenMemberExpression, [taskFunctionExpression]);
         }, this);
 
         if (firstTask) {
-            var tasksIdentifier = ast.createIdentifier('tasks');
-            var tasksDeclarator = ast.createVariableDeclarator(tasksIdentifier, firstTask.expression);
-            var tasksDeclaration = ast.createVariableDeclaration([tasksDeclarator]);
+            var tasksIdentifier = ast.identifier('tasks');
+            var tasksDeclarator = ast.variableDeclarator(tasksIdentifier, firstTask.expression);
+            var tasksDeclaration = ast.variableDeclaration([tasksDeclarator]);
             promisesArrayExpression.elements.push(tasksIdentifier);
         }
 
-        var promiseAllMemberExpression = ast.createMemberExpression(ast.createIdentifier('Promise'), ast.createIdentifier('all'));
-        var promiseAllCallExpression = ast.createCallExpression(promiseAllMemberExpression, [promisesArrayExpression]);
-        var promisesMemberExpression = ast.createMemberExpression(promiseAllCallExpression, ast.createIdentifier('then'));
+        var promiseAllMemberExpression = ast.memberExpression(ast.identifier('Promise'), ast.identifier('all'));
+        var promiseAllCallExpression = ast.callExpression(promiseAllMemberExpression, [promisesArrayExpression]);
+        var promisesMemberExpression = ast.memberExpression(promiseAllCallExpression, ast.identifier('then'));
 
         var doneCallExpression;
         if (this.tasks.length || this.expectations.length) {
-            doneCallExpression = ast.createCallExpression(stepDoneIdentifier);
+            doneCallExpression = ast.callExpression(stepDoneIdentifier);
         } else {
-            var pendingMemberExpression = ast.createMemberExpression(stepDoneIdentifier, ast.createIdentifier('pending'));
-            doneCallExpression = ast.createCallExpression(pendingMemberExpression);
+            var pendingMemberExpression = ast.memberExpression(stepDoneIdentifier, ast.identifier('pending'));
+            doneCallExpression = ast.callExpression(pendingMemberExpression);
         }
 
-        var doneExpressionStatement = ast.createExpressionStatement(doneCallExpression);
-        var doneBlockStatement = ast.createBlockStatement([doneExpressionStatement]);
-        var doneFunctionExpression = ast.createFunctionExpression(null, null, doneBlockStatement);
-        var doneCallExpression = ast.createCallExpression(promisesMemberExpression, [doneFunctionExpression]);
-        var expectationsExpression = ast.createExpressionStatement(doneCallExpression);
+        var doneExpressionStatement = ast.expressionStatement(doneCallExpression);
+        var doneBlockStatement = ast.blockStatement([doneExpressionStatement]);
+        var doneFunctionExpression = ast.functionExpression(null, null, doneBlockStatement);
+        var doneCallExpression = ast.callExpression(promisesMemberExpression, [doneFunctionExpression]);
+        var expectationsExpression = ast.expressionStatement(doneCallExpression);
 
         var blockBody = [];
         if (tasksDeclaration) {
@@ -125,10 +125,10 @@ var createStepModelConstructor = function (
             blockBody.push(expectationsExpression);
         }
 
-        var stepBlockStatement = ast.createBlockStatement(blockBody);
-        var stepFunctionExpression = ast.createFunctionExpression(null, [stepDoneIdentifier], stepBlockStatement);
-        var stepCallExpression = ast.createCallExpression(thisStep, [stepRegexLiteral, stepFunctionExpression]);
-        return ast.createExpressionStatement(stepCallExpression);
+        var stepBlockStatement = ast.blockStatement(blockBody);
+        var stepFunctionExpression = ast.functionExpression(null, [stepDoneIdentifier], stepBlockStatement);
+        var stepCallExpression = ast.callExpression(thisStep, [stepRegexLiteral, stepFunctionExpression]);
+        return ast.expressionStatement(stepCallExpression);
     }
 };
 

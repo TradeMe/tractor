@@ -71,28 +71,28 @@ var createInteractionModelConstructor = function (
         });
 
         var interactionMemberExpression;
-        var elementNameIdentifier = ast.createIdentifier(this.element.name);
+        var elementNameIdentifier = ast.identifier(this.element.name);
         if (this.element.name === 'browser') {
-            interactionMemberExpression = ast.createMemberExpression(elementNameIdentifier, this.methodInstance.nameIdentifier);
+            interactionMemberExpression = ast.memberExpression(elementNameIdentifier, this.methodInstance.nameIdentifier);
         } else {
-            var thisElementMemberExpression = ast.createMemberExpression(ast.createIdentifier('self'), elementNameIdentifier);
-            interactionMemberExpression = ast.createMemberExpression(thisElementMemberExpression, this.methodInstance.nameIdentifier);
+            var thisElementMemberExpression = ast.memberExpression(ast.identifier('self'), elementNameIdentifier);
+            interactionMemberExpression = ast.memberExpression(thisElementMemberExpression, this.methodInstance.nameIdentifier);
         }
-        var interactionCallExpression = ast.createCallExpression(interactionMemberExpression, argumentValues);
-        var interactionReturnStatement = ast.createReturnStatement(interactionCallExpression);
+        var interactionCallExpression = ast.callExpression(interactionMemberExpression, argumentValues);
+        var interactionReturnStatement = ast.returnStatement(interactionCallExpression);
 
         if (this.methodInstance.returns !== 'promise') {
-            var resolveIdentifier = ast.createIdentifier('resolve');
-            var resolveCallExpression = ast.createCallExpression(resolveIdentifier, [interactionCallExpression]);
-            var promiseResolverExpressionStatement = ast.createExpressionStatement(resolveCallExpression);
-            var promiseResolverBlockStatement = ast.createBlockStatement([promiseResolverExpressionStatement]);
-            var promiseResolverFunctionExpression = ast.createFunctionExpression(null, [resolveIdentifier], promiseResolverBlockStatement);
-            var promiseIdentifier = ast.createIdentifier('Promise');
-            var promiseNewExpression = ast.createNewExpression(promiseIdentifier, [promiseResolverFunctionExpression]);
+            var resolveIdentifier = ast.identifier('resolve');
+            var resolveCallExpression = ast.callExpression(resolveIdentifier, [interactionCallExpression]);
+            var promiseResolverExpressionStatement = ast.expressionStatement(resolveCallExpression);
+            var promiseResolverBlockStatement = ast.blockStatement([promiseResolverExpressionStatement]);
+            var promiseResolverFunctionExpression = ast.functionExpression(null, [resolveIdentifier], promiseResolverBlockStatement);
+            var promiseIdentifier = ast.identifier('Promise');
+            var promiseNewExpression = ast.newExpression(promiseIdentifier, [promiseResolverFunctionExpression]);
             interactionReturnStatement.argument = promiseNewExpression;
         }
 
-        this.resultFunctionExpression = ast.createFunctionExpression();
+        this.resultFunctionExpression = ast.functionExpression();
 
         return interactionReturnStatement;
     }

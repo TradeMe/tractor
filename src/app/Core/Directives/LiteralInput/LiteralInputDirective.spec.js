@@ -1,3 +1,4 @@
+/*global beforeEach:true, inject: true, describe:true, it:true, expect:true */
 'use strict';
 
 // Angular:
@@ -5,15 +6,11 @@ var angular = require('angular');
 require('angular-mocks');
 
 // Testing:
-var LiteralInputDirective;
+require('./LiteralInputDirective');
 
 describe('LiteralInputDirective.js:', function() {
     var $compile;
     var $rootScope;
-
-    beforeEach(function () {
-        LiteralInputDirective = require('./LiteralInputDirective');
-    });
 
     beforeEach(angular.mock.module('Core'));
 
@@ -32,15 +29,15 @@ describe('LiteralInputDirective.js:', function() {
         it('should throw an error when `model` is not passed in:', function () {
             expect(function () {
                 var scope = $rootScope.$new();
-                var directive = compileDirective('<tractor-literal-input></tractor-literal-input>', scope);
-            }).to.throw('The "tractor-literal-input" directive requires an "model" attribute.');
+                compileDirective('<tractor-literal-input></tractor-literal-input>', scope);
+            }).to.throw('The "tractor-literal-input" directive requires a "model" attribute.');
         });
 
         it('should throw an error when `name` is not passed in:', function () {
             expect(function () {
                 var scope = $rootScope.$new();
                 scope.model = {};
-                var directive = compileDirective('<tractor-literal-input model="model"></tractor-literal-input>', scope);
+                compileDirective('<tractor-literal-input model="model"></tractor-literal-input>', scope);
             }).to.throw('The "tractor-literal-input" directive requires a "name" attribute.');
         });
     });

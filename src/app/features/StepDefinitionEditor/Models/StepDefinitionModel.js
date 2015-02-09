@@ -56,15 +56,15 @@ var createStepDefinitionModelConstructor = function (
 
         moduleBody.push(this.step.ast);
 
-        var moduleBlockStatement = ast.createBlockStatement(moduleBody);
-        var moduleFunctionExpression = ast.createFunctionExpression(null, null, moduleBlockStatement);
+        var moduleBlockStatement = ast.blockStatement(moduleBody);
+        var moduleFunctionExpression = ast.functionExpression(null, null, moduleBlockStatement);
 
-        var moduleExportsMemberExpression = ast.createMemberExpression(ast.createIdentifier('module'), ast.createIdentifier('exports'));
+        var moduleExportsMemberExpression = ast.memberExpression(ast.identifier('module'), ast.identifier('exports'));
 
-        var componentModuleAssignmentExpression = ast.createAssignmentExpression(moduleExportsMemberExpression, ast.AssignmentOperators.ASSIGNMENT, moduleFunctionExpression);
-        var componentModuleExpressionStatement = ast.createExpressionStatement(componentModuleAssignmentExpression);
+        var componentModuleAssignmentExpression = ast.assignmentExpression(moduleExportsMemberExpression, ast.AssignmentOperators.ASSIGNMENT, moduleFunctionExpression);
+        var componentModuleExpressionStatement = ast.expressionStatement(componentModuleAssignmentExpression);
 
-        return ast.createProgram([componentModuleExpressionStatement]);
+        return ast.program([componentModuleExpressionStatement]);
     };
 
     return StepDefinitionModel;

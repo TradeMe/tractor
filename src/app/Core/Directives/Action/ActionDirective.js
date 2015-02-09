@@ -15,10 +15,10 @@ var ActionDirective = function () {
         restrict: 'E',
 
         scope: {
+            model: '=',
             action: '@',
             argument: '=',
-            icon: '@',
-            model: '='
+            icon: '@'
         },
 
         /* eslint-disable no-path-concat */
@@ -29,12 +29,12 @@ var ActionDirective = function () {
     };
 
     function link ($scope) {
-        if (_.isUndefined($scope.action)) {
-            throw new Error('The "tractor-action" directive requires an "action" attribute.');
-        }
-
         if (_.isUndefined($scope.model)) {
             throw new Error('The "tractor-action" directive requires a "model" attribute.');
+        }
+
+        if (_.isUndefined($scope.action)) {
+            throw new Error('The "tractor-action" directive requires an "action" attribute.');
         }
 
         $scope.method = camelcase($scope.action);

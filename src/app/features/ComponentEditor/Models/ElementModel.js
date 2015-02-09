@@ -2,17 +2,18 @@
 
 // Utilities:
 var _ = require('lodash');
-var toLiteral = require('../../../utilities/toLiteral');
 
 // Module:
 var ComponentEditor = require('../ComponentEditor');
 
 // Dependencies:
 require('../../../Core/Services/ASTCreatorService');
+require('../../../Core/Services/StringToLiteralService');
 require('./FilterModel');
 
 var createElementModelConstructor = function (
     ASTCreatorService,
+    StringToLiteralService,
     FilterModel
 ) {
     var ast = ASTCreatorService;
@@ -134,46 +135,46 @@ var createElementModelConstructor = function (
 
     function toAST () {
         var elementCallExpression;
-        var elementIdentifier = ast.createIdentifier('element');
-        var allIdentifier = ast.createIdentifier('all');
+        var elementIdentifier = ast.identifier('element');
+        var allIdentifier = ast.identifier('all');
         _.each(this.filters, function (filter, index) {
             var elementCallExpressionCallee;
             if (elementCallExpression) {
                 var previousFilter = this.filters[index - 1];
                 if (previousFilter.isAll) {
-                    var getIdentifier = ast.createIdentifier('get');
-                    var locatorLiteral = toLiteral(filter.locator);
+                    var getIdentifier = ast.identifier('get');
+                    var locatorLiteral = StringToLiteralService.toLiteral(filter.locator);
                     if (_.isNumber(locatorLiteral)) {
-                        elementCallExpressionCallee = ast.createMemberExpression(elementCallExpression, getIdentifier);
-                        elementCallExpression = ast.createCallExpression(elementCallExpressionCallee, [filter.allAst]);
+                        elementCallExpressionCallee = ast.memberExpression(elementCallExpression, getIdentifier);
+                        elementCallExpression = ast.callExpression(elementCallExpressionCallee, [filter.allAst]);
                     } else {
-                        var filterIdentifier = ast.createIdentifier('filter');
-                        elementCallExpressionCallee = ast.createMemberExpression(elementCallExpression, filterIdentifier);
-                        elementCallExpression = ast.createCallExpression(elementCallExpressionCallee, [filter.allAst]);
-                        elementCallExpressionCallee = ast.createMemberExpression(elementCallExpression, getIdentifier);
-                        elementCallExpression = ast.createCallExpression(elementCallExpressionCallee, [ast.createLiteral(0)]);
+                        var filterIdentifier = ast.identifier('filter');
+                        elementCallExpressionCallee = ast.memberExpression(elementCallExpression, filterIdentifier);
+                        elementCallExpression = ast.callExpression(elementCallExpressionCallee, [filter.allAst]);
+                        elementCallExpressionCallee = ast.memberExpression(elementCallExpression, getIdentifier);
+                        elementCallExpression = ast.callExpression(elementCallExpressionCallee, [ast.literal(0)]);
                     }
                 } else {
                     if (filter.isAll) {
-                        elementCallExpressionCallee = ast.createMemberExpression(elementCallExpression, allIdentifier);
+                        elementCallExpressionCallee = ast.memberExpression(elementCallExpression, allIdentifier);
                     } else {
-                        elementCallExpressionCallee = ast.createMemberExpression(elementCallExpression, elementIdentifier);
+                        elementCallExpressionCallee = ast.memberExpression(elementCallExpression, elementIdentifier);
                     }
-                    elementCallExpression = ast.createCallExpression(elementCallExpressionCallee, [filter.ast]);
+                    elementCallExpression = ast.callExpression(elementCallExpressionCallee, [filter.ast]);
                 }
             } else {
                 if (filter.isAll) {
-                    elementCallExpressionCallee = ast.createMemberExpression(elementIdentifier, allIdentifier);
+                    elementCallExpressionCallee = ast.memberExpression(elementIdentifier, allIdentifier);
                 } else {
                     elementCallExpressionCallee = elementIdentifier;
                 }
-                elementCallExpression = ast.createCallExpression(elementCallExpressionCallee, [filter.ast]);
+                elementCallExpression = ast.callExpression(elementCallExpressionCallee, [filter.ast]);
             }
         }, this);
 
-        var thisElementMemberExpression = ast.createMemberExpression(ast.createThisExpression(), ast.createIdentifier(this.name));
-        var elementAssignmentExpression = ast.createAssignmentExpression(thisElementMemberExpression, ast.AssignmentOperators.ASSIGNMENT, elementCallExpression);
-        return ast.createExpressionStatement(elementAssignmentExpression);
+        var thisElementMemberExpression = ast.memberExpression(ast.thisExpression(), ast.identifier(this.name));
+        var elementAssignmentExpression = ast.assignmentExpression(thisElementMemberExpression, ast.AssignmentOperators.ASSIGNMENT, elementCallExpression);
+        return ast.expressionStatement(elementAssignmentExpression);
     }
 };
 

@@ -38,7 +38,7 @@ var createParameterModelConstructor = function (ASTCreatorService) {
             }
         });
 
-        this.nameIdentifier = ast.createIdentifier(this.validateName(this, DEFAULTS.name));
+        this.nameIdentifier = ast.identifier(this.validateName(this, DEFAULTS.name));
     };
 
     ParameterModel.prototype.validateName = function (parameter, name) {

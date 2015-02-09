@@ -18,8 +18,8 @@ var VariableInputDirective = function (ValidationService) {
         restrict: 'E',
 
         scope: {
-            label: '@',
             model: '=',
+            label: '@',
             class: '@'
         },
 
@@ -46,8 +46,7 @@ var VariableInputDirective = function (ValidationService) {
         } else {
             $scope.model.validateName($scope.model, value);
         }
-    };
-
+    }
 };
 
 Core.directive('tractorVariableInput', VariableInputDirective);

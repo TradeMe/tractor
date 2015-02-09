@@ -1,3 +1,4 @@
+/*global beforeEach:true, inject: true, describe:true, it:true, expect:true */
 'use strict';
 
 // Angular:
@@ -5,15 +6,11 @@ var angular = require('angular');
 require('angular-mocks');
 
 // Testing:
-var ActionDirective;
+require('./ActionDirective');
 
 describe('ActionDirective.js:', function() {
     var $compile;
     var $rootScope;
-
-    beforeEach(function () {
-        ActionDirective = require('./ActionDirective');
-    });
 
     beforeEach(angular.mock.module('Core'));
 
@@ -29,18 +26,19 @@ describe('ActionDirective.js:', function() {
     };
 
     describe('Link function:', function () {
-        it('should throw an error when `action` is not passed in:', function () {
-            expect(function () {
-                var scope = $rootScope.$new();
-                var directive = compileDirective('<tractor-action></tractor-action>', scope);
-            }).to.throw('The "tractor-action" directive requires an "action" attribute.');
-        });
-
         it('should throw an error when `model` is not passed in:', function () {
             expect(function () {
                 var scope = $rootScope.$new();
-                var directive = compileDirective('<tractor-action action="Some action"></tractor-action>', scope);
+                compileDirective('<tractor-action></tractor-action>', scope);
             }).to.throw('The "tractor-action" directive requires a "model" attribute.');
+        });
+
+        it('should throw an error when `action` is not passed in:', function () {
+            expect(function () {
+                var scope = $rootScope.$new();
+                scope.model = {};
+                compileDirective('<tractor-action model="model"></tractor-action>', scope);
+            }).to.throw('The "tractor-action" directive requires an "action" attribute.');
         });
 
         it('should convert the "action" attribute into a camel-cased "method":', function () {
