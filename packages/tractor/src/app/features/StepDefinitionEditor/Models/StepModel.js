@@ -10,17 +10,22 @@ var StepDefinitionEditor = require('../StepDefinitionEditor');
 require('../../../Core/Services/ASTCreatorService');
 require('./ExpectationModel');
 require('./TaskModel');
+require('./BrowserGetTaskModel');
+require('./HttpBackendSetupTaskModel');
 
 var createStepModelConstructor = function (
     ASTCreatorService,
     ExpectationModel,
-    TaskModel
+    TaskModel,
+    BrowserGetTaskModel,
+    HttpBackendSetupTaskModel
 ) {
-    var ast = ASTCreatorService;
-
     var StepModel = function StepModel (stepDefinition) {
-        var tasks = [];
         var expectations = [];
+        var tasks = [];
+
+        var browserGetTask = new BrowserGetTaskModel();
+        var httpBackendSetupTask = new HttpBackendSetupTaskModel(this);
 
         Object.defineProperties(this, {
             stepDefinition: {
@@ -28,14 +33,24 @@ var createStepModelConstructor = function (
                     return stepDefinition;
                 }
             },
+            expectations: {
+                get: function () {
+                    return expectations;
+                }
+            },
             tasks: {
                 get: function () {
                     return tasks;
                 }
             },
-            expectations: {
+            browserGetTask: {
                 get: function () {
-                    return expectations;
+                    return browserGetTask;
+                }
+            },
+            httpBackendSetupTask: {
+                get: function () {
+                    return httpBackendSetupTask;
                 }
             },
             ast: {
@@ -48,14 +63,6 @@ var createStepModelConstructor = function (
 
     StepModel.prototype.stepTypes = ['Given', 'When', 'Then', 'And', 'But'];
 
-    StepModel.prototype.addTask = function () {
-        this.tasks.push(new TaskModel(this));
-    };
-
-    StepModel.prototype.removeTask = function (task) {
-        _.remove(this.tasks, task);
-    };
-
     StepModel.prototype.addExpectation = function () {
         this.expectations.push(new ExpectationModel(this));
     };
@@ -64,9 +71,19 @@ var createStepModelConstructor = function (
         _.remove(this.expectations, expectation);
     };
 
+    StepModel.prototype.addTask = function () {
+        this.tasks.push(new TaskModel(this));
+    };
+
+    StepModel.prototype.removeTask = function (task) {
+        _.remove(this.tasks, task);
+    };
+
     return StepModel;
 
     function toAST () {
+        var ast = ASTCreatorService;
+
         var thisStep = ast.memberExpression(ast.thisExpression(), ast.identifier(this.type));
         var stepRegexLiteral = ast.literal(this.regex);
         var stepDoneIdentifier = ast.identifier('done');
@@ -79,6 +96,12 @@ var createStepModelConstructor = function (
         var taskASTs = _.map(this.tasks, function (task) {
             return task.ast;
         });
+
+        if (this.type === 'Given') {
+            taskASTs.unshift(this.httpBackendSetupTask.ast);
+            taskASTs.unshift(this.browserGetTask.ast);
+        }
+
         var firstTask = _.first(taskASTs);
 
         _.each(_.rest(taskASTs), function (taskAST) {
@@ -104,7 +127,7 @@ var createStepModelConstructor = function (
         var promisesMemberExpression = ast.memberExpression(promiseAllCallExpression, ast.identifier('then'));
 
         var doneCallExpression;
-        if (this.tasks.length || this.expectations.length) {
+        if (this.tasks.length || this.expectations.length || this.type === 'Given') {
             doneCallExpression = ast.callExpression(stepDoneIdentifier);
         } else {
             var pendingMemberExpression = ast.memberExpression(stepDoneIdentifier, ast.identifier('pending'));
@@ -135,7 +158,9 @@ var createStepModelConstructor = function (
 StepDefinitionEditor.factory('StepModel', function (
     ASTCreatorService,
     ExpectationModel,
-    TaskModel
+    TaskModel,
+    BrowserGetTaskModel,
+    HttpBackendSetupTaskModel
 ) {
-    return createStepModelConstructor(ASTCreatorService, ExpectationModel, TaskModel);
+    return createStepModelConstructor(ASTCreatorService, ExpectationModel, TaskModel, BrowserGetTaskModel, HttpBackendSetupTaskModel);
 });

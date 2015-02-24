@@ -16,10 +16,6 @@ var createActionModelConstructor = function (
     ParameterModel,
     InteractionModel
 ) {
-    var DEFAULTS = {
-        name: 'action'
-    };
-
     var ActionModel = function ActionModel (component) {
         var interactions = [];
         var parameters = [];
@@ -47,7 +43,7 @@ var createActionModelConstructor = function (
             }
         });
 
-        this.name = this.component.validateName(this, DEFAULTS.name);
+        this.name = '';
     };
 
     ActionModel.prototype.addParameter = function () {
@@ -68,8 +64,8 @@ var createActionModelConstructor = function (
         _.remove(this.interactions, interaction);
     };
 
-    ActionModel.prototype.validateName = function (action, name) {
-        this.name = this.component.validateName(action, name || DEFAULTS.name);
+    ActionModel.prototype.getAllVariableNames = function () {
+        return this.component.getAllVariableNames(this);
     };
 
     return ActionModel;
@@ -77,7 +73,7 @@ var createActionModelConstructor = function (
     function toAST () {
         var ast = ASTCreatorService;
         var prototypeIdentifier = ast.identifier('prototype');
-        var prototypeMemberExpression = ast.memberExpression(this.component.nameIdentifier, prototypeIdentifier);
+        var prototypeMemberExpression = ast.memberExpression(ast.identifier(this.component.name), prototypeIdentifier);
         var actionMemberExpression = ast.memberExpression(prototypeMemberExpression, ast.identifier(this.name));
 
         var selfIdentifier = ast.identifier('self');

@@ -72,11 +72,12 @@ var createInteractionModelConstructor = function (
 
         var interactionMemberExpression;
         var elementNameIdentifier = ast.identifier(this.element.name);
+        var methodInstanceNameIdentifier = ast.identifier(this.methodInstance.name);
         if (this.element.name === 'browser') {
-            interactionMemberExpression = ast.memberExpression(elementNameIdentifier, this.methodInstance.nameIdentifier);
+            interactionMemberExpression = ast.memberExpression(elementNameIdentifier, methodInstanceNameIdentifier);
         } else {
             var thisElementMemberExpression = ast.memberExpression(ast.identifier('self'), elementNameIdentifier);
-            interactionMemberExpression = ast.memberExpression(thisElementMemberExpression, this.methodInstance.nameIdentifier);
+            interactionMemberExpression = ast.memberExpression(thisElementMemberExpression, methodInstanceNameIdentifier);
         }
         var interactionCallExpression = ast.callExpression(interactionMemberExpression, argumentValues);
         var interactionReturnStatement = ast.returnStatement(interactionCallExpression);

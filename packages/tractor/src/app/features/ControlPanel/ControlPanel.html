@@ -1,5 +1,11 @@
 <header>
-    <tractor-action model="controlPanel" action="Run protractor"></tractor-action>
+    <section class="control-panel__top-row">
+        <div class="app-root-url" title="Modify in tractor.conf.js">
+            <h3>App Root URL:&nbsp;</h3><span>{{ controlPanel.appRootUrl }}</span>
+        </div>
+
+        <tractor-action model="controlPanel" action="Run protractor"></tractor-action>
+    </section>
 
     <nav>
         <ul>
@@ -11,6 +17,9 @@
             </li>
             <li ui-sref-active="active">
                 <a ui-sref=".step-definition-editor">Step Definitions</a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref=".mock-data-editor">Mock Data</a>
             </li>
         </ul>
     </nav>

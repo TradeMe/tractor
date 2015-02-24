@@ -8,15 +8,12 @@ var ValidationService = function ($http) {
         validateVariableName: validateVariableName
     };
 
-    function validateVariableName (variableName, capital) {
+    function validateVariableName (variableName) {
         return $http.post('/validate-javascript-variable-name', {
             variableName: variableName
         })
-        .then(function (result) {
-            if (result.error) {
-                throw new Error(result.error);
-            }
-            return variableName.charAt(0)['to' + (capital ? 'Upper' : 'Lower') + 'Case']() + variableName.slice(1);
+        .then(function () {
+            return variableName;
         });
     }
 };

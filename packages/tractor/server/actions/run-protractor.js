@@ -22,6 +22,7 @@ module.exports = function (sockets) {
         protractor.stdout.on('data', function (data) {
             data = formatData(trim(stripcolorcodes(data.toString())));
             if (data.length) {
+                console.log(data);
                 socket.emit('protractor-out', data);
             }
         });
@@ -29,6 +30,7 @@ module.exports = function (sockets) {
         protractor.stderr.on('data', function (data) {
             data = trim(stripcolorcodes(data.toString()));
             if (data.length) {
+                console.log(data);
                 socket.emit('protractor-err', data);
             }
         });

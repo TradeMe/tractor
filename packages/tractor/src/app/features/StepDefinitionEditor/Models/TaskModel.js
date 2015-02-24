@@ -14,8 +14,6 @@ var createTaskModelConstructor = function (
     ASTCreatorService,
     ArgumentModel
 ) {
-    var ast = ASTCreatorService;
-
     var TaskModel = function TaskModel (step) {
         var component;
         var action;
@@ -64,11 +62,13 @@ var createTaskModelConstructor = function (
     return TaskModel;
 
     function toAST () {
+        var ast = ASTCreatorService;
+
         var argumentValues = _.map(this.arguments, function (argument) {
             return argument.ast;
         });
 
-        var taskMemberExpression = ast.memberExpression(ast.identifier(this.component.name), this.action.nameIdentifier);
+        var taskMemberExpression = ast.memberExpression(ast.identifier(this.component.name), ast.identifier(this.action.name));
         var taskCallExpression = ast.callExpression(taskMemberExpression, argumentValues);
         return ast.expressionStatement(taskCallExpression);
     }

@@ -1,14 +1,14 @@
 .file-options {
     font-size: 0;
     width: 80%;
-    height: 14%;
+    height: 14.5%;
     background: rgba(240, 240, 240, 0.8);
 }
 
 .file-options__name {
     display: inline-block;
 
-    padding: 0 0.5rem;
+    padding: $standard-spacing;
     max-width: 45%;
 
     text-overflow: ellipsis;
@@ -17,6 +17,9 @@
 
 .file-options > div {
     display: inline-block;
+    width: 55%;
+    vertical-align: top;
+    margin-top: 1.25rem;
 }
 
 .file-options__name-input,
@@ -25,18 +28,10 @@
     vertical-align: top;
 }
 
-.file-options > div {
-    width: 55%;
-}
 .file-options__name-input,
 .file-options__save-file {
     width: 50%;
-}
-
-.file-options > div {
-    vertical-align: top;
-    margin-top: 1.75rem;
-    margin-bottom: 0.875rem;
+    line-height: 5.75rem;
 }
 
 .file-options__name {

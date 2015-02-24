@@ -24,6 +24,9 @@ var createExampleModelConstructor = function (
             },
             values: {
                 get: function () {
+                    _.each(this.scenario.exampleVariables, function (exampleVariable) {
+                        values[exampleVariable] = values[exampleVariable] || '';
+                    });
                     return values;
                 }
             },

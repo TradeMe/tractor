@@ -21,7 +21,7 @@ var RealTimeService = function RealTimeService (
         .then(function (config) {
             var url = 'http://localhost:' + config.port + '/' + room;
             var connection = io.connect(url, {
-              forceNew: true
+                forceNew: true
             });
             _.each(events, function (handler, event) {
                 connection.on(event, handler);

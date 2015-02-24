@@ -1,10 +1,12 @@
 @import '../../node_modules/normalize.css/normalize.css';
 @import '../../node_modules/ng-sortable/dist/ng-sortable.css';
 
+@import 'fonts';
+@import 'colours';
+
 @import 'file-editor';
 @import 'file-options';
 @import 'file-tree';
-@import 'fonts';
 @import 'header';
 @import 'notifier';
 @import 'sortable';
@@ -26,11 +28,11 @@ body div[ui-view], main {
 }
 
 header {
-    height: 14.5%;
+    height: 15.5%;
 }
 
 main {
-    height: 85.5%;
+    height: 84.5%;
 }
 
 main > section {

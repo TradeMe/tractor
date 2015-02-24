@@ -14,14 +14,7 @@ var createGherkinModelConstructor = function (
     GherkinIndent,
     GherkinNewLine
 ) {
-    var DEFAULTS = {
-        name: 'Gherkin',
-        inOrderTo: 'achieve some goal',
-        asA: 'certain type of user',
-        iWant: 'to be able to do something'
-    };
-
-    var GherkinModel = function GherkinModel () {
+var GherkinModel = function GherkinModel () {
         var scenarios = [];
 
         Object.defineProperties(this, {
@@ -37,10 +30,10 @@ var createGherkinModelConstructor = function (
             }
         });
 
-        this.name = DEFAULTS.name;
-        this.inOrderTo = DEFAULTS.inOrderTo;
-        this.asA = DEFAULTS.asA;
-        this.iWant = DEFAULTS.iWant;
+        this.name = '';
+        this.inOrderTo = '';
+        this.asA = '';
+        this.iWant = '';
     };
 
     GherkinModel.prototype.addScenario = function () {
@@ -49,10 +42,6 @@ var createGherkinModelConstructor = function (
 
     GherkinModel.prototype.removeScenario = function (scenario) {
         _.remove(this.scenarios, scenario);
-    };
-
-    GherkinModel.prototype.setValidValue = function (property, value) {
-        this[property] = value || DEFAULTS[property];
     };
 
     return GherkinModel;

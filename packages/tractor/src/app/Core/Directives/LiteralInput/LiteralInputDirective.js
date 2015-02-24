@@ -14,7 +14,9 @@ var LiteralInputDirective = function () {
         scope: {
             model: '=',
             name: '=',
-            optional: '='
+            description: '=',
+            required: '=',
+            type: '='
         },
 
         /* eslint-disable no-path-concat */
@@ -32,12 +34,6 @@ var LiteralInputDirective = function () {
         if (_.isUndefined($scope.name)) {
             throw new Error('The "tractor-literal-input" directive requires a "name" attribute.');
         }
-
-        $scope.blur = _.partial(validateValue, $scope);
-    }
-
-    function validateValue ($scope) {
-        $scope.model = $scope.model || ($scope.optional ? '' : 'null');
     }
 };
 

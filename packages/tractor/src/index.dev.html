@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>tractor</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./style.css">
+  </head>
+  <body ng-app="tractor-dev" ng-strict-di class="fill">
+    <div ui-view class="fill"></div>
+    <script src="./tractor.min.js"></script>
+    <script>
+        angular.module('tractor-dev', ['tractor', 'ngMockE2E']);
+    </script>
+  </body>
+</html>

@@ -7,8 +7,6 @@ var StepDefinitionEditor = require('../StepDefinitionEditor');
 require('../../../Core/Services/ASTCreatorService');
 
 var createComponentInstanceModelConstructor = function (ASTCreatorService) {
-    var ast = ASTCreatorService;
-
     var ComponentInstanceModel = function ComponentInstanceModel (component) {
         Object.defineProperties(this, {
             component: {
@@ -32,12 +30,15 @@ var createComponentInstanceModelConstructor = function (ASTCreatorService) {
     return ComponentInstanceModel;
 
     function toAST () {
+        var ast = ASTCreatorService;
+
+        var componentNameIdentifier = ast.identifier(this.component.name);
         var requirePathLiteral = ast.literal('../components/' + this.component.name + '.component');
         var requireCallExpression = ast.callExpression(ast.identifier('require'), [requirePathLiteral]);
-        var importDeclarator = ast.variableDeclarator(this.component.nameIdentifier, requireCallExpression);
+        var importDeclarator = ast.variableDeclarator(componentNameIdentifier, requireCallExpression);
         var importDeclaration = ast.variableDeclaration([importDeclarator]);
 
-        var newComponentNewStatement = ast.newExpression(this.component.nameIdentifier);
+        var newComponentNewStatement = ast.newExpression(componentNameIdentifier);
         var newComponentIdentifier = ast.identifier(this.name);
         var newComponentDeclarator = ast.variableDeclarator(newComponentIdentifier, newComponentNewStatement);
         var newComponentDeclaration = ast.variableDeclaration([newComponentDeclarator]);
@@ -45,8 +46,6 @@ var createComponentInstanceModelConstructor = function (ASTCreatorService) {
     }
 };
 
-StepDefinitionEditor.factory('ComponentInstanceModel', function (
-    ASTCreatorService
-) {
+StepDefinitionEditor.factory('ComponentInstanceModel', function (ASTCreatorService) {
     return createComponentInstanceModelConstructor(ASTCreatorService);
 });

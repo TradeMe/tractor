@@ -9,20 +9,24 @@ var StepDefinitionEditor = require('../StepDefinitionEditor');
 // Dependencies:
 require('../../../Core/Services/ASTCreatorService');
 require('./ComponentInstanceModel');
+require('./MockDataInstanceModel');
 
 var createStepDefinitionModelConstructor = function (
     ASTCreatorService,
-    ComponentInstanceModel
+    ComponentInstanceModel,
+    MockDataInstanceModel
 ) {
-    var ast = ASTCreatorService;
-
-    var StepDefinitionModel = function StepDefinitionModel (fileName, availableComponents) {
+    var StepDefinitionModel = function StepDefinitionModel (fileName, availableComponents, availableMockData) {
         this.name = fileName.replace('.step.js', '');
 
         this.availableComponents = availableComponents;
+        this.availableMockData = availableMockData;
 
         this.components = [];
         this.componentInstances = [];
+
+        this.mockData = [];
+        this.mockDataInstances = [];
 
         Object.defineProperty(this, 'ast', {
             get: function () {
@@ -47,14 +51,34 @@ var createStepDefinitionModelConstructor = function (
         this.components.splice(index, 1);
     };
 
-    StepDefinitionModel.prototype.toAST = function () {
-        var moduleBody = _.chain(this.componentInstances)
-        .map(function (component) {
-            return component.ast;
-        })
-        .flatten().value();
+    StepDefinitionModel.prototype.addMock = function (name) {
+        var mockData = _.find(this.availableMockData, function (mockData) {
+            return mockData.name === name;
+        });
+        if (!_.contains(this.mockData, mockData)) {
+            this.mockData.push(mockData);
+            this.mockDataInstances.push(new MockDataInstanceModel(mockData));
+        }
+    };
 
-        moduleBody.push(this.step.ast);
+    StepDefinitionModel.prototype.removeMock = function (mockData) {
+        var index = _.indexOf(this.mockDataInstances, mockData);
+        _.remove(this.mockDataInstances, mockData);
+        this.mockData.splice(index, 1);
+    };
+
+    StepDefinitionModel.prototype.toAST = function () {
+        var ast = ASTCreatorService;
+
+        var components = _.map(this.componentInstances, function (component) {
+            return component.ast;
+        });
+
+        var mockData = _.map(this.mockDataInstances, function (mockData) {
+            return mockData.ast;
+        });
+
+        var moduleBody = _.flatten([components, mockData, this.step.ast]);
 
         var moduleBlockStatement = ast.blockStatement(moduleBody);
         var moduleFunctionExpression = ast.functionExpression(null, null, moduleBlockStatement);
@@ -72,7 +96,8 @@ var createStepDefinitionModelConstructor = function (
 
 StepDefinitionEditor.factory('StepDefinitionModel', function (
     ASTCreatorService,
-    ComponentInstanceModel
+    ComponentInstanceModel,
+    MockDataInstanceModel
 ) {
-    return createStepDefinitionModelConstructor(ASTCreatorService, ComponentInstanceModel);
+    return createStepDefinitionModelConstructor(ASTCreatorService, ComponentInstanceModel, MockDataInstanceModel);
 });

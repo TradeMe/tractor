@@ -1,14 +1,17 @@
 'use strict';
 
 module.exports = {
+    COMPONENTS_EXTENSION: '.component.js',
+    COMPONENTS_DIR: 'components',
+
     FEATURES_EXTENSION: '.feature',
     FEATURES_DIR: 'features',
 
     STEP_DEFINITIONS_EXTENSION: '.step.js',
     STEP_DEFINITIONS_DIR: 'step_definitions',
 
-    COMPONENTS_EXTENSION: '.component.js',
-    COMPONENTS_DIR: 'components',
+    MOCK_DATA_EXTENSION: '.mock.json',
+    MOCK_DATA_DIR: 'mock_data',
 
     SUPPORT_DIR: 'support',
 

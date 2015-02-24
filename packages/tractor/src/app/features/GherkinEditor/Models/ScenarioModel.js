@@ -16,10 +16,6 @@ var createScenarioModelConstructor = function (
     GherkinIndent,
     GherkinNewLine
 ) {
-    var DEFAULTS = {
-        name: 'Scenario'
-    };
-
     var ScenarioModel = function ScenarioModel () {
         var stepDeclarations = [];
         var examples = [];
@@ -37,7 +33,7 @@ var createScenarioModelConstructor = function (
             },
             exampleVariables: {
                 get: function () {
-                    return getExampleVariables(this.stepDeclarations);
+                    return getExampleVariables.call(this, this.stepDeclarations);
                 }
             },
             feature: {
@@ -47,7 +43,7 @@ var createScenarioModelConstructor = function (
             }
         });
 
-        this.name = DEFAULTS.name;
+        this.name = '';
     };
 
     ScenarioModel.prototype.addStepDeclaration = function () {
@@ -64,10 +60,6 @@ var createScenarioModelConstructor = function (
 
     ScenarioModel.prototype.removeExample = function (example) {
         _.remove(this.examples, example);
-    };
-
-    ScenarioModel.prototype.setValidValue = function (property, value) {
-        this[property] = value || DEFAULTS[property];
     };
 
     return ScenarioModel;

@@ -14,12 +14,6 @@ var createArgumentModelConstructor = function (
     ASTCreatorService,
     StringToLiteralService
 ) {
-    var DEFAULTS = {
-        string: 'argument',
-        number: 12345,
-        boolean: true
-    };
-
     var ArgumentModel = function ArgumentModel (method, argument) {
         Object.defineProperties(this, {
             method: {
@@ -27,14 +21,24 @@ var createArgumentModelConstructor = function (
                     return method || null;
                 }
             },
-            optional: {
+            name: {
                 get: function () {
-                    return argument ? argument.optional : false;
+                    return argument ? argument.name : false;
                 }
             },
-            default: {
+            description: {
                 get: function () {
-                    return this.optional ? null : DEFAULTS[this.type];
+                    return argument ? argument.description : false;
+                }
+            },
+            type: {
+                get: function () {
+                    return argument ? argument.type : false;
+                }
+            },
+            required: {
+                get: function () {
+                    return argument ? (argument.required || true) : false;
                 }
             },
             ast: {
@@ -44,11 +48,7 @@ var createArgumentModelConstructor = function (
             }
         });
 
-        if (argument) {
-            this.name = argument.name;
-            this.type = argument.type;
-        }
-        this.value = this.default;
+        this.value = '';
     };
 
     return ArgumentModel;

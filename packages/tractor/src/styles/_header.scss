@@ -1,10 +1,37 @@
 header {
-    background: rgba(66, 210, 83, 1);
-    padding: 0 1.5rem;
+    background: $primary;
+    padding: 0 $large-spacing;
 }
 
-header tractor-action {
-    margin-bottom: 0.5rem;
+header section, header nav {
+    height: 50%;
+}
+
+.control-panel__top-row {
+    padding: $standard-spacing 0;
+}
+
+.app-root-url {
+    display: inline-block;
+    background: $primary-light;
+    padding: 0 $standard-spacing;
+
+    & > * {
+        display: inline-block
+    }
+
+    span {
+        vertical-align: top;
+        line-height: 1.75rem;
+        margin: 0.875rem 0;
+        font-size: 1rem;
+        color: #eee;
+    }
+}
+
+.control-panel__top-row tractor-action {
+    vertical-align: top;
+    margin: 0.75rem 0;
 }
 
 nav > * {
@@ -22,24 +49,24 @@ nav ul li {
 }
 
 nav li a {
-    font-family: "Bebas";
+    font-family: $heading-type;
     font-size: 2.25rem;
     line-height: 4rem;
 
-    padding: 0 1rem;
-    margin-right: 1rem;
-    color: rgba(50, 50, 50, 1);
+    padding: 0 $standard-spacing;
+    margin-right: $standard-spacing;
+    color: $font-dark;
     text-decoration: none;
     display: inline-block;
 }
 
 nav li.active a {
-    background: rgba(66, 230, 103, 1);
-    color: rgba(0, 0, 0, 1);
+    background: $primary-light;
+    color: $font-dark;
 }
 
 nav li a:hover {
-    background: rgba(66, 250, 123, 1);
+    background: $primary-lighter;
 }
 
 nav li a:focus {

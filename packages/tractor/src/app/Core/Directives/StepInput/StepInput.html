@@ -1,0 +1,12 @@
+<form name="stepInput">
+    <label>{{ label }}: </label>
+    <input name="step" type="text" placeholder="e.g. {{ example }}"
+        ng-model="model[property]"
+        ng-model-options="{ allowInvalid: true }"
+        example-name
+        required />
+    <div ng-messages="stepInput.step.$error">
+        <ng-message when="required">Required</ng-message>
+        <ng-message when="validExampleName">That is not a valid example name</ng-message>
+    </div>
+</form>

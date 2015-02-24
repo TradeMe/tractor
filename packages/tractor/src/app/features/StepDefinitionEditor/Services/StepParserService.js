@@ -37,6 +37,7 @@ var StepParserService = function StepParserService (
         _.each(stepFunction.body.body, function (statement, index) {
             var notTasks = false;
             var notExpectations = false;
+            var notPending = false;
 
             try {
                 var tasksDeclaration = _.first(statement.declarations);
@@ -57,7 +58,14 @@ var StepParserService = function StepParserService (
                 notExpectations = true;
             }
 
-            if (notTasks && notExpectations) {
+            try {
+                assert(statement.expression.callee.object.name === 'callback');
+                assert(statement.expression.callee.property.name === 'pending');
+            } catch (e) {
+                notPending = true;
+            }
+
+            if (notTasks && notExpectations && notPending) {
                 console.log(statement, index);
             }
         });
