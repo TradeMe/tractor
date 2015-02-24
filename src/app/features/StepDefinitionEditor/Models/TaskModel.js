@@ -75,12 +75,10 @@ var createTaskModelConstructor = function (
 
     function parseArguments () {
         return _.map(this.action.parameters, function (parameter) {
-            var argument = new ArgumentModel();
-            var argumentName = parameter.name;
-            argumentName = argumentName.replace(/([A-Z])/g, ' $1');
-            argumentName = argumentName.charAt(0).toUpperCase() + argumentName.slice(1).toLowerCase();
-            argument.name = argumentName;
-            return argument;
+            var name = parameter.name;
+            name = name.replace(/([A-Z])/g, ' $1');
+            name = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+            return new ArgumentModel(null, { name: name });
         });
     }
 };

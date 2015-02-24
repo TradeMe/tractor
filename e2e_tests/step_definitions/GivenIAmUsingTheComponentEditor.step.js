@@ -7,7 +7,7 @@ module.exports = function () {
         var tasks = browser.get('http://localhost:3000/index.dev.html').then(function () {
             return function () {
                 httpBackend.when('GET', '/get-component-file-names').respond(mockGetComponentFileNamesData);
-                httpBackend.when('GET', '/open-component-file?name=ExampleComponent').respond(mockOpenComponentFileExampleComponent);
+                httpBackend.when('GET', '/open-component-file?name=ExampleComponent').respond(mockGetComponentFileNamesData);
                 httpBackend.when('GET', /.*/).passThrough();
                 httpBackend.when('POST', /.*/).passThrough();
                 httpBackend.when('DELETE', /.*/).passThrough();
