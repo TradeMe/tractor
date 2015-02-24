@@ -8,11 +8,9 @@ var assert = require('assert');
 var StepDefinitionEditor = require('../StepDefinitionEditor');
 
 // Dependencies:
-require('../Services/MockParserService');
 require('../Models/TaskModel');
 
 var TaskParserService = function TaskParserService (
-    MockParserService,
     TaskModel
 ) {
     return {
@@ -24,8 +22,6 @@ var TaskParserService = function TaskParserService (
 
         var notFirstTask = false;
         var notTask = false;
-        var notBrowserGetTask = false;
-        var notMockSetupTask = false;
         var notValidTask = false;
 
         try {
@@ -53,36 +49,21 @@ var TaskParserService = function TaskParserService (
         }
 
         try {
-            assert(taskCallExpression.callee.object.name === 'browser');
-        } catch (e) {
-            notBrowserGetTask = true;
-        }
-
-        try {
-            assert(taskCallExpression.callee.body.body);
-            MockParserService.parse(step, taskCallExpression.callee.body);
-        } catch (e) {
-            notMockSetupTask = true;
-        }
-
-        try {
-            if (notBrowserGetTask && notMockSetupTask) {
-                task.component = _.find(task.step.stepDefinition.componentInstances, function (componentInstance) {
-                    return taskCallExpression.callee.object.name === componentInstance.name;
-                });
-                task.action = _.find(task.component.component.actions, function (action) {
-                    return taskCallExpression.callee.property.name === action.name;
-                });
-                _.each(taskCallExpression.arguments, function (argument, index) {
-                    task.arguments[index].value = argument.value;
-                });
-                step.tasks.push(task);
-            }
+            task.component = _.find(task.step.stepDefinition.componentInstances, function (componentInstance) {
+                return taskCallExpression.callee.object.name === componentInstance.name;
+            });
+            task.action = _.find(task.component.component.actions, function (action) {
+                return taskCallExpression.callee.property.name === action.name;
+            });
+            _.each(taskCallExpression.arguments, function (argument, index) {
+                task.arguments[index].value = argument.value;
+            });
+            step.tasks.push(task);
         } catch (e) {
             notValidTask = true;
         }
 
-        if (notFirstTask && notTask && notBrowserGetTask && notMockSetupTask && notValidTask) {
+        if (notFirstTask && notTask && notValidTask) {
             console.log(astObject);
         }
     }

@@ -88,7 +88,7 @@ angular.module('tractor', [
     .state('tractor.step-definition-editor', {
         url: 'step-definition-editor',
         /* eslint-disable no-path-concat */
-        template: "<section class=\"file-tree\">\r\n    <h3>Step Definition files:</h3>\r\n    <ul class='file-tree__file-list file-tree__file-list--javascript'>\r\n        <li ng-repeat=\"stepDefinitionFileName in stepDefinitionEditor.stepDefinitionFileNames\"\r\n            ng-click=\"stepDefinitionEditor.openStepDefinitionFile(stepDefinitionFileName)\"\r\n            ng-class=\"{ true: 'active' }[stepDefinitionFileName === stepDefinitionEditor.stepDefinition.name + '.step.js']\"\r\n            class=\"file-tree__file-list-file\">\r\n            <span>{{ stepDefinitionFileName }}</span>\r\n        </li>\r\n    </ul>\r\n</section>\r\n\r\n<section class=\"file-options\" ng-if=\"stepDefinitionEditor.stepDefinition\">\r\n    <h2 class=\"file-options__name\">{{ stepDefinitionEditor.stepDefinition.name }}</h2>\r\n    <div>\r\n        <tractor-action class=\"file-options__save-file\"\r\n            model=\"stepDefinitionEditor\"\r\n            action=\"Save step definition file\">\r\n        </tractor-action>\r\n    </div>\r\n</section>\r\n\r\n<section class=\"file-editor\" ng-if=\"stepDefinitionEditor.stepDefinition\">\r\n    <section ng-if=\"stepDefinitionEditor.canAddComponents\">\r\n        <section class=\"file-editor__container\">\r\n            <h3>Available components:</h3>\r\n            <ul>\r\n                <li ng-repeat=\"component in stepDefinitionEditor.stepDefinition.availableComponents\"\r\n                    ng-if=\"stepDefinitionEditor.stepDefinition.components.indexOf(component) === -1\">\r\n                    <span> {{ component.name }} </spam>\r\n                    <tractor-action\r\n                        model=\"stepDefinitionEditor.stepDefinition\"\r\n                        action=\"Add component\"\r\n                        argument=\"component.name\">\r\n                    </tractor-action>\r\n                </li>\r\n            </ul>\r\n        </section>\r\n\r\n        <section class=\"file-editor__container\"\r\n            ng-if=\"stepDefinitionEditor.hasComponents\">\r\n            <h3>Active components:</h3>\r\n            <ul>\r\n                <li ng-repeat=\"component in stepDefinitionEditor.stepDefinition.componentInstances\">\r\n                    <span> {{ component.component.name }} </span>\r\n                    <tractor-action\r\n                        model=\"stepDefinitionEditor.stepDefinition\"\r\n                        action=\"Remove component\"\r\n                        argument=\"component\"\r\n                        icon=\"remove\">\r\n                    </tractor-action>\r\n                </li>\r\n            </ul>\r\n        </section>\r\n    </section>\r\n\r\n    <section ng-if=\"stepDefinitionEditor.canAddMockData\">\r\n        <section class=\"file-editor__container\">\r\n            <h3>Available mock data:</h3>\r\n            <ul>\r\n                <li ng-repeat=\"mockData in stepDefinitionEditor.stepDefinition.availableMockData\"\r\n                    ng-if=\"stepDefinitionEditor.stepDefinition.mockData.indexOf(mockData) === -1\">\r\n                    <span> {{ mockData.name }} </spam>\r\n                    <tractor-action\r\n                        model=\"stepDefinitionEditor.stepDefinition\"\r\n                        action=\"Add mock\"\r\n                        argument=\"mockData.name\">\r\n                    </tractor-action>\r\n                </li>\r\n            </ul>\r\n        </section>\r\n\r\n        <section class=\"file-editor__container\"\r\n            ng-if=\"stepDefinitionEditor.hasMockData\">\r\n            <h3>Active mock data:</h3>\r\n            <ul>\r\n                <li ng-repeat=\"mockData in stepDefinitionEditor.stepDefinition.mockDataInstances\">\r\n                    <span> {{ mockData.mockData.name }} </span>\r\n                    <tractor-action\r\n                        model=\"stepDefinitionEditor.stepDefinition\"\r\n                        action=\"Remove mock\"\r\n                        argument=\"mock\"\r\n                        icon=\"remove\">\r\n                    </tractor-action>\r\n                </li>\r\n            </ul>\r\n        </section>\r\n    </section>\r\n\r\n    <section class=\"file-editor__container\" ng-if=\"stepDefinitionEditor.showMockDataSection\">\r\n        <h3>Mock Data:</h3>\r\n\r\n        <ul>\r\n            <li class=\"file-editor__list-item\" ng-repeat=\"mock in stepDefinitionEditor.stepDefinition.step.httpBackendSetupTask.mocks\">\r\n                <tractor-action\r\n                    model=\"stepDefinitionEditor.stepDefinition.step.httpBackendSetupTask\"\r\n                    action=\"Remove mock\"\r\n                    argument=\"mock\"\r\n                    icon=\"remove\">\r\n                </tractor-action>\r\n\r\n                <tractor-text-input\r\n                    label=\"URL\"\r\n                    model=\"mock\"\r\n                    example=\"http://example.com\">\r\n                </tractor-text-input>\r\n                <tractor-select\r\n                    label=\"Action\"\r\n                    model=\"mock\">\r\n                </tractor-select>\r\n                <tractor-select\r\n                    label=\"Data\"\r\n                    model=\"mock\"\r\n                    options=\"stepDefinitionEditor.stepDefinition.mockDataInstances\"\r\n                    as=\"name\">\r\n                </tractor-select>\r\n            </li>\r\n        </ul>\r\n\r\n        <tractor-action\r\n            model=\"stepDefinitionEditor.stepDefinition.step.httpBackendSetupTask\"\r\n            action=\"Add mock\">\r\n        </tractor-action>\r\n    </section>\r\n\r\n    <section class=\"file-editor__container\" ng-if=\"stepDefinitionEditor.showTasksSection\">\r\n        <h3>Tasks:</h3>\r\n\r\n        <ul>\r\n            <li class=\"file-editor__list-item\" ng-repeat=\"task in stepDefinitionEditor.stepDefinition.step.tasks\">\r\n                <tractor-action\r\n                    model=\"stepDefinitionEditor.stepDefinition.step\"\r\n                    action=\"Remove task\"\r\n                    argument=\"task\"\r\n                    icon=\"remove\">\r\n                </tractor-action>\r\n\r\n                <tractor-select\r\n                    label=\"Component\"\r\n                    model=\"task\"\r\n                    options=\"stepDefinitionEditor.stepDefinition.componentInstances\"\r\n                    as=\"name\">\r\n                </tractor-select>\r\n                <tractor-select\r\n                    label=\"Action\"\r\n                    model=\"task\"\r\n                    options=\"task.component.component.actions\"\r\n                    as=\"name\">\r\n                </tractor-select>\r\n                <div ng-repeat=\"argument in task.arguments\">\r\n                    <tractor-literal-input\r\n                        name=\"argument.name\"\r\n                        model=\"argument.value\">\r\n                    </tractor-literal-input>\r\n                </div>\r\n            </li>\r\n        </ul>\r\n\r\n        <tractor-action\r\n            model=\"stepDefinitionEditor.stepDefinition.step\"\r\n            action=\"Add task\">\r\n        </tractor-action>\r\n    </section>\r\n\r\n    <section  class=\"file-editor__container\" ng-if=\"stepDefinitionEditor.showExpectationsSection\">\r\n        <h3>Expectations:</h3>\r\n\r\n        <ul>\r\n            <li class=\"file-editor__list-item\" ng-repeat=\"expectation in stepDefinitionEditor.stepDefinition.step.expectations\">\r\n                <tractor-action\r\n                    model=\"stepDefinitionEditor.stepDefinition.step\"\r\n                    action=\"Remove expectation\"\r\n                    argument=\"expectation\"\r\n                    icon=\"remove\">\r\n                </tractor-action>\r\n\r\n                <tractor-select\r\n                    label=\"Component\"\r\n                    model=\"expectation\"\r\n                    options=\"stepDefinitionEditor.stepDefinition.componentInstances\"\r\n                    as=\"name\">\r\n                </tractor-select>\r\n                <tractor-select\r\n                    label=\"Action\"\r\n                    model=\"expectation\"\r\n                    options=\"expectation.component.component.actions\"\r\n                    as=\"name\">\r\n                </tractor-select>\r\n                <tractor-literal-input ng-repeat=\"argument in expectation.arguments\"\r\n                    name=\"argument.name\"\r\n                    model=\"argument.value\"\r\n                    type=\"argument.type\">\r\n                </tractor-literal-input>\r\n                <tractor-literal-input\r\n                    name=\"'Expected result'\"\r\n                    model=\"expectation.expectedResult\">\r\n                </tractor-literal-input>\r\n            </li>\r\n        </ul>\r\n\r\n        <tractor-action\r\n            model=\"stepDefinitionEditor.stepDefinition.step\"\r\n            action=\"Add expectation\">\r\n        </tractor-action>\r\n    </section>\r\n</section>\r\n",
+        template: "<section class=\"file-tree\">\r\n    <h3>Step Definition files:</h3>\r\n    <ul class='file-tree__file-list file-tree__file-list--javascript'>\r\n        <li ng-repeat=\"stepDefinitionFileName in stepDefinitionEditor.stepDefinitionFileNames\"\r\n            ng-click=\"stepDefinitionEditor.openStepDefinitionFile(stepDefinitionFileName)\"\r\n            ng-class=\"{ true: 'active' }[stepDefinitionFileName === stepDefinitionEditor.stepDefinition.name + '.step.js']\"\r\n            class=\"file-tree__file-list-file\">\r\n            <span>{{ stepDefinitionFileName }}</span>\r\n        </li>\r\n    </ul>\r\n</section>\r\n\r\n<section class=\"file-options\" ng-if=\"stepDefinitionEditor.stepDefinition\">\r\n    <h2 class=\"file-options__name\">{{ stepDefinitionEditor.stepDefinition.name }}</h2>\r\n    <div>\r\n        <tractor-action class=\"file-options__save-file\"\r\n            model=\"stepDefinitionEditor\"\r\n            action=\"Save step definition file\">\r\n        </tractor-action>\r\n    </div>\r\n</section>\r\n\r\n<section class=\"file-editor\" ng-if=\"stepDefinitionEditor.stepDefinition\">\r\n    <section ng-if=\"stepDefinitionEditor.canAddComponents\">\r\n        <section class=\"file-editor__container\">\r\n            <h3>Available components:</h3>\r\n            <ul>\r\n                <li ng-repeat=\"component in stepDefinitionEditor.stepDefinition.availableComponents\"\r\n                    ng-if=\"stepDefinitionEditor.stepDefinition.components.indexOf(component) === -1\">\r\n                    <span> {{ component.name }} </spam>\r\n                    <tractor-action\r\n                        model=\"stepDefinitionEditor.stepDefinition\"\r\n                        action=\"Add component\"\r\n                        argument=\"component.name\">\r\n                    </tractor-action>\r\n                </li>\r\n            </ul>\r\n        </section>\r\n\r\n        <section class=\"file-editor__container\"\r\n            ng-if=\"stepDefinitionEditor.hasComponents\">\r\n            <h3>Active components:</h3>\r\n            <ul>\r\n                <li ng-repeat=\"component in stepDefinitionEditor.stepDefinition.componentInstances\">\r\n                    <span> {{ component.component.name }} </span>\r\n                    <tractor-action\r\n                        model=\"stepDefinitionEditor.stepDefinition\"\r\n                        action=\"Remove component\"\r\n                        argument=\"component\"\r\n                        icon=\"remove\">\r\n                    </tractor-action>\r\n                </li>\r\n            </ul>\r\n        </section>\r\n    </section>\r\n\r\n    <section ng-if=\"stepDefinitionEditor.canAddMockData\">\r\n        <section class=\"file-editor__container\">\r\n            <h3>Available mock data:</h3>\r\n            <ul>\r\n                <li ng-repeat=\"mockData in stepDefinitionEditor.stepDefinition.availableMockData\"\r\n                    ng-if=\"stepDefinitionEditor.stepDefinition.mockData.indexOf(mockData) === -1\">\r\n                    <span> {{ mockData.name }} </spam>\r\n                    <tractor-action\r\n                        model=\"stepDefinitionEditor.stepDefinition\"\r\n                        action=\"Add mock\"\r\n                        argument=\"mockData.name\">\r\n                    </tractor-action>\r\n                </li>\r\n            </ul>\r\n        </section>\r\n\r\n        <section class=\"file-editor__container\"\r\n            ng-if=\"stepDefinitionEditor.hasMockData\">\r\n            <h3>Active mock data:</h3>\r\n            <ul>\r\n                <li ng-repeat=\"mockData in stepDefinitionEditor.stepDefinition.mockDataInstances\">\r\n                    <span> {{ mockData.mockData.name }} </span>\r\n                    <tractor-action\r\n                        model=\"stepDefinitionEditor.stepDefinition\"\r\n                        action=\"Remove mock\"\r\n                        argument=\"mock\"\r\n                        icon=\"remove\">\r\n                    </tractor-action>\r\n                </li>\r\n            </ul>\r\n        </section>\r\n    </section>\r\n\r\n    <section class=\"file-editor__container\" ng-if=\"stepDefinitionEditor.showMockDataSection\">\r\n        <h3>Mock Data:</h3>\r\n\r\n        <ul>\r\n            <li class=\"file-editor__list-item\" ng-repeat=\"mock in stepDefinitionEditor.stepDefinition.step.mocks\">\r\n                <tractor-action\r\n                    model=\"stepDefinitionEditor.stepDefinition.step\"\r\n                    action=\"Remove mock\"\r\n                    argument=\"mock\"\r\n                    icon=\"remove\">\r\n                </tractor-action>\r\n\r\n                <tractor-text-input\r\n                    label=\"URL\"\r\n                    model=\"mock\"\r\n                    example=\"http://example.com\">\r\n                </tractor-text-input>\r\n                <tractor-select\r\n                    label=\"Action\"\r\n                    model=\"mock\">\r\n                </tractor-select>\r\n                <tractor-checkbox\r\n                    label=\"Pass through\"\r\n                    model=\"mock.passThrough\">\r\n                </tractor-checkbox>\r\n                <tractor-select\r\n                    ng-if=\"!mock.passThrough\"\r\n                    label=\"Data\"\r\n                    model=\"mock\"\r\n                    options=\"stepDefinitionEditor.stepDefinition.mockDataInstances\"\r\n                    as=\"name\">\r\n                </tractor-select>\r\n            </li>\r\n        </ul>\r\n\r\n        <tractor-action\r\n            model=\"stepDefinitionEditor.stepDefinition.step\"\r\n            action=\"Add mock\">\r\n        </tractor-action>\r\n    </section>\r\n\r\n    <section class=\"file-editor__container\" ng-if=\"stepDefinitionEditor.showTasksSection\">\r\n        <h3>Tasks:</h3>\r\n\r\n        <ul>\r\n            <li class=\"file-editor__list-item\" ng-repeat=\"task in stepDefinitionEditor.stepDefinition.step.tasks\">\r\n                <tractor-action\r\n                    model=\"stepDefinitionEditor.stepDefinition.step\"\r\n                    action=\"Remove task\"\r\n                    argument=\"task\"\r\n                    icon=\"remove\">\r\n                </tractor-action>\r\n\r\n                <tractor-select\r\n                    label=\"Component\"\r\n                    model=\"task\"\r\n                    options=\"stepDefinitionEditor.stepDefinition.componentInstances\"\r\n                    as=\"name\">\r\n                </tractor-select>\r\n                <tractor-select\r\n                    label=\"Action\"\r\n                    model=\"task\"\r\n                    options=\"task.component.component.actions\"\r\n                    as=\"name\">\r\n                </tractor-select>\r\n                <div ng-repeat=\"argument in task.arguments\">\r\n                    <tractor-literal-input\r\n                        name=\"argument.name\"\r\n                        model=\"argument.value\">\r\n                    </tractor-literal-input>\r\n                </div>\r\n            </li>\r\n        </ul>\r\n\r\n        <tractor-action\r\n            model=\"stepDefinitionEditor.stepDefinition.step\"\r\n            action=\"Add task\">\r\n        </tractor-action>\r\n    </section>\r\n\r\n    <section  class=\"file-editor__container\" ng-if=\"stepDefinitionEditor.showExpectationsSection\">\r\n        <h3>Expectations:</h3>\r\n\r\n        <ul>\r\n            <li class=\"file-editor__list-item\" ng-repeat=\"expectation in stepDefinitionEditor.stepDefinition.step.expectations\">\r\n                <tractor-action\r\n                    model=\"stepDefinitionEditor.stepDefinition.step\"\r\n                    action=\"Remove expectation\"\r\n                    argument=\"expectation\"\r\n                    icon=\"remove\">\r\n                </tractor-action>\r\n\r\n                <tractor-select\r\n                    label=\"Component\"\r\n                    model=\"expectation\"\r\n                    options=\"stepDefinitionEditor.stepDefinition.componentInstances\"\r\n                    as=\"name\">\r\n                </tractor-select>\r\n                <tractor-select\r\n                    label=\"Action\"\r\n                    model=\"expectation\"\r\n                    options=\"expectation.component.component.actions\"\r\n                    as=\"name\">\r\n                </tractor-select>\r\n                <tractor-literal-input ng-repeat=\"argument in expectation.arguments\"\r\n                    name=\"argument.name\"\r\n                    model=\"argument.value\"\r\n                    type=\"argument.type\">\r\n                </tractor-literal-input>\r\n                <tractor-literal-input\r\n                    name=\"'Expected result'\"\r\n                    model=\"expectation.expectedResult\">\r\n                </tractor-literal-input>\r\n            </li>\r\n        </ul>\r\n\r\n        <tractor-action\r\n            model=\"stepDefinitionEditor.stepDefinition.step\"\r\n            action=\"Add expectation\">\r\n        </tractor-action>\r\n    </section>\r\n</section>\r\n",
         /* eslint-enable no-path-concat */
         controller: 'StepDefinitionEditorController as stepDefinitionEditor',
         resolve: {
@@ -123,7 +123,7 @@ angular.module('tractor', [
     });
 }]);
 
-},{"./Core/Core":116,"./Core/Services/ConfigService":124,"./Core/Services/ErrorInterceptor":125,"./Core/Services/RealTimeService":126,"./features/ComponentEditor/ComponentEditor":131,"./features/ComponentEditor/ComponentEditorController":132,"./features/ComponentEditor/Services/ComponentFileService":144,"./features/ControlPanel/ControlPanel":150,"./features/ControlPanel/ControlPanelController":151,"./features/GherkinEditor/GherkinEditor":153,"./features/GherkinEditor/GherkinEditorController":154,"./features/GherkinEditor/Services/GherkinFileService":160,"./features/MockDataEditor/MockDataEditorController":165,"./features/MockDataEditor/Services/MockDataFileService":167,"./features/Notifier/Notifier":170,"./features/StepDefinitionEditor/Services/StepDefinitionFileService":183,"./features/StepDefinitionEditor/StepDefinitionEditorController":188,"angular":6,"angular-messages":2,"angular-mocks":3,"angular-sanitize":4,"angular-sortable":67,"angular-ui-router":5,"bluebird":9}],2:[function(require,module,exports){
+},{"./Core/Core":116,"./Core/Services/ConfigService":125,"./Core/Services/ErrorInterceptor":126,"./Core/Services/RealTimeService":127,"./features/ComponentEditor/ComponentEditor":132,"./features/ComponentEditor/ComponentEditorController":133,"./features/ComponentEditor/Services/ComponentFileService":145,"./features/ControlPanel/ControlPanel":151,"./features/ControlPanel/ControlPanelController":152,"./features/GherkinEditor/GherkinEditor":154,"./features/GherkinEditor/GherkinEditorController":155,"./features/GherkinEditor/Services/GherkinFileService":161,"./features/MockDataEditor/MockDataEditorController":166,"./features/MockDataEditor/Services/MockDataFileService":168,"./features/Notifier/Notifier":171,"./features/StepDefinitionEditor/Services/StepDefinitionFileService":182,"./features/StepDefinitionEditor/StepDefinitionEditorController":187,"angular":6,"angular-messages":2,"angular-mocks":3,"angular-sanitize":4,"angular-sortable":67,"angular-ui-router":5,"bluebird":9}],2:[function(require,module,exports){
 /**
  * @license AngularJS v1.3.10
  * (c) 2010-2014 Google, Inc. http://angularjs.org
@@ -55436,6 +55436,7 @@ var Core = angular.module('Core', []);
 module.exports = Core;
 
 require('./Directives/Action/ActionDirective');
+require('./Directives/Checkbox/CheckboxDirective');
 require('./Directives/LiteralInput/LiteralInputDirective');
 require('./Directives/SelectInput/SelectInputDirective');
 require('./Directives/StepInput/StepInputDirective');
@@ -55445,7 +55446,7 @@ require('./Directives/VariableInput/VariableInputDirective');
 require('./Validators/VariableNameValidator');
 require('./Validators/ExampleNameValidator');
 
-},{"./Directives/Action/ActionDirective":117,"./Directives/LiteralInput/LiteralInputDirective":118,"./Directives/SelectInput/SelectInputDirective":119,"./Directives/StepInput/StepInputDirective":120,"./Directives/TextInput/TextInputDirective":121,"./Directives/VariableInput/VariableInputDirective":122,"./Validators/ExampleNameValidator":129,"./Validators/VariableNameValidator":130,"angular":6}],117:[function(require,module,exports){
+},{"./Directives/Action/ActionDirective":117,"./Directives/Checkbox/CheckboxDirective":118,"./Directives/LiteralInput/LiteralInputDirective":119,"./Directives/SelectInput/SelectInputDirective":120,"./Directives/StepInput/StepInputDirective":121,"./Directives/TextInput/TextInputDirective":122,"./Directives/VariableInput/VariableInputDirective":123,"./Validators/ExampleNameValidator":130,"./Validators/VariableNameValidator":131,"angular":6}],117:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -55501,6 +55502,45 @@ var _ = require('lodash');
 // Module:
 var Core = require('../../Core');
 
+var CheckboxDirective = function () {
+    return {
+        restrict: 'E',
+
+        scope: {
+            model: '=',
+            label: '@'
+        },
+
+        /* eslint-disable no-path-concat */
+        template: "<form name=\"checkbox\">\r\n    <label>{{ label }}: </label>\r\n    <input type=\"checkbox\"\r\n        ng-model=\"model\" />\r\n</form>\r\n",
+        /* eslint-enable no-path-concat */
+
+        link: link
+    };
+
+    function link ($scope) {
+        if (_.isUndefined($scope.model)) {
+            throw new Error('The "tractor-checkbox" directive requires a "model" attribute.');
+        }
+
+        if (_.isUndefined($scope.label)) {
+            throw new Error('The "tractor-checkbox" directive requires an "label" attribute.');
+        }
+    }
+};
+
+Core.directive('tractorCheckbox', CheckboxDirective);
+
+},{"../../Core":116,"lodash":66}],119:[function(require,module,exports){
+'use strict';
+
+// Utilities:
+var _ = require('lodash');
+
+
+// Module:
+var Core = require('../../Core');
+
 var LiteralInputDirective = function () {
     return {
         restrict: 'E',
@@ -55533,7 +55573,7 @@ var LiteralInputDirective = function () {
 
 Core.directive('tractorLiteralInput', LiteralInputDirective);
 
-},{"../../Core":116,"lodash":66}],119:[function(require,module,exports){
+},{"../../Core":116,"lodash":66}],120:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -55592,7 +55632,7 @@ var SelectInputDirective = function () {
 
 Core.directive('tractorSelect', SelectInputDirective);
 
-},{"../../Core":116,"change-case":47,"lodash":66}],120:[function(require,module,exports){
+},{"../../Core":116,"change-case":47,"lodash":66}],121:[function(require,module,exports){
 'use strict';
 
 // Utilities
@@ -55637,7 +55677,7 @@ var StepInputDirective = function () {
 
 Core.directive('tractorStepInput', StepInputDirective);
 
-},{"../../Core":116,"change-case":47,"lodash":66}],121:[function(require,module,exports){
+},{"../../Core":116,"change-case":47,"lodash":66}],122:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -55682,7 +55722,7 @@ var TextInputDirective = function () {
 
 Core.directive('tractorTextInput', TextInputDirective);
 
-},{"../../Core":116,"change-case":47,"lodash":66}],122:[function(require,module,exports){
+},{"../../Core":116,"change-case":47,"lodash":66}],123:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -55721,7 +55761,7 @@ var VariableInputDirective = function () {
 
 Core.directive('tractorVariableInput', VariableInputDirective);
 
-},{"../../Core":116,"change-case":47}],123:[function(require,module,exports){
+},{"../../Core":116,"change-case":47}],124:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -55919,7 +55959,7 @@ var ASTCreatorService = function () {
 
 Core.service('ASTCreatorService', ASTCreatorService);
 
-},{"../Core":116,"lodash":66}],124:[function(require,module,exports){
+},{"../Core":116,"lodash":66}],125:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -55940,7 +55980,7 @@ ConfigService.$inject = ['$http'];
 
 Core.service('ConfigService', ConfigService);
 
-},{"../Core":116}],125:[function(require,module,exports){
+},{"../Core":116}],126:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -55970,7 +56010,7 @@ Core.factory('HttpResponseInterceptor', ['NotifierService', function(NotifierSer
     $httpProvider.interceptors.push('HttpResponseInterceptor');
 }]);
 
-},{"../Core":116,"bluebird":9}],126:[function(require,module,exports){
+},{"../Core":116,"bluebird":9}],127:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56006,7 +56046,7 @@ RealTimeService.$inject = ['ConfigService'];
 
 Core.service('RealTimeService', RealTimeService);
 
-},{"../Core":116,"lodash":66,"socket.io-client":68}],127:[function(require,module,exports){
+},{"../Core":116,"lodash":66,"socket.io-client":68}],128:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56057,7 +56097,7 @@ var StringToLiteralService = function () {
 
 Core.service('StringToLiteralService', StringToLiteralService);
 
-},{"../Core":116,"lodash":66}],128:[function(require,module,exports){
+},{"../Core":116,"lodash":66}],129:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -56081,7 +56121,7 @@ ValidationService.$inject = ['$http'];
 
 Core.service('ValidationService', ValidationService);
 
-},{"../Core":116}],129:[function(require,module,exports){
+},{"../Core":116}],130:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56122,7 +56162,7 @@ ExampleNameValidator.$inject = ['ValidationService', 'StepDeclarationModel'];
 
 Core.directive('exampleName', ExampleNameValidator);
 
-},{"../../features/GherkinEditor/Models/StepDeclarationModel":158,"../Core":116,"../Services/ValidationService":128,"bluebird":9,"lodash":66}],130:[function(require,module,exports){
+},{"../../features/GherkinEditor/Models/StepDeclarationModel":159,"../Core":116,"../Services/ValidationService":129,"bluebird":9,"lodash":66}],131:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56194,7 +56234,7 @@ VariableNameValidator.$inject = ['$rootScope', 'ValidationService'];
 
 Core.directive('variableName', VariableNameValidator);
 
-},{"../Core":116,"../Services/ValidationService":128,"change-case":47,"lodash":66}],131:[function(require,module,exports){
+},{"../Core":116,"../Services/ValidationService":129,"change-case":47,"lodash":66}],132:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56207,7 +56247,7 @@ var ComponentEditor = angular.module('ComponentEditor', ['Core']);
 
 module.exports = ComponentEditor;
 
-},{"../../Core/Core":116,"angular":6}],132:[function(require,module,exports){
+},{"../../Core/Core":116,"angular":6}],133:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56275,7 +56315,7 @@ var ComponentEditorController = (function () {
 
 ComponentEditor.controller('ComponentEditorController', ComponentEditorController);
 
-},{"./ComponentEditor":131,"./Models/ComponentModel":136,"./Services/ComponentFileService":144,"./Services/ComponentParserService":145,"lodash":66}],133:[function(require,module,exports){
+},{"./ComponentEditor":132,"./Models/ComponentModel":137,"./Services/ComponentFileService":145,"./Services/ComponentParserService":146,"lodash":66}],134:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56406,7 +56446,7 @@ ComponentEditor.factory('ActionModel', ['ASTCreatorService', 'ParameterModel', '
     return createActionModelConstructor(ASTCreatorService, ParameterModel, InteractionModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":123,"../ComponentEditor":131,"./InteractionModel":139,"./ParameterModel":141,"lodash":66}],134:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":124,"../ComponentEditor":132,"./InteractionModel":140,"./ParameterModel":142,"lodash":66}],135:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56498,7 +56538,7 @@ ComponentEditor.factory('ArgumentModel', ['ASTCreatorService', 'StringToLiteralS
     return createArgumentModelConstructor(ASTCreatorService, StringToLiteralService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":123,"../../../Core/Services/StringToLiteralService":127,"../ComponentEditor":131,"lodash":66}],135:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":124,"../../../Core/Services/StringToLiteralService":128,"../ComponentEditor":132,"lodash":66}],136:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -56561,7 +56601,7 @@ ComponentEditor.factory('BrowserModel', function () {
     return createBrowserModelConstructor();
 });
 
-},{"../ComponentEditor":131}],136:[function(require,module,exports){
+},{"../ComponentEditor":132}],137:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56694,7 +56734,7 @@ ComponentEditor.factory('ComponentModel', ['ASTCreatorService', 'BrowserModel', 
     return createComponentModelConstructor(ASTCreatorService, BrowserModel, ElementModel, ActionModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":123,"../ComponentEditor":131,"./ActionModel":133,"./BrowserModel":135,"./ElementModel":137,"lodash":66}],137:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":124,"../ComponentEditor":132,"./ActionModel":134,"./BrowserModel":136,"./ElementModel":138,"lodash":66}],138:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56877,7 +56917,7 @@ ComponentEditor.factory('ElementModel', ['ASTCreatorService', 'StringToLiteralSe
     return createElementModelConstructor(ASTCreatorService, StringToLiteralService, FilterModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":123,"../../../Core/Services/StringToLiteralService":127,"../ComponentEditor":131,"./FilterModel":138,"lodash":66}],138:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":124,"../../../Core/Services/StringToLiteralService":128,"../ComponentEditor":132,"./FilterModel":139,"lodash":66}],139:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56981,7 +57021,7 @@ ComponentEditor.factory('FilterModel', ['ASTCreatorService', 'StringToLiteralSer
     return createFilterModelConstructor(ASTCreatorService, StringToLiteralService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":123,"../../../Core/Services/StringToLiteralService":127,"../ComponentEditor":131,"lodash":66}],139:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":124,"../../../Core/Services/StringToLiteralService":128,"../ComponentEditor":132,"lodash":66}],140:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57090,7 +57130,7 @@ ComponentEditor.factory('InteractionModel', ['ASTCreatorService', 'MethodModel',
     return createInteractionModelConstructor(ASTCreatorService, MethodModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":123,"../ComponentEditor":131,"./MethodModel":140,"lodash":66}],140:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":124,"../ComponentEditor":132,"./MethodModel":141,"lodash":66}],141:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57147,7 +57187,7 @@ ComponentEditor.factory('MethodModel', ['ArgumentModel', function (ArgumentModel
     return createMethodModelConstructor(ArgumentModel);
 }]);
 
-},{"../ComponentEditor":131,"./ArgumentModel":134,"lodash":66}],141:[function(require,module,exports){
+},{"../ComponentEditor":132,"./ArgumentModel":135,"lodash":66}],142:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57199,7 +57239,7 @@ ComponentEditor.factory('ParameterModel', ['ASTCreatorService', function (ASTCre
     return createParameterModelConstructor(ASTCreatorService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":123,"../ComponentEditor":131,"lodash":66}],142:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":124,"../ComponentEditor":132,"lodash":66}],143:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57267,7 +57307,7 @@ ActionParserService.$inject = ['ParameterParserService', 'InteractionParserServi
 
 ComponentEditor.service('ActionParserService', ActionParserService);
 
-},{"../ComponentEditor":131,"../Models/ActionModel":133,"./InteractionParserService":148,"./ParameterParserService":149,"assert":42,"lodash":66}],143:[function(require,module,exports){
+},{"../ComponentEditor":132,"../Models/ActionModel":134,"./InteractionParserService":149,"./ParameterParserService":150,"assert":42,"lodash":66}],144:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -57292,7 +57332,7 @@ ArgumentParserService.$inject = ['ArgumentModel'];
 
 ComponentEditor.service('ArgumentParserService', ArgumentParserService);
 
-},{"../ComponentEditor":131,"../Models/ArgumentModel":134}],144:[function(require,module,exports){
+},{"../ComponentEditor":132,"../Models/ArgumentModel":135}],145:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57350,7 +57390,7 @@ ComponentFileService.$inject = ['$http', 'ComponentParserService'];
 
 ComponentEditor.service('ComponentFileService', ComponentFileService);
 
-},{"../ComponentEditor":131,"./ComponentParserService":145,"bluebird":9,"lodash":66}],145:[function(require,module,exports){
+},{"../ComponentEditor":132,"./ComponentParserService":146,"bluebird":9,"lodash":66}],146:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57415,7 +57455,7 @@ ComponentParserService.$inject = ['ElementParserService', 'ActionParserService',
 
 ComponentEditor.service('ComponentParserService', ComponentParserService);
 
-},{"../ComponentEditor":131,"../Models/ComponentModel":136,"../Services/ActionParserService":142,"../Services/ElementParserService":146,"assert":42,"lodash":66}],146:[function(require,module,exports){
+},{"../ComponentEditor":132,"../Models/ComponentModel":137,"../Services/ActionParserService":143,"../Services/ElementParserService":147,"assert":42,"lodash":66}],147:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57544,7 +57584,7 @@ ElementParserService.$inject = ['FilterParserService', 'ElementModel'];
 
 ComponentEditor.service('ElementParserService', ElementParserService);
 
-},{"../ComponentEditor":131,"../Models/ElementModel":137,"../Services/FilterParserService":147,"assert":42,"lodash":66}],147:[function(require,module,exports){
+},{"../ComponentEditor":132,"../Models/ElementModel":138,"../Services/FilterParserService":148,"assert":42,"lodash":66}],148:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57626,7 +57666,7 @@ FilterParserService.$inject = ['FilterModel'];
 
 ComponentEditor.service('FilterParserService', FilterParserService);
 
-},{"../ComponentEditor":131,"../Models/FilterModel":138,"assert":42,"lodash":66}],148:[function(require,module,exports){
+},{"../ComponentEditor":132,"../Models/FilterModel":139,"assert":42,"lodash":66}],149:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57740,7 +57780,7 @@ InteractionParserService.$inject = ['ArgumentParserService', 'InteractionModel']
 
 ComponentEditor.service('InteractionParserService', InteractionParserService);
 
-},{"../ComponentEditor":131,"../Models/InteractionModel":139,"./ArgumentParserService":143,"assert":42,"lodash":66}],149:[function(require,module,exports){
+},{"../ComponentEditor":132,"../Models/InteractionModel":140,"./ArgumentParserService":144,"assert":42,"lodash":66}],150:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -57766,7 +57806,7 @@ ParameterParserService.$inject = ['ParameterModel'];
 
 ComponentEditor.service('ParameterParserService', ParameterParserService);
 
-},{"../ComponentEditor":131,"../Models/ParameterModel":141}],150:[function(require,module,exports){
+},{"../ComponentEditor":132,"../Models/ParameterModel":142}],151:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57779,7 +57819,7 @@ var ControlPanel = angular.module('ControlPanel', ['Core']);
 
 module.exports = ControlPanel;
 
-},{"../../Core/Core":116,"angular":6}],151:[function(require,module,exports){
+},{"../../Core/Core":116,"angular":6}],152:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57814,7 +57854,7 @@ var ControlPanelController = (function () {
 
 ControlPanel.controller('ControlPanelController', ControlPanelController);
 
-},{"./ControlPanel":150,"./Services/RunnerService":152,"lodash":66}],152:[function(require,module,exports){
+},{"./ControlPanel":151,"./Services/RunnerService":153,"lodash":66}],153:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -57850,7 +57890,7 @@ RunnerService.$inject = ['NotifierService', 'RealTimeService'];
 
 ControlPanel.service('RunnerService', RunnerService);
 
-},{"../../Notifier/Services/NotifierService":171,"../ControlPanel":150}],153:[function(require,module,exports){
+},{"../../Notifier/Services/NotifierService":172,"../ControlPanel":151}],154:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57866,7 +57906,7 @@ GherkinEditor.constant('GherkinNewLine', '%%NEWLINE%%');
 
 module.exports = GherkinEditor;
 
-},{"../../Core/Core":116,"angular":6}],154:[function(require,module,exports){
+},{"../../Core/Core":116,"angular":6}],155:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57935,7 +57975,7 @@ var GherkinEditorController = (function () {
 
 GherkinEditor.controller('GherkinEditorController', GherkinEditorController);
 
-},{"./GherkinEditor":153,"./Models/GherkinModel":156,"./Services/GherkinFileService":160,"./Services/GherkinParserService":161,"change-case":47,"lodash":66}],155:[function(require,module,exports){
+},{"./GherkinEditor":154,"./Models/GherkinModel":157,"./Services/GherkinFileService":161,"./Services/GherkinParserService":162,"change-case":47,"lodash":66}],156:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57995,7 +58035,7 @@ GherkinEditor.factory('ExampleModel', ['StringToLiteralService', 'GherkinIndent'
     return createExampleModelConstructor(StringToLiteralService, GherkinIndent);
 }]);
 
-},{"../../../Core/Services/StringToLiteralService":127,"../GherkinEditor":153,"lodash":66}],156:[function(require,module,exports){
+},{"../../../Core/Services/StringToLiteralService":128,"../GherkinEditor":154,"lodash":66}],157:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58068,7 +58108,7 @@ GherkinEditor.factory('GherkinModel', ['ScenarioModel', 'GherkinIndent', 'Gherki
     return createGherkinModelConstructor(ScenarioModel, GherkinIndent, GherkinNewLine);
 }]);
 
-},{"../GherkinEditor":153,"./ScenarioModel":157,"lodash":66}],157:[function(require,module,exports){
+},{"../GherkinEditor":154,"./ScenarioModel":158,"lodash":66}],158:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58175,7 +58215,7 @@ GherkinEditor.factory('ScenarioModel', ['StepDeclarationModel', 'ExampleModel', 
     return createScenarioModelConstructor(StepDeclarationModel, ExampleModel, GherkinIndent, GherkinNewLine);
 }]);
 
-},{"../GherkinEditor":153,"./ExampleModel":155,"./StepDeclarationModel":158,"lodash":66}],158:[function(require,module,exports){
+},{"../GherkinEditor":154,"./ExampleModel":156,"./StepDeclarationModel":159,"lodash":66}],159:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58218,7 +58258,7 @@ GherkinEditor.factory('StepDeclarationModel', function () {
     return createStepDeclarationModelConstructor();
 });
 
-},{"../GherkinEditor":153,"lodash":66}],159:[function(require,module,exports){
+},{"../GherkinEditor":154,"lodash":66}],160:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58249,7 +58289,7 @@ ExampleParserService.$inject = ['ExampleModel'];
 
 GherkinEditor.service('ExampleParserService', ExampleParserService);
 
-},{"../GherkinEditor":153,"../Models/ExampleModel":155,"lodash":66}],160:[function(require,module,exports){
+},{"../GherkinEditor":154,"../Models/ExampleModel":156,"lodash":66}],161:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -58282,7 +58322,7 @@ GherkinFileService.$inject = ['$http'];
 
 GherkinEditor.service('GherkinFileService', GherkinFileService);
 
-},{"../GherkinEditor":153}],161:[function(require,module,exports){
+},{"../GherkinEditor":154}],162:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58336,7 +58376,7 @@ GherkinParserService.$inject = ['ScenarioParserService', 'GherkinModel'];
 
 GherkinEditor.service('GherkinParserService', GherkinParserService);
 
-},{"../GherkinEditor":153,"../Models/GherkinModel":156,"./ScenarioParserService":162,"assert":42,"lodash":66}],162:[function(require,module,exports){
+},{"../GherkinEditor":154,"../Models/GherkinModel":157,"./ScenarioParserService":163,"assert":42,"lodash":66}],163:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58405,7 +58445,7 @@ ScenarioParserService.$inject = ['StepDeclarationParserService', 'ExampleParserS
 
 GherkinEditor.service('ScenarioParserService', ScenarioParserService);
 
-},{"../GherkinEditor":153,"../Models/ScenarioModel":157,"./ExampleParserService":159,"./StepDeclarationParserService":163,"assert":42,"lodash":66}],163:[function(require,module,exports){
+},{"../GherkinEditor":154,"../Models/ScenarioModel":158,"./ExampleParserService":160,"./StepDeclarationParserService":164,"assert":42,"lodash":66}],164:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -58432,7 +58472,7 @@ StepDeclarationParserService.$inject = ['StepDeclarationModel'];
 
 GherkinEditor.service('StepDeclarationParserService', StepDeclarationParserService);
 
-},{"../GherkinEditor":153,"../Models/StepDeclarationModel":158}],164:[function(require,module,exports){
+},{"../GherkinEditor":154,"../Models/StepDeclarationModel":159}],165:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58445,7 +58485,7 @@ var MockDataEditor = angular.module('MockDataEditor', ['Core']);
 
 module.exports = MockDataEditor;
 
-},{"../../Core/Core":116,"angular":6}],165:[function(require,module,exports){
+},{"../../Core/Core":116,"angular":6}],166:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58493,7 +58533,7 @@ var MockDataEditorController = (function () {
 
 MockDataEditor.controller('MockDataEditorController', MockDataEditorController);
 
-},{"./MockDataEditor":164,"./Models/MockDataModel":166,"./Services/MockDataFileService":167,"./Services/MockDataParserService":168,"lodash":66}],166:[function(require,module,exports){
+},{"./MockDataEditor":165,"./Models/MockDataModel":167,"./Services/MockDataFileService":168,"./Services/MockDataParserService":169,"lodash":66}],167:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -58530,7 +58570,7 @@ MockDataEditor.factory('MockDataModel', function () {
     return createMockDataModelConstructor();
 });
 
-},{"../MockDataEditor":164}],167:[function(require,module,exports){
+},{"../MockDataEditor":165}],168:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58588,7 +58628,7 @@ MockDataFileService.$inject = ['$http', 'MockDataParserService'];
 
 MockDataEditor.service('MockDataFileService', MockDataFileService);
 
-},{"../MockDataEditor":164,"./MockDataParserService":168,"bluebird":9,"lodash":66}],168:[function(require,module,exports){
+},{"../MockDataEditor":165,"./MockDataParserService":169,"bluebird":9,"lodash":66}],169:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -58612,7 +58652,7 @@ MockDataParserService.$inject = ['MockDataModel'];
 
 MockDataEditor.service('MockDataParserService', MockDataParserService);
 
-},{"../MockDataEditor":164,"../Models/MockDataModel":166}],169:[function(require,module,exports){
+},{"../MockDataEditor":165,"../Models/MockDataModel":167}],170:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58642,7 +58682,7 @@ NotifierDirective.$inject = ['NotifierService'];
 
 Notifier.directive('tractorNotifier', NotifierDirective);
 
-},{"../Notifier":170,"../Services/NotifierService":171}],170:[function(require,module,exports){
+},{"../Notifier":171,"../Services/NotifierService":172}],171:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58654,7 +58694,7 @@ module.exports = Notifier;
 
 require('./Directives/NotifierDirective');
 
-},{"./Directives/NotifierDirective":169,"angular":6}],171:[function(require,module,exports){
+},{"./Directives/NotifierDirective":170,"angular":6}],172:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58717,57 +58757,7 @@ NotifierService.$inject = ['$timeout'];
 
 Notifier.service('NotifierService', NotifierService);
 
-},{"../Notifier":170,"lodash":66}],172:[function(require,module,exports){
-'use strict';
-
-// Utilities;
-var _ = require('lodash');
-
-// Module:
-var StepDefinitionEditor = require('../StepDefinitionEditor');
-
-// Dependencies:
-require('../../../Core/Services/ASTCreatorService');
-require('../../../Core/Services/ConfigService');
-
-var createBrowserGetTaskModelConstructor = function (
-    ASTCreatorService,
-    ConfigService
-) {
-    var BrowserGetTaskModel = function BrowserGetTaskModel () {
-        Object.defineProperties(this, {
-            ast: {
-                get: function () {
-                    return toAST.call(this);
-                }
-            }
-        });
-
-        ConfigService.getConfig()
-        .then(_.bind(function (config) {
-            this.appRootUrl = config.appRootUrl;
-        }, this));
-    };
-
-    return BrowserGetTaskModel;
-
-    function toAST () {
-        var ast = ASTCreatorService;
-
-        var browserGetTaskMemberExpression = ast.memberExpression(ast.identifier('browser'), ast.identifier('get'));
-        var browserGetTaskCallExpression = ast.callExpression(browserGetTaskMemberExpression, [ast.literal(this.appRootUrl)]);
-        return ast.expressionStatement(browserGetTaskCallExpression);
-    }
-};
-
-StepDefinitionEditor.factory('BrowserGetTaskModel', ['ASTCreatorService', 'ConfigService', function (
-    ASTCreatorService,
-    ConfigService
-) {
-    return createBrowserGetTaskModelConstructor(ASTCreatorService, ConfigService);
-}]);
-
-},{"../../../Core/Services/ASTCreatorService":123,"../../../Core/Services/ConfigService":124,"../StepDefinitionEditor":187,"lodash":66}],173:[function(require,module,exports){
+},{"../Notifier":171,"lodash":66}],173:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -58820,7 +58810,7 @@ StepDefinitionEditor.factory('ComponentInstanceModel', ['ASTCreatorService', fun
     return createComponentInstanceModelConstructor(ASTCreatorService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":123,"../StepDefinitionEditor":187}],174:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":124,"../StepDefinitionEditor":186}],174:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58887,7 +58877,6 @@ var createExpectationModelConstructor = function (
     return ExpectationModel;
 
     function toAST () {
-        debugger;
         var ast = ASTCreatorService;
 
         var argumentValues = _.map(this.arguments, function (argument) {
@@ -58927,92 +58916,7 @@ StepDefinitionEditor.factory('ExpectationModel', ['ASTCreatorService', 'StringTo
     return createExpectationModelConstructor(ASTCreatorService, StringToLiteralService, ArgumentModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":123,"../../../Core/Services/StringToLiteralService":127,"../../ComponentEditor/Models/ArgumentModel":134,"../StepDefinitionEditor":187,"lodash":66}],175:[function(require,module,exports){
-'use strict';
-
-// Utilities;
-var _ = require('lodash');
-
-// Module:
-var StepDefinitionEditor = require('../StepDefinitionEditor');
-
-// Dependencies:
-require('../../../Core/Services/ASTCreatorService');
-require('./MockModel');
-
-var createHttpBackendSetupTaskModelConstructor = function (
-    ASTCreatorService,
-    MockModel
-) {
-    var HttpBackendSetupTaskModel = function HttpBackendSetupTaskModel (step) {
-        var mocks = [];
-
-        Object.defineProperties(this, {
-            step: {
-                get: function () {
-                    return step;
-                }
-            },
-            mocks: {
-                get: function () {
-                    return mocks;
-                }
-            },
-            ast: {
-                get: function () {
-                    return toAST.call(this);
-                }
-            }
-        });
-    };
-
-    HttpBackendSetupTaskModel.prototype.addMock = function () {
-        this.mocks.push(new MockModel(this));
-    };
-
-    HttpBackendSetupTaskModel.prototype.removeMock = function (mock) {
-        _.remove(this.mocks, mock);
-    };
-
-    return HttpBackendSetupTaskModel;
-
-    function toAST () {
-        var ast = ASTCreatorService;
-
-        var httpBackendIdentifier = ast.identifier('httpBackend');
-        var mockASTs = _.map(this.mocks, function (mock) {
-            return mock.ast;
-        });
-
-        _.each(MockModel.prototype.actions, function (action) {
-            var httpBackendWhenMemberExpression = ast.memberExpression(httpBackendIdentifier, ast.identifier('when'));
-            var httpBackendWhenCallExpression = ast.callExpression(httpBackendWhenMemberExpression, [ast.literal(action), ast.literal(/.*/)]);
-            var httpBackendPassThroughMemberExpression = ast.memberExpression(httpBackendWhenCallExpression, ast.identifier('passThrough'));
-            var httpBackendPassThroughCallExpression = ast.callExpression(httpBackendPassThroughMemberExpression);
-            mockASTs.push(ast.expressionStatement(httpBackendPassThroughCallExpression));
-        });
-
-        var httpBackendFlushMemberExpression = ast.memberExpression(httpBackendIdentifier, ast.identifier('flush'));
-        var httpBackendFlushCallExpression = ast.callExpression(httpBackendFlushMemberExpression);
-        var returnHttpBackendFlush = ast.returnStatement(httpBackendFlushCallExpression);
-        mockASTs.push(returnHttpBackendFlush);
-
-        var setupBlockExpression = ast.blockStatement(mockASTs);
-        var setupFunctionExpression = ast.functionExpression(null, null, setupBlockExpression);
-        var setupCallExpression = ast.callExpression(setupFunctionExpression);
-
-        return ast.expressionStatement(setupCallExpression);
-    }
-};
-
-StepDefinitionEditor.factory('HttpBackendSetupTaskModel', ['ASTCreatorService', 'MockModel', function (
-    ASTCreatorService,
-    MockModel
-) {
-    return createHttpBackendSetupTaskModelConstructor(ASTCreatorService, MockModel);
-}]);
-
-},{"../../../Core/Services/ASTCreatorService":123,"../StepDefinitionEditor":187,"./MockModel":177,"lodash":66}],176:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":124,"../../../Core/Services/StringToLiteralService":128,"../../ComponentEditor/Models/ArgumentModel":135,"../StepDefinitionEditor":186,"lodash":66}],175:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -59065,7 +58969,7 @@ StepDefinitionEditor.factory('MockDataInstanceModel', ['ASTCreatorService', func
     return createMockDataInstanceModelConstructor(ASTCreatorService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":123,"../StepDefinitionEditor":187}],177:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":124,"../StepDefinitionEditor":186}],176:[function(require,module,exports){
 'use strict';
 
 // Utilities;
@@ -59080,11 +58984,11 @@ require('../../../Core/Services/ASTCreatorService');
 var createMockModelConstructor = function (
     ASTCreatorService
 ) {
-    var MockModel = function TaskModel (task) {
+    var MockModel = function TaskModel (step) {
         Object.defineProperties(this, {
-            task: {
+            step: {
                 get: function () {
-                    return task;
+                    return step;
                 }
             },
             ast: {
@@ -59096,7 +59000,8 @@ var createMockModelConstructor = function (
 
         this.url = '';
         this.action = _.first(this.actions);
-        this.data = _.first(this.task.step.stepDefinition.mockDataInstances);
+        this.data = _.first(this.step.stepDefinition.mockDataInstances);
+        this.passThrough = false;
     };
 
     MockModel.prototype.actions = ['GET', 'POST', 'DELETE', 'PUT', 'HEAD', 'PATCH'];
@@ -59106,12 +59011,20 @@ var createMockModelConstructor = function (
     function toAST () {
         var ast = ASTCreatorService;
 
-        var httpBackendWhenMemberExpression = ast.memberExpression(ast.identifier('httpBackend'), ast.identifier('when'));
+        var httpBackendOnLoadMemberExpression = ast.memberExpression(ast.identifier('httpBackend'), ast.identifier('onLoad'));
+        var httpBackendWhenMemberExpression = ast.memberExpression(httpBackendOnLoadMemberExpression, ast.identifier('when'));
         var httpBackendWhenCallExpression = ast.callExpression(httpBackendWhenMemberExpression, [ast.literal(this.action), ast.literal(this.url)]);
-        var httpBackendRespondMemberExpression = ast.memberExpression(httpBackendWhenCallExpression, ast.identifier('respond'));
-        var httpBackendRespondCallExpression = ast.callExpression(httpBackendRespondMemberExpression, [ast.identifier(this.data.name)]);
 
-        return ast.expressionStatement(httpBackendRespondCallExpression);
+        var httpBackendCallExpression;
+        if (this.passThrough) {
+            var httpBackendRespondMemberExpression = ast.memberExpression(httpBackendWhenCallExpression, ast.identifier('passThrough'));
+            httpBackendCallExpression = ast.callExpression(httpBackendRespondMemberExpression);
+        } else {
+            var httpBackendRespondMemberExpression = ast.memberExpression(httpBackendWhenCallExpression, ast.identifier('respond'));
+            httpBackendCallExpression = ast.callExpression(httpBackendRespondMemberExpression, [ast.identifier(this.data.name)]);
+        }
+
+        return ast.expressionStatement(httpBackendCallExpression);
     }
 };
 
@@ -59121,7 +59034,7 @@ StepDefinitionEditor.factory('MockModel', ['ASTCreatorService', function (
     return createMockModelConstructor(ASTCreatorService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":123,"../StepDefinitionEditor":187,"lodash":66}],178:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":124,"../StepDefinitionEditor":186,"lodash":66}],177:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -59226,7 +59139,7 @@ StepDefinitionEditor.factory('StepDefinitionModel', ['ASTCreatorService', 'Compo
     return createStepDefinitionModelConstructor(ASTCreatorService, ComponentInstanceModel, MockDataInstanceModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":123,"../StepDefinitionEditor":187,"./ComponentInstanceModel":173,"./MockDataInstanceModel":176,"lodash":66}],179:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":124,"../StepDefinitionEditor":186,"./ComponentInstanceModel":173,"./MockDataInstanceModel":175,"lodash":66}],178:[function(require,module,exports){
 'use strict';
 
 // Utilities;
@@ -59239,22 +59152,18 @@ var StepDefinitionEditor = require('../StepDefinitionEditor');
 require('../../../Core/Services/ASTCreatorService');
 require('./ExpectationModel');
 require('./TaskModel');
-require('./BrowserGetTaskModel');
-require('./HttpBackendSetupTaskModel');
+require('./MockModel');
 
 var createStepModelConstructor = function (
     ASTCreatorService,
     ExpectationModel,
     TaskModel,
-    BrowserGetTaskModel,
-    HttpBackendSetupTaskModel
+    MockModel
 ) {
     var StepModel = function StepModel (stepDefinition) {
         var expectations = [];
         var tasks = [];
-
-        var browserGetTask = new BrowserGetTaskModel();
-        var httpBackendSetupTask = new HttpBackendSetupTaskModel(this);
+        var mocks = [];
 
         Object.defineProperties(this, {
             stepDefinition: {
@@ -59272,14 +59181,9 @@ var createStepModelConstructor = function (
                     return tasks;
                 }
             },
-            browserGetTask: {
+            mocks: {
                 get: function () {
-                    return browserGetTask;
-                }
-            },
-            httpBackendSetupTask: {
-                get: function () {
-                    return httpBackendSetupTask;
+                    return mocks;
                 }
             },
             ast: {
@@ -59308,6 +59212,14 @@ var createStepModelConstructor = function (
         _.remove(this.tasks, task);
     };
 
+    StepModel.prototype.addMock = function () {
+        this.mocks.push(new MockModel(this));
+    };
+
+    StepModel.prototype.removeMock = function (mock) {
+        _.remove(this.mocks, mock);
+    };
+
     return StepModel;
 
     function toAST () {
@@ -59322,59 +59234,57 @@ var createStepModelConstructor = function (
         });
         var promisesArrayExpression = ast.arrayExpression(expectationASTs);
 
+        var mockASTs = _.map(this.mocks, function (mock) {
+            return mock.ast;
+        });
+
         var taskASTs = _.map(this.tasks, function (task) {
             return task.ast;
         });
 
-        if (this.type === 'Given') {
-            taskASTs.unshift(this.httpBackendSetupTask.ast);
-            taskASTs.unshift(this.browserGetTask.ast);
-        }
-
-        var firstTask = _.first(taskASTs);
-
-        _.each(_.rest(taskASTs), function (taskAST) {
-            var thenIdentifier = ast.identifier('then');
-            var promiseThenMemberExpression = ast.memberExpression(firstTask.expression, thenIdentifier);
-
-            var taskReturnStatement = ast.returnStatement(taskAST.expression);
-            var taskBlockStatement = ast.blockStatement([taskReturnStatement]);
-            var taskFunctionExpression = ast.functionExpression(null, null, taskBlockStatement);
-
-            firstTask.expression = ast.callExpression(promiseThenMemberExpression, [taskFunctionExpression]);
-        }, this);
-
-        if (firstTask) {
-            var tasksIdentifier = ast.identifier('tasks');
-            var tasksDeclarator = ast.variableDeclarator(tasksIdentifier, firstTask.expression);
-            var tasksDeclaration = ast.variableDeclaration([tasksDeclarator]);
-            promisesArrayExpression.elements.push(tasksIdentifier);
-        }
-
-        var promiseAllMemberExpression = ast.memberExpression(ast.identifier('Promise'), ast.identifier('all'));
-        var promiseAllCallExpression = ast.callExpression(promiseAllMemberExpression, [promisesArrayExpression]);
-        var promisesMemberExpression = ast.memberExpression(promiseAllCallExpression, ast.identifier('then'));
-
         var doneCallExpression;
-        if (this.tasks.length || this.expectations.length || this.type === 'Given') {
+        if (this.tasks.length || this.expectations.length || this.mocks.length) {
             doneCallExpression = ast.callExpression(stepDoneIdentifier);
         } else {
             var pendingMemberExpression = ast.memberExpression(stepDoneIdentifier, ast.identifier('pending'));
             doneCallExpression = ast.callExpression(pendingMemberExpression);
         }
-
         var doneExpressionStatement = ast.expressionStatement(doneCallExpression);
-        var doneBlockStatement = ast.blockStatement([doneExpressionStatement]);
-        var doneFunctionExpression = ast.functionExpression(null, null, doneBlockStatement);
-        var doneCallExpression = ast.callExpression(promisesMemberExpression, [doneFunctionExpression]);
-        var expectationsExpression = ast.expressionStatement(doneCallExpression);
 
-        var blockBody = [];
-        if (tasksDeclaration) {
+        var blockBody = mockASTs || [];
+
+        if (this.tasks.length) {
+            var firstTask = _.first(taskASTs);
+            var tasksDeclaration;
+            _.each(_.rest(taskASTs), function (taskAST) {
+                var thenIdentifier = ast.identifier('then');
+                var promiseThenMemberExpression = ast.memberExpression(firstTask.expression, thenIdentifier);
+
+                var taskReturnStatement = ast.returnStatement(taskAST.expression);
+                var taskBlockStatement = ast.blockStatement([taskReturnStatement]);
+                var taskFunctionExpression = ast.functionExpression(null, null, taskBlockStatement);
+
+                firstTask.expression = ast.callExpression(promiseThenMemberExpression, [taskFunctionExpression]);
+            }, this);
+
+            var tasksIdentifier = ast.identifier('tasks');
+            var tasksDeclarator = ast.variableDeclarator(tasksIdentifier, firstTask.expression);
+            tasksDeclaration = ast.variableDeclaration([tasksDeclarator]);
+            promisesArrayExpression.elements.push(tasksIdentifier);
             blockBody.push(tasksDeclaration);
         }
-        if (expectationsExpression) {
+
+        if (this.tasks.length || this.expectations.length) {
+            var promiseAllMemberExpression = ast.memberExpression(ast.identifier('Promise'), ast.identifier('all'));
+            var promiseAllCallExpression = ast.callExpression(promiseAllMemberExpression, [promisesArrayExpression]);
+            var promisesMemberExpression = ast.memberExpression(promiseAllCallExpression, ast.identifier('then'));
+            var promisesDoneBlockStatement = ast.blockStatement([doneExpressionStatement]);
+            var promisesDoneFunctionExpression = ast.functionExpression(null, null, promisesDoneBlockStatement);
+            var promisesDoneCallExpression = ast.callExpression(promisesMemberExpression, [promisesDoneFunctionExpression]);
+            var expectationsExpression = ast.expressionStatement(promisesDoneCallExpression);
             blockBody.push(expectationsExpression);
+        } else {
+            blockBody.push(doneExpressionStatement);
         }
 
         var stepBlockStatement = ast.blockStatement(blockBody);
@@ -59384,17 +59294,16 @@ var createStepModelConstructor = function (
     }
 };
 
-StepDefinitionEditor.factory('StepModel', ['ASTCreatorService', 'ExpectationModel', 'TaskModel', 'BrowserGetTaskModel', 'HttpBackendSetupTaskModel', function (
+StepDefinitionEditor.factory('StepModel', ['ASTCreatorService', 'ExpectationModel', 'TaskModel', 'MockModel', function (
     ASTCreatorService,
     ExpectationModel,
     TaskModel,
-    BrowserGetTaskModel,
-    HttpBackendSetupTaskModel
+    MockModel
 ) {
-    return createStepModelConstructor(ASTCreatorService, ExpectationModel, TaskModel, BrowserGetTaskModel, HttpBackendSetupTaskModel);
+    return createStepModelConstructor(ASTCreatorService, ExpectationModel, TaskModel, MockModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":123,"../StepDefinitionEditor":187,"./BrowserGetTaskModel":172,"./ExpectationModel":174,"./HttpBackendSetupTaskModel":175,"./TaskModel":180,"lodash":66}],180:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":124,"../StepDefinitionEditor":186,"./ExpectationModel":174,"./MockModel":176,"./TaskModel":179,"lodash":66}],179:[function(require,module,exports){
 'use strict';
 
 // Utilities;
@@ -59487,7 +59396,7 @@ StepDefinitionEditor.factory('TaskModel', ['ASTCreatorService', 'ArgumentModel',
     return createTaskModelConstructor(ASTCreatorService, ArgumentModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":123,"../../ComponentEditor/Models/ArgumentModel":134,"../StepDefinitionEditor":187,"lodash":66}],181:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":124,"../../ComponentEditor/Models/ArgumentModel":135,"../StepDefinitionEditor":186,"lodash":66}],180:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -59532,7 +59441,7 @@ ExpectationParserService.$inject = ['ExpectationModel'];
 
 StepDefinitionEditor.service('ExpectationParserService', ExpectationParserService);
 
-},{"../Models/ExpectationModel":174,"../StepDefinitionEditor":187,"lodash":66}],182:[function(require,module,exports){
+},{"../Models/ExpectationModel":174,"../StepDefinitionEditor":186,"lodash":66}],181:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -59552,35 +59461,28 @@ var MockParserService = function MockParserService (
         parse: parse
     };
 
-    function parse (step, astObject) {
-        _.each(astObject.body, function (statement, index) {
-            try {
-                var mock = new MockModel(step.httpBackendSetupTask);
+    function parse (step, statement) {
+        var mock = new MockModel(step);
 
-                var action = _.first(statement.expression.callee.object.arguments).value;
-                var url = _.last(statement.expression.callee.object.arguments).value;
-                assert(_.contains(mock.actions, action));
+        var action = _.first(statement.expression.callee.object.arguments).value;
+        var url = _.last(statement.expression.callee.object.arguments).value;
+        assert(_.contains(mock.actions, action));
 
-                mock.action = action;
-                mock.url = url;
+        mock.action = action;
+        mock.url = url;
 
-                var instanceName = _.first(statement.expression.arguments).name;
-                step.data = _.find(step.stepDefinition.mockDataInstances, function (mockDataInstance) {
-                    return mockDataInstance.name === instanceName;
-                });
-
-                step.httpBackendSetupTask.mocks.push(mock);
-            } catch (e) {
-                console.log(statement, index);
-            }
+        var instanceName = _.first(statement.expression.arguments).name;
+        mock.data = _.find(step.stepDefinition.mockDataInstances, function (mockDataInstance) {
+            return mockDataInstance.name === instanceName;
         });
+        return mock;
     }
 };
 MockParserService.$inject = ['MockModel'];
 
 StepDefinitionEditor.service('MockParserService', MockParserService);
 
-},{"../Models/MockModel":177,"../StepDefinitionEditor":187,"assert":42,"lodash":66}],183:[function(require,module,exports){
+},{"../Models/MockModel":176,"../StepDefinitionEditor":186,"assert":42,"lodash":66}],182:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -59612,7 +59514,7 @@ StepDefinitionFileService.$inject = ['$http'];
 
 StepDefinitionEditor.service('StepDefinitionFileService', StepDefinitionFileService);
 
-},{"../StepDefinitionEditor":187}],184:[function(require,module,exports){
+},{"../StepDefinitionEditor":186}],183:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -59705,7 +59607,7 @@ StepDefinitionParserService.$inject = ['StepParserService', 'StepDefinitionModel
 
 StepDefinitionEditor.service('StepDefinitionParserService', StepDefinitionParserService);
 
-},{"../Models/StepDefinitionModel":178,"../Services/StepParserService":185,"../StepDefinitionEditor":187,"assert":42,"change-case":47,"lodash":66}],185:[function(require,module,exports){
+},{"../Models/StepDefinitionModel":177,"../Services/StepParserService":184,"../StepDefinitionEditor":186,"assert":42,"change-case":47,"lodash":66}],184:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -59716,11 +59618,13 @@ var assert = require('assert');
 var StepDefinitionEditor = require('../StepDefinitionEditor');
 
 // Dependencies:
+require('../Services/MockParserService');
 require('../Services/TaskParserService');
 require('../Services/ExpectationParserService');
 require('../Models/StepModel');
 
 var StepParserService = function StepParserService (
+    MockParserService,
     TaskParserService,
     ExpectationParserService,
     StepModel
@@ -59743,9 +59647,20 @@ var StepParserService = function StepParserService (
         var stepFunction = _.last(astObject.expression.arguments);
 
         _.each(stepFunction.body.body, function (statement, index) {
+            var notMock = false;
             var notTasks = false;
             var notExpectations = false;
             var notPending = false;
+
+            try {
+                var httpBackendOnloadMemberExpression = statement.expression.callee.object.callee.object;
+                assert(httpBackendOnloadMemberExpression.object.name === 'httpBackend');
+                assert(httpBackendOnloadMemberExpression.property.name === 'onLoad');
+                var mock = MockParserService.parse(step, statement);
+                step.mocks.push(mock);
+            } catch (e) {
+                notMock = true;
+            }
 
             try {
                 var tasksDeclaration = _.first(statement.declarations);
@@ -59773,7 +59688,7 @@ var StepParserService = function StepParserService (
                 notPending = true;
             }
 
-            if (notTasks && notExpectations && notPending) {
+            if (notMock && notTasks && notExpectations && notPending) {
                 console.log(statement, index);
             }
         });
@@ -59781,11 +59696,11 @@ var StepParserService = function StepParserService (
         return step;
     }
 };
-StepParserService.$inject = ['TaskParserService', 'ExpectationParserService', 'StepModel'];
+StepParserService.$inject = ['MockParserService', 'TaskParserService', 'ExpectationParserService', 'StepModel'];
 
 StepDefinitionEditor.service('StepParserService', StepParserService);
 
-},{"../Models/StepModel":179,"../Services/ExpectationParserService":181,"../Services/TaskParserService":186,"../StepDefinitionEditor":187,"assert":42,"lodash":66}],186:[function(require,module,exports){
+},{"../Models/StepModel":178,"../Services/ExpectationParserService":180,"../Services/MockParserService":181,"../Services/TaskParserService":185,"../StepDefinitionEditor":186,"assert":42,"lodash":66}],185:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -59796,11 +59711,9 @@ var assert = require('assert');
 var StepDefinitionEditor = require('../StepDefinitionEditor');
 
 // Dependencies:
-require('../Services/MockParserService');
 require('../Models/TaskModel');
 
 var TaskParserService = function TaskParserService (
-    MockParserService,
     TaskModel
 ) {
     return {
@@ -59812,8 +59725,6 @@ var TaskParserService = function TaskParserService (
 
         var notFirstTask = false;
         var notTask = false;
-        var notBrowserGetTask = false;
-        var notMockSetupTask = false;
         var notValidTask = false;
 
         try {
@@ -59841,45 +59752,30 @@ var TaskParserService = function TaskParserService (
         }
 
         try {
-            assert(taskCallExpression.callee.object.name === 'browser');
-        } catch (e) {
-            notBrowserGetTask = true;
-        }
-
-        try {
-            assert(taskCallExpression.callee.body.body);
-            MockParserService.parse(step, taskCallExpression.callee.body);
-        } catch (e) {
-            notMockSetupTask = true;
-        }
-
-        try {
-            if (notBrowserGetTask && notMockSetupTask) {
-                task.component = _.find(task.step.stepDefinition.componentInstances, function (componentInstance) {
-                    return taskCallExpression.callee.object.name === componentInstance.name;
-                });
-                task.action = _.find(task.component.component.actions, function (action) {
-                    return taskCallExpression.callee.property.name === action.name;
-                });
-                _.each(taskCallExpression.arguments, function (argument, index) {
-                    task.arguments[index].value = argument.value;
-                });
-                step.tasks.push(task);
-            }
+            task.component = _.find(task.step.stepDefinition.componentInstances, function (componentInstance) {
+                return taskCallExpression.callee.object.name === componentInstance.name;
+            });
+            task.action = _.find(task.component.component.actions, function (action) {
+                return taskCallExpression.callee.property.name === action.name;
+            });
+            _.each(taskCallExpression.arguments, function (argument, index) {
+                task.arguments[index].value = argument.value;
+            });
+            step.tasks.push(task);
         } catch (e) {
             notValidTask = true;
         }
 
-        if (notFirstTask && notTask && notBrowserGetTask && notMockSetupTask && notValidTask) {
+        if (notFirstTask && notTask && notValidTask) {
             console.log(astObject);
         }
     }
 };
-TaskParserService.$inject = ['MockParserService', 'TaskModel'];
+TaskParserService.$inject = ['TaskModel'];
 
 StepDefinitionEditor.service('TaskParserService', TaskParserService);
 
-},{"../Models/TaskModel":180,"../Services/MockParserService":182,"../StepDefinitionEditor":187,"assert":42,"lodash":66}],187:[function(require,module,exports){
+},{"../Models/TaskModel":179,"../StepDefinitionEditor":186,"assert":42,"lodash":66}],186:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -59892,7 +59788,7 @@ var StepDefinitionEditor = angular.module('StepDefinitionEditor', ['Core']);
 
 module.exports = StepDefinitionEditor;
 
-},{"../../Core/Core":116,"angular":6}],188:[function(require,module,exports){
+},{"../../Core/Core":116,"angular":6}],187:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -59923,7 +59819,8 @@ var StepDefinitionEditorController = (function () {
         Object.defineProperties(this, {
             canAddComponents: {
                 get: function () {
-                    return this.availableComponents.length > 0;
+                    return this.availableComponents.length > 0
+                        && this.stepDefinition.step.type !== 'Given';
                 }
             },
             canAddMockData: {
@@ -59949,7 +59846,7 @@ var StepDefinitionEditorController = (function () {
             showTasksSection: {
                 get: function () {
                     return this.hasComponents
-                        && this.stepDefinition.step.type !== 'Then';
+                        && this.stepDefinition.step.type === 'When';
                 }
             },
             showExpectationsSection: {
@@ -59960,8 +59857,7 @@ var StepDefinitionEditorController = (function () {
             },
             showMockDataSection: {
                 get: function () {
-                    return this.hasComponents
-                        && this.hasMockData
+                    return this.hasMockData
                         && this.stepDefinition.step.type === 'Given';
                 }
             }
@@ -59987,4 +59883,4 @@ var StepDefinitionEditorController = (function () {
 
 StepDefinitionEditor.controller('StepDefinitionEditorController', StepDefinitionEditorController);
 
-},{"./Services/StepDefinitionFileService":183,"./Services/StepDefinitionParserService":184,"./StepDefinitionEditor":187,"lodash":66}]},{},[1]);
+},{"./Services/StepDefinitionFileService":182,"./Services/StepDefinitionParserService":183,"./StepDefinitionEditor":186,"lodash":66}]},{},[1]);

@@ -61,10 +61,12 @@
 .file-editor tractor-text-input,
 .file-editor tractor-literal-input,
 .file-editor tractor-select,
-.file-editor tractor-step-input {
+.file-editor tractor-step-input,
+.file-editor tractor-checkbox {
     font-size: 0;
     display: inline-block;
     margin-bottom: 1rem;
+    vertical-align: top;
 }
 
 .file-editor section > tractor-action:last-child {

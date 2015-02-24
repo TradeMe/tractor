@@ -2,7 +2,8 @@ tractor-variable-input,
 tractor-text-input,
 tractor-literal-input,
 tractor-select,
-tractor-step-input {
+tractor-step-input,
+tractor-checkbox {
     line-height: 3.5rem;
     height: 3.5rem;
     display: block;
@@ -21,7 +22,8 @@ tractor-variable-input label,
 tractor-text-input label,
 tractor-literal-input label,
 tractor-select label,
-tractor-step-input label {
+tractor-step-input label,
+tractor-checkbox label {
     font-family: "CodePro";
     font-size: 1rem;
     line-height: 1rem;
@@ -33,7 +35,8 @@ tractor-variable-input input,
 tractor-text-input input,
 tractor-literal-input input,
 tractor-select select,
-tractor-step-input input {
+tractor-step-input input,
+tractor-checkbox input {
     font-family: "Corbert";
     display: block;
     border: none;

@@ -8,11 +8,13 @@ var assert = require('assert');
 var StepDefinitionEditor = require('../StepDefinitionEditor');
 
 // Dependencies:
+require('../Services/MockParserService');
 require('../Services/TaskParserService');
 require('../Services/ExpectationParserService');
 require('../Models/StepModel');
 
 var StepParserService = function StepParserService (
+    MockParserService,
     TaskParserService,
     ExpectationParserService,
     StepModel
@@ -35,9 +37,20 @@ var StepParserService = function StepParserService (
         var stepFunction = _.last(astObject.expression.arguments);
 
         _.each(stepFunction.body.body, function (statement, index) {
+            var notMock = false;
             var notTasks = false;
             var notExpectations = false;
             var notPending = false;
+
+            try {
+                var httpBackendOnloadMemberExpression = statement.expression.callee.object.callee.object;
+                assert(httpBackendOnloadMemberExpression.object.name === 'httpBackend');
+                assert(httpBackendOnloadMemberExpression.property.name === 'onLoad');
+                var mock = MockParserService.parse(step, statement);
+                step.mocks.push(mock);
+            } catch (e) {
+                notMock = true;
+            }
 
             try {
                 var tasksDeclaration = _.first(statement.declarations);
@@ -65,7 +78,7 @@ var StepParserService = function StepParserService (
                 notPending = true;
             }
 
-            if (notTasks && notExpectations && notPending) {
+            if (notMock && notTasks && notExpectations && notPending) {
                 console.log(statement, index);
             }
         });

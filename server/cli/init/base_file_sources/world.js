@@ -23,5 +23,10 @@ module.exports = function () {
         return callback(w);
     };
 
+    this.After(function(callback) {
+        httpBackend.onLoad.reset();
+        callback();
+    });
+
     return this.World;
 };
