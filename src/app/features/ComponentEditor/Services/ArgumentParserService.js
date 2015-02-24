@@ -13,7 +13,6 @@ var ArgumentParserService = function ArgumentParserService (ArgumentModel) {
 
     function parse (method, argument, astObject) {
         argument = new ArgumentModel(method, argument);
-
         argument.value = astObject.name || astObject.value;
 
         return argument;

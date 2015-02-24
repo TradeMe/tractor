@@ -1,4 +1,20 @@
-<div>
-    <label>{{ name }}: </label>
-    <input ng-model="model" ng-blur="blur(model)" placeholder="{{ optional ? '(optional)' : '' }}" required type="text"/>
-</div>
+<form name="literalInput">
+    <label ng-if="description" title="{{ description }}">{{ name }}: </label>
+    <label ng-if="!description">{{ name }}: </label>
+
+    <input name="literalRequired" type="text"
+        ng-show="required"
+        ng-model="model"
+        ng-model-options="{ allowInvalid: true }"
+        placeholder="({{ type ? type + ' - ' : '' }}required)"
+        required />
+    <input name="literalOptional" type="text"
+        ng-hide="required"
+        ng-model="model"
+        ng-model-options="{ allowInvalid: true }"
+        placeholder="({{ type ? type + ' - ' : '' }}optional)" />
+
+    <div ng-messages="literalInput.literalRequired.$error">
+        <ng-message when="required">Required</ng-message>
+    </div>
+</form>

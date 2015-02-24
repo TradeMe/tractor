@@ -1,38 +1,42 @@
 .file-tree {
-    background: rgba(250, 250, 250, 1);
+    background: $background-lightest;
 
     width: 20%;
-    padding-left: 1rem;
+    padding-left: $standard-spacing;
 }
 
-.file-tree__file-list {
-    margin-top: -0.5rem;
+.file-tree__file-list li {
+    list-style: none;
+    margin-left: -$large-spacing;
+    padding-left: $large-spacing;
+    background-repeat: no-repeat;
+    background-position: 0 50%;
 }
 
-.file-tree__file-list--javascript {
-    list-style-image: url('./images/js.png');
+.file-tree__file-list--javascript li {
+    background-image: url('./images/js.png');
 }
 
-.file-tree__file-list--gherkin {
-    list-style-image: url('./images/gherkin.png');
+.file-tree__file-list--gherkin li {
+    background-image: url('./images/gherkin.png');
+}
+
+.file-tree__file-list--json li {
+    background-image: url('./images/json.png');
 }
 
 .file-tree__file-list-file {
-    margin-bottom: 0.25rem;
-    font-family: 'Corbert';
+    line-height: 1.5rem;
+    font-family: $body-type;
     cursor: pointer;
-}
+    transition: transform 0.5s;
 
-.file-tree__file-list-file span {
-   transition: transform 0.5s;
-}
+    &:hover, &.active {
+        font-weight: bolder;
+    }
 
-.file-tree__file-list-file:hover, .file-tree__file-list-file.active {
-    font-weight: bolder;
-    letter-spacing: -0.5px;
-}
-
-.file-tree__file-list-file.active span {
-    transform: translateX(20px);
-    display: block;
+    &.active {
+        display: block;
+        transform: translateX(20px);
+    }
 }

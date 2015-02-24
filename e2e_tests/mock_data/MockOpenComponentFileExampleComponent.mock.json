@@ -1,0 +1,81 @@
+{
+    "contents": "module.exports = function () {\n    var ExampleComponent = function ExampleComponent() { };\n    return ExampleComponent;\n}();\n",
+    "ast": {
+        "type": "Program",
+        "body": [
+            {
+                "type": "ExpressionStatement",
+                "expression": {
+                    "type": "AssignmentExpression",
+                    "operator": "=",
+                    "left": {
+                        "type": "MemberExpression",
+                        "computed": false,
+                        "object": {
+                            "type": "Identifier",
+                            "name": "module"
+                        },
+                        "property": {
+                            "type": "Identifier",
+                            "name": "exports"
+                        }
+                    },
+                    "right": {
+                        "type": "CallExpression",
+                        "callee": {
+                            "type": "FunctionExpression",
+                            "id": null,
+                            "params": [],
+                            "defaults": [],
+                            "body": {
+                                "type": "BlockStatement",
+                                "body": [
+                                    {
+                                        "type": "VariableDeclaration",
+                                        "declarations": [
+                                            {
+                                                "type": "VariableDeclarator",
+                                                "id": {
+                                                    "type": "Identifier",
+                                                    "name": "ExampleComponent"
+                                                },
+                                                "init": {
+                                                    "type": "FunctionExpression",
+                                                    "id": {
+                                                        "type": "Identifier",
+                                                        "name": "ExampleComponent"
+                                                    },
+                                                    "params": [],
+                                                    "defaults": [],
+                                                    "body": {
+                                                        "type": "BlockStatement",
+                                                        "body": []
+                                                    },
+                                                    "rest": null,
+                                                    "generator": false,
+                                                    "expression": false
+                                                }
+                                            }
+                                        ],
+                                        "kind": "var"
+                                    },
+                                    {
+                                        "type": "ReturnStatement",
+                                        "argument": {
+                                            "type": "Identifier",
+                                            "name": "ExampleComponent"
+                                        }
+                                    }
+                                ]
+                            },
+                            "rest": null,
+                            "generator": false,
+                            "expression": false
+                        },
+                        "arguments": []
+                    }
+                }
+            }
+        ]
+    }
+}

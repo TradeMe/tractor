@@ -10,25 +10,11 @@ var ComponentEditor = require('../ComponentEditor');
 require('../../../Core/Services/ASTCreatorService');
 
 var createParameterModelConstructor = function (ASTCreatorService) {
-    var ast = ASTCreatorService;
-
-    var DEFAULTS = {
-        name: 'parameter'
-    };
-
     var ParameterModel = function ParameterModel (action) {
         Object.defineProperties(this, {
             action: {
                 get: function () {
                     return action;
-                }
-            },
-            name: {
-                get: function () {
-                    return this.nameIdentifier.name;
-                },
-                set: function (name) {
-                    this.nameIdentifier.name = name;
                 }
             },
             ast: {
@@ -38,33 +24,24 @@ var createParameterModelConstructor = function (ASTCreatorService) {
             }
         });
 
-        this.nameIdentifier = ast.identifier(this.validateName(this, DEFAULTS.name));
+        this.name = '';
     };
 
-    ParameterModel.prototype.validateName = function (parameter, name) {
-        var nameToCheck = name;
-        var names = getAllNames.call(this, parameter);
-        var count = 1;
-        while (_.contains(names, nameToCheck)) {
-            nameToCheck = name + count;
-            count += 1;
-        }
-        return nameToCheck;
+    ParameterModel.prototype.getAllVariableNames = function () {
+        var currentParameter = this;
+        return _.chain(this.action.parameters)
+        .reject(function (parameter) {
+            return parameter === currentParameter;
+        }).map(function (object) {
+            return object.name;
+        }).compact().value();
     };
 
     return ParameterModel;
 
-    function getAllNames (reject) {
-        return _.chain(this.action.parameters)
-        .reject(function (object) {
-            return object === reject;
-        }).map(function (object) {
-            return object.name;
-        }).value();
-    }
-
     function toAST () {
-        return this.nameIdentifier;
+        var ast = ASTCreatorService;
+        return ast.identifier(this.name);
     }
 };
 

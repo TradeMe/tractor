@@ -10,6 +10,13 @@ tractor-step-input {
     margin-bottom: 1px;
 }
 
+tractor-variable-input,
+tractor-text-input,
+tractor-literal-input,
+tractor-step-input {
+    width: 40%;
+}
+
 tractor-variable-input label,
 tractor-text-input label,
 tractor-literal-input label,
@@ -42,10 +49,41 @@ tractor-step-input input {
 tractor-variable-input input:active,
 tractor-text-input input:active,
 tractor-literal-input input:active,
+tractor-select select:active,
 tractor-step-input input:active,
 tractor-variable-input input:focus,
 tractor-text-input input:focus,
 tractor-literal-input input:focus,
+tractor-select select:focus,
 tractor-step-input input:focus {
+    outline: none;
+}
+
+tractor-variable-input [ng-messages],
+tractor-text-input [ng-messages],
+tractor-literal-input [ng-messages],
+tractor-select [ng-messages],
+tractor-step-input [ng-messages] {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    float: left;
+}
+
+.ng-invalid input.ng-touched, .ng-invalid input.ng-untouched.ng-dirty,  {
+    border-bottom: 1px solid rgba(255, 50, 50, 0.9);
+
+    & + [ng-messages] > ng-message {
+        color: rgba(255, 50, 50, 0.9);
+    }
+}
+
+label[title] {
+    cursor: help;
+}
+
+textarea {
+    font-family: "ubuntu";
+    width: 100%;
+    height: 30rem;
     outline: none;
 }

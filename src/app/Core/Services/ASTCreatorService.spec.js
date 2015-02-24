@@ -196,7 +196,7 @@ describe('ASTCreatorService.js:', function () {
     describe('ASTCreatorService.newExpression:', function () {
         it('should create a new `newExpression` object:', function () {
             var callee = {};
-            var args = {}
+            var args = {};
             var newExpression = ASTCreatorService.newExpression(callee, args);
             expect(newExpression.type).to.equal('NewExpression');
             expect(newExpression.callee).to.equal(callee);
@@ -212,7 +212,7 @@ describe('ASTCreatorService.js:', function () {
     describe('ASTCreatorService.callExpression:', function () {
         it('should create a new `callExpression` object:', function () {
             var callee = {};
-            var args = {}
+            var args = {};
             var callExpression = ASTCreatorService.callExpression(callee, args);
             expect(callExpression.type).to.equal('CallExpression');
             expect(callExpression.callee).to.equal(callee);
@@ -256,7 +256,7 @@ describe('ASTCreatorService.js:', function () {
         });
 
         it('should have the `raw` value if the literal is a RegExp:', function () {
-            var value = /RegExp/
+            var value = /RegExp/;
             var literal = ASTCreatorService.literal(value);
             expect(literal.raw).to.equal('/RegExp/');
         });

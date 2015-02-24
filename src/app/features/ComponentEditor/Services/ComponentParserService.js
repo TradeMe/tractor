@@ -25,49 +25,36 @@ var ComponentParserService = function ComponentParserService (
         var component = new ComponentModel();
 
         var componentModuleExpressionStatement = _.first(astObject.body);
-        var moduleBody = componentModuleExpressionStatement.expression.right.callee.body.body;
+        var moduleBlockStatement = componentModuleExpressionStatement.expression.right.callee.body;
 
-        _.each(moduleBody, function (statement, index) {
-            var notElement = false;
-            var notAction = false;
-            var notReturn = false;
+        _.each(moduleBlockStatement.body, function (statement, index) {
+            try {
+                component.name = statement.argument.name;
+                return;
+            } catch (e) { }
 
             try {
                 var constructorDeclarator = _.first(statement.declarations);
-                component.name = constructorDeclarator.id.name;
-                var constructorBody = constructorDeclarator.init.body.body;
-                _.each(constructorBody, function (statement) {
+                var constructorBlockStatament = constructorDeclarator.init.body;
+                _.each(constructorBlockStatament.body, function (statement) {
                     var domElement = ElementParserService.parse(component, statement);
                     assert(domElement);
                     component.elements.push(domElement);
                     component.domElements.push(domElement);
                 });
-            } catch (e) {
-                notElement = true;
-            }
+                return;
+            } catch (e) { }
 
             try {
-                if (notElement) {
-                    var action = ActionParserService.parse(component, statement);
-                    assert(action);
-                    component.actions.push(action);
-                }
-            } catch (e) {
-                notAction = true;
-            }
+                var action = ActionParserService.parse(component, statement);
+                assert(action);
+                component.actions.push(action);
+                return;
+            } catch (e) { }
 
-            try {
-                if (notAction) {
-                    assert(statement.argument.name === component.name);
-                }
-            } catch (e) {
-                notReturn = true;
-            }
-
-            if (notElement && notAction && notReturn) {
-                console.log(statement, index);
-            }
+            console.warn('Invalid Component:', statement, index);
         });
+
         return component;
     }
 };

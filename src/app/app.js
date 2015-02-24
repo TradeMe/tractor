@@ -7,6 +7,7 @@ var Promise = require('bluebird');
 // Dependencies:
 var angular = require('angular');
 require('angular-sanitize');
+require('angular-messages');
 require('angular-mocks');
 require('angular-ui-router');
 require('angular-sortable');
@@ -25,6 +26,9 @@ require('./features/GherkinEditor/Services/GherkinFileService');
 require('./features/StepDefinitionEditor/Services/StepDefinitionFileService');
 require('./features/StepDefinitionEditor/StepDefinitionEditorController');
 
+require('./features/MockDataEditor/Services/MockDataFileService');
+require('./features/MockDataEditor/MockDataEditorController');
+
 require('./Core/Core');
 require('./Core/Services/ConfigService');
 require('./Core/Services/ErrorInterceptor');
@@ -34,14 +38,16 @@ require('./features/Notifier/Notifier');
 
 // Application Init:
 angular.module('tractor', [
-    'ui.router',
-    'ui.sortable',
-    'Core',
-    'Notifier',
-    'ControlPanel',
-    'ComponentEditor',
-    'GherkinEditor',
-    'StepDefinitionEditor'
+  'ngMessages',
+  'ui.router',
+  'ui.sortable',
+  'Core',
+  'Notifier',
+  'ControlPanel',
+  'ComponentEditor',
+  'GherkinEditor',
+  'StepDefinitionEditor',
+  'MockDataEditor'
 ])
 .config(function ($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise('/');
@@ -90,6 +96,21 @@ angular.module('tractor', [
             },
             components: function (ComponentFileService) {
                 return ComponentFileService.getAllComponents();
+            },
+            mockData: function (MockDataFileService) {
+                return MockDataFileService.getAllMockData();
+            }
+        }
+    })
+    .state('tractor.mock-data-editor', {
+        url: 'mock-data-editor',
+        /* eslint-disable no-path-concat */
+        template: fs.readFileSync(__dirname + '/features/MockDataEditor/MockDataEditor.html', 'utf8'),
+        /* eslint-enable no-path-concat */
+        controller: 'MockDataEditorController as mockDataEditor',
+        resolve: {
+            mockDataFileNames: function (MockDataFileService) {
+                return MockDataFileService.getMockDataFileNames();
             }
         }
     });

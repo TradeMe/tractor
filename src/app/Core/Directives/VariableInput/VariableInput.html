@@ -1,0 +1,15 @@
+<form name="variableInput">
+    <label>{{ label }}: </label>
+    <input name="variable" type="text" placeholder="e.g. {{ example }}"
+        ng-model="model[property]"
+        ng-model-options="{ allowInvalid: true }"
+        ng-blur="blur(model[property])"
+        required
+        variable-name
+        variable-name-model="model" />
+    <div ng-messages="variableInput.variable.$error">
+        <ng-message when="required">Required</ng-message>
+        <ng-message when="validVariableName">That is not a valid name</ng-message>
+        <ng-message when="uniqueVariableName">There is something else with the same name</ng-message>
+    </div>
+</form>

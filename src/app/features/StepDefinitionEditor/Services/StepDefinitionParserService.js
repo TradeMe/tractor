@@ -8,6 +8,7 @@ var assert = require('assert');
 var StepDefinitionEditor = require('../StepDefinitionEditor');
 
 // Dependencies:
+var pascal = require('change-case').pascal;
 require('../Services/StepParserService');
 require('../Models/StepDefinitionModel');
 
@@ -19,8 +20,8 @@ var StepDefinitionParserService = function StepDefinitionParserService (
         parse: parse
     };
 
-    function parse (astObject, fileName, availableComponents) {
-        var stepDefinition = new StepDefinitionModel(fileName, availableComponents);
+    function parse (astObject, fileName, availableComponents, availableMockData) {
+        var stepDefinition = new StepDefinitionModel(fileName, availableComponents, availableMockData);
 
         var module = _.first(astObject.body);
         var moduleBody = module.expression.right.body.body;
@@ -29,6 +30,7 @@ var StepDefinitionParserService = function StepDefinitionParserService (
             var notStepDefinition = false;
             var notComponentConstructorRequire = false;
             var notComponent = false;
+            var notMockDataRequire = false;
 
             try {
                 var step = StepParserService.parse(stepDefinition, statement);
@@ -45,6 +47,8 @@ var StepDefinitionParserService = function StepDefinitionParserService (
                 if (notStepDefinition) {
                     declarator = _.first(statement.declarations);
                     name = declarator.init.callee.name;
+                    var path = _.first(declarator.init.arguments);
+                    assert(path.value.match(/\.component$/));
                     assert(name === 'require');
                 }
             } catch (e) {
@@ -62,7 +66,19 @@ var StepDefinitionParserService = function StepDefinitionParserService (
                 notComponent = true;
             }
 
-            if (notStepDefinition && notComponentConstructorRequire && notComponent) {
+            try {
+                if (notComponent) {
+                    declarator = _.first(statement.declarations);
+                    name = declarator.id.name;
+                    var path = _.first(declarator.init.arguments);
+                    assert(path.value.match(/\.mock.json$/));
+                    stepDefinition.addMock(pascal(name));
+                }
+            } catch (e) {
+                notComponentConstructorRequire = true;
+            }
+
+            if (notStepDefinition && notComponentConstructorRequire && notComponent && notMockDataRequire) {
                 console.log(statement, index);
             }
         });

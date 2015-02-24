@@ -1,4 +1,10 @@
-<div>
+<form name="textInput">
     <label>{{ label }}: </label>
-    <input ng-model="model[property]" ng-blur="blur(model[property])" required type="text"/>
-</div>
+    <input name="text" type="text" placeholder="e.g. {{ example }}"
+        ng-model="model[property]"
+        ng-model-options="{ allowInvalid: true }"
+        required />
+    <div ng-messages="textInput.text.$error">
+        <ng-message when="required">Required</ng-message>
+    </div>
+</form>

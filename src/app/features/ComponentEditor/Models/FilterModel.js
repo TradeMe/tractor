@@ -14,11 +14,6 @@ var createFilterModelConstructor = function (
     ASTCreatorService,
     StringToLiteralService
 ) {
-    var DEFAULTS = {
-        type: 'model',
-        locator: 'locator'
-    };
-
     var FilterModel = function FilterModel (element) {
         Object.defineProperties(this, {
             element: {
@@ -50,15 +45,11 @@ var createFilterModelConstructor = function (
             }
         });
 
-        this.type = DEFAULTS.type;
-        this.locator = DEFAULTS.locator;
+        this.type = _.first(this.types);
+        this.locator = '';
     };
 
     FilterModel.prototype.types = ['model', 'binding', 'text', 'css', 'options', 'repeater'];
-
-    FilterModel.prototype.setValidValue = function (property, value) {
-        this[property] = value || DEFAULTS[property];
-    };
 
     return FilterModel;
 

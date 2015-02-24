@@ -3,28 +3,14 @@
 // Module:
 var ComponentEditor = require('../ComponentEditor');
 
-// Dependencies:
-require('../../../Core/Services/ASTCreatorService');
-
-var createBrowserModelConstructor = function (ASTCreatorService) {
-    var ast = ASTCreatorService;
-
+var createBrowserModelConstructor = function () {
     var BrowserModel = function BrowserModel () {
-        Object.defineProperty(this, 'name', {
-            get: function () {
-                return this.nameIdentifier.name;
-            },
-            set: function (name) {
-                this.nameIdentifier.name = name;
-            }
-        });
-
-        this.nameIdentifier = ast.identifier('browser');
+        this.name = 'browser';
     };
 
     BrowserModel.prototype.methods = [{
         name: 'get',
-        description: 'Navigate to the given destination and loads mock modules before Angular. Assumes that the page being loaded uses Angular. If you need to access a page which does not have Angular on load, use the wrapped webdriver directly.',
+        description: 'Navigate to the given destination and loads mock modules before Angular.',
         arguments: [{
             name: 'destination',
             description: 'Destination URL',
@@ -33,16 +19,16 @@ var createBrowserModelConstructor = function (ASTCreatorService) {
             name: 'timeout',
             description: 'Number of milliseconds to wait for Angular to start.',
             type: 'number',
-            optional: true
+            required: false
         }]
     }, {
         name: 'refresh',
-        description: 'Makes a full reload of the current page and loads mock modules before Angular. Assumes that the page being loaded uses Angular. If you need to access a page which does not have Angular on load, use the wrapped webdriver directly.',
+        description: 'Makes a full reload of the current page and loads mock modules before Angular. Assumes that the page being loaded uses Angular.',
         arguments: [{
             name: 'timeout',
             description: 'Number of seconds to wait for Angular to start.',
             type: 'number',
-            optional: true
+            required: false
         }]
     }, {
         name: 'setLocation',
@@ -70,6 +56,6 @@ var createBrowserModelConstructor = function (ASTCreatorService) {
     return BrowserModel;
 };
 
-ComponentEditor.factory('BrowserModel', function (ASTCreatorService) {
-    return createBrowserModelConstructor(ASTCreatorService);
+ComponentEditor.factory('BrowserModel', function () {
+    return createBrowserModelConstructor();
 });

@@ -16,12 +16,6 @@ var createElementModelConstructor = function (
     StringToLiteralService,
     FilterModel
 ) {
-    var ast = ASTCreatorService;
-
-    var DEFAULTS = {
-        name: 'element'
-    };
-
     var ElementModel = function ElementModel (component) {
         var filters = [];
 
@@ -31,13 +25,11 @@ var createElementModelConstructor = function (
                     return component;
                 }
             },
-
             filters: {
                 get: function () {
                     return filters;
                 }
             },
-
             ast: {
                 get: function () {
                     return toAST.call(this);
@@ -45,7 +37,7 @@ var createElementModelConstructor = function (
             }
         });
 
-        this.name = DEFAULTS.name;
+        this.name = '';
     };
 
     ElementModel.prototype.addFilter = function () {
@@ -56,8 +48,8 @@ var createElementModelConstructor = function (
         _.remove(this.filters, filter);
     };
 
-    ElementModel.prototype.validateName = function (element, name) {
-        this.name = this.component.validateName(element, name ? name : DEFAULTS.name);
+    ElementModel.prototype.getAllVariableNames = function () {
+        return this.component.getAllVariableNames(this);
     };
 
     ElementModel.prototype.methods = [{
@@ -134,6 +126,8 @@ var createElementModelConstructor = function (
     return ElementModel;
 
     function toAST () {
+        var ast = ASTCreatorService;
+
         var elementCallExpression;
         var elementIdentifier = ast.identifier('element');
         var allIdentifier = ast.identifier('all');

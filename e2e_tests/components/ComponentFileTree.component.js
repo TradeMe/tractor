@@ -10,7 +10,7 @@ module.exports = function () {
     };
     ComponentFileTree.prototype.getTitleText = function () {
         var self = this;
-        return self.title.getText();
+        return self.title.getInnerHtml();
     };
     ComponentFileTree.prototype.openExampleComponent = function () {
         var self = this;

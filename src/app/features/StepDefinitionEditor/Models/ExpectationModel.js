@@ -16,12 +16,6 @@ var createExpectationModelConstructor = function (
     StringToLiteralService,
     Argument
 ) {
-    var ast = ASTCreatorService;
-
-    var DEFAULTS = {
-        expectation: 'expected'
-    };
-
     var ExpectationModel = function ExpectationModel (step) {
         var component;
         var action;
@@ -56,15 +50,6 @@ var createExpectationModelConstructor = function (
                     return args;
                 }
             },
-            expectedResult: {
-                get: function () {
-                    return this.expectedResultLiteral.value;
-                },
-                set: function (value) {
-                    this.expectedResultLiteral.value = value;
-                }
-            },
-
             ast: {
                 get: function () {
                     return toAST.call(this);
@@ -73,17 +58,20 @@ var createExpectationModelConstructor = function (
         });
 
         this.component = _.first(this.step.stepDefinition.componentInstances);
-        this.expectedResultLiteral = ast.literal(DEFAULTS.expectation);
+        this.expectedResult = '';
     };
 
     return ExpectationModel;
 
     function toAST () {
+        debugger;
+        var ast = ASTCreatorService;
+
         var argumentValues = _.map(this.arguments, function (argument) {
             return argument.ast;
         });
 
-        var actionMemberExpression = ast.memberExpression(ast.identifier(this.component.name), this.action.nameIdentifier);
+        var actionMemberExpression = ast.memberExpression(ast.identifier(this.component.name), ast.identifier(this.action.name));
         var actionCallExpression = ast.callExpression(actionMemberExpression, argumentValues);
         var expectCallExpression = ast.callExpression(ast.identifier('expect'), [actionCallExpression]);
         var toMemberExpression = ast.memberExpression(expectCallExpression, ast.identifier('to'));
@@ -94,7 +82,7 @@ var createExpectationModelConstructor = function (
         if (expectedResultLiteral) {
             return ast.callExpression(equalMemberExpression, [ast.literal(expectedResultLiteral)]);
         } else {
-            return ast.callExpression(equalMemberExpression, [this.expectedResultLiteral]);
+            return ast.callExpression(equalMemberExpression, [ast.literal(this.expectedResult)]);
         }
     }
 

@@ -1,6 +1,6 @@
 .file-editor {
     width: 80%;
-    height: 86%;
+    height: 85.5%;
 }
 
 .file-editor ul,
@@ -11,9 +11,43 @@
     position: relative;
 }
 
+.file-editor .file-editor__json-structure {
+    tractor-literal-input {
+        width: 100%;
+        height: auto;
+        line-height: normal;
+        margin-bottom: 0;
+
+        label {
+            display: inline-block;
+            width: 20%;
+        }
+
+        input {
+            display: inline-block;
+            width: 80%;
+        }
+    }
+
+    ul, ol {
+        padding: 0.5rem 1rem;
+    }
+
+    ol li {
+        margin-bottom: 1rem;
+    }
+
+    ul li {
+        padding: 0.5rem 1rem;
+        margin-bottom: 0.5rem;
+        position: relative;
+        background: rgba(0, 0, 0, 0.05);
+    }
+}
+
 .file-editor__list-item {
     position: relative;
-    padding: 1.5rem;
+    padding: 1.5rem 1.5rem 0.5rem;
     margin-right: 1rem;
     margin-bottom: 1rem;
     background: rgba(230, 230, 230, 1);
@@ -27,10 +61,10 @@
 .file-editor tractor-text-input,
 .file-editor tractor-literal-input,
 .file-editor tractor-select,
-.file-editor tractor-action,
 .file-editor tractor-step-input {
     font-size: 0;
     display: inline-block;
+    margin-bottom: 1rem;
 }
 
 .file-editor section > tractor-action:last-child {

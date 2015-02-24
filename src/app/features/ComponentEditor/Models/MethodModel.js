@@ -7,14 +7,11 @@ var _ = require('lodash');
 var ComponentEditor = require('../ComponentEditor');
 
 // Dependencies:
-require('../../../Core/Services/ASTCreatorService');
 require('./ArgumentModel');
 
-var createMethodModelConstructor = function (ASTCreatorService, ArgumentModel) {
-    var ast = ASTCreatorService;
-
+var createMethodModelConstructor = function (ArgumentModel) {
     var MethodModel = function MethodModel (interaction, method) {
-        var args = getArguments.call(this, method);
+        this.arguments = getArguments.call(this, method);
 
         Object.defineProperties(this, {
             interaction: {
@@ -24,15 +21,12 @@ var createMethodModelConstructor = function (ASTCreatorService, ArgumentModel) {
             },
             name: {
                 get: function () {
-                    return this.nameIdentifier.name;
+                    return method.name;
                 }
             },
-            arguments: {
+            description: {
                 get: function () {
-                    return args;
-                },
-                set: function (newArgs) {
-                    args = newArgs;
+                    return method.description;
                 }
             },
             returns: {
@@ -41,8 +35,6 @@ var createMethodModelConstructor = function (ASTCreatorService, ArgumentModel) {
                 }
             }
         });
-
-        this.nameIdentifier = ast.identifier(method.name);
 
         if (this.returns) {
             this[this.returns] = method[this.returns];
@@ -58,9 +50,6 @@ var createMethodModelConstructor = function (ASTCreatorService, ArgumentModel) {
     }
 };
 
-ComponentEditor.factory('MethodModel', function (
-    ASTCreatorService,
-    ArgumentModel
-) {
-    return createMethodModelConstructor(ASTCreatorService, ArgumentModel);
+ComponentEditor.factory('MethodModel', function (ArgumentModel) {
+    return createMethodModelConstructor(ArgumentModel);
 });
