@@ -6,5 +6,11 @@ module.exports = function () {
         var self = this;
         return self.title.getInnerHtml();
     };
+    Tractor.prototype.get = function () {
+        var self = this;
+        return new Promise(function (resolve) {
+            resolve(browser.get('http://localhost:3000', null));
+        });
+    };
     return Tractor;
 }();

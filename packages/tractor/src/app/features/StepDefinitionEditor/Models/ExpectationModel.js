@@ -64,7 +64,6 @@ var createExpectationModelConstructor = function (
     return ExpectationModel;
 
     function toAST () {
-        debugger;
         var ast = ASTCreatorService;
 
         var argumentValues = _.map(this.arguments, function (argument) {

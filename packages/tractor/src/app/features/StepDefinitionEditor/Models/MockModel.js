@@ -12,11 +12,11 @@ require('../../../Core/Services/ASTCreatorService');
 var createMockModelConstructor = function (
     ASTCreatorService
 ) {
-    var MockModel = function TaskModel (task) {
+    var MockModel = function TaskModel (step) {
         Object.defineProperties(this, {
-            task: {
+            step: {
                 get: function () {
-                    return task;
+                    return step;
                 }
             },
             ast: {
@@ -28,7 +28,8 @@ var createMockModelConstructor = function (
 
         this.url = '';
         this.action = _.first(this.actions);
-        this.data = _.first(this.task.step.stepDefinition.mockDataInstances);
+        this.data = _.first(this.step.stepDefinition.mockDataInstances);
+        this.passThrough = false;
     };
 
     MockModel.prototype.actions = ['GET', 'POST', 'DELETE', 'PUT', 'HEAD', 'PATCH'];
@@ -38,12 +39,20 @@ var createMockModelConstructor = function (
     function toAST () {
         var ast = ASTCreatorService;
 
-        var httpBackendWhenMemberExpression = ast.memberExpression(ast.identifier('httpBackend'), ast.identifier('when'));
+        var httpBackendOnLoadMemberExpression = ast.memberExpression(ast.identifier('httpBackend'), ast.identifier('onLoad'));
+        var httpBackendWhenMemberExpression = ast.memberExpression(httpBackendOnLoadMemberExpression, ast.identifier('when'));
         var httpBackendWhenCallExpression = ast.callExpression(httpBackendWhenMemberExpression, [ast.literal(this.action), ast.literal(this.url)]);
-        var httpBackendRespondMemberExpression = ast.memberExpression(httpBackendWhenCallExpression, ast.identifier('respond'));
-        var httpBackendRespondCallExpression = ast.callExpression(httpBackendRespondMemberExpression, [ast.identifier(this.data.name)]);
 
-        return ast.expressionStatement(httpBackendRespondCallExpression);
+        var httpBackendCallExpression;
+        if (this.passThrough) {
+            var httpBackendRespondMemberExpression = ast.memberExpression(httpBackendWhenCallExpression, ast.identifier('passThrough'));
+            httpBackendCallExpression = ast.callExpression(httpBackendRespondMemberExpression);
+        } else {
+            var httpBackendRespondMemberExpression = ast.memberExpression(httpBackendWhenCallExpression, ast.identifier('respond'));
+            httpBackendCallExpression = ast.callExpression(httpBackendRespondMemberExpression, [ast.identifier(this.data.name)]);
+        }
+
+        return ast.expressionStatement(httpBackendCallExpression);
     }
 };
 

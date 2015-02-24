@@ -17,28 +17,21 @@ var MockParserService = function MockParserService (
         parse: parse
     };
 
-    function parse (step, astObject) {
-        _.each(astObject.body, function (statement, index) {
-            try {
-                var mock = new MockModel(step.httpBackendSetupTask);
+    function parse (step, statement) {
+        var mock = new MockModel(step);
 
-                var action = _.first(statement.expression.callee.object.arguments).value;
-                var url = _.last(statement.expression.callee.object.arguments).value;
-                assert(_.contains(mock.actions, action));
+        var action = _.first(statement.expression.callee.object.arguments).value;
+        var url = _.last(statement.expression.callee.object.arguments).value;
+        assert(_.contains(mock.actions, action));
 
-                mock.action = action;
-                mock.url = url;
+        mock.action = action;
+        mock.url = url;
 
-                var instanceName = _.first(statement.expression.arguments).name;
-                step.data = _.find(step.stepDefinition.mockDataInstances, function (mockDataInstance) {
-                    return mockDataInstance.name === instanceName;
-                });
-
-                step.httpBackendSetupTask.mocks.push(mock);
-            } catch (e) {
-                console.log(statement, index);
-            }
+        var instanceName = _.first(statement.expression.arguments).name;
+        mock.data = _.find(step.stepDefinition.mockDataInstances, function (mockDataInstance) {
+            return mockDataInstance.name === instanceName;
         });
+        return mock;
     }
 };
 

@@ -91,9 +91,9 @@
         <h3>Mock Data:</h3>
 
         <ul>
-            <li class="file-editor__list-item" ng-repeat="mock in stepDefinitionEditor.stepDefinition.step.httpBackendSetupTask.mocks">
+            <li class="file-editor__list-item" ng-repeat="mock in stepDefinitionEditor.stepDefinition.step.mocks">
                 <tractor-action
-                    model="stepDefinitionEditor.stepDefinition.step.httpBackendSetupTask"
+                    model="stepDefinitionEditor.stepDefinition.step"
                     action="Remove mock"
                     argument="mock"
                     icon="remove">
@@ -108,7 +108,12 @@
                     label="Action"
                     model="mock">
                 </tractor-select>
+                <tractor-checkbox
+                    label="Pass through"
+                    model="mock.passThrough">
+                </tractor-checkbox>
                 <tractor-select
+                    ng-if="!mock.passThrough"
                     label="Data"
                     model="mock"
                     options="stepDefinitionEditor.stepDefinition.mockDataInstances"
@@ -118,7 +123,7 @@
         </ul>
 
         <tractor-action
-            model="stepDefinitionEditor.stepDefinition.step.httpBackendSetupTask"
+            model="stepDefinitionEditor.stepDefinition.step"
             action="Add mock">
         </tractor-action>
     </section>

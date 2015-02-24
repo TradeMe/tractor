@@ -28,7 +28,8 @@ var StepDefinitionEditorController = (function () {
         Object.defineProperties(this, {
             canAddComponents: {
                 get: function () {
-                    return this.availableComponents.length > 0;
+                    return this.availableComponents.length > 0
+                        && this.stepDefinition.step.type !== 'Given';
                 }
             },
             canAddMockData: {
@@ -54,7 +55,7 @@ var StepDefinitionEditorController = (function () {
             showTasksSection: {
                 get: function () {
                     return this.hasComponents
-                        && this.stepDefinition.step.type !== 'Then';
+                        && this.stepDefinition.step.type === 'When';
                 }
             },
             showExpectationsSection: {
@@ -65,8 +66,7 @@ var StepDefinitionEditorController = (function () {
             },
             showMockDataSection: {
                 get: function () {
-                    return this.hasComponents
-                        && this.hasMockData
+                    return this.hasMockData
                         && this.stepDefinition.step.type === 'Given';
                 }
             }
