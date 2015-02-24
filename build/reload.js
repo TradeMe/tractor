@@ -1,14 +1,14 @@
 'use strict';
 
-var config      = require('./config.js');
+// Config:
+var config       = require('./config.js');
 
+// Dependencies:
 var gulp        = require('gulp');
 var browserSync = require('browser-sync');
 
 gulp.task('reload', function() {
-    browserSync(browserSyncConfig);
+    browserSync({
+        proxy: 'localhost:4000'
+    });
 });
-
-var browserSyncConfig = {
-    proxy: 'localhost:4000'
-};

@@ -1,14 +1,13 @@
 'use strict';
 
+// Dependencies:
 var notify = require('gulp-notify');
 
 module.exports = function() {
-  var args = Array.prototype.slice.call(arguments);
+    notify.onError({
+        title: "Error",
+        message: "<%= error %>"
+    }).apply(this, arguments);
 
-  notify.onError({
-      title: "Error",
-      message: "<%= error %>"
-  }).apply(this, args);
-
-  this.emit('end');
+    this.emit('end');
 };

@@ -1,7 +1,8 @@
 'use strict';
 
+// Config:
 var src = './src/';
-var dest = './www/'
+var dest = './www/';
 
 module.exports = {
     src: src,
