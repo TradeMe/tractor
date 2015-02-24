@@ -1,5 +1,4 @@
 /*global browser:true, protractor:true, httpBackend:true, By:true, expect:true, Promise:true */
-'use strict';
 
 var CustomWorld = (function () {
     var chai = require('chai');
