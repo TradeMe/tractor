@@ -66,8 +66,7 @@ var StepDefinitionEditorController = (function () {
             },
             showMockDataSection: {
                 get: function () {
-                    return this.hasMockData
-                        && this.stepDefinition.step.type === 'Given';
+                    return this.stepDefinition.step.type === 'Given';
                 }
             }
         });
