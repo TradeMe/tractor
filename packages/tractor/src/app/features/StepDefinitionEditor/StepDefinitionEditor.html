@@ -113,7 +113,7 @@
                     model="mock.passThrough">
                 </tractor-checkbox>
                 <tractor-select
-                    ng-if="!mock.passThrough"
+                    ng-if="!mock.passThrough && stepDefinitionEditor.hasMockData"
                     label="Data"
                     model="mock"
                     options="stepDefinitionEditor.stepDefinition.mockDataInstances"

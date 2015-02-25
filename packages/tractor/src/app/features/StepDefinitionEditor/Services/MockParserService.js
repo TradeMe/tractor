@@ -27,10 +27,20 @@ var MockParserService = function MockParserService (
         mock.action = action;
         mock.url = url;
 
-        var instanceName = _.first(statement.expression.arguments).name;
-        mock.data = _.find(step.stepDefinition.mockDataInstances, function (mockDataInstance) {
-            return mockDataInstance.name === instanceName;
-        });
+        try {
+            var instanceName = _.first(statement.expression.arguments).name;
+            mock.data = _.find(step.stepDefinition.mockDataInstances, function (mockDataInstance) {
+                return mockDataInstance.name === instanceName;
+            });
+            return mock;
+        } catch (e) { }
+
+        try {
+            assert(statement.expression.callee.property.name === 'passThrough')
+            mock.passThrough = true;
+            return mock;
+        } catch (e) { }
+
         return mock;
     }
 };
