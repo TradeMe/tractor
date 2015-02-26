@@ -8,7 +8,7 @@ var assert = require('assert');
 var StepDefinitionEditor = require('../StepDefinitionEditor');
 
 // Dependencies:
-var pascal = require('change-case').pascal;
+var ucFirst = require('change-case').ucFirst;
 require('../Services/StepParserService');
 require('../Models/StepDefinitionModel');
 
@@ -72,7 +72,7 @@ var StepDefinitionParserService = function StepDefinitionParserService (
                     name = declarator.id.name;
                     var path = _.first(declarator.init.arguments);
                     assert(path.value.match(/\.mock.json$/));
-                    stepDefinition.addMock(pascal(name));
+                    stepDefinition.addMock(ucFirst(name));
                 }
             } catch (e) {
                 notComponentConstructorRequire = true;
