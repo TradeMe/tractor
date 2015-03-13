@@ -1,70 +1,63 @@
 'use strict';
 
-// Config:
-var config = require('../utils/get-config');
-
 // Utilities:
 var _ = require('lodash');
-var constants = require('../constants');
-var log = require('../utils/logging');
+var errorHandler = require('../utils/error-handler');
+var path = require('path');
 var Promise = require('bluebird');
+
+// Config:
+var config = require('../utils/get-config')();
+var constants = require('../constants');
 
 // Dependencies:
 var fs = Promise.promisifyAll(require('fs'));
-var path = require('path');
 var escodegen = require('escodegen');
 
 // Errors:
 var GenerateJavaScriptError = require('../Errors/GenerateJavaScriptError');
 
-module.exports = (function () {
-    return function (req, res) {
-        var name = req.body.name + constants.STEP_DEFINITIONS_EXTENSION;
+module.exports = saveStepDefinitionFile;
 
-        generateJavaScript(req)
-        .then(function (javascript) {
-            var stepPath = path.join(config.testDirectory, constants.STEP_DEFINITIONS_DIR, name);
-            return fs.writeFileAsync(stepPath, javascript);
-        })
-        .then(function () {
-            res.send(JSON.stringify({
-                message: name + ' saved successfully.'
-            }));
-        })
-        .catch(GenerateJavaScriptError, function (error) {
-            res.status(400);
-            res.send(JSON.stringify({
-                error: error.message
-            }));
-        })
-        .catch(function (error) {
-            log.error(error);
-            res.status(500);
-            res.send(JSON.stringify({
-                error: 'Saving ' + name + ' failed.'
-            }));
-        });
-    };
+function saveStepDefinitionFile (request, response) {
+    var name = request.body.name + constants.STEP_DEFINITIONS_EXTENSION;
 
-    function generateJavaScript (req) {
-        return new Promise(function (resolve, reject) {
-            try {
-                var program = rebuildRegExps(req.body.program);
-                resolve(escodegen.generate(program));
-            } catch (error) {
-                reject(new GenerateJavaScriptError('That is not a valid JavaScript AST.'));
-            }
-        });
+    var javascript = null;
+    try {
+        generateJavaScript(request);
+    } catch (e) {
+        errorHandler(response, new GenerateJavaScriptError('Invalid step definition.'));
+        return Promise.resolve();
     }
 
-    function rebuildRegExps (object) {
-        _.each(object, function (value) {
-            if (value && value.type && value.type === 'Literal' && value.raw && value.value) {
-                value.value = new RegExp(value.raw.replace(/^\//, '').replace(/\/$/, ''));
-            } else if (_.isObject(value) || _.isArray(value)) {
-                rebuildRegExps(value);
-            }
-        });
-        return object;
-    }
-})();
+    return saveJavaScriptFile(name, javascript, response);
+}
+
+function generateJavaScript (request) {
+    var program = rebuildRegExps(request.body.program);
+    return escodegen.generate(program);
+}
+
+function rebuildRegExps (object) {
+    _.each(object, function (value) {
+        if (value && value.type === 'Literal' && value.raw && value.value) {
+            value.value = new RegExp(value.raw.replace(/^\//, '').replace(/\/$/, ''));
+        } else if (_.isArray(value) || _.isObject(value)) {
+            rebuildRegExps(value);
+        }
+    });
+    return object;
+}
+
+function saveJavaScriptFile (name, javascript, response) {
+    var stepPath = path.join(config.testDirectory, constants.STEP_DEFINITIONS_DIR, name);
+    return fs.writeFileAsync(stepPath, javascript)
+    .then(function () {
+        response.send(JSON.stringify({
+            message: '"' + name + '" saved successfully.'
+        }));
+    })
+    .catch(function (error) {
+        errorHandler(response, error, 'Saving "' + name + '" failed.');
+    });
+}

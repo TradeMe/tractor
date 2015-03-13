@@ -1,3 +1,5 @@
+'use strict';
+
 exports.config = {
     allScriptsTimeout: 11000,
 
@@ -12,7 +14,7 @@ exports.config = {
     framework: 'cucumber',
 
     cucumberOpts: {
-        require: ['%%SUPPORT%%/**/*.js', '%%STEP_DEFINITIONS%%/**/*.js'],
+        require: ['support/**/*.js', 'step_definitions/**/*.js'],
         format: 'pretty'
     }
 };

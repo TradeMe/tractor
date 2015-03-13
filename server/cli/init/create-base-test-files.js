@@ -9,36 +9,63 @@ var Promise = require('bluebird');
 var fs = Promise.promisifyAll(require('fs'));
 var path = require('path');
 
-module.exports = (function () {
-    return function (testDirectory) {
-        return Promise.all([
-            createWorldFile(path.join(testDirectory, constants.SUPPORT_DIR)),
-            createProtractorConf(testDirectory)
-        ]);
-    };
+// Errors:
+var BaseTestFileAlreadyExistsError = require('../../errors/BaseTestFileAlreadyExistsError');
 
-    function createWorldFile (supportDirPath) {
-        log.info('Creating "' + constants.WORLD_FILE_NAME + '"...');
-        return fs.readFileAsync(path.join(__dirname, constants.WORLD_SOURCE_FILE_PATH))
-        .then(function (worldSource) {
-            return fs.writeFileAsync(path.join(supportDirPath, constants.WORLD_FILE_NAME), worldSource);
-        })
-        .then(function () {
-            log.success('"' + constants.WORLD_FILE_NAME + '" created.');
-        });
-    }
+module.exports = {
+    run: createBaseTestFiles
+};
 
-    function createProtractorConf (testDirectory) {
-        log.info('Creating "' + constants.PROTRACTOR_CONF_FILE_NAME + '"...');
-        return fs.readFileAsync(path.join(__dirname, constants.PROTRACTOR_CONF_SOURCE_FILE_PATH))
-        .then(function (protractorConfSource) {
-            protractorConfSource = protractorConfSource.toString();
-            protractorConfSource = protractorConfSource.replace(/%%SUPPORT%%/, constants.SUPPORT_DIR);
-            protractorConfSource = protractorConfSource.replace(/%%STEP_DEFINITIONS%%/, constants.STEP_DEFINITIONS_DIR);
-            return fs.writeFileAsync(path.join(testDirectory, constants.PROTRACTOR_CONF_FILE_NAME), protractorConfSource);
-        })
-        .then(function () {
-            log.success('"' + constants.PROTRACTOR_CONF_FILE_NAME + '" created.');
-        });
-    }
-})();
+function createBaseTestFiles (testDirectoryPath) {
+    return createWorldFile(path.join(testDirectoryPath, constants.SUPPORT_DIR))
+    .catch(BaseTestFileAlreadyExistsError, function (e) {
+        log.warn(e.message + ' Not copying...');
+    })
+    .then(function () {
+        return createProtractorConf(testDirectoryPath);
+    })
+    .catch(BaseTestFileAlreadyExistsError, function (e) {
+        log.warn(e.message + ' Not copying...');
+    });
+}
+
+function createWorldFile (supportDirPath) {
+    var fileName = constants.WORLD_FILE_NAME;
+    var readPath = path.join(__dirname, constants.WORLD_SOURCE_FILE_PATH);
+    var writePath = path.join(process.cwd(), supportDirPath, constants.WORLD_FILE_NAME);
+    return createFile(fileName, readPath, writePath);
+}
+
+function createProtractorConf (testDirectoryPath) {
+    var fileName = constants.PROTRACTOR_CONF_FILE_NAME;
+    var readPath = path.join(__dirname, constants.PROTRACTOR_CONF_SOURCE_FILE_PATH);
+    var writePath = path.join(process.cwd(), testDirectoryPath, constants.PROTRACTOR_CONF_FILE_NAME);
+    return createFile(fileName, readPath, writePath);
+}
+
+function createFile (fileName, readPath, writePath) {
+    return fs.openAsync(writePath, 'r')
+    .then(function () {
+        throw new BaseTestFileAlreadyExistsError('"' + fileName + '" already exists.');
+    })
+    .catch(Promise.OperationalError, function () {
+        logCreating(fileName);
+    })
+    .then(function () {
+        return fs.readFileAsync(readPath);
+    })
+    .then(function (contents) {
+        return fs.writeFileAsync(writePath, contents);
+    })
+    .then(function () {
+        logCreated(fileName);
+    });
+}
+
+function logCreating (file) {
+    log.info('Creating "' + file + '"...');
+}
+
+function logCreated (file) {
+    log.success('"' + file + '" created.');
+}

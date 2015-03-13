@@ -10,11 +10,11 @@ tractor
 tractor
 .command('init')
 .description('initialise tractor in a project')
-.action(require('../server/cli/init/')());
+.action(require('../server/cli/init/'));
 
 tractor
 .command('start')
 .description('Start the tractor server')
-.action(require('../server/cli/start/')());
+.action(require('../server/cli/start/'));
 
 tractor.parse(process.argv);

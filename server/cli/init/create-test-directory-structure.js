@@ -1,7 +1,6 @@
 'use strict';
 
 // Utilities:
-var _ = require('lodash');
 var constants = require('../../constants');
 var log = require('../../utils/logging');
 var Promise = require('bluebird');
@@ -13,38 +12,45 @@ var path = require('path');
 // Errors:
 var TestDirectoryAlreadyExistsError = require('../../Errors/TestDirectoryAlreadyExistsError');
 
-module.exports = (function () {
-    return function (testDirectory) {
-        return createRootDirectory(testDirectory)
-        .then(function () {
-            return createSubDirectories(testDirectory);
-        });
-    };
+module.exports = {
+    run: createTestDirectoryStructure
+};
 
-    function createRootDirectory (testDirectory) {
-        log.info('Creating directory structure...');
-        return fs.mkdirAsync(testDirectory)
-        .catch(Promise.OperationalError, function (e) {
-            if (e && e.cause && e.cause.code === 'EEXIST') {
-                throw new TestDirectoryAlreadyExistsError('"' + testDirectory + '" directory already exists.');
-            }
-        });
-    }
+function createTestDirectoryStructure (testDirectory) {
+    return createRootDirectory(testDirectory)
+    .then(function () {
+        return createSubDirectories(testDirectory);
+    })
+    .catch(TestDirectoryAlreadyExistsError, function (e) {
+        log.warn(e.message + ' Not creating folder structure...');
+    });
+}
 
-    function createSubDirectories (testDirectory) {
-        var createDirectories = _.map([
-            constants.FEATURES_DIR,
-            constants.STEP_DEFINITIONS_DIR,
-            constants.COMPONENTS_DIR,
-            constants.MOCK_DATA_DIR,
-            constants.SUPPORT_DIR
-        ], function (dir) {
-            return fs.mkdirAsync(path.join(testDirectory, dir));
-        });
+function createRootDirectory (testDirectory) {
+    log.info('Creating directory structure...');
+    return fs.mkdirAsync(testDirectory)
+    .catch(Promise.OperationalError, function (error) {
+        if (error && error.cause && error.cause.code === 'EEXIST') {
+            throw new TestDirectoryAlreadyExistsError('"' + testDirectory + '" directory already exists.');
+        } else {
+            throw error;
+        }
+    });
+}
 
-        return Promise.all(createDirectories)
-        .then(function () {
-            log.success('Directory structure created.');
-        });
-    }
-})();
+function createSubDirectories (testDirectory) {
+    var createDirectories = [
+        constants.COMPONENTS_DIR,
+        constants.FEATURES_DIR,
+        constants.STEP_DEFINITIONS_DIR,
+        constants.MOCK_DATA_DIR,
+        constants.SUPPORT_DIR
+    ].map(function (directory) {
+        return fs.mkdirAsync(path.join(testDirectory, directory));
+    });
+
+    return Promise.all(createDirectories)
+    .then(function () {
+        log.success('Directory structure created.');
+    });
+}

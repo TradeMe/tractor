@@ -1,101 +1,94 @@
 'use strict';
 
-// Config:
-var config = require('../utils/get-config');
-
 // Utilities:
 var _ = require('lodash');
 var constants = require('../constants');
-var log = require('../utils/logging');
-var Promise = require('bluebird');
-
-// Dependencies:
-var exec = Promise.promisify(require('child_process').exec);
-var fs = Promise.promisifyAll(require('fs'));
+var errorHandler = require('../utils/error-handler');
 var os = require('os');
 var path = require('path');
+var Promise = require('bluebird');
 
-module.exports = (function () {
-    return function (req, res) {
-        var name = req.body.name + constants.FEATURES_EXTENSION;
-        var gherkin = req.body.gherkin.replace(new RegExp(constants.GHERKIN_NEWLINE, 'g'), os.EOL);
+// Config:
+var config = require('../utils/get-config')();
 
-        var featurePath = path.join(config.testDirectory, constants.FEATURES_DIR, name);
-        fs.writeFileAsync(featurePath, gherkin)
-        .then(function () {
-            return exec(constants.CUCUMBER_COMMAND + featurePath);
-        })
-        .spread(function (result) {
-            return fs.readdirAsync(path.join(config.testDirectory, constants.STEP_DEFINITIONS_DIR))
-            .then(function (stepDefinitionFiles) {
-                return Promise.all(splitResultToStepDefinitions(result)
-                .map(function (stub) {
-                    var name = createStepDefinitionName(stub) + constants.STEP_DEFINITIONS_EXTENSION;
-                    var stepPath = path.join(config.testDirectory, constants.STEP_DEFINITIONS_DIR, name);
-                    if (!_.contains(stepDefinitionFiles, name)) {
-                        return fs.writeFileAsync(stepPath, formatStepDefinitionCode(stub));
-                    } else {
-                        return false;
-                    }
-                }));
-            });
-        })
-        .then(function () {
-            res.send(JSON.stringify({
-                message: 'Cucumber stubs generated.'
-            }));
-        })
-        .catch(function (error) {
-            log.error(error);
-            res.status(500);
-            res.send(JSON.stringify({
-                error: 'Generating Cucumber stubs failed.'
-            }));
-        });
-    };
+// Dependencies:
+var childProcess = Promise.promisifyAll(require('child_process'));
+var fs = Promise.promisifyAll(require('fs'));
+var pascal = require('change-case').pascal;
+var stripcolorcodes = require('stripcolorcodes');
 
-    function splitResultToStepDefinitions (result) {
-        var pieces = result
-        // Replace color characters:
-        .replace(/\u001b\[.*?m/g, '')
-        // Split on new-lines:
-        .split(/\r\n?|\n{2}/);
-        // Filter out everything that isn't a step definition:
-        return _.filter(pieces, function (piece) {
-            return !!/^this\.(Given|Then|When)[\s\S]*\}\);$/m.exec(piece);
-        });
+module.exports = saveGherkinFile;
+
+function saveGherkinFile (request, response) {
+    var name = request.body.name + constants.FEATURES_EXTENSION;
+    var gherkin = request.body.gherkin.replace(new RegExp(constants.GHERKIN_NEWLINE, 'g'), os.EOL);
+
+    var featurePath = path.join(config.testDirectory, constants.FEATURES_DIR, name);
+    return fs.writeFileAsync(featurePath, gherkin)
+    .then(function () {
+        return childProcess.execAsync(constants.CUCUMBER_COMMAND + featurePath);
+    })
+    .spread(generateStepDefinitions)
+    .then(function () {
+        response.send(JSON.stringify({
+            message: 'Cucumber stubs generated.'
+        }));
+    })
+    .catch(function (error) {
+        errorHandler(response, error, 'Generating Cucumber stubs failed.');
+    });
+}
+
+function generateStepDefinitions (result) {
+    return fs.readdirAsync(path.join(config.testDirectory, constants.STEP_DEFINITIONS_DIR))
+    .then(function (stepDefinitionFiles) {
+        return Promise.all(splitResultToStubs(result).map(function (stub) {
+            return generateStepDefinitionFile(stepDefinitionFiles, stub);
+        }));
+    });
+}
+
+function splitResultToStubs (result) {
+    var pieces = stripcolorcodes(result)
+    // Split on new-lines:
+    .split(/\r\n?|\n{2}/);
+    // Filter out everything that isn't a step definition:
+    return pieces.filter(function (piece) {
+        return !!/^this\.(Given|Then|When)[\s\S]*\}\);$/m.exec(piece);
+    });
+}
+
+function generateStepDefinitionFile (stepDefinitionFiles, stub) {
+    var name = createStepDefinitionFileName(stub) + constants.STEP_DEFINITIONS_EXTENSION;
+    var stepPath = path.join(config.testDirectory, constants.STEP_DEFINITIONS_DIR, name);
+    if (!_.contains(stepDefinitionFiles, name)) {
+        return fs.writeFileAsync(stepPath, formatStubCode(stub));
+    } else {
+        return false;
     }
+}
 
-    function createCapitalCaseName (string) {
-        // Split on the spaces:
-        return string.split(' ')
-        .map(function (part) {
-            // Uppercase each word:
-            return part.charAt(0).toUpperCase() + part.slice(1);
-        })
-        // Rejoin:
-        .join('');
-    }
+function createStepDefinitionFileName (stub) {
+    // Find the type of the step stub:
+    var type = /^this\.(Given|Then|When)/.exec(stub);
+    // Pull out the regex from the stub:
+    var match = /\^(.*)\$/.exec(stub);
+    return type[1] + pascal(match[1]);
+}
 
-    function createStepDefinitionName (stepDefinition) {
-        // Find the type of the step definition:
-        var type = /^this\.(Given|Then|When)/.exec(stepDefinition);
-        // Pull out the regex from the step definition:
-        var match = /\^(.*)\$/.exec(stepDefinition);
-        return type[1] + createCapitalCaseName(match[1]);
-    }
+function formatStubCode (stub) {
+    var code = stub
+    // Replace generated two space indent with four:
+    .replace(/^{\s}2/, '    ')
+    // Split on new lines:
+    .split(os.EOL)
+    .map(function (line) {
+        // Add some indentation:
+        return '    ' + line;
+    })
+    // Rejoin with new lines:
+    .join(os.EOL);
 
-    function formatStepDefinitionCode (stepDefinition) {
-        // Split on new lines:
-        var code = stepDefinition.split(os.EOL)
-        .map(function (line) {
-            // Add some indentation:
-            return '    ' + line;
-        })
-        // Rejoin with new lines:
-        .join(os.EOL);
-
-        // Wrap in a `module.exports`:
-        return 'module.exports = function () {' + os.EOL + code + os.EOL + '};';
-    }
-})();
+    // Wrap in a `module.exports`:
+    return 'module.exports = function () {' + os.EOL + code + os.EOL + '};';
+}

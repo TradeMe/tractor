@@ -1,4 +1,4 @@
-/*global browser:true, protractor:true, httpBackend:true, By:true, expect:true, Promise:true */
+'use strict';
 
 var CustomWorld = (function () {
     var chai = require('chai');
@@ -6,12 +6,12 @@ var CustomWorld = (function () {
     var HttpBackendProxy = require('http-backend-proxy');
 
     var CustomWorld = function CustomWorld () {
-        browser = protractor = require('protractor').getInstance();
-        httpBackend = new HttpBackendProxy(browser, { buffer: true });
-        By = protractor.By;
+        global.browser = global.protractor = require('protractor').getInstance();
+        global.httpBackend = new HttpBackendProxy(global.browser, { buffer: true });
+        global.By = global.protractor.By;
         chai.use(chaiAsPromised);
-        expect = chai.expect;
-        Promise = require('bluebird');
+        global.expect = chai.expect;
+        global.Promise = require('bluebird');
     };
 
     return CustomWorld;
@@ -23,8 +23,10 @@ module.exports = function () {
         return callback(w);
     };
 
+    /* eslint-disable new-cap */
     this.After(function(callback) {
-        httpBackend.onLoad.reset();
+    /* eslint-enable new-cap */
+        global.httpBackend.onLoad.reset();
         callback();
     });
 

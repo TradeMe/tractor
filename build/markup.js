@@ -1,16 +1,20 @@
 'use strict';
 
 // Config:
-var config      = require('./config.js');
+var config = require('./config.js');
+
+// Utilities:
+var gulp = require('gulp');
 
 // Dependencies:
-var gulp        = require('gulp');
 var browserSync = require('browser-sync');
 
-gulp.task('markup', function() {
+module.exports = markup;
+
+function markup () {
     return gulp.src(config.src + '*.html')
     .pipe(gulp.dest(config.dest))
     .pipe(browserSync.reload({
         stream: true
     }));
-});
+}

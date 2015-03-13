@@ -1,17 +1,24 @@
 'use strict';
 
-// Dependencies:
-var CharFunk = require('CharFunk');
+// Utilities:
+var errorHandler = require('../utils/error-handler');
 
-module.exports = function (req, res) {
-    var response = {
-        result: CharFunk.isValidName(req.body.variableName, true)
+// Dependencies:
+var charFunk = require('CharFunk');
+
+// Errors:
+var InvalidVariableNameError = require('../Errors/InvalidVariableNameError');
+
+module.exports = valiateJavaScriptVariableName;
+
+function valiateJavaScriptVariableName (request, response) {
+    var data = {
+        result: charFunk.isValidName(request.body.variableName, true)
     };
 
-    if (!response.result) {
-        res.status(400);
-        response.error = 'That is not a valid variable name.';
+    if (data.result) {
+        response.send(JSON.stringify(data));
+    } else {
+        errorHandler(response, new InvalidVariableNameError('Invalid variable name.'));
     }
-
-    res.send(JSON.stringify(response));
-};
+}

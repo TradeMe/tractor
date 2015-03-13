@@ -3,32 +3,34 @@
 // Dependencies:
 var chalk = require('chalk');
 
-module.exports = (function () {
-    return {
-        info: info,
-        warn: warn,
-        important: important,
-        success: success,
-        error: error
-    };
+module.exports = {
+    info: info,
+    warn: warn,
+    important: important,
+    success: success,
+    error: error
+};
 
-    function info (message) {
-        console.log(chalk.bold(' INFO: ') + ' ' + chalk.white(message));
-    }
+function log (message) {
+    console.log(chalk.reset('[ tractor @ ' + new Date() + ' ]: ' + message));
+}
 
-    function warn (message) {
-        console.log(chalk.bold.black.bgYellow(' WARNING: ') + ' ' + chalk.yellow(message));
-    }
+function info (message) {
+    log(' INFO: ' + chalk.white(message));
+}
 
-    function important (message) {
-       console.log(chalk.bold.white.bgBlue(' ' + message + ' '));
-    }
+function warn (message) {
+    log(chalk.bgYellow(' WARNING: ') + ' ' + chalk.yellow(message));
+}
 
-    function success (message) {
-        console.log(chalk.bold.white.bgGreen(' SUCCESS: ') + ' ' + chalk.green(message));
-    }
+function important (message) {
+    log(chalk.bgBlue(' IMPORTANT: ') + ' ' + chalk.blue(message));
+}
 
-    function error (message) {
-        console.log(chalk.bold.white.bgRed(' ERROR: ') + ' ' + chalk.red(message));
-    }
-})();
+function success (message) {
+    log(chalk.bgGreen(' SUCCESS: ') + ' ' + chalk.green(message));
+}
+
+function error (message) {
+    log(chalk.bgRed(' ERROR: ') + ' ' + chalk.red(message));
+}
