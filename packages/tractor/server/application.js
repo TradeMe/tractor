@@ -1,7 +1,7 @@
 'use strict';
 
 // Config:
-var config = require('./utils/get-config');
+var config = require('./utils/get-config')();
 
 // Utilities:
 var log = require('./utils/logging');
@@ -24,7 +24,9 @@ module.exports = (function () {
 
     function init () {
         var application = express();
+        /* eslint-disable new-cap */
         var server = http.Server(application);
+        /* eslint-enable new-cap */
         var sockets = io(server);
 
         application.use(express.static(path.resolve(__dirname, '../www')));
@@ -44,10 +46,10 @@ module.exports = (function () {
         application.get('/get-step-definition-file-names', getListOfFileNames(constants.STEP_DEFINITIONS_DIR, constants.STEP_DEFINITIONS_EXTENSION));
         application.get('/get-mock-data-file-names', getListOfFileNames(constants.MOCK_DATA_DIR, constants.MOCK_DATA_EXTENSION));
 
-        application.get('/open-component-file', openFile(constants.COMPONENTS_DIR, true));
-        application.get('/open-gherkin-file', openFile(constants.FEATURES_DIR, false, true));
-        application.get('/open-step-definition-file', openFile(constants.STEP_DEFINITIONS_DIR, true));
-        application.get('/open-mock-data-file', openFile(constants.MOCK_DATA_DIR, false, false));
+        application.get('/open-component-file', openFile(constants.COMPONENTS_DIR, { parseJS: true }));
+        application.get('/open-gherkin-file', openFile(constants.FEATURES_DIR, { lexGherkin: true }));
+        application.get('/open-step-definition-file', openFile(constants.STEP_DEFINITIONS_DIR, { parseJS: true }));
+        application.get('/open-mock-data-file', openFile(constants.MOCK_DATA_DIR));
 
         application.get('/get-config', require('./actions/get-config'));
 
@@ -58,18 +60,16 @@ module.exports = (function () {
 
         application.post('/validate-javascript-variable-name', require('./actions/validate-javascript-variable-name'));
 
-        require('./actions/run-protractor')(sockets);
+        require('./actions/setup-protractor-listener')(sockets);
 
         return server;
     }
 
     function start () {
-        log.important('Starting tractor...');
+        log.important('Starting tractor... brrrrrrmmmmmmm');
 
         var tractor = server.listen(config.port, function() {
             log.success('tractor is running at port ' + tractor.address().port);
         });
-
-        delete module.exports.start;
     }
 })();

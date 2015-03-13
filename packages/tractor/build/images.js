@@ -1,15 +1,19 @@
 'use strict';
 
 // Config:
-var config       = require('./config.js');
+var config = require('./config.js');
+
+// Utilities:
+var gulp = require('gulp');
 
 // Dependencies:
-var gulp        = require('gulp');
-var changed     = require('gulp-changed');
-var imagemin    = require('gulp-imagemin');
 var browserSync = require('browser-sync');
+var changed = require('gulp-changed');
+var imagemin = require('gulp-imagemin');
 
-gulp.task('images', function() {
+module.exports = images;
+
+function images () {
     return gulp.src(config.src + '/images/*')
     .pipe(changed(config.dest + '/images/'))
     .pipe(imagemin())
@@ -17,4 +21,4 @@ gulp.task('images', function() {
     .pipe(browserSync.reload({
         stream: true
     }));
-});
+}

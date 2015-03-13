@@ -1,8 +1,10 @@
 'use strict';
 
 // Config:
-var config = require('../utils/get-config');
+var config = require('../utils/get-config')();
 
-module.exports = function (req, res) {
-    res.send(JSON.stringify(config));
-};
+module.exports = getConfig;
+
+function getConfig (request, response) {
+    response.send(JSON.stringify(config));
+}

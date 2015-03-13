@@ -1,55 +1,46 @@
 'use strict';
 
-// Config:
-var config = require('../utils/get-config');
-
 // Utilities:
-var constants = require('../constants');
+var errorHandler = require('../utils/error-handler');
+var path = require('path');
 var Promise = require('bluebird');
+
+// Config:
+var config = require('../utils/get-config')();
+var constants = require('../constants');
 
 // Dependencies:
 var escodegen = require('escodegen');
 var fs = Promise.promisifyAll(require('fs'));
-var path = require('path');
 
 // Errors:
 var GenerateJavaScriptError = require('../Errors/GenerateJavaScriptError');
 
-module.exports = (function () {
-    return function (req, res) {
-        var name = req.body.name + constants.COMPONENTS_EXTENSION;
+module.exports = saveComponentFile;
 
-        generateJavaScript(req)
-        .then(function (javascript) {
-            var componentPath = path.join(config.testDirectory, constants.COMPONENTS_DIR, name);
-            return fs.writeFileAsync(componentPath, javascript);
-        })
-        .then(function () {
-            res.send(JSON.stringify({
-                message: name + ' saved successfully.'
-            }));
-        })
-        .catch(GenerateJavaScriptError, function (error) {
-            res.status(400);
-            res.send(JSON.stringify({
-                error: error.message
-            }));
-        })
-        .catch(function () {
-            res.status(500);
-            res.send(JSON.stringify({
-                error: 'Saving ' + name + ' failed.'
-            }));
-        });
-    };
+function saveComponentFile (request, response) {
+    var name = request.body.name + constants.COMPONENTS_EXTENSION;
 
-    function generateJavaScript (req) {
-        return new Promise(function (resolve, reject) {
-            try {
-                resolve(escodegen.generate(req.body.program));
-            } catch (error) {
-                reject(new GenerateJavaScriptError('That is not a valid JavaScript AST.'));
-            }
-        });
+    var javascript = null;
+    try {
+        javascript = escodegen.generate(request.body.program);
+    } catch (e) {
+        errorHandler(response, new GenerateJavaScriptError('Invalid component.'));
+        return Promise.resolve();
     }
-})();
+
+    return saveJavaScriptFile(name, javascript, response);
+}
+
+function saveJavaScriptFile (name, javascript, response) {
+    var componentPath = path.join(config.testDirectory, constants.COMPONENTS_DIR, name);
+    return fs.writeFileAsync(componentPath, javascript)
+    .then(function () {
+        response.send(JSON.stringify({
+            message: '"' + name + '" saved successfully.'
+        }));
+    })
+    .catch(function (error) {
+        errorHandler(response, error, 'Saving "' + name + '" failed.');
+    });
+}

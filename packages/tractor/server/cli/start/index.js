@@ -4,7 +4,5 @@
 var application = require('../../application');
 
 module.exports = function () {
-	return function () {
-			application.start();
-	};
+	application.start();
 };

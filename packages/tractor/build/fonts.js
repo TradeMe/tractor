@@ -1,13 +1,17 @@
 'use strict';
 
 // Config:
-var config      = require('./config.js');
+var config = require('./config.js');
+
+// Utilities:
+var gulp = require('gulp');
 
 // Dependencies:
-var gulp        = require('gulp');
 var browserSync = require('browser-sync');
 
-gulp.task('fonts', function() {
+module.exports = fonts;
+
+function fonts () {
     return gulp.src(config.src + 'fonts/*')
     .pipe(gulp.dest(config.dest + 'fonts/'));
-});
+}

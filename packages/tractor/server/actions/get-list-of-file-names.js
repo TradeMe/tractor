@@ -1,37 +1,41 @@
 'use strict';
 
-// Config:
-var config = require('../utils/get-config');
-
 // Utilities:
-var log = require('../utils/logging');
+var errorHandler = require('../utils/error-handler');
+var path = require('path');
 var Promise = require('bluebird');
+
+// Config:
+var config = require('../utils/get-config')();
 
 // Dependencies:
 var fs = Promise.promisifyAll(require('fs'));
-var path = require('path');
 
-module.exports = function (folderName, extension) {
-    var EXTENSION_REGEX = new RegExp(extension + '$');
+module.exports = createHandlerForDirectoryAndExtension;
 
-    return function (req, res) {
-        return fs.readdirAsync(path.join(config.testDirectory, folderName))
-        .then(function (fileNames) {
-            fileNames = fileNames
-            .filter(function (fileName) {
-                return EXTENSION_REGEX.test(fileName);
-            })
-            .map(function (fileName) {
-                return fileName.replace(EXTENSION_REGEX, '');
-            });
-            res.send(JSON.stringify(fileNames));
-        })
-        .catch(function (error) {
-            log.error(error);
-            res.status(500);
-            res.send(JSON.stringify({
-                message: 'Reading list of "' + extension + '" files failed.'
-            }));
-        });
-    };
-};
+function createHandlerForDirectoryAndExtension (directory, extension) {
+    var directoryPath = path.join(config.testDirectory, directory);
+    return getListOfFileNames.bind(null, directoryPath, extension);
+}
+
+function getListOfFileNames (directoryPath, extension, request, response) {
+    var extensionRegex = new RegExp(extension.replace('.', '\\.') + '$');
+    return fs.readdirAsync(directoryPath)
+    .then(function (fileNames) {
+        response.send(JSON.stringify(filterFileNamesByExtension(fileNames, extensionRegex)));
+    })
+    .catch(function (error) {
+        var message = 'Reading list of "' + extension + '" files failed.';
+        errorHandler(response, error, message);
+    });
+}
+
+function filterFileNamesByExtension (fileNames, extensionRegex) {
+    return fileNames
+    .filter(function (fileName) {
+        return extensionRegex.test(fileName);
+    })
+    .map(function (fileName) {
+        return fileName.replace(extensionRegex, '');
+    });
+}
