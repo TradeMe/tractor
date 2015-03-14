@@ -9,7 +9,7 @@ var Core = require('../Core');
 
 // Dependencies:
 require('../Services/ValidationService');
-require('../../features/GherkinEditor/Models/StepDeclarationModel');
+require('../../features/FeatureEditor/Models/StepDeclarationModel');
 
 var ExampleNameValidator = function (
     ValidationService,

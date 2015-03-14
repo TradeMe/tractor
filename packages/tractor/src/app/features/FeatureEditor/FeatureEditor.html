@@ -1,0 +1,136 @@
+<section class="file-tree">
+    <h3>Feature files:</h3>
+    <ul class='file-tree__file-list file-tree__file-list--feature'>
+        <li ng-repeat="featureFileName in featureEditor.featureFileNames"
+            ng-class="{ true: 'active' }[featureFileName === featureEditor.featureName]"
+            class="file-tree__file-list-file">
+            <a ui-sref="tractor.feature-editor({ feature: featureFileName })">{{ featureFileName }}</a>
+        </li>
+    </ul>
+</section>
+
+<form class="file" name="feature-editor" novalidate
+    ng-submit="featureEditor.showErrors() && featureEditor.saveFeatureFile()">
+    <section class="file-options">
+        <h2 class="file-options__name">{{ featureEditor.featureName }}</h2>
+        <div>
+            <tractor-text-input class="file-options__name-input"
+                form="feature-editor"
+                label="Name"
+                model="featureEditor.feature"
+                example="Feature">
+            </tractor-text-input>
+            <tractor-submit class="file-options__save-file"
+                action="Save feature file">
+            </tractor-submit>
+        </div>
+    </section>
+
+    <section class="file-editor">
+        <section ng-show="featureEditor.feature.name">
+            <section class="file-editor__container">
+                <h3>Feature:</h3>
+
+                <tractor-text-input
+                    form="feature-editor"
+                    label="In order to"
+                    model="featureEditor.feature"
+                    example="achieve some goal">
+                </tractor-text-input>
+                <tractor-text-input
+                    form="feature-editor"
+                    label="As a"
+                    model="featureEditor.feature"
+                    example="certain type of user">
+                </tractor-text-input>
+                <tractor-text-input
+                    form="feature-editor"
+                    label="I want"
+                    model="featureEditor.feature"
+                    example="to be able to do something">
+                </tractor-text-input>
+            </section>
+
+            <section class="file-editor__container">
+                <h3>Scenarios:</h3>
+
+                <ul ng-if="featureEditor.feature.scenarios.length">
+                    <li class="file-editor__list-item" ng-repeat="scenario in featureEditor.feature.scenarios">
+                        <tractor-action
+                            model="featureEditor.feature"
+                            action="Remove scenario"
+                            argument="scenario"
+                            icon="remove"></tractor-action>
+
+                        <tractor-text-input
+                            form="feature-editor"
+                            label="Name"
+                            model="scenario"
+                            example="Scenario">
+                        </tractor-text-input>
+
+                        <section>
+                            <h4>Step Declarations:</h4>
+
+                            <ol ng-if="scenario.stepDeclarations.length" as-sortable ng-model="scenario.stepDeclarations" is-disabled="scenario.stepDeclarations.length < 2">
+                                <li class="file-editor__list-item" ng-repeat="stepDeclaration in scenario.stepDeclarations" as-sortable-item>
+                                    <tractor-action
+                                        model="scenario"
+                                        action="Remove step declaration"
+                                        argument="stepDeclaration"
+                                        icon="remove">
+                                    </tractor-action>
+                                    <div ng-if="scenario.stepDeclarations.length > 1" class="file-editor__sort-handle" as-sortable-item-handle title="Drag to sort"></div>
+
+                                    <tractor-select label="Type" model="stepDeclaration"></tractor-select>
+                                    <tractor-step-input
+                                        form="feature-editor"
+                                        label="Step"
+                                        model="stepDeclaration"
+                                        example="something happens">
+                                    </tractor-step-input>
+                                </li>
+                            </ol>
+
+                            <tractor-action
+                                model="scenario"
+                                action="Add step declaration">
+                            </tractor-action>
+                        </section>
+
+                        <section ng-show="scenario.exampleVariables.length">
+                            <h4>Examples:</h4>
+                            <ul>
+                                <li class="file-editor__list-item" ng-repeat="example in scenario.examples">
+                                    <tractor-action
+                                        model="scenario"
+                                        action="Remove example"
+                                        argument="example"
+                                        icon="remove">
+                                    </tractor-action>
+
+                                    <tractor-literal-input ng-repeat="exampleVariable in scenario.exampleVariables"
+                                        form="feature-editor"
+                                        name="exampleVariable"
+                                        model="example.values[exampleVariable]"
+                                        type="argument.type">
+                                    </tractor-literal-input>
+                                </li>
+                            </ul>
+
+                            <tractor-action
+                                model="scenario"
+                                action="Add example">
+                            </tractor-action>
+                        </section>
+                    </li>
+                </ul>
+
+                <tractor-action
+                    model="featureEditor.feature"
+                    action="Add scenario">
+                </tractor-action>
+            </section>
+        </section>
+    </section>
+</form>

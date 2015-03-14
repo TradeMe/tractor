@@ -17,14 +17,14 @@ var fs = Promise.promisifyAll(require('fs'));
 var pascal = require('change-case').pascal;
 var stripcolorcodes = require('stripcolorcodes');
 
-module.exports = saveGherkinFile;
+module.exports = saveFeatureFile;
 
-function saveGherkinFile (request, response) {
+function saveFeatureFile (request, response) {
     var name = request.body.name + constants.FEATURES_EXTENSION;
-    var gherkin = request.body.gherkin.replace(new RegExp(constants.GHERKIN_NEWLINE, 'g'), os.EOL);
+    var feature = request.body.feature.replace(new RegExp(constants.FEATURE_NEWLINE, 'g'), os.EOL);
 
     var featurePath = path.join(config.testDirectory, constants.FEATURES_DIR, name);
-    return fs.writeFileAsync(featurePath, gherkin)
+    return fs.writeFileAsync(featurePath, feature)
     .then(function () {
         return childProcess.execAsync(constants.CUCUMBER_COMMAND + featurePath);
     })

@@ -25,10 +25,10 @@ var MockDataFileService = function MockDataFileService (
         return $http.get('/open-mock-data-file?name=' + encodeURIComponent(fileName));
     }
 
-    function saveMockDataFile (name, data) {
+    function saveMockDataFile (data, name) {
         return $http.post('/save-mock-data-file', {
-            name: name,
-            data: data
+            data: data,
+            name: name
         });
     }
 

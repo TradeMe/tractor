@@ -5,7 +5,7 @@ var last = require('array-last');
 var noop = require('node-noop');
 var os = require('os');
 
-var GherkinLexerFormatter = function GherkinLexerFormatter () {
+var FeatureLexerFormatter = function FeatureLexerFormatter () {
     this.features = [];
 
     Object.defineProperties(this, {
@@ -22,7 +22,7 @@ var GherkinLexerFormatter = function GherkinLexerFormatter () {
     });
 };
 
-GherkinLexerFormatter.prototype.feature = function (type, name, description) {
+FeatureLexerFormatter.prototype.feature = function (type, name, description) {
     var feature = {
         type: type,
         name: name
@@ -35,7 +35,7 @@ GherkinLexerFormatter.prototype.feature = function (type, name, description) {
     this.features.push(feature);
 };
 
-GherkinLexerFormatter.prototype.background = function (type, name, description) {
+FeatureLexerFormatter.prototype.background = function (type, name, description) {
     var background = {
         type: type,
         name: name,
@@ -46,7 +46,7 @@ GherkinLexerFormatter.prototype.background = function (type, name, description) 
     this.lastFeature.elements.push(background);
 };
 
-GherkinLexerFormatter.prototype.scenario = function (type, name, description) {
+FeatureLexerFormatter.prototype.scenario = function (type, name, description) {
     var scenario = {
         type: type,
         name: name,
@@ -57,7 +57,7 @@ GherkinLexerFormatter.prototype.scenario = function (type, name, description) {
     this.lastFeature.elements.push(scenario);
 };
 
-GherkinLexerFormatter.prototype.scenario_outline = function (type, name, description) {
+FeatureLexerFormatter.prototype.scenario_outline = function (type, name, description) {
     var scenario_outline = {
         type: type,
         name: name,
@@ -68,7 +68,7 @@ GherkinLexerFormatter.prototype.scenario_outline = function (type, name, descrip
     this.lastFeature.elements.push(scenario_outline);
 };
 
-GherkinLexerFormatter.prototype.row = function (row) {
+FeatureLexerFormatter.prototype.row = function (row) {
     if (!this.lastElement.variables) {
         this.lastElement.variables = row;
     } else {
@@ -76,7 +76,7 @@ GherkinLexerFormatter.prototype.row = function (row) {
     }
 };
 
-GherkinLexerFormatter.prototype.step = function (type, step) {
+FeatureLexerFormatter.prototype.step = function (type, step) {
     var stepDeclaration = {
         type: type.replace(/ $/, ''),
         step: step
@@ -84,14 +84,14 @@ GherkinLexerFormatter.prototype.step = function (type, step) {
     this.lastElement.stepDeclarations.push(stepDeclaration);
 };
 
-GherkinLexerFormatter.prototype.done = function () {
+FeatureLexerFormatter.prototype.done = function () {
     return this.features;
 };
 
-GherkinLexerFormatter.prototype.comment = noop.noop;
-GherkinLexerFormatter.prototype.doc_string = noop.noop;
-GherkinLexerFormatter.prototype.examples = noop.noop;
-GherkinLexerFormatter.prototype.eof = noop.noop;
-GherkinLexerFormatter.prototype.tag = noop.noop;
+FeatureLexerFormatter.prototype.comment = noop.noop;
+FeatureLexerFormatter.prototype.doc_string = noop.noop;
+FeatureLexerFormatter.prototype.examples = noop.noop;
+FeatureLexerFormatter.prototype.eof = noop.noop;
+FeatureLexerFormatter.prototype.tag = noop.noop;
 
-module.exports = GherkinLexerFormatter;
+module.exports = FeatureLexerFormatter;

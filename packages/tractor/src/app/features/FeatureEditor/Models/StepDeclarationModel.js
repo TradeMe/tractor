@@ -4,7 +4,7 @@
 var _ = require('lodash');
 
 // Module:
-var GherkinEditor = require('../GherkinEditor');
+var FeatureEditor = require('../FeatureEditor');
 
 var createStepDeclarationModelConstructor = function () {
     var StepDeclarationModel = function StepDeclarationModel () {
@@ -36,6 +36,6 @@ var createStepDeclarationModelConstructor = function () {
     }
 };
 
-GherkinEditor.factory('StepDeclarationModel', function () {
+FeatureEditor.factory('StepDeclarationModel', function () {
     return createStepDeclarationModelConstructor();
 });

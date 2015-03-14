@@ -26,7 +26,7 @@ var LiteralInputDirective = function () {
         link: link
     };
 
-    function link ($scope) {
+    function link ($scope, $element, $attrs) {
         if (_.isUndefined($scope.model)) {
             throw new Error('The "tractor-literal-input" directive requires a "model" attribute.');
         }
@@ -34,6 +34,9 @@ var LiteralInputDirective = function () {
         if (_.isUndefined($scope.name)) {
             throw new Error('The "tractor-literal-input" directive requires a "name" attribute.');
         }
+
+        $scope.form = $scope.$parent[$attrs.form];
+        $scope.id = Math.floor(Math.random() * Date.now());
     }
 };
 

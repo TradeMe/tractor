@@ -4,7 +4,7 @@
 var _ = require('lodash');
 
 // Module:
-var GherkinEditor = require('../GherkinEditor');
+var FeatureEditor = require('../FeatureEditor');
 
 // Dependencies:
 require('./StepDeclarationModel');
@@ -13,8 +13,8 @@ require('./ExampleModel');
 var createScenarioModelConstructor = function (
     StepDeclarationModel,
     ExampleModel,
-    GherkinIndent,
-    GherkinNewLine
+    FeatureIndent,
+    FeatureNewLine
 ) {
     var ScenarioModel = function ScenarioModel () {
         var stepDeclarations = [];
@@ -36,9 +36,9 @@ var createScenarioModelConstructor = function (
                     return getExampleVariables.call(this, this.stepDeclarations);
                 }
             },
-            feature: {
+            featureString: {
                 get: function () {
-                    return toFeature.call(this);
+                    return toFeatureString.call(this);
                 }
             }
         });
@@ -72,34 +72,34 @@ var createScenarioModelConstructor = function (
         .unique().value();
     }
 
-    function toFeature () {
+    function toFeatureString () {
         var scenario = 'Scenario' + (this.examples.length ? ' Outline' : '') + ': ' + this.name;
 
         var stepDeclarations = _.map(this.stepDeclarations, function (stepDeclaration) {
-            return GherkinIndent + GherkinIndent + stepDeclaration.feature;
+            return FeatureIndent + FeatureIndent + stepDeclaration.feature;
         });
 
         var lines = [scenario, stepDeclarations];
 
         if (this.examples.length) {
-            lines.push(GherkinIndent + GherkinIndent + 'Examples:');
+            lines.push(FeatureIndent + FeatureIndent + 'Examples:');
             var variables = '| ' + this.exampleVariables.join(' | ') + ' |';
-            lines.push(GherkinIndent + GherkinIndent + GherkinIndent + variables);
+            lines.push(FeatureIndent + FeatureIndent + FeatureIndent + variables);
             _.each(this.examples, function (example) {
                 lines.push(example.feature);
             }, this);
         }
 
         lines = _.flatten(lines);
-        return lines.join(GherkinNewLine);
+        return lines.join(FeatureNewLine);
     }
 };
 
-GherkinEditor.factory('ScenarioModel', function (
+FeatureEditor.factory('ScenarioModel', function (
     StepDeclarationModel,
     ExampleModel,
-    GherkinIndent,
-    GherkinNewLine
+    FeatureIndent,
+    FeatureNewLine
 ) {
-    return createScenarioModelConstructor(StepDeclarationModel, ExampleModel, GherkinIndent, GherkinNewLine);
+    return createScenarioModelConstructor(StepDeclarationModel, ExampleModel, FeatureIndent, FeatureNewLine);
 });

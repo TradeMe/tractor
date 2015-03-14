@@ -4,7 +4,7 @@
 var _ = require('lodash');
 
 // Module:
-var GherkinEditor = require('../GherkinEditor');
+var FeatureEditor = require('../FeatureEditor');
 
 // Dependencies:
 require('../Models/ExampleModel');
@@ -25,4 +25,4 @@ var ExampleParserService = function ExampleParserService (ExampleModel) {
     }
 };
 
-GherkinEditor.service('ExampleParserService', ExampleParserService);
+FeatureEditor.service('ExampleParserService', ExampleParserService);

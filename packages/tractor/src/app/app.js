@@ -19,9 +19,9 @@ require('./features/ComponentEditor/ComponentEditor');
 require('./features/ComponentEditor/ComponentEditorController');
 require('./features/ComponentEditor/Services/ComponentFileService');
 
-require('./features/GherkinEditor/GherkinEditor');
-require('./features/GherkinEditor/GherkinEditorController');
-require('./features/GherkinEditor/Services/GherkinFileService');
+require('./features/FeatureEditor/FeatureEditor');
+require('./features/FeatureEditor/FeatureEditorController');
+require('./features/FeatureEditor/Services/FeatureFileService');
 
 require('./features/StepDefinitionEditor/Services/StepDefinitionFileService');
 require('./features/StepDefinitionEditor/StepDefinitionEditorController');
@@ -45,7 +45,7 @@ angular.module('tractor', [
   'Notifier',
   'ControlPanel',
   'ComponentEditor',
-  'GherkinEditor',
+  'FeatureEditor',
   'StepDefinitionEditor',
   'MockDataEditor'
 ])
@@ -61,7 +61,7 @@ angular.module('tractor', [
         controller: 'ControlPanelController as controlPanel'
     })
     .state('tractor.component-editor', {
-        url: 'component-editor',
+        url: 'component-editor?component',
         /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/features/ComponentEditor/ComponentEditor.html', 'utf8'),
         /* eslint-enable no-path-concat */
@@ -69,23 +69,31 @@ angular.module('tractor', [
         resolve: {
             componentFileNames: function (ComponentFileService) {
                 return ComponentFileService.getComponentFileNames();
+            },
+            componentFile: function ($stateParams, ComponentFileService) {
+                var component = $stateParams.component;
+                return component ? ComponentFileService.openComponentFile(component) : null;
             }
         }
     })
-    .state('tractor.gherkin-editor', {
-        url: 'gherkin-editor',
+    .state('tractor.feature-editor', {
+        url: 'feature-editor?feature',
         /* eslint-disable no-path-concat */
-        template: fs.readFileSync(__dirname + '/features/GherkinEditor/GherkinEditor.html', 'utf8'),
+        template: fs.readFileSync(__dirname + '/features/FeatureEditor/FeatureEditor.html', 'utf8'),
         /* eslint-enable no-path-concat */
-        controller: 'GherkinEditorController as gherkinEditor',
+        controller: 'FeatureEditorController as featureEditor',
         resolve: {
-            gherkinFileNames: function (GherkinFileService) {
-                return GherkinFileService.getGherkinFileNames();
+            featureFileNames: function (FeatureFileService) {
+                return FeatureFileService.getFeatureFileNames();
+            },
+            featureFile: function ($stateParams, FeatureFileService) {
+                var feature = $stateParams.feature;
+                return feature ? FeatureFileService.openFeatureFile(feature) : null;
             }
         }
     })
     .state('tractor.step-definition-editor', {
-        url: 'step-definition-editor',
+        url: 'step-definition-editor?stepDefinition',
         /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/features/StepDefinitionEditor/StepDefinitionEditor.html', 'utf8'),
         /* eslint-enable no-path-concat */
@@ -93,6 +101,10 @@ angular.module('tractor', [
         resolve: {
             stepDefinitionFileNames: function (StepDefinitionFileService) {
                 return StepDefinitionFileService.getStepDefinitionFileNames();
+            },
+            stepDefinitionFile: function ($stateParams, StepDefinitionFileService) {
+                var stepDefinition = $stateParams.stepDefinition;
+                return stepDefinition ? StepDefinitionFileService.openStepDefinitionFile(stepDefinition) : null;
             },
             components: function (ComponentFileService) {
                 return ComponentFileService.getAllComponents();
@@ -103,7 +115,7 @@ angular.module('tractor', [
         }
     })
     .state('tractor.mock-data-editor', {
-        url: 'mock-data-editor',
+        url: 'mock-data-editor?mockData',
         /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/features/MockDataEditor/MockDataEditor.html', 'utf8'),
         /* eslint-enable no-path-concat */
@@ -111,6 +123,10 @@ angular.module('tractor', [
         resolve: {
             mockDataFileNames: function (MockDataFileService) {
                 return MockDataFileService.getMockDataFileNames();
+            },
+            mockDataFile: function ($stateParams, MockDataFileService) {
+                var mockData = $stateParams.mockData;
+                return mockData ? MockDataFileService.openMockDataFile(mockData) : null;
             }
         }
     });

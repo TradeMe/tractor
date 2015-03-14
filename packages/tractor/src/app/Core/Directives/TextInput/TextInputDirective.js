@@ -27,7 +27,7 @@ var TextInputDirective = function () {
         link: link
     };
 
-    function link ($scope) {
+    function link ($scope, $element, $attrs) {
         if (_.isUndefined($scope.model)) {
             throw new Error('The "tractor-text-input" directive requires a "model" attribute.');
         }
@@ -35,6 +35,9 @@ var TextInputDirective = function () {
         if (_.isUndefined($scope.label)) {
             throw new Error('The "tractor-text-input" directive requires a "label" attribute.');
         }
+
+        $scope.form = $scope.$parent[$attrs.form];
+        $scope.id = Math.floor(Math.random() * Date.now());
 
         $scope.property = camelcase($scope.label);
     }

@@ -134,8 +134,8 @@ describe('server/actions: open-file:', function () {
         });
     });
 
-    describe('open-file hander - lexGherkin: true:', function () {
-        it('should also return the `tokens` if the `lexGherkin` flag is used when creating the handler', function () {
+    describe('open-file hander - lexFeature: true:', function () {
+        it('should also return the `tokens` if the `lexFeature` flag is used when creating the handler', function () {
             var fs = require('fs');
             var gherkin = require('gherkin');
             sinon.stub(fs, 'readFileAsync').returns(Promise.resolve(''));
@@ -149,7 +149,7 @@ describe('server/actions: open-file:', function () {
                 send: noop
             };
             sinon.spy(response, 'send');
-            var handler = openFile('features', { lexGherkin: true });
+            var handler = openFile('features', { lexFeature: true });
 
             return handler(request, response)
             .then(function () {
@@ -184,7 +184,7 @@ describe('server/actions: open-file:', function () {
             };
             sinon.spy(response, 'status');
             sinon.spy(response, 'send');
-            var handler = openFile('features', { lexGherkin: true });
+            var handler = openFile('features', { lexFeature: true });
 
             return handler(request, response)
             .then(function () {

@@ -72,7 +72,7 @@ tractor-step-input [ng-messages] {
     float: left;
 }
 
-.ng-invalid input.ng-touched, .ng-invalid input.ng-untouched.ng-dirty,  {
+input.ng-invalid.ng-touched, input.ng-invalid.ng-untouched.ng-dirty,  {
     border-bottom: 1px solid rgba(255, 50, 50, 0.9);
 
     & + [ng-messages] > ng-message {
