@@ -62,7 +62,8 @@ var createElementModelConstructor = function (
         arguments: [{
             name: 'keys',
             description: 'The sequence of keys to type.',
-            type: 'string'
+            type: 'string',
+            required: true
         }],
         returns: 'promise'
     }, {
@@ -71,7 +72,8 @@ var createElementModelConstructor = function (
         returns: 'promise',
         promise: {
             name: 'text',
-            type: 'string'
+            type: 'string',
+            required: true
         }
     }, {
         name: 'isEnabled',
@@ -79,7 +81,8 @@ var createElementModelConstructor = function (
         returns: 'promise',
         promise: {
             name: 'enabled',
-            type: 'boolean'
+            type: 'boolean',
+            required: true
         }
     }, {
         name: 'isSelected',
@@ -87,7 +90,8 @@ var createElementModelConstructor = function (
         returns: 'promise',
         promise: {
             name: 'selected',
-            type: 'boolean'
+            type: 'boolean',
+            required: true
         }
     }, {
         name: 'submit',
@@ -103,7 +107,8 @@ var createElementModelConstructor = function (
         returns: 'promise',
         promise: {
             name: 'displayed',
-            type: 'boolean'
+            type: 'boolean',
+            required: true
         }
     }, {
         name: 'getOuterHtml',
@@ -111,7 +116,8 @@ var createElementModelConstructor = function (
         returns: 'promise',
         promise: {
             name: 'outerHtml',
-            type: 'string'
+            type: 'string',
+            required: true
         }
     }, {
         name: 'getInnerHtml',
@@ -119,7 +125,8 @@ var createElementModelConstructor = function (
         returns: 'promise',
         promise: {
             name: 'innerHtml',
-            type: 'string'
+            type: 'string',
+            required: true
         }
     }];
 

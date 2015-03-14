@@ -1,7 +1,7 @@
 'use strict';
 
 // Module:
-var GherkinEditor = require('../GherkinEditor');
+var FeatureEditor = require('../FeatureEditor');
 
 // Dependencies
 require('../Models/StepDeclarationModel');
@@ -21,4 +21,4 @@ var StepDeclarationParserService = function ExampleParserService (StepDeclaratio
     }
 };
 
-GherkinEditor.service('StepDeclarationParserService', StepDeclarationParserService);
+FeatureEditor.service('StepDeclarationParserService', StepDeclarationParserService);

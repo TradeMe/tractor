@@ -14,12 +14,12 @@ var createBrowserModelConstructor = function () {
         arguments: [{
             name: 'destination',
             description: 'Destination URL',
-            type: 'string'
+            type: 'string',
+            required: true
         }, {
             name: 'timeout',
             description: 'Number of milliseconds to wait for Angular to start.',
-            type: 'number',
-            required: false
+            type: 'number'
         }]
     }, {
         name: 'refresh',
@@ -27,8 +27,7 @@ var createBrowserModelConstructor = function () {
         arguments: [{
             name: 'timeout',
             description: 'Number of seconds to wait for Angular to start.',
-            type: 'number',
-            required: false
+            type: 'number'
         }]
     }, {
         name: 'setLocation',
@@ -36,7 +35,8 @@ var createBrowserModelConstructor = function () {
         arguments: [{
             name: 'url',
             description: 'In page URL using the same syntax as $location.url()',
-            type: 'string'
+            type: 'string',
+            required: true
         }],
         returns: 'promise'
     }, {
@@ -45,7 +45,8 @@ var createBrowserModelConstructor = function () {
         returns: 'string',
         string: {
             name: 'absoluteUrl',
-            type: 'string'
+            type: 'string',
+            required: true
         }
     }, {
         name: 'waitForAngular',

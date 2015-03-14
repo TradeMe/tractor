@@ -1,4 +1,5 @@
-tractor-action {
+tractor-action,
+tractor-submit {
     display: inline-block;
     padding: 0 0.5rem;
 }
@@ -23,7 +24,8 @@ tractor-action[icon] button:active {
    transform: scale(1.25);
 }
 
-tractor-action button {
+tractor-action button,
+tractor-submit button {
     -webkit-appearance: none;
     appearance: none;
     border: none;
@@ -40,20 +42,24 @@ tractor-action button {
     background: rgba(110, 110, 110, 1);
 }
 
-tractor-action button span {
+tractor-action button span,
+tractor-submit button span {
     transition: all 0.1s;
     transform: scale(0.8);
     display: block;
 }
 
-tractor-action button:hover {
+tractor-action button:hover,
+tractor-submit button:hover {
     background: rgba(130, 130, 130, 1);
 }
 
-tractor-action button:hover span {
+tractor-action button:hover span,
+tractor-submit button:hover span {
     transform: scale(0.9);
 }
 
-tractor-action button:active span {
+tractor-action button:active span,
+tractor-submit button:active span {
     transform: scale(1);
 }

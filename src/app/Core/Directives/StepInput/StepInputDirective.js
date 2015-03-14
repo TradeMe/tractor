@@ -27,7 +27,7 @@ var StepInputDirective = function () {
         link: link
     };
 
-    function link ($scope) {
+    function link ($scope, $element, $attrs) {
         if (_.isUndefined($scope.model)) {
             throw new Error('The "tractor-step-input" directive requires a "model" attribute.');
         }
@@ -36,6 +36,7 @@ var StepInputDirective = function () {
             throw new Error('The "tractor-step-input" directive requires a "label" attribute.');
         }
 
+        $scope.form = $scope.$parent[$attrs.form];
         $scope.property = camelcase($scope.label);
     }
 };

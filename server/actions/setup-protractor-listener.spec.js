@@ -13,7 +13,7 @@ var setupProtractorListener = require('./setup-protractor-listener');
 
 describe('server/actions: setup-protractor-listener:', function () {
     it('should listen to sockets in the "/run-protractor" namespace for a "connection" event', function () {
-        var EventEmitter = require('events');
+        var EventEmitter = require('events').EventEmitter;
         var emitter = new EventEmitter();
         var sockets = {
             of: noop
@@ -29,7 +29,7 @@ describe('server/actions: setup-protractor-listener:', function () {
 
     describe('"run-protractor" listener: ', function () {
         it('should spawn the "protractor" command when it receives a "connection" event', function () {
-            var EventEmitter = require('events');
+            var EventEmitter = require('events').EventEmitter;
             var childProcess = require('child_process');
             var socketEmitter = new EventEmitter();
             var spawnEmitter = new EventEmitter();
@@ -50,7 +50,7 @@ describe('server/actions: setup-protractor-listener:', function () {
         });
 
         it('should disconnect the socket when "protractor" finishes', function () {
-            var EventEmitter = require('events');
+            var EventEmitter = require('events').EventEmitter;
             var childProcess = require('child_process');
             var socketEmitter = new EventEmitter();
             var spawnEmitter = new EventEmitter();
@@ -77,7 +77,7 @@ describe('server/actions: setup-protractor-listener:', function () {
 
         it('should format messages from "stdout" and send them to the client', function () {
             var log = require('../utils/logging');
-            var EventEmitter = require('events');
+            var EventEmitter = require('events').EventEmitter;
             var childProcess = require('child_process');
             var socketEmitter = new EventEmitter();
             var spawnEmitter = new EventEmitter();
@@ -107,7 +107,7 @@ describe('server/actions: setup-protractor-listener:', function () {
 
         it('should format messages from "stdout" and send them to the client', function () {
             var log = require('../utils/logging');
-            var EventEmitter = require('events');
+            var EventEmitter = require('events').EventEmitter;
             var childProcess = require('child_process');
             var socketEmitter = new EventEmitter();
             var spawnEmitter = new EventEmitter();
@@ -136,7 +136,7 @@ describe('server/actions: setup-protractor-listener:', function () {
         });
 
         it('should not send empty messages to the client', function () {
-            var EventEmitter = require('events');
+            var EventEmitter = require('events').EventEmitter;
             var childProcess = require('child_process');
             var socketEmitter = new EventEmitter();
             var spawnEmitter = new EventEmitter();

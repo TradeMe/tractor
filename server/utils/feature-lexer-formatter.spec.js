@@ -5,13 +5,13 @@ var chai = require('chai');
 
 var expect = chai.expect;
 
-var GherkinLexerFormatter = require('./gherkin-lexer-formatter');
+var FeatureLexerFormatter = require('./feature-lexer-formatter');
 
-describe('server/utils: gherkin-lexer-formattery:', function () {
-    describe('GherkinLexerFormatter::feature', function () {
-        it('should extract the important properties out of a gherkin feature description', function () {
+describe('server/utils: feature-lexer-formattery:', function () {
+    describe('FeatureLexerFormatter::feature', function () {
+        it('should extract the important properties out of a feature description', function () {
             var eol = require('os').EOL;
-            var formatter = new GherkinLexerFormatter();
+            var formatter = new FeatureLexerFormatter();
             var description = 'In order to do something' + eol +
                               'As a user' + eol +
                               'I want to be able to do something';
@@ -27,9 +27,9 @@ describe('server/utils: gherkin-lexer-formattery:', function () {
         });
     });
 
-    describe('GherkinLexerFormatter::background', function () {
-        it('should extract the important properties out of a gherkin background description', function () {
-            var formatter = new GherkinLexerFormatter();
+    describe('FeatureLexerFormatter::background', function () {
+        it('should extract the important properties out of a feature background description', function () {
+            var formatter = new FeatureLexerFormatter();
             formatter.features = [{
                 elements: []
             }];
@@ -45,9 +45,9 @@ describe('server/utils: gherkin-lexer-formattery:', function () {
         });
     });
 
-    describe('GherkinLexerFormatter::scenario', function () {
-        it('should extract the important properties out of a gherkin scenario description', function () {
-            var formatter = new GherkinLexerFormatter();
+    describe('FeatureLexerFormatter::scenario', function () {
+        it('should extract the important properties out of a feature scenario description', function () {
+            var formatter = new FeatureLexerFormatter();
             formatter.features = [{
                 elements: []
             }];
@@ -63,9 +63,9 @@ describe('server/utils: gherkin-lexer-formattery:', function () {
         });
     });
 
-    describe('GherkinLexerFormatter::scenario_outline', function () {
-        it('should extract the important properties out of a gherkin scenario_outline description', function () {
-            var formatter = new GherkinLexerFormatter();
+    describe('FeatureLexerFormatter::scenario_outline', function () {
+        it('should extract the important properties out of a feature scenario_outline description', function () {
+            var formatter = new FeatureLexerFormatter();
             formatter.features = [{
                 elements: []
             }];
@@ -81,9 +81,9 @@ describe('server/utils: gherkin-lexer-formattery:', function () {
         });
     });
 
-    describe('GherkinLexerFormatter::row', function () {
-        it('should extract the variables out of a gherkin step definition', function () {
-            var formatter = new GherkinLexerFormatter();
+    describe('FeatureLexerFormatter::row', function () {
+        it('should extract the variables out of a feature step definition', function () {
+            var formatter = new FeatureLexerFormatter();
             formatter.features = [{
                 elements: [{}]
             }];
@@ -96,8 +96,8 @@ describe('server/utils: gherkin-lexer-formattery:', function () {
             expect(formatter.lastElement.variables[2]).to.equal('c');
         });
 
-        it('should extract each example out of a gherkin step definition', function () {
-            var formatter = new GherkinLexerFormatter();
+        it('should extract each example out of a feature step definition', function () {
+            var formatter = new FeatureLexerFormatter();
             formatter.features = [{
                 elements: [{
                     variables: [],
@@ -114,9 +114,9 @@ describe('server/utils: gherkin-lexer-formattery:', function () {
         });
     });
 
-    describe('GherkinLexerFormatter::step', function () {
+    describe('FeatureLexerFormatter::step', function () {
         it('should extract each step declaration out of a scenario', function () {
-            var formatter = new GherkinLexerFormatter();
+            var formatter = new FeatureLexerFormatter();
             formatter.features = [{
                 elements: [{
                     stepDeclarations: []

@@ -2,30 +2,37 @@
     <h3>Mock Data files:</h3>
     <ul class='file-tree__file-list file-tree__file-list--json'>
         <li ng-repeat="mockDataFileName in mockDataEditor.mockDataFileNames"
-            ng-click="mockDataEditor.openMockDataFile(mockDataFileName)"
-            ng-class="{ true: 'active' }[mockDataFileName === mockDataEditor.mockData.name + '.data.json']"
+            ng-class="{ true: 'active' }[mockDataFileName === mockDataEditor.mockData.name]"
             class="file-tree__file-list-file">
-            <span>{{ mockDataFileName }}</span>
+            <a ui-sref="tractor.mock-data-editor({ mockData: mockDataFileName })">{{ mockDataFileName }}</a>
         </li>
     </ul>
 </section>
 
-<section class="file-options">
-    <h2 class="file-options__name">{{ mockDataEditor.mockData.name }}</h2>
-    <div>
-        <tractor-text-input class="file-options__name-input"
-            label="Name"
-            model="mockDataEditor.mockData"
-            example="Data">
-        </tractor-text-input>
-        <tractor-action class="file-options__save-file" model="mockDataEditor" action="Save mock data file"></tractor-action>
-    </div>
-</section>
-
-<section class="file-editor">
-    <section class="file-editor__container">
-        <h3>JSON data:</h3>
-        <textarea ng-model="mockDataEditor.mockData.json"></textarea>
-
+<form class="file" name="mock-data-editor" novalidate
+    ng-submit="mockDataEditor.showErrors() && mockDataEditor.saveMockDataFile()">
+    <section class="file-options">
+        <h2 class="file-options__name">{{ mockDataEditor.mockData.name }}</h2>
+        <div>
+            <tractor-text-input class="file-options__name-input"
+                form="mock-data-editor"
+                label="Name"
+                model="mockDataEditor.mockData"
+                example="Data">
+            </tractor-text-input>
+            <tractor-submit class="file-options__save-file"
+                action="Save mock data file">
+            </tractor-submit>
+        </div>
     </section>
-</section>
+
+    <section class="file-editor">
+        <section class="file-editor__container">
+            <h3>JSON data:</h3>
+            <textarea
+                ng-model="mockDataEditor.mockData.json"
+                required>
+            </textarea>
+        </section>
+    </section>
+</form>

@@ -1,12 +1,10 @@
-<form>
-    <label ng-if="model[property].description" title="{{ model[property].description }}">{{ label }}: </label>
-    <label ng-if="!model[property].description">{{ label }}: </label>
-    <select ng-if="as"
-            ng-model="model[property]"
-            ng-options="option as option[as] for option in selectOptions">
-    </select>
-    <select ng-if="!as"
-            ng-model="model[property]"
-            ng-options="option for option in selectOptions">
-    </select>
-<form>
+<label ng-if="model[property].description" title="{{ model[property].description }}">{{ label }}: </label>
+<label ng-if="!model[property].description">{{ label }}: </label>
+<select ng-if="as"
+        ng-model="model[property]"
+        ng-options="option as option[as] for option in selectOptions">
+</select>
+<select ng-if="!as"
+        ng-model="model[property]"
+        ng-options="option for option in selectOptions">
+</select>

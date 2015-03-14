@@ -4,14 +4,14 @@
 var _ = require('lodash');
 
 // Module:
-var GherkinEditor = require('../GherkinEditor');
+var FeatureEditor = require('../FeatureEditor');
 
 // Dependencies:
 require('../../../Core/Services/StringToLiteralService');
 
 var createExampleModelConstructor = function (
     StringToLiteralService,
-    GherkinIndent
+    FeatureIndent
 ) {
     var ExampleModel = function ExampleModel (scenario) {
         var values = {};
@@ -46,13 +46,13 @@ var createExampleModelConstructor = function (
            var literal = StringToLiteralService.toLiteral(value);
            return !_.isUndefined(literal) ? literal : '"' + value + '"';
         }, this).join(' | ') + ' |';
-        return GherkinIndent + GherkinIndent + GherkinIndent + values;
+        return FeatureIndent + FeatureIndent + FeatureIndent + values;
     }
 };
 
-GherkinEditor.factory('ExampleModel', function (
+FeatureEditor.factory('ExampleModel', function (
     StringToLiteralService,
-    GherkinIndent
+    FeatureIndent
 ) {
-    return createExampleModelConstructor(StringToLiteralService, GherkinIndent);
+    return createExampleModelConstructor(StringToLiteralService, FeatureIndent);
 });
