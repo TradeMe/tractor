@@ -5,7 +5,7 @@ var _ = require('lodash');
 var assert = require('assert');
 
 // Module:
-var GherkinEditor = require('../GherkinEditor');
+var FeatureEditor = require('../FeatureEditor');
 
 // Dependencies:
 require('./StepDeclarationParserService');
@@ -21,7 +21,7 @@ var ScenarioParserService = function ScenarioParserService (
         parse: parse
     };
 
-    function parse (gherkin, tokens) {
+    function parse (feature, tokens) {
         var scenario = new ScenarioModel();
 
         scenario.name = tokens.name;
@@ -63,4 +63,4 @@ var ScenarioParserService = function ScenarioParserService (
     }
 };
 
-GherkinEditor.service('ScenarioParserService', ScenarioParserService);
+FeatureEditor.service('ScenarioParserService', ScenarioParserService);

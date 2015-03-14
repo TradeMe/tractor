@@ -14,12 +14,19 @@ require('./Models/MockDataModel');
 var MockDataEditorController = (function () {
     var MockDataEditorController = function MockDataEditorController (
         $stateParams,
+        $scope,
+        $window,
+        NotifierService,
         MockDataFileService,
         MockDataParserService,
         MockDataModel,
         mockDataFileNames,
         mockDataFile
     ) {
+        this.$window = $window;
+        this.$scope = $scope;
+        this.notifierService = NotifierService;
+
         this.mockDataFileService = MockDataFileService;
         this.mockDataParserService = MockDataParserService;
 
@@ -32,13 +39,37 @@ var MockDataEditorController = (function () {
         }
     };
 
-    MockDataEditorController.prototype.openMockDataFile = function (fileName) {
-        this.mockDataFileService.openMockDataFile(fileName)
-        .then(parseMockDataFile.bind(this, fileName));
+    MockDataEditorController.prototype.saveMockDataFile = function () {
+        var mockDataFileNames = this.mockDataFileNames;
+        var json = this.mockData.json;
+        var name = this.mockData.name;
+
+        var exists = _.contains(mockDataFileNames, name);
+
+        if (!exists || this.$window.confirm('This will overwrite "' + name + '". Continue?')) {
+            this.mockDataFileService.saveMockDataFile(json, name)
+            .then(function () {
+                if (!exists) {
+                    mockDataFileNames.push(name);
+                }
+            });
+        }
     };
 
-    MockDataEditorController.prototype.saveMockDataFile = function () {
-        this.mockDataFileService.saveMockDataFile(this.mockData.name, this.mockData.json);
+    MockDataEditorController.prototype.showErrors = function () {
+        var mockDataEditor = this.$scope['mock-data-editor'];
+        if (mockDataEditor.$invalid) {
+            Object.keys(mockDataEditor.$error).forEach(function (invalidType) {
+                var errors = mockDataEditor.$error[invalidType];
+                errors.forEach(function (element) {
+                    element.$setTouched();
+                });
+            });
+            this.notifierService.error('Can\'t save mock data, something is invalid.');
+            return false;
+        } else {
+            return true;
+        }
     };
 
     function parseMockDataFile (fileName, mockDataFile) {

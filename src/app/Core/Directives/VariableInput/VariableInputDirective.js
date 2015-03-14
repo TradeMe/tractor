@@ -16,8 +16,7 @@ var VariableInputDirective = function () {
         scope: {
             model: '=',
             label: '@',
-            example: '@',
-            isClass: '@'
+            example: '@'
         },
 
         /* eslint-disable no-path-concat */
@@ -27,7 +26,12 @@ var VariableInputDirective = function () {
         link: link
     };
 
-    function link ($scope) {
+    function link ($scope, $element, $attrs) {
+        $scope.form = $scope.$parent[$attrs.form];
+        $scope.id = Math.floor(Math.random() * Date.now());
+
+        $scope.isClass = !!$attrs.isClass;
+
         $scope.$watch('model', function () {
             $scope.property = camelcase($scope.label);
         });

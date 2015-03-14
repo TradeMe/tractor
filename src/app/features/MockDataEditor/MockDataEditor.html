@@ -9,22 +9,30 @@
     </ul>
 </section>
 
-<section class="file-options">
-    <h2 class="file-options__name">{{ mockDataEditor.mockData.name }}</h2>
-    <div>
-        <tractor-text-input class="file-options__name-input"
-            label="Name"
-            model="mockDataEditor.mockData"
-            example="Data">
-        </tractor-text-input>
-        <tractor-action class="file-options__save-file" model="mockDataEditor" action="Save mock data file"></tractor-action>
-    </div>
-</section>
-
-<section class="file-editor">
-    <section class="file-editor__container">
-        <h3>JSON data:</h3>
-        <textarea ng-model="mockDataEditor.mockData.json"></textarea>
-
+<form class="file" name="mock-data-editor" novalidate
+    ng-submit="mockDataEditor.showErrors() && mockDataEditor.saveMockDataFile()">
+    <section class="file-options">
+        <h2 class="file-options__name">{{ mockDataEditor.mockData.name }}</h2>
+        <div>
+            <tractor-text-input class="file-options__name-input"
+                form="mock-data-editor"
+                label="Name"
+                model="mockDataEditor.mockData"
+                example="Data">
+            </tractor-text-input>
+            <tractor-submit class="file-options__save-file"
+                action="Save mock data file">
+            </tractor-submit>
+        </div>
     </section>
-</section>
+
+    <section class="file-editor">
+        <section class="file-editor__container">
+            <h3>JSON data:</h3>
+            <textarea
+                ng-model="mockDataEditor.mockData.json"
+                required>
+            </textarea>
+        </section>
+    </section>
+</form>

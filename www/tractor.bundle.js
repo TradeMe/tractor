@@ -20,9 +20,9 @@ require('./features/ComponentEditor/ComponentEditor');
 require('./features/ComponentEditor/ComponentEditorController');
 require('./features/ComponentEditor/Services/ComponentFileService');
 
-require('./features/GherkinEditor/GherkinEditor');
-require('./features/GherkinEditor/GherkinEditorController');
-require('./features/GherkinEditor/Services/GherkinFileService');
+require('./features/FeatureEditor/FeatureEditor');
+require('./features/FeatureEditor/FeatureEditorController');
+require('./features/FeatureEditor/Services/FeatureFileService');
 
 require('./features/StepDefinitionEditor/Services/StepDefinitionFileService');
 require('./features/StepDefinitionEditor/StepDefinitionEditorController');
@@ -46,7 +46,7 @@ angular.module('tractor', [
   'Notifier',
   'ControlPanel',
   'ComponentEditor',
-  'GherkinEditor',
+  'FeatureEditor',
   'StepDefinitionEditor',
   'MockDataEditor'
 ])
@@ -57,14 +57,14 @@ angular.module('tractor', [
     .state('tractor', {
         url: '/',
         /* eslint-disable no-path-concat */
-        template: "<header>\r\n    <section class=\"control-panel__top-row\">\r\n        <div class=\"app-root-url\" title=\"Modify in tractor.conf.js\">\r\n            <h3>App Root URL:&nbsp;</h3><span>{{ controlPanel.appRootUrl }}</span>\r\n        </div>\r\n\r\n        <tractor-action model=\"controlPanel\" action=\"Run protractor\"></tractor-action>\r\n    </section>\r\n\r\n    <nav>\r\n        <ul>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".component-editor\">Components</a>\r\n            </li>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".gherkin-editor\">Gherkins</a>\r\n            </li>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".step-definition-editor\">Step Definitions</a>\r\n            </li>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".mock-data-editor\">Mock Data</a>\r\n            </li>\r\n        </ul>\r\n    </nav>\r\n</header>\r\n\r\n<main ui-view></main>\r\n\r\n<tractor-notifier></tractor-notifier>\r\n",
+        template: "<header>\r\n    <section class=\"control-panel__top-row\">\r\n        <div class=\"app-root-url\" title=\"Modify in tractor.conf.js\">\r\n            <h3>App Root URL:&nbsp;</h3><span>{{ controlPanel.appRootUrl }}</span>\r\n        </div>\r\n\r\n        <tractor-action model=\"controlPanel\" action=\"Run protractor\"></tractor-action>\r\n    </section>\r\n\r\n    <nav>\r\n        <ul>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".component-editor\">Components</a>\r\n            </li>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".feature-editor\">Features</a>\r\n            </li>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".step-definition-editor\">Step Definitions</a>\r\n            </li>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".mock-data-editor\">Mock Data</a>\r\n            </li>\r\n        </ul>\r\n    </nav>\r\n</header>\r\n\r\n<main ui-view></main>\r\n\r\n<tractor-notifier></tractor-notifier>\r\n",
         /* eslint-enable no-path-concat */
         controller: 'ControlPanelController as controlPanel'
     })
     .state('tractor.component-editor', {
         url: 'component-editor?component',
         /* eslint-disable no-path-concat */
-        template: "<section class=\"file-tree\">\r\n    <h3>Component files:</h3>\r\n    <ul class='file-tree__file-list file-tree__file-list--javascript'>\r\n        <li ng-repeat=\"componentFileName in componentEditor.componentFileNames\"\r\n            ng-class=\"{ true: 'active' }[componentFileName === componentEditor.component.name]\"\r\n            class=\"file-tree__file-list-file\">\r\n            <a ui-sref=\"tractor.component-editor({ component: componentFileName })\">{{ componentFileName }}</a>\r\n        </li>\r\n    </ul>\r\n</section>\r\n\r\n<section class=\"file-options\">\r\n    <h2 class=\"file-options__name\">{{ componentEditor.component.name }}</h2>\r\n    <div>\r\n        <tractor-variable-input class=\"file-options__name-input\"\r\n            label=\"Name\"\r\n            model=\"componentEditor.component\"\r\n            example=\"Component\"\r\n            is-class=\"{{ true }}\">\r\n        </tractor-variable-input>\r\n        <tractor-action class=\"file-options__save-file\"\r\n            model=\"componentEditor\"\r\n            action=\"Save component file\">\r\n        </tractor-action>\r\n    </div>\r\n</section>\r\n\r\n<section class=\"file-editor\">\r\n    <section ng-show=\"componentEditor.component.name\">\r\n        <section class=\"file-editor__container\">\r\n            <h3>Elements:</h3>\r\n\r\n            <section ng-if=\"componentEditor.component.domElements.length\">\r\n                <ul>\r\n                    <li class=\"file-editor__list-item\" ng-repeat=\"domElement in componentEditor.component.domElements\">\r\n                        <tractor-action\r\n                            model=\"componentEditor.component\"\r\n                            action=\"Remove element\"\r\n                            argument=\"domElement\"\r\n                            icon=\"remove\">\r\n                        </tractor-action>\r\n\r\n                        <tractor-variable-input\r\n                            label=\"Name\"\r\n                            model=\"domElement\"\r\n                            example=\"element\">\r\n                        </tractor-variable-input>\r\n                        <tractor-select\r\n                            label=\"Type\"\r\n                            model=\"domElement.filters[0]\">\r\n                        </tractor-select>\r\n                        <tractor-text-input\r\n                            label=\"Locator\"\r\n                            model=\"domElement.filters[0]\"\r\n                            example=\"someController.someModel\">\r\n                        </tractor-text-input>\r\n\r\n                        <section>\r\n                            <h4>Filters:</h4>\r\n\r\n                            <ol ng-if=\"domElement.filters.length > 1\" as-sortable ng-model=\"domElement.filters\" is-disabled=\"domElement.filters.length < 3\">\r\n                                <li class=\"file-editor__list-item\" ng-repeat=\"filter in domElement.filters.slice(1)\" as-sortable-item>\r\n                                    <tractor-action\r\n                                        model=\"domElement\"\r\n                                        action=\"Remove filter\"\r\n                                        argument=\"filter\"\r\n                                        icon=\"remove\">\r\n                                    </tractor-action>\r\n                                    <div ng-if=\"domElement.filters.length > 2\" class=\"file-editor__sort-handle\" as-sortable-item-handle title=\"Drag to sort\"></div>\r\n\r\n                                    <tractor-select ng-if=\"!domElement.filters[$index].isAll\"\r\n                                        label=\"Type\"\r\n                                        model=\"filter\">\r\n                                    </tractor-select>\r\n                                    <tractor-text-input\r\n                                        label=\"Locator\"\r\n                                        model=\"filter\"\r\n                                        example=\"someController.someModel\">\r\n                                    </tractor-text-input>\r\n                                </li>\r\n                            </ol>\r\n\r\n                            <tractor-action\r\n                                model=\"domElement\"\r\n                                action=\"Add filter\">\r\n                            </tractor-action>\r\n                        </section>\r\n                    </li>\r\n                </ul>\r\n            </section>\r\n\r\n            <tractor-action\r\n                model=\"componentEditor.component\"\r\n                action=\"Add element\">\r\n            </tractor-action>\r\n        </section>\r\n\r\n        <section class=\"file-editor__container\">\r\n            <h3>Actions:</h3>\r\n\r\n            <section ng-if=\"componentEditor.component.actions.length\">\r\n                <ul>\r\n                    <li class=\"file-editor__list-item\" ng-repeat=\"action in componentEditor.component.actions\">\r\n                        <tractor-action\r\n                            model=\"componentEditor.component\"\r\n                            action=\"Remove action\"\r\n                            argument=\"action\"\r\n                            icon=\"remove\">\r\n                        </tractor-action>\r\n\r\n                        <tractor-variable-input\r\n                            label=\"Name\"\r\n                            model=\"action\"\r\n                            example=\"action\">\r\n                        </tractor-variable-input>\r\n\r\n                        <section>\r\n                            <h4>Parameters:</h4>\r\n\r\n                            <section>\r\n                                <ol ng-if=\"action.parameters.length\" as-sortable ng-model=\"action.parameters\" is-disabled=\"action.parameters.length < 2\">\r\n                                    <li class=\"file-editor__list-item\" ng-repeat=\"parameter in action.parameters\" as-sortable-item>\r\n                                        <tractor-action\r\n                                            model=\"action\"\r\n                                            action=\"Remove parameter\"\r\n                                            argument=\"parameter\"\r\n                                            icon=\"remove\">\r\n                                        </tractor-action>\r\n                                        <div ng-if=\"action.parameters.length > 1\" class=\"file-editor__sort-handle\" as-sortable-item-handle title=\"Drag to sort\"></div>\r\n\r\n                                        <tractor-variable-input\r\n                                            label=\"Name\"\r\n                                            model=\"parameter\"\r\n                                            example=\"parameter\">\r\n                                        </tractor-variable-input>\r\n                                    </li>\r\n                                </ol>\r\n                            </section>\r\n\r\n                            <tractor-action\r\n                                model=\"action\"\r\n                                action=\"Add parameter\">\r\n                            </tractor-action>\r\n                        </section>\r\n\r\n                        <section>\r\n                            <h4>Interactions:</h4>\r\n\r\n                            <section>\r\n                                <ol ng-if=\"action.interactions.length\" as-sortable ng-model=\"action.interactions\" is-disabled=\"action.interactions.length < 2\">\r\n                                    <li class=\"file-editor__list-item\" ng-repeat=\"interaction in action.interactions\" as-sortable-item>\r\n                                        <tractor-action\r\n                                            model=\"action\"\r\n                                            action=\"Remove interaction\"\r\n                                            argument=\"interaction\"\r\n                                            icon=\"remove\">\r\n                                        </tractor-action>\r\n                                        <div ng-if=\"action.interactions.length > 1\" class=\"file-editor__sort-handle\" as-sortable-item-handle title=\"Drag to sort\"></div>\r\n\r\n                                        <tractor-select\r\n                                            label=\"Element\"\r\n                                            model=\"interaction\"\r\n                                            options=\"componentEditor.component.elements\"\r\n                                            as=\"name\">\r\n                                        </tractor-select>\r\n                                        <tractor-select\r\n                                            label=\"Method\"\r\n                                            model=\"interaction\"\r\n                                            options=\"interaction.element.methods\"\r\n                                            as=\"name\">\r\n                                        </tractor-select>\r\n\r\n                                        <div ng-repeat=\"argument in interaction.arguments\">\r\n                                            <tractor-literal-input\r\n                                                name=\"interaction.method.arguments[$index].name\"\r\n                                                model=\"argument.value\"\r\n                                                description=\"argument.description\"\r\n                                                required=\"argument.required\"\r\n                                                type=\"argument.type\">\r\n                                            </tractor-literal-input>\r\n                                        </div>\r\n                                    </li>\r\n                                </ol>\r\n                            </section>\r\n\r\n                            <tractor-action\r\n                                model=\"action\"\r\n                                action=\"Add interaction\">\r\n                            </tractor-action>\r\n                        </section>\r\n                    </li>\r\n                </ul>\r\n            </section>\r\n\r\n            <tractor-action\r\n                model=\"componentEditor.component\"\r\n                action=\"Add action\">\r\n            </tractor-action>\r\n        </section>\r\n    </section>\r\n</section>\r\n",
+        template: "<section class=\"file-tree\">\r\n    <h3>Component files:</h3>\r\n    <ul class='file-tree__file-list file-tree__file-list--javascript'>\r\n        <li ng-repeat=\"componentFileName in componentEditor.componentFileNames\"\r\n            ng-class=\"{ true: 'active' }[componentFileName === componentEditor.component.name]\"\r\n            class=\"file-tree__file-list-file\">\r\n            <a ui-sref=\"tractor.component-editor({ component: componentFileName })\">{{ componentFileName }}</a>\r\n        </li>\r\n    </ul>\r\n</section>\r\n\r\n<form class=\"file\" name=\"component-editor\" novalidate\r\n    ng-submit=\"componentEditor.showErrors() && componentEditor.saveComponentFile()\">\r\n    <section class=\"file-options\">\r\n        <h2 class=\"file-options__name\">{{ componentEditor.component.name }}</h2>\r\n        <div>\r\n            <tractor-variable-input class=\"file-options__name-input\"\r\n                form=\"component-editor\"\r\n                label=\"Name\"\r\n                model=\"componentEditor.component\"\r\n                example=\"Component\"\r\n                is-class=\"true\">\r\n            </tractor-variable-input>\r\n            <tractor-submit class=\"file-options__save-file\"\r\n                action=\"Save component file\">\r\n            </tractor-submit>\r\n        </div>\r\n    </section>\r\n\r\n    <section class=\"file-editor\">\r\n        <section ng-show=\"componentEditor.component.name\">\r\n            <section class=\"file-editor__container\">\r\n                <h3>Elements:</h3>\r\n\r\n                <section ng-if=\"componentEditor.component.domElements.length\">\r\n                    <ul>\r\n                        <li class=\"file-editor__list-item\" ng-repeat=\"domElement in componentEditor.component.domElements\">\r\n                            <tractor-action\r\n                                model=\"componentEditor.component\"\r\n                                action=\"Remove element\"\r\n                                argument=\"domElement\"\r\n                                icon=\"remove\">\r\n                            </tractor-action>\r\n\r\n                            <tractor-variable-input\r\n                                form=\"component-editor\"\r\n                                label=\"Name\"\r\n                                model=\"domElement\"\r\n                                example=\"element\">\r\n                            </tractor-variable-input>\r\n                            <tractor-select\r\n                                label=\"Type\"\r\n                                model=\"domElement.filters[0]\">\r\n                            </tractor-select>\r\n                            <tractor-text-input\r\n                                form=\"component-editor\"\r\n                                label=\"Locator\"\r\n                                model=\"domElement.filters[0]\"\r\n                                example=\"someController.someModel\">\r\n                            </tractor-text-input>\r\n\r\n                            <section>\r\n                                <h4>Filters:</h4>\r\n\r\n                                <ol ng-if=\"domElement.filters.length > 1\" as-sortable ng-model=\"domElement.filters\" is-disabled=\"domElement.filters.length < 3\">\r\n                                    <li class=\"file-editor__list-item\" ng-repeat=\"filter in domElement.filters.slice(1)\" as-sortable-item>\r\n                                        <tractor-action\r\n                                            model=\"domElement\"\r\n                                            action=\"Remove filter\"\r\n                                            argument=\"filter\"\r\n                                            icon=\"remove\">\r\n                                        </tractor-action>\r\n                                        <div ng-if=\"domElement.filters.length > 2\" class=\"file-editor__sort-handle\" as-sortable-item-handle title=\"Drag to sort\"></div>\r\n\r\n                                        <tractor-select ng-if=\"!domElement.filters[$index].isAll\"\r\n                                            label=\"Type\"\r\n                                            model=\"filter\">\r\n                                        </tractor-select>\r\n                                        <tractor-text-input\r\n                                            form=\"component-editor\"\r\n                                            label=\"Locator\"\r\n                                            model=\"filter\"\r\n                                            example=\"someController.someModel\">\r\n                                        </tractor-text-input>\r\n                                    </li>\r\n                                </ol>\r\n\r\n                                <tractor-action\r\n                                    model=\"domElement\"\r\n                                    action=\"Add filter\">\r\n                                </tractor-action>\r\n                            </section>\r\n                        </li>\r\n                    </ul>\r\n                </section>\r\n\r\n                <tractor-action\r\n                    model=\"componentEditor.component\"\r\n                    action=\"Add element\">\r\n                </tractor-action>\r\n            </section>\r\n\r\n            <section class=\"file-editor__container\">\r\n                <h3>Actions:</h3>\r\n\r\n                <section ng-if=\"componentEditor.component.actions.length\">\r\n                    <ul>\r\n                        <li class=\"file-editor__list-item\" ng-repeat=\"action in componentEditor.component.actions\">\r\n                            <tractor-action\r\n                                model=\"componentEditor.component\"\r\n                                action=\"Remove action\"\r\n                                argument=\"action\"\r\n                                icon=\"remove\">\r\n                            </tractor-action>\r\n\r\n                            <tractor-variable-input\r\n                                form=\"component-editor\"\r\n                                label=\"Name\"\r\n                                model=\"action\"\r\n                                example=\"action\">\r\n                            </tractor-variable-input>\r\n\r\n                            <section>\r\n                                <h4>Parameters:</h4>\r\n\r\n                                <section>\r\n                                    <ol ng-if=\"action.parameters.length\" as-sortable ng-model=\"action.parameters\" is-disabled=\"action.parameters.length < 2\">\r\n                                        <li class=\"file-editor__list-item\" ng-repeat=\"parameter in action.parameters\" as-sortable-item>\r\n                                            <tractor-action\r\n                                                model=\"action\"\r\n                                                action=\"Remove parameter\"\r\n                                                argument=\"parameter\"\r\n                                                icon=\"remove\">\r\n                                            </tractor-action>\r\n                                            <div ng-if=\"action.parameters.length > 1\" class=\"file-editor__sort-handle\" as-sortable-item-handle title=\"Drag to sort\"></div>\r\n\r\n                                            <tractor-variable-input\r\n                                                form=\"component-editor\"\r\n                                                label=\"Name\"\r\n                                                model=\"parameter\"\r\n                                                example=\"parameter\">\r\n                                            </tractor-variable-input>\r\n                                        </li>\r\n                                    </ol>\r\n                                </section>\r\n\r\n                                <tractor-action\r\n                                    model=\"action\"\r\n                                    action=\"Add parameter\">\r\n                                </tractor-action>\r\n                            </section>\r\n\r\n                            <section>\r\n                                <h4>Interactions:</h4>\r\n\r\n                                <section>\r\n                                    <ol ng-if=\"action.interactions.length\" as-sortable ng-model=\"action.interactions\" is-disabled=\"action.interactions.length < 2\">\r\n                                        <li class=\"file-editor__list-item\" ng-repeat=\"interaction in action.interactions\" as-sortable-item>\r\n                                            <tractor-action\r\n                                                model=\"action\"\r\n                                                action=\"Remove interaction\"\r\n                                                argument=\"interaction\"\r\n                                                icon=\"remove\">\r\n                                            </tractor-action>\r\n                                            <div ng-if=\"action.interactions.length > 1\" class=\"file-editor__sort-handle\" as-sortable-item-handle title=\"Drag to sort\"></div>\r\n\r\n                                            <tractor-select\r\n                                                label=\"Element\"\r\n                                                model=\"interaction\"\r\n                                                options=\"componentEditor.component.elements\"\r\n                                                as=\"name\">\r\n                                            </tractor-select>\r\n                                            <tractor-select\r\n                                                label=\"Method\"\r\n                                                model=\"interaction\"\r\n                                                options=\"interaction.element.methods\"\r\n                                                as=\"name\">\r\n                                            </tractor-select>\r\n\r\n                                            <div ng-repeat=\"argument in interaction.arguments\">\r\n                                                <tractor-literal-input\r\n                                                    form=\"component-editor\"\r\n                                                    name=\"argument.name\"\r\n                                                    model=\"argument.value\"\r\n                                                    description=\"argument.description\"\r\n                                                    required=\"argument.required\"\r\n                                                    type=\"argument.type\">\r\n                                                </tractor-literal-input>\r\n                                            </div>\r\n                                        </li>\r\n                                    </ol>\r\n                                </section>\r\n\r\n                                <tractor-action\r\n                                    model=\"action\"\r\n                                    action=\"Add interaction\">\r\n                                </tractor-action>\r\n                            </section>\r\n                        </li>\r\n                    </ul>\r\n                </section>\r\n\r\n                <tractor-action\r\n                    model=\"componentEditor.component\"\r\n                    action=\"Add action\">\r\n                </tractor-action>\r\n            </section>\r\n        </section>\r\n    </section>\r\n</form>\r\n",
         /* eslint-enable no-path-concat */
         controller: 'ComponentEditorController as componentEditor',
         resolve: {
@@ -72,31 +72,31 @@ angular.module('tractor', [
                 return ComponentFileService.getComponentFileNames();
             }],
             componentFile: ['$stateParams', 'ComponentFileService', function ($stateParams, ComponentFileService) {
-                var component = $stateParams.component
+                var component = $stateParams.component;
                 return component ? ComponentFileService.openComponentFile(component) : null;
             }]
         }
     })
-    .state('tractor.gherkin-editor', {
-        url: 'gherkin-editor?feature',
+    .state('tractor.feature-editor', {
+        url: 'feature-editor?feature',
         /* eslint-disable no-path-concat */
-        template: "<section class=\"file-tree\">\r\n    <h3>Gherkin files:</h3>\r\n    <ul class='file-tree__file-list file-tree__file-list--gherkin'>\r\n        <li ng-repeat=\"gherkinFileName in gherkinEditor.gherkinFileNames\"\r\n            ng-class=\"{ true: 'active' }[gherkinFileName === gherkinEditor.gherkinName]\"\r\n            class=\"file-tree__file-list-file\">\r\n            <a ui-sref=\"tractor.gherkin-editor({ feature: gherkinFileName })\">{{ gherkinFileName }}</a>\r\n        </li>\r\n    </ul>\r\n</section>\r\n\r\n<section class=\"file-options\">\r\n    <h2 class=\"file-options__name\">{{ gherkinEditor.gherkinName }}</h2>\r\n    <div>\r\n        <tractor-text-input class=\"file-options__name-input\"\r\n            label=\"Name\"\r\n            model=\"gherkinEditor.gherkin\"\r\n            example=\"Gherkin\">\r\n        </tractor-text-input>\r\n        <tractor-action class=\"file-options__save-file\" model=\"gherkinEditor\" action=\"Save gherkin\"></tractor-action>\r\n    </div>\r\n</section>\r\n\r\n<section class=\"file-editor\">\r\n    <section ng-show=\"gherkinEditor.gherkin.name\">\r\n        <section class=\"file-editor__container\">\r\n            <h3>Feature:</h3>\r\n\r\n            <tractor-text-input\r\n                label=\"In order to\"\r\n                model=\"gherkinEditor.gherkin\"\r\n                example=\"achieve some goal\">\r\n            </tractor-text-input>\r\n            <tractor-text-input\r\n                label=\"As a\"\r\n                model=\"gherkinEditor.gherkin\"\r\n                example=\"certain type of user\">\r\n            </tractor-text-input>\r\n            <tractor-text-input\r\n                label=\"I want\"\r\n                model=\"gherkinEditor.gherkin\"\r\n                example=\"to be able to do something\">\r\n            </tractor-text-input>\r\n        </section>\r\n\r\n        <section class=\"file-editor__container\">\r\n            <h3>Scenarios:</h3>\r\n\r\n            <ul ng-if=\"gherkinEditor.gherkin.scenarios.length\">\r\n                <li class=\"file-editor__list-item\" ng-repeat=\"scenario in gherkinEditor.gherkin.scenarios\">\r\n                    <tractor-action model=\"gherkinEditor.gherkin\" action=\"Remove scenario\" argument=\"scenario\" icon=\"remove\"></tractor-action>\r\n\r\n                    <tractor-text-input\r\n                        label=\"Name\"\r\n                        model=\"scenario\"\r\n                        example=\"Scenario\">\r\n                    </tractor-text-input>\r\n\r\n                    <section>\r\n                        <h4>Step Declarations:</h4>\r\n\r\n                        <ol ng-if=\"scenario.stepDeclarations.length\" as-sortable ng-model=\"scenario.stepDeclarations\" is-disabled=\"scenario.stepDeclarations.length < 2\">\r\n                            <li class=\"file-editor__list-item\" ng-repeat=\"stepDeclaration in scenario.stepDeclarations\" as-sortable-item>\r\n                                <tractor-action model=\"scenario\" action=\"Remove step declaration\" argument=\"stepDeclaration\" icon=\"remove\"></tractor-action>\r\n                                <div ng-if=\"scenario.stepDeclarations.length > 1\" class=\"file-editor__sort-handle\" as-sortable-item-handle title=\"Drag to sort\"></div>\r\n\r\n                                <tractor-select label=\"Type\" model=\"stepDeclaration\"></tractor-select>\r\n                                <tractor-step-input\r\n                                    label=\"Step\"\r\n                                    model=\"stepDeclaration\"\r\n                                    example=\"something happens\">\r\n                                </tractor-step-input>\r\n                            </li>\r\n                        </ol>\r\n\r\n                        <tractor-action model=\"scenario\" action=\"Add step declaration\"></tractor-action>\r\n                    </section>\r\n\r\n                    <section ng-show=\"scenario.exampleVariables.length\">\r\n                        <h4>Examples:</h4>\r\n                        <ul>\r\n                            <li class=\"file-editor__list-item\" ng-repeat=\"example in scenario.examples\">\r\n                                <tractor-action model=\"scenario\" action=\"Remove example\" argument=\"example\" icon=\"remove\"></tractor-action>\r\n\r\n                                <tractor-literal-input ng-repeat=\"exampleVariable in scenario.exampleVariables\"\r\n                                    name=\"exampleVariable\"\r\n                                    model=\"example.values[exampleVariable]\"\r\n                                    type=\"argument.type\">\r\n                                </tractor-literal-input>\r\n                            </li>\r\n                        </ul>\r\n\r\n                        <tractor-action model=\"scenario\" action=\"Add example\"></tractor-action>\r\n                    </section>\r\n                </li>\r\n            </ul>\r\n\r\n            <tractor-action model=\"gherkinEditor.gherkin\" action=\"Add scenario\"></tractor-action>\r\n        </section>\r\n    </section>\r\n</section>\r\n",
+        template: "<section class=\"file-tree\">\r\n    <h3>Feature files:</h3>\r\n    <ul class='file-tree__file-list file-tree__file-list--feature'>\r\n        <li ng-repeat=\"featureFileName in featureEditor.featureFileNames\"\r\n            ng-class=\"{ true: 'active' }[featureFileName === featureEditor.featureName]\"\r\n            class=\"file-tree__file-list-file\">\r\n            <a ui-sref=\"tractor.feature-editor({ feature: featureFileName })\">{{ featureFileName }}</a>\r\n        </li>\r\n    </ul>\r\n</section>\r\n\r\n<form class=\"file\" name=\"feature-editor\" novalidate\r\n    ng-submit=\"featureEditor.showErrors() && featureEditor.saveFeatureFile()\">\r\n    <section class=\"file-options\">\r\n        <h2 class=\"file-options__name\">{{ featureEditor.featureName }}</h2>\r\n        <div>\r\n            <tractor-text-input class=\"file-options__name-input\"\r\n                form=\"feature-editor\"\r\n                label=\"Name\"\r\n                model=\"featureEditor.feature\"\r\n                example=\"Feature\">\r\n            </tractor-text-input>\r\n            <tractor-submit class=\"file-options__save-file\"\r\n                action=\"Save feature file\">\r\n            </tractor-submit>\r\n        </div>\r\n    </section>\r\n\r\n    <section class=\"file-editor\">\r\n        <section ng-show=\"featureEditor.feature.name\">\r\n            <section class=\"file-editor__container\">\r\n                <h3>Feature:</h3>\r\n\r\n                <tractor-text-input\r\n                    form=\"feature-editor\"\r\n                    label=\"In order to\"\r\n                    model=\"featureEditor.feature\"\r\n                    example=\"achieve some goal\">\r\n                </tractor-text-input>\r\n                <tractor-text-input\r\n                    form=\"feature-editor\"\r\n                    label=\"As a\"\r\n                    model=\"featureEditor.feature\"\r\n                    example=\"certain type of user\">\r\n                </tractor-text-input>\r\n                <tractor-text-input\r\n                    form=\"feature-editor\"\r\n                    label=\"I want\"\r\n                    model=\"featureEditor.feature\"\r\n                    example=\"to be able to do something\">\r\n                </tractor-text-input>\r\n            </section>\r\n\r\n            <section class=\"file-editor__container\">\r\n                <h3>Scenarios:</h3>\r\n\r\n                <ul ng-if=\"featureEditor.feature.scenarios.length\">\r\n                    <li class=\"file-editor__list-item\" ng-repeat=\"scenario in featureEditor.feature.scenarios\">\r\n                        <tractor-action\r\n                            model=\"featureEditor.feature\"\r\n                            action=\"Remove scenario\"\r\n                            argument=\"scenario\"\r\n                            icon=\"remove\"></tractor-action>\r\n\r\n                        <tractor-text-input\r\n                            form=\"feature-editor\"\r\n                            label=\"Name\"\r\n                            model=\"scenario\"\r\n                            example=\"Scenario\">\r\n                        </tractor-text-input>\r\n\r\n                        <section>\r\n                            <h4>Step Declarations:</h4>\r\n\r\n                            <ol ng-if=\"scenario.stepDeclarations.length\" as-sortable ng-model=\"scenario.stepDeclarations\" is-disabled=\"scenario.stepDeclarations.length < 2\">\r\n                                <li class=\"file-editor__list-item\" ng-repeat=\"stepDeclaration in scenario.stepDeclarations\" as-sortable-item>\r\n                                    <tractor-action\r\n                                        model=\"scenario\"\r\n                                        action=\"Remove step declaration\"\r\n                                        argument=\"stepDeclaration\"\r\n                                        icon=\"remove\">\r\n                                    </tractor-action>\r\n                                    <div ng-if=\"scenario.stepDeclarations.length > 1\" class=\"file-editor__sort-handle\" as-sortable-item-handle title=\"Drag to sort\"></div>\r\n\r\n                                    <tractor-select label=\"Type\" model=\"stepDeclaration\"></tractor-select>\r\n                                    <tractor-step-input\r\n                                        form=\"feature-editor\"\r\n                                        label=\"Step\"\r\n                                        model=\"stepDeclaration\"\r\n                                        example=\"something happens\">\r\n                                    </tractor-step-input>\r\n                                </li>\r\n                            </ol>\r\n\r\n                            <tractor-action\r\n                                model=\"scenario\"\r\n                                action=\"Add step declaration\">\r\n                            </tractor-action>\r\n                        </section>\r\n\r\n                        <section ng-show=\"scenario.exampleVariables.length\">\r\n                            <h4>Examples:</h4>\r\n                            <ul>\r\n                                <li class=\"file-editor__list-item\" ng-repeat=\"example in scenario.examples\">\r\n                                    <tractor-action\r\n                                        model=\"scenario\"\r\n                                        action=\"Remove example\"\r\n                                        argument=\"example\"\r\n                                        icon=\"remove\">\r\n                                    </tractor-action>\r\n\r\n                                    <tractor-literal-input ng-repeat=\"exampleVariable in scenario.exampleVariables\"\r\n                                        form=\"feature-editor\"\r\n                                        name=\"exampleVariable\"\r\n                                        model=\"example.values[exampleVariable]\"\r\n                                        type=\"argument.type\">\r\n                                    </tractor-literal-input>\r\n                                </li>\r\n                            </ul>\r\n\r\n                            <tractor-action\r\n                                model=\"scenario\"\r\n                                action=\"Add example\">\r\n                            </tractor-action>\r\n                        </section>\r\n                    </li>\r\n                </ul>\r\n\r\n                <tractor-action\r\n                    model=\"featureEditor.feature\"\r\n                    action=\"Add scenario\">\r\n                </tractor-action>\r\n            </section>\r\n        </section>\r\n    </section>\r\n</form>\r\n",
         /* eslint-enable no-path-concat */
-        controller: 'GherkinEditorController as gherkinEditor',
+        controller: 'FeatureEditorController as featureEditor',
         resolve: {
-            gherkinFileNames: ['GherkinFileService', function (GherkinFileService) {
-                return GherkinFileService.getGherkinFileNames();
+            featureFileNames: ['FeatureFileService', function (FeatureFileService) {
+                return FeatureFileService.getFeatureFileNames();
             }],
-            featureFile: ['$stateParams', 'GherkinFileService', function ($stateParams, GherkinFileService) {
+            featureFile: ['$stateParams', 'FeatureFileService', function ($stateParams, FeatureFileService) {
                 var feature = $stateParams.feature;
-                return feature ? GherkinFileService.openGherkinFile(feature) : null;
+                return feature ? FeatureFileService.openFeatureFile(feature) : null;
             }]
         }
     })
     .state('tractor.step-definition-editor', {
         url: 'step-definition-editor?stepDefinition',
         /* eslint-disable no-path-concat */
-        template: "<section class=\"file-tree\">\r\n    <h3>Step Definition files:</h3>\r\n    <ul class='file-tree__file-list file-tree__file-list--javascript'>\r\n        <li ng-repeat=\"stepDefinitionFileName in stepDefinitionEditor.stepDefinitionFileNames\"\r\n            ng-class=\"{ true: 'active' }[stepDefinitionFileName === stepDefinitionEditor.stepDefinition.name]\"\r\n            class=\"file-tree__file-list-file\">\r\n            <a ui-sref=\"tractor.step-definition-editor({ stepDefinition: stepDefinitionFileName })\">{{ stepDefinitionFileName }}</a>\r\n        </li>\r\n    </ul>\r\n</section>\r\n\r\n<section class=\"file-options\" ng-if=\"stepDefinitionEditor.stepDefinition\">\r\n    <h2 class=\"file-options__name\">{{ stepDefinitionEditor.stepDefinition.name }}</h2>\r\n    <div>\r\n        <tractor-action class=\"file-options__save-file\"\r\n            model=\"stepDefinitionEditor\"\r\n            action=\"Save step definition file\">\r\n        </tractor-action>\r\n    </div>\r\n</section>\r\n\r\n<section class=\"file-editor\" ng-if=\"stepDefinitionEditor.stepDefinition\">\r\n    <section ng-if=\"stepDefinitionEditor.canAddComponents\">\r\n        <section class=\"file-editor__container\">\r\n            <h3>Available components:</h3>\r\n            <ul>\r\n                <li ng-repeat=\"component in stepDefinitionEditor.stepDefinition.availableComponents\"\r\n                    ng-if=\"stepDefinitionEditor.stepDefinition.components.indexOf(component) === -1\">\r\n                    <span> {{ component.name }} </spam>\r\n                    <tractor-action\r\n                        model=\"stepDefinitionEditor.stepDefinition\"\r\n                        action=\"Add component\"\r\n                        argument=\"component.name\">\r\n                    </tractor-action>\r\n                </li>\r\n            </ul>\r\n        </section>\r\n\r\n        <section class=\"file-editor__container\"\r\n            ng-if=\"stepDefinitionEditor.hasComponents\">\r\n            <h3>Active components:</h3>\r\n            <ul>\r\n                <li ng-repeat=\"component in stepDefinitionEditor.stepDefinition.componentInstances\">\r\n                    <span> {{ component.component.name }} </span>\r\n                    <tractor-action\r\n                        model=\"stepDefinitionEditor.stepDefinition\"\r\n                        action=\"Remove component\"\r\n                        argument=\"component\"\r\n                        icon=\"remove\">\r\n                    </tractor-action>\r\n                </li>\r\n            </ul>\r\n        </section>\r\n    </section>\r\n\r\n    <section ng-if=\"stepDefinitionEditor.canAddMockData\">\r\n        <section class=\"file-editor__container\">\r\n            <h3>Available mock data:</h3>\r\n            <ul>\r\n                <li ng-repeat=\"mockData in stepDefinitionEditor.stepDefinition.availableMockData\"\r\n                    ng-if=\"stepDefinitionEditor.stepDefinition.mockData.indexOf(mockData) === -1\">\r\n                    <span> {{ mockData.name }} </spam>\r\n                    <tractor-action\r\n                        model=\"stepDefinitionEditor.stepDefinition\"\r\n                        action=\"Add mock\"\r\n                        argument=\"mockData.name\">\r\n                    </tractor-action>\r\n                </li>\r\n            </ul>\r\n        </section>\r\n\r\n        <section class=\"file-editor__container\"\r\n            ng-if=\"stepDefinitionEditor.hasMockData\">\r\n            <h3>Active mock data:</h3>\r\n            <ul>\r\n                <li ng-repeat=\"mockData in stepDefinitionEditor.stepDefinition.mockDataInstances\">\r\n                    <span> {{ mockData.mockData.name }} </span>\r\n                    <tractor-action\r\n                        model=\"stepDefinitionEditor.stepDefinition\"\r\n                        action=\"Remove mock\"\r\n                        argument=\"mock\"\r\n                        icon=\"remove\">\r\n                    </tractor-action>\r\n                </li>\r\n            </ul>\r\n        </section>\r\n    </section>\r\n\r\n    <section class=\"file-editor__container\" ng-if=\"stepDefinitionEditor.showMockDataSection\">\r\n        <h3>Mock Data:</h3>\r\n\r\n        <ul>\r\n            <li class=\"file-editor__list-item\" ng-repeat=\"mock in stepDefinitionEditor.stepDefinition.step.mocks\">\r\n                <tractor-action\r\n                    model=\"stepDefinitionEditor.stepDefinition.step\"\r\n                    action=\"Remove mock\"\r\n                    argument=\"mock\"\r\n                    icon=\"remove\">\r\n                </tractor-action>\r\n\r\n                <tractor-text-input\r\n                    label=\"URL\"\r\n                    model=\"mock\"\r\n                    example=\"http://example.com\">\r\n                </tractor-text-input>\r\n                <tractor-select\r\n                    label=\"Action\"\r\n                    model=\"mock\">\r\n                </tractor-select>\r\n                <tractor-checkbox\r\n                    label=\"Pass through\"\r\n                    model=\"mock.passThrough\">\r\n                </tractor-checkbox>\r\n                <tractor-select\r\n                    ng-if=\"!mock.passThrough && stepDefinitionEditor.hasMockData\"\r\n                    label=\"Data\"\r\n                    model=\"mock\"\r\n                    options=\"stepDefinitionEditor.stepDefinition.mockDataInstances\"\r\n                    as=\"name\">\r\n                </tractor-select>\r\n            </li>\r\n        </ul>\r\n\r\n        <tractor-action\r\n            model=\"stepDefinitionEditor.stepDefinition.step\"\r\n            action=\"Add mock\">\r\n        </tractor-action>\r\n    </section>\r\n\r\n    <section class=\"file-editor__container\" ng-if=\"stepDefinitionEditor.showTasksSection\">\r\n        <h3>Tasks:</h3>\r\n\r\n        <ul>\r\n            <li class=\"file-editor__list-item\" ng-repeat=\"task in stepDefinitionEditor.stepDefinition.step.tasks\">\r\n                <tractor-action\r\n                    model=\"stepDefinitionEditor.stepDefinition.step\"\r\n                    action=\"Remove task\"\r\n                    argument=\"task\"\r\n                    icon=\"remove\">\r\n                </tractor-action>\r\n\r\n                <tractor-select\r\n                    label=\"Component\"\r\n                    model=\"task\"\r\n                    options=\"stepDefinitionEditor.stepDefinition.componentInstances\"\r\n                    as=\"name\">\r\n                </tractor-select>\r\n                <tractor-select\r\n                    label=\"Action\"\r\n                    model=\"task\"\r\n                    options=\"task.component.component.actions\"\r\n                    as=\"name\">\r\n                </tractor-select>\r\n                <div ng-repeat=\"argument in task.arguments\">\r\n                    <tractor-literal-input\r\n                        name=\"argument.name\"\r\n                        model=\"argument.value\">\r\n                    </tractor-literal-input>\r\n                </div>\r\n            </li>\r\n        </ul>\r\n\r\n        <tractor-action\r\n            model=\"stepDefinitionEditor.stepDefinition.step\"\r\n            action=\"Add task\">\r\n        </tractor-action>\r\n    </section>\r\n\r\n    <section  class=\"file-editor__container\" ng-if=\"stepDefinitionEditor.showExpectationsSection\">\r\n        <h3>Expectations:</h3>\r\n\r\n        <ul>\r\n            <li class=\"file-editor__list-item\" ng-repeat=\"expectation in stepDefinitionEditor.stepDefinition.step.expectations\">\r\n                <tractor-action\r\n                    model=\"stepDefinitionEditor.stepDefinition.step\"\r\n                    action=\"Remove expectation\"\r\n                    argument=\"expectation\"\r\n                    icon=\"remove\">\r\n                </tractor-action>\r\n\r\n                <tractor-select\r\n                    label=\"Component\"\r\n                    model=\"expectation\"\r\n                    options=\"stepDefinitionEditor.stepDefinition.componentInstances\"\r\n                    as=\"name\">\r\n                </tractor-select>\r\n                <tractor-select\r\n                    label=\"Action\"\r\n                    model=\"expectation\"\r\n                    options=\"expectation.component.component.actions\"\r\n                    as=\"name\">\r\n                </tractor-select>\r\n                <tractor-literal-input ng-repeat=\"argument in expectation.arguments\"\r\n                    name=\"argument.name\"\r\n                    model=\"argument.value\"\r\n                    type=\"argument.type\">\r\n                </tractor-literal-input>\r\n                <tractor-literal-input\r\n                    name=\"'Expected result'\"\r\n                    model=\"expectation.expectedResult\">\r\n                </tractor-literal-input>\r\n            </li>\r\n        </ul>\r\n\r\n        <tractor-action\r\n            model=\"stepDefinitionEditor.stepDefinition.step\"\r\n            action=\"Add expectation\">\r\n        </tractor-action>\r\n    </section>\r\n</section>\r\n",
+        template: "<section class=\"file-tree\">\r\n    <h3>Step Definition files:</h3>\r\n    <ul class='file-tree__file-list file-tree__file-list--javascript'>\r\n        <li ng-repeat=\"stepDefinitionFileName in stepDefinitionEditor.stepDefinitionFileNames\"\r\n            ng-class=\"{ true: 'active' }[stepDefinitionFileName === stepDefinitionEditor.stepDefinition.name]\"\r\n            class=\"file-tree__file-list-file\">\r\n            <a ui-sref=\"tractor.step-definition-editor({ stepDefinition: stepDefinitionFileName })\">{{ stepDefinitionFileName }}</a>\r\n        </li>\r\n    </ul>\r\n</section>\r\n\r\n<form class=\"file\" name=\"step-definition-editor\" novalidate\r\n    ng-submit=\"stepDefinitionEditor.showErrors() && stepDefinitionEditor.saveStepDefinitionFile()\">\r\n    <section class=\"file-options\" ng-if=\"stepDefinitionEditor.stepDefinition\">\r\n        <h2 class=\"file-options__name\">{{ stepDefinitionEditor.stepDefinition.name }}</h2>\r\n        <div>\r\n            <tractor-submit class=\"file-options__save-file\"\r\n                action=\"Save step definition file\">\r\n            </tractor-submit>\r\n        </div>\r\n    </section>\r\n\r\n    <section class=\"file-editor\" ng-if=\"stepDefinitionEditor.stepDefinition\">\r\n        <section ng-if=\"stepDefinitionEditor.canAddComponents\">\r\n            <section class=\"file-editor__container\">\r\n                <h3>Available components:</h3>\r\n                <ul>\r\n                    <li ng-repeat=\"component in stepDefinitionEditor.stepDefinition.availableComponents\"\r\n                        ng-if=\"stepDefinitionEditor.stepDefinition.components.indexOf(component) === -1\">\r\n                        <span> {{ component.name }} </spam>\r\n                        <tractor-action\r\n                            model=\"stepDefinitionEditor.stepDefinition\"\r\n                            action=\"Add component\"\r\n                            argument=\"component.name\">\r\n                        </tractor-action>\r\n                    </li>\r\n                </ul>\r\n            </section>\r\n\r\n            <section class=\"file-editor__container\"\r\n                ng-if=\"stepDefinitionEditor.hasComponents\">\r\n                <h3>Active components:</h3>\r\n                <ul>\r\n                    <li ng-repeat=\"component in stepDefinitionEditor.stepDefinition.componentInstances\">\r\n                        <span> {{ component.component.name }} </span>\r\n                        <tractor-action\r\n                            model=\"stepDefinitionEditor.stepDefinition\"\r\n                            action=\"Remove component\"\r\n                            argument=\"component\"\r\n                            icon=\"remove\">\r\n                        </tractor-action>\r\n                    </li>\r\n                </ul>\r\n            </section>\r\n        </section>\r\n\r\n        <section ng-if=\"stepDefinitionEditor.canAddMockData\">\r\n            <section class=\"file-editor__container\">\r\n                <h3>Available mock data:</h3>\r\n                <ul>\r\n                    <li ng-repeat=\"mockData in stepDefinitionEditor.stepDefinition.availableMockData\"\r\n                        ng-if=\"stepDefinitionEditor.stepDefinition.mockData.indexOf(mockData) === -1\">\r\n                        <span> {{ mockData.name }} </spam>\r\n                        <tractor-action\r\n                            model=\"stepDefinitionEditor.stepDefinition\"\r\n                            action=\"Add mock\"\r\n                            argument=\"mockData.name\">\r\n                        </tractor-action>\r\n                    </li>\r\n                </ul>\r\n            </section>\r\n\r\n            <section class=\"file-editor__container\"\r\n                ng-if=\"stepDefinitionEditor.hasMockData\">\r\n                <h3>Active mock data:</h3>\r\n                <ul>\r\n                    <li ng-repeat=\"mockData in stepDefinitionEditor.stepDefinition.mockDataInstances\">\r\n                        <span> {{ mockData.mockData.name }} </span>\r\n                        <tractor-action\r\n                            form=\"step-definition-editor\"\r\n                            model=\"stepDefinitionEditor.stepDefinition\"\r\n                            action=\"Remove mock\"\r\n                            argument=\"mock\"\r\n                            icon=\"remove\">\r\n                        </tractor-action>\r\n                    </li>\r\n                </ul>\r\n            </section>\r\n        </section>\r\n\r\n        <section class=\"file-editor__container\" ng-if=\"stepDefinitionEditor.showMockDataSection\">\r\n            <h3>Mock Data:</h3>\r\n\r\n            <ul>\r\n                <li class=\"file-editor__list-item\" ng-repeat=\"mock in stepDefinitionEditor.stepDefinition.step.mocks\">\r\n                    <tractor-action\r\n                        model=\"stepDefinitionEditor.stepDefinition.step\"\r\n                        action=\"Remove mock\"\r\n                        argument=\"mock\"\r\n                        icon=\"remove\">\r\n                    </tractor-action>\r\n\r\n                    <tractor-text-input\r\n                        form=\"step-definition-editor\"\r\n                        label=\"URL\"\r\n                        model=\"mock\"\r\n                        example=\"http://example.com\">\r\n                    </tractor-text-input>\r\n                    <tractor-select\r\n                        label=\"Action\"\r\n                        model=\"mock\">\r\n                    </tractor-select>\r\n                    <tractor-checkbox\r\n                        label=\"Pass through\"\r\n                        model=\"mock.passThrough\">\r\n                    </tractor-checkbox>\r\n                    <tractor-select\r\n                        ng-if=\"!mock.passThrough && stepDefinitionEditor.hasMockData\"\r\n                        label=\"Data\"\r\n                        model=\"mock\"\r\n                        options=\"stepDefinitionEditor.stepDefinition.mockDataInstances\"\r\n                        as=\"name\">\r\n                    </tractor-select>\r\n                </li>\r\n            </ul>\r\n\r\n            <tractor-action\r\n                model=\"stepDefinitionEditor.stepDefinition.step\"\r\n                action=\"Add mock\">\r\n            </tractor-action>\r\n        </section>\r\n\r\n        <section class=\"file-editor__container\" ng-if=\"stepDefinitionEditor.showTasksSection\">\r\n            <h3>Tasks:</h3>\r\n\r\n            <ul>\r\n                <li class=\"file-editor__list-item\" ng-repeat=\"task in stepDefinitionEditor.stepDefinition.step.tasks\">\r\n                    <tractor-action\r\n                        model=\"stepDefinitionEditor.stepDefinition.step\"\r\n                        action=\"Remove task\"\r\n                        argument=\"task\"\r\n                        icon=\"remove\">\r\n                    </tractor-action>\r\n\r\n                    <tractor-select\r\n                        label=\"Component\"\r\n                        model=\"task\"\r\n                        options=\"stepDefinitionEditor.stepDefinition.componentInstances\"\r\n                        as=\"name\">\r\n                    </tractor-select>\r\n                    <tractor-select\r\n                        label=\"Action\"\r\n                        model=\"task\"\r\n                        options=\"task.component.component.actions\"\r\n                        as=\"name\">\r\n                    </tractor-select>\r\n                    <div ng-repeat=\"argument in task.arguments\">\r\n                        <tractor-literal-input\r\n                            form=\"step-definition-editor\"\r\n                            name=\"argument.name\"\r\n                            model=\"argument.value\">\r\n                        </tractor-literal-input>\r\n                    </div>\r\n                </li>\r\n            </ul>\r\n\r\n            <tractor-action\r\n                model=\"stepDefinitionEditor.stepDefinition.step\"\r\n                action=\"Add task\">\r\n            </tractor-action>\r\n        </section>\r\n\r\n        <section  class=\"file-editor__container\" ng-if=\"stepDefinitionEditor.showExpectationsSection\">\r\n            <h3>Expectations:</h3>\r\n\r\n            <ul>\r\n                <li class=\"file-editor__list-item\" ng-repeat=\"expectation in stepDefinitionEditor.stepDefinition.step.expectations\">\r\n                    <tractor-action\r\n                        model=\"stepDefinitionEditor.stepDefinition.step\"\r\n                        action=\"Remove expectation\"\r\n                        argument=\"expectation\"\r\n                        icon=\"remove\">\r\n                    </tractor-action>\r\n\r\n                    <tractor-select\r\n                        label=\"Component\"\r\n                        model=\"expectation\"\r\n                        options=\"stepDefinitionEditor.stepDefinition.componentInstances\"\r\n                        as=\"name\">\r\n                    </tractor-select>\r\n                    <tractor-select\r\n                        label=\"Action\"\r\n                        model=\"expectation\"\r\n                        options=\"expectation.component.component.actions\"\r\n                        as=\"name\">\r\n                    </tractor-select>\r\n                    <div ng-repeat=\"argument in expectation.arguments\">\r\n                        <tractor-literal-input\r\n                            form=\"step-definition-editor\"\r\n                            name=\"argument.name\"\r\n                            model=\"argument.value\"\r\n                            type=\"argument.type\">\r\n                        </tractor-literal-input>\r\n                    </div>\r\n                    <tractor-literal-input\r\n                        name=\"'Expected result'\"\r\n                        model=\"expectation.expectedResult\">\r\n                    </tractor-literal-input>\r\n                </li>\r\n            </ul>\r\n\r\n            <tractor-action\r\n                model=\"stepDefinitionEditor.stepDefinition.step\"\r\n                action=\"Add expectation\">\r\n            </tractor-action>\r\n        </section>\r\n    </section>\r\n</form>\r\n",
         /* eslint-enable no-path-concat */
         controller: 'StepDefinitionEditorController as stepDefinitionEditor',
         resolve: {
@@ -118,7 +118,7 @@ angular.module('tractor', [
     .state('tractor.mock-data-editor', {
         url: 'mock-data-editor?mockData',
         /* eslint-disable no-path-concat */
-        template: "<section class=\"file-tree\">\r\n    <h3>Mock Data files:</h3>\r\n    <ul class='file-tree__file-list file-tree__file-list--json'>\r\n        <li ng-repeat=\"mockDataFileName in mockDataEditor.mockDataFileNames\"\r\n            ng-class=\"{ true: 'active' }[mockDataFileName === mockDataEditor.mockData.name]\"\r\n            class=\"file-tree__file-list-file\">\r\n            <a ui-sref=\"tractor.mock-data-editor({ mockData: mockDataFileName })\">{{ mockDataFileName }}</a>\r\n        </li>\r\n    </ul>\r\n</section>\r\n\r\n<section class=\"file-options\">\r\n    <h2 class=\"file-options__name\">{{ mockDataEditor.mockData.name }}</h2>\r\n    <div>\r\n        <tractor-text-input class=\"file-options__name-input\"\r\n            label=\"Name\"\r\n            model=\"mockDataEditor.mockData\"\r\n            example=\"Data\">\r\n        </tractor-text-input>\r\n        <tractor-action class=\"file-options__save-file\" model=\"mockDataEditor\" action=\"Save mock data file\"></tractor-action>\r\n    </div>\r\n</section>\r\n\r\n<section class=\"file-editor\">\r\n    <section class=\"file-editor__container\">\r\n        <h3>JSON data:</h3>\r\n        <textarea ng-model=\"mockDataEditor.mockData.json\"></textarea>\r\n\r\n    </section>\r\n</section>\r\n",
+        template: "<section class=\"file-tree\">\r\n    <h3>Mock Data files:</h3>\r\n    <ul class='file-tree__file-list file-tree__file-list--json'>\r\n        <li ng-repeat=\"mockDataFileName in mockDataEditor.mockDataFileNames\"\r\n            ng-class=\"{ true: 'active' }[mockDataFileName === mockDataEditor.mockData.name]\"\r\n            class=\"file-tree__file-list-file\">\r\n            <a ui-sref=\"tractor.mock-data-editor({ mockData: mockDataFileName })\">{{ mockDataFileName }}</a>\r\n        </li>\r\n    </ul>\r\n</section>\r\n\r\n<form class=\"file\" name=\"mock-data-editor\" novalidate\r\n    ng-submit=\"mockDataEditor.showErrors() && mockDataEditor.saveMockDataFile()\">\r\n    <section class=\"file-options\">\r\n        <h2 class=\"file-options__name\">{{ mockDataEditor.mockData.name }}</h2>\r\n        <div>\r\n            <tractor-text-input class=\"file-options__name-input\"\r\n                form=\"mock-data-editor\"\r\n                label=\"Name\"\r\n                model=\"mockDataEditor.mockData\"\r\n                example=\"Data\">\r\n            </tractor-text-input>\r\n            <tractor-submit class=\"file-options__save-file\"\r\n                action=\"Save mock data file\">\r\n            </tractor-submit>\r\n        </div>\r\n    </section>\r\n\r\n    <section class=\"file-editor\">\r\n        <section class=\"file-editor__container\">\r\n            <h3>JSON data:</h3>\r\n            <textarea\r\n                ng-model=\"mockDataEditor.mockData.json\"\r\n                required>\r\n            </textarea>\r\n        </section>\r\n    </section>\r\n</form>\r\n",
         /* eslint-enable no-path-concat */
         controller: 'MockDataEditorController as mockDataEditor',
         resolve: {
@@ -139,7 +139,7 @@ angular.module('tractor', [
     });
 }]);
 
-},{"./Core/Core":116,"./Core/Services/ConfigService":125,"./Core/Services/ErrorInterceptor":126,"./Core/Services/RealTimeService":127,"./features/ComponentEditor/ComponentEditor":132,"./features/ComponentEditor/ComponentEditorController":133,"./features/ComponentEditor/Services/ComponentFileService":145,"./features/ControlPanel/ControlPanel":151,"./features/ControlPanel/ControlPanelController":152,"./features/GherkinEditor/GherkinEditor":154,"./features/GherkinEditor/GherkinEditorController":155,"./features/GherkinEditor/Services/GherkinFileService":161,"./features/MockDataEditor/MockDataEditorController":166,"./features/MockDataEditor/Services/MockDataFileService":168,"./features/Notifier/Notifier":171,"./features/StepDefinitionEditor/Services/StepDefinitionFileService":182,"./features/StepDefinitionEditor/StepDefinitionEditorController":187,"angular":6,"angular-messages":2,"angular-mocks":3,"angular-sanitize":4,"angular-sortable":67,"angular-ui-router":5,"bluebird":9}],2:[function(require,module,exports){
+},{"./Core/Core":116,"./Core/Services/ConfigService":126,"./Core/Services/ErrorInterceptor":127,"./Core/Services/RealTimeService":128,"./features/ComponentEditor/ComponentEditor":133,"./features/ComponentEditor/ComponentEditorController":134,"./features/ComponentEditor/Services/ComponentFileService":146,"./features/ControlPanel/ControlPanel":152,"./features/ControlPanel/ControlPanelController":153,"./features/FeatureEditor/FeatureEditor":155,"./features/FeatureEditor/FeatureEditorController":156,"./features/FeatureEditor/Services/FeatureFileService":162,"./features/MockDataEditor/MockDataEditorController":167,"./features/MockDataEditor/Services/MockDataFileService":169,"./features/Notifier/Notifier":172,"./features/StepDefinitionEditor/Services/StepDefinitionFileService":183,"./features/StepDefinitionEditor/StepDefinitionEditorController":188,"angular":6,"angular-messages":2,"angular-mocks":3,"angular-sanitize":4,"angular-sortable":67,"angular-ui-router":5,"bluebird":9}],2:[function(require,module,exports){
 /**
  * @license AngularJS v1.3.10
  * (c) 2010-2014 Google, Inc. http://angularjs.org
@@ -55456,13 +55456,14 @@ require('./Directives/Checkbox/CheckboxDirective');
 require('./Directives/LiteralInput/LiteralInputDirective');
 require('./Directives/SelectInput/SelectInputDirective');
 require('./Directives/StepInput/StepInputDirective');
+require('./Directives/Submit/SubmitDirective');
 require('./Directives/TextInput/TextInputDirective');
 require('./Directives/VariableInput/VariableInputDirective');
 
 require('./Validators/VariableNameValidator');
 require('./Validators/ExampleNameValidator');
 
-},{"./Directives/Action/ActionDirective":117,"./Directives/Checkbox/CheckboxDirective":118,"./Directives/LiteralInput/LiteralInputDirective":119,"./Directives/SelectInput/SelectInputDirective":120,"./Directives/StepInput/StepInputDirective":121,"./Directives/TextInput/TextInputDirective":122,"./Directives/VariableInput/VariableInputDirective":123,"./Validators/ExampleNameValidator":130,"./Validators/VariableNameValidator":131,"angular":6}],117:[function(require,module,exports){
+},{"./Directives/Action/ActionDirective":117,"./Directives/Checkbox/CheckboxDirective":118,"./Directives/LiteralInput/LiteralInputDirective":119,"./Directives/SelectInput/SelectInputDirective":120,"./Directives/StepInput/StepInputDirective":121,"./Directives/Submit/SubmitDirective":122,"./Directives/TextInput/TextInputDirective":123,"./Directives/VariableInput/VariableInputDirective":124,"./Validators/ExampleNameValidator":131,"./Validators/VariableNameValidator":132,"angular":6}],117:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -55528,7 +55529,7 @@ var CheckboxDirective = function () {
         },
 
         /* eslint-disable no-path-concat */
-        template: "<form name=\"checkbox\">\r\n    <label>{{ label }}: </label>\r\n    <input type=\"checkbox\"\r\n        ng-model=\"model\" />\r\n</form>\r\n",
+        template: "<label>{{ label }}: </label>\r\n<input type=\"checkbox\"\r\n    ng-model=\"model\" />\r\n",
         /* eslint-enable no-path-concat */
 
         link: link
@@ -55570,13 +55571,13 @@ var LiteralInputDirective = function () {
         },
 
         /* eslint-disable no-path-concat */
-        template: "<form name=\"literalInput\">\r\n    <label ng-if=\"description\" title=\"{{ description }}\">{{ name }}: </label>\r\n    <label ng-if=\"!description\">{{ name }}: </label>\r\n\r\n    <input name=\"literalRequired\" type=\"text\"\r\n        ng-show=\"required\"\r\n        ng-model=\"model\"\r\n        ng-model-options=\"{ allowInvalid: true }\"\r\n        placeholder=\"({{ type ? type + ' - ' : '' }}required)\"\r\n        required />\r\n    <input name=\"literalOptional\" type=\"text\"\r\n        ng-hide=\"required\"\r\n        ng-model=\"model\"\r\n        ng-model-options=\"{ allowInvalid: true }\"\r\n        placeholder=\"({{ type ? type + ' - ' : '' }}optional)\" />\r\n\r\n    <div ng-messages=\"literalInput.literalRequired.$error\">\r\n        <ng-message when=\"required\">Required</ng-message>\r\n    </div>\r\n</form>\r\n",
+        template: "<label ng-if=\"description\" title=\"{{ description }}\">{{ name }}: </label>\r\n<label ng-if=\"!description\">{{ name }}: </label>\r\n\r\n<input name=\"literal-required-{{ id }}\" type=\"text\"\r\n    ng-if=\"required\"\r\n    ng-model=\"model\"\r\n    ng-model-options=\"{ allowInvalid: true }\"\r\n    placeholder=\"({{ type ? type + ' - ' : '' }}required)\"\r\n    required />\r\n<input name=\"literal-optional-{{ id }}\" type=\"text\"\r\n    ng-if=\"!required\"\r\n    ng-model=\"model\"\r\n    ng-model-options=\"{ allowInvalid: true }\"\r\n    placeholder=\"({{ type ? type + ' - ' : '' }}optional)\" />\r\n\r\n<div ng-messages=\"form['literal-required-' + id].$error\">\r\n    <ng-message when=\"required\">Required</ng-message>\r\n</div>\r\n",
         /* eslint-enable no-path-concat */
 
         link: link
     };
 
-    function link ($scope) {
+    function link ($scope, $element, $attrs) {
         if (_.isUndefined($scope.model)) {
             throw new Error('The "tractor-literal-input" directive requires a "model" attribute.');
         }
@@ -55584,6 +55585,9 @@ var LiteralInputDirective = function () {
         if (_.isUndefined($scope.name)) {
             throw new Error('The "tractor-literal-input" directive requires a "name" attribute.');
         }
+
+        $scope.form = $scope.$parent[$attrs.form];
+        $scope.id = Math.floor(Math.random() * Date.now());
     }
 };
 
@@ -55614,7 +55618,7 @@ var SelectInputDirective = function () {
         },
 
         /* eslint-disable no-path-concat */
-        template: "<form>\r\n    <label ng-if=\"model[property].description\" title=\"{{ model[property].description }}\">{{ label }}: </label>\r\n    <label ng-if=\"!model[property].description\">{{ label }}: </label>\r\n    <select ng-if=\"as\"\r\n            ng-model=\"model[property]\"\r\n            ng-options=\"option as option[as] for option in selectOptions\">\r\n    </select>\r\n    <select ng-if=\"!as\"\r\n            ng-model=\"model[property]\"\r\n            ng-options=\"option for option in selectOptions\">\r\n    </select>\r\n<form>\r\n",
+        template: "<label ng-if=\"model[property].description\" title=\"{{ model[property].description }}\">{{ label }}: </label>\r\n<label ng-if=\"!model[property].description\">{{ label }}: </label>\r\n<select ng-if=\"as\"\r\n        ng-model=\"model[property]\"\r\n        ng-options=\"option as option[as] for option in selectOptions\">\r\n</select>\r\n<select ng-if=\"!as\"\r\n        ng-model=\"model[property]\"\r\n        ng-options=\"option for option in selectOptions\">\r\n</select>\r\n",
         /* eslint-enable no-path-concat */
 
         link: link
@@ -55672,13 +55676,13 @@ var StepInputDirective = function () {
         },
 
         /* eslint-disable no-path-concat */
-        template: "<form name=\"stepInput\">\r\n    <label>{{ label }}: </label>\r\n    <input name=\"step\" type=\"text\" placeholder=\"e.g. {{ example }}\"\r\n        ng-model=\"model[property]\"\r\n        ng-model-options=\"{ allowInvalid: true }\"\r\n        example-name\r\n        required />\r\n    <div ng-messages=\"stepInput.step.$error\">\r\n        <ng-message when=\"required\">Required</ng-message>\r\n        <ng-message when=\"validExampleName\">That is not a valid example name</ng-message>\r\n    </div>\r\n</form>\r\n",
+        template: "<label>{{ label }}: </label>\r\n<input name=\"step-{{ id }}\" type=\"text\" placeholder=\"e.g. {{ example }}\"\r\n    ng-model=\"model[property]\"\r\n    ng-model-options=\"{ allowInvalid: true }\"\r\n    example-name\r\n    required />\r\n<div ng-messages=\"form['step-' + id].$error\">\r\n    <ng-message when=\"required\">Required</ng-message>\r\n    <ng-message when=\"validExampleName\">That is not a valid example name</ng-message>\r\n</div>\r\n",
         /* eslint-enable no-path-concat */
 
         link: link
     };
 
-    function link ($scope) {
+    function link ($scope, $element, $attrs) {
         if (_.isUndefined($scope.model)) {
             throw new Error('The "tractor-step-input" directive requires a "model" attribute.');
         }
@@ -55687,6 +55691,7 @@ var StepInputDirective = function () {
             throw new Error('The "tractor-step-input" directive requires a "label" attribute.');
         }
 
+        $scope.form = $scope.$parent[$attrs.form];
         $scope.property = camelcase($scope.label);
     }
 };
@@ -55694,6 +55699,40 @@ var StepInputDirective = function () {
 Core.directive('tractorStepInput', StepInputDirective);
 
 },{"../../Core":116,"change-case":47,"lodash":66}],122:[function(require,module,exports){
+'use strict';
+
+// Utilities:
+var _ = require('lodash');
+
+
+// Module:
+var Core = require('../../Core');
+
+var SubmitDirective = function () {
+    return {
+        restrict: 'E',
+
+        scope: {
+            action: '@'
+        },
+
+        /* eslint-disable no-path-concat */
+        template: "<button type=\"submit\">\r\n    <span>{{ action }}</span>\r\n</button>\r\n",
+        /* eslint-enable no-path-concat */
+
+        link: link
+    };
+
+    function link ($scope) {
+        if (_.isUndefined($scope.action)) {
+            throw new Error('The "tractor-submit" directive requires an "action" attribute.');
+        }
+    }
+};
+
+Core.directive('tractorSubmit', SubmitDirective);
+
+},{"../../Core":116,"lodash":66}],123:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -55717,13 +55756,13 @@ var TextInputDirective = function () {
         },
 
         /* eslint-disable no-path-concat */
-        template: "<form name=\"textInput\">\r\n    <label>{{ label }}: </label>\r\n    <input name=\"text\" type=\"text\" placeholder=\"e.g. {{ example }}\"\r\n        ng-model=\"model[property]\"\r\n        ng-model-options=\"{ allowInvalid: true }\"\r\n        required />\r\n    <div ng-messages=\"textInput.text.$error\">\r\n        <ng-message when=\"required\">Required</ng-message>\r\n    </div>\r\n</form>\r\n",
+        template: "<label>{{ label }}: </label>\r\n<input name=\"text-{{ id }}\" type=\"text\" placeholder=\"e.g. {{ example }}\"\r\n    ng-model=\"model[property]\"\r\n    ng-model-options=\"{ allowInvalid: true }\"\r\n    required />\r\n<div ng-messages=\"form['text-' + id].$error\">\r\n    <ng-message when=\"required\">Required</ng-message>\r\n</div>\r\n",
         /* eslint-enable no-path-concat */
 
         link: link
     };
 
-    function link ($scope) {
+    function link ($scope, $element, $attrs) {
         if (_.isUndefined($scope.model)) {
             throw new Error('The "tractor-text-input" directive requires a "model" attribute.');
         }
@@ -55732,13 +55771,16 @@ var TextInputDirective = function () {
             throw new Error('The "tractor-text-input" directive requires a "label" attribute.');
         }
 
+        $scope.form = $scope.$parent[$attrs.form];
+        $scope.id = Math.floor(Math.random() * Date.now());
+
         $scope.property = camelcase($scope.label);
     }
 };
 
 Core.directive('tractorTextInput', TextInputDirective);
 
-},{"../../Core":116,"change-case":47,"lodash":66}],123:[function(require,module,exports){
+},{"../../Core":116,"change-case":47,"lodash":66}],124:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -55757,18 +55799,22 @@ var VariableInputDirective = function () {
         scope: {
             model: '=',
             label: '@',
-            example: '@',
-            isClass: '@'
+            example: '@'
         },
 
         /* eslint-disable no-path-concat */
-        template: "<form name=\"variableInput\">\r\n    <label>{{ label }}: </label>\r\n    <input name=\"variable\" type=\"text\" placeholder=\"e.g. {{ example }}\"\r\n        ng-model=\"model[property]\"\r\n        ng-model-options=\"{ allowInvalid: true }\"\r\n        ng-blur=\"blur(model[property])\"\r\n        required\r\n        variable-name\r\n        variable-name-model=\"model\" />\r\n    <div ng-messages=\"variableInput.variable.$error\">\r\n        <ng-message when=\"required\">Required</ng-message>\r\n        <ng-message when=\"validVariableName\">That is not a valid name</ng-message>\r\n        <ng-message when=\"uniqueVariableName\">There is something else with the same name</ng-message>\r\n    </div>\r\n</form>\r\n",
+        template: "<label>{{ label }}: </label>\r\n<input name=\"variable-input-{{ id }}\" type=\"text\" placeholder=\"e.g. {{ example }}\"\r\n    ng-model=\"model[property]\"\r\n    ng-model-options=\"{ allowInvalid: true }\"\r\n    ng-blur=\"blur(model[property])\"\r\n    required\r\n    variable-name\r\n    variable-name-model=\"model\" />\r\n<div ng-messages=\"form['variable-input-' + id].$error\">\r\n    <ng-message when=\"required\">Required</ng-message>\r\n    <ng-message when=\"validVariableName\">That is not a valid name</ng-message>\r\n    <ng-message when=\"uniqueVariableName\">There is something else with the same name</ng-message>\r\n</div>\r\n",
         /* eslint-enable no-path-concat */
 
         link: link
     };
 
-    function link ($scope) {
+    function link ($scope, $element, $attrs) {
+        $scope.form = $scope.$parent[$attrs.form];
+        $scope.id = Math.floor(Math.random() * Date.now());
+
+        $scope.isClass = !!$attrs.isClass;
+
         $scope.$watch('model', function () {
             $scope.property = camelcase($scope.label);
         });
@@ -55777,7 +55823,7 @@ var VariableInputDirective = function () {
 
 Core.directive('tractorVariableInput', VariableInputDirective);
 
-},{"../../Core":116,"change-case":47}],124:[function(require,module,exports){
+},{"../../Core":116,"change-case":47}],125:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -55975,7 +56021,7 @@ var ASTCreatorService = function () {
 
 Core.service('ASTCreatorService', ASTCreatorService);
 
-},{"../Core":116,"lodash":66}],125:[function(require,module,exports){
+},{"../Core":116,"lodash":66}],126:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -55996,7 +56042,7 @@ ConfigService.$inject = ['$http'];
 
 Core.service('ConfigService', ConfigService);
 
-},{"../Core":116}],126:[function(require,module,exports){
+},{"../Core":116}],127:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56026,7 +56072,7 @@ Core.factory('HttpResponseInterceptor', ['NotifierService', function(NotifierSer
     $httpProvider.interceptors.push('HttpResponseInterceptor');
 }]);
 
-},{"../Core":116,"bluebird":9}],127:[function(require,module,exports){
+},{"../Core":116,"bluebird":9}],128:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56062,7 +56108,7 @@ RealTimeService.$inject = ['ConfigService'];
 
 Core.service('RealTimeService', RealTimeService);
 
-},{"../Core":116,"lodash":66,"socket.io-client":68}],128:[function(require,module,exports){
+},{"../Core":116,"lodash":66,"socket.io-client":68}],129:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56113,7 +56159,7 @@ var StringToLiteralService = function () {
 
 Core.service('StringToLiteralService', StringToLiteralService);
 
-},{"../Core":116,"lodash":66}],129:[function(require,module,exports){
+},{"../Core":116,"lodash":66}],130:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -56137,7 +56183,7 @@ ValidationService.$inject = ['$http'];
 
 Core.service('ValidationService', ValidationService);
 
-},{"../Core":116}],130:[function(require,module,exports){
+},{"../Core":116}],131:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56149,7 +56195,7 @@ var Core = require('../Core');
 
 // Dependencies:
 require('../Services/ValidationService');
-require('../../features/GherkinEditor/Models/StepDeclarationModel');
+require('../../features/FeatureEditor/Models/StepDeclarationModel');
 
 var ExampleNameValidator = function (
     ValidationService,
@@ -56178,7 +56224,7 @@ ExampleNameValidator.$inject = ['ValidationService', 'StepDeclarationModel'];
 
 Core.directive('exampleName', ExampleNameValidator);
 
-},{"../../features/GherkinEditor/Models/StepDeclarationModel":159,"../Core":116,"../Services/ValidationService":129,"bluebird":9,"lodash":66}],131:[function(require,module,exports){
+},{"../../features/FeatureEditor/Models/StepDeclarationModel":160,"../Core":116,"../Services/ValidationService":130,"bluebird":9,"lodash":66}],132:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56250,7 +56296,7 @@ VariableNameValidator.$inject = ['$rootScope', 'ValidationService'];
 
 Core.directive('variableName', VariableNameValidator);
 
-},{"../Core":116,"../Services/ValidationService":129,"change-case":47,"lodash":66}],132:[function(require,module,exports){
+},{"../Core":116,"../Services/ValidationService":130,"change-case":47,"lodash":66}],133:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56263,7 +56309,7 @@ var ComponentEditor = angular.module('ComponentEditor', ['Core']);
 
 module.exports = ComponentEditor;
 
-},{"../../Core/Core":116,"angular":6}],133:[function(require,module,exports){
+},{"../../Core/Core":116,"angular":6}],134:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56279,14 +56325,19 @@ require('./Models/ComponentModel');
 
 var ComponentEditorController = (function () {
     var ComponentEditorController = function ComponentEditorController (
+        $scope,
         $window,
+        NotifierService,
         ComponentFileService,
         ComponentParserService,
         ComponentModel,
         componentFileNames,
         componentFile
     ) {
+        this.$scope = $scope;
         this.$window = $window;
+        this.notifierService = NotifierService;
+
         this.componentFileService = ComponentFileService;
         this.componentParserService = ComponentParserService;
         this.componentFileNames = componentFileNames;
@@ -56299,7 +56350,7 @@ var ComponentEditorController = (function () {
             this.component.addAction();
         }
     };
-    ComponentEditorController.$inject = ['$window', 'ComponentFileService', 'ComponentParserService', 'ComponentModel', 'componentFileNames', 'componentFile'];
+    ComponentEditorController.$inject = ['$scope', '$window', 'NotifierService', 'ComponentFileService', 'ComponentParserService', 'ComponentModel', 'componentFileNames', 'componentFile'];
 
     ComponentEditorController.prototype.saveComponentFile = function () {
         var componentFileNames = this.componentFileNames;
@@ -56308,13 +56359,29 @@ var ComponentEditorController = (function () {
 
         var exists = _.contains(componentFileNames, name);
 
-        if (!exists || exists && this.$window.confirm('This will overwrite "' + name + '". Continue?')) {
+        if (!exists || this.$window.confirm('This will overwrite "' + name + '". Continue?')) {
             this.componentFileService.saveComponentFile(ast, name)
             .then(function () {
                 if (!exists) {
                     componentFileNames.push(name);
                 }
             });
+        }
+    };
+
+    ComponentEditorController.prototype.showErrors = function () {
+        var componentEditor = this.$scope['component-editor'];
+        if (componentEditor.$invalid) {
+            Object.keys(componentEditor.$error).forEach(function (invalidType) {
+                var errors = componentEditor.$error[invalidType];
+                errors.forEach(function (element) {
+                    element.$setTouched();
+                });
+            });
+            this.notifierService.error('Can\'t save component, something is invalid.');
+            return false;
+        } else {
+            return true;
         }
     };
 
@@ -56329,7 +56396,7 @@ var ComponentEditorController = (function () {
 
 ComponentEditor.controller('ComponentEditorController', ComponentEditorController);
 
-},{"./ComponentEditor":132,"./Models/ComponentModel":137,"./Services/ComponentFileService":145,"./Services/ComponentParserService":146,"lodash":66}],134:[function(require,module,exports){
+},{"./ComponentEditor":133,"./Models/ComponentModel":138,"./Services/ComponentFileService":146,"./Services/ComponentParserService":147,"lodash":66}],135:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56460,7 +56527,7 @@ ComponentEditor.factory('ActionModel', ['ASTCreatorService', 'ParameterModel', '
     return createActionModelConstructor(ASTCreatorService, ParameterModel, InteractionModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":124,"../ComponentEditor":132,"./InteractionModel":140,"./ParameterModel":142,"lodash":66}],135:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":125,"../ComponentEditor":133,"./InteractionModel":141,"./ParameterModel":143,"lodash":66}],136:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56501,7 +56568,7 @@ var createArgumentModelConstructor = function (
             },
             required: {
                 get: function () {
-                    return argument ? (argument.required || true) : false;
+                    return argument ? !!argument.required : false;
                 }
             },
             ast: {
@@ -56552,7 +56619,7 @@ ComponentEditor.factory('ArgumentModel', ['ASTCreatorService', 'StringToLiteralS
     return createArgumentModelConstructor(ASTCreatorService, StringToLiteralService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":124,"../../../Core/Services/StringToLiteralService":128,"../ComponentEditor":132,"lodash":66}],136:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":125,"../../../Core/Services/StringToLiteralService":129,"../ComponentEditor":133,"lodash":66}],137:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -56569,12 +56636,12 @@ var createBrowserModelConstructor = function () {
         arguments: [{
             name: 'destination',
             description: 'Destination URL',
-            type: 'string'
+            type: 'string',
+            required: true
         }, {
             name: 'timeout',
             description: 'Number of milliseconds to wait for Angular to start.',
-            type: 'number',
-            required: false
+            type: 'number'
         }]
     }, {
         name: 'refresh',
@@ -56582,8 +56649,7 @@ var createBrowserModelConstructor = function () {
         arguments: [{
             name: 'timeout',
             description: 'Number of seconds to wait for Angular to start.',
-            type: 'number',
-            required: false
+            type: 'number'
         }]
     }, {
         name: 'setLocation',
@@ -56591,7 +56657,8 @@ var createBrowserModelConstructor = function () {
         arguments: [{
             name: 'url',
             description: 'In page URL using the same syntax as $location.url()',
-            type: 'string'
+            type: 'string',
+            required: true
         }],
         returns: 'promise'
     }, {
@@ -56600,7 +56667,8 @@ var createBrowserModelConstructor = function () {
         returns: 'string',
         string: {
             name: 'absoluteUrl',
-            type: 'string'
+            type: 'string',
+            required: true
         }
     }, {
         name: 'waitForAngular',
@@ -56615,7 +56683,7 @@ ComponentEditor.factory('BrowserModel', function () {
     return createBrowserModelConstructor();
 });
 
-},{"../ComponentEditor":132}],137:[function(require,module,exports){
+},{"../ComponentEditor":133}],138:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56748,7 +56816,7 @@ ComponentEditor.factory('ComponentModel', ['ASTCreatorService', 'BrowserModel', 
     return createComponentModelConstructor(ASTCreatorService, BrowserModel, ElementModel, ActionModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":124,"../ComponentEditor":132,"./ActionModel":134,"./BrowserModel":136,"./ElementModel":138,"lodash":66}],138:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":125,"../ComponentEditor":133,"./ActionModel":135,"./BrowserModel":137,"./ElementModel":139,"lodash":66}],139:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56813,7 +56881,8 @@ var createElementModelConstructor = function (
         arguments: [{
             name: 'keys',
             description: 'The sequence of keys to type.',
-            type: 'string'
+            type: 'string',
+            required: true
         }],
         returns: 'promise'
     }, {
@@ -56822,7 +56891,8 @@ var createElementModelConstructor = function (
         returns: 'promise',
         promise: {
             name: 'text',
-            type: 'string'
+            type: 'string',
+            required: true
         }
     }, {
         name: 'isEnabled',
@@ -56830,7 +56900,8 @@ var createElementModelConstructor = function (
         returns: 'promise',
         promise: {
             name: 'enabled',
-            type: 'boolean'
+            type: 'boolean',
+            required: true
         }
     }, {
         name: 'isSelected',
@@ -56838,7 +56909,8 @@ var createElementModelConstructor = function (
         returns: 'promise',
         promise: {
             name: 'selected',
-            type: 'boolean'
+            type: 'boolean',
+            required: true
         }
     }, {
         name: 'submit',
@@ -56854,7 +56926,8 @@ var createElementModelConstructor = function (
         returns: 'promise',
         promise: {
             name: 'displayed',
-            type: 'boolean'
+            type: 'boolean',
+            required: true
         }
     }, {
         name: 'getOuterHtml',
@@ -56862,7 +56935,8 @@ var createElementModelConstructor = function (
         returns: 'promise',
         promise: {
             name: 'outerHtml',
-            type: 'string'
+            type: 'string',
+            required: true
         }
     }, {
         name: 'getInnerHtml',
@@ -56870,7 +56944,8 @@ var createElementModelConstructor = function (
         returns: 'promise',
         promise: {
             name: 'innerHtml',
-            type: 'string'
+            type: 'string',
+            required: true
         }
     }];
 
@@ -56931,7 +57006,7 @@ ComponentEditor.factory('ElementModel', ['ASTCreatorService', 'StringToLiteralSe
     return createElementModelConstructor(ASTCreatorService, StringToLiteralService, FilterModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":124,"../../../Core/Services/StringToLiteralService":128,"../ComponentEditor":132,"./FilterModel":139,"lodash":66}],139:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":125,"../../../Core/Services/StringToLiteralService":129,"../ComponentEditor":133,"./FilterModel":140,"lodash":66}],140:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57035,7 +57110,7 @@ ComponentEditor.factory('FilterModel', ['ASTCreatorService', 'StringToLiteralSer
     return createFilterModelConstructor(ASTCreatorService, StringToLiteralService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":124,"../../../Core/Services/StringToLiteralService":128,"../ComponentEditor":132,"lodash":66}],140:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":125,"../../../Core/Services/StringToLiteralService":129,"../ComponentEditor":133,"lodash":66}],141:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57144,7 +57219,7 @@ ComponentEditor.factory('InteractionModel', ['ASTCreatorService', 'MethodModel',
     return createInteractionModelConstructor(ASTCreatorService, MethodModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":124,"../ComponentEditor":132,"./MethodModel":141,"lodash":66}],141:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":125,"../ComponentEditor":133,"./MethodModel":142,"lodash":66}],142:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57201,7 +57276,7 @@ ComponentEditor.factory('MethodModel', ['ArgumentModel', function (ArgumentModel
     return createMethodModelConstructor(ArgumentModel);
 }]);
 
-},{"../ComponentEditor":132,"./ArgumentModel":135,"lodash":66}],142:[function(require,module,exports){
+},{"../ComponentEditor":133,"./ArgumentModel":136,"lodash":66}],143:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57253,7 +57328,7 @@ ComponentEditor.factory('ParameterModel', ['ASTCreatorService', function (ASTCre
     return createParameterModelConstructor(ASTCreatorService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":124,"../ComponentEditor":132,"lodash":66}],143:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":125,"../ComponentEditor":133,"lodash":66}],144:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57321,7 +57396,7 @@ ActionParserService.$inject = ['ParameterParserService', 'InteractionParserServi
 
 ComponentEditor.service('ActionParserService', ActionParserService);
 
-},{"../ComponentEditor":132,"../Models/ActionModel":134,"./InteractionParserService":149,"./ParameterParserService":150,"assert":42,"lodash":66}],144:[function(require,module,exports){
+},{"../ComponentEditor":133,"../Models/ActionModel":135,"./InteractionParserService":150,"./ParameterParserService":151,"assert":42,"lodash":66}],145:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -57346,7 +57421,7 @@ ArgumentParserService.$inject = ['ArgumentModel'];
 
 ComponentEditor.service('ArgumentParserService', ArgumentParserService);
 
-},{"../ComponentEditor":132,"../Models/ArgumentModel":135}],145:[function(require,module,exports){
+},{"../ComponentEditor":133,"../Models/ArgumentModel":136}],146:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57404,7 +57479,7 @@ ComponentFileService.$inject = ['$http', 'ComponentParserService'];
 
 ComponentEditor.service('ComponentFileService', ComponentFileService);
 
-},{"../ComponentEditor":132,"./ComponentParserService":146,"bluebird":9,"lodash":66}],146:[function(require,module,exports){
+},{"../ComponentEditor":133,"./ComponentParserService":147,"bluebird":9,"lodash":66}],147:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57469,7 +57544,7 @@ ComponentParserService.$inject = ['ElementParserService', 'ActionParserService',
 
 ComponentEditor.service('ComponentParserService', ComponentParserService);
 
-},{"../ComponentEditor":132,"../Models/ComponentModel":137,"../Services/ActionParserService":143,"../Services/ElementParserService":147,"assert":42,"lodash":66}],147:[function(require,module,exports){
+},{"../ComponentEditor":133,"../Models/ComponentModel":138,"../Services/ActionParserService":144,"../Services/ElementParserService":148,"assert":42,"lodash":66}],148:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57598,7 +57673,7 @@ ElementParserService.$inject = ['FilterParserService', 'ElementModel'];
 
 ComponentEditor.service('ElementParserService', ElementParserService);
 
-},{"../ComponentEditor":132,"../Models/ElementModel":138,"../Services/FilterParserService":148,"assert":42,"lodash":66}],148:[function(require,module,exports){
+},{"../ComponentEditor":133,"../Models/ElementModel":139,"../Services/FilterParserService":149,"assert":42,"lodash":66}],149:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57680,7 +57755,7 @@ FilterParserService.$inject = ['FilterModel'];
 
 ComponentEditor.service('FilterParserService', FilterParserService);
 
-},{"../ComponentEditor":132,"../Models/FilterModel":139,"assert":42,"lodash":66}],149:[function(require,module,exports){
+},{"../ComponentEditor":133,"../Models/FilterModel":140,"assert":42,"lodash":66}],150:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57794,7 +57869,7 @@ InteractionParserService.$inject = ['ArgumentParserService', 'InteractionModel']
 
 ComponentEditor.service('InteractionParserService', InteractionParserService);
 
-},{"../ComponentEditor":132,"../Models/InteractionModel":140,"./ArgumentParserService":144,"assert":42,"lodash":66}],150:[function(require,module,exports){
+},{"../ComponentEditor":133,"../Models/InteractionModel":141,"./ArgumentParserService":145,"assert":42,"lodash":66}],151:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -57820,7 +57895,7 @@ ParameterParserService.$inject = ['ParameterModel'];
 
 ComponentEditor.service('ParameterParserService', ParameterParserService);
 
-},{"../ComponentEditor":132,"../Models/ParameterModel":142}],151:[function(require,module,exports){
+},{"../ComponentEditor":133,"../Models/ParameterModel":143}],152:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57833,7 +57908,7 @@ var ControlPanel = angular.module('ControlPanel', ['Core']);
 
 module.exports = ControlPanel;
 
-},{"../../Core/Core":116,"angular":6}],152:[function(require,module,exports){
+},{"../../Core/Core":116,"angular":6}],153:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57868,7 +57943,7 @@ var ControlPanelController = (function () {
 
 ControlPanel.controller('ControlPanelController', ControlPanelController);
 
-},{"./ControlPanel":151,"./Services/RunnerService":153,"lodash":66}],153:[function(require,module,exports){
+},{"./ControlPanel":152,"./Services/RunnerService":154,"lodash":66}],154:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -57904,7 +57979,7 @@ RunnerService.$inject = ['NotifierService', 'RealTimeService'];
 
 ControlPanel.service('RunnerService', RunnerService);
 
-},{"../../Notifier/Services/NotifierService":172,"../ControlPanel":151}],154:[function(require,module,exports){
+},{"../../Notifier/Services/NotifierService":173,"../ControlPanel":152}],155:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57913,14 +57988,14 @@ var angular = require('angular');
 // Dependencies:
 require('../../Core/Core');
 
-var GherkinEditor = angular.module('GherkinEditor', ['Core']);
+var FeatureEditor = angular.module('FeatureEditor', ['Core']);
 
-GherkinEditor.constant('GherkinIndent', '  ');
-GherkinEditor.constant('GherkinNewLine', '%%NEWLINE%%');
+FeatureEditor.constant('FeatureIndent', '  ');
+FeatureEditor.constant('FeatureNewLine', '%%NEWLINE%%');
 
-module.exports = GherkinEditor;
+module.exports = FeatureEditor;
 
-},{"../../Core/Core":116,"angular":6}],155:[function(require,module,exports){
+},{"../../Core/Core":116,"angular":6}],156:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57928,84 +58003,105 @@ var _ = require('lodash');
 var pascal = require('change-case').pascal;
 
 // Module:
-var GherkinEditor = require('./GherkinEditor');
+var FeatureEditor = require('./FeatureEditor');
 
 // Dependencies:
-require('./Services/GherkinFileService');
-require('./Services/GherkinParserService');
-require('./Models/GherkinModel');
+require('./Services/FeatureFileService');
+require('./Services/FeatureParserService');
+require('./Models/FeatureModel');
 
-var GherkinEditorController = (function () {
-    var GherkinEditorController = function GherkinEditorController (
+var FeatureEditorController = (function () {
+    var FeatureEditorController = function FeatureEditorController (
+        $scope,
         $window,
-        GherkinFileService,
-        GherkinParserService,
-        GherkinModel,
-        gherkinFileNames,
+        NotifierService,
+        FeatureFileService,
+        FeatureParserService,
+        FeatureModel,
+        featureFileNames,
         featureFile
     ) {
+        this.$scope = $scope;
         this.$window = $window;
-        this.gherkinFileService = GherkinFileService;
-        this.gherkinParserService = GherkinParserService;
-        this.gherkinFileNames = gherkinFileNames;
+        this.notifierService = NotifierService;
+
+        this.featureFileService = FeatureFileService;
+        this.featureParserService = FeatureParserService;
+        this.featureFileNames = featureFileNames;
 
         if (featureFile) {
             parseFeatureFile.call(this, featureFile);
         } else {
-            this.gherkin = new GherkinModel();
+            this.feature = new FeatureModel();
         }
 
-        Object.defineProperty(this, 'gherkinName', {
+        Object.defineProperty(this, 'featureName', {
             get: function () {
-                return pascal(this.gherkin.name);
+                return pascal(this.feature.name);
             }
         });
     };
-    GherkinEditorController.$inject = ['$window', 'GherkinFileService', 'GherkinParserService', 'GherkinModel', 'gherkinFileNames', 'featureFile'];
+    FeatureEditorController.$inject = ['$scope', '$window', 'NotifierService', 'FeatureFileService', 'FeatureParserService', 'FeatureModel', 'featureFileNames', 'featureFile'];
 
-    GherkinEditorController.prototype.saveGherkin = function () {
-        var gherkinFileNames = this.gherkinFileNames;
-        var feature = this.gherkin.feature;
-        var name = this.gherkinName;
+    FeatureEditorController.prototype.saveFeatureFile = function () {
+        var featureFileNames = this.featureFileNames;
+        var featureString = this.feature.featureString;
+        var name = this.featureName;
 
-        var exists = _.contains(gherkinFileNames, name);
+        var exists = _.contains(featureFileNames, name);
 
-        if (!exists || exists && this.$window.confirm('This will overwrite "' + name + '". Continue?')) {
-            this.gherkinFileService.saveGherkinFile(name, feature)
+        if (!exists || this.$window.confirm('This will overwrite "' + name + '". Continue?')) {
+            this.featureFileService.saveFeatureFile(featureString, name)
             .then(function () {
                 if (!exists) {
-                    gherkinFileNames.push(name);
+                    featureFileNames.push(name);
                 }
             });
         }
     };
 
+    FeatureEditorController.prototype.showErrors = function () {
+        var featureEditor = this.$scope['feature-editor'];
+        if (featureEditor.$invalid) {
+            Object.keys(featureEditor.$error).forEach(function (invalidType) {
+                var errors = featureEditor.$error[invalidType];
+                errors.forEach(function (element) {
+                    element.$setTouched();
+                });
+            });
+            this.notifierService.error('Can\'t save feature, something is invalid.');
+            return false;
+        } else {
+            return true;
+        }
+    };
+
     function parseFeatureFile (featureFile) {
         try {
-            this.gherkin = this.gherkinParserService.parse(featureFile.tokens);
+            this.feature = this.featureParserService.parse(featureFile.tokens);
         } catch (e) { }
     }
 
-    return GherkinEditorController;
+    return FeatureEditorController;
 })();
 
-GherkinEditor.controller('GherkinEditorController', GherkinEditorController);
+FeatureEditor.controller('FeatureEditorController', FeatureEditorController);
 
-},{"./GherkinEditor":154,"./Models/GherkinModel":157,"./Services/GherkinFileService":161,"./Services/GherkinParserService":162,"change-case":47,"lodash":66}],156:[function(require,module,exports){
+},{"./FeatureEditor":155,"./Models/FeatureModel":158,"./Services/FeatureFileService":162,"./Services/FeatureParserService":163,"change-case":47,"lodash":66}],157:[function(require,module,exports){
 'use strict';
 
 // Utilities:
 var _ = require('lodash');
 
 // Module:
-var GherkinEditor = require('../GherkinEditor');
+var FeatureEditor = require('../FeatureEditor');
 
 // Dependencies:
 require('../../../Core/Services/StringToLiteralService');
 
 var createExampleModelConstructor = function (
     StringToLiteralService,
-    GherkinIndent
+    FeatureIndent
 ) {
     var ExampleModel = function ExampleModel (scenario) {
         var values = {};
@@ -58040,35 +58136,35 @@ var createExampleModelConstructor = function (
            var literal = StringToLiteralService.toLiteral(value);
            return !_.isUndefined(literal) ? literal : '"' + value + '"';
         }, this).join(' | ') + ' |';
-        return GherkinIndent + GherkinIndent + GherkinIndent + values;
+        return FeatureIndent + FeatureIndent + FeatureIndent + values;
     }
 };
 
-GherkinEditor.factory('ExampleModel', ['StringToLiteralService', 'GherkinIndent', function (
+FeatureEditor.factory('ExampleModel', ['StringToLiteralService', 'FeatureIndent', function (
     StringToLiteralService,
-    GherkinIndent
+    FeatureIndent
 ) {
-    return createExampleModelConstructor(StringToLiteralService, GherkinIndent);
+    return createExampleModelConstructor(StringToLiteralService, FeatureIndent);
 }]);
 
-},{"../../../Core/Services/StringToLiteralService":128,"../GherkinEditor":154,"lodash":66}],157:[function(require,module,exports){
+},{"../../../Core/Services/StringToLiteralService":129,"../FeatureEditor":155,"lodash":66}],158:[function(require,module,exports){
 'use strict';
 
 // Utilities:
 var _ = require('lodash');
 
 // Module:
-var GherkinEditor = require('../GherkinEditor');
+var FeatureEditor = require('../FeatureEditor');
 
 // Dependencies:
 require('./ScenarioModel');
 
-var createGherkinModelConstructor = function (
+var createFeatureModelConstructor = function (
     ScenarioModel,
-    GherkinIndent,
-    GherkinNewLine
+    FeatureIndent,
+    FeatureNewLine
 ) {
-var GherkinModel = function GherkinModel () {
+    var FeatureModel = function FeatureModel () {
         var scenarios = [];
 
         Object.defineProperties(this, {
@@ -58077,9 +58173,9 @@ var GherkinModel = function GherkinModel () {
                     return scenarios;
                 }
             },
-            feature: {
+            featureString: {
                 get: function () {
-                    return toFeature.call(this);
+                    return toFeatureString.call(this);
                 }
             }
         });
@@ -58090,48 +58186,48 @@ var GherkinModel = function GherkinModel () {
         this.iWant = '';
     };
 
-    GherkinModel.prototype.addScenario = function () {
+    FeatureModel.prototype.addScenario = function () {
         this.scenarios.push(new ScenarioModel());
     };
 
-    GherkinModel.prototype.removeScenario = function (scenario) {
+    FeatureModel.prototype.removeScenario = function (scenario) {
         _.remove(this.scenarios, scenario);
     };
 
-    return GherkinModel;
+    return FeatureModel;
 
-    function toFeature () {
+    function toFeatureString () {
         var feature = 'Feature: ' + this.name;
 
-        var inOrderTo = GherkinIndent + 'In order to ' + this.inOrderTo;
-        var asA = GherkinIndent + 'As a ' + this.asA;
-        var iWant = GherkinIndent + 'I want ' + this.iWant;
+        var inOrderTo = FeatureIndent + 'In order to ' + this.inOrderTo;
+        var asA = FeatureIndent + 'As a ' + this.asA;
+        var iWant = FeatureIndent + 'I want ' + this.iWant;
 
         var scenarios = _.map(this.scenarios, function (scenario) {
-            return GherkinIndent + scenario.feature;
+            return FeatureIndent + scenario.featureString;
         });
 
         var lines = _.flatten([feature, inOrderTo, asA, iWant, scenarios]);
-        return lines.join(GherkinNewLine);
+        return lines.join(FeatureNewLine);
     }
 };
 
-GherkinEditor.factory('GherkinModel', ['ScenarioModel', 'GherkinIndent', 'GherkinNewLine', function (
+FeatureEditor.factory('FeatureModel', ['ScenarioModel', 'FeatureIndent', 'FeatureNewLine', function (
     ScenarioModel,
-    GherkinIndent,
-    GherkinNewLine
+    FeatureIndent,
+    FeatureNewLine
 ) {
-    return createGherkinModelConstructor(ScenarioModel, GherkinIndent, GherkinNewLine);
+    return createFeatureModelConstructor(ScenarioModel, FeatureIndent, FeatureNewLine);
 }]);
 
-},{"../GherkinEditor":154,"./ScenarioModel":158,"lodash":66}],158:[function(require,module,exports){
+},{"../FeatureEditor":155,"./ScenarioModel":159,"lodash":66}],159:[function(require,module,exports){
 'use strict';
 
 // Utilities:
 var _ = require('lodash');
 
 // Module:
-var GherkinEditor = require('../GherkinEditor');
+var FeatureEditor = require('../FeatureEditor');
 
 // Dependencies:
 require('./StepDeclarationModel');
@@ -58140,8 +58236,8 @@ require('./ExampleModel');
 var createScenarioModelConstructor = function (
     StepDeclarationModel,
     ExampleModel,
-    GherkinIndent,
-    GherkinNewLine
+    FeatureIndent,
+    FeatureNewLine
 ) {
     var ScenarioModel = function ScenarioModel () {
         var stepDeclarations = [];
@@ -58163,9 +58259,9 @@ var createScenarioModelConstructor = function (
                     return getExampleVariables.call(this, this.stepDeclarations);
                 }
             },
-            feature: {
+            featureString: {
                 get: function () {
-                    return toFeature.call(this);
+                    return toFeatureString.call(this);
                 }
             }
         });
@@ -58199,46 +58295,46 @@ var createScenarioModelConstructor = function (
         .unique().value();
     }
 
-    function toFeature () {
+    function toFeatureString () {
         var scenario = 'Scenario' + (this.examples.length ? ' Outline' : '') + ': ' + this.name;
 
         var stepDeclarations = _.map(this.stepDeclarations, function (stepDeclaration) {
-            return GherkinIndent + GherkinIndent + stepDeclaration.feature;
+            return FeatureIndent + FeatureIndent + stepDeclaration.feature;
         });
 
         var lines = [scenario, stepDeclarations];
 
         if (this.examples.length) {
-            lines.push(GherkinIndent + GherkinIndent + 'Examples:');
+            lines.push(FeatureIndent + FeatureIndent + 'Examples:');
             var variables = '| ' + this.exampleVariables.join(' | ') + ' |';
-            lines.push(GherkinIndent + GherkinIndent + GherkinIndent + variables);
+            lines.push(FeatureIndent + FeatureIndent + FeatureIndent + variables);
             _.each(this.examples, function (example) {
                 lines.push(example.feature);
             }, this);
         }
 
         lines = _.flatten(lines);
-        return lines.join(GherkinNewLine);
+        return lines.join(FeatureNewLine);
     }
 };
 
-GherkinEditor.factory('ScenarioModel', ['StepDeclarationModel', 'ExampleModel', 'GherkinIndent', 'GherkinNewLine', function (
+FeatureEditor.factory('ScenarioModel', ['StepDeclarationModel', 'ExampleModel', 'FeatureIndent', 'FeatureNewLine', function (
     StepDeclarationModel,
     ExampleModel,
-    GherkinIndent,
-    GherkinNewLine
+    FeatureIndent,
+    FeatureNewLine
 ) {
-    return createScenarioModelConstructor(StepDeclarationModel, ExampleModel, GherkinIndent, GherkinNewLine);
+    return createScenarioModelConstructor(StepDeclarationModel, ExampleModel, FeatureIndent, FeatureNewLine);
 }]);
 
-},{"../GherkinEditor":154,"./ExampleModel":156,"./StepDeclarationModel":159,"lodash":66}],159:[function(require,module,exports){
+},{"../FeatureEditor":155,"./ExampleModel":157,"./StepDeclarationModel":160,"lodash":66}],160:[function(require,module,exports){
 'use strict';
 
 // Utilities:
 var _ = require('lodash');
 
 // Module:
-var GherkinEditor = require('../GherkinEditor');
+var FeatureEditor = require('../FeatureEditor');
 
 var createStepDeclarationModelConstructor = function () {
     var StepDeclarationModel = function StepDeclarationModel () {
@@ -58270,18 +58366,18 @@ var createStepDeclarationModelConstructor = function () {
     }
 };
 
-GherkinEditor.factory('StepDeclarationModel', function () {
+FeatureEditor.factory('StepDeclarationModel', function () {
     return createStepDeclarationModelConstructor();
 });
 
-},{"../GherkinEditor":154,"lodash":66}],160:[function(require,module,exports){
+},{"../FeatureEditor":155,"lodash":66}],161:[function(require,module,exports){
 'use strict';
 
 // Utilities:
 var _ = require('lodash');
 
 // Module:
-var GherkinEditor = require('../GherkinEditor');
+var FeatureEditor = require('../FeatureEditor');
 
 // Dependencies:
 require('../Models/ExampleModel');
@@ -58303,42 +58399,42 @@ var ExampleParserService = function ExampleParserService (ExampleModel) {
 };
 ExampleParserService.$inject = ['ExampleModel'];
 
-GherkinEditor.service('ExampleParserService', ExampleParserService);
+FeatureEditor.service('ExampleParserService', ExampleParserService);
 
-},{"../GherkinEditor":154,"../Models/ExampleModel":156,"lodash":66}],161:[function(require,module,exports){
+},{"../FeatureEditor":155,"../Models/ExampleModel":157,"lodash":66}],162:[function(require,module,exports){
 'use strict';
 
 // Module:
-var GherkinEditor = require('../GherkinEditor');
+var FeatureEditor = require('../FeatureEditor');
 
-var GherkinFileService = function GherkinFileService ($http) {
+var FeatureFileService = function FeatureFileService ($http) {
     return {
-        openGherkinFile: openGherkinFile,
-        saveGherkinFile: saveGherkinFile,
-        getGherkinFileNames: getGherkinFileNames
+        openFeatureFile: openFeatureFile,
+        saveFeatureFile: saveFeatureFile,
+        getFeatureFileNames: getFeatureFileNames
     };
 
-    function openGherkinFile (fileName) {
-        return $http.get('/open-gherkin-file?name=' + encodeURIComponent(fileName));
+    function openFeatureFile (fileName) {
+        return $http.get('/open-feature-file?name=' + encodeURIComponent(fileName));
     }
 
-    function saveGherkinFile (name, gherkin) {
-        gherkin = gherkin.replace(/"</g, '\'<').replace(/>"/g, '>\'');
-        return $http.post('/save-gherkin-file', {
-            name: name,
-            gherkin: gherkin
+    function saveFeatureFile (feature, name) {
+        feature = feature.replace(/"</g, '\'<').replace(/>"/g, '>\'');
+        return $http.post('/save-feature-file', {
+            feature: feature,
+            name: name
         });
     }
 
-    function getGherkinFileNames () {
-        return $http.get('/get-gherkin-file-names');
+    function getFeatureFileNames () {
+        return $http.get('/get-feature-file-names');
     }
 };
-GherkinFileService.$inject = ['$http'];
+FeatureFileService.$inject = ['$http'];
 
-GherkinEditor.service('GherkinFileService', GherkinFileService);
+FeatureEditor.service('FeatureFileService', FeatureFileService);
 
-},{"../GherkinEditor":154}],162:[function(require,module,exports){
+},{"../FeatureEditor":155}],163:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58346,36 +58442,36 @@ var _ = require('lodash');
 var assert = require('assert');
 
 // Module:
-var GherkinEditor = require('../GherkinEditor');
+var FeatureEditor = require('../FeatureEditor');
 
 // Dependencies:
 require('./ScenarioParserService');
-require('../Models/GherkinModel');
+require('../Models/FeatureModel');
 
-var GherkinParserService = function GherkinParserService (
+var FeatureParserService = function FeatureParserService (
     ScenarioParserService,
-    GherkinModel
+    FeatureModel
 ) {
     return {
         parse: parse
     };
 
     function parse (tokens) {
-        var gherkin = new GherkinModel();
+        var feature = new FeatureModel();
 
-        var feature = _.first(tokens);
-        gherkin.name = feature.name;
-        gherkin.inOrderTo = feature.inOrderTo;
-        gherkin.asA = feature.asA;
-        gherkin.iWant = feature.iWant;
+        var featureTokens = _.first(tokens);
+        feature.name = featureTokens.name;
+        feature.inOrderTo = featureTokens.inOrderTo;
+        feature.asA = featureTokens.asA;
+        feature.iWant = featureTokens.iWant;
 
-        _.each(feature.elements, function (element, index) {
+        _.each(featureTokens.elements, function (element, index) {
             var notScenario = false;
 
             try {
-                var parsedScenario = ScenarioParserService.parse(gherkin, element);
+                var parsedScenario = ScenarioParserService.parse(feature, element);
                 assert(parsedScenario);
-                gherkin.scenarios.push(parsedScenario);
+                feature.scenarios.push(parsedScenario);
             } catch (e) {
                 notScenario = true;
             }
@@ -58385,14 +58481,14 @@ var GherkinParserService = function GherkinParserService (
             }
         });
 
-        return gherkin;
+        return feature;
     }
 };
-GherkinParserService.$inject = ['ScenarioParserService', 'GherkinModel'];
+FeatureParserService.$inject = ['ScenarioParserService', 'FeatureModel'];
 
-GherkinEditor.service('GherkinParserService', GherkinParserService);
+FeatureEditor.service('FeatureParserService', FeatureParserService);
 
-},{"../GherkinEditor":154,"../Models/GherkinModel":157,"./ScenarioParserService":163,"assert":42,"lodash":66}],163:[function(require,module,exports){
+},{"../FeatureEditor":155,"../Models/FeatureModel":158,"./ScenarioParserService":164,"assert":42,"lodash":66}],164:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58400,7 +58496,7 @@ var _ = require('lodash');
 var assert = require('assert');
 
 // Module:
-var GherkinEditor = require('../GherkinEditor');
+var FeatureEditor = require('../FeatureEditor');
 
 // Dependencies:
 require('./StepDeclarationParserService');
@@ -58416,7 +58512,7 @@ var ScenarioParserService = function ScenarioParserService (
         parse: parse
     };
 
-    function parse (gherkin, tokens) {
+    function parse (feature, tokens) {
         var scenario = new ScenarioModel();
 
         scenario.name = tokens.name;
@@ -58459,13 +58555,13 @@ var ScenarioParserService = function ScenarioParserService (
 };
 ScenarioParserService.$inject = ['StepDeclarationParserService', 'ExampleParserService', 'ScenarioModel'];
 
-GherkinEditor.service('ScenarioParserService', ScenarioParserService);
+FeatureEditor.service('ScenarioParserService', ScenarioParserService);
 
-},{"../GherkinEditor":154,"../Models/ScenarioModel":158,"./ExampleParserService":160,"./StepDeclarationParserService":164,"assert":42,"lodash":66}],164:[function(require,module,exports){
+},{"../FeatureEditor":155,"../Models/ScenarioModel":159,"./ExampleParserService":161,"./StepDeclarationParserService":165,"assert":42,"lodash":66}],165:[function(require,module,exports){
 'use strict';
 
 // Module:
-var GherkinEditor = require('../GherkinEditor');
+var FeatureEditor = require('../FeatureEditor');
 
 // Dependencies
 require('../Models/StepDeclarationModel');
@@ -58486,9 +58582,9 @@ var StepDeclarationParserService = function ExampleParserService (StepDeclaratio
 };
 StepDeclarationParserService.$inject = ['StepDeclarationModel'];
 
-GherkinEditor.service('StepDeclarationParserService', StepDeclarationParserService);
+FeatureEditor.service('StepDeclarationParserService', StepDeclarationParserService);
 
-},{"../GherkinEditor":154,"../Models/StepDeclarationModel":159}],165:[function(require,module,exports){
+},{"../FeatureEditor":155,"../Models/StepDeclarationModel":160}],166:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58501,7 +58597,7 @@ var MockDataEditor = angular.module('MockDataEditor', ['Core']);
 
 module.exports = MockDataEditor;
 
-},{"../../Core/Core":116,"angular":6}],166:[function(require,module,exports){
+},{"../../Core/Core":116,"angular":6}],167:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58518,12 +58614,19 @@ require('./Models/MockDataModel');
 var MockDataEditorController = (function () {
     var MockDataEditorController = function MockDataEditorController (
         $stateParams,
+        $scope,
+        $window,
+        NotifierService,
         MockDataFileService,
         MockDataParserService,
         MockDataModel,
         mockDataFileNames,
         mockDataFile
     ) {
+        this.$window = $window;
+        this.$scope = $scope;
+        this.notifierService = NotifierService;
+
         this.mockDataFileService = MockDataFileService;
         this.mockDataParserService = MockDataParserService;
 
@@ -58535,15 +58638,39 @@ var MockDataEditorController = (function () {
             this.mockData = new MockDataModel();
         }
     };
-    MockDataEditorController.$inject = ['$stateParams', 'MockDataFileService', 'MockDataParserService', 'MockDataModel', 'mockDataFileNames', 'mockDataFile'];
-
-    MockDataEditorController.prototype.openMockDataFile = function (fileName) {
-        this.mockDataFileService.openMockDataFile(fileName)
-        .then(parseMockDataFile.bind(this, fileName));
-    };
+    MockDataEditorController.$inject = ['$stateParams', '$scope', '$window', 'NotifierService', 'MockDataFileService', 'MockDataParserService', 'MockDataModel', 'mockDataFileNames', 'mockDataFile'];
 
     MockDataEditorController.prototype.saveMockDataFile = function () {
-        this.mockDataFileService.saveMockDataFile(this.mockData.name, this.mockData.json);
+        var mockDataFileNames = this.mockDataFileNames;
+        var json = this.mockData.json;
+        var name = this.mockData.name;
+
+        var exists = _.contains(mockDataFileNames, name);
+
+        if (!exists || this.$window.confirm('This will overwrite "' + name + '". Continue?')) {
+            this.mockDataFileService.saveMockDataFile(json, name)
+            .then(function () {
+                if (!exists) {
+                    mockDataFileNames.push(name);
+                }
+            });
+        }
+    };
+
+    MockDataEditorController.prototype.showErrors = function () {
+        var mockDataEditor = this.$scope['mock-data-editor'];
+        if (mockDataEditor.$invalid) {
+            Object.keys(mockDataEditor.$error).forEach(function (invalidType) {
+                var errors = mockDataEditor.$error[invalidType];
+                errors.forEach(function (element) {
+                    element.$setTouched();
+                });
+            });
+            this.notifierService.error('Can\'t save mock data, something is invalid.');
+            return false;
+        } else {
+            return true;
+        }
     };
 
     function parseMockDataFile (fileName, mockDataFile) {
@@ -58557,7 +58684,7 @@ var MockDataEditorController = (function () {
 
 MockDataEditor.controller('MockDataEditorController', MockDataEditorController);
 
-},{"./MockDataEditor":165,"./Models/MockDataModel":167,"./Services/MockDataFileService":168,"./Services/MockDataParserService":169,"lodash":66}],167:[function(require,module,exports){
+},{"./MockDataEditor":166,"./Models/MockDataModel":168,"./Services/MockDataFileService":169,"./Services/MockDataParserService":170,"lodash":66}],168:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -58594,7 +58721,7 @@ MockDataEditor.factory('MockDataModel', function () {
     return createMockDataModelConstructor();
 });
 
-},{"../MockDataEditor":165}],168:[function(require,module,exports){
+},{"../MockDataEditor":166}],169:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58622,10 +58749,10 @@ var MockDataFileService = function MockDataFileService (
         return $http.get('/open-mock-data-file?name=' + encodeURIComponent(fileName));
     }
 
-    function saveMockDataFile (name, data) {
+    function saveMockDataFile (data, name) {
         return $http.post('/save-mock-data-file', {
-            name: name,
-            data: data
+            data: data,
+            name: name
         });
     }
 
@@ -58652,7 +58779,7 @@ MockDataFileService.$inject = ['$http', 'MockDataParserService'];
 
 MockDataEditor.service('MockDataFileService', MockDataFileService);
 
-},{"../MockDataEditor":165,"./MockDataParserService":169,"bluebird":9,"lodash":66}],169:[function(require,module,exports){
+},{"../MockDataEditor":166,"./MockDataParserService":170,"bluebird":9,"lodash":66}],170:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -58676,7 +58803,7 @@ MockDataParserService.$inject = ['MockDataModel'];
 
 MockDataEditor.service('MockDataParserService', MockDataParserService);
 
-},{"../MockDataEditor":165,"../Models/MockDataModel":167}],170:[function(require,module,exports){
+},{"../MockDataEditor":166,"../Models/MockDataModel":168}],171:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58706,7 +58833,7 @@ NotifierDirective.$inject = ['NotifierService'];
 
 Notifier.directive('tractorNotifier', NotifierDirective);
 
-},{"../Notifier":171,"../Services/NotifierService":172}],171:[function(require,module,exports){
+},{"../Notifier":172,"../Services/NotifierService":173}],172:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58718,7 +58845,7 @@ module.exports = Notifier;
 
 require('./Directives/NotifierDirective');
 
-},{"./Directives/NotifierDirective":170,"angular":6}],172:[function(require,module,exports){
+},{"./Directives/NotifierDirective":171,"angular":6}],173:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58781,7 +58908,7 @@ NotifierService.$inject = ['$timeout'];
 
 Notifier.service('NotifierService', NotifierService);
 
-},{"../Notifier":171,"lodash":66}],173:[function(require,module,exports){
+},{"../Notifier":172,"lodash":66}],174:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -58834,7 +58961,7 @@ StepDefinitionEditor.factory('ComponentInstanceModel', ['ASTCreatorService', fun
     return createComponentInstanceModelConstructor(ASTCreatorService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":124,"../StepDefinitionEditor":186}],174:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":125,"../StepDefinitionEditor":187}],175:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58940,7 +59067,7 @@ StepDefinitionEditor.factory('ExpectationModel', ['ASTCreatorService', 'StringTo
     return createExpectationModelConstructor(ASTCreatorService, StringToLiteralService, ArgumentModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":124,"../../../Core/Services/StringToLiteralService":128,"../../ComponentEditor/Models/ArgumentModel":135,"../StepDefinitionEditor":186,"lodash":66}],175:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":125,"../../../Core/Services/StringToLiteralService":129,"../../ComponentEditor/Models/ArgumentModel":136,"../StepDefinitionEditor":187,"lodash":66}],176:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -58993,7 +59120,7 @@ StepDefinitionEditor.factory('MockDataInstanceModel', ['ASTCreatorService', func
     return createMockDataInstanceModelConstructor(ASTCreatorService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":124,"../StepDefinitionEditor":186}],176:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":125,"../StepDefinitionEditor":187}],177:[function(require,module,exports){
 'use strict';
 
 // Utilities;
@@ -59058,7 +59185,7 @@ StepDefinitionEditor.factory('MockModel', ['ASTCreatorService', function (
     return createMockModelConstructor(ASTCreatorService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":124,"../StepDefinitionEditor":186,"lodash":66}],177:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":125,"../StepDefinitionEditor":187,"lodash":66}],178:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -59163,7 +59290,7 @@ StepDefinitionEditor.factory('StepDefinitionModel', ['ASTCreatorService', 'Compo
     return createStepDefinitionModelConstructor(ASTCreatorService, ComponentInstanceModel, MockDataInstanceModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":124,"../StepDefinitionEditor":186,"./ComponentInstanceModel":173,"./MockDataInstanceModel":175,"lodash":66}],178:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":125,"../StepDefinitionEditor":187,"./ComponentInstanceModel":174,"./MockDataInstanceModel":176,"lodash":66}],179:[function(require,module,exports){
 'use strict';
 
 // Utilities;
@@ -59327,7 +59454,7 @@ StepDefinitionEditor.factory('StepModel', ['ASTCreatorService', 'ExpectationMode
     return createStepModelConstructor(ASTCreatorService, ExpectationModel, TaskModel, MockModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":124,"../StepDefinitionEditor":186,"./ExpectationModel":174,"./MockModel":176,"./TaskModel":179,"lodash":66}],179:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":125,"../StepDefinitionEditor":187,"./ExpectationModel":175,"./MockModel":177,"./TaskModel":180,"lodash":66}],180:[function(require,module,exports){
 'use strict';
 
 // Utilities;
@@ -59420,7 +59547,7 @@ StepDefinitionEditor.factory('TaskModel', ['ASTCreatorService', 'ArgumentModel',
     return createTaskModelConstructor(ASTCreatorService, ArgumentModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":124,"../../ComponentEditor/Models/ArgumentModel":135,"../StepDefinitionEditor":186,"lodash":66}],180:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":125,"../../ComponentEditor/Models/ArgumentModel":136,"../StepDefinitionEditor":187,"lodash":66}],181:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -59465,7 +59592,7 @@ ExpectationParserService.$inject = ['ExpectationModel'];
 
 StepDefinitionEditor.service('ExpectationParserService', ExpectationParserService);
 
-},{"../Models/ExpectationModel":174,"../StepDefinitionEditor":186,"lodash":66}],181:[function(require,module,exports){
+},{"../Models/ExpectationModel":175,"../StepDefinitionEditor":187,"lodash":66}],182:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -59516,7 +59643,7 @@ MockParserService.$inject = ['MockModel'];
 
 StepDefinitionEditor.service('MockParserService', MockParserService);
 
-},{"../Models/MockModel":176,"../StepDefinitionEditor":186,"assert":42,"lodash":66}],182:[function(require,module,exports){
+},{"../Models/MockModel":177,"../StepDefinitionEditor":187,"assert":42,"lodash":66}],183:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -59548,7 +59675,7 @@ StepDefinitionFileService.$inject = ['$http'];
 
 StepDefinitionEditor.service('StepDefinitionFileService', StepDefinitionFileService);
 
-},{"../StepDefinitionEditor":186}],183:[function(require,module,exports){
+},{"../StepDefinitionEditor":187}],184:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -59641,7 +59768,7 @@ StepDefinitionParserService.$inject = ['StepParserService', 'StepDefinitionModel
 
 StepDefinitionEditor.service('StepDefinitionParserService', StepDefinitionParserService);
 
-},{"../Models/StepDefinitionModel":177,"../Services/StepParserService":184,"../StepDefinitionEditor":186,"assert":42,"change-case":47,"lodash":66}],184:[function(require,module,exports){
+},{"../Models/StepDefinitionModel":178,"../Services/StepParserService":185,"../StepDefinitionEditor":187,"assert":42,"change-case":47,"lodash":66}],185:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -59734,7 +59861,7 @@ StepParserService.$inject = ['MockParserService', 'TaskParserService', 'Expectat
 
 StepDefinitionEditor.service('StepParserService', StepParserService);
 
-},{"../Models/StepModel":178,"../Services/ExpectationParserService":180,"../Services/MockParserService":181,"../Services/TaskParserService":185,"../StepDefinitionEditor":186,"assert":42,"lodash":66}],185:[function(require,module,exports){
+},{"../Models/StepModel":179,"../Services/ExpectationParserService":181,"../Services/MockParserService":182,"../Services/TaskParserService":186,"../StepDefinitionEditor":187,"assert":42,"lodash":66}],186:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -59809,7 +59936,7 @@ TaskParserService.$inject = ['TaskModel'];
 
 StepDefinitionEditor.service('TaskParserService', TaskParserService);
 
-},{"../Models/TaskModel":179,"../StepDefinitionEditor":186,"assert":42,"lodash":66}],186:[function(require,module,exports){
+},{"../Models/TaskModel":180,"../StepDefinitionEditor":187,"assert":42,"lodash":66}],187:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -59822,7 +59949,7 @@ var StepDefinitionEditor = angular.module('StepDefinitionEditor', ['Core']);
 
 module.exports = StepDefinitionEditor;
 
-},{"../../Core/Core":116,"angular":6}],187:[function(require,module,exports){
+},{"../../Core/Core":116,"angular":6}],188:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -59838,6 +59965,9 @@ require('./Services/StepDefinitionParserService');
 var StepDefinitionEditorController = (function () {
     var StepDefinitionEditorController = function StepDefinitionEditorController (
         $stateParams,
+        $scope,
+        $window,
+        NotifierService,
         StepDefinitionFileService,
         StepDefinitionParserService,
         stepDefinitionFileNames,
@@ -59845,6 +59975,10 @@ var StepDefinitionEditorController = (function () {
         components,
         mockData
     ) {
+        this.$window = $window;
+        this.$scope = $scope;
+        this.notifierService = NotifierService;
+
         this.stepDefinitionFileService = StepDefinitionFileService;
         this.stepDefinitionParserService = StepDefinitionParserService;
 
@@ -59902,10 +60036,39 @@ var StepDefinitionEditorController = (function () {
             parseStepDefinitionFile.call(this, $stateParams.stepDefinition, stepDefinitionFile);
         }
     };
-    StepDefinitionEditorController.$inject = ['$stateParams', 'StepDefinitionFileService', 'StepDefinitionParserService', 'stepDefinitionFileNames', 'stepDefinitionFile', 'components', 'mockData'];
+    StepDefinitionEditorController.$inject = ['$stateParams', '$scope', '$window', 'NotifierService', 'StepDefinitionFileService', 'StepDefinitionParserService', 'stepDefinitionFileNames', 'stepDefinitionFile', 'components', 'mockData'];
 
     StepDefinitionEditorController.prototype.saveStepDefinitionFile = function () {
-        this.stepDefinitionFileService.saveStepDefinitionFile(this.stepDefinition.ast, this.stepDefinition.name);
+        var stepDefinitionFileNames = this.stepDefinitionFileNames;
+        var ast = this.stepDefinition.ast;
+        var name = this.stepDefinition.name;
+
+        var exists = _.contains(stepDefinitionFileNames, name);
+
+        if (!exists || this.$window.confirm('This will overwrite "' + name + '". Continue?')) {
+            this.stepDefinitionFileService.saveStepDefinitionFile(ast, name)
+            .then(function () {
+                if (!exists) {
+                    stepDefinitionFileNames.push(name);
+                }
+            });
+        }
+    };
+
+    StepDefinitionEditorController.prototype.showErrors = function () {
+        var stepDefinitionEditor = this.$scope['step-definition-editor'];
+        if (stepDefinitionEditor.$invalid) {
+            Object.keys(stepDefinitionEditor.$error).forEach(function (invalidType) {
+                var errors = stepDefinitionEditor.$error[invalidType];
+                errors.forEach(function (element) {
+                    element.$setTouched();
+                });
+            });
+            this.notifierService.error('Can\'t save step definition, something is invalid.');
+            return false;
+        } else {
+            return true;
+        }
     };
 
     function parseStepDefinitionFile (filename, stepDefinitionFile) {
@@ -59919,4 +60082,4 @@ var StepDefinitionEditorController = (function () {
 
 StepDefinitionEditor.controller('StepDefinitionEditorController', StepDefinitionEditorController);
 
-},{"./Services/StepDefinitionFileService":182,"./Services/StepDefinitionParserService":183,"./StepDefinitionEditor":186,"lodash":66}]},{},[1]);
+},{"./Services/StepDefinitionFileService":183,"./Services/StepDefinitionParserService":184,"./StepDefinitionEditor":187,"lodash":66}]},{},[1]);

@@ -29,5 +29,5 @@ module.exports = {
 
     CUCUMBER_COMMAND: 'node node_modules/cucumber/bin/cucumber ',
 
-    GHERKIN_NEWLINE: '%%NEWLINE%%'
+    FEATURE_NEWLINE: '%%NEWLINE%%'
 };

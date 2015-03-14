@@ -13,14 +13,19 @@ require('./Models/ComponentModel');
 
 var ComponentEditorController = (function () {
     var ComponentEditorController = function ComponentEditorController (
+        $scope,
         $window,
+        NotifierService,
         ComponentFileService,
         ComponentParserService,
         ComponentModel,
         componentFileNames,
         componentFile
     ) {
+        this.$scope = $scope;
         this.$window = $window;
+        this.notifierService = NotifierService;
+
         this.componentFileService = ComponentFileService;
         this.componentParserService = ComponentParserService;
         this.componentFileNames = componentFileNames;
@@ -41,13 +46,29 @@ var ComponentEditorController = (function () {
 
         var exists = _.contains(componentFileNames, name);
 
-        if (!exists || exists && this.$window.confirm('This will overwrite "' + name + '". Continue?')) {
+        if (!exists || this.$window.confirm('This will overwrite "' + name + '". Continue?')) {
             this.componentFileService.saveComponentFile(ast, name)
             .then(function () {
                 if (!exists) {
                     componentFileNames.push(name);
                 }
             });
+        }
+    };
+
+    ComponentEditorController.prototype.showErrors = function () {
+        var componentEditor = this.$scope['component-editor'];
+        if (componentEditor.$invalid) {
+            Object.keys(componentEditor.$error).forEach(function (invalidType) {
+                var errors = componentEditor.$error[invalidType];
+                errors.forEach(function (element) {
+                    element.$setTouched();
+                });
+            });
+            this.notifierService.error('Can\'t save component, something is invalid.');
+            return false;
+        } else {
+            return true;
         }
     };
 

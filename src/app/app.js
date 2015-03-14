@@ -19,9 +19,9 @@ require('./features/ComponentEditor/ComponentEditor');
 require('./features/ComponentEditor/ComponentEditorController');
 require('./features/ComponentEditor/Services/ComponentFileService');
 
-require('./features/GherkinEditor/GherkinEditor');
-require('./features/GherkinEditor/GherkinEditorController');
-require('./features/GherkinEditor/Services/GherkinFileService');
+require('./features/FeatureEditor/FeatureEditor');
+require('./features/FeatureEditor/FeatureEditorController');
+require('./features/FeatureEditor/Services/FeatureFileService');
 
 require('./features/StepDefinitionEditor/Services/StepDefinitionFileService');
 require('./features/StepDefinitionEditor/StepDefinitionEditorController');
@@ -45,7 +45,7 @@ angular.module('tractor', [
   'Notifier',
   'ControlPanel',
   'ComponentEditor',
-  'GherkinEditor',
+  'FeatureEditor',
   'StepDefinitionEditor',
   'MockDataEditor'
 ])
@@ -71,24 +71,24 @@ angular.module('tractor', [
                 return ComponentFileService.getComponentFileNames();
             },
             componentFile: function ($stateParams, ComponentFileService) {
-                var component = $stateParams.component
+                var component = $stateParams.component;
                 return component ? ComponentFileService.openComponentFile(component) : null;
             }
         }
     })
-    .state('tractor.gherkin-editor', {
-        url: 'gherkin-editor?feature',
+    .state('tractor.feature-editor', {
+        url: 'feature-editor?feature',
         /* eslint-disable no-path-concat */
-        template: fs.readFileSync(__dirname + '/features/GherkinEditor/GherkinEditor.html', 'utf8'),
+        template: fs.readFileSync(__dirname + '/features/FeatureEditor/FeatureEditor.html', 'utf8'),
         /* eslint-enable no-path-concat */
-        controller: 'GherkinEditorController as gherkinEditor',
+        controller: 'FeatureEditorController as featureEditor',
         resolve: {
-            gherkinFileNames: function (GherkinFileService) {
-                return GherkinFileService.getGherkinFileNames();
+            featureFileNames: function (FeatureFileService) {
+                return FeatureFileService.getFeatureFileNames();
             },
-            featureFile: function ($stateParams, GherkinFileService) {
+            featureFile: function ($stateParams, FeatureFileService) {
                 var feature = $stateParams.feature;
-                return feature ? GherkinFileService.openGherkinFile(feature) : null;
+                return feature ? FeatureFileService.openFeatureFile(feature) : null;
             }
         }
     })

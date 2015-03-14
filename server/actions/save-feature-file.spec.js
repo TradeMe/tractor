@@ -10,10 +10,10 @@ var noop = function () { };
 var expect = chai.expect;
 chai.use(sinonChai);
 
-var saveGherkinFile = require('./save-gherkin-file');
+var saveFeatureFile = require('./save-feature-file');
 
-describe('server/actions: save-gherkin-file:', function () {
-    it('should build the correct `featurePath` and save the `gherkin` to a ".feature" file', function () {
+describe('server/actions: save-feature-file:', function () {
+    it('should build the correct `featurePath` and save the `feature` to a ".feature" file', function () {
         var childProcess = require('child_process');
         var fs = require('fs');
         sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(['']));
@@ -22,16 +22,16 @@ describe('server/actions: save-gherkin-file:', function () {
         var request = {
             body: {
                 name: 'feature',
-                gherkin: 'gherkin'
+                feature: 'feature'
             }
         };
         var response = {
             send: noop
         };
 
-        return saveGherkinFile(request, response)
+        return saveFeatureFile(request, response)
         .then(function () {
-            expect(fs.writeFileAsync).to.have.been.calledWith('e2e_tests/features/feature.feature', 'gherkin');
+            expect(fs.writeFileAsync).to.have.been.calledWith('e2e_tests/features/feature.feature', 'feature');
         })
         .finally(function () {
             childProcess.execAsync.restore();
@@ -49,14 +49,14 @@ describe('server/actions: save-gherkin-file:', function () {
         var request = {
             body: {
                 name: 'feature',
-                gherkin: '%%NEWLINE%%'
+                feature: '%%NEWLINE%%'
             }
         };
         var response = {
             send: noop
         };
 
-        return saveGherkinFile(request, response)
+        return saveFeatureFile(request, response)
         .then(function () {
             expect(fs.writeFileAsync).to.have.been.calledWith('e2e_tests/features/feature.feature', require('os').EOL);
         })
@@ -76,14 +76,14 @@ describe('server/actions: save-gherkin-file:', function () {
         var request = {
             body: {
                 name: 'feature',
-                gherkin: '%%NEWLINE%%'
+                feature: '%%NEWLINE%%'
             }
         };
         var response = {
             send: noop
         };
 
-        return saveGherkinFile(request, response)
+        return saveFeatureFile(request, response)
         .then(function () {
             expect(childProcess.execAsync).to.have.been.calledWith('node node_modules/cucumber/bin/cucumber e2e_tests/features/feature.feature');
         })
@@ -103,7 +103,7 @@ describe('server/actions: save-gherkin-file:', function () {
         sinon.stub(logging, 'error');
         var request = {
             body: {
-                gherkin: ''
+                feature: ''
             }
         };
         var response = {
@@ -113,7 +113,7 @@ describe('server/actions: save-gherkin-file:', function () {
         sinon.spy(response, 'status');
         sinon.spy(response, 'send');
 
-        return saveGherkinFile(request, response)
+        return saveFeatureFile(request, response)
         .then(function () {
             expect(response.status).to.have.been.calledWith(500);
             var responseData = JSON.parse(response.send.firstCall.args[0]);
@@ -140,7 +140,7 @@ describe('server/actions: save-gherkin-file:', function () {
         var request = {
             body: {
                 name: '',
-                gherkin: ''
+                feature: ''
             }
         };
         var response = {
@@ -150,7 +150,7 @@ describe('server/actions: save-gherkin-file:', function () {
         sinon.stub(fs, 'writeFileAsync').returns(Promise.resolve());
         sinon.stub(fs, 'readdirAsync').returns(Promise.resolve());
 
-        return saveGherkinFile(request, response)
+        return saveFeatureFile(request, response)
         .then(function () {
             var firstStub = fs.writeFileAsync.getCall(1).args[1];
             expect(firstStub.indexOf('this.When(/^some step$/, function (done) {') > -1).to.equal(true);
@@ -174,7 +174,7 @@ describe('server/actions: save-gherkin-file:', function () {
         var request = {
             body: {
                 name: '',
-                gherkin: ''
+                feature: ''
             }
         };
         var response = {
@@ -184,7 +184,7 @@ describe('server/actions: save-gherkin-file:', function () {
         sinon.stub(fs, 'writeFileAsync').returns(Promise.resolve());
         sinon.stub(fs, 'readdirAsync').returns(Promise.resolve());
 
-        return saveGherkinFile(request, response)
+        return saveFeatureFile(request, response)
         .then(function () {
             var path = fs.writeFileAsync.getCall(1).args[0];
             expect(path).to.equal('e2e_tests/step_definitions/WhenSomeStep.step.js');
@@ -206,7 +206,7 @@ describe('server/actions: save-gherkin-file:', function () {
         var request = {
             body: {
                 name: '',
-                gherkin: ''
+                feature: ''
             }
         };
         var response = {
@@ -216,7 +216,7 @@ describe('server/actions: save-gherkin-file:', function () {
         sinon.stub(fs, 'writeFileAsync').returns(Promise.resolve());
         sinon.stub(fs, 'readdirAsync').returns(Promise.resolve());
 
-        return saveGherkinFile(request, response)
+        return saveFeatureFile(request, response)
         .then(function () {
             var stub = fs.writeFileAsync.getCall(1).args[1];
             expect(stub.indexOf('this.When(/^some step$/, function (done) {') > -1).to.equal(true);
@@ -239,7 +239,7 @@ describe('server/actions: save-gherkin-file:', function () {
         var request = {
             body: {
                 name: '',
-                gherkin: ''
+                feature: ''
             }
         };
         var response = {
@@ -249,7 +249,7 @@ describe('server/actions: save-gherkin-file:', function () {
         sinon.stub(fs, 'writeFileAsync').returns(Promise.resolve());
         sinon.stub(fs, 'readdirAsync').returns(Promise.resolve());
 
-        return saveGherkinFile(request, response)
+        return saveFeatureFile(request, response)
         .then(function () {
             var stub = fs.writeFileAsync.getCall(1).args[1];
             expect(stub.indexOf('module.exports = function () {') > -1).to.equal(true);
@@ -271,7 +271,7 @@ describe('server/actions: save-gherkin-file:', function () {
         var request = {
             body: {
                 name: '',
-                gherkin: ''
+                feature: ''
             }
         };
         var response = {
@@ -281,7 +281,7 @@ describe('server/actions: save-gherkin-file:', function () {
         sinon.stub(fs, 'writeFileAsync').returns(Promise.resolve());
         sinon.stub(fs, 'readdirAsync').returns(Promise.resolve(['WhenSomeStep.step.js']));
 
-        return saveGherkinFile(request, response)
+        return saveFeatureFile(request, response)
         .then(function () {
             expect(fs.writeFileAsync.callCount).to.equal(1);
         })
@@ -301,7 +301,7 @@ describe('server/actions: save-gherkin-file:', function () {
         var request = {
             body: {
                 name: '',
-                gherkin: ''
+                feature: ''
             }
         };
         var response = {
@@ -309,7 +309,7 @@ describe('server/actions: save-gherkin-file:', function () {
         };
         sinon.spy(response, 'send');
 
-        return saveGherkinFile(request, response)
+        return saveFeatureFile(request, response)
         .then(function () {
             var responseData = JSON.parse(response.send.firstCall.args[0]);
             expect(responseData.message).to.equal('Cucumber stubs generated.');

@@ -11,13 +11,13 @@ var constants = require('../constants');
 
 // Dependencies:
 var esprima = require('esprima');
-var Formatter = require('../utils/gherkin-lexer-formatter');
+var Formatter = require('../utils/feature-lexer-formatter');
 var fs = Promise.promisifyAll(require('fs'));
 var gherkin = require('gherkin');
 
 // Errors:
 var ParseJavaScriptError = require('../errors/ParseJavaScriptError');
-var LexGherkinError = require('../errors/LexGherkinError');
+var LexFeatureError = require('../errors/LexFeatureError');
 
 module.exports = createHandlerForDirectory;
 
@@ -38,7 +38,7 @@ function openFile (directory, options, extension, request, response) {
     .catch(ParseJavaScriptError, function (error) {
         errorHandler(response, error);
     })
-    .catch(LexGherkinError, function (error) {
+    .catch(LexFeatureError, function (error) {
         errorHandler(response, error);
     })
     .catch(function (error) {
@@ -53,8 +53,8 @@ function createResponseData (contents, options, name) {
     };
     if (options.parseJS) {
         data.ast = parseJS(contents, name);
-    } else if (options.lexGherkin) {
-        data.tokens = lexGherkin(contents, name);
+    } else if (options.lexFeature) {
+        data.tokens = lexFeature(contents, name);
     }
     return data;
 }
@@ -69,7 +69,7 @@ function parseJS (contents, name) {
     return ast;
 }
 
-function lexGherkin (contents, name) {
+function lexFeature (contents, name) {
     var tokens;
     try {
         var formatter = new Formatter();
@@ -80,7 +80,7 @@ function lexGherkin (contents, name) {
         enLexer.scan(contents);
         tokens = formatter.done();
     } catch (e) {
-        throw new LexGherkinError('Lexing "' + name + '" failed.');
+        throw new LexFeatureError('Lexing "' + name + '" failed.');
     }
     return tokens;
 }

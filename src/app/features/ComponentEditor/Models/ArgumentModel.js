@@ -38,7 +38,7 @@ var createArgumentModelConstructor = function (
             },
             required: {
                 get: function () {
-                    return argument ? (argument.required || true) : false;
+                    return argument ? !!argument.required : false;
                 }
             },
             ast: {

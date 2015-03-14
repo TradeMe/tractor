@@ -475,9 +475,8 @@ th {
   src: url("./fonts/ubuntumono-r-webfont.eot?#iefix") format("embedded-opentype"), url("./fonts/ubuntumono-r-webfont.woff2") format("woff2"), url("./fonts/ubuntumono-r-webfont.woff") format("woff"), url("./fonts/ubuntumono-r-webfont.ttf") format("truetype"), url("./fonts/ubuntumono-r-webfont.svg#ubuntu_monoregular") format("svg");
   font-weight: normal;
   font-style: normal; }
-.file-editor {
-  width: 80%;
-  height: 85.5%; }
+form.file {
+  width: 80%; }
 
 .file-editor ul,
 .file-editor ol {
@@ -570,7 +569,6 @@ th {
 
 .file-options {
   font-size: 0;
-  width: 80%;
   height: 14.5%;
   background: rgba(240, 240, 240, 0.8); }
 
@@ -622,8 +620,8 @@ th {
 .file-tree__file-list--javascript li {
   background-image: url("./images/js.png"); }
 
-.file-tree__file-list--gherkin li {
-  background-image: url("./images/gherkin.png"); }
+.file-tree__file-list--feature li {
+  background-image: url("./images/feature.png"); }
 
 .file-tree__file-list--json li {
   background-image: url("./images/json.png"); }
@@ -829,7 +827,8 @@ sup, sub {
 sub {
   top: 0.4em; }
 
-tractor-action {
+tractor-action,
+tractor-submit {
   display: inline-block;
   padding: 0 0.5rem; }
 
@@ -852,7 +851,8 @@ tractor-action[icon] button:active {
   -webkit-transform: scale(1.25);
           transform: scale(1.25); }
 
-tractor-action button {
+tractor-action button,
+tractor-submit button {
   -webkit-appearance: none;
   appearance: none;
   border: none;
@@ -864,20 +864,24 @@ tractor-action button {
   color: whitesmoke;
   background: #6e6e6e; }
 
-tractor-action button span {
+tractor-action button span,
+tractor-submit button span {
   transition: all 0.1s;
   -webkit-transform: scale(0.8);
           transform: scale(0.8);
   display: block; }
 
-tractor-action button:hover {
+tractor-action button:hover,
+tractor-submit button:hover {
   background: #828282; }
 
-tractor-action button:hover span {
+tractor-action button:hover span,
+tractor-submit button:hover span {
   -webkit-transform: scale(0.9);
           transform: scale(0.9); }
 
-tractor-action button:active span {
+tractor-action button:active span,
+tractor-submit button:active span {
   -webkit-transform: scale(1);
           transform: scale(1); }
 
@@ -949,9 +953,9 @@ tractor-step-input [ng-messages] {
   line-height: 1rem;
   float: left; }
 
-.ng-invalid input.ng-touched, .ng-invalid input.ng-untouched.ng-dirty {
+input.ng-invalid.ng-touched, input.ng-invalid.ng-untouched.ng-dirty {
   border-bottom: 1px solid rgba(255, 50, 50, 0.9); }
-  .ng-invalid input.ng-touched + [ng-messages] > ng-message, .ng-invalid input.ng-untouched.ng-dirty + [ng-messages] > ng-message {
+  input.ng-invalid.ng-touched + [ng-messages] > ng-message, input.ng-invalid.ng-untouched.ng-dirty + [ng-messages] > ng-message {
     color: rgba(255, 50, 50, 0.9); }
 
 label[title] {
@@ -979,7 +983,7 @@ header {
 main {
   height: 84.5%; }
 
-main > section {
+main > section, main > form {
   float: left;
   height: 100%;
   overflow-y: scroll;
