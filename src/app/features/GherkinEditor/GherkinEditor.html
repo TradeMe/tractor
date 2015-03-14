@@ -2,10 +2,9 @@
     <h3>Gherkin files:</h3>
     <ul class='file-tree__file-list file-tree__file-list--gherkin'>
         <li ng-repeat="gherkinFileName in gherkinEditor.gherkinFileNames"
-            ng-click="gherkinEditor.openGherkinFile(gherkinFileName)"
-            ng-class="{ true: 'active' }[gherkinFileName === gherkinEditor.gherkinName + '.feature']"
+            ng-class="{ true: 'active' }[gherkinFileName === gherkinEditor.gherkinName]"
             class="file-tree__file-list-file">
-            <span>{{ gherkinFileName }}</span>
+            <a ui-sref="tractor.gherkin-editor({ feature: gherkinFileName })">{{ gherkinFileName }}</a>
         </li>
     </ul>
 </section>

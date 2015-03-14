@@ -17,28 +17,20 @@ var ComponentEditorController = (function () {
         ComponentFileService,
         ComponentParserService,
         ComponentModel,
-        componentFileNames
+        componentFileNames,
+        componentFile
     ) {
         this.$window = $window;
         this.componentFileService = ComponentFileService;
         this.componentParserService = ComponentParserService;
         this.componentFileNames = componentFileNames;
 
-        this.component = new ComponentModel();
-        this.component.addElement();
-        this.component.addAction();
-    };
-
-    ComponentEditorController.prototype.openComponentFile = function (componentFileName) {
-        var open = this.component.name === componentFileName;
-
-        if (!open) {
-            this.componentFileService.openComponentFile(componentFileName)
-            .then(_.bind(function (data) {
-                try {
-                    this.component = this.componentParserService.parse(data.ast);
-                } catch (e) { }
-            }, this));
+        if (componentFile) {
+            parseComponentFile.call(this, componentFile);
+        } else {
+            this.component = new ComponentModel();
+            this.component.addElement();
+            this.component.addAction();
         }
     };
 
@@ -58,6 +50,12 @@ var ComponentEditorController = (function () {
             });
         }
     };
+
+    function parseComponentFile (componentFile) {
+        try {
+            this.component = this.componentParserService.parse(componentFile.ast);
+        } catch (e) { }
+    }
 
     return ComponentEditorController;
 })();

@@ -615,6 +615,10 @@ th {
   background-repeat: no-repeat;
   background-position: 0 50%; }
 
+.file-tree__file-list li a {
+  text-decoration: none;
+  color: black; }
+
 .file-tree__file-list--javascript li {
   background-image: url("./images/js.png"); }
 
@@ -627,15 +631,13 @@ th {
 .file-tree__file-list-file {
   line-height: 1.5rem;
   font-family: "Corbert";
-  cursor: pointer;
-  transition: -webkit-transform 0.5s;
-  transition: transform 0.5s; }
+  cursor: pointer; }
   .file-tree__file-list-file:hover, .file-tree__file-list-file.active {
     font-weight: bolder; }
   .file-tree__file-list-file.active {
     display: block;
-    -webkit-transform: translateX(20px);
-            transform: translateX(20px); }
+    -webkit-transform: translateX(1.5rem);
+            transform: translateX(1.5rem); }
 
 header {
   background: #42d253;

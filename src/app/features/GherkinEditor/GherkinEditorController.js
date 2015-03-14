@@ -18,29 +18,25 @@ var GherkinEditorController = (function () {
         GherkinFileService,
         GherkinParserService,
         GherkinModel,
-        gherkinFileNames
+        gherkinFileNames,
+        featureFile
     ) {
         this.$window = $window;
         this.gherkinFileService = GherkinFileService;
         this.gherkinParserService = GherkinParserService;
         this.gherkinFileNames = gherkinFileNames;
 
-        this.gherkin = new GherkinModel();
+        if (featureFile) {
+            parseFeatureFile.call(this, featureFile);
+        } else {
+            this.gherkin = new GherkinModel();
+        }
 
         Object.defineProperty(this, 'gherkinName', {
             get: function () {
                 return pascal(this.gherkin.name);
             }
         });
-    };
-
-    GherkinEditorController.prototype.openGherkinFile = function (fileName) {
-        this.gherkinFileService.openGherkinFile(fileName)
-        .then(_.bind(function (result) {
-            try {
-                this.gherkin = this.gherkinParserService.parse(result.tokens);
-            } catch (e) {  }
-        }, this));
     };
 
     GherkinEditorController.prototype.saveGherkin = function () {
@@ -59,6 +55,12 @@ var GherkinEditorController = (function () {
             });
         }
     };
+
+    function parseFeatureFile (featureFile) {
+        try {
+            this.gherkin = this.gherkinParserService.parse(featureFile.tokens);
+        } catch (e) { }
+    }
 
     return GherkinEditorController;
 })();

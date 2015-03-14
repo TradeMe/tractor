@@ -2,10 +2,9 @@
     <h3>Mock Data files:</h3>
     <ul class='file-tree__file-list file-tree__file-list--json'>
         <li ng-repeat="mockDataFileName in mockDataEditor.mockDataFileNames"
-            ng-click="mockDataEditor.openMockDataFile(mockDataFileName)"
-            ng-class="{ true: 'active' }[mockDataFileName === mockDataEditor.mockData.name + '.data.json']"
+            ng-class="{ true: 'active' }[mockDataFileName === mockDataEditor.mockData.name]"
             class="file-tree__file-list-file">
-            <span>{{ mockDataFileName }}</span>
+            <a ui-sref="tractor.mock-data-editor({ mockData: mockDataFileName })">{{ mockDataFileName }}</a>
         </li>
     </ul>
 </section>

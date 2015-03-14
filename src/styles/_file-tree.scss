@@ -13,6 +13,11 @@
     background-position: 0 50%;
 }
 
+.file-tree__file-list li a {
+    text-decoration: none;
+    color: $font-dark;
+}
+
 .file-tree__file-list--javascript li {
     background-image: url('./images/js.png');
 }
@@ -29,7 +34,6 @@
     line-height: 1.5rem;
     font-family: $body-type;
     cursor: pointer;
-    transition: transform 0.5s;
 
     &:hover, &.active {
         font-weight: bolder;
@@ -37,6 +41,6 @@
 
     &.active {
         display: block;
-        transform: translateX(20px);
+        transform: translateX($large-spacing);
     }
 }

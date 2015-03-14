@@ -12,9 +12,11 @@ require('./Services/StepDefinitionParserService');
 
 var StepDefinitionEditorController = (function () {
     var StepDefinitionEditorController = function StepDefinitionEditorController (
+        $stateParams,
         StepDefinitionFileService,
         StepDefinitionParserService,
         stepDefinitionFileNames,
+        stepDefinitionFile,
         components,
         mockData
     ) {
@@ -70,20 +72,21 @@ var StepDefinitionEditorController = (function () {
                 }
             }
         });
-    };
 
-    StepDefinitionEditorController.prototype.openStepDefinitionFile = function (filename) {
-        this.stepDefinitionFileService.openStepDefinitionFile(filename)
-        .then(_.bind(function (data) {
-            try {
-                this.stepDefinition = this.stepDefinitionParserService.parse(data.ast, filename, this.availableComponents, this.availableMockData);
-            } catch (e) { }
-        }, this));
+        if (stepDefinitionFile) {
+            parseStepDefinitionFile.call(this, $stateParams.stepDefinition, stepDefinitionFile);
+        }
     };
 
     StepDefinitionEditorController.prototype.saveStepDefinitionFile = function () {
         this.stepDefinitionFileService.saveStepDefinitionFile(this.stepDefinition.ast, this.stepDefinition.name);
     };
+
+    function parseStepDefinitionFile (filename, stepDefinitionFile) {
+        try {
+            this.stepDefinition = this.stepDefinitionParserService.parse(stepDefinitionFile.ast, filename, this.availableComponents, this.availableMockData);
+        } catch (e) { }
+    }
 
     return StepDefinitionEditorController;
 })();

@@ -2,10 +2,9 @@
     <h3>Step Definition files:</h3>
     <ul class='file-tree__file-list file-tree__file-list--javascript'>
         <li ng-repeat="stepDefinitionFileName in stepDefinitionEditor.stepDefinitionFileNames"
-            ng-click="stepDefinitionEditor.openStepDefinitionFile(stepDefinitionFileName)"
-            ng-class="{ true: 'active' }[stepDefinitionFileName === stepDefinitionEditor.stepDefinition.name + '.step.js']"
+            ng-class="{ true: 'active' }[stepDefinitionFileName === stepDefinitionEditor.stepDefinition.name]"
             class="file-tree__file-list-file">
-            <span>{{ stepDefinitionFileName }}</span>
+            <a ui-sref="tractor.step-definition-editor({ stepDefinition: stepDefinitionFileName })">{{ stepDefinitionFileName }}</a>
         </li>
     </ul>
 </section>

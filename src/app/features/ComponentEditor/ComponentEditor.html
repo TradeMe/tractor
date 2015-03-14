@@ -2,10 +2,9 @@
     <h3>Component files:</h3>
     <ul class='file-tree__file-list file-tree__file-list--javascript'>
         <li ng-repeat="componentFileName in componentEditor.componentFileNames"
-            ng-click="componentEditor.openComponentFile(componentFileName)"
             ng-class="{ true: 'active' }[componentFileName === componentEditor.component.name]"
             class="file-tree__file-list-file">
-            <span>{{ componentFileName }}</span>
+            <a ui-sref="tractor.component-editor({ component: componentFileName })">{{ componentFileName }}</a>
         </li>
     </ul>
 </section>
