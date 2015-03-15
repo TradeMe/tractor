@@ -1,5 +1,5 @@
 <section class="file-tree">
-    <h3>Feature files:</h3>
+    <h2>Feature files:</h2>
     <ul class='file-tree__file-list file-tree__file-list--feature'>
         <li ng-repeat="featureFileName in featureEditor.featureFileNames"
             ng-class="{ true: 'active' }[featureFileName === featureEditor.featureName]"
@@ -12,7 +12,7 @@
 <form class="file" name="feature-editor" novalidate
     ng-submit="featureEditor.showErrors() && featureEditor.saveFeatureFile()">
     <section class="file-options">
-        <h2 class="file-options__name">{{ featureEditor.featureName }}</h2>
+        <h1 class="file-options__name">{{ featureEditor.featureName }}</h1>
         <div>
             <tractor-text-input class="file-options__name-input"
                 form="feature-editor"
@@ -29,7 +29,7 @@
     <section class="file-editor">
         <section ng-show="featureEditor.feature.name">
             <section class="file-editor__container">
-                <h3>Feature:</h3>
+                <h2>Feature:</h2>
 
                 <tractor-text-input
                     form="feature-editor"
@@ -52,7 +52,7 @@
             </section>
 
             <section class="file-editor__container">
-                <h3>Scenarios:</h3>
+                <h2>Scenarios:</h2>
 
                 <ul ng-if="featureEditor.feature.scenarios.length">
                     <li class="file-editor__list-item" ng-repeat="scenario in featureEditor.feature.scenarios">
@@ -70,7 +70,7 @@
                         </tractor-text-input>
 
                         <section>
-                            <h4>Step Declarations:</h4>
+                            <h3>Step Declarations:</h3>
 
                             <ol ng-if="scenario.stepDeclarations.length" as-sortable ng-model="scenario.stepDeclarations" is-disabled="scenario.stepDeclarations.length < 2">
                                 <li class="file-editor__list-item" ng-repeat="stepDeclaration in scenario.stepDeclarations" as-sortable-item>
@@ -99,7 +99,7 @@
                         </section>
 
                         <section ng-show="scenario.exampleVariables.length">
-                            <h4>Examples:</h4>
+                            <h3>Examples:</h3>
                             <ul>
                                 <li class="file-editor__list-item" ng-repeat="example in scenario.examples">
                                     <tractor-action

@@ -1,5 +1,5 @@
 <section class="file-tree">
-    <h3>Component files:</h3>
+    <h2>Component files:</h2>
     <ul class='file-tree__file-list file-tree__file-list--javascript'>
         <li ng-repeat="componentFileName in componentEditor.componentFileNames"
             ng-class="{ true: 'active' }[componentFileName === componentEditor.component.name]"
@@ -12,7 +12,7 @@
 <form class="file" name="component-editor" novalidate
     ng-submit="componentEditor.showErrors() && componentEditor.saveComponentFile()">
     <section class="file-options">
-        <h2 class="file-options__name">{{ componentEditor.component.name }}</h2>
+        <h1 class="file-options__name">{{ componentEditor.component.name }}</h1>
         <div>
             <tractor-variable-input class="file-options__name-input"
                 form="component-editor"
@@ -30,7 +30,7 @@
     <section class="file-editor">
         <section ng-show="componentEditor.component.name">
             <section class="file-editor__container">
-                <h3>Elements:</h3>
+                <h2>Elements:</h2>
 
                 <section ng-if="componentEditor.component.domElements.length">
                     <ul>
@@ -50,27 +50,30 @@
                             </tractor-variable-input>
                             <tractor-select
                                 label="Type"
-                                model="domElement.filters[0]">
+                                model="domElement.selector">
                             </tractor-select>
                             <tractor-text-input
                                 form="component-editor"
                                 label="Locator"
-                                model="domElement.filters[0]"
+                                model="domElement.selector"
                                 example="someController.someModel">
                             </tractor-text-input>
 
                             <section>
-                                <h4>Filters:</h4>
+                                <h3>Filters:</h3>
 
-                                <ol ng-if="domElement.filters.length > 1" as-sortable ng-model="domElement.filters" is-disabled="domElement.filters.length < 3">
-                                    <li class="file-editor__list-item" ng-repeat="filter in domElement.filters.slice(1)" as-sortable-item>
+                                <ol ng-if="domElement.filters.length > 1" as-sortable ng-model="domElement.sortableFilters" is-disabled="domElement.filters.length < 3">
+                                    <li class="file-editor__list-item" ng-repeat="filter in domElement.sortableFilters" as-sortable-item>
                                         <tractor-action
                                             model="domElement"
                                             action="Remove filter"
                                             argument="filter"
                                             icon="remove">
                                         </tractor-action>
-                                        <div ng-if="domElement.filters.length > 2" class="file-editor__sort-handle" as-sortable-item-handle title="Drag to sort"></div>
+                                        <div class="file-editor__sort-handle" title="Drag to sort"
+                                            ng-if="domElement.filters.length > 2"
+                                            as-sortable-item-handle>
+                                        </div>
 
                                         <tractor-select ng-if="!domElement.filters[$index].isAll"
                                             label="Type"
@@ -101,7 +104,7 @@
             </section>
 
             <section class="file-editor__container">
-                <h3>Actions:</h3>
+                <h2>Actions:</h2>
 
                 <section ng-if="componentEditor.component.actions.length">
                     <ul>
@@ -121,7 +124,7 @@
                             </tractor-variable-input>
 
                             <section>
-                                <h4>Parameters:</h4>
+                                <h3>Parameters:</h3>
 
                                 <section>
                                     <ol ng-if="action.parameters.length" as-sortable ng-model="action.parameters" is-disabled="action.parameters.length < 2">
@@ -151,7 +154,7 @@
                             </section>
 
                             <section>
-                                <h4>Interactions:</h4>
+                                <h3>Interactions:</h3>
 
                                 <section>
                                     <ol ng-if="action.interactions.length" as-sortable ng-model="action.interactions" is-disabled="action.interactions.length < 2">

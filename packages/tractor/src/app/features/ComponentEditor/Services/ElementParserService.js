@@ -54,7 +54,7 @@ var ElementParserService = function ElementParserService (
             assert(elementCallExpressionCallee.name === 'element');
             var filterAST = _.first(elementCallExpression.arguments);
             var filter = FilterParserService.parse(element, filterAST);
-            element.filters.push(filter);
+            element.addFilter(filter);
         } catch (e) {
             notFirstElementBy = true;
         }
@@ -65,7 +65,7 @@ var ElementParserService = function ElementParserService (
                 assert(elementCallExpressionCallee.property.name === 'all');
                 var filterAllAST = _.first(elementCallExpression.arguments);
                 var filter = FilterParserService.parse(element, filterAllAST);
-                element.filters.push(filter);
+                element.addFilter(filter);
             }
         } catch (e) {
             notFirstElementAllBy = true;
@@ -76,7 +76,7 @@ var ElementParserService = function ElementParserService (
                 assert(elementCallExpressionCallee.property.name === 'element');
                 var filterAST = _.first(elementCallExpression.arguments);
                 var filter = FilterParserService.parse(element, filterAST);
-                element.filters.push(filter);
+                element.addFilter(filter);
             }
         } catch (e) {
             notElementBy = true;
@@ -87,7 +87,7 @@ var ElementParserService = function ElementParserService (
                 assert(elementCallExpressionCallee.property.name === 'all');
                 var filterAllAST = _.first(elementCallExpression.arguments);
                 var filter = FilterParserService.parse(element, filterAllAST);
-                element.filters.push(filter);
+                element.addFilter(filter);
             }
         } catch (e) {
             notElementAllBy = true;
@@ -98,7 +98,7 @@ var ElementParserService = function ElementParserService (
                 assert(elementCallExpressionCallee.property.name === 'filter');
                 var filterAST = _.first(elementCallExpression.arguments);
                 var filter = FilterParserService.parse(element, filterAST);
-                element.filters.push(filter);
+                element.addFilter(filter);
             }
         } catch (e) {
             notElementFilter = true;
@@ -109,7 +109,7 @@ var ElementParserService = function ElementParserService (
                 assert(elementCallExpressionCallee.property.name === 'get');
                 var filterAST = _.first(elementCallExpression.arguments);
                 var filter = FilterParserService.parse(element, filterAST);
-                element.filters.push(filter);
+                element.addFilter(filter);
             }
         } catch (e) {
             notElementGet = true;

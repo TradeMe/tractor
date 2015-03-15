@@ -17,17 +17,15 @@ var createElementModelConstructor = function (
     FilterModel
 ) {
     var ElementModel = function ElementModel (component) {
-        var filters = [];
-
         Object.defineProperties(this, {
             component: {
                 get: function () {
                     return component;
                 }
             },
-            filters: {
+            selector: {
                 get: function () {
-                    return filters;
+                    return _.first(this.filters);
                 }
             },
             ast: {
@@ -38,14 +36,21 @@ var createElementModelConstructor = function (
         });
 
         this.name = '';
+        this.filters = [];
+        this.sortableFilters = [];
     };
 
-    ElementModel.prototype.addFilter = function () {
-        this.filters.push(new FilterModel(this));
+    ElementModel.prototype.addFilter = function (filter) {
+        filter = filter || new FilterModel(this);
+        this.filters.push(filter);
+        if (this.filters.length > 1) {
+            this.sortableFilters.push(filter);
+        }
     };
 
     ElementModel.prototype.removeFilter = function (filter) {
         _.remove(this.filters, filter);
+        _.remove(this.sortableFilters, filter);
     };
 
     ElementModel.prototype.getAllVariableNames = function () {

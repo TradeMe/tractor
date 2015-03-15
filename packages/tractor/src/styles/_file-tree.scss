@@ -8,7 +8,7 @@
 .file-tree__file-list li {
     list-style: none;
     margin-left: -$large-spacing;
-    padding-left: $large-spacing;
+    padding-left: $huge-spacing;
     background-repeat: no-repeat;
     background-position: 0 50%;
 }
@@ -31,7 +31,7 @@
 }
 
 .file-tree__file-list-file {
-    line-height: 1.5rem;
+    line-height: $huge-spacing;
     font-family: $body-type;
     cursor: pointer;
 

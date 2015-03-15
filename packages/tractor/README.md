@@ -1,4 +1,4 @@
-# tractor - v0.2.5
+# tractor - v0.3.0
 
 A UI around [Gherkin][gherkin] & [Protractor][protractor] to help write E2E tests for [Angular][angular] applications without needing to know JavaScript.
 
