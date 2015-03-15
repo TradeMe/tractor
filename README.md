@@ -1,6 +1,6 @@
-# tractor - v0.3.0
+# tractor - v0.3.1
 
-A UI around [Gherkin][gherkin] & [Protractor][protractor] to help write E2E tests for [Angular][angular] applications without needing to know JavaScript.
+A UI around [Gherkin](http://cukes.info/gherkin.html) & [Protractor](http://angular.github.io/protractor/) to help write E2E tests for [Angular](https://angularjs.org/) applications without needing to know JavaScript.
 
 # Install:
 
@@ -16,7 +16,7 @@ From there, you should navigate to the root directory of your Angular app and ru
 
     tractor init
 
-That sets up the test directory structure, installs some dependencies, and sets up [Selenium][selenium].
+That sets up the test directory structure, installs some dependencies, and sets up [Selenium](http://www.seleniumhq.org/).
 The initialisation can be configured with a `tractor.conf.js` file (described in the Config section).
 
 Once everything has been initialised, you need to start the `tractor` application from the root directory of your app with:
@@ -35,8 +35,3 @@ If you want to change the port that `tractor` runs at, or the file where it stor
         testDirectory: 'path/to/test/directory', // defaults to root/e2e_tests
         port: number                             // defaults to 4000
     };
-
-[gherkin]: http://cukes.info/gherkin.html "Gherkin"
-[protractor]: http://angular.github.io/protractor/ "Protractor"
-[angular]: https://angularjs.org/ "Angular"
-[selenium]: http://www.seleniumhq.org/ "Selenium"
