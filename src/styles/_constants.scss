@@ -5,6 +5,7 @@ $primary-lighter: rgba(66, 250, 123, 1);
 $background-lightest: rgba(250, 250, 250, 1);
 
 $standard-spacing: 0.5rem;
-$large-spacing: 1.5rem;
+$large-spacing: $standard-spacing * 2;
+$huge-spacing: $standard-spacing * 3;
 
 $font-dark: rgba(0, 0, 0, 1);

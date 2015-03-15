@@ -10,50 +10,16 @@ form.file {
     position: relative;
 }
 
-.file-editor .file-editor__json-structure {
-    tractor-literal-input {
-        width: 100%;
-        height: auto;
-        line-height: normal;
-        margin-bottom: 0;
-
-        label {
-            display: inline-block;
-            width: 20%;
-        }
-
-        input {
-            display: inline-block;
-            width: 80%;
-        }
-    }
-
-    ul, ol {
-        padding: 0.5rem 1rem;
-    }
-
-    ol li {
-        margin-bottom: 1rem;
-    }
-
-    ul li {
-        padding: 0.5rem 1rem;
-        margin-bottom: 0.5rem;
-        position: relative;
-        background: rgba(0, 0, 0, 0.05);
-    }
-}
-
 .file-editor__list-item {
     position: relative;
-    padding: 1.5rem 1.5rem 0.5rem;
-    margin-right: 1rem;
-    margin-bottom: 1rem;
-    background: rgba(230, 230, 230, 1);
+    padding: $standard-spacing;
+    margin-right: $standard-spacing + 2;
+    margin-bottom: $standard-spacing;
+    background: rgba(245, 245, 245, 1);
 }
 
 .file-editor__list-item .file-editor__list-item {
-    background: rgba(210, 210, 210, 1);
+    background: rgba(235, 235, 235, 1);
 }
 
 .file-editor tractor-variable-input,
@@ -64,16 +30,13 @@ form.file {
 .file-editor tractor-checkbox {
     font-size: 0;
     display: inline-block;
-    margin-bottom: 1rem;
+    margin-bottom: $standard-spacing;
     vertical-align: top;
 }
 
 .file-editor section > tractor-action:last-child {
     height: 2.5rem;
-}
-
-.file-editor section > tractor-action:last-child {
-    padding-left: 3rem;
+    padding-left: $large-spacing;
 }
 
 .file-editor section > tractor-action:last-child button {
@@ -82,8 +45,8 @@ form.file {
 
 .file-editor li > tractor-action:first-of-type {
     position: absolute;
-    top: -0.5rem;
-    left: -0.5rem;
+    top: 0rem;
+    left: -2rem;
     padding: 0;
 }
 
@@ -109,8 +72,8 @@ form.file {
 
 .file-editor__sort-handle {
     position: absolute;
-    top: -0.5rem;
-    right: -0.5rem;
+    top: 0rem;
+    right: -2rem;
     width: 2rem;
     height: 2rem;
     background: rgba(110, 110, 110, 1);

@@ -1,13 +1,15 @@
 .file-options {
     font-size: 0;
-    height: 14.5%;
+    height: 10%;
     background: rgba(240, 240, 240, 0.8);
 }
 
 .file-options__name {
     display: inline-block;
+    vertical-align: top;
 
     padding: $standard-spacing;
+    margin: $standard-spacing 0;
     max-width: 45%;
 
     text-overflow: ellipsis;
@@ -17,8 +19,7 @@
 .file-options > div {
     display: inline-block;
     width: 55%;
-    vertical-align: top;
-    margin-top: 1.25rem;
+    margin-top: 0.5rem;
 }
 
 .file-options__name-input,
@@ -30,13 +31,9 @@
 .file-options__name-input,
 .file-options__save-file {
     width: 50%;
-    line-height: 5.75rem;
+    line-height: 4rem;
 }
 
-.file-options__name {
-    text-align: center;
-}
-
-.file-options__save-fil{
-    vertical-align: top;
+.file-options__save-file button {
+    margin-top: 1.5rem;
 }

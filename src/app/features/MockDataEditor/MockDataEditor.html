@@ -1,5 +1,5 @@
 <section class="file-tree">
-    <h3>Mock Data files:</h3>
+    <h2>Mock Data files:</h2>
     <ul class='file-tree__file-list file-tree__file-list--json'>
         <li ng-repeat="mockDataFileName in mockDataEditor.mockDataFileNames"
             ng-class="{ true: 'active' }[mockDataFileName === mockDataEditor.mockData.name]"
@@ -12,7 +12,7 @@
 <form class="file" name="mock-data-editor" novalidate
     ng-submit="mockDataEditor.showErrors() && mockDataEditor.saveMockDataFile()">
     <section class="file-options">
-        <h2 class="file-options__name">{{ mockDataEditor.mockData.name }}</h2>
+        <h1 class="file-options__name">{{ mockDataEditor.mockData.name }}</h1>
         <div>
             <tractor-text-input class="file-options__name-input"
                 form="mock-data-editor"
@@ -28,7 +28,7 @@
 
     <section class="file-editor">
         <section class="file-editor__container">
-            <h3>JSON data:</h3>
+            <h2>JSON data:</h2>
             <textarea
                 ng-model="mockDataEditor.mockData.json"
                 required>

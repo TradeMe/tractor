@@ -1,5 +1,5 @@
 <section class="file-tree">
-    <h3>Step Definition files:</h3>
+    <h2>Step Definition files:</h2>
     <ul class='file-tree__file-list file-tree__file-list--javascript'>
         <li ng-repeat="stepDefinitionFileName in stepDefinitionEditor.stepDefinitionFileNames"
             ng-class="{ true: 'active' }[stepDefinitionFileName === stepDefinitionEditor.stepDefinition.name]"
@@ -12,7 +12,7 @@
 <form class="file" name="step-definition-editor" novalidate
     ng-submit="stepDefinitionEditor.showErrors() && stepDefinitionEditor.saveStepDefinitionFile()">
     <section class="file-options" ng-if="stepDefinitionEditor.stepDefinition">
-        <h2 class="file-options__name">{{ stepDefinitionEditor.stepDefinition.name }}</h2>
+        <h1 class="file-options__name">{{ stepDefinitionEditor.stepDefinition.name }}</h1>
         <div>
             <tractor-submit class="file-options__save-file"
                 action="Save step definition file">
@@ -23,7 +23,7 @@
     <section class="file-editor" ng-if="stepDefinitionEditor.stepDefinition">
         <section ng-if="stepDefinitionEditor.canAddComponents">
             <section class="file-editor__container">
-                <h3>Available components:</h3>
+                <h2>Available components:</h2>
                 <ul>
                     <li ng-repeat="component in stepDefinitionEditor.stepDefinition.availableComponents"
                         ng-if="stepDefinitionEditor.stepDefinition.components.indexOf(component) === -1">
@@ -39,7 +39,7 @@
 
             <section class="file-editor__container"
                 ng-if="stepDefinitionEditor.hasComponents">
-                <h3>Active components:</h3>
+                <h2>Active components:</h2>
                 <ul>
                     <li ng-repeat="component in stepDefinitionEditor.stepDefinition.componentInstances">
                         <span> {{ component.component.name }} </span>
@@ -56,7 +56,7 @@
 
         <section ng-if="stepDefinitionEditor.canAddMockData">
             <section class="file-editor__container">
-                <h3>Available mock data:</h3>
+                <h2>Available mock data:</h2>
                 <ul>
                     <li ng-repeat="mockData in stepDefinitionEditor.stepDefinition.availableMockData"
                         ng-if="stepDefinitionEditor.stepDefinition.mockData.indexOf(mockData) === -1">
@@ -72,7 +72,7 @@
 
             <section class="file-editor__container"
                 ng-if="stepDefinitionEditor.hasMockData">
-                <h3>Active mock data:</h3>
+                <h2>Active mock data:</h2>
                 <ul>
                     <li ng-repeat="mockData in stepDefinitionEditor.stepDefinition.mockDataInstances">
                         <span> {{ mockData.mockData.name }} </span>
@@ -89,7 +89,7 @@
         </section>
 
         <section class="file-editor__container" ng-if="stepDefinitionEditor.showMockDataSection">
-            <h3>Mock Data:</h3>
+            <h2>Mock Data:</h2>
 
             <ul>
                 <li class="file-editor__list-item" ng-repeat="mock in stepDefinitionEditor.stepDefinition.step.mocks">
@@ -131,7 +131,7 @@
         </section>
 
         <section class="file-editor__container" ng-if="stepDefinitionEditor.showTasksSection">
-            <h3>Tasks:</h3>
+            <h2>Tasks:</h2>
 
             <ul>
                 <li class="file-editor__list-item" ng-repeat="task in stepDefinitionEditor.stepDefinition.step.tasks">
@@ -171,7 +171,7 @@
         </section>
 
         <section  class="file-editor__container" ng-if="stepDefinitionEditor.showExpectationsSection">
-            <h3>Expectations:</h3>
+            <h2>Expectations:</h2>
 
             <ul>
                 <li class="file-editor__list-item" ng-repeat="expectation in stepDefinitionEditor.stepDefinition.step.expectations">

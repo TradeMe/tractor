@@ -20,10 +20,14 @@ header section, header nav {
         display: inline-block
     }
 
+    h3 {
+        margin: 0.5rem 0;
+    }
+
     span {
         vertical-align: top;
         line-height: 1.75rem;
-        margin: 0.875rem 0;
+        margin: 0.5rem 0;
         font-size: 1rem;
         color: #eee;
     }
@@ -31,7 +35,7 @@ header section, header nav {
 
 .control-panel__top-row tractor-action {
     vertical-align: top;
-    margin: 0.75rem 0;
+    margin: 0.625rem 0;
 }
 
 nav > * {
@@ -51,12 +55,11 @@ nav ul li {
 nav li a {
     font-family: $heading-type;
     font-size: 2.25rem;
-    line-height: 4rem;
+    line-height: 3rem;
 
     padding: 0 $standard-spacing;
     margin-right: $standard-spacing;
     color: $font-dark;
-    text-decoration: none;
     display: inline-block;
 }
 
