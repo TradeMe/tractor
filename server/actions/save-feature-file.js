@@ -51,7 +51,7 @@ function generateStepDefinitions (result) {
 function splitResultToStubs (result) {
     var pieces = stripcolorcodes(result)
     // Split on new-lines:
-    .split(/\r\n?|\n{2}/);
+    .split(/(\r\n|\n){2}/);
     // Filter out everything that isn't a step definition:
     return pieces.filter(function (piece) {
         return !!/^this\.(Given|Then|When)[\s\S]*\}\);$/m.exec(piece);

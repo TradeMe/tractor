@@ -44,7 +44,7 @@ nav > * {
 
 nav ul {
     margin: 0;
-    padding: 0;
+    padding: 0.5rem 0;
     font-size: 0;
 }
 
@@ -54,8 +54,8 @@ nav ul li {
 
 nav li a {
     font-family: $heading-type;
-    font-size: 2.25rem;
-    line-height: 3rem;
+    font-size: 1.75rem;
+    line-height: 2.25rem;
 
     padding: 0 $standard-spacing;
     margin-right: $standard-spacing;

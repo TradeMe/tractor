@@ -2,6 +2,12 @@ form.file {
     width: 80%;
 }
 
+.file-editor {
+    height: 92%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
 .file-editor ul,
 .file-editor ol {
     padding-left: 3rem;

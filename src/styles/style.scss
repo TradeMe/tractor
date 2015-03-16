@@ -28,18 +28,16 @@ body div[ui-view], main {
 }
 
 header {
-    height: 12.5%;
+    height: 10%;
 }
 
 main {
-    height: 87.5%;
+    height: 90%;
 }
 
 main > section, main > form {
     float: left;
     height: 100%;
-    overflow-y: scroll;
-    overflow-x: hidden;
 }
 
 .fill {

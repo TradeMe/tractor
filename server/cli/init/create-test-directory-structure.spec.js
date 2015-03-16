@@ -75,6 +75,7 @@ describe('server/cli/init: create-test-directory-structure:', function () {
     it('should create the subdirectory structure', function () {
         var fs = require('fs');
         var log = require('../../utils/logging');
+		var path = require('path');
         sinon.stub(fs, 'mkdirAsync').returns(Promise.resolve());
         sinon.stub(log, 'info');
         sinon.stub(log, 'warn');
@@ -82,11 +83,11 @@ describe('server/cli/init: create-test-directory-structure:', function () {
 
         return createTestDirectoryStructure.run('directory')
         .then(function () {
-            expect(fs.mkdirAsync).to.have.been.calledWith('directory/components');
-            expect(fs.mkdirAsync).to.have.been.calledWith('directory/features');
-            expect(fs.mkdirAsync).to.have.been.calledWith('directory/step_definitions');
-            expect(fs.mkdirAsync).to.have.been.calledWith('directory/mock_data');
-            expect(fs.mkdirAsync).to.have.been.calledWith('directory/support');
+            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'components'));
+            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'features'));
+            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'step_definitions'));
+            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'mock_data'));
+            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'support'));
         })
         .finally(function () {
             fs.mkdirAsync.restore();

@@ -2,7 +2,11 @@
     background: $background-lightest;
 
     width: 20%;
-    padding-left: $standard-spacing;
+    overflow: hidden;
+}
+
+.file-tree h2 {
+    padding-left: $large-spacing;
 }
 
 .file-tree__file-list li {

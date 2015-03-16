@@ -15,13 +15,15 @@ describe('server/cli/init: set-up-selenium:', function () {
     it('should run the "webdriver-manager update" command', function () {
         var childProcess = require('child_process');
         var log = require('../../utils/logging');
+		var path = require('path');
         sinon.stub(childProcess, 'execAsync').returns(Promise.resolve());
         sinon.stub(log, 'info');
         sinon.stub(log, 'success');
 
         return setUpSelenium.run()
         .then(function () {
-            expect(childProcess.execAsync).to.have.been.calledWith('node node_modules/protractor/bin/webdriver-manager update');
+			var webdriverManagerPath = path.join('node_modules', 'protractor', 'bin', 'webdriver-manager');
+            expect(childProcess.execAsync).to.have.been.calledWith('node ' + webdriverManagerPath + ' update');
         })
         .finally(function () {
             childProcess.execAsync.restore();

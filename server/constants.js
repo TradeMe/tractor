@@ -1,5 +1,7 @@
 'use strict';
 
+var path = require('path');
+
 module.exports = {
     COMPONENTS_EXTENSION: '.component.js',
     COMPONENTS_DIR: 'components',
@@ -15,19 +17,19 @@ module.exports = {
 
     SUPPORT_DIR: 'support',
 
-    WORLD_SOURCE_FILE_PATH: './base_file_sources/world.js',
+    WORLD_SOURCE_FILE_PATH: path.join('base_file_sources', 'world.js'),
     WORLD_FILE_NAME: 'world.js',
 
-    PROTRACTOR_CONF_SOURCE_FILE_PATH: './base_file_sources/protractor.conf.js',
+    PROTRACTOR_CONF_SOURCE_FILE_PATH: path.join('base_file_sources', 'protractor.conf.js'),
     PROTRACTOR_CONF_FILE_NAME: 'protractor.conf.js',
 
     GET_INSTALLED_DEPENDENCIES_COMMAND: 'npm ls --depth 0',
 
     INSTALL_DEPENDENCIES_COMMAND: 'npm install --save-dev --save-exact ',
 
-    SELENIUM_UPDATE_COMMAND: 'node node_modules/protractor/bin/webdriver-manager update',
+    SELENIUM_UPDATE_COMMAND: 'node ' + path.join('node_modules', 'protractor', 'bin', 'webdriver-manager') + ' update',
 
-    CUCUMBER_COMMAND: 'node node_modules/cucumber/bin/cucumber ',
+    CUCUMBER_COMMAND: 'node ' + path.join('node_modules', 'cucumber', 'bin', 'cucumber') + ' ',
 
     FEATURE_NEWLINE: '%%NEWLINE%%'
 };

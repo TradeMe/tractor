@@ -15,6 +15,7 @@ var saveMockDataFile = require('./save-mock-data-file');
 describe('server/actions: save-mock-data-file:', function () {
     it('should build the correct `dataPath` and save the `data` to a ".mock.json" file', function () {
         var fs = require('fs');
+		var path = require('path');
         sinon.stub(fs, 'writeFileAsync').returns(Promise.resolve());
         var request = {
             body: {
@@ -28,7 +29,8 @@ describe('server/actions: save-mock-data-file:', function () {
 
         return saveMockDataFile(request, response)
         .then(function () {
-            expect(fs.writeFileAsync).to.have.been.calledWith('e2e_tests/mock_data/mock.mock.json', 'data');
+			var mockPath = path.join('e2e_tests', 'mock_data', 'mock.mock.json');
+            expect(fs.writeFileAsync).to.have.been.calledWith(mockPath, 'data');
         })
         .finally(function () {
             fs.writeFileAsync.restore();

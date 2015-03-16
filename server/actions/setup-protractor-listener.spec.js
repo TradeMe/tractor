@@ -31,6 +31,7 @@ describe('server/actions: setup-protractor-listener:', function () {
         it('should spawn the "protractor" command when it receives a "connection" event', function () {
             var EventEmitter = require('events').EventEmitter;
             var childProcess = require('child_process');
+			var path = require('path');
             var socketEmitter = new EventEmitter();
             var spawnEmitter = new EventEmitter();
             spawnEmitter.stdout = new EventEmitter();
@@ -44,7 +45,9 @@ describe('server/actions: setup-protractor-listener:', function () {
 
             socketEmitter.emit('connection');
 
-            expect(childProcess.spawn).to.have.been.calledWith('node', ['node_modules/protractor/bin/protractor', 'e2e_tests/protractor.conf.js']);
+			var protractorPath = path.join('node_modules', 'protractor', 'bin', 'protractor');
+			var protractorConfPath = path.join('e2e_tests', 'protractor.conf.js');
+            expect(childProcess.spawn).to.have.been.calledWith('node', [protractorPath, protractorConfPath]);
 
             childProcess.spawn.restore();
         });

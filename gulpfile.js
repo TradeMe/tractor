@@ -17,8 +17,12 @@ gulp.task('fonts', fonts);
 gulp.task('images', images);
 
 gulp.task('bundle', bundle);
-gulp.task('lint', ['bundle'], lint);
-gulp.task('test', ['lint'], test);
+
+gulp.task('lint-server', lint.server);
+gulp.task('lint-client', ['bundle'], lint.client);
+
+gulp.task('test-server', ['lint-server'], test.server);
+gulp.task('test-client', ['lint-client'], test.client);
 
 gulp.task('markup', markup);
 
@@ -27,4 +31,4 @@ gulp.task('styles', styles);
 gulp.task('reload', reload);
 gulp.task('watch', ['reload'], watch);
 
-gulp.task('default', ['fonts', 'images', 'markup', 'styles', 'test', 'watch']);
+gulp.task('default', ['fonts', 'images', 'markup', 'styles', 'test-server', 'test-client', 'watch']);
