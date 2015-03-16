@@ -6,9 +6,9 @@ var angular = require('angular');
 require('angular-mocks');
 
 // Testing:
-require('./LiteralInputDirective');
+require('./StepInputDirective');
 
-describe('LiteralInputDirective.js:', function() {
+describe('StepInputDirective.js:', function() {
     var $compile;
     var $rootScope;
 
@@ -29,25 +29,25 @@ describe('LiteralInputDirective.js:', function() {
         it('should throw an error when `model` is not passed in:', function () {
             expect(function () {
                 var scope = $rootScope.$new();
-                compileDirective('<tractor-literal-input></tractor-literal-input>', scope);
-            }).to.throw('The "tractor-literal-input" directive requires a "model" attribute.');
+                compileDirective('<tractor-step-input></tractor-step-input>', scope);
+            }).to.throw('The "tractor-step-input" directive requires a "model" attribute.');
         });
 
-        it('should throw an error when `name` is not passed in:', function () {
+        it('should throw an error when `label` is not passed in:', function () {
             expect(function () {
                 var scope = $rootScope.$new();
                 scope.model = {};
-                compileDirective('<tractor-literal-input model="model"></tractor-literal-input>', scope);
-            }).to.throw('The "tractor-literal-input" directive requires a "name" attribute.');
+                compileDirective('<tractor-step-input model="model"></tractor-step-input>', scope);
+            }).to.throw('The "tractor-step-input" directive requires a "label" attribute.');
         });
 
         it('should throw an error when `form` is not passed in:', function () {
             expect(function () {
                 var scope = $rootScope.$new();
                 scope.model = {};
-                scope.name = ''
-                compileDirective('<tractor-literal-input model="model" name="name"></tractor-literal-input>', scope);
-            }).to.throw('The "tractor-literal-input" directive requires a "form" attribute.');
+                scope.label = ''
+                compileDirective('<tractor-step-input model="model" label="label"></tractor-step-input>', scope);
+            }).to.throw('The "tractor-step-input" directive requires a "form" attribute.');
         });
 
         it('should get the correct form off the parent scope:', function () {
@@ -56,8 +56,18 @@ describe('LiteralInputDirective.js:', function() {
             scope.$parent.parent = parentForm;
             scope.model = {};
             scope.name = '';
-            var directive = compileDirective('<tractor-literal-input model="model" name="name" form="parent"></tractor-literal-input>', scope);
+            var directive = compileDirective('<tractor-step-input model="model" name="name" form="parent"></tractor-step-input>', scope);
             expect(directive.isolateScope().form).to.equal(parentForm);
+        });
+
+        it('should convert the "label" attribute into a camel-cased "property":', function () {
+            var scope = $rootScope.$new();
+            var parentForm = {};
+            scope.$parent.parent = parentForm;
+            scope.model = {};
+            scope.options = [];
+            var directive = compileDirective('<tractor-step-input model="model" label="Some Label" form="parent"></tractor-step>', scope);
+            expect(directive.isolateScope().property).to.equal('someLabel');
         });
     });
 });

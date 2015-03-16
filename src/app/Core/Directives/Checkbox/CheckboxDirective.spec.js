@@ -6,9 +6,9 @@ var angular = require('angular');
 require('angular-mocks');
 
 // Testing:
-require('./TextInputDirective');
+require('./CheckboxDirective');
 
-describe('TextInputDirective.js:', function() {
+describe('CheckboxDirective.js:', function() {
     var $compile;
     var $rootScope;
 
@@ -29,24 +29,23 @@ describe('TextInputDirective.js:', function() {
         it('should throw an error when `model` is not passed in:', function () {
             expect(function () {
                 var scope = $rootScope.$new();
-                compileDirective('<tractor-text-input></tractor-literal-input>', scope);
-            }).to.throw('The "tractor-text-input" directive requires a "model" attribute.');
+                compileDirective('<tractor-checkbox></tractor-checkbox>', scope);
+            }).to.throw('The "tractor-checkbox" directive requires a "model" attribute.');
         });
 
         it('should throw an error when `label` is not passed in:', function () {
             expect(function () {
                 var scope = $rootScope.$new();
                 scope.model = {};
-                compileDirective('<tractor-text-input model="model"></tractor-literal-input>', scope);
-            }).to.throw('The "tractor-text-input" directive requires a "label" attribute.');
+                compileDirective('<tractor-checkbox model="model"></tractor-checkbox>', scope);
+            }).to.throw('The "tractor-checkbox" directive requires an "label" attribute.');
         });
 
         it('should convert the "label" attribute into a camel-cased "property":', function () {
             var scope = $rootScope.$new();
             scope.model = {};
-            scope.options = [];
-            var directive = compileDirective('<tractor-text-input model="model" label="Some Label"></tractor-select>', scope);
-            expect(directive.isolateScope().property).to.equal('someLabel');
+            var directive = compileDirective('<tractor-checkbox model="model" label="Some property"></tractor-checkbox>', scope);
+            expect(directive.isolateScope().property).to.equal('someProperty');
         });
     });
 });

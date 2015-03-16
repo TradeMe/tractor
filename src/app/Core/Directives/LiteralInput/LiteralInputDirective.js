@@ -35,6 +35,10 @@ var LiteralInputDirective = function () {
             throw new Error('The "tractor-literal-input" directive requires a "name" attribute.');
         }
 
+        if (_.isUndefined($attrs.form)) {
+            throw new Error('The "tractor-literal-input" directive requires a "form" attribute.');
+        }
+
         $scope.form = $scope.$parent[$attrs.form];
         $scope.id = Math.floor(Math.random() * Date.now());
     }

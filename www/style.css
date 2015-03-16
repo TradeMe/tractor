@@ -479,7 +479,7 @@ form.file {
   width: 80%; }
 
 .file-editor {
-  height: 92%;
+  height: 90%;
   overflow-x: hidden;
   overflow-y: scroll; }
 
@@ -551,8 +551,8 @@ form.file {
 
 .file-options {
   font-size: 0;
-  height: 8%;
-  background: rgba(240, 240, 240, 0.8); }
+  height: 10%;
+  background: #e1e1e1; }
 
 .file-options__name {
   display: inline-block;
@@ -621,14 +621,12 @@ form.file {
             transform: translateX(1rem); }
 
 header {
+  height: 11.5%;
   background: #42d253;
   padding: 0 1rem; }
 
-header section, header nav {
-  height: 50%; }
-
-.control-panel__top-row {
-  padding: 0.5rem 0; }
+.control-panel__top-row > div {
+  padding: 0.5rem 0 0.25rem; }
 
 .app-root-url {
   display: inline-block;
@@ -654,7 +652,7 @@ nav > * {
 
 nav ul {
   margin: 0;
-  padding: 0.5rem 0;
+  padding: 0.25rem 0 0.5rem;
   font-size: 0; }
 
 nav ul li {
@@ -976,11 +974,8 @@ html, body {
 body div[ui-view], main {
   width: 100%; }
 
-header {
-  height: 10%; }
-
 main {
-  height: 90%; }
+  height: 88.5%; }
 
 main > section, main > form {
   float: left;

@@ -6,6 +6,7 @@ var fs = require('fs');
 
 // Dependencies:
 var camelcase = require('change-case').camel;
+require('../../Validators/ExampleNameValidator');
 
 // Module:
 var Core = require('../../Core');
@@ -36,7 +37,13 @@ var StepInputDirective = function () {
             throw new Error('The "tractor-step-input" directive requires a "label" attribute.');
         }
 
+        if (_.isUndefined($attrs.form)) {
+            throw new Error('The "tractor-step-input" directive requires a "form" attribute.');
+        }
+
         $scope.form = $scope.$parent[$attrs.form];
+        $scope.id = Math.floor(Math.random() * Date.now());
+
         $scope.property = camelcase($scope.label);
     }
 };

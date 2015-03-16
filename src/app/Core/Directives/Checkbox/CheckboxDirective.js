@@ -4,6 +4,9 @@
 var _ = require('lodash');
 var fs = require('fs');
 
+// Dependencies:
+var camelcase = require('change-case').camel;
+
 // Module:
 var Core = require('../../Core');
 
@@ -31,6 +34,8 @@ var CheckboxDirective = function () {
         if (_.isUndefined($scope.label)) {
             throw new Error('The "tractor-checkbox" directive requires an "label" attribute.');
         }
+
+        $scope.property = camelcase($scope.label);
     }
 };
 

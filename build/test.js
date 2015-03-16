@@ -46,26 +46,31 @@ function client (reportTaskDone) {
 
         reporters: ['progress', 'coverage'],
         coverageReporter: {
-            type : 'lcov',
-            dir : 'reports/client'
+            reporters: [{
+                type: 'lcov',
+                dir: 'reports/client'
+            }, {
+                type: 'text',
+                dir: 'reports/client'
+            }]
         },
 
         colors: true,
         autoWatch: false,
         singleRun: true,
-        logLevel: karma.LOG_INFO,
 
         files: [
             'src/**/*.spec.js'
         ],
 
         preprocessors: {
-            'src/**/*.js': ['browserify', 'coverage'],
             'src/**/*.spec.js': ['browserify']
         },
 
         browserify: {
-            transform: ['brfs', 'browserify-shim']
+            transform: ['brfs', 'browserify-shim', ['browserify-istanbul', {
+                ignore: ['**/*.spec.js']
+            }]]
         }
     }, function () {
         reportTaskDone();
