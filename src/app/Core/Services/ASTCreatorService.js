@@ -49,13 +49,15 @@ var ASTCreatorService = function () {
         memberExpression: memberExpression,
 
         identifier: identifier,
-        literal: literal
+        literal: literal,
+        blockComment: blockComment
     };
 
-    function program (body) {
+    function program (body, comments) {
         return {
             type: 'Program',
-            body: body || []
+            body: body || [],
+            comments: comments || []
         };
     }
 
@@ -190,6 +192,13 @@ var ASTCreatorService = function () {
           literal.raw = '' + value;
         }
         return literal;
+    }
+
+    function blockComment (value) {
+        return {
+            type: 'block',
+            value: value
+        };
     }
 };
 

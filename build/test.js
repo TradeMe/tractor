@@ -29,7 +29,10 @@ function server (reportTaskDone) {
     .pipe(istanbul.hookRequire())
     .on('finish', function () {
         gulp.src(['server/**/*.spec.js'])
-        .pipe(mocha())
+        .pipe(mocha().on('error', function () {
+            this.destroy();
+            reportTaskDone();
+        }))
         .pipe(istanbul.writeReports({
             dir: './reports/server'
         }))

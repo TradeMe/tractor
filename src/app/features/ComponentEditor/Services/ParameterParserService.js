@@ -12,11 +12,7 @@ var ParameterParserService = function ParameterParserService (ParameterModel) {
     };
 
     function parse (action, astObject) {
-       var parameter = new ParameterModel(action);
-
-       parameter.name = astObject.name;
-
-       return parameter;
+       return new ParameterModel(action);
     }
 };
 

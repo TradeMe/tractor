@@ -7,6 +7,7 @@ var _ = require('lodash');
 var ComponentEditor = require('../ComponentEditor');
 
 // Dependencies:
+var camelcase = require('change-case').camel;
 require('../../../Core/Services/ASTCreatorService');
 require('./ParameterModel');
 require('./InteractionModel');
@@ -34,6 +35,19 @@ var createActionModelConstructor = function (
             parameters: {
                 get: function () {
                     return parameters;
+                }
+            },
+            variableName: {
+                get: function () {
+                    return camelcase(this.name);
+                }
+            },
+            meta: {
+                get: function () {
+                    return {
+                        name: this.name,
+                        parameters: this.parameters.map(function (parameter) { return parameter.meta; })
+                    };
                 }
             },
             ast: {
@@ -73,8 +87,8 @@ var createActionModelConstructor = function (
     function toAST () {
         var ast = ASTCreatorService;
         var prototypeIdentifier = ast.identifier('prototype');
-        var prototypeMemberExpression = ast.memberExpression(ast.identifier(this.component.name), prototypeIdentifier);
-        var actionMemberExpression = ast.memberExpression(prototypeMemberExpression, ast.identifier(this.name));
+        var prototypeMemberExpression = ast.memberExpression(ast.identifier(this.component.variableName), prototypeIdentifier);
+        var actionMemberExpression = ast.memberExpression(prototypeMemberExpression, ast.identifier(this.variableName));
 
         var selfIdentifier = ast.identifier('self');
         var thisExpression = ast.thisExpression();

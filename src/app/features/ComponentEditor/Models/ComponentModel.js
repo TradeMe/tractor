@@ -7,6 +7,7 @@ var _ = require('lodash');
 var ComponentEditor = require('../ComponentEditor');
 
 // Dependencies:
+var pascalcase = require('change-case').pascal;
 require('../../../Core/Services/ASTCreatorService');
 require('./BrowserModel');
 require('./ElementModel');
@@ -43,6 +44,20 @@ var createComponentModelConstructor = function (
             elements: {
                 get: function () {
                     return elements;
+                }
+            },
+            variableName: {
+                get: function () {
+                    return pascalcase(this.name);
+                }
+            },
+            meta: {
+                get: function () {
+                    return JSON.stringify({
+                        name: this.name,
+                        elements: this.domElements.map(function (element) { return element.meta; }),
+                        actions: this.actions.map(function (action) { return action.meta; })
+                    }, null, '    ');
                 }
             },
             ast: {
@@ -92,7 +107,7 @@ var createComponentModelConstructor = function (
     function toAST () {
         var ast = ASTCreatorService;
 
-        var nameIdentifier = ast.identifier(this.name);
+        var nameIdentifier = ast.identifier(this.variableName);
         var moduleReturnStatement = ast.returnStatement(nameIdentifier);
 
         var elementASTs = _.map(this.domElements, function (element) {
@@ -116,6 +131,7 @@ var createComponentModelConstructor = function (
         var moduleExportsMemberExpression = ast.memberExpression(ast.identifier('module'), ast.identifier('exports'));
         var componentModuleAssignmentExpression = ast.assignmentExpression(moduleExportsMemberExpression, ast.AssignmentOperators.ASSIGNMENT, moduleCallExpression);
         var componentModuleExpressionStatement = ast.expressionStatement(componentModuleAssignmentExpression);
+        componentModuleAssignmentExpression.leadingComments = [ast.blockComment(this.meta)];
 
         return ast.program([componentModuleExpressionStatement]);
     }

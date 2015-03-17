@@ -62,8 +62,11 @@ function createResponseData (contents, options, name) {
 function parseJS (contents, name) {
     var ast;
     try {
-        ast = esprima.parse(contents);
+        ast = esprima.parse(contents, {
+            comment: true
+        });
     } catch (e) {
+        console.log(e);
         throw new ParseJavaScriptError('Parsing "' + name + '" failed.');
     }
     return ast;

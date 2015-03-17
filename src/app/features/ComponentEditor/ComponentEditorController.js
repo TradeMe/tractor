@@ -73,9 +73,7 @@ var ComponentEditorController = (function () {
     };
 
     function parseComponentFile (componentFile) {
-        try {
-            this.component = this.componentParserService.parse(componentFile.ast);
-        } catch (e) { }
+        this.component = this.componentParserService.parse(componentFile.ast);
     }
 
     return ComponentEditorController;

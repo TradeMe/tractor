@@ -7,6 +7,7 @@ var _ = require('lodash');
 var ComponentEditor = require('../ComponentEditor');
 
 // Dependencies:
+var camelcase = require('change-case').camel;
 require('../../../Core/Services/ASTCreatorService');
 require('../../../Core/Services/StringToLiteralService');
 require('./FilterModel');
@@ -26,6 +27,18 @@ var createElementModelConstructor = function (
             selector: {
                 get: function () {
                     return _.first(this.filters);
+                }
+            },
+            variableName: {
+                get: function () {
+                    return camelcase(this.name);
+                }
+            },
+            meta: {
+                get: function () {
+                    return {
+                        name: this.name
+                    };
                 }
             },
             ast: {
@@ -178,7 +191,7 @@ var createElementModelConstructor = function (
             }
         }, this);
 
-        var thisElementMemberExpression = ast.memberExpression(ast.thisExpression(), ast.identifier(this.name));
+        var thisElementMemberExpression = ast.memberExpression(ast.thisExpression(), ast.identifier(this.variableName));
         var elementAssignmentExpression = ast.assignmentExpression(thisElementMemberExpression, ast.AssignmentOperators.ASSIGNMENT, elementCallExpression);
         return ast.expressionStatement(elementAssignmentExpression);
     }
