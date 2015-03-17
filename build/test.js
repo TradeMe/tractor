@@ -59,8 +59,6 @@ function client (reportTaskDone) {
         },
 
         colors: true,
-        autoWatch: false,
-        singleRun: true,
 
         files: [
             'src/**/*.spec.js'

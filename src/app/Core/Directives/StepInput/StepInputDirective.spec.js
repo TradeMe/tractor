@@ -12,7 +12,16 @@ describe('StepInputDirective.js:', function() {
     var $compile;
     var $rootScope;
 
-    beforeEach(angular.mock.module('Core'));
+    beforeEach(function () {
+        angular.module('StepDefinitionEditor', []);
+        angular.mock.module('Core');
+
+        angular.mock.module(function ($provide) {
+            $provide.factory('StepDeclarationModel', function () {
+                return {};
+            });
+        });
+    });
 
     beforeEach(inject(function (_$compile_, _$rootScope_) {
         $compile = _$compile_;
@@ -45,8 +54,7 @@ describe('StepInputDirective.js:', function() {
             expect(function () {
                 var scope = $rootScope.$new();
                 scope.model = {};
-                scope.label = ''
-                compileDirective('<tractor-step-input model="model" label="label"></tractor-step-input>', scope);
+                compileDirective('<tractor-step-input model="model" label="Some label"></tractor-step-input>', scope);
             }).to.throw('The "tractor-step-input" directive requires a "form" attribute.');
         });
 
@@ -55,8 +63,7 @@ describe('StepInputDirective.js:', function() {
             var parentForm = {};
             scope.$parent.parent = parentForm;
             scope.model = {};
-            scope.name = '';
-            var directive = compileDirective('<tractor-step-input model="model" name="name" form="parent"></tractor-step-input>', scope);
+            var directive = compileDirective('<tractor-step-input model="model" label="Some label" form="parent"></tractor-step-input>', scope);
             expect(directive.isolateScope().form).to.equal(parentForm);
         });
 
@@ -65,9 +72,23 @@ describe('StepInputDirective.js:', function() {
             var parentForm = {};
             scope.$parent.parent = parentForm;
             scope.model = {};
-            scope.options = [];
-            var directive = compileDirective('<tractor-step-input model="model" label="Some Label" form="parent"></tractor-step>', scope);
+            var directive = compileDirective('<tractor-step-input model="model" label="Some label" form="parent"></tractor-step>', scope);
             expect(directive.isolateScope().property).to.equal('someLabel');
+        });
+
+        it('should generate a unique id for the input:', function () {
+            var scopeOne = $rootScope.$new();
+            var scopeTwo = $rootScope.$new();
+            var parentForm = {};
+            scopeOne.$parent.parent = scopeTwo.$parent.parent = parentForm;
+            scopeOne.model = scopeTwo.model = {};
+            var directiveOne = compileDirective('<tractor-step-input model="model" label="Some label" form="parent"></tractor-step>', scopeOne);
+            var directiveTwo = compileDirective('<tractor-step-input model="model" label="Some label" form="parent"></tractor-step>', scopeTwo);
+            var idOne = directiveOne.isolateScope().id;
+            var idTwo = directiveTwo.isolateScope().id;
+            expect(idOne).not.to.equal(undefined);
+            expect(idTwo).not.to.equal(undefined);
+            expect(idOne).not.to.equal(idTwo);
         });
     });
 });

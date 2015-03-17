@@ -59,5 +59,17 @@ describe('LiteralInputDirective.js:', function() {
             var directive = compileDirective('<tractor-literal-input model="model" name="name" form="parent"></tractor-literal-input>', scope);
             expect(directive.isolateScope().form).to.equal(parentForm);
         });
+
+        it('should generate a unique id for the input:', function () {
+            var scopeOne = $rootScope.$new();
+            var scopeTwo = $rootScope.$new();
+            var parentForm = {};
+            scopeOne.$parent.parent = scopeTwo.$parent.parent = parentForm;
+            scopeOne.model = scopeTwo.model = {};
+            scopeOne.name = scopeTwo.name = '';
+            var directiveOne = compileDirective('<tractor-literal-input model="model" name="name" form="parent"></tractor-literal-input>', scopeOne);
+            var directiveTwo = compileDirective('<tractor-literal-input model="model" name="name" form="parent"></tractor-literal-input>', scopeTwo);
+            expect(directiveOne.isolateScope().id).not.to.equal(directiveTwo.isolateScope().id);
+        });
     });
 });
