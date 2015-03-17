@@ -71,7 +71,7 @@ var createInteractionModelConstructor = function (
         });
 
         var interactionMemberExpression;
-        var elementNameIdentifier = ast.identifier(this.element.name);
+        var elementNameIdentifier = ast.identifier(this.element.variableName);
         var methodInstanceNameIdentifier = ast.identifier(this.methodInstance.name);
         if (this.element.name === 'browser') {
             interactionMemberExpression = ast.memberExpression(elementNameIdentifier, methodInstanceNameIdentifier);

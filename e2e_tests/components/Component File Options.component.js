@@ -1,3 +1,35 @@
+/*{
+    "name": "Component File Options",
+    "elements": [
+        {
+            "name": "component name"
+        },
+        {
+            "name": "component name input"
+        },
+        {
+            "name": "save component file button"
+        }
+    ],
+    "actions": [
+        {
+            "name": "get component name",
+            "parameters": []
+        },
+        {
+            "name": "set component name",
+            "parameters": [
+                {
+                    "name": "component name"
+                }
+            ]
+        },
+        {
+            "name": "save component",
+            "parameters": []
+        }
+    ]
+}*/
 module.exports = function () {
     var ComponentFileOptions = function ComponentFileOptions() {
         this.componentName = element(by.binding('componentEditor.component.name'));
@@ -10,7 +42,7 @@ module.exports = function () {
     };
     ComponentFileOptions.prototype.setComponentName = function (componentName) {
         var self = this;
-        return self.componentNameInput.sendKeys(componentName);
+        return self.componentNameInput.sendKeys('componentName');
     };
     ComponentFileOptions.prototype.saveComponent = function () {
         var self = this;

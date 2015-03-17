@@ -54,7 +54,7 @@ describe('server/actions: validate-javascript-variable-name:', function () {
 
         expect(response.status).to.have.been.calledWith(400);
         var responseData = JSON.parse(response.send.firstCall.args[0]);
-        expect(responseData.error).to.equal('Invalid variable name.');
+        expect(responseData.error).to.equal('Invalid name.');
 
         charFunk.isValidName.restore();
         logging.error.restore();

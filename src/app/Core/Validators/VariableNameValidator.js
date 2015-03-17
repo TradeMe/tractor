@@ -45,15 +45,6 @@ var VariableNameValidator = function (
             destroy();
         });
 
-        ngModelController.$parsers.push(function (value) {
-            value = $scope.$parent.isClass ? pascalcase(value) : camelcase(value);
-
-            ngModelController.$setViewValue(value);
-            ngModelController.$render();
-
-            return value;
-        });
-
         ngModelController.$validators.uniqueVariableName = function (value) {
             var allVariableNames = $scope.variableNameModel.getAllVariableNames();
             var result = !_.contains(allVariableNames, value);
@@ -61,7 +52,8 @@ var VariableNameValidator = function (
         };
 
         ngModelController.$asyncValidators.validVariableName = function (value) {
-            return ValidationService.validateVariableName(value);
+            var variableName = $scope.$parent.isClass ? pascalcase(value) : camelcase(value);
+            return ValidationService.validateVariableName(variableName);
         };
     }
 };

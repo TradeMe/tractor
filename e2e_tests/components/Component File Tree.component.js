@@ -1,3 +1,27 @@
+/*{
+    "name": "Component File Tree",
+    "elements": [
+        {
+            "name": "title"
+        },
+        {
+            "name": "list of component files"
+        },
+        {
+            "name": "example component file"
+        }
+    ],
+    "actions": [
+        {
+            "name": "get title text",
+            "parameters": []
+        },
+        {
+            "name": "open example component",
+            "parameters": []
+        }
+    ]
+}*/
 module.exports = function () {
     var ComponentFileTree = function ComponentFileTree() {
         this.title = element(by.css('.file-tree h3'));

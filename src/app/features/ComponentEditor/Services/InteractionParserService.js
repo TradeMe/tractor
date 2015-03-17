@@ -83,7 +83,7 @@ var InteractionParserService = function InteractionParserService (
                 interaction.element = action.component.browser;
             } else {
                 interaction.element = _.find(action.component.elements, function (element) {
-                    return element.name === interactionCallExpression.callee.object.property.name;
+                    return element.variableName === interactionCallExpression.callee.object.property.name;
                 });
             }
             assert(interaction.element);

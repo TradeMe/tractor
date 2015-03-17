@@ -23,7 +23,9 @@ function saveComponentFile (request, response) {
 
     var javascript = null;
     try {
-        javascript = escodegen.generate(request.body.program);
+        javascript = escodegen.generate(request.body.program, {
+            comment: true
+        });
     } catch (e) {
         errorHandler(response, new GenerateJavaScriptError('Invalid component.'));
         return Promise.resolve();

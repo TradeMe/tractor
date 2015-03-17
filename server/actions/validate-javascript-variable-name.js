@@ -19,6 +19,6 @@ function valiateJavaScriptVariableName (request, response) {
     if (data.result) {
         response.send(JSON.stringify(data));
     } else {
-        errorHandler(response, new InvalidVariableNameError('Invalid variable name.'));
+        errorHandler(response, new InvalidVariableNameError('Invalid name.'));
     }
 }
