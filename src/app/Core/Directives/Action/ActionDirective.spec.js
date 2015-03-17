@@ -41,6 +41,14 @@ describe('ActionDirective.js:', function() {
             }).to.throw('The "tractor-action" directive requires an "action" attribute.');
         });
 
+        it('should successfully compile the directive otherwise:', function () {
+            expect(function () {
+                var scope = $rootScope.$new();
+                scope.model = {};
+                var directive = compileDirective('<tractor-action model="model" action="Some Action"></tractor-action>', scope);
+            }).not.to.throw();
+        });
+
         it('should convert the "action" attribute into a camel-cased "method":', function () {
             var scope = $rootScope.$new();
             scope.model = {};

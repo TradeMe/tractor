@@ -50,6 +50,17 @@ describe('LiteralInputDirective.js:', function() {
             }).to.throw('The "tractor-literal-input" directive requires a "form" attribute.');
         });
 
+        it('should successfully compile the directive otherwise:', function () {
+            expect(function () {
+                var scope = $rootScope.$new();
+                var parentForm = {};
+                scope.$parent.parent = parentForm;
+                scope.model = {};
+                scope.name = '';
+                var directive = compileDirective('<tractor-literal-input model="model" name="name" form="parent"></tractor-literal-input>', scope);            
+            }).not.to.throw();
+        });
+
         it('should get the correct form off the parent scope:', function () {
             var scope = $rootScope.$new();
             var parentForm = {};

@@ -41,6 +41,14 @@ describe('CheckboxDirective.js:', function() {
             }).to.throw('The "tractor-checkbox" directive requires an "label" attribute.');
         });
 
+        it('should successfully compile the directive otherwise:', function () {
+            expect(function () {
+                var scope = $rootScope.$new();
+                scope.model = {};
+                var directive = compileDirective('<tractor-checkbox model="model" label="Some property"></tractor-checkbox>', scope);                
+            }).not.to.throw();
+        });
+
         it('should convert the "label" attribute into a camel-cased "property":', function () {
             var scope = $rootScope.$new();
             scope.model = {};

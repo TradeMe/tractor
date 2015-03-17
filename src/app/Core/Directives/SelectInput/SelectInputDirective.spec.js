@@ -49,6 +49,15 @@ describe('SelectInputDirective.js:', function() {
             }).to.throw('The "tractor-select" directive requires an "options" attribute, or a "label" attribute that matches a set of options on the "model".');
         });
 
+        it('should successfully compile the directive otherwise:', function () {
+            expect(function () {
+                var scope = $rootScope.$new();
+                scope.model = {};
+                scope.options = [];
+                var directive = compileDirective('<tractor-select model="model" label="Some Label" options="options"></tractor-select>', scope);
+            }).not.to.throw();
+        });
+
         it('should convert the "label" attribute into a camel-cased "property":', function () {
             var scope = $rootScope.$new();
             scope.model = {};

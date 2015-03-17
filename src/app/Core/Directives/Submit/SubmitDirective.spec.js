@@ -32,5 +32,12 @@ describe('SubmitDirective.js:', function() {
                 compileDirective('<tractor-submit></tractor-submit>', scope);
             }).to.throw('The "tractor-submit" directive requires an "action" attribute.');
         });
+
+        it('should successfully compile the directive otherwise:', function () {
+            expect(function () {
+                var scope = $rootScope.$new();
+                compileDirective('<tractor-submit action="Some action"></tractor-submit>', scope);
+            }).not.to.throw();
+        });
     });
 });

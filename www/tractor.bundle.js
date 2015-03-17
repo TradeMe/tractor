@@ -55787,6 +55787,10 @@ var TextInputDirective = function () {
             throw new Error('The "tractor-text-input" directive requires a "label" attribute.');
         }
 
+        if (_.isUndefined($attrs.form)) {
+            throw new Error('The "tractor-text-input" directive requires a "label" attribute.');
+        }
+
         $scope.form = $scope.$parent[$attrs.form];
         $scope.id = Math.floor(Math.random() * Date.now());
 
