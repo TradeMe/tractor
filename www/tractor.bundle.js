@@ -55891,13 +55891,15 @@ var ASTCreatorService = function () {
         memberExpression: memberExpression,
 
         identifier: identifier,
-        literal: literal
+        literal: literal,
+        blockComment: blockComment
     };
 
-    function program (body) {
+    function program (body, comments) {
         return {
             type: 'Program',
-            body: body || []
+            body: body || [],
+            comments: comments || []
         };
     }
 
@@ -56032,6 +56034,13 @@ var ASTCreatorService = function () {
           literal.raw = '' + value;
         }
         return literal;
+    }
+
+    function blockComment (value) {
+        return {
+            type: 'block',
+            value: value
+        };
     }
 };
 
@@ -56288,15 +56297,6 @@ var VariableNameValidator = function (
             destroy();
         });
 
-        ngModelController.$parsers.push(function (value) {
-            value = $scope.$parent.isClass ? pascalcase(value) : camelcase(value);
-
-            ngModelController.$setViewValue(value);
-            ngModelController.$render();
-
-            return value;
-        });
-
         ngModelController.$validators.uniqueVariableName = function (value) {
             var allVariableNames = $scope.variableNameModel.getAllVariableNames();
             var result = !_.contains(allVariableNames, value);
@@ -56304,7 +56304,8 @@ var VariableNameValidator = function (
         };
 
         ngModelController.$asyncValidators.validVariableName = function (value) {
-            return ValidationService.validateVariableName(value);
+            var variableName = $scope.$parent.isClass ? pascalcase(value) : camelcase(value);
+            return ValidationService.validateVariableName(variableName);
         };
     }
 };
@@ -56402,9 +56403,7 @@ var ComponentEditorController = (function () {
     };
 
     function parseComponentFile (componentFile) {
-        try {
-            this.component = this.componentParserService.parse(componentFile.ast);
-        } catch (e) { }
+        this.component = this.componentParserService.parse(componentFile.ast);
     }
 
     return ComponentEditorController;
@@ -56422,6 +56421,7 @@ var _ = require('lodash');
 var ComponentEditor = require('../ComponentEditor');
 
 // Dependencies:
+var camelcase = require('change-case').camel;
 require('../../../Core/Services/ASTCreatorService');
 require('./ParameterModel');
 require('./InteractionModel');
@@ -56449,6 +56449,19 @@ var createActionModelConstructor = function (
             parameters: {
                 get: function () {
                     return parameters;
+                }
+            },
+            variableName: {
+                get: function () {
+                    return camelcase(this.name);
+                }
+            },
+            meta: {
+                get: function () {
+                    return {
+                        name: this.name,
+                        parameters: this.parameters.map(function (parameter) { return parameter.meta; })
+                    };
                 }
             },
             ast: {
@@ -56488,8 +56501,8 @@ var createActionModelConstructor = function (
     function toAST () {
         var ast = ASTCreatorService;
         var prototypeIdentifier = ast.identifier('prototype');
-        var prototypeMemberExpression = ast.memberExpression(ast.identifier(this.component.name), prototypeIdentifier);
-        var actionMemberExpression = ast.memberExpression(prototypeMemberExpression, ast.identifier(this.name));
+        var prototypeMemberExpression = ast.memberExpression(ast.identifier(this.component.variableName), prototypeIdentifier);
+        var actionMemberExpression = ast.memberExpression(prototypeMemberExpression, ast.identifier(this.variableName));
 
         var selfIdentifier = ast.identifier('self');
         var thisExpression = ast.thisExpression();
@@ -56543,7 +56556,7 @@ ComponentEditor.factory('ActionModel', ['ASTCreatorService', 'ParameterModel', '
     return createActionModelConstructor(ASTCreatorService, ParameterModel, InteractionModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":125,"../ComponentEditor":133,"./InteractionModel":141,"./ParameterModel":143,"lodash":66}],136:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":125,"../ComponentEditor":133,"./InteractionModel":141,"./ParameterModel":143,"change-case":47,"lodash":66}],136:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56709,6 +56722,7 @@ var _ = require('lodash');
 var ComponentEditor = require('../ComponentEditor');
 
 // Dependencies:
+var pascalcase = require('change-case').pascal;
 require('../../../Core/Services/ASTCreatorService');
 require('./BrowserModel');
 require('./ElementModel');
@@ -56745,6 +56759,20 @@ var createComponentModelConstructor = function (
             elements: {
                 get: function () {
                     return elements;
+                }
+            },
+            variableName: {
+                get: function () {
+                    return pascalcase(this.name);
+                }
+            },
+            meta: {
+                get: function () {
+                    return JSON.stringify({
+                        name: this.name,
+                        elements: this.domElements.map(function (element) { return element.meta; }),
+                        actions: this.actions.map(function (action) { return action.meta; })
+                    }, null, '    ');
                 }
             },
             ast: {
@@ -56794,7 +56822,7 @@ var createComponentModelConstructor = function (
     function toAST () {
         var ast = ASTCreatorService;
 
-        var nameIdentifier = ast.identifier(this.name);
+        var nameIdentifier = ast.identifier(this.variableName);
         var moduleReturnStatement = ast.returnStatement(nameIdentifier);
 
         var elementASTs = _.map(this.domElements, function (element) {
@@ -56818,6 +56846,7 @@ var createComponentModelConstructor = function (
         var moduleExportsMemberExpression = ast.memberExpression(ast.identifier('module'), ast.identifier('exports'));
         var componentModuleAssignmentExpression = ast.assignmentExpression(moduleExportsMemberExpression, ast.AssignmentOperators.ASSIGNMENT, moduleCallExpression);
         var componentModuleExpressionStatement = ast.expressionStatement(componentModuleAssignmentExpression);
+        componentModuleAssignmentExpression.leadingComments = [ast.blockComment(this.meta)];
 
         return ast.program([componentModuleExpressionStatement]);
     }
@@ -56832,7 +56861,7 @@ ComponentEditor.factory('ComponentModel', ['ASTCreatorService', 'BrowserModel', 
     return createComponentModelConstructor(ASTCreatorService, BrowserModel, ElementModel, ActionModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":125,"../ComponentEditor":133,"./ActionModel":135,"./BrowserModel":137,"./ElementModel":139,"lodash":66}],139:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":125,"../ComponentEditor":133,"./ActionModel":135,"./BrowserModel":137,"./ElementModel":139,"change-case":47,"lodash":66}],139:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56842,6 +56871,7 @@ var _ = require('lodash');
 var ComponentEditor = require('../ComponentEditor');
 
 // Dependencies:
+var camelcase = require('change-case').camel;
 require('../../../Core/Services/ASTCreatorService');
 require('../../../Core/Services/StringToLiteralService');
 require('./FilterModel');
@@ -56861,6 +56891,18 @@ var createElementModelConstructor = function (
             selector: {
                 get: function () {
                     return _.first(this.filters);
+                }
+            },
+            variableName: {
+                get: function () {
+                    return camelcase(this.name);
+                }
+            },
+            meta: {
+                get: function () {
+                    return {
+                        name: this.name
+                    };
                 }
             },
             ast: {
@@ -57013,7 +57055,7 @@ var createElementModelConstructor = function (
             }
         }, this);
 
-        var thisElementMemberExpression = ast.memberExpression(ast.thisExpression(), ast.identifier(this.name));
+        var thisElementMemberExpression = ast.memberExpression(ast.thisExpression(), ast.identifier(this.variableName));
         var elementAssignmentExpression = ast.assignmentExpression(thisElementMemberExpression, ast.AssignmentOperators.ASSIGNMENT, elementCallExpression);
         return ast.expressionStatement(elementAssignmentExpression);
     }
@@ -57027,7 +57069,7 @@ ComponentEditor.factory('ElementModel', ['ASTCreatorService', 'StringToLiteralSe
     return createElementModelConstructor(ASTCreatorService, StringToLiteralService, FilterModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":125,"../../../Core/Services/StringToLiteralService":129,"../ComponentEditor":133,"./FilterModel":140,"lodash":66}],140:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":125,"../../../Core/Services/StringToLiteralService":129,"../ComponentEditor":133,"./FilterModel":140,"change-case":47,"lodash":66}],140:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57205,7 +57247,7 @@ var createInteractionModelConstructor = function (
         });
 
         var interactionMemberExpression;
-        var elementNameIdentifier = ast.identifier(this.element.name);
+        var elementNameIdentifier = ast.identifier(this.element.variableName);
         var methodInstanceNameIdentifier = ast.identifier(this.methodInstance.name);
         if (this.element.name === 'browser') {
             interactionMemberExpression = ast.memberExpression(elementNameIdentifier, methodInstanceNameIdentifier);
@@ -57307,6 +57349,7 @@ var _ = require('lodash');
 var ComponentEditor = require('../ComponentEditor');
 
 // Dependencies:
+var camelcase = require('change-case').camel;
 require('../../../Core/Services/ASTCreatorService');
 
 var createParameterModelConstructor = function (ASTCreatorService) {
@@ -57315,6 +57358,18 @@ var createParameterModelConstructor = function (ASTCreatorService) {
             action: {
                 get: function () {
                     return action;
+                }
+            },
+            variableName: {
+                get: function () {
+                    return camelcase(this.name);
+                }
+            },
+            meta: {
+                get: function () {
+                    return {
+                        name: this.name
+                    };
                 }
             },
             ast: {
@@ -57341,7 +57396,7 @@ var createParameterModelConstructor = function (ASTCreatorService) {
 
     function toAST () {
         var ast = ASTCreatorService;
-        return ast.identifier(this.name);
+        return ast.identifier(this.variableName);
     }
 };
 
@@ -57349,7 +57404,7 @@ ComponentEditor.factory('ParameterModel', ['ASTCreatorService', function (ASTCre
     return createParameterModelConstructor(ASTCreatorService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":125,"../ComponentEditor":133,"lodash":66}],144:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":125,"../ComponentEditor":133,"change-case":47,"lodash":66}],144:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57373,16 +57428,16 @@ var ActionParserService = function ActionParserService (
         parse: parse
     };
 
-    function parse (component, astObject) {
+    function parse (component, astObject, meta) {
         var action = new ActionModel(component);
 
-        action.name = astObject.expression.left.property.name;
         var actionFunctionExpression = astObject.expression.right;
         var actionBody = actionFunctionExpression.body.body;
 
         _.each(actionFunctionExpression.params, function (param) {
             var parameter = ParameterParserService.parse(action, param);
             assert(parameter);
+            parameter.name = meta.parameters[action.parameters.length].name;
             action.parameters.push(parameter);
         });
 
@@ -57525,40 +57580,53 @@ var ComponentParserService = function ComponentParserService (
     };
 
     function parse (astObject) {
-        var component = new ComponentModel();
-
-        var componentModuleExpressionStatement = _.first(astObject.body);
-        var moduleBlockStatement = componentModuleExpressionStatement.expression.right.callee.body;
-
-        _.each(moduleBlockStatement.body, function (statement, index) {
+        try {
+            var meta = {};
             try {
-                component.name = statement.argument.name;
-                return;
+                meta = JSON.parse(_.first(astObject.comments).value);
             } catch (e) { }
 
-            try {
-                var constructorDeclarator = _.first(statement.declarations);
-                var constructorBlockStatament = constructorDeclarator.init.body;
-                _.each(constructorBlockStatament.body, function (statement) {
-                    var domElement = ElementParserService.parse(component, statement);
-                    assert(domElement);
-                    component.elements.push(domElement);
-                    component.domElements.push(domElement);
-                });
-                return;
-            } catch (e) { }
+            var component = new ComponentModel();
+            component.name = meta.name;
 
-            try {
-                var action = ActionParserService.parse(component, statement);
-                assert(action);
-                component.actions.push(action);
-                return;
-            } catch (e) { }
+            var componentModuleExpressionStatement = _.first(astObject.body);
+            var moduleBlockStatement = componentModuleExpressionStatement.expression.right.callee.body;
 
-            console.warn('Invalid Component:', statement, index);
-        });
+            _.each(moduleBlockStatement.body, function (statement, index) {
+                try {
+                    assert(statement.argument.name);
+                    return;
+                } catch (e) { }
 
-        return component;
+                try {
+                    var constructorDeclarator = _.first(statement.declarations);
+                    var constructorBlockStatement = constructorDeclarator.init.body;
+                    _.each(constructorBlockStatement.body, function (statement) {
+                        var domElement = ElementParserService.parse(component, statement);
+                        assert(domElement);
+                        domElement.name = meta.elements[component.domElements.length].name;
+                        component.elements.push(domElement);
+                        component.domElements.push(domElement);
+                    });
+                    return;
+                } catch (e) { }
+
+                try {
+                    var actionMeta = meta.actions[component.actions.length];
+                    var action = ActionParserService.parse(component, statement, actionMeta);
+                    assert(action);
+                    action.name = actionMeta.name;
+                    component.actions.push(action);
+                    return;
+                } catch (e) { }
+
+                console.warn('Invalid Component:', statement, index);
+            });
+
+            return component;
+        } catch (e) {
+            return new ComponentModel();
+        }
     }
 };
 ComponentParserService.$inject = ['ElementParserService', 'ActionParserService', 'ComponentModel'];
@@ -57590,7 +57658,6 @@ var ElementParserService = function ElementParserService (
     function parse (component, astObject, element) {
         if (!element) {
             element = new ElementModel(component);
-            element.name = astObject.expression.left.property.name;
         }
 
         var elementCallExpression = astObject.expression.right;
@@ -57862,7 +57929,7 @@ var InteractionParserService = function InteractionParserService (
                 interaction.element = action.component.browser;
             } else {
                 interaction.element = _.find(action.component.elements, function (element) {
-                    return element.name === interactionCallExpression.callee.object.property.name;
+                    return element.variableName === interactionCallExpression.callee.object.property.name;
                 });
             }
             assert(interaction.element);
@@ -57905,11 +57972,7 @@ var ParameterParserService = function ParameterParserService (ParameterModel) {
     };
 
     function parse (action, astObject) {
-       var parameter = new ParameterModel(action);
-
-       parameter.name = astObject.name;
-
-       return parameter;
+       return new ParameterModel(action);
     }
 };
 ParameterParserService.$inject = ['ParameterModel'];
