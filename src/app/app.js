@@ -31,7 +31,7 @@ require('./features/MockDataEditor/MockDataEditorController');
 
 require('./Core/Core');
 require('./Core/Services/ConfigService');
-require('./Core/Services/ErrorInterceptor');
+require('./Core/Services/HttpResponseInterceptor');
 require('./Core/Services/RealTimeService');
 
 require('./features/Notifier/Notifier');

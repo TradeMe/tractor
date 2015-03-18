@@ -1,9 +1,12 @@
-/*global beforeEach:true, inject: true, describe:true, it:true, expect:true */
+/*global beforeEach:true, describe:true, it:true, expect:true */
 'use strict';
 
 // Angular:
 var angular = require('angular');
 require('angular-mocks');
+
+// Mocks:
+var MockHttpResponseInterceptor = require('../../Services/HttpResponseInterceptor.mock');
 
 // Testing:
 require('./TextInputDirective');
@@ -12,12 +15,20 @@ describe('TextInputDirective.js:', function() {
     var $compile;
     var $rootScope;
 
-    beforeEach(angular.mock.module('Core'));
+    beforeEach(function () {
+        angular.mock.module('Core');
 
-    beforeEach(inject(function (_$compile_, _$rootScope_) {
-        $compile = _$compile_;
-        $rootScope = _$rootScope_;
-    }));
+        angular.mock.module(function ($provide) {
+            $provide.factory('HttpResponseInterceptor', function () {
+                return new MockHttpResponseInterceptor();
+            });
+        });
+
+        angular.mock.inject(function (_$compile_, _$rootScope_) {
+            $compile = _$compile_;
+            $rootScope = _$rootScope_;
+        });
+    });
 
     var compileDirective = function (template, scope) {
         var directive = $compile(template)(scope);
@@ -55,14 +66,14 @@ describe('TextInputDirective.js:', function() {
                 var parentForm = {};
                 scope.$parent.parent = parentForm;
                 scope.model = {};
-                var directive = compileDirective('<tractor-text-input model="model" label="Some label" form="parent"></tractor-text-input>', scope);
+                compileDirective('<tractor-text-input model="model" label="Some label" form="parent"></tractor-text-input>', scope);
             }).not.to.throw();
         });
 
         it('should convert the "label" attribute into a camel-cased "property":', function () {
             var scope = $rootScope.$new();
             scope.model = {};
-            var directive = compileDirective('<tractor-text-input model="model" label="Some Label"></tractor-select>', scope);
+            var directive = compileDirective('<tractor-text-input model="model" label="Some Label" form="parent"></tractor-text-input>', scope);
             expect(directive.isolateScope().property).to.equal('someLabel');
         });
 
@@ -71,7 +82,7 @@ describe('TextInputDirective.js:', function() {
             var parentForm = {};
             scope.$parent.parent = parentForm;
             scope.model = {};
-            var directive = compileDirective('<tractor-text-input model="model" label="Some Label"></tractor-select>', scope);
+            var directive = compileDirective('<tractor-text-input model="model" label="Some Label" form="parent"></tractor-text-input>', scope);
             expect(directive.isolateScope().form).to.equal(parentForm);
         });
 
@@ -81,12 +92,14 @@ describe('TextInputDirective.js:', function() {
             var parentForm = {};
             scopeOne.$parent.parent = scopeTwo.$parent.parent = parentForm;
             scopeOne.model = scopeTwo.model = {};
-            var directiveOne = compileDirective('<tractor-step-input model="model" label="Some label" form="parent"></tractor-step>', scopeOne);
-            var directiveTwo = compileDirective('<tractor-step-input model="model" label="Some label" form="parent"></tractor-step>', scopeTwo);
+            var directiveOne = compileDirective('<tractor-text-input model="model" label="Some label" form="parent"></tractor-text-input>', scopeOne);
+            var directiveTwo = compileDirective('<tractor-text-input model="model" label="Some label" form="parent"></tractor-text-input>', scopeTwo);
             var idOne = directiveOne.isolateScope().id;
             var idTwo = directiveTwo.isolateScope().id;
-            expect(idOne).not.to.equal(undefined);
-            expect(idTwo).not.to.equal(undefined);
+            /* eslint-disable no-unused-expressions */
+            expect(idOne).not.to.be.undefined;
+            expect(idTwo).not.to.be.undefined;
+            /* eslint-enable no-unused-expressions */
             expect(idOne).not.to.equal(idTwo);
         });
 
@@ -95,7 +108,7 @@ describe('TextInputDirective.js:', function() {
             var parentForm = {};
             scope.$parent.parent = parentForm;
             scope.model = {};
-            var directive = compileDirective('<tractor-step-input model="model" label="Some label" form="parent"></tractor-step>', scope);
+            var directive = compileDirective('<tractor-text-input model="model" label="Some label" form="parent"></tractor-text-input>', scope);
             expect(directive.isolateScope().property).to.equal('someLabel');
         });
     });

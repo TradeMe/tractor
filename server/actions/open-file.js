@@ -66,7 +66,6 @@ function parseJS (contents, name) {
             comment: true
         });
     } catch (e) {
-        console.log(e);
         throw new ParseJavaScriptError('Parsing "' + name + '" failed.');
     }
     return ast;

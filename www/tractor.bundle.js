@@ -32,7 +32,7 @@ require('./features/MockDataEditor/MockDataEditorController');
 
 require('./Core/Core');
 require('./Core/Services/ConfigService');
-require('./Core/Services/ErrorInterceptor');
+require('./Core/Services/HttpResponseInterceptor');
 require('./Core/Services/RealTimeService');
 
 require('./features/Notifier/Notifier');
@@ -64,7 +64,7 @@ angular.module('tractor', [
     .state('tractor.component-editor', {
         url: 'component-editor?component',
         /* eslint-disable no-path-concat */
-        template: "<section class=\"file-tree\">\r\n    <h2>Component files:</h2>\r\n    <ul class='file-tree__file-list file-tree__file-list--javascript'>\r\n        <li ng-repeat=\"componentFileName in componentEditor.componentFileNames\"\r\n            ng-class=\"{ true: 'active' }[componentFileName === componentEditor.component.name]\"\r\n            class=\"file-tree__file-list-file\">\r\n            <a ui-sref=\"tractor.component-editor({ component: componentFileName })\">{{ componentFileName }}</a>\r\n        </li>\r\n    </ul>\r\n</section>\r\n\r\n<form class=\"file\" name=\"component-editor\" novalidate\r\n    ng-submit=\"componentEditor.showErrors() && componentEditor.saveComponentFile()\">\r\n    <section class=\"file-options\">\r\n        <h1 class=\"file-options__name\">{{ componentEditor.component.name }}</h1>\r\n        <div>\r\n            <tractor-variable-input class=\"file-options__name-input\"\r\n                form=\"component-editor\"\r\n                label=\"Name\"\r\n                model=\"componentEditor.component\"\r\n                example=\"Component\"\r\n                is-class=\"true\">\r\n            </tractor-variable-input>\r\n            <tractor-submit class=\"file-options__save-file\"\r\n                action=\"Save component file\">\r\n            </tractor-submit>\r\n        </div>\r\n    </section>\r\n\r\n    <section class=\"file-editor\">\r\n        <section ng-show=\"componentEditor.component.name\">\r\n            <section class=\"file-editor__container\">\r\n                <h2>Elements:</h2>\r\n\r\n                <section ng-if=\"componentEditor.component.domElements.length\">\r\n                    <ul>\r\n                        <li class=\"file-editor__list-item\" ng-repeat=\"domElement in componentEditor.component.domElements\">\r\n                            <tractor-action\r\n                                model=\"componentEditor.component\"\r\n                                action=\"Remove element\"\r\n                                argument=\"domElement\"\r\n                                icon=\"remove\">\r\n                            </tractor-action>\r\n\r\n                            <tractor-variable-input\r\n                                form=\"component-editor\"\r\n                                label=\"Name\"\r\n                                model=\"domElement\"\r\n                                example=\"element\">\r\n                            </tractor-variable-input>\r\n                            <tractor-select\r\n                                label=\"Type\"\r\n                                model=\"domElement.selector\">\r\n                            </tractor-select>\r\n                            <tractor-text-input\r\n                                form=\"component-editor\"\r\n                                label=\"Locator\"\r\n                                model=\"domElement.selector\"\r\n                                example=\"someController.someModel\">\r\n                            </tractor-text-input>\r\n\r\n                            <section>\r\n                                <h3>Filters:</h3>\r\n\r\n                                <ol ng-if=\"domElement.filters.length > 1\" as-sortable ng-model=\"domElement.sortableFilters\" is-disabled=\"domElement.filters.length < 3\">\r\n                                    <li class=\"file-editor__list-item\" ng-repeat=\"filter in domElement.sortableFilters\" as-sortable-item>\r\n                                        <tractor-action\r\n                                            model=\"domElement\"\r\n                                            action=\"Remove filter\"\r\n                                            argument=\"filter\"\r\n                                            icon=\"remove\">\r\n                                        </tractor-action>\r\n                                        <div class=\"file-editor__sort-handle\" title=\"Drag to sort\"\r\n                                            ng-if=\"domElement.filters.length > 2\"\r\n                                            as-sortable-item-handle>\r\n                                        </div>\r\n\r\n                                        <tractor-select ng-if=\"!domElement.filters[$index].isAll\"\r\n                                            label=\"Type\"\r\n                                            model=\"filter\">\r\n                                        </tractor-select>\r\n                                        <tractor-text-input\r\n                                            form=\"component-editor\"\r\n                                            label=\"Locator\"\r\n                                            model=\"filter\"\r\n                                            example=\"someController.someModel\">\r\n                                        </tractor-text-input>\r\n                                    </li>\r\n                                </ol>\r\n\r\n                                <tractor-action\r\n                                    model=\"domElement\"\r\n                                    action=\"Add filter\">\r\n                                </tractor-action>\r\n                            </section>\r\n                        </li>\r\n                    </ul>\r\n                </section>\r\n\r\n                <tractor-action\r\n                    model=\"componentEditor.component\"\r\n                    action=\"Add element\">\r\n                </tractor-action>\r\n            </section>\r\n\r\n            <section class=\"file-editor__container\">\r\n                <h2>Actions:</h2>\r\n\r\n                <section ng-if=\"componentEditor.component.actions.length\">\r\n                    <ul>\r\n                        <li class=\"file-editor__list-item\" ng-repeat=\"action in componentEditor.component.actions\">\r\n                            <tractor-action\r\n                                model=\"componentEditor.component\"\r\n                                action=\"Remove action\"\r\n                                argument=\"action\"\r\n                                icon=\"remove\">\r\n                            </tractor-action>\r\n\r\n                            <tractor-variable-input\r\n                                form=\"component-editor\"\r\n                                label=\"Name\"\r\n                                model=\"action\"\r\n                                example=\"action\">\r\n                            </tractor-variable-input>\r\n\r\n                            <section>\r\n                                <h3>Parameters:</h3>\r\n\r\n                                <section>\r\n                                    <ol ng-if=\"action.parameters.length\" as-sortable ng-model=\"action.parameters\" is-disabled=\"action.parameters.length < 2\">\r\n                                        <li class=\"file-editor__list-item\" ng-repeat=\"parameter in action.parameters\" as-sortable-item>\r\n                                            <tractor-action\r\n                                                model=\"action\"\r\n                                                action=\"Remove parameter\"\r\n                                                argument=\"parameter\"\r\n                                                icon=\"remove\">\r\n                                            </tractor-action>\r\n                                            <div ng-if=\"action.parameters.length > 1\" class=\"file-editor__sort-handle\" as-sortable-item-handle title=\"Drag to sort\"></div>\r\n\r\n                                            <tractor-variable-input\r\n                                                form=\"component-editor\"\r\n                                                label=\"Name\"\r\n                                                model=\"parameter\"\r\n                                                example=\"parameter\">\r\n                                            </tractor-variable-input>\r\n                                        </li>\r\n                                    </ol>\r\n                                </section>\r\n\r\n                                <tractor-action\r\n                                    model=\"action\"\r\n                                    action=\"Add parameter\">\r\n                                </tractor-action>\r\n                            </section>\r\n\r\n                            <section>\r\n                                <h3>Interactions:</h3>\r\n\r\n                                <section>\r\n                                    <ol ng-if=\"action.interactions.length\" as-sortable ng-model=\"action.interactions\" is-disabled=\"action.interactions.length < 2\">\r\n                                        <li class=\"file-editor__list-item\" ng-repeat=\"interaction in action.interactions\" as-sortable-item>\r\n                                            <tractor-action\r\n                                                model=\"action\"\r\n                                                action=\"Remove interaction\"\r\n                                                argument=\"interaction\"\r\n                                                icon=\"remove\">\r\n                                            </tractor-action>\r\n                                            <div ng-if=\"action.interactions.length > 1\" class=\"file-editor__sort-handle\" as-sortable-item-handle title=\"Drag to sort\"></div>\r\n\r\n                                            <tractor-select\r\n                                                label=\"Element\"\r\n                                                model=\"interaction\"\r\n                                                options=\"componentEditor.component.elements\"\r\n                                                as=\"name\">\r\n                                            </tractor-select>\r\n                                            <tractor-select\r\n                                                label=\"Method\"\r\n                                                model=\"interaction\"\r\n                                                options=\"interaction.element.methods\"\r\n                                                as=\"name\">\r\n                                            </tractor-select>\r\n\r\n                                            <div ng-repeat=\"argument in interaction.arguments\">\r\n                                                <tractor-literal-input\r\n                                                    form=\"component-editor\"\r\n                                                    name=\"argument.name\"\r\n                                                    model=\"argument.value\"\r\n                                                    description=\"argument.description\"\r\n                                                    required=\"argument.required\"\r\n                                                    type=\"argument.type\">\r\n                                                </tractor-literal-input>\r\n                                            </div>\r\n                                        </li>\r\n                                    </ol>\r\n                                </section>\r\n\r\n                                <tractor-action\r\n                                    model=\"action\"\r\n                                    action=\"Add interaction\">\r\n                                </tractor-action>\r\n                            </section>\r\n                        </li>\r\n                    </ul>\r\n                </section>\r\n\r\n                <tractor-action\r\n                    model=\"componentEditor.component\"\r\n                    action=\"Add action\">\r\n                </tractor-action>\r\n            </section>\r\n        </section>\r\n    </section>\r\n</form>\r\n",
+        template: "<section class=\"file-tree\">\r\n    <h2>Component files:</h2>\r\n    <ul class='file-tree__file-list file-tree__file-list--javascript'>\r\n        <li ng-repeat=\"componentFileName in componentEditor.componentFileNames\"\r\n            ng-class=\"{ true: 'active' }[componentFileName === componentEditor.component.name]\"\r\n            class=\"file-tree__file-list-file\">\r\n            <a ui-sref=\"tractor.component-editor({ component: componentFileName })\">{{ componentFileName }}</a>\r\n        </li>\r\n    </ul>\r\n</section>\r\n\r\n<form class=\"file\" name=\"component-editor\" novalidate\r\n    ng-submit=\"componentEditor.showErrors() && componentEditor.saveComponentFile()\">\r\n    <section class=\"file-options\">\r\n        <h1 class=\"file-options__name\">{{ componentEditor.component.name }}</h1>\r\n        <div>\r\n            <tractor-variable-input class=\"file-options__name-input\"\r\n                form=\"component-editor\"\r\n                label=\"Name\"\r\n                model=\"componentEditor.component\"\r\n                example=\"Component\"\r\n                is-class>\r\n            </tractor-variable-input>\r\n            <tractor-submit class=\"file-options__save-file\"\r\n                action=\"Save component file\">\r\n            </tractor-submit>\r\n        </div>\r\n    </section>\r\n\r\n    <section class=\"file-editor\">\r\n        <section ng-show=\"componentEditor.component.name\">\r\n            <section class=\"file-editor__container\">\r\n                <h2>Elements:</h2>\r\n\r\n                <section ng-if=\"componentEditor.component.domElements.length\">\r\n                    <ul>\r\n                        <li class=\"file-editor__list-item\" ng-repeat=\"domElement in componentEditor.component.domElements\">\r\n                            <tractor-action\r\n                                model=\"componentEditor.component\"\r\n                                action=\"Remove element\"\r\n                                argument=\"domElement\"\r\n                                icon=\"remove\">\r\n                            </tractor-action>\r\n\r\n                            <tractor-variable-input\r\n                                form=\"component-editor\"\r\n                                label=\"Name\"\r\n                                model=\"domElement\"\r\n                                example=\"element\">\r\n                            </tractor-variable-input>\r\n                            <tractor-select\r\n                                label=\"Type\"\r\n                                model=\"domElement.selector\">\r\n                            </tractor-select>\r\n                            <tractor-text-input\r\n                                form=\"component-editor\"\r\n                                label=\"Locator\"\r\n                                model=\"domElement.selector\"\r\n                                example=\"someController.someModel\">\r\n                            </tractor-text-input>\r\n\r\n                            <section>\r\n                                <h3>Filters:</h3>\r\n\r\n                                <ol ng-if=\"domElement.filters.length > 1\" as-sortable ng-model=\"domElement.sortableFilters\" is-disabled=\"domElement.filters.length < 3\">\r\n                                    <li class=\"file-editor__list-item\" ng-repeat=\"filter in domElement.sortableFilters\" as-sortable-item>\r\n                                        <tractor-action\r\n                                            model=\"domElement\"\r\n                                            action=\"Remove filter\"\r\n                                            argument=\"filter\"\r\n                                            icon=\"remove\">\r\n                                        </tractor-action>\r\n                                        <div class=\"file-editor__sort-handle\" title=\"Drag to sort\"\r\n                                            ng-if=\"domElement.filters.length > 2\"\r\n                                            as-sortable-item-handle>\r\n                                        </div>\r\n\r\n                                        <tractor-select ng-if=\"!domElement.filters[$index].isAll\"\r\n                                            label=\"Type\"\r\n                                            model=\"filter\">\r\n                                        </tractor-select>\r\n                                        <tractor-text-input\r\n                                            form=\"component-editor\"\r\n                                            label=\"Locator\"\r\n                                            model=\"filter\"\r\n                                            example=\"someController.someModel\">\r\n                                        </tractor-text-input>\r\n                                    </li>\r\n                                </ol>\r\n\r\n                                <tractor-action\r\n                                    model=\"domElement\"\r\n                                    action=\"Add filter\">\r\n                                </tractor-action>\r\n                            </section>\r\n                        </li>\r\n                    </ul>\r\n                </section>\r\n\r\n                <tractor-action\r\n                    model=\"componentEditor.component\"\r\n                    action=\"Add element\">\r\n                </tractor-action>\r\n            </section>\r\n\r\n            <section class=\"file-editor__container\">\r\n                <h2>Actions:</h2>\r\n\r\n                <section ng-if=\"componentEditor.component.actions.length\">\r\n                    <ul>\r\n                        <li class=\"file-editor__list-item\" ng-repeat=\"action in componentEditor.component.actions\">\r\n                            <tractor-action\r\n                                model=\"componentEditor.component\"\r\n                                action=\"Remove action\"\r\n                                argument=\"action\"\r\n                                icon=\"remove\">\r\n                            </tractor-action>\r\n\r\n                            <tractor-variable-input\r\n                                form=\"component-editor\"\r\n                                label=\"Name\"\r\n                                model=\"action\"\r\n                                example=\"action\">\r\n                            </tractor-variable-input>\r\n\r\n                            <section>\r\n                                <h3>Parameters:</h3>\r\n\r\n                                <section>\r\n                                    <ol ng-if=\"action.parameters.length\" as-sortable ng-model=\"action.parameters\" is-disabled=\"action.parameters.length < 2\">\r\n                                        <li class=\"file-editor__list-item\" ng-repeat=\"parameter in action.parameters\" as-sortable-item>\r\n                                            <tractor-action\r\n                                                model=\"action\"\r\n                                                action=\"Remove parameter\"\r\n                                                argument=\"parameter\"\r\n                                                icon=\"remove\">\r\n                                            </tractor-action>\r\n                                            <div ng-if=\"action.parameters.length > 1\" class=\"file-editor__sort-handle\" as-sortable-item-handle title=\"Drag to sort\"></div>\r\n\r\n                                            <tractor-variable-input\r\n                                                form=\"component-editor\"\r\n                                                label=\"Name\"\r\n                                                model=\"parameter\"\r\n                                                example=\"parameter\">\r\n                                            </tractor-variable-input>\r\n                                        </li>\r\n                                    </ol>\r\n                                </section>\r\n\r\n                                <tractor-action\r\n                                    model=\"action\"\r\n                                    action=\"Add parameter\">\r\n                                </tractor-action>\r\n                            </section>\r\n\r\n                            <section>\r\n                                <h3>Interactions:</h3>\r\n\r\n                                <section>\r\n                                    <ol ng-if=\"action.interactions.length\" as-sortable ng-model=\"action.interactions\" is-disabled=\"action.interactions.length < 2\">\r\n                                        <li class=\"file-editor__list-item\" ng-repeat=\"interaction in action.interactions\" as-sortable-item>\r\n                                            <tractor-action\r\n                                                model=\"action\"\r\n                                                action=\"Remove interaction\"\r\n                                                argument=\"interaction\"\r\n                                                icon=\"remove\">\r\n                                            </tractor-action>\r\n                                            <div ng-if=\"action.interactions.length > 1\" class=\"file-editor__sort-handle\" as-sortable-item-handle title=\"Drag to sort\"></div>\r\n\r\n                                            <tractor-select\r\n                                                label=\"Element\"\r\n                                                model=\"interaction\"\r\n                                                options=\"componentEditor.component.elements\"\r\n                                                as=\"name\">\r\n                                            </tractor-select>\r\n                                            <tractor-select\r\n                                                label=\"Method\"\r\n                                                model=\"interaction\"\r\n                                                options=\"interaction.element.methods\"\r\n                                                as=\"name\">\r\n                                            </tractor-select>\r\n\r\n                                            <div ng-repeat=\"argument in interaction.arguments\">\r\n                                                <tractor-literal-input\r\n                                                    form=\"component-editor\"\r\n                                                    name=\"argument.name\"\r\n                                                    model=\"argument.value\"\r\n                                                    description=\"argument.description\"\r\n                                                    required=\"argument.required\"\r\n                                                    type=\"argument.type\">\r\n                                                </tractor-literal-input>\r\n                                            </div>\r\n                                        </li>\r\n                                    </ol>\r\n                                </section>\r\n\r\n                                <tractor-action\r\n                                    model=\"action\"\r\n                                    action=\"Add interaction\">\r\n                                </tractor-action>\r\n                            </section>\r\n                        </li>\r\n                    </ul>\r\n                </section>\r\n\r\n                <tractor-action\r\n                    model=\"componentEditor.component\"\r\n                    action=\"Add action\">\r\n                </tractor-action>\r\n            </section>\r\n        </section>\r\n    </section>\r\n</form>\r\n",
         /* eslint-enable no-path-concat */
         controller: 'ComponentEditorController as componentEditor',
         resolve: {
@@ -139,7 +139,7 @@ angular.module('tractor', [
     });
 }]);
 
-},{"./Core/Core":116,"./Core/Services/ConfigService":126,"./Core/Services/ErrorInterceptor":127,"./Core/Services/RealTimeService":128,"./features/ComponentEditor/ComponentEditor":133,"./features/ComponentEditor/ComponentEditorController":134,"./features/ComponentEditor/Services/ComponentFileService":146,"./features/ControlPanel/ControlPanel":152,"./features/ControlPanel/ControlPanelController":153,"./features/FeatureEditor/FeatureEditor":155,"./features/FeatureEditor/FeatureEditorController":156,"./features/FeatureEditor/Services/FeatureFileService":162,"./features/MockDataEditor/MockDataEditorController":167,"./features/MockDataEditor/Services/MockDataFileService":169,"./features/Notifier/Notifier":172,"./features/StepDefinitionEditor/Services/StepDefinitionFileService":183,"./features/StepDefinitionEditor/StepDefinitionEditorController":188,"angular":6,"angular-messages":2,"angular-mocks":3,"angular-sanitize":4,"angular-sortable":67,"angular-ui-router":5,"bluebird":9}],2:[function(require,module,exports){
+},{"./Core/Core":116,"./Core/Services/ConfigService":126,"./Core/Services/HttpResponseInterceptor":127,"./Core/Services/RealTimeService":128,"./features/ComponentEditor/ComponentEditor":133,"./features/ComponentEditor/ComponentEditorController":134,"./features/ComponentEditor/Services/ComponentFileService":146,"./features/ControlPanel/ControlPanel":152,"./features/ControlPanel/ControlPanelController":153,"./features/FeatureEditor/FeatureEditor":155,"./features/FeatureEditor/FeatureEditorController":156,"./features/FeatureEditor/Services/FeatureFileService":162,"./features/MockDataEditor/MockDataEditorController":167,"./features/MockDataEditor/Services/MockDataFileService":169,"./features/Notifier/Notifier":172,"./features/StepDefinitionEditor/Services/StepDefinitionFileService":183,"./features/StepDefinitionEditor/StepDefinitionEditorController":188,"angular":6,"angular-messages":2,"angular-mocks":3,"angular-sanitize":4,"angular-sortable":67,"angular-ui-router":5,"bluebird":9}],2:[function(require,module,exports){
 /**
  * @license AngularJS v1.3.10
  * (c) 2010-2014 Google, Inc. http://angularjs.org
@@ -55664,16 +55664,16 @@ Core.directive('tractorSelect', SelectInputDirective);
 },{"../../Core":116,"change-case":47,"lodash":66}],121:[function(require,module,exports){
 'use strict';
 
-// Utilities
+// Utilities:
 var _ = require('lodash');
 
+
+// Module:
+var Core = require('../../Core');
 
 // Dependencies:
 var camelcase = require('change-case').camel;
 require('../../Validators/ExampleNameValidator');
-
-// Module:
-var Core = require('../../Core');
 
 var StepInputDirective = function () {
     return {
@@ -55788,7 +55788,7 @@ var TextInputDirective = function () {
         }
 
         if (_.isUndefined($attrs.form)) {
-            throw new Error('The "tractor-text-input" directive requires a "label" attribute.');
+            throw new Error('The "tractor-text-input" directive requires a "form" attribute.');
         }
 
         $scope.form = $scope.$parent[$attrs.form];
@@ -55804,6 +55804,7 @@ Core.directive('tractorTextInput', TextInputDirective);
 'use strict';
 
 // Utilities:
+var _ = require('lodash');
 
 
 // Module:
@@ -55811,6 +55812,7 @@ var Core = require('../../Core');
 
 // Dependencies:
 var camelcase = require('change-case').camel;
+require('../../Validators/VariableNameValidator');
 
 var VariableInputDirective = function () {
     return {
@@ -55830,20 +55832,29 @@ var VariableInputDirective = function () {
     };
 
     function link ($scope, $element, $attrs) {
+        if (_.isUndefined($scope.model)) {
+            throw new Error('The "tractor-variable-input" directive requires a "model" attribute.');
+        }
+
+        if (_.isUndefined($scope.label)) {
+            throw new Error('The "tractor-variable-input" directive requires a "label" attribute.');
+        }
+
+        if (_.isUndefined($attrs.form)) {
+            throw new Error('The "tractor-variable-input" directive requires a "form" attribute.');
+        }
+
         $scope.form = $scope.$parent[$attrs.form];
         $scope.id = Math.floor(Math.random() * Date.now());
 
-        $scope.isClass = !!$attrs.isClass;
-
-        $scope.$watch('model', function () {
-            $scope.property = camelcase($scope.label);
-        });
+        $scope.isClass = Object.prototype.hasOwnProperty.call($attrs, 'isClass');
+        $scope.property = camelcase($scope.label);
     }
 };
 
 Core.directive('tractorVariableInput', VariableInputDirective);
 
-},{"../../Core":116,"change-case":47}],125:[function(require,module,exports){
+},{"../../Core":116,"../../Validators/VariableNameValidator":132,"change-case":47,"lodash":66}],125:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56042,7 +56053,7 @@ var ASTCreatorService = function () {
 
     function blockComment (value) {
         return {
-            type: 'block',
+            type: 'Block',
             value: value
         };
     }
@@ -56080,7 +56091,9 @@ var Promise = require('bluebird');
 // Module:
 var Core = require('../Core');
 
-Core.factory('HttpResponseInterceptor', ['NotifierService', function(NotifierService) {
+Core.factory('HttpResponseInterceptor', ['NotifierService', function (
+    NotifierService
+) {
     return {
         response: handleResponseData,
         responseError: handleResponseError
@@ -56091,10 +56104,13 @@ Core.factory('HttpResponseInterceptor', ['NotifierService', function(NotifierSer
     }
 
     function handleResponseError (response) {
+        var error = new Error();
         try {
             NotifierService.error(response.data.error);
+            error.message = response.data.error;
+            error.response = response;
         } catch (e) { }
-        return Promise.reject();
+        return Promise.reject(error);
     }
 }])
 .config(['$httpProvider', function ($httpProvider) {
@@ -56464,7 +56480,9 @@ var createActionModelConstructor = function (
                 get: function () {
                     return {
                         name: this.name,
-                        parameters: this.parameters.map(function (parameter) { return parameter.meta; })
+                        parameters: this.parameters.map(function (parameter) {
+                            return parameter.meta;
+                        })
                     };
                 }
             },
@@ -56774,8 +56792,12 @@ var createComponentModelConstructor = function (
                 get: function () {
                     return JSON.stringify({
                         name: this.name,
-                        elements: this.domElements.map(function (element) { return element.meta; }),
-                        actions: this.actions.map(function (action) { return action.meta; })
+                        elements: this.domElements.map(function (element) {
+                            return element.meta;
+                        }),
+                        actions: this.actions.map(function (action) {
+                            return action.meta;
+                        })
                     }, null, '    ');
                 }
             },

@@ -46,7 +46,9 @@ var createActionModelConstructor = function (
                 get: function () {
                     return {
                         name: this.name,
-                        parameters: this.parameters.map(function (parameter) { return parameter.meta; })
+                        parameters: this.parameters.map(function (parameter) {
+                            return parameter.meta;
+                        })
                     };
                 }
             },

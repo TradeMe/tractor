@@ -55,8 +55,12 @@ var createComponentModelConstructor = function (
                 get: function () {
                     return JSON.stringify({
                         name: this.name,
-                        elements: this.domElements.map(function (element) { return element.meta; }),
-                        actions: this.actions.map(function (action) { return action.meta; })
+                        elements: this.domElements.map(function (element) {
+                            return element.meta;
+                        }),
+                        actions: this.actions.map(function (action) {
+                            return action.meta;
+                        })
                     }, null, '    ');
                 }
             },

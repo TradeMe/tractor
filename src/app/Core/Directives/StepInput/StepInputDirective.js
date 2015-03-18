@@ -1,15 +1,15 @@
 'use strict';
 
-// Utilities
+// Utilities:
 var _ = require('lodash');
 var fs = require('fs');
+
+// Module:
+var Core = require('../../Core');
 
 // Dependencies:
 var camelcase = require('change-case').camel;
 require('../../Validators/ExampleNameValidator');
-
-// Module:
-var Core = require('../../Core');
 
 var StepInputDirective = function () {
     return {

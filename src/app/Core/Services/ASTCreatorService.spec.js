@@ -1,4 +1,4 @@
-/*global beforeEach:true, inject: true, describe:true, it:true, expect:true */
+/*global beforeEach:true, describe:true, it:true, expect:true */
 'use strict';
 
 // Angular:
@@ -6,18 +6,17 @@ var angular = require('angular');
 require('angular-mocks');
 
 // Testing:
+require('./ASTCreatorService');
 var ASTCreatorService;
 
 describe('ASTCreatorService.js:', function () {
-    beforeEach(angular.mock.module('Core'));
-
     beforeEach(function () {
-        ASTCreatorService = require('./ASTCreatorService');
-    });
+        angular.mock.module('Core');
 
-    beforeEach(inject(function (_ASTCreatorService_) {
-        ASTCreatorService = _ASTCreatorService_;
-    }));
+        angular.mock.inject(function (_ASTCreatorService_) {
+            ASTCreatorService = _ASTCreatorService_;
+        });
+    });
 
     describe('ASTCreatorService.program:', function () {
         it('should create a new `program` object:', function () {
@@ -259,6 +258,15 @@ describe('ASTCreatorService.js:', function () {
             var value = /RegExp/;
             var literal = ASTCreatorService.literal(value);
             expect(literal.raw).to.equal('/RegExp/');
+        });
+    });
+
+    describe('ASTCreatorService.blockComment:', function () {
+        it('should create a new `blockComment` object:', function () {
+            var value = '';
+            var literal = ASTCreatorService.blockComment(value);
+            expect(literal.type).to.equal('Block');
+            expect(literal.value).to.equal(value);
         });
     });
 });

@@ -42,7 +42,7 @@ function server (reportTaskDone) {
 
 function client (reportTaskDone) {
     karma.start({
-        frameworks: ['browserify', 'mocha', 'chai'],
+        frameworks: ['browserify', 'mocha', 'sinon-chai'],
         browsers: ['Chrome'],
 
         port: 9876,
@@ -59,6 +59,8 @@ function client (reportTaskDone) {
         },
 
         colors: true,
+        autoWatch: false,
+        singleRun: true,
 
         files: [
             'src/**/*.spec.js'
@@ -70,7 +72,7 @@ function client (reportTaskDone) {
 
         browserify: {
             transform: ['brfs', 'browserify-shim', ['browserify-istanbul', {
-                ignore: ['**/*.spec.js']
+                ignore: ['**/*.spec.js', '**/*.mock.js', '**/Errors/*.js']
             }]]
         }
     }, function () {

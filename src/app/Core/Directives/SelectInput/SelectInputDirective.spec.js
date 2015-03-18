@@ -1,9 +1,12 @@
-/*global beforeEach:true, inject: true, describe:true, it:true, expect:true */
+/*global beforeEach:true, describe:true, it:true, expect:true */
 'use strict';
 
 // Angular:
 var angular = require('angular');
 require('angular-mocks');
+
+// Mocks:
+var MockHttpResponseInterceptor = require('../../Services/HttpResponseInterceptor.mock');
 
 // Testing:
 require('./SelectInputDirective');
@@ -12,12 +15,20 @@ describe('SelectInputDirective.js:', function() {
     var $compile;
     var $rootScope;
 
-    beforeEach(angular.mock.module('Core'));
+    beforeEach(function () {
+        angular.mock.module('Core');
 
-    beforeEach(inject(function (_$compile_, _$rootScope_) {
-        $compile = _$compile_;
-        $rootScope = _$rootScope_;
-    }));
+        angular.mock.module(function ($provide) {
+            $provide.factory('HttpResponseInterceptor', function () {
+                return new MockHttpResponseInterceptor();
+            });
+        });
+
+        angular.mock.inject(function (_$compile_, _$rootScope_) {
+            $compile = _$compile_;
+            $rootScope = _$rootScope_;
+        });
+    });
 
     var compileDirective = function (template, scope) {
         var directive = $compile(template)(scope);
@@ -54,7 +65,7 @@ describe('SelectInputDirective.js:', function() {
                 var scope = $rootScope.$new();
                 scope.model = {};
                 scope.options = [];
-                var directive = compileDirective('<tractor-select model="model" label="Some Label" options="options"></tractor-select>', scope);
+                compileDirective('<tractor-select model="model" label="Some Label" options="options"></tractor-select>', scope);
             }).not.to.throw();
         });
 

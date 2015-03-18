@@ -37,7 +37,7 @@ var TextInputDirective = function () {
         }
 
         if (_.isUndefined($attrs.form)) {
-            throw new Error('The "tractor-text-input" directive requires a "label" attribute.');
+            throw new Error('The "tractor-text-input" directive requires a "form" attribute.');
         }
 
         $scope.form = $scope.$parent[$attrs.form];

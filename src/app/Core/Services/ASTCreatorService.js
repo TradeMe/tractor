@@ -196,7 +196,7 @@ var ASTCreatorService = function () {
 
     function blockComment (value) {
         return {
-            type: 'block',
+            type: 'Block',
             value: value
         };
     }
