@@ -1,12 +1,28 @@
+<script type="text/ng-template" id="folder-structure">
+    <ul>
+        <li ng-repeat="item in item.files"
+            ng-if="item.files"
+            ng-include="'folder-structure'">
+            {{ item.name }}
+        </li>
+    </ul>
+
+</script>
+
 <section>
     <h2>{{ fileTree.type }} files:</h2>
     <ul class='file-tree__file-list file-tree__file-list--javascript'>
+        <li ng-repeat="item in fileTree.folderStructure"
+            ng-if="item.files"
+            ng-include="'folder-structure'">
+        </li>
         <!--<li ng-repeat="componentFileName in componentEditor.componentFolderStructure"-->
             <!--ng-class="{ true: 'active' }[componentFileName === componentEditor.component.name]"-->
             <!--class="file-tree__file-list-file">-->
             <!--<a ui-sref="tractor.component-editor({ component: componentFileName })">{{ componentFileName }}</a>-->
         <!--</li>-->
     </ul>
-    <!--<button ng-click="componentEditor.newFolder = !!componentEditor.newFolder">New folder</button>-->
-    <!--<input ng-if="componentEditor.newFolder" type="text"></input>-->
 </section>
+
+<!--<button ng-click="componentEditor.newFolder = !!componentEditor.newFolder">New folder</button>-->
+<!--<input ng-if="componentEditor.newFolder" type="text"></input>-->

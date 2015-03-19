@@ -81,7 +81,7 @@ var ComponentEditorController = (function () {
             if (info['-type'] === 'd') {
                 return componentAlreadyExists.call(this, componentName, info);
             // File:
-            } else {
+            } else if (name !== '-type' && name !== '-path') {
                 return new RegExp(componentName).test(name);
             }
         });
