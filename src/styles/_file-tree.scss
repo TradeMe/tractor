@@ -1,15 +1,18 @@
-.file-tree {
+tractor-file-tree {
     background: $background-lightest;
 
+    float: left;
     width: 20%;
+    height: 100%;
+
     overflow: hidden;
 }
 
-.file-tree h2 {
+tractor-file-tree h2 {
     padding-left: $large-spacing;
 }
 
-.file-tree__file-list li {
+tractor-file-tree li {
     list-style: none;
     margin-left: -$large-spacing;
     padding-left: $huge-spacing;
@@ -17,24 +20,24 @@
     background-position: 0 50%;
 }
 
-.file-tree__file-list li a {
+tractor-file-tree li a {
     text-decoration: none;
     color: $font-dark;
 }
 
-.file-tree__file-list--javascript li {
+tractor-file-tree .file-tree__file-list--javascript li {
     background-image: url('./images/js.png');
 }
 
-.file-tree__file-list--feature li {
+tractor-file-tree .file-tree__file-list--feature li {
     background-image: url('./images/feature.png');
 }
 
-.file-tree__file-list--json li {
+tractor-file-tree .file-tree__file-list--json li {
     background-image: url('./images/json.png');
 }
 
-.file-tree__file-list-file {
+tractor-file-tree .file-tree__file-list-file {
     line-height: $huge-spacing;
     font-family: $body-type;
     cursor: pointer;

@@ -2,6 +2,7 @@
 
 // Utilities:
 var _ = require('lodash');
+var estemplate = require('estemplate');
 
 // Module:
 var Core = require('../Core');
@@ -29,6 +30,8 @@ var ASTCreatorService = function () {
         UnaryOperators: UnaryOperators,
         BinaryOperators: BinaryOperators,
 
+        template: template,
+
         program: program,
 
         blockStatement: blockStatement,
@@ -52,6 +55,10 @@ var ASTCreatorService = function () {
         literal: literal,
         blockComment: blockComment
     };
+
+    function template (template, objects) {
+        return _.first(estemplate(template, objects).body);
+    }
 
     function program (body, comments) {
         return {

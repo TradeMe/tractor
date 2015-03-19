@@ -56,39 +56,33 @@ var createFilterModelConstructor = function (
     function toAST (all) {
         var ast = ASTCreatorService;
 
-        var byIdentifier = ast.identifier('by');
         var locatorLiteral = ast.literal(this.locator);
         if (!all) {
             if (!this.isText) {
-                var byMemberExpression = ast.memberExpression(byIdentifier, ast.identifier(this.type));
-                return ast.callExpression(byMemberExpression, [locatorLiteral]);
+               return ast.template('by.<%= type %>(<%= locator %>)', {
+                    type: ast.identifier(this.type),
+                    locator: locatorLiteral
+                }).expression;
             } else {
-                var cssContainingTextIdentifier = ast.identifier('cssContainingText');
-                var byMemberExpression = ast.memberExpression(byIdentifier, cssContainingTextIdentifier);
-                var allSelectorLiteral = ast.literal('*');
-                return ast.callExpression(byMemberExpression, [allSelectorLiteral, locatorLiteral]);
+                return ast.template('by.<%= type %>(<%= all %>, <%= locator %>)', {
+                    type: ast.identifier('cssContainingText'),
+                    all: ast.literal('*'),
+                    locator: locatorLiteral
+                }).expression;
             }
         } else {
-            var locator = StringToLiteralService.toLiteral(this.locator);
-            if (_.isNumber(locator)) {
-                return ast.literal(locator);
+            var number = StringToLiteralService.toLiteral(locatorLiteral.value);
+            if (_.isNumber(number)) {
+                return ast.literal(number);
             } else {
-                var elementIdentifier = ast.identifier('element');
-                var elementGetTextMemberExpression = ast.memberExpression(elementIdentifier, ast.identifier('getText'));
-                var getTextCallExpression = ast.callExpression(elementGetTextMemberExpression);
-                var getTextThenMemberExpression = ast.memberExpression(getTextCallExpression, ast.identifier('then'));
-                var textIdentifier = ast.identifier('text');
-                var textIndexOfMemberExpresion = ast.memberExpression(textIdentifier, ast.identifier('indexOf'));
-                var textIndexOfCallExpression = ast.callExpression(textIndexOfMemberExpresion, [ast.literal(this.locator)]);
-                var negativeOneUnaryExpression = ast.unaryExpression(ast.UnaryOperators.NEGATION, ast.literal(1), true);
-                var textFoundBinaryExpression = ast.binaryExpression(ast.BinaryOperators.STRICT_INEQUALITY, textIndexOfCallExpression, negativeOneUnaryExpression);
-                var checkFoundTextReturnStatement = ast.returnStatement(textFoundBinaryExpression);
-                var checkFoundTextBodyBlockStatement = ast.blockStatement([checkFoundTextReturnStatement]);
-                var checkFoundTextFunctionExpression = ast.functionExpression(null, [textIdentifier], checkFoundTextBodyBlockStatement);
-                var getTextThenCallExpression = ast.callExpression(getTextThenMemberExpression, [checkFoundTextFunctionExpression]);
-                var getTextThenReturnStatement = ast.returnStatement(getTextThenCallExpression);
-                var getTextThenBodyBlockStatement = ast.blockStatement([getTextThenReturnStatement]);
-                return ast.functionExpression(null, [elementIdentifier], getTextThenBodyBlockStatement);
+                return ast.template(
+                    '(function (element) {' +
+                    '    return element.getText().then(function (text) {' +
+                    '        return text.indexOf(<%= locator %>) !== -1;' +
+                    '    });' +
+                    '});', {
+                    locator: locatorLiteral
+                }).expression;
             }
         }
     }

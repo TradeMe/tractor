@@ -64,16 +64,16 @@ angular.module('tractor', [
     .state('tractor.component-editor', {
         url: 'component-editor?component',
         /* eslint-disable no-path-concat */
-        template: "<section class=\"file-tree\">\r\n    <h2>Component files:</h2>\r\n    <ul class='file-tree__file-list file-tree__file-list--javascript'>\r\n        <li ng-repeat=\"componentFileName in componentEditor.componentFileNames\"\r\n            ng-class=\"{ true: 'active' }[componentFileName === componentEditor.component.name]\"\r\n            class=\"file-tree__file-list-file\">\r\n            <a ui-sref=\"tractor.component-editor({ component: componentFileName })\">{{ componentFileName }}</a>\r\n        </li>\r\n    </ul>\r\n</section>\r\n\r\n<form class=\"file\" name=\"component-editor\" novalidate\r\n    ng-submit=\"componentEditor.showErrors() && componentEditor.saveComponentFile()\">\r\n    <section class=\"file-options\">\r\n        <h1 class=\"file-options__name\">{{ componentEditor.component.name }}</h1>\r\n        <div>\r\n            <tractor-variable-input class=\"file-options__name-input\"\r\n                form=\"component-editor\"\r\n                label=\"Name\"\r\n                model=\"componentEditor.component\"\r\n                example=\"Component\"\r\n                is-class>\r\n            </tractor-variable-input>\r\n            <tractor-submit class=\"file-options__save-file\"\r\n                action=\"Save component file\">\r\n            </tractor-submit>\r\n        </div>\r\n    </section>\r\n\r\n    <section class=\"file-editor\">\r\n        <section ng-show=\"componentEditor.component.name\">\r\n            <section class=\"file-editor__container\">\r\n                <h2>Elements:</h2>\r\n\r\n                <section ng-if=\"componentEditor.component.domElements.length\">\r\n                    <ul>\r\n                        <li class=\"file-editor__list-item\" ng-repeat=\"domElement in componentEditor.component.domElements\">\r\n                            <tractor-action\r\n                                model=\"componentEditor.component\"\r\n                                action=\"Remove element\"\r\n                                argument=\"domElement\"\r\n                                icon=\"remove\">\r\n                            </tractor-action>\r\n\r\n                            <tractor-variable-input\r\n                                form=\"component-editor\"\r\n                                label=\"Name\"\r\n                                model=\"domElement\"\r\n                                example=\"element\">\r\n                            </tractor-variable-input>\r\n                            <tractor-select\r\n                                label=\"Type\"\r\n                                model=\"domElement.selector\">\r\n                            </tractor-select>\r\n                            <tractor-text-input\r\n                                form=\"component-editor\"\r\n                                label=\"Locator\"\r\n                                model=\"domElement.selector\"\r\n                                example=\"someController.someModel\">\r\n                            </tractor-text-input>\r\n\r\n                            <section>\r\n                                <h3>Filters:</h3>\r\n\r\n                                <ol ng-if=\"domElement.filters.length > 1\" as-sortable ng-model=\"domElement.sortableFilters\" is-disabled=\"domElement.filters.length < 3\">\r\n                                    <li class=\"file-editor__list-item\" ng-repeat=\"filter in domElement.sortableFilters\" as-sortable-item>\r\n                                        <tractor-action\r\n                                            model=\"domElement\"\r\n                                            action=\"Remove filter\"\r\n                                            argument=\"filter\"\r\n                                            icon=\"remove\">\r\n                                        </tractor-action>\r\n                                        <div class=\"file-editor__sort-handle\" title=\"Drag to sort\"\r\n                                            ng-if=\"domElement.filters.length > 2\"\r\n                                            as-sortable-item-handle>\r\n                                        </div>\r\n\r\n                                        <tractor-select ng-if=\"!domElement.filters[$index].isAll\"\r\n                                            label=\"Type\"\r\n                                            model=\"filter\">\r\n                                        </tractor-select>\r\n                                        <tractor-text-input\r\n                                            form=\"component-editor\"\r\n                                            label=\"Locator\"\r\n                                            model=\"filter\"\r\n                                            example=\"someController.someModel\">\r\n                                        </tractor-text-input>\r\n                                    </li>\r\n                                </ol>\r\n\r\n                                <tractor-action\r\n                                    model=\"domElement\"\r\n                                    action=\"Add filter\">\r\n                                </tractor-action>\r\n                            </section>\r\n                        </li>\r\n                    </ul>\r\n                </section>\r\n\r\n                <tractor-action\r\n                    model=\"componentEditor.component\"\r\n                    action=\"Add element\">\r\n                </tractor-action>\r\n            </section>\r\n\r\n            <section class=\"file-editor__container\">\r\n                <h2>Actions:</h2>\r\n\r\n                <section ng-if=\"componentEditor.component.actions.length\">\r\n                    <ul>\r\n                        <li class=\"file-editor__list-item\" ng-repeat=\"action in componentEditor.component.actions\">\r\n                            <tractor-action\r\n                                model=\"componentEditor.component\"\r\n                                action=\"Remove action\"\r\n                                argument=\"action\"\r\n                                icon=\"remove\">\r\n                            </tractor-action>\r\n\r\n                            <tractor-variable-input\r\n                                form=\"component-editor\"\r\n                                label=\"Name\"\r\n                                model=\"action\"\r\n                                example=\"action\">\r\n                            </tractor-variable-input>\r\n\r\n                            <section>\r\n                                <h3>Parameters:</h3>\r\n\r\n                                <section>\r\n                                    <ol ng-if=\"action.parameters.length\" as-sortable ng-model=\"action.parameters\" is-disabled=\"action.parameters.length < 2\">\r\n                                        <li class=\"file-editor__list-item\" ng-repeat=\"parameter in action.parameters\" as-sortable-item>\r\n                                            <tractor-action\r\n                                                model=\"action\"\r\n                                                action=\"Remove parameter\"\r\n                                                argument=\"parameter\"\r\n                                                icon=\"remove\">\r\n                                            </tractor-action>\r\n                                            <div ng-if=\"action.parameters.length > 1\" class=\"file-editor__sort-handle\" as-sortable-item-handle title=\"Drag to sort\"></div>\r\n\r\n                                            <tractor-variable-input\r\n                                                form=\"component-editor\"\r\n                                                label=\"Name\"\r\n                                                model=\"parameter\"\r\n                                                example=\"parameter\">\r\n                                            </tractor-variable-input>\r\n                                        </li>\r\n                                    </ol>\r\n                                </section>\r\n\r\n                                <tractor-action\r\n                                    model=\"action\"\r\n                                    action=\"Add parameter\">\r\n                                </tractor-action>\r\n                            </section>\r\n\r\n                            <section>\r\n                                <h3>Interactions:</h3>\r\n\r\n                                <section>\r\n                                    <ol ng-if=\"action.interactions.length\" as-sortable ng-model=\"action.interactions\" is-disabled=\"action.interactions.length < 2\">\r\n                                        <li class=\"file-editor__list-item\" ng-repeat=\"interaction in action.interactions\" as-sortable-item>\r\n                                            <tractor-action\r\n                                                model=\"action\"\r\n                                                action=\"Remove interaction\"\r\n                                                argument=\"interaction\"\r\n                                                icon=\"remove\">\r\n                                            </tractor-action>\r\n                                            <div ng-if=\"action.interactions.length > 1\" class=\"file-editor__sort-handle\" as-sortable-item-handle title=\"Drag to sort\"></div>\r\n\r\n                                            <tractor-select\r\n                                                label=\"Element\"\r\n                                                model=\"interaction\"\r\n                                                options=\"componentEditor.component.elements\"\r\n                                                as=\"name\">\r\n                                            </tractor-select>\r\n                                            <tractor-select\r\n                                                label=\"Method\"\r\n                                                model=\"interaction\"\r\n                                                options=\"interaction.element.methods\"\r\n                                                as=\"name\">\r\n                                            </tractor-select>\r\n\r\n                                            <div ng-repeat=\"argument in interaction.arguments\">\r\n                                                <tractor-literal-input\r\n                                                    form=\"component-editor\"\r\n                                                    name=\"argument.name\"\r\n                                                    model=\"argument.value\"\r\n                                                    description=\"argument.description\"\r\n                                                    required=\"argument.required\"\r\n                                                    type=\"argument.type\">\r\n                                                </tractor-literal-input>\r\n                                            </div>\r\n                                        </li>\r\n                                    </ol>\r\n                                </section>\r\n\r\n                                <tractor-action\r\n                                    model=\"action\"\r\n                                    action=\"Add interaction\">\r\n                                </tractor-action>\r\n                            </section>\r\n                        </li>\r\n                    </ul>\r\n                </section>\r\n\r\n                <tractor-action\r\n                    model=\"componentEditor.component\"\r\n                    action=\"Add action\">\r\n                </tractor-action>\r\n            </section>\r\n        </section>\r\n    </section>\r\n</form>\r\n",
+        template: "<tractor-file-tree model=\"componentEditor\" type=\"Component\"></tractor-file-tree>\r\n\r\n<form class=\"file\" name=\"component-editor\" novalidate\r\n    ng-submit=\"componentEditor.showErrors() && componentEditor.saveComponentFile()\">\r\n    <section class=\"file-options\">\r\n        <h1 class=\"file-options__name\">{{ componentEditor.component.name }}</h1>\r\n        <div>\r\n            <tractor-variable-input class=\"file-options__name-input\"\r\n                form=\"component-editor\"\r\n                label=\"Name\"\r\n                model=\"componentEditor.component\"\r\n                example=\"Component\"\r\n                is-class>\r\n            </tractor-variable-input>\r\n            <tractor-submit class=\"file-options__save-file\"\r\n                action=\"Save component file\">\r\n            </tractor-submit>\r\n        </div>\r\n    </section>\r\n\r\n    <section class=\"file-editor\">\r\n        <section ng-show=\"componentEditor.component.name\">\r\n            <section class=\"file-editor__container\">\r\n                <h2>Elements:</h2>\r\n\r\n                <section ng-if=\"componentEditor.component.domElements.length\">\r\n                    <ul>\r\n                        <li class=\"file-editor__list-item\" ng-repeat=\"domElement in componentEditor.component.domElements\">\r\n                            <tractor-action\r\n                                model=\"componentEditor.component\"\r\n                                action=\"Remove element\"\r\n                                argument=\"domElement\"\r\n                                icon=\"remove\">\r\n                            </tractor-action>\r\n\r\n                            <tractor-variable-input\r\n                                form=\"component-editor\"\r\n                                label=\"Name\"\r\n                                model=\"domElement\"\r\n                                example=\"element\">\r\n                            </tractor-variable-input>\r\n                            <tractor-select\r\n                                label=\"Type\"\r\n                                model=\"domElement.selector\">\r\n                            </tractor-select>\r\n                            <tractor-text-input\r\n                                form=\"component-editor\"\r\n                                label=\"Locator\"\r\n                                model=\"domElement.selector\"\r\n                                example=\"someController.someModel\">\r\n                            </tractor-text-input>\r\n\r\n                            <section>\r\n                                <h3>Filters:</h3>\r\n\r\n                                <ol ng-if=\"domElement.filters.length > 1\" as-sortable ng-model=\"domElement.sortableFilters\" is-disabled=\"domElement.filters.length < 3\">\r\n                                    <li class=\"file-editor__list-item\" ng-repeat=\"filter in domElement.sortableFilters\" as-sortable-item>\r\n                                        <tractor-action\r\n                                            model=\"domElement\"\r\n                                            action=\"Remove filter\"\r\n                                            argument=\"filter\"\r\n                                            icon=\"remove\">\r\n                                        </tractor-action>\r\n                                        <div class=\"file-editor__sort-handle\" title=\"Drag to sort\"\r\n                                            ng-if=\"domElement.filters.length > 2\"\r\n                                            as-sortable-item-handle>\r\n                                        </div>\r\n\r\n                                        <tractor-select ng-if=\"!domElement.filters[$index].isAll\"\r\n                                            label=\"Type\"\r\n                                            model=\"filter\">\r\n                                        </tractor-select>\r\n                                        <tractor-text-input\r\n                                            form=\"component-editor\"\r\n                                            label=\"Locator\"\r\n                                            model=\"filter\"\r\n                                            example=\"someController.someModel\">\r\n                                        </tractor-text-input>\r\n                                    </li>\r\n                                </ol>\r\n\r\n                                <tractor-action\r\n                                    model=\"domElement\"\r\n                                    action=\"Add filter\">\r\n                                </tractor-action>\r\n                            </section>\r\n                        </li>\r\n                    </ul>\r\n                </section>\r\n\r\n                <tractor-action\r\n                    model=\"componentEditor.component\"\r\n                    action=\"Add element\">\r\n                </tractor-action>\r\n            </section>\r\n\r\n            <section class=\"file-editor__container\">\r\n                <h2>Actions:</h2>\r\n\r\n                <section ng-if=\"componentEditor.component.actions.length\">\r\n                    <ul>\r\n                        <li class=\"file-editor__list-item\" ng-repeat=\"action in componentEditor.component.actions\">\r\n                            <tractor-action\r\n                                model=\"componentEditor.component\"\r\n                                action=\"Remove action\"\r\n                                argument=\"action\"\r\n                                icon=\"remove\">\r\n                            </tractor-action>\r\n\r\n                            <tractor-variable-input\r\n                                form=\"component-editor\"\r\n                                label=\"Name\"\r\n                                model=\"action\"\r\n                                example=\"action\">\r\n                            </tractor-variable-input>\r\n\r\n                            <section>\r\n                                <h3>Parameters:</h3>\r\n\r\n                                <section>\r\n                                    <ol ng-if=\"action.parameters.length\" as-sortable ng-model=\"action.parameters\" is-disabled=\"action.parameters.length < 2\">\r\n                                        <li class=\"file-editor__list-item\" ng-repeat=\"parameter in action.parameters\" as-sortable-item>\r\n                                            <tractor-action\r\n                                                model=\"action\"\r\n                                                action=\"Remove parameter\"\r\n                                                argument=\"parameter\"\r\n                                                icon=\"remove\">\r\n                                            </tractor-action>\r\n                                            <div ng-if=\"action.parameters.length > 1\" class=\"file-editor__sort-handle\" as-sortable-item-handle title=\"Drag to sort\"></div>\r\n\r\n                                            <tractor-variable-input\r\n                                                form=\"component-editor\"\r\n                                                label=\"Name\"\r\n                                                model=\"parameter\"\r\n                                                example=\"parameter\">\r\n                                            </tractor-variable-input>\r\n                                        </li>\r\n                                    </ol>\r\n                                </section>\r\n\r\n                                <tractor-action\r\n                                    model=\"action\"\r\n                                    action=\"Add parameter\">\r\n                                </tractor-action>\r\n                            </section>\r\n\r\n                            <section>\r\n                                <h3>Interactions:</h3>\r\n\r\n                                <section>\r\n                                    <ol ng-if=\"action.interactions.length\" as-sortable ng-model=\"action.interactions\" is-disabled=\"action.interactions.length < 2\">\r\n                                        <li class=\"file-editor__list-item\" ng-repeat=\"interaction in action.interactions\" as-sortable-item>\r\n                                            <tractor-action\r\n                                                model=\"action\"\r\n                                                action=\"Remove interaction\"\r\n                                                argument=\"interaction\"\r\n                                                icon=\"remove\">\r\n                                            </tractor-action>\r\n                                            <div ng-if=\"action.interactions.length > 1\" class=\"file-editor__sort-handle\" as-sortable-item-handle title=\"Drag to sort\"></div>\r\n\r\n                                            <tractor-select\r\n                                                label=\"Element\"\r\n                                                model=\"interaction\"\r\n                                                options=\"componentEditor.component.elements\"\r\n                                                as=\"name\">\r\n                                            </tractor-select>\r\n                                            <tractor-select\r\n                                                label=\"Method\"\r\n                                                model=\"interaction\"\r\n                                                options=\"interaction.element.methods\"\r\n                                                as=\"name\">\r\n                                            </tractor-select>\r\n\r\n                                            <div ng-repeat=\"argument in interaction.arguments\">\r\n                                                <tractor-literal-input\r\n                                                    form=\"component-editor\"\r\n                                                    name=\"argument.name\"\r\n                                                    model=\"argument.value\"\r\n                                                    description=\"argument.description\"\r\n                                                    required=\"argument.required\"\r\n                                                    type=\"argument.type\">\r\n                                                </tractor-literal-input>\r\n                                            </div>\r\n                                        </li>\r\n                                    </ol>\r\n                                </section>\r\n\r\n                                <tractor-action\r\n                                    model=\"action\"\r\n                                    action=\"Add interaction\">\r\n                                </tractor-action>\r\n                            </section>\r\n                        </li>\r\n                    </ul>\r\n                </section>\r\n\r\n                <tractor-action\r\n                    model=\"componentEditor.component\"\r\n                    action=\"Add action\">\r\n                </tractor-action>\r\n            </section>\r\n        </section>\r\n    </section>\r\n</form>\r\n",
         /* eslint-enable no-path-concat */
         controller: 'ComponentEditorController as componentEditor',
         resolve: {
-            componentFileNames: ['ComponentFileService', function (ComponentFileService) {
-                return ComponentFileService.getComponentFileNames();
+            componentFolderStructure: ['ComponentFileService', function (ComponentFileService) {
+                return ComponentFileService.getComponentFolderStructure();
             }],
             componentFile: ['$stateParams', 'ComponentFileService', function ($stateParams, ComponentFileService) {
-                var component = $stateParams.component;
-                return component ? ComponentFileService.openComponentFile(component) : null;
+                var componentName = $stateParams.component;
+                return componentName ? ComponentFileService.openComponentFile(componentName) : null;
             }]
         }
     })
@@ -139,7 +139,7 @@ angular.module('tractor', [
     });
 }]);
 
-},{"./Core/Core":116,"./Core/Services/ConfigService":126,"./Core/Services/HttpResponseInterceptor":127,"./Core/Services/RealTimeService":128,"./features/ComponentEditor/ComponentEditor":133,"./features/ComponentEditor/ComponentEditorController":134,"./features/ComponentEditor/Services/ComponentFileService":146,"./features/ControlPanel/ControlPanel":152,"./features/ControlPanel/ControlPanelController":153,"./features/FeatureEditor/FeatureEditor":155,"./features/FeatureEditor/FeatureEditorController":156,"./features/FeatureEditor/Services/FeatureFileService":162,"./features/MockDataEditor/MockDataEditorController":167,"./features/MockDataEditor/Services/MockDataFileService":169,"./features/Notifier/Notifier":172,"./features/StepDefinitionEditor/Services/StepDefinitionFileService":183,"./features/StepDefinitionEditor/StepDefinitionEditorController":188,"angular":6,"angular-messages":2,"angular-mocks":3,"angular-sanitize":4,"angular-sortable":67,"angular-ui-router":5,"bluebird":9}],2:[function(require,module,exports){
+},{"./Core/Core":119,"./Core/Services/ConfigService":131,"./Core/Services/HttpResponseInterceptor":132,"./Core/Services/RealTimeService":133,"./features/ComponentEditor/ComponentEditor":138,"./features/ComponentEditor/ComponentEditorController":139,"./features/ComponentEditor/Services/ComponentFileService":151,"./features/ControlPanel/ControlPanel":157,"./features/ControlPanel/ControlPanelController":158,"./features/FeatureEditor/FeatureEditor":160,"./features/FeatureEditor/FeatureEditorController":161,"./features/FeatureEditor/Services/FeatureFileService":167,"./features/MockDataEditor/MockDataEditorController":172,"./features/MockDataEditor/Services/MockDataFileService":174,"./features/Notifier/Notifier":177,"./features/StepDefinitionEditor/Services/StepDefinitionFileService":188,"./features/StepDefinitionEditor/StepDefinitionEditorController":193,"angular":6,"angular-messages":2,"angular-mocks":3,"angular-sanitize":4,"angular-sortable":70,"angular-ui-router":5,"bluebird":9}],2:[function(require,module,exports){
 /**
  * @license AngularJS v1.3.10
  * (c) 2010-2014 Google, Inc. http://angularjs.org
@@ -39684,6 +39684,7 @@ process.browser = true;
 process.env = {};
 process.argv = [];
 process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
 
 function noop() {}
 
@@ -40370,34 +40371,36 @@ var sentenceCase = require('sentence-case');
  * @return {String}
  */
 module.exports = function (string, locale) {
-  return sentenceCase(string, locale).replace(/ /g, '.');
+  return sentenceCase(string, locale, '.');
 };
 
 },{"sentence-case":57}],51:[function(require,module,exports){
-var lowerCase = require('lower-case');
+var lowerCase = require('lower-case')
 
 /**
  * Check if a string is lower case.
  *
  * @param  {String}  string
+ * @param  {String}  [locale]
  * @return {Boolean}
  */
 module.exports = function (string, locale) {
-  return lowerCase(string, locale) === string;
-};
+  return lowerCase(string, locale) === string
+}
 
 },{"lower-case":53}],52:[function(require,module,exports){
-var upperCase = require('upper-case');
+var upperCase = require('upper-case')
 
 /**
  * Check if a string is upper case.
  *
  * @param  {String}  string
+ * @param  {String}  [locale]
  * @return {Boolean}
  */
 module.exports = function (string, locale) {
-  return upperCase(string, locale) === string;
-};
+  return upperCase(string, locale) === string
+}
 
 },{"upper-case":65}],53:[function(require,module,exports){
 /**
@@ -40407,7 +40410,7 @@ module.exports = function (string, locale) {
  *
  * @type {Object}
  */
-var languages = {
+var LANGUAGES = {
   tr: {
     regexp: /\u0130|\u0049|\u0049\u0307/g,
     map: {
@@ -40435,7 +40438,7 @@ var languages = {
       '\u0128': '\u0069\u0307\u0303'
     }
   }
-};
+}
 
 /**
  * Lowercase a string.
@@ -40444,16 +40447,16 @@ var languages = {
  * @return {String}
  */
 module.exports = function (str, locale) {
-  var lang = languages[locale];
+  var lang = LANGUAGES[locale]
 
-  str = str == null ? '' : String(str);
+  str = str == null ? '' : String(str)
 
   if (lang) {
-    str = str.replace(lang.regexp, function (m) { return lang.map[m]; });
+    str = str.replace(lang.regexp, function (m) { return lang.map[m] })
   }
 
-  return str.toLowerCase();
-};
+  return str.toLowerCase()
+}
 
 },{}],54:[function(require,module,exports){
 var sentenceCase = require('sentence-case');
@@ -40466,7 +40469,7 @@ var sentenceCase = require('sentence-case');
  * @return {String}
  */
 module.exports = function (string, locale) {
-  return sentenceCase(string, locale).replace(/ /g, '-');
+  return sentenceCase(string, locale, '-');
 };
 
 },{"sentence-case":57}],55:[function(require,module,exports){
@@ -40495,47 +40498,60 @@ var sentenceCase = require('sentence-case');
  * @return {String}
  */
 module.exports = function (string, locale) {
-  return sentenceCase(string, locale).replace(/ /g, '/');
+  return sentenceCase(string, locale, '/');
 };
 
 },{"sentence-case":57}],57:[function(require,module,exports){
-var lowerCase = require('lower-case');
+var lowerCase = require('lower-case')
 
-var NON_WORD_REGEXP       = require('./vendor/non-word-regexp');
-var CAMEL_CASE_REGEXP     = require('./vendor/camel-case-regexp');
-var TRAILING_DIGIT_REGEXP = require('./vendor/trailing-digit-regexp');
+var NON_WORD_REGEXP = require('./vendor/non-word-regexp')
+var CAMEL_CASE_REGEXP = require('./vendor/camel-case-regexp')
+var TRAILING_DIGIT_REGEXP = require('./vendor/trailing-digit-regexp')
 
 /**
  * Sentence case a string.
  *
  * @param  {String} str
+ * @param  {String} locale
+ * @param  {String} replacement
  * @return {String}
  */
-module.exports = function (str, locale) {
+module.exports = function (str, locale, replacement) {
   if (str == null) {
-    return '';
+    return ''
+  }
+
+  replacement = replacement || ' '
+
+  function replace (match, index, string) {
+    if (index === 0 || index === (string.length - match.length)) {
+      return ''
+    }
+
+    return replacement
   }
 
   str = String(str)
-    // Enable camel case support.
+    // Support camel case ("camelCase" -> "camel Case").
     .replace(CAMEL_CASE_REGEXP, '$1 $2')
-    // Add a space after any digit groups.
+    // Support digit groups ("test2012" -> "test 2012").
     .replace(TRAILING_DIGIT_REGEXP, '$1 $2')
     // Remove all non-word characters and replace with a single space.
-    .replace(NON_WORD_REGEXP, ' ')
-    // Trim whitespace around the string.
-    .replace(/^ | $/g, '');
+    .replace(NON_WORD_REGEXP, replace)
 
   // Lower case the entire string.
-  return lowerCase(str, locale);
-};
+  return lowerCase(str, locale)
+}
 
 },{"./vendor/camel-case-regexp":58,"./vendor/non-word-regexp":59,"./vendor/trailing-digit-regexp":60,"lower-case":53}],58:[function(require,module,exports){
-module.exports = /([\u0061-\u007A\u00B5\u00DF-\u00F6\u00F8-\u00FF\u0101\u0103\u0105\u0107\u0109\u010B\u010D\u010F\u0111\u0113\u0115\u0117\u0119\u011B\u011D\u011F\u0121\u0123\u0125\u0127\u0129\u012B\u012D\u012F\u0131\u0133\u0135\u0137\u0138\u013A\u013C\u013E\u0140\u0142\u0144\u0146\u0148\u0149\u014B\u014D\u014F\u0151\u0153\u0155\u0157\u0159\u015B\u015D\u015F\u0161\u0163\u0165\u0167\u0169\u016B\u016D\u016F\u0171\u0173\u0175\u0177\u017A\u017C\u017E-\u0180\u0183\u0185\u0188\u018C\u018D\u0192\u0195\u0199-\u019B\u019E\u01A1\u01A3\u01A5\u01A8\u01AA\u01AB\u01AD\u01B0\u01B4\u01B6\u01B9\u01BA\u01BD-\u01BF\u01C6\u01C9\u01CC\u01CE\u01D0\u01D2\u01D4\u01D6\u01D8\u01DA\u01DC\u01DD\u01DF\u01E1\u01E3\u01E5\u01E7\u01E9\u01EB\u01ED\u01EF\u01F0\u01F3\u01F5\u01F9\u01FB\u01FD\u01FF\u0201\u0203\u0205\u0207\u0209\u020B\u020D\u020F\u0211\u0213\u0215\u0217\u0219\u021B\u021D\u021F\u0221\u0223\u0225\u0227\u0229\u022B\u022D\u022F\u0231\u0233-\u0239\u023C\u023F\u0240\u0242\u0247\u0249\u024B\u024D\u024F-\u0293\u0295-\u02AF\u0371\u0373\u0377\u037B-\u037D\u0390\u03AC-\u03CE\u03D0\u03D1\u03D5-\u03D7\u03D9\u03DB\u03DD\u03DF\u03E1\u03E3\u03E5\u03E7\u03E9\u03EB\u03ED\u03EF-\u03F3\u03F5\u03F8\u03FB\u03FC\u0430-\u045F\u0461\u0463\u0465\u0467\u0469\u046B\u046D\u046F\u0471\u0473\u0475\u0477\u0479\u047B\u047D\u047F\u0481\u048B\u048D\u048F\u0491\u0493\u0495\u0497\u0499\u049B\u049D\u049F\u04A1\u04A3\u04A5\u04A7\u04A9\u04AB\u04AD\u04AF\u04B1\u04B3\u04B5\u04B7\u04B9\u04BB\u04BD\u04BF\u04C2\u04C4\u04C6\u04C8\u04CA\u04CC\u04CE\u04CF\u04D1\u04D3\u04D5\u04D7\u04D9\u04DB\u04DD\u04DF\u04E1\u04E3\u04E5\u04E7\u04E9\u04EB\u04ED\u04EF\u04F1\u04F3\u04F5\u04F7\u04F9\u04FB\u04FD\u04FF\u0501\u0503\u0505\u0507\u0509\u050B\u050D\u050F\u0511\u0513\u0515\u0517\u0519\u051B\u051D\u051F\u0521\u0523\u0525\u0527\u0561-\u0587\u1D00-\u1D2B\u1D6B-\u1D77\u1D79-\u1D9A\u1E01\u1E03\u1E05\u1E07\u1E09\u1E0B\u1E0D\u1E0F\u1E11\u1E13\u1E15\u1E17\u1E19\u1E1B\u1E1D\u1E1F\u1E21\u1E23\u1E25\u1E27\u1E29\u1E2B\u1E2D\u1E2F\u1E31\u1E33\u1E35\u1E37\u1E39\u1E3B\u1E3D\u1E3F\u1E41\u1E43\u1E45\u1E47\u1E49\u1E4B\u1E4D\u1E4F\u1E51\u1E53\u1E55\u1E57\u1E59\u1E5B\u1E5D\u1E5F\u1E61\u1E63\u1E65\u1E67\u1E69\u1E6B\u1E6D\u1E6F\u1E71\u1E73\u1E75\u1E77\u1E79\u1E7B\u1E7D\u1E7F\u1E81\u1E83\u1E85\u1E87\u1E89\u1E8B\u1E8D\u1E8F\u1E91\u1E93\u1E95-\u1E9D\u1E9F\u1EA1\u1EA3\u1EA5\u1EA7\u1EA9\u1EAB\u1EAD\u1EAF\u1EB1\u1EB3\u1EB5\u1EB7\u1EB9\u1EBB\u1EBD\u1EBF\u1EC1\u1EC3\u1EC5\u1EC7\u1EC9\u1ECB\u1ECD\u1ECF\u1ED1\u1ED3\u1ED5\u1ED7\u1ED9\u1EDB\u1EDD\u1EDF\u1EE1\u1EE3\u1EE5\u1EE7\u1EE9\u1EEB\u1EED\u1EEF\u1EF1\u1EF3\u1EF5\u1EF7\u1EF9\u1EFB\u1EFD\u1EFF-\u1F07\u1F10-\u1F15\u1F20-\u1F27\u1F30-\u1F37\u1F40-\u1F45\u1F50-\u1F57\u1F60-\u1F67\u1F70-\u1F7D\u1F80-\u1F87\u1F90-\u1F97\u1FA0-\u1FA7\u1FB0-\u1FB4\u1FB6\u1FB7\u1FBE\u1FC2-\u1FC4\u1FC6\u1FC7\u1FD0-\u1FD3\u1FD6\u1FD7\u1FE0-\u1FE7\u1FF2-\u1FF4\u1FF6\u1FF7\u210A\u210E\u210F\u2113\u212F\u2134\u2139\u213C\u213D\u2146-\u2149\u214E\u2184\u2C30-\u2C5E\u2C61\u2C65\u2C66\u2C68\u2C6A\u2C6C\u2C71\u2C73\u2C74\u2C76-\u2C7B\u2C81\u2C83\u2C85\u2C87\u2C89\u2C8B\u2C8D\u2C8F\u2C91\u2C93\u2C95\u2C97\u2C99\u2C9B\u2C9D\u2C9F\u2CA1\u2CA3\u2CA5\u2CA7\u2CA9\u2CAB\u2CAD\u2CAF\u2CB1\u2CB3\u2CB5\u2CB7\u2CB9\u2CBB\u2CBD\u2CBF\u2CC1\u2CC3\u2CC5\u2CC7\u2CC9\u2CCB\u2CCD\u2CCF\u2CD1\u2CD3\u2CD5\u2CD7\u2CD9\u2CDB\u2CDD\u2CDF\u2CE1\u2CE3\u2CE4\u2CEC\u2CEE\u2CF3\u2D00-\u2D25\u2D27\u2D2D\uA641\uA643\uA645\uA647\uA649\uA64B\uA64D\uA64F\uA651\uA653\uA655\uA657\uA659\uA65B\uA65D\uA65F\uA661\uA663\uA665\uA667\uA669\uA66B\uA66D\uA681\uA683\uA685\uA687\uA689\uA68B\uA68D\uA68F\uA691\uA693\uA695\uA697\uA723\uA725\uA727\uA729\uA72B\uA72D\uA72F-\uA731\uA733\uA735\uA737\uA739\uA73B\uA73D\uA73F\uA741\uA743\uA745\uA747\uA749\uA74B\uA74D\uA74F\uA751\uA753\uA755\uA757\uA759\uA75B\uA75D\uA75F\uA761\uA763\uA765\uA767\uA769\uA76B\uA76D\uA76F\uA771-\uA778\uA77A\uA77C\uA77F\uA781\uA783\uA785\uA787\uA78C\uA78E\uA791\uA793\uA7A1\uA7A3\uA7A5\uA7A7\uA7A9\uA7FA\uFB00-\uFB06\uFB13-\uFB17\uFF41-\uFF5A])([\u0041-\u005A\u00C0-\u00D6\u00D8-\u00DE\u0100\u0102\u0104\u0106\u0108\u010A\u010C\u010E\u0110\u0112\u0114\u0116\u0118\u011A\u011C\u011E\u0120\u0122\u0124\u0126\u0128\u012A\u012C\u012E\u0130\u0132\u0134\u0136\u0139\u013B\u013D\u013F\u0141\u0143\u0145\u0147\u014A\u014C\u014E\u0150\u0152\u0154\u0156\u0158\u015A\u015C\u015E\u0160\u0162\u0164\u0166\u0168\u016A\u016C\u016E\u0170\u0172\u0174\u0176\u0178\u0179\u017B\u017D\u0181\u0182\u0184\u0186\u0187\u0189-\u018B\u018E-\u0191\u0193\u0194\u0196-\u0198\u019C\u019D\u019F\u01A0\u01A2\u01A4\u01A6\u01A7\u01A9\u01AC\u01AE\u01AF\u01B1-\u01B3\u01B5\u01B7\u01B8\u01BC\u01C4\u01C7\u01CA\u01CD\u01CF\u01D1\u01D3\u01D5\u01D7\u01D9\u01DB\u01DE\u01E0\u01E2\u01E4\u01E6\u01E8\u01EA\u01EC\u01EE\u01F1\u01F4\u01F6-\u01F8\u01FA\u01FC\u01FE\u0200\u0202\u0204\u0206\u0208\u020A\u020C\u020E\u0210\u0212\u0214\u0216\u0218\u021A\u021C\u021E\u0220\u0222\u0224\u0226\u0228\u022A\u022C\u022E\u0230\u0232\u023A\u023B\u023D\u023E\u0241\u0243-\u0246\u0248\u024A\u024C\u024E\u0370\u0372\u0376\u0386\u0388-\u038A\u038C\u038E\u038F\u0391-\u03A1\u03A3-\u03AB\u03CF\u03D2-\u03D4\u03D8\u03DA\u03DC\u03DE\u03E0\u03E2\u03E4\u03E6\u03E8\u03EA\u03EC\u03EE\u03F4\u03F7\u03F9\u03FA\u03FD-\u042F\u0460\u0462\u0464\u0466\u0468\u046A\u046C\u046E\u0470\u0472\u0474\u0476\u0478\u047A\u047C\u047E\u0480\u048A\u048C\u048E\u0490\u0492\u0494\u0496\u0498\u049A\u049C\u049E\u04A0\u04A2\u04A4\u04A6\u04A8\u04AA\u04AC\u04AE\u04B0\u04B2\u04B4\u04B6\u04B8\u04BA\u04BC\u04BE\u04C0\u04C1\u04C3\u04C5\u04C7\u04C9\u04CB\u04CD\u04D0\u04D2\u04D4\u04D6\u04D8\u04DA\u04DC\u04DE\u04E0\u04E2\u04E4\u04E6\u04E8\u04EA\u04EC\u04EE\u04F0\u04F2\u04F4\u04F6\u04F8\u04FA\u04FC\u04FE\u0500\u0502\u0504\u0506\u0508\u050A\u050C\u050E\u0510\u0512\u0514\u0516\u0518\u051A\u051C\u051E\u0520\u0522\u0524\u0526\u0531-\u0556\u10A0-\u10C5\u10C7\u10CD\u1E00\u1E02\u1E04\u1E06\u1E08\u1E0A\u1E0C\u1E0E\u1E10\u1E12\u1E14\u1E16\u1E18\u1E1A\u1E1C\u1E1E\u1E20\u1E22\u1E24\u1E26\u1E28\u1E2A\u1E2C\u1E2E\u1E30\u1E32\u1E34\u1E36\u1E38\u1E3A\u1E3C\u1E3E\u1E40\u1E42\u1E44\u1E46\u1E48\u1E4A\u1E4C\u1E4E\u1E50\u1E52\u1E54\u1E56\u1E58\u1E5A\u1E5C\u1E5E\u1E60\u1E62\u1E64\u1E66\u1E68\u1E6A\u1E6C\u1E6E\u1E70\u1E72\u1E74\u1E76\u1E78\u1E7A\u1E7C\u1E7E\u1E80\u1E82\u1E84\u1E86\u1E88\u1E8A\u1E8C\u1E8E\u1E90\u1E92\u1E94\u1E9E\u1EA0\u1EA2\u1EA4\u1EA6\u1EA8\u1EAA\u1EAC\u1EAE\u1EB0\u1EB2\u1EB4\u1EB6\u1EB8\u1EBA\u1EBC\u1EBE\u1EC0\u1EC2\u1EC4\u1EC6\u1EC8\u1ECA\u1ECC\u1ECE\u1ED0\u1ED2\u1ED4\u1ED6\u1ED8\u1EDA\u1EDC\u1EDE\u1EE0\u1EE2\u1EE4\u1EE6\u1EE8\u1EEA\u1EEC\u1EEE\u1EF0\u1EF2\u1EF4\u1EF6\u1EF8\u1EFA\u1EFC\u1EFE\u1F08-\u1F0F\u1F18-\u1F1D\u1F28-\u1F2F\u1F38-\u1F3F\u1F48-\u1F4D\u1F59\u1F5B\u1F5D\u1F5F\u1F68-\u1F6F\u1FB8-\u1FBB\u1FC8-\u1FCB\u1FD8-\u1FDB\u1FE8-\u1FEC\u1FF8-\u1FFB\u2102\u2107\u210B-\u210D\u2110-\u2112\u2115\u2119-\u211D\u2124\u2126\u2128\u212A-\u212D\u2130-\u2133\u213E\u213F\u2145\u2183\u2C00-\u2C2E\u2C60\u2C62-\u2C64\u2C67\u2C69\u2C6B\u2C6D-\u2C70\u2C72\u2C75\u2C7E-\u2C80\u2C82\u2C84\u2C86\u2C88\u2C8A\u2C8C\u2C8E\u2C90\u2C92\u2C94\u2C96\u2C98\u2C9A\u2C9C\u2C9E\u2CA0\u2CA2\u2CA4\u2CA6\u2CA8\u2CAA\u2CAC\u2CAE\u2CB0\u2CB2\u2CB4\u2CB6\u2CB8\u2CBA\u2CBC\u2CBE\u2CC0\u2CC2\u2CC4\u2CC6\u2CC8\u2CCA\u2CCC\u2CCE\u2CD0\u2CD2\u2CD4\u2CD6\u2CD8\u2CDA\u2CDC\u2CDE\u2CE0\u2CE2\u2CEB\u2CED\u2CF2\uA640\uA642\uA644\uA646\uA648\uA64A\uA64C\uA64E\uA650\uA652\uA654\uA656\uA658\uA65A\uA65C\uA65E\uA660\uA662\uA664\uA666\uA668\uA66A\uA66C\uA680\uA682\uA684\uA686\uA688\uA68A\uA68C\uA68E\uA690\uA692\uA694\uA696\uA722\uA724\uA726\uA728\uA72A\uA72C\uA72E\uA732\uA734\uA736\uA738\uA73A\uA73C\uA73E\uA740\uA742\uA744\uA746\uA748\uA74A\uA74C\uA74E\uA750\uA752\uA754\uA756\uA758\uA75A\uA75C\uA75E\uA760\uA762\uA764\uA766\uA768\uA76A\uA76C\uA76E\uA779\uA77B\uA77D\uA77E\uA780\uA782\uA784\uA786\uA78B\uA78D\uA790\uA792\uA7A0\uA7A2\uA7A4\uA7A6\uA7A8\uA7AA\uFF21-\uFF3A\u0030-\u0039\u00B2\u00B3\u00B9\u00BC-\u00BE\u0660-\u0669\u06F0-\u06F9\u07C0-\u07C9\u0966-\u096F\u09E6-\u09EF\u09F4-\u09F9\u0A66-\u0A6F\u0AE6-\u0AEF\u0B66-\u0B6F\u0B72-\u0B77\u0BE6-\u0BF2\u0C66-\u0C6F\u0C78-\u0C7E\u0CE6-\u0CEF\u0D66-\u0D75\u0E50-\u0E59\u0ED0-\u0ED9\u0F20-\u0F33\u1040-\u1049\u1090-\u1099\u1369-\u137C\u16EE-\u16F0\u17E0-\u17E9\u17F0-\u17F9\u1810-\u1819\u1946-\u194F\u19D0-\u19DA\u1A80-\u1A89\u1A90-\u1A99\u1B50-\u1B59\u1BB0-\u1BB9\u1C40-\u1C49\u1C50-\u1C59\u2070\u2074-\u2079\u2080-\u2089\u2150-\u2182\u2185-\u2189\u2460-\u249B\u24EA-\u24FF\u2776-\u2793\u2CFD\u3007\u3021-\u3029\u3038-\u303A\u3192-\u3195\u3220-\u3229\u3248-\u324F\u3251-\u325F\u3280-\u3289\u32B1-\u32BF\uA620-\uA629\uA6E6-\uA6EF\uA830-\uA835\uA8D0-\uA8D9\uA900-\uA909\uA9D0-\uA9D9\uAA50-\uAA59\uABF0-\uABF9\uFF10-\uFF19])/g;
+module.exports = /([\u0061-\u007A\u00B5\u00DF-\u00F6\u00F8-\u00FF\u0101\u0103\u0105\u0107\u0109\u010B\u010D\u010F\u0111\u0113\u0115\u0117\u0119\u011B\u011D\u011F\u0121\u0123\u0125\u0127\u0129\u012B\u012D\u012F\u0131\u0133\u0135\u0137\u0138\u013A\u013C\u013E\u0140\u0142\u0144\u0146\u0148\u0149\u014B\u014D\u014F\u0151\u0153\u0155\u0157\u0159\u015B\u015D\u015F\u0161\u0163\u0165\u0167\u0169\u016B\u016D\u016F\u0171\u0173\u0175\u0177\u017A\u017C\u017E-\u0180\u0183\u0185\u0188\u018C\u018D\u0192\u0195\u0199-\u019B\u019E\u01A1\u01A3\u01A5\u01A8\u01AA\u01AB\u01AD\u01B0\u01B4\u01B6\u01B9\u01BA\u01BD-\u01BF\u01C6\u01C9\u01CC\u01CE\u01D0\u01D2\u01D4\u01D6\u01D8\u01DA\u01DC\u01DD\u01DF\u01E1\u01E3\u01E5\u01E7\u01E9\u01EB\u01ED\u01EF\u01F0\u01F3\u01F5\u01F9\u01FB\u01FD\u01FF\u0201\u0203\u0205\u0207\u0209\u020B\u020D\u020F\u0211\u0213\u0215\u0217\u0219\u021B\u021D\u021F\u0221\u0223\u0225\u0227\u0229\u022B\u022D\u022F\u0231\u0233-\u0239\u023C\u023F\u0240\u0242\u0247\u0249\u024B\u024D\u024F-\u0293\u0295-\u02AF\u0371\u0373\u0377\u037B-\u037D\u0390\u03AC-\u03CE\u03D0\u03D1\u03D5-\u03D7\u03D9\u03DB\u03DD\u03DF\u03E1\u03E3\u03E5\u03E7\u03E9\u03EB\u03ED\u03EF-\u03F3\u03F5\u03F8\u03FB\u03FC\u0430-\u045F\u0461\u0463\u0465\u0467\u0469\u046B\u046D\u046F\u0471\u0473\u0475\u0477\u0479\u047B\u047D\u047F\u0481\u048B\u048D\u048F\u0491\u0493\u0495\u0497\u0499\u049B\u049D\u049F\u04A1\u04A3\u04A5\u04A7\u04A9\u04AB\u04AD\u04AF\u04B1\u04B3\u04B5\u04B7\u04B9\u04BB\u04BD\u04BF\u04C2\u04C4\u04C6\u04C8\u04CA\u04CC\u04CE\u04CF\u04D1\u04D3\u04D5\u04D7\u04D9\u04DB\u04DD\u04DF\u04E1\u04E3\u04E5\u04E7\u04E9\u04EB\u04ED\u04EF\u04F1\u04F3\u04F5\u04F7\u04F9\u04FB\u04FD\u04FF\u0501\u0503\u0505\u0507\u0509\u050B\u050D\u050F\u0511\u0513\u0515\u0517\u0519\u051B\u051D\u051F\u0521\u0523\u0525\u0527\u0561-\u0587\u1D00-\u1D2B\u1D6B-\u1D77\u1D79-\u1D9A\u1E01\u1E03\u1E05\u1E07\u1E09\u1E0B\u1E0D\u1E0F\u1E11\u1E13\u1E15\u1E17\u1E19\u1E1B\u1E1D\u1E1F\u1E21\u1E23\u1E25\u1E27\u1E29\u1E2B\u1E2D\u1E2F\u1E31\u1E33\u1E35\u1E37\u1E39\u1E3B\u1E3D\u1E3F\u1E41\u1E43\u1E45\u1E47\u1E49\u1E4B\u1E4D\u1E4F\u1E51\u1E53\u1E55\u1E57\u1E59\u1E5B\u1E5D\u1E5F\u1E61\u1E63\u1E65\u1E67\u1E69\u1E6B\u1E6D\u1E6F\u1E71\u1E73\u1E75\u1E77\u1E79\u1E7B\u1E7D\u1E7F\u1E81\u1E83\u1E85\u1E87\u1E89\u1E8B\u1E8D\u1E8F\u1E91\u1E93\u1E95-\u1E9D\u1E9F\u1EA1\u1EA3\u1EA5\u1EA7\u1EA9\u1EAB\u1EAD\u1EAF\u1EB1\u1EB3\u1EB5\u1EB7\u1EB9\u1EBB\u1EBD\u1EBF\u1EC1\u1EC3\u1EC5\u1EC7\u1EC9\u1ECB\u1ECD\u1ECF\u1ED1\u1ED3\u1ED5\u1ED7\u1ED9\u1EDB\u1EDD\u1EDF\u1EE1\u1EE3\u1EE5\u1EE7\u1EE9\u1EEB\u1EED\u1EEF\u1EF1\u1EF3\u1EF5\u1EF7\u1EF9\u1EFB\u1EFD\u1EFF-\u1F07\u1F10-\u1F15\u1F20-\u1F27\u1F30-\u1F37\u1F40-\u1F45\u1F50-\u1F57\u1F60-\u1F67\u1F70-\u1F7D\u1F80-\u1F87\u1F90-\u1F97\u1FA0-\u1FA7\u1FB0-\u1FB4\u1FB6\u1FB7\u1FBE\u1FC2-\u1FC4\u1FC6\u1FC7\u1FD0-\u1FD3\u1FD6\u1FD7\u1FE0-\u1FE7\u1FF2-\u1FF4\u1FF6\u1FF7\u210A\u210E\u210F\u2113\u212F\u2134\u2139\u213C\u213D\u2146-\u2149\u214E\u2184\u2C30-\u2C5E\u2C61\u2C65\u2C66\u2C68\u2C6A\u2C6C\u2C71\u2C73\u2C74\u2C76-\u2C7B\u2C81\u2C83\u2C85\u2C87\u2C89\u2C8B\u2C8D\u2C8F\u2C91\u2C93\u2C95\u2C97\u2C99\u2C9B\u2C9D\u2C9F\u2CA1\u2CA3\u2CA5\u2CA7\u2CA9\u2CAB\u2CAD\u2CAF\u2CB1\u2CB3\u2CB5\u2CB7\u2CB9\u2CBB\u2CBD\u2CBF\u2CC1\u2CC3\u2CC5\u2CC7\u2CC9\u2CCB\u2CCD\u2CCF\u2CD1\u2CD3\u2CD5\u2CD7\u2CD9\u2CDB\u2CDD\u2CDF\u2CE1\u2CE3\u2CE4\u2CEC\u2CEE\u2CF3\u2D00-\u2D25\u2D27\u2D2D\uA641\uA643\uA645\uA647\uA649\uA64B\uA64D\uA64F\uA651\uA653\uA655\uA657\uA659\uA65B\uA65D\uA65F\uA661\uA663\uA665\uA667\uA669\uA66B\uA66D\uA681\uA683\uA685\uA687\uA689\uA68B\uA68D\uA68F\uA691\uA693\uA695\uA697\uA723\uA725\uA727\uA729\uA72B\uA72D\uA72F-\uA731\uA733\uA735\uA737\uA739\uA73B\uA73D\uA73F\uA741\uA743\uA745\uA747\uA749\uA74B\uA74D\uA74F\uA751\uA753\uA755\uA757\uA759\uA75B\uA75D\uA75F\uA761\uA763\uA765\uA767\uA769\uA76B\uA76D\uA76F\uA771-\uA778\uA77A\uA77C\uA77F\uA781\uA783\uA785\uA787\uA78C\uA78E\uA791\uA793\uA7A1\uA7A3\uA7A5\uA7A7\uA7A9\uA7FA\uFB00-\uFB06\uFB13-\uFB17\uFF41-\uFF5A])([\u0041-\u005A\u00C0-\u00D6\u00D8-\u00DE\u0100\u0102\u0104\u0106\u0108\u010A\u010C\u010E\u0110\u0112\u0114\u0116\u0118\u011A\u011C\u011E\u0120\u0122\u0124\u0126\u0128\u012A\u012C\u012E\u0130\u0132\u0134\u0136\u0139\u013B\u013D\u013F\u0141\u0143\u0145\u0147\u014A\u014C\u014E\u0150\u0152\u0154\u0156\u0158\u015A\u015C\u015E\u0160\u0162\u0164\u0166\u0168\u016A\u016C\u016E\u0170\u0172\u0174\u0176\u0178\u0179\u017B\u017D\u0181\u0182\u0184\u0186\u0187\u0189-\u018B\u018E-\u0191\u0193\u0194\u0196-\u0198\u019C\u019D\u019F\u01A0\u01A2\u01A4\u01A6\u01A7\u01A9\u01AC\u01AE\u01AF\u01B1-\u01B3\u01B5\u01B7\u01B8\u01BC\u01C4\u01C7\u01CA\u01CD\u01CF\u01D1\u01D3\u01D5\u01D7\u01D9\u01DB\u01DE\u01E0\u01E2\u01E4\u01E6\u01E8\u01EA\u01EC\u01EE\u01F1\u01F4\u01F6-\u01F8\u01FA\u01FC\u01FE\u0200\u0202\u0204\u0206\u0208\u020A\u020C\u020E\u0210\u0212\u0214\u0216\u0218\u021A\u021C\u021E\u0220\u0222\u0224\u0226\u0228\u022A\u022C\u022E\u0230\u0232\u023A\u023B\u023D\u023E\u0241\u0243-\u0246\u0248\u024A\u024C\u024E\u0370\u0372\u0376\u0386\u0388-\u038A\u038C\u038E\u038F\u0391-\u03A1\u03A3-\u03AB\u03CF\u03D2-\u03D4\u03D8\u03DA\u03DC\u03DE\u03E0\u03E2\u03E4\u03E6\u03E8\u03EA\u03EC\u03EE\u03F4\u03F7\u03F9\u03FA\u03FD-\u042F\u0460\u0462\u0464\u0466\u0468\u046A\u046C\u046E\u0470\u0472\u0474\u0476\u0478\u047A\u047C\u047E\u0480\u048A\u048C\u048E\u0490\u0492\u0494\u0496\u0498\u049A\u049C\u049E\u04A0\u04A2\u04A4\u04A6\u04A8\u04AA\u04AC\u04AE\u04B0\u04B2\u04B4\u04B6\u04B8\u04BA\u04BC\u04BE\u04C0\u04C1\u04C3\u04C5\u04C7\u04C9\u04CB\u04CD\u04D0\u04D2\u04D4\u04D6\u04D8\u04DA\u04DC\u04DE\u04E0\u04E2\u04E4\u04E6\u04E8\u04EA\u04EC\u04EE\u04F0\u04F2\u04F4\u04F6\u04F8\u04FA\u04FC\u04FE\u0500\u0502\u0504\u0506\u0508\u050A\u050C\u050E\u0510\u0512\u0514\u0516\u0518\u051A\u051C\u051E\u0520\u0522\u0524\u0526\u0531-\u0556\u10A0-\u10C5\u10C7\u10CD\u1E00\u1E02\u1E04\u1E06\u1E08\u1E0A\u1E0C\u1E0E\u1E10\u1E12\u1E14\u1E16\u1E18\u1E1A\u1E1C\u1E1E\u1E20\u1E22\u1E24\u1E26\u1E28\u1E2A\u1E2C\u1E2E\u1E30\u1E32\u1E34\u1E36\u1E38\u1E3A\u1E3C\u1E3E\u1E40\u1E42\u1E44\u1E46\u1E48\u1E4A\u1E4C\u1E4E\u1E50\u1E52\u1E54\u1E56\u1E58\u1E5A\u1E5C\u1E5E\u1E60\u1E62\u1E64\u1E66\u1E68\u1E6A\u1E6C\u1E6E\u1E70\u1E72\u1E74\u1E76\u1E78\u1E7A\u1E7C\u1E7E\u1E80\u1E82\u1E84\u1E86\u1E88\u1E8A\u1E8C\u1E8E\u1E90\u1E92\u1E94\u1E9E\u1EA0\u1EA2\u1EA4\u1EA6\u1EA8\u1EAA\u1EAC\u1EAE\u1EB0\u1EB2\u1EB4\u1EB6\u1EB8\u1EBA\u1EBC\u1EBE\u1EC0\u1EC2\u1EC4\u1EC6\u1EC8\u1ECA\u1ECC\u1ECE\u1ED0\u1ED2\u1ED4\u1ED6\u1ED8\u1EDA\u1EDC\u1EDE\u1EE0\u1EE2\u1EE4\u1EE6\u1EE8\u1EEA\u1EEC\u1EEE\u1EF0\u1EF2\u1EF4\u1EF6\u1EF8\u1EFA\u1EFC\u1EFE\u1F08-\u1F0F\u1F18-\u1F1D\u1F28-\u1F2F\u1F38-\u1F3F\u1F48-\u1F4D\u1F59\u1F5B\u1F5D\u1F5F\u1F68-\u1F6F\u1FB8-\u1FBB\u1FC8-\u1FCB\u1FD8-\u1FDB\u1FE8-\u1FEC\u1FF8-\u1FFB\u2102\u2107\u210B-\u210D\u2110-\u2112\u2115\u2119-\u211D\u2124\u2126\u2128\u212A-\u212D\u2130-\u2133\u213E\u213F\u2145\u2183\u2C00-\u2C2E\u2C60\u2C62-\u2C64\u2C67\u2C69\u2C6B\u2C6D-\u2C70\u2C72\u2C75\u2C7E-\u2C80\u2C82\u2C84\u2C86\u2C88\u2C8A\u2C8C\u2C8E\u2C90\u2C92\u2C94\u2C96\u2C98\u2C9A\u2C9C\u2C9E\u2CA0\u2CA2\u2CA4\u2CA6\u2CA8\u2CAA\u2CAC\u2CAE\u2CB0\u2CB2\u2CB4\u2CB6\u2CB8\u2CBA\u2CBC\u2CBE\u2CC0\u2CC2\u2CC4\u2CC6\u2CC8\u2CCA\u2CCC\u2CCE\u2CD0\u2CD2\u2CD4\u2CD6\u2CD8\u2CDA\u2CDC\u2CDE\u2CE0\u2CE2\u2CEB\u2CED\u2CF2\uA640\uA642\uA644\uA646\uA648\uA64A\uA64C\uA64E\uA650\uA652\uA654\uA656\uA658\uA65A\uA65C\uA65E\uA660\uA662\uA664\uA666\uA668\uA66A\uA66C\uA680\uA682\uA684\uA686\uA688\uA68A\uA68C\uA68E\uA690\uA692\uA694\uA696\uA722\uA724\uA726\uA728\uA72A\uA72C\uA72E\uA732\uA734\uA736\uA738\uA73A\uA73C\uA73E\uA740\uA742\uA744\uA746\uA748\uA74A\uA74C\uA74E\uA750\uA752\uA754\uA756\uA758\uA75A\uA75C\uA75E\uA760\uA762\uA764\uA766\uA768\uA76A\uA76C\uA76E\uA779\uA77B\uA77D\uA77E\uA780\uA782\uA784\uA786\uA78B\uA78D\uA790\uA792\uA7A0\uA7A2\uA7A4\uA7A6\uA7A8\uA7AA\uFF21-\uFF3A\u0030-\u0039\u00B2\u00B3\u00B9\u00BC-\u00BE\u0660-\u0669\u06F0-\u06F9\u07C0-\u07C9\u0966-\u096F\u09E6-\u09EF\u09F4-\u09F9\u0A66-\u0A6F\u0AE6-\u0AEF\u0B66-\u0B6F\u0B72-\u0B77\u0BE6-\u0BF2\u0C66-\u0C6F\u0C78-\u0C7E\u0CE6-\u0CEF\u0D66-\u0D75\u0E50-\u0E59\u0ED0-\u0ED9\u0F20-\u0F33\u1040-\u1049\u1090-\u1099\u1369-\u137C\u16EE-\u16F0\u17E0-\u17E9\u17F0-\u17F9\u1810-\u1819\u1946-\u194F\u19D0-\u19DA\u1A80-\u1A89\u1A90-\u1A99\u1B50-\u1B59\u1BB0-\u1BB9\u1C40-\u1C49\u1C50-\u1C59\u2070\u2074-\u2079\u2080-\u2089\u2150-\u2182\u2185-\u2189\u2460-\u249B\u24EA-\u24FF\u2776-\u2793\u2CFD\u3007\u3021-\u3029\u3038-\u303A\u3192-\u3195\u3220-\u3229\u3248-\u324F\u3251-\u325F\u3280-\u3289\u32B1-\u32BF\uA620-\uA629\uA6E6-\uA6EF\uA830-\uA835\uA8D0-\uA8D9\uA900-\uA909\uA9D0-\uA9D9\uAA50-\uAA59\uABF0-\uABF9\uFF10-\uFF19])/g
+
 },{}],59:[function(require,module,exports){
-module.exports = /[^\u0041-\u005A\u0061-\u007A\u00AA\u00B5\u00BA\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02C1\u02C6-\u02D1\u02E0-\u02E4\u02EC\u02EE\u0370-\u0374\u0376\u0377\u037A-\u037D\u0386\u0388-\u038A\u038C\u038E-\u03A1\u03A3-\u03F5\u03F7-\u0481\u048A-\u0527\u0531-\u0556\u0559\u0561-\u0587\u05D0-\u05EA\u05F0-\u05F2\u0620-\u064A\u066E\u066F\u0671-\u06D3\u06D5\u06E5\u06E6\u06EE\u06EF\u06FA-\u06FC\u06FF\u0710\u0712-\u072F\u074D-\u07A5\u07B1\u07CA-\u07EA\u07F4\u07F5\u07FA\u0800-\u0815\u081A\u0824\u0828\u0840-\u0858\u08A0\u08A2-\u08AC\u0904-\u0939\u093D\u0950\u0958-\u0961\u0971-\u0977\u0979-\u097F\u0985-\u098C\u098F\u0990\u0993-\u09A8\u09AA-\u09B0\u09B2\u09B6-\u09B9\u09BD\u09CE\u09DC\u09DD\u09DF-\u09E1\u09F0\u09F1\u0A05-\u0A0A\u0A0F\u0A10\u0A13-\u0A28\u0A2A-\u0A30\u0A32\u0A33\u0A35\u0A36\u0A38\u0A39\u0A59-\u0A5C\u0A5E\u0A72-\u0A74\u0A85-\u0A8D\u0A8F-\u0A91\u0A93-\u0AA8\u0AAA-\u0AB0\u0AB2\u0AB3\u0AB5-\u0AB9\u0ABD\u0AD0\u0AE0\u0AE1\u0B05-\u0B0C\u0B0F\u0B10\u0B13-\u0B28\u0B2A-\u0B30\u0B32\u0B33\u0B35-\u0B39\u0B3D\u0B5C\u0B5D\u0B5F-\u0B61\u0B71\u0B83\u0B85-\u0B8A\u0B8E-\u0B90\u0B92-\u0B95\u0B99\u0B9A\u0B9C\u0B9E\u0B9F\u0BA3\u0BA4\u0BA8-\u0BAA\u0BAE-\u0BB9\u0BD0\u0C05-\u0C0C\u0C0E-\u0C10\u0C12-\u0C28\u0C2A-\u0C33\u0C35-\u0C39\u0C3D\u0C58\u0C59\u0C60\u0C61\u0C85-\u0C8C\u0C8E-\u0C90\u0C92-\u0CA8\u0CAA-\u0CB3\u0CB5-\u0CB9\u0CBD\u0CDE\u0CE0\u0CE1\u0CF1\u0CF2\u0D05-\u0D0C\u0D0E-\u0D10\u0D12-\u0D3A\u0D3D\u0D4E\u0D60\u0D61\u0D7A-\u0D7F\u0D85-\u0D96\u0D9A-\u0DB1\u0DB3-\u0DBB\u0DBD\u0DC0-\u0DC6\u0E01-\u0E30\u0E32\u0E33\u0E40-\u0E46\u0E81\u0E82\u0E84\u0E87\u0E88\u0E8A\u0E8D\u0E94-\u0E97\u0E99-\u0E9F\u0EA1-\u0EA3\u0EA5\u0EA7\u0EAA\u0EAB\u0EAD-\u0EB0\u0EB2\u0EB3\u0EBD\u0EC0-\u0EC4\u0EC6\u0EDC-\u0EDF\u0F00\u0F40-\u0F47\u0F49-\u0F6C\u0F88-\u0F8C\u1000-\u102A\u103F\u1050-\u1055\u105A-\u105D\u1061\u1065\u1066\u106E-\u1070\u1075-\u1081\u108E\u10A0-\u10C5\u10C7\u10CD\u10D0-\u10FA\u10FC-\u1248\u124A-\u124D\u1250-\u1256\u1258\u125A-\u125D\u1260-\u1288\u128A-\u128D\u1290-\u12B0\u12B2-\u12B5\u12B8-\u12BE\u12C0\u12C2-\u12C5\u12C8-\u12D6\u12D8-\u1310\u1312-\u1315\u1318-\u135A\u1380-\u138F\u13A0-\u13F4\u1401-\u166C\u166F-\u167F\u1681-\u169A\u16A0-\u16EA\u1700-\u170C\u170E-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176C\u176E-\u1770\u1780-\u17B3\u17D7\u17DC\u1820-\u1877\u1880-\u18A8\u18AA\u18B0-\u18F5\u1900-\u191C\u1950-\u196D\u1970-\u1974\u1980-\u19AB\u19C1-\u19C7\u1A00-\u1A16\u1A20-\u1A54\u1AA7\u1B05-\u1B33\u1B45-\u1B4B\u1B83-\u1BA0\u1BAE\u1BAF\u1BBA-\u1BE5\u1C00-\u1C23\u1C4D-\u1C4F\u1C5A-\u1C7D\u1CE9-\u1CEC\u1CEE-\u1CF1\u1CF5\u1CF6\u1D00-\u1DBF\u1E00-\u1F15\u1F18-\u1F1D\u1F20-\u1F45\u1F48-\u1F4D\u1F50-\u1F57\u1F59\u1F5B\u1F5D\u1F5F-\u1F7D\u1F80-\u1FB4\u1FB6-\u1FBC\u1FBE\u1FC2-\u1FC4\u1FC6-\u1FCC\u1FD0-\u1FD3\u1FD6-\u1FDB\u1FE0-\u1FEC\u1FF2-\u1FF4\u1FF6-\u1FFC\u2071\u207F\u2090-\u209C\u2102\u2107\u210A-\u2113\u2115\u2119-\u211D\u2124\u2126\u2128\u212A-\u212D\u212F-\u2139\u213C-\u213F\u2145-\u2149\u214E\u2183\u2184\u2C00-\u2C2E\u2C30-\u2C5E\u2C60-\u2CE4\u2CEB-\u2CEE\u2CF2\u2CF3\u2D00-\u2D25\u2D27\u2D2D\u2D30-\u2D67\u2D6F\u2D80-\u2D96\u2DA0-\u2DA6\u2DA8-\u2DAE\u2DB0-\u2DB6\u2DB8-\u2DBE\u2DC0-\u2DC6\u2DC8-\u2DCE\u2DD0-\u2DD6\u2DD8-\u2DDE\u2E2F\u3005\u3006\u3031-\u3035\u303B\u303C\u3041-\u3096\u309D-\u309F\u30A1-\u30FA\u30FC-\u30FF\u3105-\u312D\u3131-\u318E\u31A0-\u31BA\u31F0-\u31FF\u3400-\u4DB5\u4E00-\u9FCC\uA000-\uA48C\uA4D0-\uA4FD\uA500-\uA60C\uA610-\uA61F\uA62A\uA62B\uA640-\uA66E\uA67F-\uA697\uA6A0-\uA6E5\uA717-\uA71F\uA722-\uA788\uA78B-\uA78E\uA790-\uA793\uA7A0-\uA7AA\uA7F8-\uA801\uA803-\uA805\uA807-\uA80A\uA80C-\uA822\uA840-\uA873\uA882-\uA8B3\uA8F2-\uA8F7\uA8FB\uA90A-\uA925\uA930-\uA946\uA960-\uA97C\uA984-\uA9B2\uA9CF\uAA00-\uAA28\uAA40-\uAA42\uAA44-\uAA4B\uAA60-\uAA76\uAA7A\uAA80-\uAAAF\uAAB1\uAAB5\uAAB6\uAAB9-\uAABD\uAAC0\uAAC2\uAADB-\uAADD\uAAE0-\uAAEA\uAAF2-\uAAF4\uAB01-\uAB06\uAB09-\uAB0E\uAB11-\uAB16\uAB20-\uAB26\uAB28-\uAB2E\uABC0-\uABE2\uAC00-\uD7A3\uD7B0-\uD7C6\uD7CB-\uD7FB\uF900-\uFA6D\uFA70-\uFAD9\uFB00-\uFB06\uFB13-\uFB17\uFB1D\uFB1F-\uFB28\uFB2A-\uFB36\uFB38-\uFB3C\uFB3E\uFB40\uFB41\uFB43\uFB44\uFB46-\uFBB1\uFBD3-\uFD3D\uFD50-\uFD8F\uFD92-\uFDC7\uFDF0-\uFDFB\uFE70-\uFE74\uFE76-\uFEFC\uFF21-\uFF3A\uFF41-\uFF5A\uFF66-\uFFBE\uFFC2-\uFFC7\uFFCA-\uFFCF\uFFD2-\uFFD7\uFFDA-\uFFDC\u0030-\u0039\u00B2\u00B3\u00B9\u00BC-\u00BE\u0660-\u0669\u06F0-\u06F9\u07C0-\u07C9\u0966-\u096F\u09E6-\u09EF\u09F4-\u09F9\u0A66-\u0A6F\u0AE6-\u0AEF\u0B66-\u0B6F\u0B72-\u0B77\u0BE6-\u0BF2\u0C66-\u0C6F\u0C78-\u0C7E\u0CE6-\u0CEF\u0D66-\u0D75\u0E50-\u0E59\u0ED0-\u0ED9\u0F20-\u0F33\u1040-\u1049\u1090-\u1099\u1369-\u137C\u16EE-\u16F0\u17E0-\u17E9\u17F0-\u17F9\u1810-\u1819\u1946-\u194F\u19D0-\u19DA\u1A80-\u1A89\u1A90-\u1A99\u1B50-\u1B59\u1BB0-\u1BB9\u1C40-\u1C49\u1C50-\u1C59\u2070\u2074-\u2079\u2080-\u2089\u2150-\u2182\u2185-\u2189\u2460-\u249B\u24EA-\u24FF\u2776-\u2793\u2CFD\u3007\u3021-\u3029\u3038-\u303A\u3192-\u3195\u3220-\u3229\u3248-\u324F\u3251-\u325F\u3280-\u3289\u32B1-\u32BF\uA620-\uA629\uA6E6-\uA6EF\uA830-\uA835\uA8D0-\uA8D9\uA900-\uA909\uA9D0-\uA9D9\uAA50-\uAA59\uABF0-\uABF9\uFF10-\uFF19]+/g;
+module.exports = /[^\u0041-\u005A\u0061-\u007A\u00AA\u00B5\u00BA\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02C1\u02C6-\u02D1\u02E0-\u02E4\u02EC\u02EE\u0370-\u0374\u0376\u0377\u037A-\u037D\u0386\u0388-\u038A\u038C\u038E-\u03A1\u03A3-\u03F5\u03F7-\u0481\u048A-\u0527\u0531-\u0556\u0559\u0561-\u0587\u05D0-\u05EA\u05F0-\u05F2\u0620-\u064A\u066E\u066F\u0671-\u06D3\u06D5\u06E5\u06E6\u06EE\u06EF\u06FA-\u06FC\u06FF\u0710\u0712-\u072F\u074D-\u07A5\u07B1\u07CA-\u07EA\u07F4\u07F5\u07FA\u0800-\u0815\u081A\u0824\u0828\u0840-\u0858\u08A0\u08A2-\u08AC\u0904-\u0939\u093D\u0950\u0958-\u0961\u0971-\u0977\u0979-\u097F\u0985-\u098C\u098F\u0990\u0993-\u09A8\u09AA-\u09B0\u09B2\u09B6-\u09B9\u09BD\u09CE\u09DC\u09DD\u09DF-\u09E1\u09F0\u09F1\u0A05-\u0A0A\u0A0F\u0A10\u0A13-\u0A28\u0A2A-\u0A30\u0A32\u0A33\u0A35\u0A36\u0A38\u0A39\u0A59-\u0A5C\u0A5E\u0A72-\u0A74\u0A85-\u0A8D\u0A8F-\u0A91\u0A93-\u0AA8\u0AAA-\u0AB0\u0AB2\u0AB3\u0AB5-\u0AB9\u0ABD\u0AD0\u0AE0\u0AE1\u0B05-\u0B0C\u0B0F\u0B10\u0B13-\u0B28\u0B2A-\u0B30\u0B32\u0B33\u0B35-\u0B39\u0B3D\u0B5C\u0B5D\u0B5F-\u0B61\u0B71\u0B83\u0B85-\u0B8A\u0B8E-\u0B90\u0B92-\u0B95\u0B99\u0B9A\u0B9C\u0B9E\u0B9F\u0BA3\u0BA4\u0BA8-\u0BAA\u0BAE-\u0BB9\u0BD0\u0C05-\u0C0C\u0C0E-\u0C10\u0C12-\u0C28\u0C2A-\u0C33\u0C35-\u0C39\u0C3D\u0C58\u0C59\u0C60\u0C61\u0C85-\u0C8C\u0C8E-\u0C90\u0C92-\u0CA8\u0CAA-\u0CB3\u0CB5-\u0CB9\u0CBD\u0CDE\u0CE0\u0CE1\u0CF1\u0CF2\u0D05-\u0D0C\u0D0E-\u0D10\u0D12-\u0D3A\u0D3D\u0D4E\u0D60\u0D61\u0D7A-\u0D7F\u0D85-\u0D96\u0D9A-\u0DB1\u0DB3-\u0DBB\u0DBD\u0DC0-\u0DC6\u0E01-\u0E30\u0E32\u0E33\u0E40-\u0E46\u0E81\u0E82\u0E84\u0E87\u0E88\u0E8A\u0E8D\u0E94-\u0E97\u0E99-\u0E9F\u0EA1-\u0EA3\u0EA5\u0EA7\u0EAA\u0EAB\u0EAD-\u0EB0\u0EB2\u0EB3\u0EBD\u0EC0-\u0EC4\u0EC6\u0EDC-\u0EDF\u0F00\u0F40-\u0F47\u0F49-\u0F6C\u0F88-\u0F8C\u1000-\u102A\u103F\u1050-\u1055\u105A-\u105D\u1061\u1065\u1066\u106E-\u1070\u1075-\u1081\u108E\u10A0-\u10C5\u10C7\u10CD\u10D0-\u10FA\u10FC-\u1248\u124A-\u124D\u1250-\u1256\u1258\u125A-\u125D\u1260-\u1288\u128A-\u128D\u1290-\u12B0\u12B2-\u12B5\u12B8-\u12BE\u12C0\u12C2-\u12C5\u12C8-\u12D6\u12D8-\u1310\u1312-\u1315\u1318-\u135A\u1380-\u138F\u13A0-\u13F4\u1401-\u166C\u166F-\u167F\u1681-\u169A\u16A0-\u16EA\u1700-\u170C\u170E-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176C\u176E-\u1770\u1780-\u17B3\u17D7\u17DC\u1820-\u1877\u1880-\u18A8\u18AA\u18B0-\u18F5\u1900-\u191C\u1950-\u196D\u1970-\u1974\u1980-\u19AB\u19C1-\u19C7\u1A00-\u1A16\u1A20-\u1A54\u1AA7\u1B05-\u1B33\u1B45-\u1B4B\u1B83-\u1BA0\u1BAE\u1BAF\u1BBA-\u1BE5\u1C00-\u1C23\u1C4D-\u1C4F\u1C5A-\u1C7D\u1CE9-\u1CEC\u1CEE-\u1CF1\u1CF5\u1CF6\u1D00-\u1DBF\u1E00-\u1F15\u1F18-\u1F1D\u1F20-\u1F45\u1F48-\u1F4D\u1F50-\u1F57\u1F59\u1F5B\u1F5D\u1F5F-\u1F7D\u1F80-\u1FB4\u1FB6-\u1FBC\u1FBE\u1FC2-\u1FC4\u1FC6-\u1FCC\u1FD0-\u1FD3\u1FD6-\u1FDB\u1FE0-\u1FEC\u1FF2-\u1FF4\u1FF6-\u1FFC\u2071\u207F\u2090-\u209C\u2102\u2107\u210A-\u2113\u2115\u2119-\u211D\u2124\u2126\u2128\u212A-\u212D\u212F-\u2139\u213C-\u213F\u2145-\u2149\u214E\u2183\u2184\u2C00-\u2C2E\u2C30-\u2C5E\u2C60-\u2CE4\u2CEB-\u2CEE\u2CF2\u2CF3\u2D00-\u2D25\u2D27\u2D2D\u2D30-\u2D67\u2D6F\u2D80-\u2D96\u2DA0-\u2DA6\u2DA8-\u2DAE\u2DB0-\u2DB6\u2DB8-\u2DBE\u2DC0-\u2DC6\u2DC8-\u2DCE\u2DD0-\u2DD6\u2DD8-\u2DDE\u2E2F\u3005\u3006\u3031-\u3035\u303B\u303C\u3041-\u3096\u309D-\u309F\u30A1-\u30FA\u30FC-\u30FF\u3105-\u312D\u3131-\u318E\u31A0-\u31BA\u31F0-\u31FF\u3400-\u4DB5\u4E00-\u9FCC\uA000-\uA48C\uA4D0-\uA4FD\uA500-\uA60C\uA610-\uA61F\uA62A\uA62B\uA640-\uA66E\uA67F-\uA697\uA6A0-\uA6E5\uA717-\uA71F\uA722-\uA788\uA78B-\uA78E\uA790-\uA793\uA7A0-\uA7AA\uA7F8-\uA801\uA803-\uA805\uA807-\uA80A\uA80C-\uA822\uA840-\uA873\uA882-\uA8B3\uA8F2-\uA8F7\uA8FB\uA90A-\uA925\uA930-\uA946\uA960-\uA97C\uA984-\uA9B2\uA9CF\uAA00-\uAA28\uAA40-\uAA42\uAA44-\uAA4B\uAA60-\uAA76\uAA7A\uAA80-\uAAAF\uAAB1\uAAB5\uAAB6\uAAB9-\uAABD\uAAC0\uAAC2\uAADB-\uAADD\uAAE0-\uAAEA\uAAF2-\uAAF4\uAB01-\uAB06\uAB09-\uAB0E\uAB11-\uAB16\uAB20-\uAB26\uAB28-\uAB2E\uABC0-\uABE2\uAC00-\uD7A3\uD7B0-\uD7C6\uD7CB-\uD7FB\uF900-\uFA6D\uFA70-\uFAD9\uFB00-\uFB06\uFB13-\uFB17\uFB1D\uFB1F-\uFB28\uFB2A-\uFB36\uFB38-\uFB3C\uFB3E\uFB40\uFB41\uFB43\uFB44\uFB46-\uFBB1\uFBD3-\uFD3D\uFD50-\uFD8F\uFD92-\uFDC7\uFDF0-\uFDFB\uFE70-\uFE74\uFE76-\uFEFC\uFF21-\uFF3A\uFF41-\uFF5A\uFF66-\uFFBE\uFFC2-\uFFC7\uFFCA-\uFFCF\uFFD2-\uFFD7\uFFDA-\uFFDC\u0030-\u0039\u00B2\u00B3\u00B9\u00BC-\u00BE\u0660-\u0669\u06F0-\u06F9\u07C0-\u07C9\u0966-\u096F\u09E6-\u09EF\u09F4-\u09F9\u0A66-\u0A6F\u0AE6-\u0AEF\u0B66-\u0B6F\u0B72-\u0B77\u0BE6-\u0BF2\u0C66-\u0C6F\u0C78-\u0C7E\u0CE6-\u0CEF\u0D66-\u0D75\u0E50-\u0E59\u0ED0-\u0ED9\u0F20-\u0F33\u1040-\u1049\u1090-\u1099\u1369-\u137C\u16EE-\u16F0\u17E0-\u17E9\u17F0-\u17F9\u1810-\u1819\u1946-\u194F\u19D0-\u19DA\u1A80-\u1A89\u1A90-\u1A99\u1B50-\u1B59\u1BB0-\u1BB9\u1C40-\u1C49\u1C50-\u1C59\u2070\u2074-\u2079\u2080-\u2089\u2150-\u2182\u2185-\u2189\u2460-\u249B\u24EA-\u24FF\u2776-\u2793\u2CFD\u3007\u3021-\u3029\u3038-\u303A\u3192-\u3195\u3220-\u3229\u3248-\u324F\u3251-\u325F\u3280-\u3289\u32B1-\u32BF\uA620-\uA629\uA6E6-\uA6EF\uA830-\uA835\uA8D0-\uA8D9\uA900-\uA909\uA9D0-\uA9D9\uAA50-\uAA59\uABF0-\uABF9\uFF10-\uFF19]+/g
+
 },{}],60:[function(require,module,exports){
-module.exports = /([\u0030-\u0039\u00B2\u00B3\u00B9\u00BC-\u00BE\u0660-\u0669\u06F0-\u06F9\u07C0-\u07C9\u0966-\u096F\u09E6-\u09EF\u09F4-\u09F9\u0A66-\u0A6F\u0AE6-\u0AEF\u0B66-\u0B6F\u0B72-\u0B77\u0BE6-\u0BF2\u0C66-\u0C6F\u0C78-\u0C7E\u0CE6-\u0CEF\u0D66-\u0D75\u0E50-\u0E59\u0ED0-\u0ED9\u0F20-\u0F33\u1040-\u1049\u1090-\u1099\u1369-\u137C\u16EE-\u16F0\u17E0-\u17E9\u17F0-\u17F9\u1810-\u1819\u1946-\u194F\u19D0-\u19DA\u1A80-\u1A89\u1A90-\u1A99\u1B50-\u1B59\u1BB0-\u1BB9\u1C40-\u1C49\u1C50-\u1C59\u2070\u2074-\u2079\u2080-\u2089\u2150-\u2182\u2185-\u2189\u2460-\u249B\u24EA-\u24FF\u2776-\u2793\u2CFD\u3007\u3021-\u3029\u3038-\u303A\u3192-\u3195\u3220-\u3229\u3248-\u324F\u3251-\u325F\u3280-\u3289\u32B1-\u32BF\uA620-\uA629\uA6E6-\uA6EF\uA830-\uA835\uA8D0-\uA8D9\uA900-\uA909\uA9D0-\uA9D9\uAA50-\uAA59\uABF0-\uABF9\uFF10-\uFF19])([^\u0030-\u0039\u00B2\u00B3\u00B9\u00BC-\u00BE\u0660-\u0669\u06F0-\u06F9\u07C0-\u07C9\u0966-\u096F\u09E6-\u09EF\u09F4-\u09F9\u0A66-\u0A6F\u0AE6-\u0AEF\u0B66-\u0B6F\u0B72-\u0B77\u0BE6-\u0BF2\u0C66-\u0C6F\u0C78-\u0C7E\u0CE6-\u0CEF\u0D66-\u0D75\u0E50-\u0E59\u0ED0-\u0ED9\u0F20-\u0F33\u1040-\u1049\u1090-\u1099\u1369-\u137C\u16EE-\u16F0\u17E0-\u17E9\u17F0-\u17F9\u1810-\u1819\u1946-\u194F\u19D0-\u19DA\u1A80-\u1A89\u1A90-\u1A99\u1B50-\u1B59\u1BB0-\u1BB9\u1C40-\u1C49\u1C50-\u1C59\u2070\u2074-\u2079\u2080-\u2089\u2150-\u2182\u2185-\u2189\u2460-\u249B\u24EA-\u24FF\u2776-\u2793\u2CFD\u3007\u3021-\u3029\u3038-\u303A\u3192-\u3195\u3220-\u3229\u3248-\u324F\u3251-\u325F\u3280-\u3289\u32B1-\u32BF\uA620-\uA629\uA6E6-\uA6EF\uA830-\uA835\uA8D0-\uA8D9\uA900-\uA909\uA9D0-\uA9D9\uAA50-\uAA59\uABF0-\uABF9\uFF10-\uFF19])/g;
+module.exports = /([\u0030-\u0039\u00B2\u00B3\u00B9\u00BC-\u00BE\u0660-\u0669\u06F0-\u06F9\u07C0-\u07C9\u0966-\u096F\u09E6-\u09EF\u09F4-\u09F9\u0A66-\u0A6F\u0AE6-\u0AEF\u0B66-\u0B6F\u0B72-\u0B77\u0BE6-\u0BF2\u0C66-\u0C6F\u0C78-\u0C7E\u0CE6-\u0CEF\u0D66-\u0D75\u0E50-\u0E59\u0ED0-\u0ED9\u0F20-\u0F33\u1040-\u1049\u1090-\u1099\u1369-\u137C\u16EE-\u16F0\u17E0-\u17E9\u17F0-\u17F9\u1810-\u1819\u1946-\u194F\u19D0-\u19DA\u1A80-\u1A89\u1A90-\u1A99\u1B50-\u1B59\u1BB0-\u1BB9\u1C40-\u1C49\u1C50-\u1C59\u2070\u2074-\u2079\u2080-\u2089\u2150-\u2182\u2185-\u2189\u2460-\u249B\u24EA-\u24FF\u2776-\u2793\u2CFD\u3007\u3021-\u3029\u3038-\u303A\u3192-\u3195\u3220-\u3229\u3248-\u324F\u3251-\u325F\u3280-\u3289\u32B1-\u32BF\uA620-\uA629\uA6E6-\uA6EF\uA830-\uA835\uA8D0-\uA8D9\uA900-\uA909\uA9D0-\uA9D9\uAA50-\uAA59\uABF0-\uABF9\uFF10-\uFF19])([^\u0030-\u0039\u00B2\u00B3\u00B9\u00BC-\u00BE\u0660-\u0669\u06F0-\u06F9\u07C0-\u07C9\u0966-\u096F\u09E6-\u09EF\u09F4-\u09F9\u0A66-\u0A6F\u0AE6-\u0AEF\u0B66-\u0B6F\u0B72-\u0B77\u0BE6-\u0BF2\u0C66-\u0C6F\u0C78-\u0C7E\u0CE6-\u0CEF\u0D66-\u0D75\u0E50-\u0E59\u0ED0-\u0ED9\u0F20-\u0F33\u1040-\u1049\u1090-\u1099\u1369-\u137C\u16EE-\u16F0\u17E0-\u17E9\u17F0-\u17F9\u1810-\u1819\u1946-\u194F\u19D0-\u19DA\u1A80-\u1A89\u1A90-\u1A99\u1B50-\u1B59\u1BB0-\u1BB9\u1C40-\u1C49\u1C50-\u1C59\u2070\u2074-\u2079\u2080-\u2089\u2150-\u2182\u2185-\u2189\u2460-\u249B\u24EA-\u24FF\u2776-\u2793\u2CFD\u3007\u3021-\u3029\u3038-\u303A\u3192-\u3195\u3220-\u3229\u3248-\u324F\u3251-\u325F\u3280-\u3289\u32B1-\u32BF\uA620-\uA629\uA6E6-\uA6EF\uA830-\uA835\uA8D0-\uA8D9\uA900-\uA909\uA9D0-\uA9D9\uAA50-\uAA59\uABF0-\uABF9\uFF10-\uFF19])/g
+
 },{}],61:[function(require,module,exports){
 var sentenceCase = require('sentence-case');
 
@@ -40547,7 +40563,7 @@ var sentenceCase = require('sentence-case');
  * @return {String}
  */
 module.exports = function (str, locale) {
-  return sentenceCase(str, locale).replace(/ /g, '_');
+  return sentenceCase(str, locale, '_');
 };
 
 },{"sentence-case":57}],62:[function(require,module,exports){
@@ -40623,7 +40639,7 @@ module.exports = function (str, locale) {
  *
  * @type {Object}
  */
-var languages = {
+var LANGUAGES = {
   tr: {
     regexp: /[\u0069]/g,
     map: {
@@ -40647,7 +40663,7 @@ var languages = {
       '\u0069\u0307\u0303': '\u0128'
     }
   }
-};
+}
 
 /**
  * Upper case a string.
@@ -40656,18 +40672,4758 @@ var languages = {
  * @return {String}
  */
 module.exports = function (str, locale) {
-  var lang = languages[locale];
+  var lang = LANGUAGES[locale]
 
-  str = str == null ? '' : String(str);
+  str = str == null ? '' : String(str)
 
   if (lang) {
-    str = str.replace(lang.regexp, function (m) { return lang.map[m]; });
+    str = str.replace(lang.regexp, function (m) { return lang.map[m] })
   }
 
-  return str.toUpperCase();
-};
+  return str.toUpperCase()
+}
 
 },{}],66:[function(require,module,exports){
+/*
+  Copyright (C) 2013 Ariya Hidayat <ariya.hidayat@gmail.com>
+  Copyright (C) 2013 Thaddee Tyl <thaddee.tyl@gmail.com>
+  Copyright (C) 2013 Mathias Bynens <mathias@qiwi.be>
+  Copyright (C) 2012 Ariya Hidayat <ariya.hidayat@gmail.com>
+  Copyright (C) 2012 Mathias Bynens <mathias@qiwi.be>
+  Copyright (C) 2012 Joost-Wim Boekesteijn <joost-wim@boekesteijn.nl>
+  Copyright (C) 2012 Kris Kowal <kris.kowal@cixar.com>
+  Copyright (C) 2012 Yusuke Suzuki <utatane.tea@gmail.com>
+  Copyright (C) 2012 Arpad Borsos <arpad.borsos@googlemail.com>
+  Copyright (C) 2011 Ariya Hidayat <ariya.hidayat@gmail.com>
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  ARE DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+/*jslint bitwise:true plusplus:true */
+/*global esprima:true, define:true, exports:true, window: true,
+throwErrorTolerant: true,
+throwError: true, generateStatement: true, peek: true,
+parseAssignmentExpression: true, parseBlock: true, parseExpression: true,
+parseFunctionDeclaration: true, parseFunctionExpression: true,
+parseFunctionSourceElements: true, parseVariableIdentifier: true,
+parseLeftHandSideExpression: true,
+parseUnaryExpression: true,
+parseStatement: true, parseSourceElement: true */
+
+(function (root, factory) {
+    'use strict';
+
+    // Universal Module Definition (UMD) to support AMD, CommonJS/Node.js,
+    // Rhino, and plain browser loading.
+
+    /* istanbul ignore next */
+    if (typeof define === 'function' && define.amd) {
+        define(['exports'], factory);
+    } else if (typeof exports !== 'undefined') {
+        factory(exports);
+    } else {
+        factory((root.esprima = {}));
+    }
+}(this, function (exports) {
+    'use strict';
+
+    var Token,
+        TokenName,
+        FnExprTokens,
+        Syntax,
+        PropertyKind,
+        Messages,
+        Regex,
+        SyntaxTreeDelegate,
+        source,
+        strict,
+        index,
+        lineNumber,
+        lineStart,
+        length,
+        delegate,
+        lookahead,
+        state,
+        extra;
+
+    Token = {
+        BooleanLiteral: 1,
+        EOF: 2,
+        Identifier: 3,
+        Keyword: 4,
+        NullLiteral: 5,
+        NumericLiteral: 6,
+        Punctuator: 7,
+        StringLiteral: 8,
+        RegularExpression: 9
+    };
+
+    TokenName = {};
+    TokenName[Token.BooleanLiteral] = 'Boolean';
+    TokenName[Token.EOF] = '<end>';
+    TokenName[Token.Identifier] = 'Identifier';
+    TokenName[Token.Keyword] = 'Keyword';
+    TokenName[Token.NullLiteral] = 'Null';
+    TokenName[Token.NumericLiteral] = 'Numeric';
+    TokenName[Token.Punctuator] = 'Punctuator';
+    TokenName[Token.StringLiteral] = 'String';
+    TokenName[Token.RegularExpression] = 'RegularExpression';
+
+    // A function following one of those tokens is an expression.
+    FnExprTokens = ['(', '{', '[', 'in', 'typeof', 'instanceof', 'new',
+                    'return', 'case', 'delete', 'throw', 'void',
+                    // assignment operators
+                    '=', '+=', '-=', '*=', '/=', '%=', '<<=', '>>=', '>>>=',
+                    '&=', '|=', '^=', ',',
+                    // binary/unary operators
+                    '+', '-', '*', '/', '%', '++', '--', '<<', '>>', '>>>', '&',
+                    '|', '^', '!', '~', '&&', '||', '?', ':', '===', '==', '>=',
+                    '<=', '<', '>', '!=', '!=='];
+
+    Syntax = {
+        AssignmentExpression: 'AssignmentExpression',
+        ArrayExpression: 'ArrayExpression',
+        BlockStatement: 'BlockStatement',
+        BinaryExpression: 'BinaryExpression',
+        BreakStatement: 'BreakStatement',
+        CallExpression: 'CallExpression',
+        CatchClause: 'CatchClause',
+        ConditionalExpression: 'ConditionalExpression',
+        ContinueStatement: 'ContinueStatement',
+        DoWhileStatement: 'DoWhileStatement',
+        DebuggerStatement: 'DebuggerStatement',
+        EmptyStatement: 'EmptyStatement',
+        ExpressionStatement: 'ExpressionStatement',
+        ForStatement: 'ForStatement',
+        ForInStatement: 'ForInStatement',
+        FunctionDeclaration: 'FunctionDeclaration',
+        FunctionExpression: 'FunctionExpression',
+        Identifier: 'Identifier',
+        IfStatement: 'IfStatement',
+        Literal: 'Literal',
+        LabeledStatement: 'LabeledStatement',
+        LogicalExpression: 'LogicalExpression',
+        MemberExpression: 'MemberExpression',
+        NewExpression: 'NewExpression',
+        ObjectExpression: 'ObjectExpression',
+        Program: 'Program',
+        Property: 'Property',
+        ReturnStatement: 'ReturnStatement',
+        SequenceExpression: 'SequenceExpression',
+        SwitchStatement: 'SwitchStatement',
+        SwitchCase: 'SwitchCase',
+        ThisExpression: 'ThisExpression',
+        ThrowStatement: 'ThrowStatement',
+        TryStatement: 'TryStatement',
+        UnaryExpression: 'UnaryExpression',
+        UpdateExpression: 'UpdateExpression',
+        VariableDeclaration: 'VariableDeclaration',
+        VariableDeclarator: 'VariableDeclarator',
+        WhileStatement: 'WhileStatement',
+        WithStatement: 'WithStatement'
+    };
+
+    PropertyKind = {
+        Data: 1,
+        Get: 2,
+        Set: 4
+    };
+
+    // Error messages should be identical to V8.
+    Messages = {
+        UnexpectedToken:  'Unexpected token %0',
+        UnexpectedNumber:  'Unexpected number',
+        UnexpectedString:  'Unexpected string',
+        UnexpectedIdentifier:  'Unexpected identifier',
+        UnexpectedReserved:  'Unexpected reserved word',
+        UnexpectedEOS:  'Unexpected end of input',
+        NewlineAfterThrow:  'Illegal newline after throw',
+        InvalidRegExp: 'Invalid regular expression',
+        UnterminatedRegExp:  'Invalid regular expression: missing /',
+        InvalidLHSInAssignment:  'Invalid left-hand side in assignment',
+        InvalidLHSInForIn:  'Invalid left-hand side in for-in',
+        MultipleDefaultsInSwitch: 'More than one default clause in switch statement',
+        NoCatchOrFinally:  'Missing catch or finally after try',
+        UnknownLabel: 'Undefined label \'%0\'',
+        Redeclaration: '%0 \'%1\' has already been declared',
+        IllegalContinue: 'Illegal continue statement',
+        IllegalBreak: 'Illegal break statement',
+        IllegalReturn: 'Illegal return statement',
+        StrictModeWith:  'Strict mode code may not include a with statement',
+        StrictCatchVariable:  'Catch variable may not be eval or arguments in strict mode',
+        StrictVarName:  'Variable name may not be eval or arguments in strict mode',
+        StrictParamName:  'Parameter name eval or arguments is not allowed in strict mode',
+        StrictParamDupe: 'Strict mode function may not have duplicate parameter names',
+        StrictFunctionName:  'Function name may not be eval or arguments in strict mode',
+        StrictOctalLiteral:  'Octal literals are not allowed in strict mode.',
+        StrictDelete:  'Delete of an unqualified identifier in strict mode.',
+        StrictDuplicateProperty:  'Duplicate data property in object literal not allowed in strict mode',
+        AccessorDataProperty:  'Object literal may not have data and accessor property with the same name',
+        AccessorGetSet:  'Object literal may not have multiple get/set accessors with the same name',
+        StrictLHSAssignment:  'Assignment to eval or arguments is not allowed in strict mode',
+        StrictLHSPostfix:  'Postfix increment/decrement may not have eval or arguments operand in strict mode',
+        StrictLHSPrefix:  'Prefix increment/decrement may not have eval or arguments operand in strict mode',
+        StrictReservedWord:  'Use of future reserved word in strict mode'
+    };
+
+    // See also tools/generate-unicode-regex.py.
+    Regex = {
+        NonAsciiIdentifierStart: new RegExp('[\xAA\xB5\xBA\xC0-\xD6\xD8-\xF6\xF8-\u02C1\u02C6-\u02D1\u02E0-\u02E4\u02EC\u02EE\u0370-\u0374\u0376\u0377\u037A-\u037D\u0386\u0388-\u038A\u038C\u038E-\u03A1\u03A3-\u03F5\u03F7-\u0481\u048A-\u0527\u0531-\u0556\u0559\u0561-\u0587\u05D0-\u05EA\u05F0-\u05F2\u0620-\u064A\u066E\u066F\u0671-\u06D3\u06D5\u06E5\u06E6\u06EE\u06EF\u06FA-\u06FC\u06FF\u0710\u0712-\u072F\u074D-\u07A5\u07B1\u07CA-\u07EA\u07F4\u07F5\u07FA\u0800-\u0815\u081A\u0824\u0828\u0840-\u0858\u08A0\u08A2-\u08AC\u0904-\u0939\u093D\u0950\u0958-\u0961\u0971-\u0977\u0979-\u097F\u0985-\u098C\u098F\u0990\u0993-\u09A8\u09AA-\u09B0\u09B2\u09B6-\u09B9\u09BD\u09CE\u09DC\u09DD\u09DF-\u09E1\u09F0\u09F1\u0A05-\u0A0A\u0A0F\u0A10\u0A13-\u0A28\u0A2A-\u0A30\u0A32\u0A33\u0A35\u0A36\u0A38\u0A39\u0A59-\u0A5C\u0A5E\u0A72-\u0A74\u0A85-\u0A8D\u0A8F-\u0A91\u0A93-\u0AA8\u0AAA-\u0AB0\u0AB2\u0AB3\u0AB5-\u0AB9\u0ABD\u0AD0\u0AE0\u0AE1\u0B05-\u0B0C\u0B0F\u0B10\u0B13-\u0B28\u0B2A-\u0B30\u0B32\u0B33\u0B35-\u0B39\u0B3D\u0B5C\u0B5D\u0B5F-\u0B61\u0B71\u0B83\u0B85-\u0B8A\u0B8E-\u0B90\u0B92-\u0B95\u0B99\u0B9A\u0B9C\u0B9E\u0B9F\u0BA3\u0BA4\u0BA8-\u0BAA\u0BAE-\u0BB9\u0BD0\u0C05-\u0C0C\u0C0E-\u0C10\u0C12-\u0C28\u0C2A-\u0C33\u0C35-\u0C39\u0C3D\u0C58\u0C59\u0C60\u0C61\u0C85-\u0C8C\u0C8E-\u0C90\u0C92-\u0CA8\u0CAA-\u0CB3\u0CB5-\u0CB9\u0CBD\u0CDE\u0CE0\u0CE1\u0CF1\u0CF2\u0D05-\u0D0C\u0D0E-\u0D10\u0D12-\u0D3A\u0D3D\u0D4E\u0D60\u0D61\u0D7A-\u0D7F\u0D85-\u0D96\u0D9A-\u0DB1\u0DB3-\u0DBB\u0DBD\u0DC0-\u0DC6\u0E01-\u0E30\u0E32\u0E33\u0E40-\u0E46\u0E81\u0E82\u0E84\u0E87\u0E88\u0E8A\u0E8D\u0E94-\u0E97\u0E99-\u0E9F\u0EA1-\u0EA3\u0EA5\u0EA7\u0EAA\u0EAB\u0EAD-\u0EB0\u0EB2\u0EB3\u0EBD\u0EC0-\u0EC4\u0EC6\u0EDC-\u0EDF\u0F00\u0F40-\u0F47\u0F49-\u0F6C\u0F88-\u0F8C\u1000-\u102A\u103F\u1050-\u1055\u105A-\u105D\u1061\u1065\u1066\u106E-\u1070\u1075-\u1081\u108E\u10A0-\u10C5\u10C7\u10CD\u10D0-\u10FA\u10FC-\u1248\u124A-\u124D\u1250-\u1256\u1258\u125A-\u125D\u1260-\u1288\u128A-\u128D\u1290-\u12B0\u12B2-\u12B5\u12B8-\u12BE\u12C0\u12C2-\u12C5\u12C8-\u12D6\u12D8-\u1310\u1312-\u1315\u1318-\u135A\u1380-\u138F\u13A0-\u13F4\u1401-\u166C\u166F-\u167F\u1681-\u169A\u16A0-\u16EA\u16EE-\u16F0\u1700-\u170C\u170E-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176C\u176E-\u1770\u1780-\u17B3\u17D7\u17DC\u1820-\u1877\u1880-\u18A8\u18AA\u18B0-\u18F5\u1900-\u191C\u1950-\u196D\u1970-\u1974\u1980-\u19AB\u19C1-\u19C7\u1A00-\u1A16\u1A20-\u1A54\u1AA7\u1B05-\u1B33\u1B45-\u1B4B\u1B83-\u1BA0\u1BAE\u1BAF\u1BBA-\u1BE5\u1C00-\u1C23\u1C4D-\u1C4F\u1C5A-\u1C7D\u1CE9-\u1CEC\u1CEE-\u1CF1\u1CF5\u1CF6\u1D00-\u1DBF\u1E00-\u1F15\u1F18-\u1F1D\u1F20-\u1F45\u1F48-\u1F4D\u1F50-\u1F57\u1F59\u1F5B\u1F5D\u1F5F-\u1F7D\u1F80-\u1FB4\u1FB6-\u1FBC\u1FBE\u1FC2-\u1FC4\u1FC6-\u1FCC\u1FD0-\u1FD3\u1FD6-\u1FDB\u1FE0-\u1FEC\u1FF2-\u1FF4\u1FF6-\u1FFC\u2071\u207F\u2090-\u209C\u2102\u2107\u210A-\u2113\u2115\u2119-\u211D\u2124\u2126\u2128\u212A-\u212D\u212F-\u2139\u213C-\u213F\u2145-\u2149\u214E\u2160-\u2188\u2C00-\u2C2E\u2C30-\u2C5E\u2C60-\u2CE4\u2CEB-\u2CEE\u2CF2\u2CF3\u2D00-\u2D25\u2D27\u2D2D\u2D30-\u2D67\u2D6F\u2D80-\u2D96\u2DA0-\u2DA6\u2DA8-\u2DAE\u2DB0-\u2DB6\u2DB8-\u2DBE\u2DC0-\u2DC6\u2DC8-\u2DCE\u2DD0-\u2DD6\u2DD8-\u2DDE\u2E2F\u3005-\u3007\u3021-\u3029\u3031-\u3035\u3038-\u303C\u3041-\u3096\u309D-\u309F\u30A1-\u30FA\u30FC-\u30FF\u3105-\u312D\u3131-\u318E\u31A0-\u31BA\u31F0-\u31FF\u3400-\u4DB5\u4E00-\u9FCC\uA000-\uA48C\uA4D0-\uA4FD\uA500-\uA60C\uA610-\uA61F\uA62A\uA62B\uA640-\uA66E\uA67F-\uA697\uA6A0-\uA6EF\uA717-\uA71F\uA722-\uA788\uA78B-\uA78E\uA790-\uA793\uA7A0-\uA7AA\uA7F8-\uA801\uA803-\uA805\uA807-\uA80A\uA80C-\uA822\uA840-\uA873\uA882-\uA8B3\uA8F2-\uA8F7\uA8FB\uA90A-\uA925\uA930-\uA946\uA960-\uA97C\uA984-\uA9B2\uA9CF\uAA00-\uAA28\uAA40-\uAA42\uAA44-\uAA4B\uAA60-\uAA76\uAA7A\uAA80-\uAAAF\uAAB1\uAAB5\uAAB6\uAAB9-\uAABD\uAAC0\uAAC2\uAADB-\uAADD\uAAE0-\uAAEA\uAAF2-\uAAF4\uAB01-\uAB06\uAB09-\uAB0E\uAB11-\uAB16\uAB20-\uAB26\uAB28-\uAB2E\uABC0-\uABE2\uAC00-\uD7A3\uD7B0-\uD7C6\uD7CB-\uD7FB\uF900-\uFA6D\uFA70-\uFAD9\uFB00-\uFB06\uFB13-\uFB17\uFB1D\uFB1F-\uFB28\uFB2A-\uFB36\uFB38-\uFB3C\uFB3E\uFB40\uFB41\uFB43\uFB44\uFB46-\uFBB1\uFBD3-\uFD3D\uFD50-\uFD8F\uFD92-\uFDC7\uFDF0-\uFDFB\uFE70-\uFE74\uFE76-\uFEFC\uFF21-\uFF3A\uFF41-\uFF5A\uFF66-\uFFBE\uFFC2-\uFFC7\uFFCA-\uFFCF\uFFD2-\uFFD7\uFFDA-\uFFDC]'),
+        NonAsciiIdentifierPart: new RegExp('[\xAA\xB5\xBA\xC0-\xD6\xD8-\xF6\xF8-\u02C1\u02C6-\u02D1\u02E0-\u02E4\u02EC\u02EE\u0300-\u0374\u0376\u0377\u037A-\u037D\u0386\u0388-\u038A\u038C\u038E-\u03A1\u03A3-\u03F5\u03F7-\u0481\u0483-\u0487\u048A-\u0527\u0531-\u0556\u0559\u0561-\u0587\u0591-\u05BD\u05BF\u05C1\u05C2\u05C4\u05C5\u05C7\u05D0-\u05EA\u05F0-\u05F2\u0610-\u061A\u0620-\u0669\u066E-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06FC\u06FF\u0710-\u074A\u074D-\u07B1\u07C0-\u07F5\u07FA\u0800-\u082D\u0840-\u085B\u08A0\u08A2-\u08AC\u08E4-\u08FE\u0900-\u0963\u0966-\u096F\u0971-\u0977\u0979-\u097F\u0981-\u0983\u0985-\u098C\u098F\u0990\u0993-\u09A8\u09AA-\u09B0\u09B2\u09B6-\u09B9\u09BC-\u09C4\u09C7\u09C8\u09CB-\u09CE\u09D7\u09DC\u09DD\u09DF-\u09E3\u09E6-\u09F1\u0A01-\u0A03\u0A05-\u0A0A\u0A0F\u0A10\u0A13-\u0A28\u0A2A-\u0A30\u0A32\u0A33\u0A35\u0A36\u0A38\u0A39\u0A3C\u0A3E-\u0A42\u0A47\u0A48\u0A4B-\u0A4D\u0A51\u0A59-\u0A5C\u0A5E\u0A66-\u0A75\u0A81-\u0A83\u0A85-\u0A8D\u0A8F-\u0A91\u0A93-\u0AA8\u0AAA-\u0AB0\u0AB2\u0AB3\u0AB5-\u0AB9\u0ABC-\u0AC5\u0AC7-\u0AC9\u0ACB-\u0ACD\u0AD0\u0AE0-\u0AE3\u0AE6-\u0AEF\u0B01-\u0B03\u0B05-\u0B0C\u0B0F\u0B10\u0B13-\u0B28\u0B2A-\u0B30\u0B32\u0B33\u0B35-\u0B39\u0B3C-\u0B44\u0B47\u0B48\u0B4B-\u0B4D\u0B56\u0B57\u0B5C\u0B5D\u0B5F-\u0B63\u0B66-\u0B6F\u0B71\u0B82\u0B83\u0B85-\u0B8A\u0B8E-\u0B90\u0B92-\u0B95\u0B99\u0B9A\u0B9C\u0B9E\u0B9F\u0BA3\u0BA4\u0BA8-\u0BAA\u0BAE-\u0BB9\u0BBE-\u0BC2\u0BC6-\u0BC8\u0BCA-\u0BCD\u0BD0\u0BD7\u0BE6-\u0BEF\u0C01-\u0C03\u0C05-\u0C0C\u0C0E-\u0C10\u0C12-\u0C28\u0C2A-\u0C33\u0C35-\u0C39\u0C3D-\u0C44\u0C46-\u0C48\u0C4A-\u0C4D\u0C55\u0C56\u0C58\u0C59\u0C60-\u0C63\u0C66-\u0C6F\u0C82\u0C83\u0C85-\u0C8C\u0C8E-\u0C90\u0C92-\u0CA8\u0CAA-\u0CB3\u0CB5-\u0CB9\u0CBC-\u0CC4\u0CC6-\u0CC8\u0CCA-\u0CCD\u0CD5\u0CD6\u0CDE\u0CE0-\u0CE3\u0CE6-\u0CEF\u0CF1\u0CF2\u0D02\u0D03\u0D05-\u0D0C\u0D0E-\u0D10\u0D12-\u0D3A\u0D3D-\u0D44\u0D46-\u0D48\u0D4A-\u0D4E\u0D57\u0D60-\u0D63\u0D66-\u0D6F\u0D7A-\u0D7F\u0D82\u0D83\u0D85-\u0D96\u0D9A-\u0DB1\u0DB3-\u0DBB\u0DBD\u0DC0-\u0DC6\u0DCA\u0DCF-\u0DD4\u0DD6\u0DD8-\u0DDF\u0DF2\u0DF3\u0E01-\u0E3A\u0E40-\u0E4E\u0E50-\u0E59\u0E81\u0E82\u0E84\u0E87\u0E88\u0E8A\u0E8D\u0E94-\u0E97\u0E99-\u0E9F\u0EA1-\u0EA3\u0EA5\u0EA7\u0EAA\u0EAB\u0EAD-\u0EB9\u0EBB-\u0EBD\u0EC0-\u0EC4\u0EC6\u0EC8-\u0ECD\u0ED0-\u0ED9\u0EDC-\u0EDF\u0F00\u0F18\u0F19\u0F20-\u0F29\u0F35\u0F37\u0F39\u0F3E-\u0F47\u0F49-\u0F6C\u0F71-\u0F84\u0F86-\u0F97\u0F99-\u0FBC\u0FC6\u1000-\u1049\u1050-\u109D\u10A0-\u10C5\u10C7\u10CD\u10D0-\u10FA\u10FC-\u1248\u124A-\u124D\u1250-\u1256\u1258\u125A-\u125D\u1260-\u1288\u128A-\u128D\u1290-\u12B0\u12B2-\u12B5\u12B8-\u12BE\u12C0\u12C2-\u12C5\u12C8-\u12D6\u12D8-\u1310\u1312-\u1315\u1318-\u135A\u135D-\u135F\u1380-\u138F\u13A0-\u13F4\u1401-\u166C\u166F-\u167F\u1681-\u169A\u16A0-\u16EA\u16EE-\u16F0\u1700-\u170C\u170E-\u1714\u1720-\u1734\u1740-\u1753\u1760-\u176C\u176E-\u1770\u1772\u1773\u1780-\u17D3\u17D7\u17DC\u17DD\u17E0-\u17E9\u180B-\u180D\u1810-\u1819\u1820-\u1877\u1880-\u18AA\u18B0-\u18F5\u1900-\u191C\u1920-\u192B\u1930-\u193B\u1946-\u196D\u1970-\u1974\u1980-\u19AB\u19B0-\u19C9\u19D0-\u19D9\u1A00-\u1A1B\u1A20-\u1A5E\u1A60-\u1A7C\u1A7F-\u1A89\u1A90-\u1A99\u1AA7\u1B00-\u1B4B\u1B50-\u1B59\u1B6B-\u1B73\u1B80-\u1BF3\u1C00-\u1C37\u1C40-\u1C49\u1C4D-\u1C7D\u1CD0-\u1CD2\u1CD4-\u1CF6\u1D00-\u1DE6\u1DFC-\u1F15\u1F18-\u1F1D\u1F20-\u1F45\u1F48-\u1F4D\u1F50-\u1F57\u1F59\u1F5B\u1F5D\u1F5F-\u1F7D\u1F80-\u1FB4\u1FB6-\u1FBC\u1FBE\u1FC2-\u1FC4\u1FC6-\u1FCC\u1FD0-\u1FD3\u1FD6-\u1FDB\u1FE0-\u1FEC\u1FF2-\u1FF4\u1FF6-\u1FFC\u200C\u200D\u203F\u2040\u2054\u2071\u207F\u2090-\u209C\u20D0-\u20DC\u20E1\u20E5-\u20F0\u2102\u2107\u210A-\u2113\u2115\u2119-\u211D\u2124\u2126\u2128\u212A-\u212D\u212F-\u2139\u213C-\u213F\u2145-\u2149\u214E\u2160-\u2188\u2C00-\u2C2E\u2C30-\u2C5E\u2C60-\u2CE4\u2CEB-\u2CF3\u2D00-\u2D25\u2D27\u2D2D\u2D30-\u2D67\u2D6F\u2D7F-\u2D96\u2DA0-\u2DA6\u2DA8-\u2DAE\u2DB0-\u2DB6\u2DB8-\u2DBE\u2DC0-\u2DC6\u2DC8-\u2DCE\u2DD0-\u2DD6\u2DD8-\u2DDE\u2DE0-\u2DFF\u2E2F\u3005-\u3007\u3021-\u302F\u3031-\u3035\u3038-\u303C\u3041-\u3096\u3099\u309A\u309D-\u309F\u30A1-\u30FA\u30FC-\u30FF\u3105-\u312D\u3131-\u318E\u31A0-\u31BA\u31F0-\u31FF\u3400-\u4DB5\u4E00-\u9FCC\uA000-\uA48C\uA4D0-\uA4FD\uA500-\uA60C\uA610-\uA62B\uA640-\uA66F\uA674-\uA67D\uA67F-\uA697\uA69F-\uA6F1\uA717-\uA71F\uA722-\uA788\uA78B-\uA78E\uA790-\uA793\uA7A0-\uA7AA\uA7F8-\uA827\uA840-\uA873\uA880-\uA8C4\uA8D0-\uA8D9\uA8E0-\uA8F7\uA8FB\uA900-\uA92D\uA930-\uA953\uA960-\uA97C\uA980-\uA9C0\uA9CF-\uA9D9\uAA00-\uAA36\uAA40-\uAA4D\uAA50-\uAA59\uAA60-\uAA76\uAA7A\uAA7B\uAA80-\uAAC2\uAADB-\uAADD\uAAE0-\uAAEF\uAAF2-\uAAF6\uAB01-\uAB06\uAB09-\uAB0E\uAB11-\uAB16\uAB20-\uAB26\uAB28-\uAB2E\uABC0-\uABEA\uABEC\uABED\uABF0-\uABF9\uAC00-\uD7A3\uD7B0-\uD7C6\uD7CB-\uD7FB\uF900-\uFA6D\uFA70-\uFAD9\uFB00-\uFB06\uFB13-\uFB17\uFB1D-\uFB28\uFB2A-\uFB36\uFB38-\uFB3C\uFB3E\uFB40\uFB41\uFB43\uFB44\uFB46-\uFBB1\uFBD3-\uFD3D\uFD50-\uFD8F\uFD92-\uFDC7\uFDF0-\uFDFB\uFE00-\uFE0F\uFE20-\uFE26\uFE33\uFE34\uFE4D-\uFE4F\uFE70-\uFE74\uFE76-\uFEFC\uFF10-\uFF19\uFF21-\uFF3A\uFF3F\uFF41-\uFF5A\uFF66-\uFFBE\uFFC2-\uFFC7\uFFCA-\uFFCF\uFFD2-\uFFD7\uFFDA-\uFFDC]')
+    };
+
+    // Ensure the condition is true, otherwise throw an error.
+    // This is only to have a better contract semantic, i.e. another safety net
+    // to catch a logic error. The condition shall be fulfilled in normal case.
+    // Do NOT use this to enforce a certain condition on any user input.
+
+    function assert(condition, message) {
+        /* istanbul ignore if */
+        if (!condition) {
+            throw new Error('ASSERT: ' + message);
+        }
+    }
+
+    function isDecimalDigit(ch) {
+        return (ch >= 48 && ch <= 57);   // 0..9
+    }
+
+    function isHexDigit(ch) {
+        return '0123456789abcdefABCDEF'.indexOf(ch) >= 0;
+    }
+
+    function isOctalDigit(ch) {
+        return '01234567'.indexOf(ch) >= 0;
+    }
+
+
+    // 7.2 White Space
+
+    function isWhiteSpace(ch) {
+        return (ch === 0x20) || (ch === 0x09) || (ch === 0x0B) || (ch === 0x0C) || (ch === 0xA0) ||
+            (ch >= 0x1680 && [0x1680, 0x180E, 0x2000, 0x2001, 0x2002, 0x2003, 0x2004, 0x2005, 0x2006, 0x2007, 0x2008, 0x2009, 0x200A, 0x202F, 0x205F, 0x3000, 0xFEFF].indexOf(ch) >= 0);
+    }
+
+    // 7.3 Line Terminators
+
+    function isLineTerminator(ch) {
+        return (ch === 0x0A) || (ch === 0x0D) || (ch === 0x2028) || (ch === 0x2029);
+    }
+
+    // 7.6 Identifier Names and Identifiers
+
+    function isIdentifierStart(ch) {
+        return (ch === 0x24) || (ch === 0x5F) ||  // $ (dollar) and _ (underscore)
+            (ch >= 0x41 && ch <= 0x5A) ||         // A..Z
+            (ch >= 0x61 && ch <= 0x7A) ||         // a..z
+            (ch === 0x5C) ||                      // \ (backslash)
+            ((ch >= 0x80) && Regex.NonAsciiIdentifierStart.test(String.fromCharCode(ch)));
+    }
+
+    function isIdentifierPart(ch) {
+        return (ch === 0x24) || (ch === 0x5F) ||  // $ (dollar) and _ (underscore)
+            (ch >= 0x41 && ch <= 0x5A) ||         // A..Z
+            (ch >= 0x61 && ch <= 0x7A) ||         // a..z
+            (ch >= 0x30 && ch <= 0x39) ||         // 0..9
+            (ch === 0x5C) ||                      // \ (backslash)
+            ((ch >= 0x80) && Regex.NonAsciiIdentifierPart.test(String.fromCharCode(ch)));
+    }
+
+    // 7.6.1.2 Future Reserved Words
+
+    function isFutureReservedWord(id) {
+        switch (id) {
+        case 'class':
+        case 'enum':
+        case 'export':
+        case 'extends':
+        case 'import':
+        case 'super':
+            return true;
+        default:
+            return false;
+        }
+    }
+
+    function isStrictModeReservedWord(id) {
+        switch (id) {
+        case 'implements':
+        case 'interface':
+        case 'package':
+        case 'private':
+        case 'protected':
+        case 'public':
+        case 'static':
+        case 'yield':
+        case 'let':
+            return true;
+        default:
+            return false;
+        }
+    }
+
+    function isRestrictedWord(id) {
+        return id === 'eval' || id === 'arguments';
+    }
+
+    // 7.6.1.1 Keywords
+
+    function isKeyword(id) {
+        if (strict && isStrictModeReservedWord(id)) {
+            return true;
+        }
+
+        // 'const' is specialized as Keyword in V8.
+        // 'yield' and 'let' are for compatiblity with SpiderMonkey and ES.next.
+        // Some others are from future reserved words.
+
+        switch (id.length) {
+        case 2:
+            return (id === 'if') || (id === 'in') || (id === 'do');
+        case 3:
+            return (id === 'var') || (id === 'for') || (id === 'new') ||
+                (id === 'try') || (id === 'let');
+        case 4:
+            return (id === 'this') || (id === 'else') || (id === 'case') ||
+                (id === 'void') || (id === 'with') || (id === 'enum');
+        case 5:
+            return (id === 'while') || (id === 'break') || (id === 'catch') ||
+                (id === 'throw') || (id === 'const') || (id === 'yield') ||
+                (id === 'class') || (id === 'super');
+        case 6:
+            return (id === 'return') || (id === 'typeof') || (id === 'delete') ||
+                (id === 'switch') || (id === 'export') || (id === 'import');
+        case 7:
+            return (id === 'default') || (id === 'finally') || (id === 'extends');
+        case 8:
+            return (id === 'function') || (id === 'continue') || (id === 'debugger');
+        case 10:
+            return (id === 'instanceof');
+        default:
+            return false;
+        }
+    }
+
+    // 7.4 Comments
+
+    function addComment(type, value, start, end, loc) {
+        var comment, attacher;
+
+        assert(typeof start === 'number', 'Comment must have valid position');
+
+        // Because the way the actual token is scanned, often the comments
+        // (if any) are skipped twice during the lexical analysis.
+        // Thus, we need to skip adding a comment if the comment array already
+        // handled it.
+        if (state.lastCommentStart >= start) {
+            return;
+        }
+        state.lastCommentStart = start;
+
+        comment = {
+            type: type,
+            value: value
+        };
+        if (extra.range) {
+            comment.range = [start, end];
+        }
+        if (extra.loc) {
+            comment.loc = loc;
+        }
+        extra.comments.push(comment);
+        if (extra.attachComment) {
+            extra.leadingComments.push(comment);
+            extra.trailingComments.push(comment);
+        }
+    }
+
+    function skipSingleLineComment(offset) {
+        var start, loc, ch, comment;
+
+        start = index - offset;
+        loc = {
+            start: {
+                line: lineNumber,
+                column: index - lineStart - offset
+            }
+        };
+
+        while (index < length) {
+            ch = source.charCodeAt(index);
+            ++index;
+            if (isLineTerminator(ch)) {
+                if (extra.comments) {
+                    comment = source.slice(start + offset, index - 1);
+                    loc.end = {
+                        line: lineNumber,
+                        column: index - lineStart - 1
+                    };
+                    addComment('Line', comment, start, index - 1, loc);
+                }
+                if (ch === 13 && source.charCodeAt(index) === 10) {
+                    ++index;
+                }
+                ++lineNumber;
+                lineStart = index;
+                return;
+            }
+        }
+
+        if (extra.comments) {
+            comment = source.slice(start + offset, index);
+            loc.end = {
+                line: lineNumber,
+                column: index - lineStart
+            };
+            addComment('Line', comment, start, index, loc);
+        }
+    }
+
+    function skipMultiLineComment() {
+        var start, loc, ch, comment;
+
+        if (extra.comments) {
+            start = index - 2;
+            loc = {
+                start: {
+                    line: lineNumber,
+                    column: index - lineStart - 2
+                }
+            };
+        }
+
+        while (index < length) {
+            ch = source.charCodeAt(index);
+            if (isLineTerminator(ch)) {
+                if (ch === 0x0D && source.charCodeAt(index + 1) === 0x0A) {
+                    ++index;
+                }
+                ++lineNumber;
+                ++index;
+                lineStart = index;
+                if (index >= length) {
+                    throwError({}, Messages.UnexpectedToken, 'ILLEGAL');
+                }
+            } else if (ch === 0x2A) {
+                // Block comment ends with '*/'.
+                if (source.charCodeAt(index + 1) === 0x2F) {
+                    ++index;
+                    ++index;
+                    if (extra.comments) {
+                        comment = source.slice(start + 2, index - 2);
+                        loc.end = {
+                            line: lineNumber,
+                            column: index - lineStart
+                        };
+                        addComment('Block', comment, start, index, loc);
+                    }
+                    return;
+                }
+                ++index;
+            } else {
+                ++index;
+            }
+        }
+
+        throwError({}, Messages.UnexpectedToken, 'ILLEGAL');
+    }
+
+    function skipComment() {
+        var ch, start;
+
+        start = (index === 0);
+        while (index < length) {
+            ch = source.charCodeAt(index);
+
+            if (isWhiteSpace(ch)) {
+                ++index;
+            } else if (isLineTerminator(ch)) {
+                ++index;
+                if (ch === 0x0D && source.charCodeAt(index) === 0x0A) {
+                    ++index;
+                }
+                ++lineNumber;
+                lineStart = index;
+                start = true;
+            } else if (ch === 0x2F) { // U+002F is '/'
+                ch = source.charCodeAt(index + 1);
+                if (ch === 0x2F) {
+                    ++index;
+                    ++index;
+                    skipSingleLineComment(2);
+                    start = true;
+                } else if (ch === 0x2A) {  // U+002A is '*'
+                    ++index;
+                    ++index;
+                    skipMultiLineComment();
+                } else {
+                    break;
+                }
+            } else if (start && ch === 0x2D) { // U+002D is '-'
+                // U+003E is '>'
+                if ((source.charCodeAt(index + 1) === 0x2D) && (source.charCodeAt(index + 2) === 0x3E)) {
+                    // '-->' is a single-line comment
+                    index += 3;
+                    skipSingleLineComment(3);
+                } else {
+                    break;
+                }
+            } else if (ch === 0x3C) { // U+003C is '<'
+                if (source.slice(index + 1, index + 4) === '!--') {
+                    ++index; // `<`
+                    ++index; // `!`
+                    ++index; // `-`
+                    ++index; // `-`
+                    skipSingleLineComment(4);
+                } else {
+                    break;
+                }
+            } else {
+                break;
+            }
+        }
+    }
+
+    function scanHexEscape(prefix) {
+        var i, len, ch, code = 0;
+
+        len = (prefix === 'u') ? 4 : 2;
+        for (i = 0; i < len; ++i) {
+            if (index < length && isHexDigit(source[index])) {
+                ch = source[index++];
+                code = code * 16 + '0123456789abcdef'.indexOf(ch.toLowerCase());
+            } else {
+                return '';
+            }
+        }
+        return String.fromCharCode(code);
+    }
+
+    function getEscapedIdentifier() {
+        var ch, id;
+
+        ch = source.charCodeAt(index++);
+        id = String.fromCharCode(ch);
+
+        // '\u' (U+005C, U+0075) denotes an escaped character.
+        if (ch === 0x5C) {
+            if (source.charCodeAt(index) !== 0x75) {
+                throwError({}, Messages.UnexpectedToken, 'ILLEGAL');
+            }
+            ++index;
+            ch = scanHexEscape('u');
+            if (!ch || ch === '\\' || !isIdentifierStart(ch.charCodeAt(0))) {
+                throwError({}, Messages.UnexpectedToken, 'ILLEGAL');
+            }
+            id = ch;
+        }
+
+        while (index < length) {
+            ch = source.charCodeAt(index);
+            if (!isIdentifierPart(ch)) {
+                break;
+            }
+            ++index;
+            id += String.fromCharCode(ch);
+
+            // '\u' (U+005C, U+0075) denotes an escaped character.
+            if (ch === 0x5C) {
+                id = id.substr(0, id.length - 1);
+                if (source.charCodeAt(index) !== 0x75) {
+                    throwError({}, Messages.UnexpectedToken, 'ILLEGAL');
+                }
+                ++index;
+                ch = scanHexEscape('u');
+                if (!ch || ch === '\\' || !isIdentifierPart(ch.charCodeAt(0))) {
+                    throwError({}, Messages.UnexpectedToken, 'ILLEGAL');
+                }
+                id += ch;
+            }
+        }
+
+        return id;
+    }
+
+    function getIdentifier() {
+        var start, ch;
+
+        start = index++;
+        while (index < length) {
+            ch = source.charCodeAt(index);
+            if (ch === 0x5C) {
+                // Blackslash (U+005C) marks Unicode escape sequence.
+                index = start;
+                return getEscapedIdentifier();
+            }
+            if (isIdentifierPart(ch)) {
+                ++index;
+            } else {
+                break;
+            }
+        }
+
+        return source.slice(start, index);
+    }
+
+    function scanIdentifier() {
+        var start, id, type;
+
+        start = index;
+
+        // Backslash (U+005C) starts an escaped character.
+        id = (source.charCodeAt(index) === 0x5C) ? getEscapedIdentifier() : getIdentifier();
+
+        // There is no keyword or literal with only one character.
+        // Thus, it must be an identifier.
+        if (id.length === 1) {
+            type = Token.Identifier;
+        } else if (isKeyword(id)) {
+            type = Token.Keyword;
+        } else if (id === 'null') {
+            type = Token.NullLiteral;
+        } else if (id === 'true' || id === 'false') {
+            type = Token.BooleanLiteral;
+        } else {
+            type = Token.Identifier;
+        }
+
+        return {
+            type: type,
+            value: id,
+            lineNumber: lineNumber,
+            lineStart: lineStart,
+            start: start,
+            end: index
+        };
+    }
+
+
+    // 7.7 Punctuators
+
+    function scanPunctuator() {
+        var start = index,
+            code = source.charCodeAt(index),
+            code2,
+            ch1 = source[index],
+            ch2,
+            ch3,
+            ch4;
+
+        switch (code) {
+
+        // Check for most common single-character punctuators.
+        case 0x2E:  // . dot
+        case 0x28:  // ( open bracket
+        case 0x29:  // ) close bracket
+        case 0x3B:  // ; semicolon
+        case 0x2C:  // , comma
+        case 0x7B:  // { open curly brace
+        case 0x7D:  // } close curly brace
+        case 0x5B:  // [
+        case 0x5D:  // ]
+        case 0x3A:  // :
+        case 0x3F:  // ?
+        case 0x7E:  // ~
+            ++index;
+            if (extra.tokenize) {
+                if (code === 0x28) {
+                    extra.openParenToken = extra.tokens.length;
+                } else if (code === 0x7B) {
+                    extra.openCurlyToken = extra.tokens.length;
+                }
+            }
+            return {
+                type: Token.Punctuator,
+                value: String.fromCharCode(code),
+                lineNumber: lineNumber,
+                lineStart: lineStart,
+                start: start,
+                end: index
+            };
+
+        default:
+            code2 = source.charCodeAt(index + 1);
+
+            // '=' (U+003D) marks an assignment or comparison operator.
+            if (code2 === 0x3D) {
+                switch (code) {
+                case 0x2B:  // +
+                case 0x2D:  // -
+                case 0x2F:  // /
+                case 0x3C:  // <
+                case 0x3E:  // >
+                case 0x5E:  // ^
+                case 0x7C:  // |
+                case 0x25:  // %
+                case 0x26:  // &
+                case 0x2A:  // *
+                    index += 2;
+                    return {
+                        type: Token.Punctuator,
+                        value: String.fromCharCode(code) + String.fromCharCode(code2),
+                        lineNumber: lineNumber,
+                        lineStart: lineStart,
+                        start: start,
+                        end: index
+                    };
+
+                case 0x21: // !
+                case 0x3D: // =
+                    index += 2;
+
+                    // !== and ===
+                    if (source.charCodeAt(index) === 0x3D) {
+                        ++index;
+                    }
+                    return {
+                        type: Token.Punctuator,
+                        value: source.slice(start, index),
+                        lineNumber: lineNumber,
+                        lineStart: lineStart,
+                        start: start,
+                        end: index
+                    };
+                }
+            }
+        }
+
+        // 4-character punctuator: >>>=
+
+        ch4 = source.substr(index, 4);
+
+        if (ch4 === '>>>=') {
+            index += 4;
+            return {
+                type: Token.Punctuator,
+                value: ch4,
+                lineNumber: lineNumber,
+                lineStart: lineStart,
+                start: start,
+                end: index
+            };
+        }
+
+        // 3-character punctuators: === !== >>> <<= >>=
+
+        ch3 = ch4.substr(0, 3);
+
+        if (ch3 === '>>>' || ch3 === '<<=' || ch3 === '>>=') {
+            index += 3;
+            return {
+                type: Token.Punctuator,
+                value: ch3,
+                lineNumber: lineNumber,
+                lineStart: lineStart,
+                start: start,
+                end: index
+            };
+        }
+
+        // Other 2-character punctuators: ++ -- << >> && ||
+        ch2 = ch3.substr(0, 2);
+
+        if ((ch1 === ch2[1] && ('+-<>&|'.indexOf(ch1) >= 0)) || ch2 === '=>') {
+            index += 2;
+            return {
+                type: Token.Punctuator,
+                value: ch2,
+                lineNumber: lineNumber,
+                lineStart: lineStart,
+                start: start,
+                end: index
+            };
+        }
+
+        // 1-character punctuators: < > = ! + - * % & | ^ /
+        if ('<>=!+-*%&|^/'.indexOf(ch1) >= 0) {
+            ++index;
+            return {
+                type: Token.Punctuator,
+                value: ch1,
+                lineNumber: lineNumber,
+                lineStart: lineStart,
+                start: start,
+                end: index
+            };
+        }
+
+        throwError({}, Messages.UnexpectedToken, 'ILLEGAL');
+    }
+
+    // 7.8.3 Numeric Literals
+
+    function scanHexLiteral(start) {
+        var number = '';
+
+        while (index < length) {
+            if (!isHexDigit(source[index])) {
+                break;
+            }
+            number += source[index++];
+        }
+
+        if (number.length === 0) {
+            throwError({}, Messages.UnexpectedToken, 'ILLEGAL');
+        }
+
+        if (isIdentifierStart(source.charCodeAt(index))) {
+            throwError({}, Messages.UnexpectedToken, 'ILLEGAL');
+        }
+
+        return {
+            type: Token.NumericLiteral,
+            value: parseInt('0x' + number, 16),
+            lineNumber: lineNumber,
+            lineStart: lineStart,
+            start: start,
+            end: index
+        };
+    }
+
+    function scanOctalLiteral(start) {
+        var number = '0' + source[index++];
+        while (index < length) {
+            if (!isOctalDigit(source[index])) {
+                break;
+            }
+            number += source[index++];
+        }
+
+        if (isIdentifierStart(source.charCodeAt(index)) || isDecimalDigit(source.charCodeAt(index))) {
+            throwError({}, Messages.UnexpectedToken, 'ILLEGAL');
+        }
+
+        return {
+            type: Token.NumericLiteral,
+            value: parseInt(number, 8),
+            octal: true,
+            lineNumber: lineNumber,
+            lineStart: lineStart,
+            start: start,
+            end: index
+        };
+    }
+
+    function scanNumericLiteral() {
+        var number, start, ch;
+
+        ch = source[index];
+        assert(isDecimalDigit(ch.charCodeAt(0)) || (ch === '.'),
+            'Numeric literal must start with a decimal digit or a decimal point');
+
+        start = index;
+        number = '';
+        if (ch !== '.') {
+            number = source[index++];
+            ch = source[index];
+
+            // Hex number starts with '0x'.
+            // Octal number starts with '0'.
+            if (number === '0') {
+                if (ch === 'x' || ch === 'X') {
+                    ++index;
+                    return scanHexLiteral(start);
+                }
+                if (isOctalDigit(ch)) {
+                    return scanOctalLiteral(start);
+                }
+
+                // decimal number starts with '0' such as '09' is illegal.
+                if (ch && isDecimalDigit(ch.charCodeAt(0))) {
+                    throwError({}, Messages.UnexpectedToken, 'ILLEGAL');
+                }
+            }
+
+            while (isDecimalDigit(source.charCodeAt(index))) {
+                number += source[index++];
+            }
+            ch = source[index];
+        }
+
+        if (ch === '.') {
+            number += source[index++];
+            while (isDecimalDigit(source.charCodeAt(index))) {
+                number += source[index++];
+            }
+            ch = source[index];
+        }
+
+        if (ch === 'e' || ch === 'E') {
+            number += source[index++];
+
+            ch = source[index];
+            if (ch === '+' || ch === '-') {
+                number += source[index++];
+            }
+            if (isDecimalDigit(source.charCodeAt(index))) {
+                while (isDecimalDigit(source.charCodeAt(index))) {
+                    number += source[index++];
+                }
+            } else {
+                throwError({}, Messages.UnexpectedToken, 'ILLEGAL');
+            }
+        }
+
+        if (isIdentifierStart(source.charCodeAt(index))) {
+            throwError({}, Messages.UnexpectedToken, 'ILLEGAL');
+        }
+
+        return {
+            type: Token.NumericLiteral,
+            value: parseFloat(number),
+            lineNumber: lineNumber,
+            lineStart: lineStart,
+            start: start,
+            end: index
+        };
+    }
+
+    // 7.8.4 String Literals
+
+    function scanStringLiteral() {
+        var str = '', quote, start, ch, code, unescaped, restore, octal = false, startLineNumber, startLineStart;
+        startLineNumber = lineNumber;
+        startLineStart = lineStart;
+
+        quote = source[index];
+        assert((quote === '\'' || quote === '"'),
+            'String literal must starts with a quote');
+
+        start = index;
+        ++index;
+
+        while (index < length) {
+            ch = source[index++];
+
+            if (ch === quote) {
+                quote = '';
+                break;
+            } else if (ch === '\\') {
+                ch = source[index++];
+                if (!ch || !isLineTerminator(ch.charCodeAt(0))) {
+                    switch (ch) {
+                    case 'u':
+                    case 'x':
+                        restore = index;
+                        unescaped = scanHexEscape(ch);
+                        if (unescaped) {
+                            str += unescaped;
+                        } else {
+                            index = restore;
+                            str += ch;
+                        }
+                        break;
+                    case 'n':
+                        str += '\n';
+                        break;
+                    case 'r':
+                        str += '\r';
+                        break;
+                    case 't':
+                        str += '\t';
+                        break;
+                    case 'b':
+                        str += '\b';
+                        break;
+                    case 'f':
+                        str += '\f';
+                        break;
+                    case 'v':
+                        str += '\x0B';
+                        break;
+
+                    default:
+                        if (isOctalDigit(ch)) {
+                            code = '01234567'.indexOf(ch);
+
+                            // \0 is not octal escape sequence
+                            if (code !== 0) {
+                                octal = true;
+                            }
+
+                            if (index < length && isOctalDigit(source[index])) {
+                                octal = true;
+                                code = code * 8 + '01234567'.indexOf(source[index++]);
+
+                                // 3 digits are only allowed when string starts
+                                // with 0, 1, 2, 3
+                                if ('0123'.indexOf(ch) >= 0 &&
+                                        index < length &&
+                                        isOctalDigit(source[index])) {
+                                    code = code * 8 + '01234567'.indexOf(source[index++]);
+                                }
+                            }
+                            str += String.fromCharCode(code);
+                        } else {
+                            str += ch;
+                        }
+                        break;
+                    }
+                } else {
+                    ++lineNumber;
+                    if (ch ===  '\r' && source[index] === '\n') {
+                        ++index;
+                    }
+                    lineStart = index;
+                }
+            } else if (isLineTerminator(ch.charCodeAt(0))) {
+                break;
+            } else {
+                str += ch;
+            }
+        }
+
+        if (quote !== '') {
+            throwError({}, Messages.UnexpectedToken, 'ILLEGAL');
+        }
+
+        return {
+            type: Token.StringLiteral,
+            value: str,
+            octal: octal,
+            startLineNumber: startLineNumber,
+            startLineStart: startLineStart,
+            lineNumber: lineNumber,
+            lineStart: lineStart,
+            start: start,
+            end: index
+        };
+    }
+
+    function testRegExp(pattern, flags) {
+        var value;
+        try {
+            value = new RegExp(pattern, flags);
+        } catch (e) {
+            throwError({}, Messages.InvalidRegExp);
+        }
+        return value;
+    }
+
+    function scanRegExpBody() {
+        var ch, str, classMarker, terminated, body;
+
+        ch = source[index];
+        assert(ch === '/', 'Regular expression literal must start with a slash');
+        str = source[index++];
+
+        classMarker = false;
+        terminated = false;
+        while (index < length) {
+            ch = source[index++];
+            str += ch;
+            if (ch === '\\') {
+                ch = source[index++];
+                // ECMA-262 7.8.5
+                if (isLineTerminator(ch.charCodeAt(0))) {
+                    throwError({}, Messages.UnterminatedRegExp);
+                }
+                str += ch;
+            } else if (isLineTerminator(ch.charCodeAt(0))) {
+                throwError({}, Messages.UnterminatedRegExp);
+            } else if (classMarker) {
+                if (ch === ']') {
+                    classMarker = false;
+                }
+            } else {
+                if (ch === '/') {
+                    terminated = true;
+                    break;
+                } else if (ch === '[') {
+                    classMarker = true;
+                }
+            }
+        }
+
+        if (!terminated) {
+            throwError({}, Messages.UnterminatedRegExp);
+        }
+
+        // Exclude leading and trailing slash.
+        body = str.substr(1, str.length - 2);
+        return {
+            value: body,
+            literal: str
+        };
+    }
+
+    function scanRegExpFlags() {
+        var ch, str, flags, restore;
+
+        str = '';
+        flags = '';
+        while (index < length) {
+            ch = source[index];
+            if (!isIdentifierPart(ch.charCodeAt(0))) {
+                break;
+            }
+
+            ++index;
+            if (ch === '\\' && index < length) {
+                ch = source[index];
+                if (ch === 'u') {
+                    ++index;
+                    restore = index;
+                    ch = scanHexEscape('u');
+                    if (ch) {
+                        flags += ch;
+                        for (str += '\\u'; restore < index; ++restore) {
+                            str += source[restore];
+                        }
+                    } else {
+                        index = restore;
+                        flags += 'u';
+                        str += '\\u';
+                    }
+                    throwErrorTolerant({}, Messages.UnexpectedToken, 'ILLEGAL');
+                } else {
+                    str += '\\';
+                    throwErrorTolerant({}, Messages.UnexpectedToken, 'ILLEGAL');
+                }
+            } else {
+                flags += ch;
+                str += ch;
+            }
+        }
+
+        return {
+            value: flags,
+            literal: str
+        };
+    }
+
+    function scanRegExp() {
+        var start, body, flags, pattern, value;
+
+        lookahead = null;
+        skipComment();
+        start = index;
+
+        body = scanRegExpBody();
+        flags = scanRegExpFlags();
+        value = testRegExp(body.value, flags.value);
+
+        if (extra.tokenize) {
+            return {
+                type: Token.RegularExpression,
+                value: value,
+                lineNumber: lineNumber,
+                lineStart: lineStart,
+                start: start,
+                end: index
+            };
+        }
+
+        return {
+            literal: body.literal + flags.literal,
+            value: value,
+            start: start,
+            end: index
+        };
+    }
+
+    function collectRegex() {
+        var pos, loc, regex, token;
+
+        skipComment();
+
+        pos = index;
+        loc = {
+            start: {
+                line: lineNumber,
+                column: index - lineStart
+            }
+        };
+
+        regex = scanRegExp();
+        loc.end = {
+            line: lineNumber,
+            column: index - lineStart
+        };
+
+        /* istanbul ignore next */
+        if (!extra.tokenize) {
+            // Pop the previous token, which is likely '/' or '/='
+            if (extra.tokens.length > 0) {
+                token = extra.tokens[extra.tokens.length - 1];
+                if (token.range[0] === pos && token.type === 'Punctuator') {
+                    if (token.value === '/' || token.value === '/=') {
+                        extra.tokens.pop();
+                    }
+                }
+            }
+
+            extra.tokens.push({
+                type: 'RegularExpression',
+                value: regex.literal,
+                range: [pos, index],
+                loc: loc
+            });
+        }
+
+        return regex;
+    }
+
+    function isIdentifierName(token) {
+        return token.type === Token.Identifier ||
+            token.type === Token.Keyword ||
+            token.type === Token.BooleanLiteral ||
+            token.type === Token.NullLiteral;
+    }
+
+    function advanceSlash() {
+        var prevToken,
+            checkToken;
+        // Using the following algorithm:
+        // https://github.com/mozilla/sweet.js/wiki/design
+        prevToken = extra.tokens[extra.tokens.length - 1];
+        if (!prevToken) {
+            // Nothing before that: it cannot be a division.
+            return collectRegex();
+        }
+        if (prevToken.type === 'Punctuator') {
+            if (prevToken.value === ']') {
+                return scanPunctuator();
+            }
+            if (prevToken.value === ')') {
+                checkToken = extra.tokens[extra.openParenToken - 1];
+                if (checkToken &&
+                        checkToken.type === 'Keyword' &&
+                        (checkToken.value === 'if' ||
+                         checkToken.value === 'while' ||
+                         checkToken.value === 'for' ||
+                         checkToken.value === 'with')) {
+                    return collectRegex();
+                }
+                return scanPunctuator();
+            }
+            if (prevToken.value === '}') {
+                // Dividing a function by anything makes little sense,
+                // but we have to check for that.
+                if (extra.tokens[extra.openCurlyToken - 3] &&
+                        extra.tokens[extra.openCurlyToken - 3].type === 'Keyword') {
+                    // Anonymous function.
+                    checkToken = extra.tokens[extra.openCurlyToken - 4];
+                    if (!checkToken) {
+                        return scanPunctuator();
+                    }
+                } else if (extra.tokens[extra.openCurlyToken - 4] &&
+                        extra.tokens[extra.openCurlyToken - 4].type === 'Keyword') {
+                    // Named function.
+                    checkToken = extra.tokens[extra.openCurlyToken - 5];
+                    if (!checkToken) {
+                        return collectRegex();
+                    }
+                } else {
+                    return scanPunctuator();
+                }
+                // checkToken determines whether the function is
+                // a declaration or an expression.
+                if (FnExprTokens.indexOf(checkToken.value) >= 0) {
+                    // It is an expression.
+                    return scanPunctuator();
+                }
+                // It is a declaration.
+                return collectRegex();
+            }
+            return collectRegex();
+        }
+        if (prevToken.type === 'Keyword') {
+            return collectRegex();
+        }
+        return scanPunctuator();
+    }
+
+    function advance() {
+        var ch;
+
+        skipComment();
+
+        if (index >= length) {
+            return {
+                type: Token.EOF,
+                lineNumber: lineNumber,
+                lineStart: lineStart,
+                start: index,
+                end: index
+            };
+        }
+
+        ch = source.charCodeAt(index);
+
+        if (isIdentifierStart(ch)) {
+            return scanIdentifier();
+        }
+
+        // Very common: ( and ) and ;
+        if (ch === 0x28 || ch === 0x29 || ch === 0x3B) {
+            return scanPunctuator();
+        }
+
+        // String literal starts with single quote (U+0027) or double quote (U+0022).
+        if (ch === 0x27 || ch === 0x22) {
+            return scanStringLiteral();
+        }
+
+
+        // Dot (.) U+002E can also start a floating-point number, hence the need
+        // to check the next character.
+        if (ch === 0x2E) {
+            if (isDecimalDigit(source.charCodeAt(index + 1))) {
+                return scanNumericLiteral();
+            }
+            return scanPunctuator();
+        }
+
+        if (isDecimalDigit(ch)) {
+            return scanNumericLiteral();
+        }
+
+        // Slash (/) U+002F can also start a regex.
+        if (extra.tokenize && ch === 0x2F) {
+            return advanceSlash();
+        }
+
+        return scanPunctuator();
+    }
+
+    function collectToken() {
+        var loc, token, range, value;
+
+        skipComment();
+        loc = {
+            start: {
+                line: lineNumber,
+                column: index - lineStart
+            }
+        };
+
+        token = advance();
+        loc.end = {
+            line: lineNumber,
+            column: index - lineStart
+        };
+
+        if (token.type !== Token.EOF) {
+            value = source.slice(token.start, token.end);
+            extra.tokens.push({
+                type: TokenName[token.type],
+                value: value,
+                range: [token.start, token.end],
+                loc: loc
+            });
+        }
+
+        return token;
+    }
+
+    function lex() {
+        var token;
+
+        token = lookahead;
+        index = token.end;
+        lineNumber = token.lineNumber;
+        lineStart = token.lineStart;
+
+        lookahead = (typeof extra.tokens !== 'undefined') ? collectToken() : advance();
+
+        index = token.end;
+        lineNumber = token.lineNumber;
+        lineStart = token.lineStart;
+
+        return token;
+    }
+
+    function peek() {
+        var pos, line, start;
+
+        pos = index;
+        line = lineNumber;
+        start = lineStart;
+        lookahead = (typeof extra.tokens !== 'undefined') ? collectToken() : advance();
+        index = pos;
+        lineNumber = line;
+        lineStart = start;
+    }
+
+    function Position(line, column) {
+        this.line = line;
+        this.column = column;
+    }
+
+    function SourceLocation(startLine, startColumn, line, column) {
+        this.start = new Position(startLine, startColumn);
+        this.end = new Position(line, column);
+    }
+
+    SyntaxTreeDelegate = {
+
+        name: 'SyntaxTree',
+
+        processComment: function (node) {
+            var lastChild, trailingComments;
+
+            if (node.type === Syntax.Program) {
+                if (node.body.length > 0) {
+                    return;
+                }
+            }
+
+            if (extra.trailingComments.length > 0) {
+                if (extra.trailingComments[0].range[0] >= node.range[1]) {
+                    trailingComments = extra.trailingComments;
+                    extra.trailingComments = [];
+                } else {
+                    extra.trailingComments.length = 0;
+                }
+            } else {
+                if (extra.bottomRightStack.length > 0 &&
+                        extra.bottomRightStack[extra.bottomRightStack.length - 1].trailingComments &&
+                        extra.bottomRightStack[extra.bottomRightStack.length - 1].trailingComments[0].range[0] >= node.range[1]) {
+                    trailingComments = extra.bottomRightStack[extra.bottomRightStack.length - 1].trailingComments;
+                    delete extra.bottomRightStack[extra.bottomRightStack.length - 1].trailingComments;
+                }
+            }
+
+            // Eating the stack.
+            while (extra.bottomRightStack.length > 0 && extra.bottomRightStack[extra.bottomRightStack.length - 1].range[0] >= node.range[0]) {
+                lastChild = extra.bottomRightStack.pop();
+            }
+
+            if (lastChild) {
+                if (lastChild.leadingComments && lastChild.leadingComments[lastChild.leadingComments.length - 1].range[1] <= node.range[0]) {
+                    node.leadingComments = lastChild.leadingComments;
+                    delete lastChild.leadingComments;
+                }
+            } else if (extra.leadingComments.length > 0 && extra.leadingComments[extra.leadingComments.length - 1].range[1] <= node.range[0]) {
+                node.leadingComments = extra.leadingComments;
+                extra.leadingComments = [];
+            }
+
+
+            if (trailingComments) {
+                node.trailingComments = trailingComments;
+            }
+
+            extra.bottomRightStack.push(node);
+        },
+
+        markEnd: function (node, startToken) {
+            if (extra.range) {
+                node.range = [startToken.start, index];
+            }
+            if (extra.loc) {
+                node.loc = new SourceLocation(
+                    startToken.startLineNumber === undefined ?  startToken.lineNumber : startToken.startLineNumber,
+                    startToken.start - (startToken.startLineStart === undefined ?  startToken.lineStart : startToken.startLineStart),
+                    lineNumber,
+                    index - lineStart
+                );
+                this.postProcess(node);
+            }
+
+            if (extra.attachComment) {
+                this.processComment(node);
+            }
+            return node;
+        },
+
+        postProcess: function (node) {
+            if (extra.source) {
+                node.loc.source = extra.source;
+            }
+            return node;
+        },
+
+        createArrayExpression: function (elements) {
+            return {
+                type: Syntax.ArrayExpression,
+                elements: elements
+            };
+        },
+
+        createAssignmentExpression: function (operator, left, right) {
+            return {
+                type: Syntax.AssignmentExpression,
+                operator: operator,
+                left: left,
+                right: right
+            };
+        },
+
+        createBinaryExpression: function (operator, left, right) {
+            var type = (operator === '||' || operator === '&&') ? Syntax.LogicalExpression :
+                        Syntax.BinaryExpression;
+            return {
+                type: type,
+                operator: operator,
+                left: left,
+                right: right
+            };
+        },
+
+        createBlockStatement: function (body) {
+            return {
+                type: Syntax.BlockStatement,
+                body: body
+            };
+        },
+
+        createBreakStatement: function (label) {
+            return {
+                type: Syntax.BreakStatement,
+                label: label
+            };
+        },
+
+        createCallExpression: function (callee, args) {
+            return {
+                type: Syntax.CallExpression,
+                callee: callee,
+                'arguments': args
+            };
+        },
+
+        createCatchClause: function (param, body) {
+            return {
+                type: Syntax.CatchClause,
+                param: param,
+                body: body
+            };
+        },
+
+        createConditionalExpression: function (test, consequent, alternate) {
+            return {
+                type: Syntax.ConditionalExpression,
+                test: test,
+                consequent: consequent,
+                alternate: alternate
+            };
+        },
+
+        createContinueStatement: function (label) {
+            return {
+                type: Syntax.ContinueStatement,
+                label: label
+            };
+        },
+
+        createDebuggerStatement: function () {
+            return {
+                type: Syntax.DebuggerStatement
+            };
+        },
+
+        createDoWhileStatement: function (body, test) {
+            return {
+                type: Syntax.DoWhileStatement,
+                body: body,
+                test: test
+            };
+        },
+
+        createEmptyStatement: function () {
+            return {
+                type: Syntax.EmptyStatement
+            };
+        },
+
+        createExpressionStatement: function (expression) {
+            return {
+                type: Syntax.ExpressionStatement,
+                expression: expression
+            };
+        },
+
+        createForStatement: function (init, test, update, body) {
+            return {
+                type: Syntax.ForStatement,
+                init: init,
+                test: test,
+                update: update,
+                body: body
+            };
+        },
+
+        createForInStatement: function (left, right, body) {
+            return {
+                type: Syntax.ForInStatement,
+                left: left,
+                right: right,
+                body: body,
+                each: false
+            };
+        },
+
+        createFunctionDeclaration: function (id, params, defaults, body) {
+            return {
+                type: Syntax.FunctionDeclaration,
+                id: id,
+                params: params,
+                defaults: defaults,
+                body: body,
+                rest: null,
+                generator: false,
+                expression: false
+            };
+        },
+
+        createFunctionExpression: function (id, params, defaults, body) {
+            return {
+                type: Syntax.FunctionExpression,
+                id: id,
+                params: params,
+                defaults: defaults,
+                body: body,
+                rest: null,
+                generator: false,
+                expression: false
+            };
+        },
+
+        createIdentifier: function (name) {
+            return {
+                type: Syntax.Identifier,
+                name: name
+            };
+        },
+
+        createIfStatement: function (test, consequent, alternate) {
+            return {
+                type: Syntax.IfStatement,
+                test: test,
+                consequent: consequent,
+                alternate: alternate
+            };
+        },
+
+        createLabeledStatement: function (label, body) {
+            return {
+                type: Syntax.LabeledStatement,
+                label: label,
+                body: body
+            };
+        },
+
+        createLiteral: function (token) {
+            return {
+                type: Syntax.Literal,
+                value: token.value,
+                raw: source.slice(token.start, token.end)
+            };
+        },
+
+        createMemberExpression: function (accessor, object, property) {
+            return {
+                type: Syntax.MemberExpression,
+                computed: accessor === '[',
+                object: object,
+                property: property
+            };
+        },
+
+        createNewExpression: function (callee, args) {
+            return {
+                type: Syntax.NewExpression,
+                callee: callee,
+                'arguments': args
+            };
+        },
+
+        createObjectExpression: function (properties) {
+            return {
+                type: Syntax.ObjectExpression,
+                properties: properties
+            };
+        },
+
+        createPostfixExpression: function (operator, argument) {
+            return {
+                type: Syntax.UpdateExpression,
+                operator: operator,
+                argument: argument,
+                prefix: false
+            };
+        },
+
+        createProgram: function (body) {
+            return {
+                type: Syntax.Program,
+                body: body
+            };
+        },
+
+        createProperty: function (kind, key, value) {
+            return {
+                type: Syntax.Property,
+                key: key,
+                value: value,
+                kind: kind
+            };
+        },
+
+        createReturnStatement: function (argument) {
+            return {
+                type: Syntax.ReturnStatement,
+                argument: argument
+            };
+        },
+
+        createSequenceExpression: function (expressions) {
+            return {
+                type: Syntax.SequenceExpression,
+                expressions: expressions
+            };
+        },
+
+        createSwitchCase: function (test, consequent) {
+            return {
+                type: Syntax.SwitchCase,
+                test: test,
+                consequent: consequent
+            };
+        },
+
+        createSwitchStatement: function (discriminant, cases) {
+            return {
+                type: Syntax.SwitchStatement,
+                discriminant: discriminant,
+                cases: cases
+            };
+        },
+
+        createThisExpression: function () {
+            return {
+                type: Syntax.ThisExpression
+            };
+        },
+
+        createThrowStatement: function (argument) {
+            return {
+                type: Syntax.ThrowStatement,
+                argument: argument
+            };
+        },
+
+        createTryStatement: function (block, guardedHandlers, handlers, finalizer) {
+            return {
+                type: Syntax.TryStatement,
+                block: block,
+                guardedHandlers: guardedHandlers,
+                handlers: handlers,
+                finalizer: finalizer
+            };
+        },
+
+        createUnaryExpression: function (operator, argument) {
+            if (operator === '++' || operator === '--') {
+                return {
+                    type: Syntax.UpdateExpression,
+                    operator: operator,
+                    argument: argument,
+                    prefix: true
+                };
+            }
+            return {
+                type: Syntax.UnaryExpression,
+                operator: operator,
+                argument: argument,
+                prefix: true
+            };
+        },
+
+        createVariableDeclaration: function (declarations, kind) {
+            return {
+                type: Syntax.VariableDeclaration,
+                declarations: declarations,
+                kind: kind
+            };
+        },
+
+        createVariableDeclarator: function (id, init) {
+            return {
+                type: Syntax.VariableDeclarator,
+                id: id,
+                init: init
+            };
+        },
+
+        createWhileStatement: function (test, body) {
+            return {
+                type: Syntax.WhileStatement,
+                test: test,
+                body: body
+            };
+        },
+
+        createWithStatement: function (object, body) {
+            return {
+                type: Syntax.WithStatement,
+                object: object,
+                body: body
+            };
+        }
+    };
+
+    // Return true if there is a line terminator before the next token.
+
+    function peekLineTerminator() {
+        var pos, line, start, found;
+
+        pos = index;
+        line = lineNumber;
+        start = lineStart;
+        skipComment();
+        found = lineNumber !== line;
+        index = pos;
+        lineNumber = line;
+        lineStart = start;
+
+        return found;
+    }
+
+    // Throw an exception
+
+    function throwError(token, messageFormat) {
+        var error,
+            args = Array.prototype.slice.call(arguments, 2),
+            msg = messageFormat.replace(
+                /%(\d)/g,
+                function (whole, index) {
+                    assert(index < args.length, 'Message reference must be in range');
+                    return args[index];
+                }
+            );
+
+        if (typeof token.lineNumber === 'number') {
+            error = new Error('Line ' + token.lineNumber + ': ' + msg);
+            error.index = token.start;
+            error.lineNumber = token.lineNumber;
+            error.column = token.start - lineStart + 1;
+        } else {
+            error = new Error('Line ' + lineNumber + ': ' + msg);
+            error.index = index;
+            error.lineNumber = lineNumber;
+            error.column = index - lineStart + 1;
+        }
+
+        error.description = msg;
+        throw error;
+    }
+
+    function throwErrorTolerant() {
+        try {
+            throwError.apply(null, arguments);
+        } catch (e) {
+            if (extra.errors) {
+                extra.errors.push(e);
+            } else {
+                throw e;
+            }
+        }
+    }
+
+
+    // Throw an exception because of the token.
+
+    function throwUnexpected(token) {
+        if (token.type === Token.EOF) {
+            throwError(token, Messages.UnexpectedEOS);
+        }
+
+        if (token.type === Token.NumericLiteral) {
+            throwError(token, Messages.UnexpectedNumber);
+        }
+
+        if (token.type === Token.StringLiteral) {
+            throwError(token, Messages.UnexpectedString);
+        }
+
+        if (token.type === Token.Identifier) {
+            throwError(token, Messages.UnexpectedIdentifier);
+        }
+
+        if (token.type === Token.Keyword) {
+            if (isFutureReservedWord(token.value)) {
+                throwError(token, Messages.UnexpectedReserved);
+            } else if (strict && isStrictModeReservedWord(token.value)) {
+                throwErrorTolerant(token, Messages.StrictReservedWord);
+                return;
+            }
+            throwError(token, Messages.UnexpectedToken, token.value);
+        }
+
+        // BooleanLiteral, NullLiteral, or Punctuator.
+        throwError(token, Messages.UnexpectedToken, token.value);
+    }
+
+    // Expect the next token to match the specified punctuator.
+    // If not, an exception will be thrown.
+
+    function expect(value) {
+        var token = lex();
+        if (token.type !== Token.Punctuator || token.value !== value) {
+            throwUnexpected(token);
+        }
+    }
+
+    // Expect the next token to match the specified keyword.
+    // If not, an exception will be thrown.
+
+    function expectKeyword(keyword) {
+        var token = lex();
+        if (token.type !== Token.Keyword || token.value !== keyword) {
+            throwUnexpected(token);
+        }
+    }
+
+    // Return true if the next token matches the specified punctuator.
+
+    function match(value) {
+        return lookahead.type === Token.Punctuator && lookahead.value === value;
+    }
+
+    // Return true if the next token matches the specified keyword
+
+    function matchKeyword(keyword) {
+        return lookahead.type === Token.Keyword && lookahead.value === keyword;
+    }
+
+    // Return true if the next token is an assignment operator
+
+    function matchAssign() {
+        var op;
+
+        if (lookahead.type !== Token.Punctuator) {
+            return false;
+        }
+        op = lookahead.value;
+        return op === '=' ||
+            op === '*=' ||
+            op === '/=' ||
+            op === '%=' ||
+            op === '+=' ||
+            op === '-=' ||
+            op === '<<=' ||
+            op === '>>=' ||
+            op === '>>>=' ||
+            op === '&=' ||
+            op === '^=' ||
+            op === '|=';
+    }
+
+    function consumeSemicolon() {
+        var line;
+
+        // Catch the very common case first: immediately a semicolon (U+003B).
+        if (source.charCodeAt(index) === 0x3B || match(';')) {
+            lex();
+            return;
+        }
+
+        line = lineNumber;
+        skipComment();
+        if (lineNumber !== line) {
+            return;
+        }
+
+        if (lookahead.type !== Token.EOF && !match('}')) {
+            throwUnexpected(lookahead);
+        }
+    }
+
+    // Return true if provided expression is LeftHandSideExpression
+
+    function isLeftHandSide(expr) {
+        return expr.type === Syntax.Identifier || expr.type === Syntax.MemberExpression;
+    }
+
+    // 11.1.4 Array Initialiser
+
+    function parseArrayInitialiser() {
+        var elements = [], startToken;
+
+        startToken = lookahead;
+        expect('[');
+
+        while (!match(']')) {
+            if (match(',')) {
+                lex();
+                elements.push(null);
+            } else {
+                elements.push(parseAssignmentExpression());
+
+                if (!match(']')) {
+                    expect(',');
+                }
+            }
+        }
+
+        lex();
+
+        return delegate.markEnd(delegate.createArrayExpression(elements), startToken);
+    }
+
+    // 11.1.5 Object Initialiser
+
+    function parsePropertyFunction(param, first) {
+        var previousStrict, body, startToken;
+
+        previousStrict = strict;
+        startToken = lookahead;
+        body = parseFunctionSourceElements();
+        if (first && strict && isRestrictedWord(param[0].name)) {
+            throwErrorTolerant(first, Messages.StrictParamName);
+        }
+        strict = previousStrict;
+        return delegate.markEnd(delegate.createFunctionExpression(null, param, [], body), startToken);
+    }
+
+    function parseObjectPropertyKey() {
+        var token, startToken;
+
+        startToken = lookahead;
+        token = lex();
+
+        // Note: This function is called only from parseObjectProperty(), where
+        // EOF and Punctuator tokens are already filtered out.
+
+        if (token.type === Token.StringLiteral || token.type === Token.NumericLiteral) {
+            if (strict && token.octal) {
+                throwErrorTolerant(token, Messages.StrictOctalLiteral);
+            }
+            return delegate.markEnd(delegate.createLiteral(token), startToken);
+        }
+
+        return delegate.markEnd(delegate.createIdentifier(token.value), startToken);
+    }
+
+    function parseObjectProperty() {
+        var token, key, id, value, param, startToken;
+
+        token = lookahead;
+        startToken = lookahead;
+
+        if (token.type === Token.Identifier) {
+
+            id = parseObjectPropertyKey();
+
+            // Property Assignment: Getter and Setter.
+
+            if (token.value === 'get' && !match(':')) {
+                key = parseObjectPropertyKey();
+                expect('(');
+                expect(')');
+                value = parsePropertyFunction([]);
+                return delegate.markEnd(delegate.createProperty('get', key, value), startToken);
+            }
+            if (token.value === 'set' && !match(':')) {
+                key = parseObjectPropertyKey();
+                expect('(');
+                token = lookahead;
+                if (token.type !== Token.Identifier) {
+                    expect(')');
+                    throwErrorTolerant(token, Messages.UnexpectedToken, token.value);
+                    value = parsePropertyFunction([]);
+                } else {
+                    param = [ parseVariableIdentifier() ];
+                    expect(')');
+                    value = parsePropertyFunction(param, token);
+                }
+                return delegate.markEnd(delegate.createProperty('set', key, value), startToken);
+            }
+            expect(':');
+            value = parseAssignmentExpression();
+            return delegate.markEnd(delegate.createProperty('init', id, value), startToken);
+        }
+        if (token.type === Token.EOF || token.type === Token.Punctuator) {
+            throwUnexpected(token);
+        } else {
+            key = parseObjectPropertyKey();
+            expect(':');
+            value = parseAssignmentExpression();
+            return delegate.markEnd(delegate.createProperty('init', key, value), startToken);
+        }
+    }
+
+    function parseObjectInitialiser() {
+        var properties = [], property, name, key, kind, map = {}, toString = String, startToken;
+
+        startToken = lookahead;
+
+        expect('{');
+
+        while (!match('}')) {
+            property = parseObjectProperty();
+
+            if (property.key.type === Syntax.Identifier) {
+                name = property.key.name;
+            } else {
+                name = toString(property.key.value);
+            }
+            kind = (property.kind === 'init') ? PropertyKind.Data : (property.kind === 'get') ? PropertyKind.Get : PropertyKind.Set;
+
+            key = '$' + name;
+            if (Object.prototype.hasOwnProperty.call(map, key)) {
+                if (map[key] === PropertyKind.Data) {
+                    if (strict && kind === PropertyKind.Data) {
+                        throwErrorTolerant({}, Messages.StrictDuplicateProperty);
+                    } else if (kind !== PropertyKind.Data) {
+                        throwErrorTolerant({}, Messages.AccessorDataProperty);
+                    }
+                } else {
+                    if (kind === PropertyKind.Data) {
+                        throwErrorTolerant({}, Messages.AccessorDataProperty);
+                    } else if (map[key] & kind) {
+                        throwErrorTolerant({}, Messages.AccessorGetSet);
+                    }
+                }
+                map[key] |= kind;
+            } else {
+                map[key] = kind;
+            }
+
+            properties.push(property);
+
+            if (!match('}')) {
+                expect(',');
+            }
+        }
+
+        expect('}');
+
+        return delegate.markEnd(delegate.createObjectExpression(properties), startToken);
+    }
+
+    // 11.1.6 The Grouping Operator
+
+    function parseGroupExpression() {
+        var expr;
+
+        expect('(');
+
+        expr = parseExpression();
+
+        expect(')');
+
+        return expr;
+    }
+
+
+    // 11.1 Primary Expressions
+
+    function parsePrimaryExpression() {
+        var type, token, expr, startToken;
+
+        if (match('(')) {
+            return parseGroupExpression();
+        }
+
+        if (match('[')) {
+            return parseArrayInitialiser();
+        }
+
+        if (match('{')) {
+            return parseObjectInitialiser();
+        }
+
+        type = lookahead.type;
+        startToken = lookahead;
+
+        if (type === Token.Identifier) {
+            expr =  delegate.createIdentifier(lex().value);
+        } else if (type === Token.StringLiteral || type === Token.NumericLiteral) {
+            if (strict && lookahead.octal) {
+                throwErrorTolerant(lookahead, Messages.StrictOctalLiteral);
+            }
+            expr = delegate.createLiteral(lex());
+        } else if (type === Token.Keyword) {
+            if (matchKeyword('function')) {
+                return parseFunctionExpression();
+            }
+            if (matchKeyword('this')) {
+                lex();
+                expr = delegate.createThisExpression();
+            } else {
+                throwUnexpected(lex());
+            }
+        } else if (type === Token.BooleanLiteral) {
+            token = lex();
+            token.value = (token.value === 'true');
+            expr = delegate.createLiteral(token);
+        } else if (type === Token.NullLiteral) {
+            token = lex();
+            token.value = null;
+            expr = delegate.createLiteral(token);
+        } else if (match('/') || match('/=')) {
+            if (typeof extra.tokens !== 'undefined') {
+                expr = delegate.createLiteral(collectRegex());
+            } else {
+                expr = delegate.createLiteral(scanRegExp());
+            }
+            peek();
+        } else {
+            throwUnexpected(lex());
+        }
+
+        return delegate.markEnd(expr, startToken);
+    }
+
+    // 11.2 Left-Hand-Side Expressions
+
+    function parseArguments() {
+        var args = [];
+
+        expect('(');
+
+        if (!match(')')) {
+            while (index < length) {
+                args.push(parseAssignmentExpression());
+                if (match(')')) {
+                    break;
+                }
+                expect(',');
+            }
+        }
+
+        expect(')');
+
+        return args;
+    }
+
+    function parseNonComputedProperty() {
+        var token, startToken;
+
+        startToken = lookahead;
+        token = lex();
+
+        if (!isIdentifierName(token)) {
+            throwUnexpected(token);
+        }
+
+        return delegate.markEnd(delegate.createIdentifier(token.value), startToken);
+    }
+
+    function parseNonComputedMember() {
+        expect('.');
+
+        return parseNonComputedProperty();
+    }
+
+    function parseComputedMember() {
+        var expr;
+
+        expect('[');
+
+        expr = parseExpression();
+
+        expect(']');
+
+        return expr;
+    }
+
+    function parseNewExpression() {
+        var callee, args, startToken;
+
+        startToken = lookahead;
+        expectKeyword('new');
+        callee = parseLeftHandSideExpression();
+        args = match('(') ? parseArguments() : [];
+
+        return delegate.markEnd(delegate.createNewExpression(callee, args), startToken);
+    }
+
+    function parseLeftHandSideExpressionAllowCall() {
+        var previousAllowIn, expr, args, property, startToken;
+
+        startToken = lookahead;
+
+        previousAllowIn = state.allowIn;
+        state.allowIn = true;
+        expr = matchKeyword('new') ? parseNewExpression() : parsePrimaryExpression();
+        state.allowIn = previousAllowIn;
+
+        for (;;) {
+            if (match('.')) {
+                property = parseNonComputedMember();
+                expr = delegate.createMemberExpression('.', expr, property);
+            } else if (match('(')) {
+                args = parseArguments();
+                expr = delegate.createCallExpression(expr, args);
+            } else if (match('[')) {
+                property = parseComputedMember();
+                expr = delegate.createMemberExpression('[', expr, property);
+            } else {
+                break;
+            }
+            delegate.markEnd(expr, startToken);
+        }
+
+        return expr;
+    }
+
+    function parseLeftHandSideExpression() {
+        var previousAllowIn, expr, property, startToken;
+
+        startToken = lookahead;
+
+        previousAllowIn = state.allowIn;
+        expr = matchKeyword('new') ? parseNewExpression() : parsePrimaryExpression();
+        state.allowIn = previousAllowIn;
+
+        while (match('.') || match('[')) {
+            if (match('[')) {
+                property = parseComputedMember();
+                expr = delegate.createMemberExpression('[', expr, property);
+            } else {
+                property = parseNonComputedMember();
+                expr = delegate.createMemberExpression('.', expr, property);
+            }
+            delegate.markEnd(expr, startToken);
+        }
+
+        return expr;
+    }
+
+    // 11.3 Postfix Expressions
+
+    function parsePostfixExpression() {
+        var expr, token, startToken = lookahead;
+
+        expr = parseLeftHandSideExpressionAllowCall();
+
+        if (lookahead.type === Token.Punctuator) {
+            if ((match('++') || match('--')) && !peekLineTerminator()) {
+                // 11.3.1, 11.3.2
+                if (strict && expr.type === Syntax.Identifier && isRestrictedWord(expr.name)) {
+                    throwErrorTolerant({}, Messages.StrictLHSPostfix);
+                }
+
+                if (!isLeftHandSide(expr)) {
+                    throwErrorTolerant({}, Messages.InvalidLHSInAssignment);
+                }
+
+                token = lex();
+                expr = delegate.markEnd(delegate.createPostfixExpression(token.value, expr), startToken);
+            }
+        }
+
+        return expr;
+    }
+
+    // 11.4 Unary Operators
+
+    function parseUnaryExpression() {
+        var token, expr, startToken;
+
+        if (lookahead.type !== Token.Punctuator && lookahead.type !== Token.Keyword) {
+            expr = parsePostfixExpression();
+        } else if (match('++') || match('--')) {
+            startToken = lookahead;
+            token = lex();
+            expr = parseUnaryExpression();
+            // 11.4.4, 11.4.5
+            if (strict && expr.type === Syntax.Identifier && isRestrictedWord(expr.name)) {
+                throwErrorTolerant({}, Messages.StrictLHSPrefix);
+            }
+
+            if (!isLeftHandSide(expr)) {
+                throwErrorTolerant({}, Messages.InvalidLHSInAssignment);
+            }
+
+            expr = delegate.createUnaryExpression(token.value, expr);
+            expr = delegate.markEnd(expr, startToken);
+        } else if (match('+') || match('-') || match('~') || match('!')) {
+            startToken = lookahead;
+            token = lex();
+            expr = parseUnaryExpression();
+            expr = delegate.createUnaryExpression(token.value, expr);
+            expr = delegate.markEnd(expr, startToken);
+        } else if (matchKeyword('delete') || matchKeyword('void') || matchKeyword('typeof')) {
+            startToken = lookahead;
+            token = lex();
+            expr = parseUnaryExpression();
+            expr = delegate.createUnaryExpression(token.value, expr);
+            expr = delegate.markEnd(expr, startToken);
+            if (strict && expr.operator === 'delete' && expr.argument.type === Syntax.Identifier) {
+                throwErrorTolerant({}, Messages.StrictDelete);
+            }
+        } else {
+            expr = parsePostfixExpression();
+        }
+
+        return expr;
+    }
+
+    function binaryPrecedence(token, allowIn) {
+        var prec = 0;
+
+        if (token.type !== Token.Punctuator && token.type !== Token.Keyword) {
+            return 0;
+        }
+
+        switch (token.value) {
+        case '||':
+            prec = 1;
+            break;
+
+        case '&&':
+            prec = 2;
+            break;
+
+        case '|':
+            prec = 3;
+            break;
+
+        case '^':
+            prec = 4;
+            break;
+
+        case '&':
+            prec = 5;
+            break;
+
+        case '==':
+        case '!=':
+        case '===':
+        case '!==':
+            prec = 6;
+            break;
+
+        case '<':
+        case '>':
+        case '<=':
+        case '>=':
+        case 'instanceof':
+            prec = 7;
+            break;
+
+        case 'in':
+            prec = allowIn ? 7 : 0;
+            break;
+
+        case '<<':
+        case '>>':
+        case '>>>':
+            prec = 8;
+            break;
+
+        case '+':
+        case '-':
+            prec = 9;
+            break;
+
+        case '*':
+        case '/':
+        case '%':
+            prec = 11;
+            break;
+
+        default:
+            break;
+        }
+
+        return prec;
+    }
+
+    // 11.5 Multiplicative Operators
+    // 11.6 Additive Operators
+    // 11.7 Bitwise Shift Operators
+    // 11.8 Relational Operators
+    // 11.9 Equality Operators
+    // 11.10 Binary Bitwise Operators
+    // 11.11 Binary Logical Operators
+
+    function parseBinaryExpression() {
+        var marker, markers, expr, token, prec, stack, right, operator, left, i;
+
+        marker = lookahead;
+        left = parseUnaryExpression();
+
+        token = lookahead;
+        prec = binaryPrecedence(token, state.allowIn);
+        if (prec === 0) {
+            return left;
+        }
+        token.prec = prec;
+        lex();
+
+        markers = [marker, lookahead];
+        right = parseUnaryExpression();
+
+        stack = [left, token, right];
+
+        while ((prec = binaryPrecedence(lookahead, state.allowIn)) > 0) {
+
+            // Reduce: make a binary expression from the three topmost entries.
+            while ((stack.length > 2) && (prec <= stack[stack.length - 2].prec)) {
+                right = stack.pop();
+                operator = stack.pop().value;
+                left = stack.pop();
+                expr = delegate.createBinaryExpression(operator, left, right);
+                markers.pop();
+                marker = markers[markers.length - 1];
+                delegate.markEnd(expr, marker);
+                stack.push(expr);
+            }
+
+            // Shift.
+            token = lex();
+            token.prec = prec;
+            stack.push(token);
+            markers.push(lookahead);
+            expr = parseUnaryExpression();
+            stack.push(expr);
+        }
+
+        // Final reduce to clean-up the stack.
+        i = stack.length - 1;
+        expr = stack[i];
+        markers.pop();
+        while (i > 1) {
+            expr = delegate.createBinaryExpression(stack[i - 1].value, stack[i - 2], expr);
+            i -= 2;
+            marker = markers.pop();
+            delegate.markEnd(expr, marker);
+        }
+
+        return expr;
+    }
+
+
+    // 11.12 Conditional Operator
+
+    function parseConditionalExpression() {
+        var expr, previousAllowIn, consequent, alternate, startToken;
+
+        startToken = lookahead;
+
+        expr = parseBinaryExpression();
+
+        if (match('?')) {
+            lex();
+            previousAllowIn = state.allowIn;
+            state.allowIn = true;
+            consequent = parseAssignmentExpression();
+            state.allowIn = previousAllowIn;
+            expect(':');
+            alternate = parseAssignmentExpression();
+
+            expr = delegate.createConditionalExpression(expr, consequent, alternate);
+            delegate.markEnd(expr, startToken);
+        }
+
+        return expr;
+    }
+
+    // 11.13 Assignment Operators
+
+    function parseAssignmentExpression() {
+        var token, left, right, node, startToken;
+
+        token = lookahead;
+        startToken = lookahead;
+
+        node = left = parseConditionalExpression();
+
+        if (matchAssign()) {
+            // LeftHandSideExpression
+            if (!isLeftHandSide(left)) {
+                throwErrorTolerant({}, Messages.InvalidLHSInAssignment);
+            }
+
+            // 11.13.1
+            if (strict && left.type === Syntax.Identifier && isRestrictedWord(left.name)) {
+                throwErrorTolerant(token, Messages.StrictLHSAssignment);
+            }
+
+            token = lex();
+            right = parseAssignmentExpression();
+            node = delegate.markEnd(delegate.createAssignmentExpression(token.value, left, right), startToken);
+        }
+
+        return node;
+    }
+
+    // 11.14 Comma Operator
+
+    function parseExpression() {
+        var expr, startToken = lookahead;
+
+        expr = parseAssignmentExpression();
+
+        if (match(',')) {
+            expr = delegate.createSequenceExpression([ expr ]);
+
+            while (index < length) {
+                if (!match(',')) {
+                    break;
+                }
+                lex();
+                expr.expressions.push(parseAssignmentExpression());
+            }
+
+            delegate.markEnd(expr, startToken);
+        }
+
+        return expr;
+    }
+
+    // 12.1 Block
+
+    function parseStatementList() {
+        var list = [],
+            statement;
+
+        while (index < length) {
+            if (match('}')) {
+                break;
+            }
+            statement = parseSourceElement();
+            if (typeof statement === 'undefined') {
+                break;
+            }
+            list.push(statement);
+        }
+
+        return list;
+    }
+
+    function parseBlock() {
+        var block, startToken;
+
+        startToken = lookahead;
+        expect('{');
+
+        block = parseStatementList();
+
+        expect('}');
+
+        return delegate.markEnd(delegate.createBlockStatement(block), startToken);
+    }
+
+    // 12.2 Variable Statement
+
+    function parseVariableIdentifier() {
+        var token, startToken;
+
+        startToken = lookahead;
+        token = lex();
+
+        if (token.type !== Token.Identifier) {
+            throwUnexpected(token);
+        }
+
+        return delegate.markEnd(delegate.createIdentifier(token.value), startToken);
+    }
+
+    function parseVariableDeclaration(kind) {
+        var init = null, id, startToken;
+
+        startToken = lookahead;
+        id = parseVariableIdentifier();
+
+        // 12.2.1
+        if (strict && isRestrictedWord(id.name)) {
+            throwErrorTolerant({}, Messages.StrictVarName);
+        }
+
+        if (kind === 'const') {
+            expect('=');
+            init = parseAssignmentExpression();
+        } else if (match('=')) {
+            lex();
+            init = parseAssignmentExpression();
+        }
+
+        return delegate.markEnd(delegate.createVariableDeclarator(id, init), startToken);
+    }
+
+    function parseVariableDeclarationList(kind) {
+        var list = [];
+
+        do {
+            list.push(parseVariableDeclaration(kind));
+            if (!match(',')) {
+                break;
+            }
+            lex();
+        } while (index < length);
+
+        return list;
+    }
+
+    function parseVariableStatement() {
+        var declarations;
+
+        expectKeyword('var');
+
+        declarations = parseVariableDeclarationList();
+
+        consumeSemicolon();
+
+        return delegate.createVariableDeclaration(declarations, 'var');
+    }
+
+    // kind may be `const` or `let`
+    // Both are experimental and not in the specification yet.
+    // see http://wiki.ecmascript.org/doku.php?id=harmony:const
+    // and http://wiki.ecmascript.org/doku.php?id=harmony:let
+    function parseConstLetDeclaration(kind) {
+        var declarations, startToken;
+
+        startToken = lookahead;
+
+        expectKeyword(kind);
+
+        declarations = parseVariableDeclarationList(kind);
+
+        consumeSemicolon();
+
+        return delegate.markEnd(delegate.createVariableDeclaration(declarations, kind), startToken);
+    }
+
+    // 12.3 Empty Statement
+
+    function parseEmptyStatement() {
+        expect(';');
+        return delegate.createEmptyStatement();
+    }
+
+    // 12.4 Expression Statement
+
+    function parseExpressionStatement() {
+        var expr = parseExpression();
+        consumeSemicolon();
+        return delegate.createExpressionStatement(expr);
+    }
+
+    // 12.5 If statement
+
+    function parseIfStatement() {
+        var test, consequent, alternate;
+
+        expectKeyword('if');
+
+        expect('(');
+
+        test = parseExpression();
+
+        expect(')');
+
+        consequent = parseStatement();
+
+        if (matchKeyword('else')) {
+            lex();
+            alternate = parseStatement();
+        } else {
+            alternate = null;
+        }
+
+        return delegate.createIfStatement(test, consequent, alternate);
+    }
+
+    // 12.6 Iteration Statements
+
+    function parseDoWhileStatement() {
+        var body, test, oldInIteration;
+
+        expectKeyword('do');
+
+        oldInIteration = state.inIteration;
+        state.inIteration = true;
+
+        body = parseStatement();
+
+        state.inIteration = oldInIteration;
+
+        expectKeyword('while');
+
+        expect('(');
+
+        test = parseExpression();
+
+        expect(')');
+
+        if (match(';')) {
+            lex();
+        }
+
+        return delegate.createDoWhileStatement(body, test);
+    }
+
+    function parseWhileStatement() {
+        var test, body, oldInIteration;
+
+        expectKeyword('while');
+
+        expect('(');
+
+        test = parseExpression();
+
+        expect(')');
+
+        oldInIteration = state.inIteration;
+        state.inIteration = true;
+
+        body = parseStatement();
+
+        state.inIteration = oldInIteration;
+
+        return delegate.createWhileStatement(test, body);
+    }
+
+    function parseForVariableDeclaration() {
+        var token, declarations, startToken;
+
+        startToken = lookahead;
+        token = lex();
+        declarations = parseVariableDeclarationList();
+
+        return delegate.markEnd(delegate.createVariableDeclaration(declarations, token.value), startToken);
+    }
+
+    function parseForStatement() {
+        var init, test, update, left, right, body, oldInIteration;
+
+        init = test = update = null;
+
+        expectKeyword('for');
+
+        expect('(');
+
+        if (match(';')) {
+            lex();
+        } else {
+            if (matchKeyword('var') || matchKeyword('let')) {
+                state.allowIn = false;
+                init = parseForVariableDeclaration();
+                state.allowIn = true;
+
+                if (init.declarations.length === 1 && matchKeyword('in')) {
+                    lex();
+                    left = init;
+                    right = parseExpression();
+                    init = null;
+                }
+            } else {
+                state.allowIn = false;
+                init = parseExpression();
+                state.allowIn = true;
+
+                if (matchKeyword('in')) {
+                    // LeftHandSideExpression
+                    if (!isLeftHandSide(init)) {
+                        throwErrorTolerant({}, Messages.InvalidLHSInForIn);
+                    }
+
+                    lex();
+                    left = init;
+                    right = parseExpression();
+                    init = null;
+                }
+            }
+
+            if (typeof left === 'undefined') {
+                expect(';');
+            }
+        }
+
+        if (typeof left === 'undefined') {
+
+            if (!match(';')) {
+                test = parseExpression();
+            }
+            expect(';');
+
+            if (!match(')')) {
+                update = parseExpression();
+            }
+        }
+
+        expect(')');
+
+        oldInIteration = state.inIteration;
+        state.inIteration = true;
+
+        body = parseStatement();
+
+        state.inIteration = oldInIteration;
+
+        return (typeof left === 'undefined') ?
+                delegate.createForStatement(init, test, update, body) :
+                delegate.createForInStatement(left, right, body);
+    }
+
+    // 12.7 The continue statement
+
+    function parseContinueStatement() {
+        var label = null, key;
+
+        expectKeyword('continue');
+
+        // Optimize the most common form: 'continue;'.
+        if (source.charCodeAt(index) === 0x3B) {
+            lex();
+
+            if (!state.inIteration) {
+                throwError({}, Messages.IllegalContinue);
+            }
+
+            return delegate.createContinueStatement(null);
+        }
+
+        if (peekLineTerminator()) {
+            if (!state.inIteration) {
+                throwError({}, Messages.IllegalContinue);
+            }
+
+            return delegate.createContinueStatement(null);
+        }
+
+        if (lookahead.type === Token.Identifier) {
+            label = parseVariableIdentifier();
+
+            key = '$' + label.name;
+            if (!Object.prototype.hasOwnProperty.call(state.labelSet, key)) {
+                throwError({}, Messages.UnknownLabel, label.name);
+            }
+        }
+
+        consumeSemicolon();
+
+        if (label === null && !state.inIteration) {
+            throwError({}, Messages.IllegalContinue);
+        }
+
+        return delegate.createContinueStatement(label);
+    }
+
+    // 12.8 The break statement
+
+    function parseBreakStatement() {
+        var label = null, key;
+
+        expectKeyword('break');
+
+        // Catch the very common case first: immediately a semicolon (U+003B).
+        if (source.charCodeAt(index) === 0x3B) {
+            lex();
+
+            if (!(state.inIteration || state.inSwitch)) {
+                throwError({}, Messages.IllegalBreak);
+            }
+
+            return delegate.createBreakStatement(null);
+        }
+
+        if (peekLineTerminator()) {
+            if (!(state.inIteration || state.inSwitch)) {
+                throwError({}, Messages.IllegalBreak);
+            }
+
+            return delegate.createBreakStatement(null);
+        }
+
+        if (lookahead.type === Token.Identifier) {
+            label = parseVariableIdentifier();
+
+            key = '$' + label.name;
+            if (!Object.prototype.hasOwnProperty.call(state.labelSet, key)) {
+                throwError({}, Messages.UnknownLabel, label.name);
+            }
+        }
+
+        consumeSemicolon();
+
+        if (label === null && !(state.inIteration || state.inSwitch)) {
+            throwError({}, Messages.IllegalBreak);
+        }
+
+        return delegate.createBreakStatement(label);
+    }
+
+    // 12.9 The return statement
+
+    function parseReturnStatement() {
+        var argument = null;
+
+        expectKeyword('return');
+
+        if (!state.inFunctionBody) {
+            throwErrorTolerant({}, Messages.IllegalReturn);
+        }
+
+        // 'return' followed by a space and an identifier is very common.
+        if (source.charCodeAt(index) === 0x20) {
+            if (isIdentifierStart(source.charCodeAt(index + 1))) {
+                argument = parseExpression();
+                consumeSemicolon();
+                return delegate.createReturnStatement(argument);
+            }
+        }
+
+        if (peekLineTerminator()) {
+            return delegate.createReturnStatement(null);
+        }
+
+        if (!match(';')) {
+            if (!match('}') && lookahead.type !== Token.EOF) {
+                argument = parseExpression();
+            }
+        }
+
+        consumeSemicolon();
+
+        return delegate.createReturnStatement(argument);
+    }
+
+    // 12.10 The with statement
+
+    function parseWithStatement() {
+        var object, body;
+
+        if (strict) {
+            // TODO(ikarienator): Should we update the test cases instead?
+            skipComment();
+            throwErrorTolerant({}, Messages.StrictModeWith);
+        }
+
+        expectKeyword('with');
+
+        expect('(');
+
+        object = parseExpression();
+
+        expect(')');
+
+        body = parseStatement();
+
+        return delegate.createWithStatement(object, body);
+    }
+
+    // 12.10 The swith statement
+
+    function parseSwitchCase() {
+        var test, consequent = [], statement, startToken;
+
+        startToken = lookahead;
+        if (matchKeyword('default')) {
+            lex();
+            test = null;
+        } else {
+            expectKeyword('case');
+            test = parseExpression();
+        }
+        expect(':');
+
+        while (index < length) {
+            if (match('}') || matchKeyword('default') || matchKeyword('case')) {
+                break;
+            }
+            statement = parseStatement();
+            consequent.push(statement);
+        }
+
+        return delegate.markEnd(delegate.createSwitchCase(test, consequent), startToken);
+    }
+
+    function parseSwitchStatement() {
+        var discriminant, cases, clause, oldInSwitch, defaultFound;
+
+        expectKeyword('switch');
+
+        expect('(');
+
+        discriminant = parseExpression();
+
+        expect(')');
+
+        expect('{');
+
+        cases = [];
+
+        if (match('}')) {
+            lex();
+            return delegate.createSwitchStatement(discriminant, cases);
+        }
+
+        oldInSwitch = state.inSwitch;
+        state.inSwitch = true;
+        defaultFound = false;
+
+        while (index < length) {
+            if (match('}')) {
+                break;
+            }
+            clause = parseSwitchCase();
+            if (clause.test === null) {
+                if (defaultFound) {
+                    throwError({}, Messages.MultipleDefaultsInSwitch);
+                }
+                defaultFound = true;
+            }
+            cases.push(clause);
+        }
+
+        state.inSwitch = oldInSwitch;
+
+        expect('}');
+
+        return delegate.createSwitchStatement(discriminant, cases);
+    }
+
+    // 12.13 The throw statement
+
+    function parseThrowStatement() {
+        var argument;
+
+        expectKeyword('throw');
+
+        if (peekLineTerminator()) {
+            throwError({}, Messages.NewlineAfterThrow);
+        }
+
+        argument = parseExpression();
+
+        consumeSemicolon();
+
+        return delegate.createThrowStatement(argument);
+    }
+
+    // 12.14 The try statement
+
+    function parseCatchClause() {
+        var param, body, startToken;
+
+        startToken = lookahead;
+        expectKeyword('catch');
+
+        expect('(');
+        if (match(')')) {
+            throwUnexpected(lookahead);
+        }
+
+        param = parseVariableIdentifier();
+        // 12.14.1
+        if (strict && isRestrictedWord(param.name)) {
+            throwErrorTolerant({}, Messages.StrictCatchVariable);
+        }
+
+        expect(')');
+        body = parseBlock();
+        return delegate.markEnd(delegate.createCatchClause(param, body), startToken);
+    }
+
+    function parseTryStatement() {
+        var block, handlers = [], finalizer = null;
+
+        expectKeyword('try');
+
+        block = parseBlock();
+
+        if (matchKeyword('catch')) {
+            handlers.push(parseCatchClause());
+        }
+
+        if (matchKeyword('finally')) {
+            lex();
+            finalizer = parseBlock();
+        }
+
+        if (handlers.length === 0 && !finalizer) {
+            throwError({}, Messages.NoCatchOrFinally);
+        }
+
+        return delegate.createTryStatement(block, [], handlers, finalizer);
+    }
+
+    // 12.15 The debugger statement
+
+    function parseDebuggerStatement() {
+        expectKeyword('debugger');
+
+        consumeSemicolon();
+
+        return delegate.createDebuggerStatement();
+    }
+
+    // 12 Statements
+
+    function parseStatement() {
+        var type = lookahead.type,
+            expr,
+            labeledBody,
+            key,
+            startToken;
+
+        if (type === Token.EOF) {
+            throwUnexpected(lookahead);
+        }
+
+        if (type === Token.Punctuator && lookahead.value === '{') {
+            return parseBlock();
+        }
+
+        startToken = lookahead;
+
+        if (type === Token.Punctuator) {
+            switch (lookahead.value) {
+            case ';':
+                return delegate.markEnd(parseEmptyStatement(), startToken);
+            case '(':
+                return delegate.markEnd(parseExpressionStatement(), startToken);
+            default:
+                break;
+            }
+        }
+
+        if (type === Token.Keyword) {
+            switch (lookahead.value) {
+            case 'break':
+                return delegate.markEnd(parseBreakStatement(), startToken);
+            case 'continue':
+                return delegate.markEnd(parseContinueStatement(), startToken);
+            case 'debugger':
+                return delegate.markEnd(parseDebuggerStatement(), startToken);
+            case 'do':
+                return delegate.markEnd(parseDoWhileStatement(), startToken);
+            case 'for':
+                return delegate.markEnd(parseForStatement(), startToken);
+            case 'function':
+                return delegate.markEnd(parseFunctionDeclaration(), startToken);
+            case 'if':
+                return delegate.markEnd(parseIfStatement(), startToken);
+            case 'return':
+                return delegate.markEnd(parseReturnStatement(), startToken);
+            case 'switch':
+                return delegate.markEnd(parseSwitchStatement(), startToken);
+            case 'throw':
+                return delegate.markEnd(parseThrowStatement(), startToken);
+            case 'try':
+                return delegate.markEnd(parseTryStatement(), startToken);
+            case 'var':
+                return delegate.markEnd(parseVariableStatement(), startToken);
+            case 'while':
+                return delegate.markEnd(parseWhileStatement(), startToken);
+            case 'with':
+                return delegate.markEnd(parseWithStatement(), startToken);
+            default:
+                break;
+            }
+        }
+
+        expr = parseExpression();
+
+        // 12.12 Labelled Statements
+        if ((expr.type === Syntax.Identifier) && match(':')) {
+            lex();
+
+            key = '$' + expr.name;
+            if (Object.prototype.hasOwnProperty.call(state.labelSet, key)) {
+                throwError({}, Messages.Redeclaration, 'Label', expr.name);
+            }
+
+            state.labelSet[key] = true;
+            labeledBody = parseStatement();
+            delete state.labelSet[key];
+            return delegate.markEnd(delegate.createLabeledStatement(expr, labeledBody), startToken);
+        }
+
+        consumeSemicolon();
+
+        return delegate.markEnd(delegate.createExpressionStatement(expr), startToken);
+    }
+
+    // 13 Function Definition
+
+    function parseFunctionSourceElements() {
+        var sourceElement, sourceElements = [], token, directive, firstRestricted,
+            oldLabelSet, oldInIteration, oldInSwitch, oldInFunctionBody, startToken;
+
+        startToken = lookahead;
+        expect('{');
+
+        while (index < length) {
+            if (lookahead.type !== Token.StringLiteral) {
+                break;
+            }
+            token = lookahead;
+
+            sourceElement = parseSourceElement();
+            sourceElements.push(sourceElement);
+            if (sourceElement.expression.type !== Syntax.Literal) {
+                // this is not directive
+                break;
+            }
+            directive = source.slice(token.start + 1, token.end - 1);
+            if (directive === 'use strict') {
+                strict = true;
+                if (firstRestricted) {
+                    throwErrorTolerant(firstRestricted, Messages.StrictOctalLiteral);
+                }
+            } else {
+                if (!firstRestricted && token.octal) {
+                    firstRestricted = token;
+                }
+            }
+        }
+
+        oldLabelSet = state.labelSet;
+        oldInIteration = state.inIteration;
+        oldInSwitch = state.inSwitch;
+        oldInFunctionBody = state.inFunctionBody;
+
+        state.labelSet = {};
+        state.inIteration = false;
+        state.inSwitch = false;
+        state.inFunctionBody = true;
+
+        while (index < length) {
+            if (match('}')) {
+                break;
+            }
+            sourceElement = parseSourceElement();
+            if (typeof sourceElement === 'undefined') {
+                break;
+            }
+            sourceElements.push(sourceElement);
+        }
+
+        expect('}');
+
+        state.labelSet = oldLabelSet;
+        state.inIteration = oldInIteration;
+        state.inSwitch = oldInSwitch;
+        state.inFunctionBody = oldInFunctionBody;
+
+        return delegate.markEnd(delegate.createBlockStatement(sourceElements), startToken);
+    }
+
+    function parseParams(firstRestricted) {
+        var param, params = [], token, stricted, paramSet, key, message;
+        expect('(');
+
+        if (!match(')')) {
+            paramSet = {};
+            while (index < length) {
+                token = lookahead;
+                param = parseVariableIdentifier();
+                key = '$' + token.value;
+                if (strict) {
+                    if (isRestrictedWord(token.value)) {
+                        stricted = token;
+                        message = Messages.StrictParamName;
+                    }
+                    if (Object.prototype.hasOwnProperty.call(paramSet, key)) {
+                        stricted = token;
+                        message = Messages.StrictParamDupe;
+                    }
+                } else if (!firstRestricted) {
+                    if (isRestrictedWord(token.value)) {
+                        firstRestricted = token;
+                        message = Messages.StrictParamName;
+                    } else if (isStrictModeReservedWord(token.value)) {
+                        firstRestricted = token;
+                        message = Messages.StrictReservedWord;
+                    } else if (Object.prototype.hasOwnProperty.call(paramSet, key)) {
+                        firstRestricted = token;
+                        message = Messages.StrictParamDupe;
+                    }
+                }
+                params.push(param);
+                paramSet[key] = true;
+                if (match(')')) {
+                    break;
+                }
+                expect(',');
+            }
+        }
+
+        expect(')');
+
+        return {
+            params: params,
+            stricted: stricted,
+            firstRestricted: firstRestricted,
+            message: message
+        };
+    }
+
+    function parseFunctionDeclaration() {
+        var id, params = [], body, token, stricted, tmp, firstRestricted, message, previousStrict, startToken;
+
+        startToken = lookahead;
+
+        expectKeyword('function');
+        token = lookahead;
+        id = parseVariableIdentifier();
+        if (strict) {
+            if (isRestrictedWord(token.value)) {
+                throwErrorTolerant(token, Messages.StrictFunctionName);
+            }
+        } else {
+            if (isRestrictedWord(token.value)) {
+                firstRestricted = token;
+                message = Messages.StrictFunctionName;
+            } else if (isStrictModeReservedWord(token.value)) {
+                firstRestricted = token;
+                message = Messages.StrictReservedWord;
+            }
+        }
+
+        tmp = parseParams(firstRestricted);
+        params = tmp.params;
+        stricted = tmp.stricted;
+        firstRestricted = tmp.firstRestricted;
+        if (tmp.message) {
+            message = tmp.message;
+        }
+
+        previousStrict = strict;
+        body = parseFunctionSourceElements();
+        if (strict && firstRestricted) {
+            throwError(firstRestricted, message);
+        }
+        if (strict && stricted) {
+            throwErrorTolerant(stricted, message);
+        }
+        strict = previousStrict;
+
+        return delegate.markEnd(delegate.createFunctionDeclaration(id, params, [], body), startToken);
+    }
+
+    function parseFunctionExpression() {
+        var token, id = null, stricted, firstRestricted, message, tmp, params = [], body, previousStrict, startToken;
+
+        startToken = lookahead;
+        expectKeyword('function');
+
+        if (!match('(')) {
+            token = lookahead;
+            id = parseVariableIdentifier();
+            if (strict) {
+                if (isRestrictedWord(token.value)) {
+                    throwErrorTolerant(token, Messages.StrictFunctionName);
+                }
+            } else {
+                if (isRestrictedWord(token.value)) {
+                    firstRestricted = token;
+                    message = Messages.StrictFunctionName;
+                } else if (isStrictModeReservedWord(token.value)) {
+                    firstRestricted = token;
+                    message = Messages.StrictReservedWord;
+                }
+            }
+        }
+
+        tmp = parseParams(firstRestricted);
+        params = tmp.params;
+        stricted = tmp.stricted;
+        firstRestricted = tmp.firstRestricted;
+        if (tmp.message) {
+            message = tmp.message;
+        }
+
+        previousStrict = strict;
+        body = parseFunctionSourceElements();
+        if (strict && firstRestricted) {
+            throwError(firstRestricted, message);
+        }
+        if (strict && stricted) {
+            throwErrorTolerant(stricted, message);
+        }
+        strict = previousStrict;
+
+        return delegate.markEnd(delegate.createFunctionExpression(id, params, [], body), startToken);
+    }
+
+    // 14 Program
+
+    function parseSourceElement() {
+        if (lookahead.type === Token.Keyword) {
+            switch (lookahead.value) {
+            case 'const':
+            case 'let':
+                return parseConstLetDeclaration(lookahead.value);
+            case 'function':
+                return parseFunctionDeclaration();
+            default:
+                return parseStatement();
+            }
+        }
+
+        if (lookahead.type !== Token.EOF) {
+            return parseStatement();
+        }
+    }
+
+    function parseSourceElements() {
+        var sourceElement, sourceElements = [], token, directive, firstRestricted;
+
+        while (index < length) {
+            token = lookahead;
+            if (token.type !== Token.StringLiteral) {
+                break;
+            }
+
+            sourceElement = parseSourceElement();
+            sourceElements.push(sourceElement);
+            if (sourceElement.expression.type !== Syntax.Literal) {
+                // this is not directive
+                break;
+            }
+            directive = source.slice(token.start + 1, token.end - 1);
+            if (directive === 'use strict') {
+                strict = true;
+                if (firstRestricted) {
+                    throwErrorTolerant(firstRestricted, Messages.StrictOctalLiteral);
+                }
+            } else {
+                if (!firstRestricted && token.octal) {
+                    firstRestricted = token;
+                }
+            }
+        }
+
+        while (index < length) {
+            sourceElement = parseSourceElement();
+            /* istanbul ignore if */
+            if (typeof sourceElement === 'undefined') {
+                break;
+            }
+            sourceElements.push(sourceElement);
+        }
+        return sourceElements;
+    }
+
+    function parseProgram() {
+        var body, startToken;
+
+        skipComment();
+        peek();
+        startToken = lookahead;
+        strict = false;
+
+        body = parseSourceElements();
+        return delegate.markEnd(delegate.createProgram(body), startToken);
+    }
+
+    function filterTokenLocation() {
+        var i, entry, token, tokens = [];
+
+        for (i = 0; i < extra.tokens.length; ++i) {
+            entry = extra.tokens[i];
+            token = {
+                type: entry.type,
+                value: entry.value
+            };
+            if (extra.range) {
+                token.range = entry.range;
+            }
+            if (extra.loc) {
+                token.loc = entry.loc;
+            }
+            tokens.push(token);
+        }
+
+        extra.tokens = tokens;
+    }
+
+    function tokenize(code, options) {
+        var toString,
+            token,
+            tokens;
+
+        toString = String;
+        if (typeof code !== 'string' && !(code instanceof String)) {
+            code = toString(code);
+        }
+
+        delegate = SyntaxTreeDelegate;
+        source = code;
+        index = 0;
+        lineNumber = (source.length > 0) ? 1 : 0;
+        lineStart = 0;
+        length = source.length;
+        lookahead = null;
+        state = {
+            allowIn: true,
+            labelSet: {},
+            inFunctionBody: false,
+            inIteration: false,
+            inSwitch: false,
+            lastCommentStart: -1
+        };
+
+        extra = {};
+
+        // Options matching.
+        options = options || {};
+
+        // Of course we collect tokens here.
+        options.tokens = true;
+        extra.tokens = [];
+        extra.tokenize = true;
+        // The following two fields are necessary to compute the Regex tokens.
+        extra.openParenToken = -1;
+        extra.openCurlyToken = -1;
+
+        extra.range = (typeof options.range === 'boolean') && options.range;
+        extra.loc = (typeof options.loc === 'boolean') && options.loc;
+
+        if (typeof options.comment === 'boolean' && options.comment) {
+            extra.comments = [];
+        }
+        if (typeof options.tolerant === 'boolean' && options.tolerant) {
+            extra.errors = [];
+        }
+
+        try {
+            peek();
+            if (lookahead.type === Token.EOF) {
+                return extra.tokens;
+            }
+
+            token = lex();
+            while (lookahead.type !== Token.EOF) {
+                try {
+                    token = lex();
+                } catch (lexError) {
+                    token = lookahead;
+                    if (extra.errors) {
+                        extra.errors.push(lexError);
+                        // We have to break on the first error
+                        // to avoid infinite loops.
+                        break;
+                    } else {
+                        throw lexError;
+                    }
+                }
+            }
+
+            filterTokenLocation();
+            tokens = extra.tokens;
+            if (typeof extra.comments !== 'undefined') {
+                tokens.comments = extra.comments;
+            }
+            if (typeof extra.errors !== 'undefined') {
+                tokens.errors = extra.errors;
+            }
+        } catch (e) {
+            throw e;
+        } finally {
+            extra = {};
+        }
+        return tokens;
+    }
+
+    function parse(code, options) {
+        var program, toString;
+
+        toString = String;
+        if (typeof code !== 'string' && !(code instanceof String)) {
+            code = toString(code);
+        }
+
+        delegate = SyntaxTreeDelegate;
+        source = code;
+        index = 0;
+        lineNumber = (source.length > 0) ? 1 : 0;
+        lineStart = 0;
+        length = source.length;
+        lookahead = null;
+        state = {
+            allowIn: true,
+            labelSet: {},
+            inFunctionBody: false,
+            inIteration: false,
+            inSwitch: false,
+            lastCommentStart: -1
+        };
+
+        extra = {};
+        if (typeof options !== 'undefined') {
+            extra.range = (typeof options.range === 'boolean') && options.range;
+            extra.loc = (typeof options.loc === 'boolean') && options.loc;
+            extra.attachComment = (typeof options.attachComment === 'boolean') && options.attachComment;
+
+            if (extra.loc && options.source !== null && options.source !== undefined) {
+                extra.source = toString(options.source);
+            }
+
+            if (typeof options.tokens === 'boolean' && options.tokens) {
+                extra.tokens = [];
+            }
+            if (typeof options.comment === 'boolean' && options.comment) {
+                extra.comments = [];
+            }
+            if (typeof options.tolerant === 'boolean' && options.tolerant) {
+                extra.errors = [];
+            }
+            if (extra.attachComment) {
+                extra.range = true;
+                extra.comments = [];
+                extra.bottomRightStack = [];
+                extra.trailingComments = [];
+                extra.leadingComments = [];
+            }
+        }
+
+        try {
+            program = parseProgram();
+            if (typeof extra.comments !== 'undefined') {
+                program.comments = extra.comments;
+            }
+            if (typeof extra.tokens !== 'undefined') {
+                filterTokenLocation();
+                program.tokens = extra.tokens;
+            }
+            if (typeof extra.errors !== 'undefined') {
+                program.errors = extra.errors;
+            }
+        } catch (e) {
+            throw e;
+        } finally {
+            extra = {};
+        }
+
+        return program;
+    }
+
+    // Sync with *.json manifests.
+    exports.version = '1.2.2';
+
+    exports.tokenize = tokenize;
+
+    exports.parse = parse;
+
+    // Deep copy.
+   /* istanbul ignore next */
+    exports.Syntax = (function () {
+        var name, types = {};
+
+        if (typeof Object.create === 'function') {
+            types = Object.create(null);
+        }
+
+        for (name in Syntax) {
+            if (Syntax.hasOwnProperty(name)) {
+                types[name] = Syntax[name];
+            }
+        }
+
+        if (typeof Object.freeze === 'function') {
+            Object.freeze(types);
+        }
+
+        return types;
+    }());
+
+}));
+/* vim: set sw=4 ts=4 et tw=80 : */
+
+},{}],67:[function(require,module,exports){
+/*
+ * estemplate
+ * https://github.com/RReverser/estemplate
+ *
+ * Copyright (c) 2014 Ingvar Stepanyan
+ * Licensed under the MIT license.
+ */
+
+'use strict';
+
+var parse = require('esprima').parse;
+var estraverse = require('estraverse');
+var reCode = /([^\s,;]?)\s*?%(=?)\s*([\s\S]+?)\s*%\s*?([^\s,;]?)/g;
+var reInternalVar = /^__ASTER_DATA_\d+$/;
+var reInternalMarker = /\"(__ASTER_DATA_\d+)\"/g;
+
+function tmpl(str, options, data) {
+	if (!data) {
+		data = options;
+		options = undefined;
+	}
+	return tmpl.compile(str, options)(data);
+}
+
+function isInternalVar(node) {
+	return node.type === 'Identifier' && reInternalVar.test(node.name);
+}
+
+function isInternalStmt(node) {
+	return node.type === 'ExpressionStatement' && typeof node.expression === 'string';
+}
+
+var brackets = {
+	'<': '>',
+	'[': ']',
+	'(': ')',
+	'{': '}',
+	"'": "'",
+	'"': '"'
+};
+
+var spread = {
+	'ArrayExpression': 'elements',
+	'CallExpression': 'arguments',
+	'BlockStatement': 'body',
+	'FunctionExpression': 'params',
+	'FunctionDeclaration': 'params'
+};
+
+tmpl.fixAST = function (ast) {
+	estraverse.traverse(ast, {
+		leave: function (node, parent) {
+			if (node.type !== '...') {
+				return;
+			}
+			var itemsKey = spread[parent.type];
+			if (!itemsKey) {
+				throw new TypeError('Unknown substitution in ' + parent.type);
+			}
+			parent[itemsKey] = parent[itemsKey].reduce(function (items, item) {
+				if (item.type === '...') {
+					return items.concat(item.argument);
+				}
+				items.push(item);
+				return items;
+			}, []);
+		},
+		keys: {
+			'...': ['argument']
+		}
+	});
+	return ast;
+};
+
+tmpl.compile = function (str, options) {
+	var code = [],
+		index = 0;
+
+	str = str.replace(reCode, function (match, open, isEval, codePart, close) {
+		if (open) {
+			var expectedClose = brackets[open];
+			if (!expectedClose || close && expectedClose !== close) {
+				return match;
+			}
+		}
+		if (isEval) {
+			var varName = '__ASTER_DATA_' + (index++);
+			var isSpread = open !== '<' && open !== "'" && open !== '"';
+			if (isSpread) {
+				codePart = '{type: "...", argument: ' + codePart + '}';
+			} else if (open === "'" || open === '"') {
+				codePart = '{type: "Literal", value: ' + codePart + '}';
+			}
+			code.push('\t\tvar ' + varName + ' = ' + codePart);
+			return isSpread ? (open + varName + close) : varName;
+		} else {
+			if (open !== '<') {
+				return match;
+			}
+			code.push(codePart);
+			return '';
+		}
+	});
+
+	var ast = parse(str, options);
+
+	ast = estraverse.replace(ast, {
+		leave: function (node) {
+			if (isInternalVar(node)) {
+				return node.name;
+			}
+
+			if (isInternalStmt(node)) {
+				return node.expression;
+			}
+		}
+	});
+
+	if (!(options && options.fast)) {
+		code.unshift('\twith (it) {');
+		code.push('\t}');
+	}
+
+	code.unshift('return function template(it) {');
+
+	code.push(
+		'\treturn estemplate.fixAST(' + JSON.stringify(ast).replace(reInternalMarker, '$1') + ')',
+		'}'
+	);
+
+	return new Function('estemplate', code.join('\n'))(tmpl);
+};
+
+module.exports = tmpl;
+},{"esprima":66,"estraverse":68}],68:[function(require,module,exports){
+/*
+  Copyright (C) 2012-2013 Yusuke Suzuki <utatane.tea@gmail.com>
+  Copyright (C) 2012 Ariya Hidayat <ariya.hidayat@gmail.com>
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  ARE DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+/*jslint vars:false, bitwise:true*/
+/*jshint indent:4*/
+/*global exports:true, define:true*/
+(function (root, factory) {
+    'use strict';
+
+    // Universal Module Definition (UMD) to support AMD, CommonJS/Node.js,
+    // and plain browser loading,
+    if (typeof define === 'function' && define.amd) {
+        define(['exports'], factory);
+    } else if (typeof exports !== 'undefined') {
+        factory(exports);
+    } else {
+        factory((root.estraverse = {}));
+    }
+}(this, function clone(exports) {
+    'use strict';
+
+    var Syntax,
+        isArray,
+        VisitorOption,
+        VisitorKeys,
+        objectCreate,
+        objectKeys,
+        BREAK,
+        SKIP,
+        REMOVE;
+
+    function ignoreJSHintError() { }
+
+    isArray = Array.isArray;
+    if (!isArray) {
+        isArray = function isArray(array) {
+            return Object.prototype.toString.call(array) === '[object Array]';
+        };
+    }
+
+    function deepCopy(obj) {
+        var ret = {}, key, val;
+        for (key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                val = obj[key];
+                if (typeof val === 'object' && val !== null) {
+                    ret[key] = deepCopy(val);
+                } else {
+                    ret[key] = val;
+                }
+            }
+        }
+        return ret;
+    }
+
+    function shallowCopy(obj) {
+        var ret = {}, key;
+        for (key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                ret[key] = obj[key];
+            }
+        }
+        return ret;
+    }
+    ignoreJSHintError(shallowCopy);
+
+    // based on LLVM libc++ upper_bound / lower_bound
+    // MIT License
+
+    function upperBound(array, func) {
+        var diff, len, i, current;
+
+        len = array.length;
+        i = 0;
+
+        while (len) {
+            diff = len >>> 1;
+            current = i + diff;
+            if (func(array[current])) {
+                len = diff;
+            } else {
+                i = current + 1;
+                len -= diff + 1;
+            }
+        }
+        return i;
+    }
+
+    function lowerBound(array, func) {
+        var diff, len, i, current;
+
+        len = array.length;
+        i = 0;
+
+        while (len) {
+            diff = len >>> 1;
+            current = i + diff;
+            if (func(array[current])) {
+                i = current + 1;
+                len -= diff + 1;
+            } else {
+                len = diff;
+            }
+        }
+        return i;
+    }
+    ignoreJSHintError(lowerBound);
+
+    objectCreate = Object.create || (function () {
+        function F() { }
+
+        return function (o) {
+            F.prototype = o;
+            return new F();
+        };
+    })();
+
+    objectKeys = Object.keys || function (o) {
+        var keys = [], key;
+        for (key in o) {
+            keys.push(key);
+        }
+        return keys;
+    };
+
+    function extend(to, from) {
+        var keys = objectKeys(from), key, i, len;
+        for (i = 0, len = keys.length; i < len; i += 1) {
+            key = keys[i];
+            to[key] = from[key];
+        }
+        return to;
+    }
+
+    Syntax = {
+        AssignmentExpression: 'AssignmentExpression',
+        ArrayExpression: 'ArrayExpression',
+        ArrayPattern: 'ArrayPattern',
+        ArrowFunctionExpression: 'ArrowFunctionExpression',
+        AwaitExpression: 'AwaitExpression', // CAUTION: It's deferred to ES7.
+        BlockStatement: 'BlockStatement',
+        BinaryExpression: 'BinaryExpression',
+        BreakStatement: 'BreakStatement',
+        CallExpression: 'CallExpression',
+        CatchClause: 'CatchClause',
+        ClassBody: 'ClassBody',
+        ClassDeclaration: 'ClassDeclaration',
+        ClassExpression: 'ClassExpression',
+        ComprehensionBlock: 'ComprehensionBlock',  // CAUTION: It's deferred to ES7.
+        ComprehensionExpression: 'ComprehensionExpression',  // CAUTION: It's deferred to ES7.
+        ConditionalExpression: 'ConditionalExpression',
+        ContinueStatement: 'ContinueStatement',
+        DebuggerStatement: 'DebuggerStatement',
+        DirectiveStatement: 'DirectiveStatement',
+        DoWhileStatement: 'DoWhileStatement',
+        EmptyStatement: 'EmptyStatement',
+        ExportBatchSpecifier: 'ExportBatchSpecifier',
+        ExportDeclaration: 'ExportDeclaration',
+        ExportSpecifier: 'ExportSpecifier',
+        ExpressionStatement: 'ExpressionStatement',
+        ForStatement: 'ForStatement',
+        ForInStatement: 'ForInStatement',
+        ForOfStatement: 'ForOfStatement',
+        FunctionDeclaration: 'FunctionDeclaration',
+        FunctionExpression: 'FunctionExpression',
+        GeneratorExpression: 'GeneratorExpression',  // CAUTION: It's deferred to ES7.
+        Identifier: 'Identifier',
+        IfStatement: 'IfStatement',
+        ImportDeclaration: 'ImportDeclaration',
+        ImportDefaultSpecifier: 'ImportDefaultSpecifier',
+        ImportNamespaceSpecifier: 'ImportNamespaceSpecifier',
+        ImportSpecifier: 'ImportSpecifier',
+        Literal: 'Literal',
+        LabeledStatement: 'LabeledStatement',
+        LogicalExpression: 'LogicalExpression',
+        MemberExpression: 'MemberExpression',
+        MethodDefinition: 'MethodDefinition',
+        ModuleSpecifier: 'ModuleSpecifier',
+        NewExpression: 'NewExpression',
+        ObjectExpression: 'ObjectExpression',
+        ObjectPattern: 'ObjectPattern',
+        Program: 'Program',
+        Property: 'Property',
+        ReturnStatement: 'ReturnStatement',
+        SequenceExpression: 'SequenceExpression',
+        SpreadElement: 'SpreadElement',
+        SwitchStatement: 'SwitchStatement',
+        SwitchCase: 'SwitchCase',
+        TaggedTemplateExpression: 'TaggedTemplateExpression',
+        TemplateElement: 'TemplateElement',
+        TemplateLiteral: 'TemplateLiteral',
+        ThisExpression: 'ThisExpression',
+        ThrowStatement: 'ThrowStatement',
+        TryStatement: 'TryStatement',
+        UnaryExpression: 'UnaryExpression',
+        UpdateExpression: 'UpdateExpression',
+        VariableDeclaration: 'VariableDeclaration',
+        VariableDeclarator: 'VariableDeclarator',
+        WhileStatement: 'WhileStatement',
+        WithStatement: 'WithStatement',
+        YieldExpression: 'YieldExpression'
+    };
+
+    VisitorKeys = {
+        AssignmentExpression: ['left', 'right'],
+        ArrayExpression: ['elements'],
+        ArrayPattern: ['elements'],
+        ArrowFunctionExpression: ['params', 'defaults', 'rest', 'body'],
+        AwaitExpression: ['argument'], // CAUTION: It's deferred to ES7.
+        BlockStatement: ['body'],
+        BinaryExpression: ['left', 'right'],
+        BreakStatement: ['label'],
+        CallExpression: ['callee', 'arguments'],
+        CatchClause: ['param', 'body'],
+        ClassBody: ['body'],
+        ClassDeclaration: ['id', 'body', 'superClass'],
+        ClassExpression: ['id', 'body', 'superClass'],
+        ComprehensionBlock: ['left', 'right'],  // CAUTION: It's deferred to ES7.
+        ComprehensionExpression: ['blocks', 'filter', 'body'],  // CAUTION: It's deferred to ES7.
+        ConditionalExpression: ['test', 'consequent', 'alternate'],
+        ContinueStatement: ['label'],
+        DebuggerStatement: [],
+        DirectiveStatement: [],
+        DoWhileStatement: ['body', 'test'],
+        EmptyStatement: [],
+        ExportBatchSpecifier: [],
+        ExportDeclaration: ['declaration', 'specifiers', 'source'],
+        ExportSpecifier: ['id', 'name'],
+        ExpressionStatement: ['expression'],
+        ForStatement: ['init', 'test', 'update', 'body'],
+        ForInStatement: ['left', 'right', 'body'],
+        ForOfStatement: ['left', 'right', 'body'],
+        FunctionDeclaration: ['id', 'params', 'defaults', 'rest', 'body'],
+        FunctionExpression: ['id', 'params', 'defaults', 'rest', 'body'],
+        GeneratorExpression: ['blocks', 'filter', 'body'],  // CAUTION: It's deferred to ES7.
+        Identifier: [],
+        IfStatement: ['test', 'consequent', 'alternate'],
+        ImportDeclaration: ['specifiers', 'source'],
+        ImportDefaultSpecifier: ['id'],
+        ImportNamespaceSpecifier: ['id'],
+        ImportSpecifier: ['id', 'name'],
+        Literal: [],
+        LabeledStatement: ['label', 'body'],
+        LogicalExpression: ['left', 'right'],
+        MemberExpression: ['object', 'property'],
+        MethodDefinition: ['key', 'value'],
+        ModuleSpecifier: [],
+        NewExpression: ['callee', 'arguments'],
+        ObjectExpression: ['properties'],
+        ObjectPattern: ['properties'],
+        Program: ['body'],
+        Property: ['key', 'value'],
+        ReturnStatement: ['argument'],
+        SequenceExpression: ['expressions'],
+        SpreadElement: ['argument'],
+        SwitchStatement: ['discriminant', 'cases'],
+        SwitchCase: ['test', 'consequent'],
+        TaggedTemplateExpression: ['tag', 'quasi'],
+        TemplateElement: [],
+        TemplateLiteral: ['quasis', 'expressions'],
+        ThisExpression: [],
+        ThrowStatement: ['argument'],
+        TryStatement: ['block', 'handlers', 'handler', 'guardedHandlers', 'finalizer'],
+        UnaryExpression: ['argument'],
+        UpdateExpression: ['argument'],
+        VariableDeclaration: ['declarations'],
+        VariableDeclarator: ['id', 'init'],
+        WhileStatement: ['test', 'body'],
+        WithStatement: ['object', 'body'],
+        YieldExpression: ['argument']
+    };
+
+    // unique id
+    BREAK = {};
+    SKIP = {};
+    REMOVE = {};
+
+    VisitorOption = {
+        Break: BREAK,
+        Skip: SKIP,
+        Remove: REMOVE
+    };
+
+    function Reference(parent, key) {
+        this.parent = parent;
+        this.key = key;
+    }
+
+    Reference.prototype.replace = function replace(node) {
+        this.parent[this.key] = node;
+    };
+
+    Reference.prototype.remove = function remove() {
+        if (isArray(this.parent)) {
+            this.parent.splice(this.key, 1);
+            return true;
+        } else {
+            this.replace(null);
+            return false;
+        }
+    };
+
+    function Element(node, path, wrap, ref) {
+        this.node = node;
+        this.path = path;
+        this.wrap = wrap;
+        this.ref = ref;
+    }
+
+    function Controller() { }
+
+    // API:
+    // return property path array from root to current node
+    Controller.prototype.path = function path() {
+        var i, iz, j, jz, result, element;
+
+        function addToPath(result, path) {
+            if (isArray(path)) {
+                for (j = 0, jz = path.length; j < jz; ++j) {
+                    result.push(path[j]);
+                }
+            } else {
+                result.push(path);
+            }
+        }
+
+        // root node
+        if (!this.__current.path) {
+            return null;
+        }
+
+        // first node is sentinel, second node is root element
+        result = [];
+        for (i = 2, iz = this.__leavelist.length; i < iz; ++i) {
+            element = this.__leavelist[i];
+            addToPath(result, element.path);
+        }
+        addToPath(result, this.__current.path);
+        return result;
+    };
+
+    // API:
+    // return type of current node
+    Controller.prototype.type = function () {
+        var node = this.current();
+        return node.type || this.__current.wrap;
+    };
+
+    // API:
+    // return array of parent elements
+    Controller.prototype.parents = function parents() {
+        var i, iz, result;
+
+        // first node is sentinel
+        result = [];
+        for (i = 1, iz = this.__leavelist.length; i < iz; ++i) {
+            result.push(this.__leavelist[i].node);
+        }
+
+        return result;
+    };
+
+    // API:
+    // return current node
+    Controller.prototype.current = function current() {
+        return this.__current.node;
+    };
+
+    Controller.prototype.__execute = function __execute(callback, element) {
+        var previous, result;
+
+        result = undefined;
+
+        previous  = this.__current;
+        this.__current = element;
+        this.__state = null;
+        if (callback) {
+            result = callback.call(this, element.node, this.__leavelist[this.__leavelist.length - 1].node);
+        }
+        this.__current = previous;
+
+        return result;
+    };
+
+    // API:
+    // notify control skip / break
+    Controller.prototype.notify = function notify(flag) {
+        this.__state = flag;
+    };
+
+    // API:
+    // skip child nodes of current node
+    Controller.prototype.skip = function () {
+        this.notify(SKIP);
+    };
+
+    // API:
+    // break traversals
+    Controller.prototype['break'] = function () {
+        this.notify(BREAK);
+    };
+
+    // API:
+    // remove node
+    Controller.prototype.remove = function () {
+        this.notify(REMOVE);
+    };
+
+    Controller.prototype.__initialize = function(root, visitor) {
+        this.visitor = visitor;
+        this.root = root;
+        this.__worklist = [];
+        this.__leavelist = [];
+        this.__current = null;
+        this.__state = null;
+        this.__fallback = visitor.fallback === 'iteration';
+        this.__keys = VisitorKeys;
+        if (visitor.keys) {
+            this.__keys = extend(objectCreate(this.__keys), visitor.keys);
+        }
+    };
+
+    function isNode(node) {
+        if (node == null) {
+            return false;
+        }
+        return typeof node === 'object' && typeof node.type === 'string';
+    }
+
+    function isProperty(nodeType, key) {
+        return (nodeType === Syntax.ObjectExpression || nodeType === Syntax.ObjectPattern) && 'properties' === key;
+    }
+
+    Controller.prototype.traverse = function traverse(root, visitor) {
+        var worklist,
+            leavelist,
+            element,
+            node,
+            nodeType,
+            ret,
+            key,
+            current,
+            current2,
+            candidates,
+            candidate,
+            sentinel;
+
+        this.__initialize(root, visitor);
+
+        sentinel = {};
+
+        // reference
+        worklist = this.__worklist;
+        leavelist = this.__leavelist;
+
+        // initialize
+        worklist.push(new Element(root, null, null, null));
+        leavelist.push(new Element(null, null, null, null));
+
+        while (worklist.length) {
+            element = worklist.pop();
+
+            if (element === sentinel) {
+                element = leavelist.pop();
+
+                ret = this.__execute(visitor.leave, element);
+
+                if (this.__state === BREAK || ret === BREAK) {
+                    return;
+                }
+                continue;
+            }
+
+            if (element.node) {
+
+                ret = this.__execute(visitor.enter, element);
+
+                if (this.__state === BREAK || ret === BREAK) {
+                    return;
+                }
+
+                worklist.push(sentinel);
+                leavelist.push(element);
+
+                if (this.__state === SKIP || ret === SKIP) {
+                    continue;
+                }
+
+                node = element.node;
+                nodeType = element.wrap || node.type;
+                candidates = this.__keys[nodeType];
+                if (!candidates) {
+                    if (this.__fallback) {
+                        candidates = objectKeys(node);
+                    } else {
+                        throw new Error('Unknown node type ' + nodeType + '.');
+                    }
+                }
+
+                current = candidates.length;
+                while ((current -= 1) >= 0) {
+                    key = candidates[current];
+                    candidate = node[key];
+                    if (!candidate) {
+                        continue;
+                    }
+
+                    if (isArray(candidate)) {
+                        current2 = candidate.length;
+                        while ((current2 -= 1) >= 0) {
+                            if (!candidate[current2]) {
+                                continue;
+                            }
+                            if (isProperty(nodeType, candidates[current])) {
+                                element = new Element(candidate[current2], [key, current2], 'Property', null);
+                            } else if (isNode(candidate[current2])) {
+                                element = new Element(candidate[current2], [key, current2], null, null);
+                            } else {
+                                continue;
+                            }
+                            worklist.push(element);
+                        }
+                    } else if (isNode(candidate)) {
+                        worklist.push(new Element(candidate, key, null, null));
+                    }
+                }
+            }
+        }
+    };
+
+    Controller.prototype.replace = function replace(root, visitor) {
+        function removeElem(element) {
+            var i,
+                key,
+                nextElem,
+                parent;
+
+            if (element.ref.remove()) {
+                // When the reference is an element of an array.
+                key = element.ref.key;
+                parent = element.ref.parent;
+
+                // If removed from array, then decrease following items' keys.
+                i = worklist.length;
+                while (i--) {
+                    nextElem = worklist[i];
+                    if (nextElem.ref && nextElem.ref.parent === parent) {
+                        if  (nextElem.ref.key < key) {
+                            break;
+                        }
+                        --nextElem.ref.key;
+                    }
+                }
+            }
+        }
+
+        var worklist,
+            leavelist,
+            node,
+            nodeType,
+            target,
+            element,
+            current,
+            current2,
+            candidates,
+            candidate,
+            sentinel,
+            outer,
+            key;
+
+        this.__initialize(root, visitor);
+
+        sentinel = {};
+
+        // reference
+        worklist = this.__worklist;
+        leavelist = this.__leavelist;
+
+        // initialize
+        outer = {
+            root: root
+        };
+        element = new Element(root, null, null, new Reference(outer, 'root'));
+        worklist.push(element);
+        leavelist.push(element);
+
+        while (worklist.length) {
+            element = worklist.pop();
+
+            if (element === sentinel) {
+                element = leavelist.pop();
+
+                target = this.__execute(visitor.leave, element);
+
+                // node may be replaced with null,
+                // so distinguish between undefined and null in this place
+                if (target !== undefined && target !== BREAK && target !== SKIP && target !== REMOVE) {
+                    // replace
+                    element.ref.replace(target);
+                }
+
+                if (this.__state === REMOVE || target === REMOVE) {
+                    removeElem(element);
+                }
+
+                if (this.__state === BREAK || target === BREAK) {
+                    return outer.root;
+                }
+                continue;
+            }
+
+            target = this.__execute(visitor.enter, element);
+
+            // node may be replaced with null,
+            // so distinguish between undefined and null in this place
+            if (target !== undefined && target !== BREAK && target !== SKIP && target !== REMOVE) {
+                // replace
+                element.ref.replace(target);
+                element.node = target;
+            }
+
+            if (this.__state === REMOVE || target === REMOVE) {
+                removeElem(element);
+                element.node = null;
+            }
+
+            if (this.__state === BREAK || target === BREAK) {
+                return outer.root;
+            }
+
+            // node may be null
+            node = element.node;
+            if (!node) {
+                continue;
+            }
+
+            worklist.push(sentinel);
+            leavelist.push(element);
+
+            if (this.__state === SKIP || target === SKIP) {
+                continue;
+            }
+
+            nodeType = element.wrap || node.type;
+            candidates = this.__keys[nodeType];
+            if (!candidates) {
+                if (this.__fallback) {
+                    candidates = objectKeys(node);
+                } else {
+                    throw new Error('Unknown node type ' + nodeType + '.');
+                }
+            }
+
+            current = candidates.length;
+            while ((current -= 1) >= 0) {
+                key = candidates[current];
+                candidate = node[key];
+                if (!candidate) {
+                    continue;
+                }
+
+                if (isArray(candidate)) {
+                    current2 = candidate.length;
+                    while ((current2 -= 1) >= 0) {
+                        if (!candidate[current2]) {
+                            continue;
+                        }
+                        if (isProperty(nodeType, candidates[current])) {
+                            element = new Element(candidate[current2], [key, current2], 'Property', new Reference(candidate, current2));
+                        } else if (isNode(candidate[current2])) {
+                            element = new Element(candidate[current2], [key, current2], null, new Reference(candidate, current2));
+                        } else {
+                            continue;
+                        }
+                        worklist.push(element);
+                    }
+                } else if (isNode(candidate)) {
+                    worklist.push(new Element(candidate, key, null, new Reference(node, key)));
+                }
+            }
+        }
+
+        return outer.root;
+    };
+
+    function traverse(root, visitor) {
+        var controller = new Controller();
+        return controller.traverse(root, visitor);
+    }
+
+    function replace(root, visitor) {
+        var controller = new Controller();
+        return controller.replace(root, visitor);
+    }
+
+    function extendCommentRange(comment, tokens) {
+        var target;
+
+        target = upperBound(tokens, function search(token) {
+            return token.range[0] > comment.range[0];
+        });
+
+        comment.extendedRange = [comment.range[0], comment.range[1]];
+
+        if (target !== tokens.length) {
+            comment.extendedRange[1] = tokens[target].range[0];
+        }
+
+        target -= 1;
+        if (target >= 0) {
+            comment.extendedRange[0] = tokens[target].range[1];
+        }
+
+        return comment;
+    }
+
+    function attachComments(tree, providedComments, tokens) {
+        // At first, we should calculate extended comment ranges.
+        var comments = [], comment, len, i, cursor;
+
+        if (!tree.range) {
+            throw new Error('attachComments needs range information');
+        }
+
+        // tokens array is empty, we attach comments to tree as 'leadingComments'
+        if (!tokens.length) {
+            if (providedComments.length) {
+                for (i = 0, len = providedComments.length; i < len; i += 1) {
+                    comment = deepCopy(providedComments[i]);
+                    comment.extendedRange = [0, tree.range[0]];
+                    comments.push(comment);
+                }
+                tree.leadingComments = comments;
+            }
+            return tree;
+        }
+
+        for (i = 0, len = providedComments.length; i < len; i += 1) {
+            comments.push(extendCommentRange(deepCopy(providedComments[i]), tokens));
+        }
+
+        // This is based on John Freeman's implementation.
+        cursor = 0;
+        traverse(tree, {
+            enter: function (node) {
+                var comment;
+
+                while (cursor < comments.length) {
+                    comment = comments[cursor];
+                    if (comment.extendedRange[1] > node.range[0]) {
+                        break;
+                    }
+
+                    if (comment.extendedRange[1] === node.range[0]) {
+                        if (!node.leadingComments) {
+                            node.leadingComments = [];
+                        }
+                        node.leadingComments.push(comment);
+                        comments.splice(cursor, 1);
+                    } else {
+                        cursor += 1;
+                    }
+                }
+
+                // already out of owned node
+                if (cursor === comments.length) {
+                    return VisitorOption.Break;
+                }
+
+                if (comments[cursor].extendedRange[0] > node.range[1]) {
+                    return VisitorOption.Skip;
+                }
+            }
+        });
+
+        cursor = 0;
+        traverse(tree, {
+            leave: function (node) {
+                var comment;
+
+                while (cursor < comments.length) {
+                    comment = comments[cursor];
+                    if (node.range[1] < comment.extendedRange[0]) {
+                        break;
+                    }
+
+                    if (node.range[1] === comment.extendedRange[0]) {
+                        if (!node.trailingComments) {
+                            node.trailingComments = [];
+                        }
+                        node.trailingComments.push(comment);
+                        comments.splice(cursor, 1);
+                    } else {
+                        cursor += 1;
+                    }
+                }
+
+                // already out of owned node
+                if (cursor === comments.length) {
+                    return VisitorOption.Break;
+                }
+
+                if (comments[cursor].extendedRange[0] > node.range[1]) {
+                    return VisitorOption.Skip;
+                }
+            }
+        });
+
+        return tree;
+    }
+
+    exports.version = '1.8.1-dev';
+    exports.Syntax = Syntax;
+    exports.traverse = traverse;
+    exports.replace = replace;
+    exports.attachComments = attachComments;
+    exports.VisitorKeys = VisitorKeys;
+    exports.VisitorOption = VisitorOption;
+    exports.Controller = Controller;
+    exports.cloneEnvironment = function () { return clone({}); };
+
+    return exports;
+}));
+/* vim: set sw=4 ts=4 et tw=80 : */
+
+},{}],69:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -47456,7 +52212,7 @@ module.exports = function (str, locale) {
 }.call(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],67:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 /*
  The MIT License (MIT)
 
@@ -47518,7 +52274,7 @@ module.exports = function (str, locale) {
          * @returns {String} Height
          */
         height: function (element) {
-          return element.prop('offsetHeight');
+          return element[0].getBoundingClientRect().height;
         },
 
         /**
@@ -47528,7 +52284,7 @@ module.exports = function (str, locale) {
          * @returns {String} Width
          */
         width: function (element) {
-          return element.prop('offsetWidth');
+          return element[0].getBoundingClientRect().width;
         },
 
         /**
@@ -47796,9 +52552,7 @@ module.exports = function (str, locale) {
      * @param itemData - the item model data.
      */
     $scope.insertItem = function (index, itemData) {
-      $scope.safeApply(function () {
-        $scope.modelValue.splice(index, 0, itemData);
-      });
+      $scope.modelValue.splice(index, 0, itemData);
     };
 
     /**
@@ -47810,9 +52564,7 @@ module.exports = function (str, locale) {
     $scope.removeItem = function (index) {
       var removedItem = null;
       if (index > -1) {
-        $scope.safeApply(function () {
-          removedItem = $scope.modelValue.splice(index, 1)[0];
-        });
+        removedItem = $scope.modelValue.splice(index, 1)[0];
       }
       return removedItem;
     };
@@ -47836,22 +52588,6 @@ module.exports = function (str, locale) {
      */
     $scope.accept = function (sourceItemHandleScope, destScope, destItemScope) {
       return $scope.callbacks.accept(sourceItemHandleScope, destScope, destItemScope);
-    };
-
-    /**
-     * Checks the current phase before executing the function.
-     *
-     * @param fn the function to execute.
-     */
-    $scope.safeApply = function (fn) {
-      var phase = this.$root.$$phase;
-      if (phase === '$apply' || phase === '$digest') {
-        if (fn && (typeof fn === 'function')) {
-          fn();
-        }
-      } else {
-        this.$apply(fn);
-      }
     };
 
   }]);
@@ -48512,11 +53248,11 @@ module.exports = function (str, locale) {
     }]);
 
 }());
-},{}],68:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 
 module.exports = require('./lib/');
 
-},{"./lib/":69}],69:[function(require,module,exports){
+},{"./lib/":72}],72:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -48605,7 +53341,7 @@ exports.connect = lookup;
 exports.Manager = require('./manager');
 exports.Socket = require('./socket');
 
-},{"./manager":70,"./socket":72,"./url":73,"debug":77,"socket.io-parser":111}],70:[function(require,module,exports){
+},{"./manager":73,"./socket":75,"./url":76,"debug":80,"socket.io-parser":114}],73:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -49110,7 +53846,7 @@ Manager.prototype.onreconnect = function(){
   this.emitAll('reconnect', attempt);
 };
 
-},{"./on":71,"./socket":72,"./url":73,"backo2":74,"component-bind":75,"component-emitter":76,"debug":77,"engine.io-client":78,"indexof":107,"object-component":108,"socket.io-parser":111}],71:[function(require,module,exports){
+},{"./on":74,"./socket":75,"./url":76,"backo2":77,"component-bind":78,"component-emitter":79,"debug":80,"engine.io-client":81,"indexof":110,"object-component":111,"socket.io-parser":114}],74:[function(require,module,exports){
 
 /**
  * Module exports.
@@ -49136,7 +53872,7 @@ function on(obj, ev, fn) {
   };
 }
 
-},{}],72:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -49523,7 +54259,7 @@ Socket.prototype.disconnect = function(){
   return this;
 };
 
-},{"./on":71,"component-bind":75,"component-emitter":76,"debug":77,"has-binary":105,"socket.io-parser":111,"to-array":115}],73:[function(require,module,exports){
+},{"./on":74,"component-bind":78,"component-emitter":79,"debug":80,"has-binary":108,"socket.io-parser":114,"to-array":118}],76:[function(require,module,exports){
 (function (global){
 
 /**
@@ -49600,7 +54336,7 @@ function url(uri, loc){
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"debug":77,"parseuri":109}],74:[function(require,module,exports){
+},{"debug":80,"parseuri":112}],77:[function(require,module,exports){
 
 /**
  * Expose `Backoff`.
@@ -49687,7 +54423,7 @@ Backoff.prototype.setJitter = function(jitter){
 };
 
 
-},{}],75:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 /**
  * Slice reference.
  */
@@ -49712,7 +54448,7 @@ module.exports = function(obj, fn){
   }
 };
 
-},{}],76:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 
 /**
  * Expose `Emitter`.
@@ -49878,7 +54614,7 @@ Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
 };
 
-},{}],77:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 
 /**
  * Expose `debug()` as the module.
@@ -50017,11 +54753,11 @@ try {
   if (window.localStorage) debug.enable(localStorage.debug);
 } catch(e){}
 
-},{}],78:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 
 module.exports =  require('./lib/');
 
-},{"./lib/":79}],79:[function(require,module,exports){
+},{"./lib/":82}],82:[function(require,module,exports){
 
 module.exports = require('./socket');
 
@@ -50033,7 +54769,7 @@ module.exports = require('./socket');
  */
 module.exports.parser = require('engine.io-parser');
 
-},{"./socket":80,"engine.io-parser":92}],80:[function(require,module,exports){
+},{"./socket":83,"engine.io-parser":95}],83:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -50742,7 +55478,7 @@ Socket.prototype.filterUpgrades = function (upgrades) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./transport":81,"./transports":82,"component-emitter":76,"debug":89,"engine.io-parser":92,"indexof":107,"parsejson":101,"parseqs":102,"parseuri":103}],81:[function(require,module,exports){
+},{"./transport":84,"./transports":85,"component-emitter":79,"debug":92,"engine.io-parser":95,"indexof":110,"parsejson":104,"parseqs":105,"parseuri":106}],84:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -50903,7 +55639,7 @@ Transport.prototype.onClose = function () {
   this.emit('close');
 };
 
-},{"component-emitter":76,"engine.io-parser":92}],82:[function(require,module,exports){
+},{"component-emitter":79,"engine.io-parser":95}],85:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies
@@ -50960,7 +55696,7 @@ function polling(opts){
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./polling-jsonp":83,"./polling-xhr":84,"./websocket":86,"xmlhttprequest":87}],83:[function(require,module,exports){
+},{"./polling-jsonp":86,"./polling-xhr":87,"./websocket":89,"xmlhttprequest":90}],86:[function(require,module,exports){
 (function (global){
 
 /**
@@ -51197,7 +55933,7 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./polling":85,"component-inherit":88}],84:[function(require,module,exports){
+},{"./polling":88,"component-inherit":91}],87:[function(require,module,exports){
 (function (global){
 /**
  * Module requirements.
@@ -51585,7 +56321,7 @@ function unloadHandler() {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./polling":85,"component-emitter":76,"component-inherit":88,"debug":89,"xmlhttprequest":87}],85:[function(require,module,exports){
+},{"./polling":88,"component-emitter":79,"component-inherit":91,"debug":92,"xmlhttprequest":90}],88:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -51832,7 +56568,7 @@ Polling.prototype.uri = function(){
   return schema + '://' + this.hostname + port + this.path + query;
 };
 
-},{"../transport":81,"component-inherit":88,"debug":89,"engine.io-parser":92,"parseqs":102,"xmlhttprequest":87}],86:[function(require,module,exports){
+},{"../transport":84,"component-inherit":91,"debug":92,"engine.io-parser":95,"parseqs":105,"xmlhttprequest":90}],89:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -52072,7 +56808,7 @@ WS.prototype.check = function(){
   return !!WebSocket && !('__initialize' in WebSocket && this.name === WS.prototype.name);
 };
 
-},{"../transport":81,"component-inherit":88,"debug":89,"engine.io-parser":92,"parseqs":102,"ws":104}],87:[function(require,module,exports){
+},{"../transport":84,"component-inherit":91,"debug":92,"engine.io-parser":95,"parseqs":105,"ws":107}],90:[function(require,module,exports){
 // browser shim for xmlhttprequest module
 var hasCORS = require('has-cors');
 
@@ -52110,7 +56846,7 @@ module.exports = function(opts) {
   }
 }
 
-},{"has-cors":99}],88:[function(require,module,exports){
+},{"has-cors":102}],91:[function(require,module,exports){
 
 module.exports = function(a, b){
   var fn = function(){};
@@ -52118,7 +56854,7 @@ module.exports = function(a, b){
   a.prototype = new fn;
   a.prototype.constructor = a;
 };
-},{}],89:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
 
 /**
  * This is the web browser implementation of `debug()`.
@@ -52267,7 +57003,7 @@ function load() {
 
 exports.enable(load());
 
-},{"./debug":90}],90:[function(require,module,exports){
+},{"./debug":93}],93:[function(require,module,exports){
 
 /**
  * This is the common logic for both the Node.js and web browser
@@ -52466,7 +57202,7 @@ function coerce(val) {
   return val;
 }
 
-},{"ms":91}],91:[function(require,module,exports){
+},{"ms":94}],94:[function(require,module,exports){
 /**
  * Helpers.
  */
@@ -52579,7 +57315,7 @@ function plural(ms, n, name) {
   return Math.ceil(ms / n) + ' ' + name + 's';
 }
 
-},{}],92:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -53177,7 +57913,7 @@ exports.decodePayloadAsBinary = function (data, binaryType, callback) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./keys":93,"after":94,"arraybuffer.slice":95,"base64-arraybuffer":96,"blob":97,"has-binary":105,"utf8":98}],93:[function(require,module,exports){
+},{"./keys":96,"after":97,"arraybuffer.slice":98,"base64-arraybuffer":99,"blob":100,"has-binary":108,"utf8":101}],96:[function(require,module,exports){
 
 /**
  * Gets the keys for an object.
@@ -53198,7 +57934,7 @@ module.exports = Object.keys || function keys (obj){
   return arr;
 };
 
-},{}],94:[function(require,module,exports){
+},{}],97:[function(require,module,exports){
 module.exports = after
 
 function after(count, callback, err_cb) {
@@ -53228,7 +57964,7 @@ function after(count, callback, err_cb) {
 
 function noop() {}
 
-},{}],95:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 /**
  * An abstraction for slicing an arraybuffer even when
  * ArrayBuffer.prototype.slice is not supported
@@ -53259,7 +57995,7 @@ module.exports = function(arraybuffer, start, end) {
   return result.buffer;
 };
 
-},{}],96:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 /*
  * base64-arraybuffer
  * https://github.com/niklasvh/base64-arraybuffer
@@ -53320,7 +58056,7 @@ module.exports = function(arraybuffer, start, end) {
   };
 })("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/");
 
-},{}],97:[function(require,module,exports){
+},{}],100:[function(require,module,exports){
 (function (global){
 /**
  * Create a blob builder even when vendor prefixes exist
@@ -53373,7 +58109,7 @@ module.exports = (function() {
 })();
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],98:[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 (function (global){
 /*! http://mths.be/utf8js v2.0.0 by @mathias */
 ;(function(root) {
@@ -53616,7 +58352,7 @@ module.exports = (function() {
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],99:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -53641,7 +58377,7 @@ try {
   module.exports = false;
 }
 
-},{"global":100}],100:[function(require,module,exports){
+},{"global":103}],103:[function(require,module,exports){
 
 /**
  * Returns `this`. Execute this without a "context" (i.e. without it being
@@ -53651,7 +58387,7 @@ try {
 
 module.exports = (function () { return this; })();
 
-},{}],101:[function(require,module,exports){
+},{}],104:[function(require,module,exports){
 (function (global){
 /**
  * JSON parse.
@@ -53686,7 +58422,7 @@ module.exports = function parsejson(data) {
   }
 };
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],102:[function(require,module,exports){
+},{}],105:[function(require,module,exports){
 /**
  * Compiles a querystring
  * Returns string representation of the object
@@ -53725,7 +58461,7 @@ exports.decode = function(qs){
   return qry;
 };
 
-},{}],103:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 /**
  * Parses an URI
  *
@@ -53766,7 +58502,7 @@ module.exports = function parseuri(str) {
     return uri;
 };
 
-},{}],104:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -53811,7 +58547,7 @@ function ws(uri, protocols, opts) {
 
 if (WebSocket) ws.prototype = WebSocket.prototype;
 
-},{}],105:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 (function (global){
 
 /*
@@ -53873,12 +58609,12 @@ function hasBinary(data) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"isarray":106}],106:[function(require,module,exports){
+},{"isarray":109}],109:[function(require,module,exports){
 module.exports = Array.isArray || function (arr) {
   return Object.prototype.toString.call(arr) == '[object Array]';
 };
 
-},{}],107:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 
 var indexOf = [].indexOf;
 
@@ -53889,7 +58625,7 @@ module.exports = function(arr, obj){
   }
   return -1;
 };
-},{}],108:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 
 /**
  * HOP ref.
@@ -53974,7 +58710,7 @@ exports.length = function(obj){
 exports.isEmpty = function(obj){
   return 0 == exports.length(obj);
 };
-},{}],109:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 /**
  * Parses an URI
  *
@@ -54001,7 +58737,7 @@ module.exports = function parseuri(str) {
   return uri;
 };
 
-},{}],110:[function(require,module,exports){
+},{}],113:[function(require,module,exports){
 (function (global){
 /*global Blob,File*/
 
@@ -54146,7 +58882,7 @@ exports.removeBlobs = function(data, callback) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./is-buffer":112,"isarray":113}],111:[function(require,module,exports){
+},{"./is-buffer":115,"isarray":116}],114:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -54544,7 +59280,7 @@ function error(data){
   };
 }
 
-},{"./binary":110,"./is-buffer":112,"component-emitter":76,"debug":77,"isarray":113,"json3":114}],112:[function(require,module,exports){
+},{"./binary":113,"./is-buffer":115,"component-emitter":79,"debug":80,"isarray":116,"json3":117}],115:[function(require,module,exports){
 (function (global){
 
 module.exports = isBuf;
@@ -54561,9 +59297,9 @@ function isBuf(obj) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],113:[function(require,module,exports){
-arguments[4][106][0].apply(exports,arguments)
-},{"dup":106}],114:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
+arguments[4][109][0].apply(exports,arguments)
+},{"dup":109}],117:[function(require,module,exports){
 /*! JSON v3.2.6 | http://bestiejs.github.io/json3 | Copyright 2012-2013, Kit Cambridge | http://kit.mit-license.org */
 ;(function (window) {
   // Convenience aliases.
@@ -55426,7 +60162,7 @@ arguments[4][106][0].apply(exports,arguments)
   }
 }(this));
 
-},{}],115:[function(require,module,exports){
+},{}],118:[function(require,module,exports){
 module.exports = toArray
 
 function toArray(list, index) {
@@ -55441,7 +60177,7 @@ function toArray(list, index) {
     return array
 }
 
-},{}],116:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -55453,6 +60189,7 @@ module.exports = Core;
 
 require('./Directives/Action/ActionDirective');
 require('./Directives/Checkbox/CheckboxDirective');
+require('./Directives/FileTree/FileTreeDirective');
 require('./Directives/LiteralInput/LiteralInputDirective');
 require('./Directives/SelectInput/SelectInputDirective');
 require('./Directives/StepInput/StepInputDirective');
@@ -55463,7 +60200,7 @@ require('./Directives/VariableInput/VariableInputDirective');
 require('./Validators/VariableNameValidator');
 require('./Validators/ExampleNameValidator');
 
-},{"./Directives/Action/ActionDirective":117,"./Directives/Checkbox/CheckboxDirective":118,"./Directives/LiteralInput/LiteralInputDirective":119,"./Directives/SelectInput/SelectInputDirective":120,"./Directives/StepInput/StepInputDirective":121,"./Directives/Submit/SubmitDirective":122,"./Directives/TextInput/TextInputDirective":123,"./Directives/VariableInput/VariableInputDirective":124,"./Validators/ExampleNameValidator":131,"./Validators/VariableNameValidator":132,"angular":6}],117:[function(require,module,exports){
+},{"./Directives/Action/ActionDirective":120,"./Directives/Checkbox/CheckboxDirective":121,"./Directives/FileTree/FileTreeDirective":123,"./Directives/LiteralInput/LiteralInputDirective":124,"./Directives/SelectInput/SelectInputDirective":125,"./Directives/StepInput/StepInputDirective":126,"./Directives/Submit/SubmitDirective":127,"./Directives/TextInput/TextInputDirective":128,"./Directives/VariableInput/VariableInputDirective":129,"./Validators/ExampleNameValidator":136,"./Validators/VariableNameValidator":137,"angular":6}],120:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -55509,7 +60246,7 @@ var ActionDirective = function () {
 
 Core.directive('tractorAction', ActionDirective);
 
-},{"../../Core":116,"change-case":47,"lodash":66}],118:[function(require,module,exports){
+},{"../../Core":119,"change-case":47,"lodash":69}],121:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -55553,7 +60290,68 @@ var CheckboxDirective = function () {
 
 Core.directive('tractorCheckbox', CheckboxDirective);
 
-},{"../../Core":116,"change-case":47,"lodash":66}],119:[function(require,module,exports){
+},{"../../Core":119,"change-case":47,"lodash":69}],122:[function(require,module,exports){
+'use strict';
+
+// Module:
+var Core = require('../../Core');
+
+var FileTreeController = (function () {
+    var FileTreeController = function FileTreeController () {
+        debugger;
+    };
+
+    return FileTreeController;
+})();
+
+Core.controller('FileTreeController', FileTreeController);
+
+},{"../../Core":119}],123:[function(require,module,exports){
+'use strict';
+
+// Utilities:
+var _ = require('lodash');
+
+
+// Module:
+var Core = require('../../Core');
+
+// Dependencies:
+require('./FileTreeController');
+
+var FileTreeDirective = function () {
+    return {
+        restrict: 'E',
+
+        scope: {
+            model: '=',
+            type: '@'
+        },
+
+        /* eslint-disable no-path-concat */
+        template: "<section>\r\n    <h2>{{ fileTree.type }} files:</h2>\r\n    <ul class='file-tree__file-list file-tree__file-list--javascript'>\r\n        <!--<li ng-repeat=\"componentFileName in componentEditor.componentFolderStructure\"-->\r\n            <!--ng-class=\"{ true: 'active' }[componentFileName === componentEditor.component.name]\"-->\r\n            <!--class=\"file-tree__file-list-file\">-->\r\n            <!--<a ui-sref=\"tractor.component-editor({ component: componentFileName })\">{{ componentFileName }}</a>-->\r\n        <!--</li>-->\r\n    </ul>\r\n    <!--<button ng-click=\"componentEditor.newFolder = !!componentEditor.newFolder\">New folder</button>-->\r\n    <!--<input ng-if=\"componentEditor.newFolder\" type=\"text\"></input>-->\r\n</section>",
+        /* eslint-enable no-path-concat */
+
+        controller: 'FileTreeController',
+        controllerAs: 'fileTree',
+        bindToController: true,
+        link: link
+    };
+
+    function link ($scope) {
+        if (_.isUndefined($scope.fileTree.model)) {
+            throw new Error('The "tractor-file-tree" directive requires a "model" attribute.');
+        }
+
+        if (_.isUndefined($scope.fileTree.type)) {
+            throw new Error('The "tractor-file-tree" directive requires a "type" attribute.');
+        }
+    }
+};
+
+Core.directive('tractorFileTree', FileTreeDirective);
+
+},{"../../Core":119,"./FileTreeController":122,"lodash":69}],124:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -55602,7 +60400,7 @@ var LiteralInputDirective = function () {
 
 Core.directive('tractorLiteralInput', LiteralInputDirective);
 
-},{"../../Core":116,"lodash":66}],120:[function(require,module,exports){
+},{"../../Core":119,"lodash":69}],125:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -55661,7 +60459,7 @@ var SelectInputDirective = function () {
 
 Core.directive('tractorSelect', SelectInputDirective);
 
-},{"../../Core":116,"change-case":47,"lodash":66}],121:[function(require,module,exports){
+},{"../../Core":119,"change-case":47,"lodash":69}],126:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -55714,7 +60512,7 @@ var StepInputDirective = function () {
 
 Core.directive('tractorStepInput', StepInputDirective);
 
-},{"../../Core":116,"../../Validators/ExampleNameValidator":131,"change-case":47,"lodash":66}],122:[function(require,module,exports){
+},{"../../Core":119,"../../Validators/ExampleNameValidator":136,"change-case":47,"lodash":69}],127:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -55748,7 +60546,7 @@ var SubmitDirective = function () {
 
 Core.directive('tractorSubmit', SubmitDirective);
 
-},{"../../Core":116,"lodash":66}],123:[function(require,module,exports){
+},{"../../Core":119,"lodash":69}],128:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -55800,7 +60598,7 @@ var TextInputDirective = function () {
 
 Core.directive('tractorTextInput', TextInputDirective);
 
-},{"../../Core":116,"change-case":47,"lodash":66}],124:[function(require,module,exports){
+},{"../../Core":119,"change-case":47,"lodash":69}],129:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -55854,11 +60652,12 @@ var VariableInputDirective = function () {
 
 Core.directive('tractorVariableInput', VariableInputDirective);
 
-},{"../../Core":116,"../../Validators/VariableNameValidator":132,"change-case":47,"lodash":66}],125:[function(require,module,exports){
+},{"../../Core":119,"../../Validators/VariableNameValidator":137,"change-case":47,"lodash":69}],130:[function(require,module,exports){
 'use strict';
 
 // Utilities:
 var _ = require('lodash');
+var estemplate = require('estemplate');
 
 // Module:
 var Core = require('../Core');
@@ -55886,6 +60685,8 @@ var ASTCreatorService = function () {
         UnaryOperators: UnaryOperators,
         BinaryOperators: BinaryOperators,
 
+        template: template,
+
         program: program,
 
         blockStatement: blockStatement,
@@ -55909,6 +60710,10 @@ var ASTCreatorService = function () {
         literal: literal,
         blockComment: blockComment
     };
+
+    function template (template, objects) {
+        return _.first(estemplate(template, objects).body);
+    }
 
     function program (body, comments) {
         return {
@@ -56061,7 +60866,7 @@ var ASTCreatorService = function () {
 
 Core.service('ASTCreatorService', ASTCreatorService);
 
-},{"../Core":116,"lodash":66}],126:[function(require,module,exports){
+},{"../Core":119,"estemplate":67,"lodash":69}],131:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -56082,7 +60887,7 @@ ConfigService.$inject = ['$http'];
 
 Core.service('ConfigService', ConfigService);
 
-},{"../Core":116}],127:[function(require,module,exports){
+},{"../Core":119}],132:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56117,7 +60922,7 @@ Core.factory('HttpResponseInterceptor', ['NotifierService', function (
     $httpProvider.interceptors.push('HttpResponseInterceptor');
 }]);
 
-},{"../Core":116,"bluebird":9}],128:[function(require,module,exports){
+},{"../Core":119,"bluebird":9}],133:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56153,7 +60958,7 @@ RealTimeService.$inject = ['ConfigService'];
 
 Core.service('RealTimeService', RealTimeService);
 
-},{"../Core":116,"lodash":66,"socket.io-client":68}],129:[function(require,module,exports){
+},{"../Core":119,"lodash":69,"socket.io-client":71}],134:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56204,7 +61009,7 @@ var StringToLiteralService = function () {
 
 Core.service('StringToLiteralService', StringToLiteralService);
 
-},{"../Core":116,"lodash":66}],130:[function(require,module,exports){
+},{"../Core":119,"lodash":69}],135:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -56228,7 +61033,7 @@ ValidationService.$inject = ['$http'];
 
 Core.service('ValidationService', ValidationService);
 
-},{"../Core":116}],131:[function(require,module,exports){
+},{"../Core":119}],136:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56269,7 +61074,7 @@ ExampleNameValidator.$inject = ['ValidationService', 'StepDeclarationModel'];
 
 Core.directive('exampleName', ExampleNameValidator);
 
-},{"../../features/FeatureEditor/Models/StepDeclarationModel":160,"../Core":116,"../Services/ValidationService":130,"bluebird":9,"lodash":66}],132:[function(require,module,exports){
+},{"../../features/FeatureEditor/Models/StepDeclarationModel":165,"../Core":119,"../Services/ValidationService":135,"bluebird":9,"lodash":69}],137:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56333,7 +61138,7 @@ VariableNameValidator.$inject = ['$rootScope', 'ValidationService'];
 
 Core.directive('variableName', VariableNameValidator);
 
-},{"../Core":116,"../Services/ValidationService":130,"change-case":47,"lodash":66}],133:[function(require,module,exports){
+},{"../Core":119,"../Services/ValidationService":135,"change-case":47,"lodash":69}],138:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56346,7 +61151,7 @@ var ComponentEditor = angular.module('ComponentEditor', ['Core']);
 
 module.exports = ComponentEditor;
 
-},{"../../Core/Core":116,"angular":6}],134:[function(require,module,exports){
+},{"../../Core/Core":119,"angular":6}],139:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56368,7 +61173,7 @@ var ComponentEditorController = (function () {
         ComponentFileService,
         ComponentParserService,
         ComponentModel,
-        componentFileNames,
+        componentFolderStructure,
         componentFile
     ) {
         this.$scope = $scope;
@@ -56377,7 +61182,8 @@ var ComponentEditorController = (function () {
 
         this.componentFileService = ComponentFileService;
         this.componentParserService = ComponentParserService;
-        this.componentFileNames = componentFileNames;
+
+        this.folderStructure = componentFolderStructure;
 
         if (componentFile) {
             parseComponentFile.call(this, componentFile);
@@ -56387,22 +61193,22 @@ var ComponentEditorController = (function () {
             this.component.addAction();
         }
     };
-    ComponentEditorController.$inject = ['$scope', '$window', 'NotifierService', 'ComponentFileService', 'ComponentParserService', 'ComponentModel', 'componentFileNames', 'componentFile'];
+    ComponentEditorController.$inject = ['$scope', '$window', 'NotifierService', 'ComponentFileService', 'ComponentParserService', 'ComponentModel', 'componentFolderStructure', 'componentFile'];
 
     ComponentEditorController.prototype.saveComponentFile = function () {
-        var componentFileNames = this.componentFileNames;
         var ast = this.component.ast;
         var name = this.component.name;
 
-        var exists = _.contains(componentFileNames, name);
+        var exists = componentAlreadyExists.call(this, name);
 
         if (!exists || this.$window.confirm('This will overwrite "' + name + '". Continue?')) {
             this.componentFileService.saveComponentFile(ast, name)
             .then(function () {
-                if (!exists) {
-                    componentFileNames.push(name);
-                }
-            });
+                return this.componentFileService.getComponentFolderStructure();
+            }.bind(this))
+            .then(function (componentFolderStructure) {
+                this.folderStructure = componentFolderStructure;
+            }.bind(this));
         }
     };
 
@@ -56416,14 +61222,24 @@ var ComponentEditorController = (function () {
                 });
             });
             this.notifierService.error('Can\'t save component, something is invalid.');
-            return false;
-        } else {
-            return true;
         }
+        return componentEditor.$valid;
     };
 
     function parseComponentFile (componentFile) {
         this.component = this.componentParserService.parse(componentFile.ast);
+    }
+
+    function componentAlreadyExists (componentName, directory) {
+        return _.some(directory || this.componentFolderStructure, function (info, name) {
+            // Directory:
+            if (info['-type'] === 'd') {
+                return componentAlreadyExists.call(this, componentName, info);
+            // File:
+            } else {
+                return new RegExp(componentName).test(name);
+            }
+        });
     }
 
     return ComponentEditorController;
@@ -56431,7 +61247,7 @@ var ComponentEditorController = (function () {
 
 ComponentEditor.controller('ComponentEditorController', ComponentEditorController);
 
-},{"./ComponentEditor":133,"./Models/ComponentModel":138,"./Services/ComponentFileService":146,"./Services/ComponentParserService":147,"lodash":66}],135:[function(require,module,exports){
+},{"./ComponentEditor":138,"./Models/ComponentModel":143,"./Services/ComponentFileService":151,"./Services/ComponentParserService":152,"lodash":69}],140:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56578,7 +61394,7 @@ ComponentEditor.factory('ActionModel', ['ASTCreatorService', 'ParameterModel', '
     return createActionModelConstructor(ASTCreatorService, ParameterModel, InteractionModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":125,"../ComponentEditor":133,"./InteractionModel":141,"./ParameterModel":143,"change-case":47,"lodash":66}],136:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":130,"../ComponentEditor":138,"./InteractionModel":146,"./ParameterModel":148,"change-case":47,"lodash":69}],141:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56670,7 +61486,7 @@ ComponentEditor.factory('ArgumentModel', ['ASTCreatorService', 'StringToLiteralS
     return createArgumentModelConstructor(ASTCreatorService, StringToLiteralService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":125,"../../../Core/Services/StringToLiteralService":129,"../ComponentEditor":133,"lodash":66}],137:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":130,"../../../Core/Services/StringToLiteralService":134,"../ComponentEditor":138,"lodash":69}],142:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -56734,7 +61550,7 @@ ComponentEditor.factory('BrowserModel', function () {
     return createBrowserModelConstructor();
 });
 
-},{"../ComponentEditor":133}],138:[function(require,module,exports){
+},{"../ComponentEditor":138}],143:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -56887,7 +61703,7 @@ ComponentEditor.factory('ComponentModel', ['ASTCreatorService', 'BrowserModel', 
     return createComponentModelConstructor(ASTCreatorService, BrowserModel, ElementModel, ActionModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":125,"../ComponentEditor":133,"./ActionModel":135,"./BrowserModel":137,"./ElementModel":139,"change-case":47,"lodash":66}],139:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":130,"../ComponentEditor":138,"./ActionModel":140,"./BrowserModel":142,"./ElementModel":144,"change-case":47,"lodash":69}],144:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57095,7 +61911,7 @@ ComponentEditor.factory('ElementModel', ['ASTCreatorService', 'StringToLiteralSe
     return createElementModelConstructor(ASTCreatorService, StringToLiteralService, FilterModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":125,"../../../Core/Services/StringToLiteralService":129,"../ComponentEditor":133,"./FilterModel":140,"change-case":47,"lodash":66}],140:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":130,"../../../Core/Services/StringToLiteralService":134,"../ComponentEditor":138,"./FilterModel":145,"change-case":47,"lodash":69}],145:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57154,39 +61970,33 @@ var createFilterModelConstructor = function (
     function toAST (all) {
         var ast = ASTCreatorService;
 
-        var byIdentifier = ast.identifier('by');
         var locatorLiteral = ast.literal(this.locator);
         if (!all) {
             if (!this.isText) {
-                var byMemberExpression = ast.memberExpression(byIdentifier, ast.identifier(this.type));
-                return ast.callExpression(byMemberExpression, [locatorLiteral]);
+               return ast.template('by.<%= type %>(<%= locator %>)', {
+                    type: ast.identifier(this.type),
+                    locator: locatorLiteral
+                }).expression;
             } else {
-                var cssContainingTextIdentifier = ast.identifier('cssContainingText');
-                var byMemberExpression = ast.memberExpression(byIdentifier, cssContainingTextIdentifier);
-                var allSelectorLiteral = ast.literal('*');
-                return ast.callExpression(byMemberExpression, [allSelectorLiteral, locatorLiteral]);
+                return ast.template('by.<%= type %>(<%= all %>, <%= locator %>)', {
+                    type: ast.identifier('cssContainingText'),
+                    all: ast.literal('*'),
+                    locator: locatorLiteral
+                }).expression;
             }
         } else {
-            var locator = StringToLiteralService.toLiteral(this.locator);
-            if (_.isNumber(locator)) {
-                return ast.literal(locator);
+            var number = StringToLiteralService.toLiteral(locatorLiteral.value);
+            if (_.isNumber(number)) {
+                return ast.literal(number);
             } else {
-                var elementIdentifier = ast.identifier('element');
-                var elementGetTextMemberExpression = ast.memberExpression(elementIdentifier, ast.identifier('getText'));
-                var getTextCallExpression = ast.callExpression(elementGetTextMemberExpression);
-                var getTextThenMemberExpression = ast.memberExpression(getTextCallExpression, ast.identifier('then'));
-                var textIdentifier = ast.identifier('text');
-                var textIndexOfMemberExpresion = ast.memberExpression(textIdentifier, ast.identifier('indexOf'));
-                var textIndexOfCallExpression = ast.callExpression(textIndexOfMemberExpresion, [ast.literal(this.locator)]);
-                var negativeOneUnaryExpression = ast.unaryExpression(ast.UnaryOperators.NEGATION, ast.literal(1), true);
-                var textFoundBinaryExpression = ast.binaryExpression(ast.BinaryOperators.STRICT_INEQUALITY, textIndexOfCallExpression, negativeOneUnaryExpression);
-                var checkFoundTextReturnStatement = ast.returnStatement(textFoundBinaryExpression);
-                var checkFoundTextBodyBlockStatement = ast.blockStatement([checkFoundTextReturnStatement]);
-                var checkFoundTextFunctionExpression = ast.functionExpression(null, [textIdentifier], checkFoundTextBodyBlockStatement);
-                var getTextThenCallExpression = ast.callExpression(getTextThenMemberExpression, [checkFoundTextFunctionExpression]);
-                var getTextThenReturnStatement = ast.returnStatement(getTextThenCallExpression);
-                var getTextThenBodyBlockStatement = ast.blockStatement([getTextThenReturnStatement]);
-                return ast.functionExpression(null, [elementIdentifier], getTextThenBodyBlockStatement);
+                return ast.template(
+                    '(function (element) {' +
+                    '    return element.getText().then(function (text) {' +
+                    '        return text.indexOf(<%= locator %>) !== -1;' +
+                    '    });' +
+                    '});', {
+                    locator: locatorLiteral
+                }).expression;
             }
         }
     }
@@ -57199,7 +62009,7 @@ ComponentEditor.factory('FilterModel', ['ASTCreatorService', 'StringToLiteralSer
     return createFilterModelConstructor(ASTCreatorService, StringToLiteralService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":125,"../../../Core/Services/StringToLiteralService":129,"../ComponentEditor":133,"lodash":66}],141:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":130,"../../../Core/Services/StringToLiteralService":134,"../ComponentEditor":138,"lodash":69}],146:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57308,7 +62118,7 @@ ComponentEditor.factory('InteractionModel', ['ASTCreatorService', 'MethodModel',
     return createInteractionModelConstructor(ASTCreatorService, MethodModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":125,"../ComponentEditor":133,"./MethodModel":142,"lodash":66}],142:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":130,"../ComponentEditor":138,"./MethodModel":147,"lodash":69}],147:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57365,7 +62175,7 @@ ComponentEditor.factory('MethodModel', ['ArgumentModel', function (ArgumentModel
     return createMethodModelConstructor(ArgumentModel);
 }]);
 
-},{"../ComponentEditor":133,"./ArgumentModel":136,"lodash":66}],143:[function(require,module,exports){
+},{"../ComponentEditor":138,"./ArgumentModel":141,"lodash":69}],148:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57430,7 +62240,7 @@ ComponentEditor.factory('ParameterModel', ['ASTCreatorService', function (ASTCre
     return createParameterModelConstructor(ASTCreatorService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":125,"../ComponentEditor":133,"change-case":47,"lodash":66}],144:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":130,"../ComponentEditor":138,"change-case":47,"lodash":69}],149:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57498,7 +62308,7 @@ ActionParserService.$inject = ['ParameterParserService', 'InteractionParserServi
 
 ComponentEditor.service('ActionParserService', ActionParserService);
 
-},{"../ComponentEditor":133,"../Models/ActionModel":135,"./InteractionParserService":150,"./ParameterParserService":151,"assert":42,"lodash":66}],145:[function(require,module,exports){
+},{"../ComponentEditor":138,"../Models/ActionModel":140,"./InteractionParserService":155,"./ParameterParserService":156,"assert":42,"lodash":69}],150:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -57523,7 +62333,7 @@ ArgumentParserService.$inject = ['ArgumentModel'];
 
 ComponentEditor.service('ArgumentParserService', ArgumentParserService);
 
-},{"../ComponentEditor":133,"../Models/ArgumentModel":136}],146:[function(require,module,exports){
+},{"../ComponentEditor":138,"../Models/ArgumentModel":141}],151:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57543,7 +62353,7 @@ var ComponentFileService = function ComponentFileService (
     return {
         openComponentFile: openComponentFile,
         saveComponentFile: saveComponentFile,
-        getComponentFileNames: getComponentFileNames,
+        getComponentFolderStructure: getComponentFolderStructure,
         getAllComponents: getAllComponents
     };
 
@@ -57558,12 +62368,12 @@ var ComponentFileService = function ComponentFileService (
         });
     }
 
-    function getComponentFileNames () {
-        return $http.get('/get-component-file-names');
+    function getComponentFolderStructure () {
+        return $http.get('/get-component-folder-structure');
     }
 
     function getAllComponents () {
-        return this.getComponentFileNames()
+        return this.getComponentFolderStructure()
         .then(function (componentFileNames) {
             var openComponentFiles = _.map(componentFileNames, function (componentFileName) {
                 return openComponentFile(componentFileName);
@@ -57581,7 +62391,7 @@ ComponentFileService.$inject = ['$http', 'ComponentParserService'];
 
 ComponentEditor.service('ComponentFileService', ComponentFileService);
 
-},{"../ComponentEditor":133,"./ComponentParserService":147,"bluebird":9,"lodash":66}],147:[function(require,module,exports){
+},{"../ComponentEditor":138,"./ComponentParserService":152,"bluebird":9,"lodash":69}],152:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57659,7 +62469,7 @@ ComponentParserService.$inject = ['ElementParserService', 'ActionParserService',
 
 ComponentEditor.service('ComponentParserService', ComponentParserService);
 
-},{"../ComponentEditor":133,"../Models/ComponentModel":138,"../Services/ActionParserService":144,"../Services/ElementParserService":148,"assert":42,"lodash":66}],148:[function(require,module,exports){
+},{"../ComponentEditor":138,"../Models/ComponentModel":143,"../Services/ActionParserService":149,"../Services/ElementParserService":153,"assert":42,"lodash":69}],153:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57787,7 +62597,7 @@ ElementParserService.$inject = ['FilterParserService', 'ElementModel'];
 
 ComponentEditor.service('ElementParserService', ElementParserService);
 
-},{"../ComponentEditor":133,"../Models/ElementModel":139,"../Services/FilterParserService":149,"assert":42,"lodash":66}],149:[function(require,module,exports){
+},{"../ComponentEditor":138,"../Models/ElementModel":144,"../Services/FilterParserService":154,"assert":42,"lodash":69}],154:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57869,7 +62679,7 @@ FilterParserService.$inject = ['FilterModel'];
 
 ComponentEditor.service('FilterParserService', FilterParserService);
 
-},{"../ComponentEditor":133,"../Models/FilterModel":140,"assert":42,"lodash":66}],150:[function(require,module,exports){
+},{"../ComponentEditor":138,"../Models/FilterModel":145,"assert":42,"lodash":69}],155:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -57983,7 +62793,7 @@ InteractionParserService.$inject = ['ArgumentParserService', 'InteractionModel']
 
 ComponentEditor.service('InteractionParserService', InteractionParserService);
 
-},{"../ComponentEditor":133,"../Models/InteractionModel":141,"./ArgumentParserService":145,"assert":42,"lodash":66}],151:[function(require,module,exports){
+},{"../ComponentEditor":138,"../Models/InteractionModel":146,"./ArgumentParserService":150,"assert":42,"lodash":69}],156:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -58005,7 +62815,7 @@ ParameterParserService.$inject = ['ParameterModel'];
 
 ComponentEditor.service('ParameterParserService', ParameterParserService);
 
-},{"../ComponentEditor":133,"../Models/ParameterModel":143}],152:[function(require,module,exports){
+},{"../ComponentEditor":138,"../Models/ParameterModel":148}],157:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58018,7 +62828,7 @@ var ControlPanel = angular.module('ControlPanel', ['Core']);
 
 module.exports = ControlPanel;
 
-},{"../../Core/Core":116,"angular":6}],153:[function(require,module,exports){
+},{"../../Core/Core":119,"angular":6}],158:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58053,7 +62863,7 @@ var ControlPanelController = (function () {
 
 ControlPanel.controller('ControlPanelController', ControlPanelController);
 
-},{"./ControlPanel":152,"./Services/RunnerService":154,"lodash":66}],154:[function(require,module,exports){
+},{"./ControlPanel":157,"./Services/RunnerService":159,"lodash":69}],159:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -58089,7 +62899,7 @@ RunnerService.$inject = ['NotifierService', 'RealTimeService'];
 
 ControlPanel.service('RunnerService', RunnerService);
 
-},{"../../Notifier/Services/NotifierService":173,"../ControlPanel":152}],155:[function(require,module,exports){
+},{"../../Notifier/Services/NotifierService":178,"../ControlPanel":157}],160:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58105,7 +62915,7 @@ FeatureEditor.constant('FeatureNewLine', '%%NEWLINE%%');
 
 module.exports = FeatureEditor;
 
-},{"../../Core/Core":116,"angular":6}],156:[function(require,module,exports){
+},{"../../Core/Core":119,"angular":6}],161:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58197,7 +63007,7 @@ var FeatureEditorController = (function () {
 
 FeatureEditor.controller('FeatureEditorController', FeatureEditorController);
 
-},{"./FeatureEditor":155,"./Models/FeatureModel":158,"./Services/FeatureFileService":162,"./Services/FeatureParserService":163,"change-case":47,"lodash":66}],157:[function(require,module,exports){
+},{"./FeatureEditor":160,"./Models/FeatureModel":163,"./Services/FeatureFileService":167,"./Services/FeatureParserService":168,"change-case":47,"lodash":69}],162:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58257,7 +63067,7 @@ FeatureEditor.factory('ExampleModel', ['StringToLiteralService', 'FeatureIndent'
     return createExampleModelConstructor(StringToLiteralService, FeatureIndent);
 }]);
 
-},{"../../../Core/Services/StringToLiteralService":129,"../FeatureEditor":155,"lodash":66}],158:[function(require,module,exports){
+},{"../../../Core/Services/StringToLiteralService":134,"../FeatureEditor":160,"lodash":69}],163:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58330,7 +63140,7 @@ FeatureEditor.factory('FeatureModel', ['ScenarioModel', 'FeatureIndent', 'Featur
     return createFeatureModelConstructor(ScenarioModel, FeatureIndent, FeatureNewLine);
 }]);
 
-},{"../FeatureEditor":155,"./ScenarioModel":159,"lodash":66}],159:[function(require,module,exports){
+},{"../FeatureEditor":160,"./ScenarioModel":164,"lodash":69}],164:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58437,7 +63247,7 @@ FeatureEditor.factory('ScenarioModel', ['StepDeclarationModel', 'ExampleModel', 
     return createScenarioModelConstructor(StepDeclarationModel, ExampleModel, FeatureIndent, FeatureNewLine);
 }]);
 
-},{"../FeatureEditor":155,"./ExampleModel":157,"./StepDeclarationModel":160,"lodash":66}],160:[function(require,module,exports){
+},{"../FeatureEditor":160,"./ExampleModel":162,"./StepDeclarationModel":165,"lodash":69}],165:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58480,7 +63290,7 @@ FeatureEditor.factory('StepDeclarationModel', function () {
     return createStepDeclarationModelConstructor();
 });
 
-},{"../FeatureEditor":155,"lodash":66}],161:[function(require,module,exports){
+},{"../FeatureEditor":160,"lodash":69}],166:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58511,7 +63321,7 @@ ExampleParserService.$inject = ['ExampleModel'];
 
 FeatureEditor.service('ExampleParserService', ExampleParserService);
 
-},{"../FeatureEditor":155,"../Models/ExampleModel":157,"lodash":66}],162:[function(require,module,exports){
+},{"../FeatureEditor":160,"../Models/ExampleModel":162,"lodash":69}],167:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -58544,7 +63354,7 @@ FeatureFileService.$inject = ['$http'];
 
 FeatureEditor.service('FeatureFileService', FeatureFileService);
 
-},{"../FeatureEditor":155}],163:[function(require,module,exports){
+},{"../FeatureEditor":160}],168:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58598,7 +63408,7 @@ FeatureParserService.$inject = ['ScenarioParserService', 'FeatureModel'];
 
 FeatureEditor.service('FeatureParserService', FeatureParserService);
 
-},{"../FeatureEditor":155,"../Models/FeatureModel":158,"./ScenarioParserService":164,"assert":42,"lodash":66}],164:[function(require,module,exports){
+},{"../FeatureEditor":160,"../Models/FeatureModel":163,"./ScenarioParserService":169,"assert":42,"lodash":69}],169:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58667,7 +63477,7 @@ ScenarioParserService.$inject = ['StepDeclarationParserService', 'ExampleParserS
 
 FeatureEditor.service('ScenarioParserService', ScenarioParserService);
 
-},{"../FeatureEditor":155,"../Models/ScenarioModel":159,"./ExampleParserService":161,"./StepDeclarationParserService":165,"assert":42,"lodash":66}],165:[function(require,module,exports){
+},{"../FeatureEditor":160,"../Models/ScenarioModel":164,"./ExampleParserService":166,"./StepDeclarationParserService":170,"assert":42,"lodash":69}],170:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -58694,7 +63504,7 @@ StepDeclarationParserService.$inject = ['StepDeclarationModel'];
 
 FeatureEditor.service('StepDeclarationParserService', StepDeclarationParserService);
 
-},{"../FeatureEditor":155,"../Models/StepDeclarationModel":160}],166:[function(require,module,exports){
+},{"../FeatureEditor":160,"../Models/StepDeclarationModel":165}],171:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58707,7 +63517,7 @@ var MockDataEditor = angular.module('MockDataEditor', ['Core']);
 
 module.exports = MockDataEditor;
 
-},{"../../Core/Core":116,"angular":6}],167:[function(require,module,exports){
+},{"../../Core/Core":119,"angular":6}],172:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58794,7 +63604,7 @@ var MockDataEditorController = (function () {
 
 MockDataEditor.controller('MockDataEditorController', MockDataEditorController);
 
-},{"./MockDataEditor":166,"./Models/MockDataModel":168,"./Services/MockDataFileService":169,"./Services/MockDataParserService":170,"lodash":66}],168:[function(require,module,exports){
+},{"./MockDataEditor":171,"./Models/MockDataModel":173,"./Services/MockDataFileService":174,"./Services/MockDataParserService":175,"lodash":69}],173:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -58831,7 +63641,7 @@ MockDataEditor.factory('MockDataModel', function () {
     return createMockDataModelConstructor();
 });
 
-},{"../MockDataEditor":166}],169:[function(require,module,exports){
+},{"../MockDataEditor":171}],174:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58889,7 +63699,7 @@ MockDataFileService.$inject = ['$http', 'MockDataParserService'];
 
 MockDataEditor.service('MockDataFileService', MockDataFileService);
 
-},{"../MockDataEditor":166,"./MockDataParserService":170,"bluebird":9,"lodash":66}],170:[function(require,module,exports){
+},{"../MockDataEditor":171,"./MockDataParserService":175,"bluebird":9,"lodash":69}],175:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -58913,7 +63723,7 @@ MockDataParserService.$inject = ['MockDataModel'];
 
 MockDataEditor.service('MockDataParserService', MockDataParserService);
 
-},{"../MockDataEditor":166,"../Models/MockDataModel":168}],171:[function(require,module,exports){
+},{"../MockDataEditor":171,"../Models/MockDataModel":173}],176:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58930,7 +63740,7 @@ var NotifierDirective = function (NotifierService) {
         restrict: 'E',
 
         /* eslint-disable no-path-concat */
-        template: "<aside>\n    <ul class=\"notifier__notifications\">\n        <li ng-repeat=\"notification in notifications\"\n            ng-class=\"'notifier__notification notifier__notification--' + notification.type\">\n            <span class=\"notifier__notification-message\">{{ notification.message }}</span>\n\n            <button ng-click=\"dismiss(notification)\"\n                    class=\"notifier__notification-dismiss\"\n                    type=\"button\"\n                    title=\"Dismiss\">\n            </button>\n        </li>\n    </ul>\n</aside>\n",
+        template: "<aside>\r\n    <ul class=\"notifier__notifications\">\r\n        <li ng-repeat=\"notification in notifications\"\r\n            ng-class=\"'notifier__notification notifier__notification--' + notification.type\">\r\n            <span class=\"notifier__notification-message\">{{ notification.message }}</span>\r\n\r\n            <button ng-click=\"dismiss(notification)\"\r\n                    class=\"notifier__notification-dismiss\"\r\n                    type=\"button\"\r\n                    title=\"Dismiss\">\r\n            </button>\r\n        </li>\r\n    </ul>\r\n</aside>\r\n",
         /* eslint-enable no-path-concat */
 
         link: function ($scope) {
@@ -58943,7 +63753,7 @@ NotifierDirective.$inject = ['NotifierService'];
 
 Notifier.directive('tractorNotifier', NotifierDirective);
 
-},{"../Notifier":172,"../Services/NotifierService":173}],172:[function(require,module,exports){
+},{"../Notifier":177,"../Services/NotifierService":178}],177:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -58955,7 +63765,7 @@ module.exports = Notifier;
 
 require('./Directives/NotifierDirective');
 
-},{"./Directives/NotifierDirective":171,"angular":6}],173:[function(require,module,exports){
+},{"./Directives/NotifierDirective":176,"angular":6}],178:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -59018,7 +63828,7 @@ NotifierService.$inject = ['$timeout'];
 
 Notifier.service('NotifierService', NotifierService);
 
-},{"../Notifier":172,"lodash":66}],174:[function(require,module,exports){
+},{"../Notifier":177,"lodash":69}],179:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -59071,7 +63881,7 @@ StepDefinitionEditor.factory('ComponentInstanceModel', ['ASTCreatorService', fun
     return createComponentInstanceModelConstructor(ASTCreatorService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":125,"../StepDefinitionEditor":187}],175:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":130,"../StepDefinitionEditor":192}],180:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -59177,7 +63987,7 @@ StepDefinitionEditor.factory('ExpectationModel', ['ASTCreatorService', 'StringTo
     return createExpectationModelConstructor(ASTCreatorService, StringToLiteralService, ArgumentModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":125,"../../../Core/Services/StringToLiteralService":129,"../../ComponentEditor/Models/ArgumentModel":136,"../StepDefinitionEditor":187,"lodash":66}],176:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":130,"../../../Core/Services/StringToLiteralService":134,"../../ComponentEditor/Models/ArgumentModel":141,"../StepDefinitionEditor":192,"lodash":69}],181:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -59230,7 +64040,7 @@ StepDefinitionEditor.factory('MockDataInstanceModel', ['ASTCreatorService', func
     return createMockDataInstanceModelConstructor(ASTCreatorService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":125,"../StepDefinitionEditor":187}],177:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":130,"../StepDefinitionEditor":192}],182:[function(require,module,exports){
 'use strict';
 
 // Utilities;
@@ -59295,7 +64105,7 @@ StepDefinitionEditor.factory('MockModel', ['ASTCreatorService', function (
     return createMockModelConstructor(ASTCreatorService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":125,"../StepDefinitionEditor":187,"lodash":66}],178:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":130,"../StepDefinitionEditor":192,"lodash":69}],183:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -59400,7 +64210,7 @@ StepDefinitionEditor.factory('StepDefinitionModel', ['ASTCreatorService', 'Compo
     return createStepDefinitionModelConstructor(ASTCreatorService, ComponentInstanceModel, MockDataInstanceModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":125,"../StepDefinitionEditor":187,"./ComponentInstanceModel":174,"./MockDataInstanceModel":176,"lodash":66}],179:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":130,"../StepDefinitionEditor":192,"./ComponentInstanceModel":179,"./MockDataInstanceModel":181,"lodash":69}],184:[function(require,module,exports){
 'use strict';
 
 // Utilities;
@@ -59564,7 +64374,7 @@ StepDefinitionEditor.factory('StepModel', ['ASTCreatorService', 'ExpectationMode
     return createStepModelConstructor(ASTCreatorService, ExpectationModel, TaskModel, MockModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":125,"../StepDefinitionEditor":187,"./ExpectationModel":175,"./MockModel":177,"./TaskModel":180,"lodash":66}],180:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":130,"../StepDefinitionEditor":192,"./ExpectationModel":180,"./MockModel":182,"./TaskModel":185,"lodash":69}],185:[function(require,module,exports){
 'use strict';
 
 // Utilities;
@@ -59657,7 +64467,7 @@ StepDefinitionEditor.factory('TaskModel', ['ASTCreatorService', 'ArgumentModel',
     return createTaskModelConstructor(ASTCreatorService, ArgumentModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":125,"../../ComponentEditor/Models/ArgumentModel":136,"../StepDefinitionEditor":187,"lodash":66}],181:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":130,"../../ComponentEditor/Models/ArgumentModel":141,"../StepDefinitionEditor":192,"lodash":69}],186:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -59702,7 +64512,7 @@ ExpectationParserService.$inject = ['ExpectationModel'];
 
 StepDefinitionEditor.service('ExpectationParserService', ExpectationParserService);
 
-},{"../Models/ExpectationModel":175,"../StepDefinitionEditor":187,"lodash":66}],182:[function(require,module,exports){
+},{"../Models/ExpectationModel":180,"../StepDefinitionEditor":192,"lodash":69}],187:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -59753,7 +64563,7 @@ MockParserService.$inject = ['MockModel'];
 
 StepDefinitionEditor.service('MockParserService', MockParserService);
 
-},{"../Models/MockModel":177,"../StepDefinitionEditor":187,"assert":42,"lodash":66}],183:[function(require,module,exports){
+},{"../Models/MockModel":182,"../StepDefinitionEditor":192,"assert":42,"lodash":69}],188:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -59785,7 +64595,7 @@ StepDefinitionFileService.$inject = ['$http'];
 
 StepDefinitionEditor.service('StepDefinitionFileService', StepDefinitionFileService);
 
-},{"../StepDefinitionEditor":187}],184:[function(require,module,exports){
+},{"../StepDefinitionEditor":192}],189:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -59878,7 +64688,7 @@ StepDefinitionParserService.$inject = ['StepParserService', 'StepDefinitionModel
 
 StepDefinitionEditor.service('StepDefinitionParserService', StepDefinitionParserService);
 
-},{"../Models/StepDefinitionModel":178,"../Services/StepParserService":185,"../StepDefinitionEditor":187,"assert":42,"change-case":47,"lodash":66}],185:[function(require,module,exports){
+},{"../Models/StepDefinitionModel":183,"../Services/StepParserService":190,"../StepDefinitionEditor":192,"assert":42,"change-case":47,"lodash":69}],190:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -59971,7 +64781,7 @@ StepParserService.$inject = ['MockParserService', 'TaskParserService', 'Expectat
 
 StepDefinitionEditor.service('StepParserService', StepParserService);
 
-},{"../Models/StepModel":179,"../Services/ExpectationParserService":181,"../Services/MockParserService":182,"../Services/TaskParserService":186,"../StepDefinitionEditor":187,"assert":42,"lodash":66}],186:[function(require,module,exports){
+},{"../Models/StepModel":184,"../Services/ExpectationParserService":186,"../Services/MockParserService":187,"../Services/TaskParserService":191,"../StepDefinitionEditor":192,"assert":42,"lodash":69}],191:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -60046,7 +64856,7 @@ TaskParserService.$inject = ['TaskModel'];
 
 StepDefinitionEditor.service('TaskParserService', TaskParserService);
 
-},{"../Models/TaskModel":180,"../StepDefinitionEditor":187,"assert":42,"lodash":66}],187:[function(require,module,exports){
+},{"../Models/TaskModel":185,"../StepDefinitionEditor":192,"assert":42,"lodash":69}],192:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -60059,7 +64869,7 @@ var StepDefinitionEditor = angular.module('StepDefinitionEditor', ['Core']);
 
 module.exports = StepDefinitionEditor;
 
-},{"../../Core/Core":116,"angular":6}],188:[function(require,module,exports){
+},{"../../Core/Core":119,"angular":6}],193:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -60192,4 +65002,4 @@ var StepDefinitionEditorController = (function () {
 
 StepDefinitionEditor.controller('StepDefinitionEditorController', StepDefinitionEditorController);
 
-},{"./Services/StepDefinitionFileService":183,"./Services/StepDefinitionParserService":184,"./StepDefinitionEditor":187,"lodash":66}]},{},[1]);
+},{"./Services/StepDefinitionFileService":188,"./Services/StepDefinitionParserService":189,"./StepDefinitionEditor":192,"lodash":69}]},{},[1]);

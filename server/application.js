@@ -38,10 +38,11 @@ module.exports = (function () {
 
         application.use(cors());
 
+        var getFolderStructure = require('./actions/get-folder-structure');
         var getListOfFileNames = require('./actions/get-list-of-file-names');
         var openFile = require('./actions/open-file');
 
-        application.get('/get-component-file-names', getListOfFileNames(constants.COMPONENTS_DIR, constants.COMPONENTS_EXTENSION));
+        application.get('/get-component-folder-structure', getFolderStructure(constants.COMPONENTS_DIR));
         application.get('/get-feature-file-names', getListOfFileNames(constants.FEATURES_DIR, constants.FEATURES_EXTENSION));
         application.get('/get-step-definition-file-names', getListOfFileNames(constants.STEP_DEFINITIONS_DIR, constants.STEP_DEFINITIONS_EXTENSION));
         application.get('/get-mock-data-file-names', getListOfFileNames(constants.MOCK_DATA_DIR, constants.MOCK_DATA_EXTENSION));

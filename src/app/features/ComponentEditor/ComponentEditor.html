@@ -1,13 +1,4 @@
-<section class="file-tree">
-    <h2>Component files:</h2>
-    <ul class='file-tree__file-list file-tree__file-list--javascript'>
-        <li ng-repeat="componentFileName in componentEditor.componentFileNames"
-            ng-class="{ true: 'active' }[componentFileName === componentEditor.component.name]"
-            class="file-tree__file-list-file">
-            <a ui-sref="tractor.component-editor({ component: componentFileName })">{{ componentFileName }}</a>
-        </li>
-    </ul>
-</section>
+<tractor-file-tree model="componentEditor" type="Component"></tractor-file-tree>
 
 <form class="file" name="component-editor" novalidate
     ng-submit="componentEditor.showErrors() && componentEditor.saveComponentFile()">

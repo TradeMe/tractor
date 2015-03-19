@@ -67,12 +67,12 @@ angular.module('tractor', [
         /* eslint-enable no-path-concat */
         controller: 'ComponentEditorController as componentEditor',
         resolve: {
-            componentFileNames: function (ComponentFileService) {
-                return ComponentFileService.getComponentFileNames();
+            componentFolderStructure: function (ComponentFileService) {
+                return ComponentFileService.getComponentFolderStructure();
             },
             componentFile: function ($stateParams, ComponentFileService) {
-                var component = $stateParams.component;
-                return component ? ComponentFileService.openComponentFile(component) : null;
+                var componentName = $stateParams.component;
+                return componentName ? ComponentFileService.openComponentFile(componentName) : null;
             }
         }
     })

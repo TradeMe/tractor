@@ -19,7 +19,7 @@ var ComponentEditorController = (function () {
         ComponentFileService,
         ComponentParserService,
         ComponentModel,
-        componentFileNames,
+        componentFolderStructure,
         componentFile
     ) {
         this.$scope = $scope;
@@ -28,7 +28,8 @@ var ComponentEditorController = (function () {
 
         this.componentFileService = ComponentFileService;
         this.componentParserService = ComponentParserService;
-        this.componentFileNames = componentFileNames;
+
+        this.folderStructure = componentFolderStructure;
 
         if (componentFile) {
             parseComponentFile.call(this, componentFile);
@@ -40,19 +41,19 @@ var ComponentEditorController = (function () {
     };
 
     ComponentEditorController.prototype.saveComponentFile = function () {
-        var componentFileNames = this.componentFileNames;
         var ast = this.component.ast;
         var name = this.component.name;
 
-        var exists = _.contains(componentFileNames, name);
+        var exists = componentAlreadyExists.call(this, name);
 
         if (!exists || this.$window.confirm('This will overwrite "' + name + '". Continue?')) {
             this.componentFileService.saveComponentFile(ast, name)
             .then(function () {
-                if (!exists) {
-                    componentFileNames.push(name);
-                }
-            });
+                return this.componentFileService.getComponentFolderStructure();
+            }.bind(this))
+            .then(function (componentFolderStructure) {
+                this.folderStructure = componentFolderStructure;
+            }.bind(this));
         }
     };
 
@@ -66,14 +67,24 @@ var ComponentEditorController = (function () {
                 });
             });
             this.notifierService.error('Can\'t save component, something is invalid.');
-            return false;
-        } else {
-            return true;
         }
+        return componentEditor.$valid;
     };
 
     function parseComponentFile (componentFile) {
         this.component = this.componentParserService.parse(componentFile.ast);
+    }
+
+    function componentAlreadyExists (componentName, directory) {
+        return _.some(directory || this.componentFolderStructure, function (info, name) {
+            // Directory:
+            if (info['-type'] === 'd') {
+                return componentAlreadyExists.call(this, componentName, info);
+            // File:
+            } else {
+                return new RegExp(componentName).test(name);
+            }
+        });
     }
 
     return ComponentEditorController;
