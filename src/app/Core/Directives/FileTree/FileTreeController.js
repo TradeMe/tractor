@@ -6,37 +6,56 @@ var _ = require('lodash');
 // Module:
 var Core = require('../../Core');
 
+// Dependencies:
+var title = require('change-case').title;
+require('../../Services/FileTreeService');
+
 var FileTreeController = (function () {
-    var FileTreeController = function FileTreeController () {
-        organiseFolderStructure.call(this);
+    var FileTreeController = function FileTreeController (
+        FileTreeService
+    ) {
+        this.fileTreeService = FileTreeService;
+
+        this.folderStructure = organiseFolderStructure(this.model.folderStructure);
+        this.headerName = title(this.type);
+    };
+
+    FileTreeController.prototype.addFolder = function (directory) {
+        this.fileTreeService.editDirectory({
+            path: directory.path
+        })
+        .then(function (folderStructure) {
+            this.folderStructure = organiseFolderStructure(folderStructure);
+            directory.showFolderNameInput = true;
+        }.bind(this));
+    };
+
+    FileTreeController.prototype.editFolderName = function () {
+
     };
 
     function organiseFolderStructure (directory) {
-        directory = directory || this.model.folderStructure;
-        var path = directory['-path'];
+        var skip = ['name', '-name', 'path', '-path', '-type'];
         _.each(directory, function (info, name) {
-            // Directory:
             var type = info['-type'];
             var path = info['-path'];
+            // Directory:
             if (type === 'd') {
                 info.name = name;
                 info.path = path;
-                return organiseFolderStructure.call(this, info);
+                directory.directories = directory.directories || [];
+                directory.directories.push(organiseFolderStructure(info));
             // File:
-            } else if (name !== '-type' && name !== '-path') {
+            } else if (!_.contains(skip, name)) {
                 directory.files = directory.files || [];
                 directory.files.push({
-                    name: name,
+                    name: _.last(/^(.*?)\./.exec(name)),
                     path: path
                 });
             }
-            delete directory[name];
-            delete info['-type'];
-            delete info['-path'];
         });
-        directory.path = path;
-        delete directory['-type'];
-        delete directory['-path'];
+        directory.path = directory['-path'];
+        return directory;
     }
 
     return FileTreeController;

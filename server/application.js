@@ -47,6 +47,8 @@ module.exports = (function () {
         application.get('/get-step-definition-file-names', getListOfFileNames(constants.STEP_DEFINITIONS_DIR, constants.STEP_DEFINITIONS_EXTENSION));
         application.get('/get-mock-data-file-names', getListOfFileNames(constants.MOCK_DATA_DIR, constants.MOCK_DATA_EXTENSION));
 
+        application.post('/edit-directory', require('./actions/edit-directory'));
+
         application.get('/open-component-file', openFile(constants.COMPONENTS_DIR, { parseJS: true }));
         application.get('/open-feature-file', openFile(constants.FEATURES_DIR, { lexFeature: true }));
         application.get('/open-step-definition-file', openFile(constants.STEP_DEFINITIONS_DIR, { parseJS: true }));
