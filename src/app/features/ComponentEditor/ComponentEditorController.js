@@ -49,6 +49,7 @@ var ComponentEditorController = (function () {
         if (!exists || this.$window.confirm('This will overwrite "' + name + '". Continue?')) {
             this.componentFileService.saveComponentFile(ast, name)
             .then(function () {
+                this.component.isSaved = true;
                 return this.componentFileService.getComponentFolderStructure();
             }.bind(this))
             .then(function (componentFolderStructure) {

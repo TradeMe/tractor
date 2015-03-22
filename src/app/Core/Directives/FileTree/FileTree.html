@@ -1,21 +1,62 @@
 <script type="text/ng-template" id="folder-structure.html">
-    <ul>
-        <li ng-repeat="item in item.directories"
-            ng-include="'folder-structure.html'">
+    <p class="file-tree__item-name"
+        ng-if="item.name && !item.editingName"
+        ng-dblclick="fileTree.startEditingName(item)">
+        {{ item.name }}
+    </p>
+    <input class="file-tree__item-rename"
+        ng-if="item.editingName"
+        ng-model="item.name"
+        ng-blur="fileTree.editName(item)"
+        ng-keypress="fileTree.renameOnEnter($event, item)"
+        tractor-give-focus
+        focus-on="item.editingName">
+    </input>
+
+    <ul class="file-tree__file-list">
+        <li class="file-tree__file-list-item file-tree__file-list-item--new-directory">
+            <tractor-action class="file-tree__add-directory"
+                model="fileTree"
+                action="Add directory"
+                argument="item || fileTree.folderStructure">
+            </tractor-action>
         </li>
-        <li ng-repeat="item in item.files"
-            class="file-tree__file-list-file">
-            <a ui-sref="tractor.{{ fileTree.type }}-editor({ component: item.name })">{{ item.name }}</a>
+
+        <li class="file-tree__file-list-item file-tree__file-list-item--directory"
+            ng-repeat="item in (item || fileTree.folderStructure).directories"
+            ng-include="'folder-structure.html'"
+            tractor-drop-file
+            on-drop="fileTree.moveFile"
+            drop-directory="item">
+        </li>
+
+        <li class="file-tree__file-list-item"
+            ng-repeat="item in (item || fileTree.folderStructure).files"
+            tractor-drag-file>
+            <p class="file-tree__item-name"
+                ng-if="!item.editingName"
+                ng-click="fileTree.openFile(item)"
+                ng-dblclick="fileTree.startEditingName(item)">
+                {{ item.name }}
+            </p>
+            <input class="file-tree__item-rename"
+                ng-if="item.editingName"
+                ng-model="item.name"
+                ng-blur="fileTree.editName(item)"
+                ng-keypress="fileTree.renameOnEnter($event, item)"
+                tractor-give-focus
+                focus-on="item.editingName">
+            </input>
         </li>
     </ul>
-    <button ng-if="!item.showFolderNameInput" ng-click="fileTree.addFolder(item)">New folder</button>
-    <input ng-if="item.showFolderNameInput" ng-blur="fileTree.editFolderName(item)" type="text"></input>
 </script>
 
-<section>
-    <h2>{{ fileTree.headerName }} files:</h2>
-    <div class='file-tree__file-list file-tree__file-list--javascript'
-         ng-init="item = fileTree.folderStructure"
-         ng-include="'folder-structure.html'">
+<section class="file-tree__container">
+    <h2 class="file-tree__header">
+        {{ fileTree.headerName }} files:
+    </h2>
+    <div class="file-tree file-tree--javascript"
+        ng-include="'folder-structure.html'">
     </div>
 </section>
+<div class="file-tree__resize-handle"></div>

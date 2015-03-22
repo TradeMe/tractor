@@ -19,11 +19,12 @@ var createComponentModelConstructor = function (
     ElementModel,
     ActionModel
 ) {
-    var ComponentModel = function ComponentModel () {
+    var ComponentModel = function ComponentModel (options) {
         var browser = new BrowserModel();
         var elements = [browser];
         var domElements = [];
         var actions = [];
+        this.isSaved = !!(options && options.isSaved);
 
         Object.defineProperties(this, {
             browser: {

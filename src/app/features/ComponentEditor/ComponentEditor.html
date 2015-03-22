@@ -6,6 +6,7 @@
         <h1 class="file-options__name">{{ componentEditor.component.name }}</h1>
         <div>
             <tractor-variable-input class="file-options__name-input"
+                ng-if="!componentEditor.component.isSaved"
                 form="component-editor"
                 label="Name"
                 model="componentEditor.component"
@@ -117,26 +118,24 @@
                             <section>
                                 <h3>Parameters:</h3>
 
-                                <section>
-                                    <ol ng-if="action.parameters.length" as-sortable ng-model="action.parameters" is-disabled="action.parameters.length < 2">
-                                        <li class="file-editor__list-item" ng-repeat="parameter in action.parameters" as-sortable-item>
-                                            <tractor-action
-                                                model="action"
-                                                action="Remove parameter"
-                                                argument="parameter"
-                                                icon="remove">
-                                            </tractor-action>
-                                            <div ng-if="action.parameters.length > 1" class="file-editor__sort-handle" as-sortable-item-handle title="Drag to sort"></div>
+                                <ol ng-if="action.parameters.length" as-sortable ng-model="action.parameters" is-disabled="action.parameters.length < 2">
+                                    <li class="file-editor__list-item" ng-repeat="parameter in action.parameters" as-sortable-item>
+                                        <tractor-action
+                                            model="action"
+                                            action="Remove parameter"
+                                            argument="parameter"
+                                            icon="remove">
+                                        </tractor-action>
+                                        <div ng-if="action.parameters.length > 1" class="file-editor__sort-handle" as-sortable-item-handle title="Drag to sort"></div>
 
-                                            <tractor-variable-input
-                                                form="component-editor"
-                                                label="Name"
-                                                model="parameter"
-                                                example="parameter">
-                                            </tractor-variable-input>
-                                        </li>
-                                    </ol>
-                                </section>
+                                        <tractor-variable-input
+                                            form="component-editor"
+                                            label="Name"
+                                            model="parameter"
+                                            example="parameter">
+                                        </tractor-variable-input>
+                                    </li>
+                                </ol>
 
                                 <tractor-action
                                     model="action"
@@ -147,43 +146,41 @@
                             <section>
                                 <h3>Interactions:</h3>
 
-                                <section>
-                                    <ol ng-if="action.interactions.length" as-sortable ng-model="action.interactions" is-disabled="action.interactions.length < 2">
-                                        <li class="file-editor__list-item" ng-repeat="interaction in action.interactions" as-sortable-item>
-                                            <tractor-action
-                                                model="action"
-                                                action="Remove interaction"
-                                                argument="interaction"
-                                                icon="remove">
-                                            </tractor-action>
-                                            <div ng-if="action.interactions.length > 1" class="file-editor__sort-handle" as-sortable-item-handle title="Drag to sort"></div>
+                                <ol ng-if="action.interactions.length" as-sortable ng-model="action.interactions" is-disabled="action.interactions.length < 2">
+                                    <li class="file-editor__list-item" ng-repeat="interaction in action.interactions" as-sortable-item>
+                                        <tractor-action
+                                            model="action"
+                                            action="Remove interaction"
+                                            argument="interaction"
+                                            icon="remove">
+                                        </tractor-action>
+                                        <div ng-if="action.interactions.length > 1" class="file-editor__sort-handle" as-sortable-item-handle title="Drag to sort"></div>
 
-                                            <tractor-select
-                                                label="Element"
-                                                model="interaction"
-                                                options="componentEditor.component.elements"
-                                                as="name">
-                                            </tractor-select>
-                                            <tractor-select
-                                                label="Method"
-                                                model="interaction"
-                                                options="interaction.element.methods"
-                                                as="name">
-                                            </tractor-select>
+                                        <tractor-select
+                                            label="Element"
+                                            model="interaction"
+                                            options="componentEditor.component.elements"
+                                            as="name">
+                                        </tractor-select>
+                                        <tractor-select
+                                            label="Method"
+                                            model="interaction"
+                                            options="interaction.element.methods"
+                                            as="name">
+                                        </tractor-select>
 
-                                            <div ng-repeat="argument in interaction.arguments">
-                                                <tractor-literal-input
-                                                    form="component-editor"
-                                                    name="argument.name"
-                                                    model="argument.value"
-                                                    description="argument.description"
-                                                    required="argument.required"
-                                                    type="argument.type">
-                                                </tractor-literal-input>
-                                            </div>
-                                        </li>
-                                    </ol>
-                                </section>
+                                        <div ng-repeat="argument in interaction.arguments">
+                                            <tractor-literal-input
+                                                form="component-editor"
+                                                name="argument.name"
+                                                model="argument.value"
+                                                description="argument.description"
+                                                required="argument.required"
+                                                type="argument.type">
+                                            </tractor-literal-input>
+                                        </div>
+                                    </li>
+                                </ol>
 
                                 <tractor-action
                                     model="action"

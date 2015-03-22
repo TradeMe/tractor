@@ -33,7 +33,7 @@ var ComponentFileService = function ComponentFileService (
     }
 
     function getComponentFolderStructure () {
-        return $http.get('/get-component-folder-structure');
+        return $http.get('/get-file-structure?directory=components');
     }
 
     function getAllComponents () {

@@ -28,7 +28,9 @@ var ComponentParserService = function ComponentParserService (
                 meta = JSON.parse(_.first(astObject.comments).value);
             } catch (e) { }
 
-            var component = new ComponentModel();
+            var component = new ComponentModel({
+                isSaved: true
+            });
             component.name = meta.name;
 
             var componentModuleExpressionStatement = _.first(astObject.body);

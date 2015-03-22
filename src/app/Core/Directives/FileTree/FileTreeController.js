@@ -1,61 +1,97 @@
 'use strict';
 
-// Utilities:
-var _ = require('lodash');
-
 // Module:
 var Core = require('../../Core');
 
 // Dependencies:
-var title = require('change-case').title;
+var changecase = require('change-case');
+var pascal = changecase.pascal;
+var title = changecase.title;
 require('../../Services/FileTreeService');
+
+var transforms = {
+    '.component.js': function (oldName, newName) {
+        return {
+            replace: pascal(oldName),
+            with: pascal(newName)
+        }
+    }
+};
 
 var FileTreeController = (function () {
     var FileTreeController = function FileTreeController (
+        $state,
+        $timeout,
         FileTreeService
     ) {
+        this.$state = $state;
+        this.$timeout = $timeout;
         this.fileTreeService = FileTreeService;
 
-        this.folderStructure = organiseFolderStructure(this.model.folderStructure);
         this.headerName = title(this.type);
+        this.folderStructure = this.fileTreeService.organiseFolderStructure(this.model.folderStructure);
     };
 
-    FileTreeController.prototype.addFolder = function (directory) {
-        this.fileTreeService.editDirectory({
+    FileTreeController.prototype.addDirectory = function (directory) {
+        this.fileTreeService.addDirectory({
+            root: this.folderStructure.path,
             path: directory.path
         })
         .then(function (folderStructure) {
-            this.folderStructure = organiseFolderStructure(folderStructure);
-            directory.showFolderNameInput = true;
+            this.folderStructure = this.fileTreeService.organiseFolderStructure(folderStructure);
         }.bind(this));
     };
 
-    FileTreeController.prototype.editFolderName = function () {
-
+    FileTreeController.prototype.startEditingName = function (item) {
+        item.editingName = true;
+        item.previousName = item.name;
     };
 
-    function organiseFolderStructure (directory) {
-        var skip = ['name', '-name', 'path', '-path', '-type'];
-        _.each(directory, function (info, name) {
-            var type = info['-type'];
-            var path = info['-path'];
-            // Directory:
-            if (type === 'd') {
-                info.name = name;
-                info.path = path;
-                directory.directories = directory.directories || [];
-                directory.directories.push(organiseFolderStructure(info));
-            // File:
-            } else if (!_.contains(skip, name)) {
-                directory.files = directory.files || [];
-                directory.files.push({
-                    name: _.last(/^(.*?)\./.exec(name)),
-                    path: path
-                });
+    FileTreeController.prototype.editName = function (item) {
+        item.editingName = false;
+        if (!item.name.trim().length) {
+            item.name = item.previousName;
+        }
+        if (item.name !== item.previousName) {
+            var oldName = item.previousName;
+            var newName = item.name;
+            var extension = item.extension || '';
+            var transform = transforms[item.extension];
+            if (transform) {
+                transform = transform(oldName, newName);
             }
-        });
-        directory.path = directory['-path'];
-        return directory;
+
+            this.fileTreeService.editName({
+                root: this.folderStructure.path,
+                path: item.path,
+                oldName: oldName + extension,
+                newName: newName + extension,
+                transform: transform
+            })
+            .then(function (folderStructure) {
+                this.folderStructure = this.fileTreeService.organiseFolderStructure(folderStructure);
+            }.bind(this));
+        }
+    };
+
+    FileTreeController.prototype.renameOnEnter = function ($event, item) {
+        if ($event.keyCode === 13) {
+            this.editName(item);
+        }
+    };
+
+    FileTreeController.prototype.openFile = function (item) {
+        this.$timeout(function () {
+            if (!item.editingName) {
+                var params = {};
+                params[this.type] = item.name;
+                this.$state.go('tractor.' + this.type + '-editor', params)
+            }
+        }.bind(this), 200);
+    }
+
+    FileTreeController.prototype.moveFile = function (root, file, directory) {
+        debugger;
     }
 
     return FileTreeController;

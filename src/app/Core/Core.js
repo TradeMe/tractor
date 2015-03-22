@@ -9,7 +9,10 @@ module.exports = Core;
 
 require('./Directives/Action/ActionDirective');
 require('./Directives/Checkbox/CheckboxDirective');
+require('./Directives/DragFile/DragFileDirective');
+require('./Directives/DropFile/DropFileDirective');
 require('./Directives/FileTree/FileTreeDirective');
+require('./Directives/GiveFocus/GiveFocusDirective');
 require('./Directives/LiteralInput/LiteralInputDirective');
 require('./Directives/SelectInput/SelectInputDirective');
 require('./Directives/StepInput/StepInputDirective');
