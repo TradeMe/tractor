@@ -564,13 +564,11 @@ form.file {
   vertical-align: top;
   padding: 0.5rem;
   margin: 0.5rem 0;
-  max-width: 60%;
   text-overflow: ellipsis;
   overflow: hidden; }
 
 .file-options > div {
   display: inline-block;
-  width: 40%;
   margin-top: 0.5rem; }
 
 .file-options__name-input,
@@ -589,18 +587,14 @@ form.file {
 tractor-file-tree {
   background: #fafafa;
   float: left;
-  width: 20%;
+  width: 19.75%;
   height: 100%;
   overflow-x: hidden;
   overflow-y: scroll; }
 
 tractor-file-tree .file-tree__container {
   float: left;
-  width: 99%;
   height: 100%; }
-
-tractor-file-tree .file-tree {
-  width: 500%; }
 
 tractor-file-tree .file-tree__header {
   padding-left: 1rem; }
@@ -648,6 +642,10 @@ tractor-file-tree .file-tree__file-list-item {
   cursor: pointer; }
   tractor-file-tree .file-tree__file-list-item:hover > p, tractor-file-tree .file-tree__file-list-item.active > p {
     font-weight: bolder; }
+  tractor-file-tree .file-tree__file-list-item:hover > [ng-include] > .file-tree__item-options {
+    background-image: url("./images/options.png"); }
+  tractor-file-tree .file-tree__file-list-item > [ng-include] > .file-tree__item-options.file-tree__item-active-options {
+    background-image: url("./images/active-options.png"); }
   tractor-file-tree .file-tree__file-list-item.active {
     display: block;
     -webkit-transform: translateX(1rem);
@@ -664,15 +662,13 @@ tractor-file-tree .file-tree__item-options {
   left: -1.25rem;
   height: 1.5rem;
   width: 1.5rem; }
-  tractor-file-tree .file-tree__item-options:hover {
-    background-image: url("./images/options.png"); }
-  tractor-file-tree .file-tree__item-options.file-tree__item-active-options {
-    background-image: url("./images/active-options.png"); }
 
 tractor-file-tree .file-tree__item-options-panel {
   position: absolute;
   top: 1.5rem;
   left: -1.25rem;
+  margin-top: -1.5rem;
+  padding-top: 1.5rem;
   z-index: 1;
   width: 8rem; }
   tractor-file-tree .file-tree__item-options-panel tractor-action, tractor-file-tree .file-tree__item-options-panel button {
@@ -683,13 +679,6 @@ tractor-file-tree tractor-action button {
   color: black; }
   tractor-file-tree tractor-action button:hover {
     background: #e1e1e1; }
-
-tractor-file-tree .file-tree__resize-handle {
-  float: left;
-  width: 1%;
-  height: 100%;
-  background: #cdcdcd;
-  cursor: col-resize; }
 
 header {
   height: 11.5%;
@@ -1057,6 +1046,20 @@ main {
 
 .hidden {
   display: none !important; }
+
+tractor-resize-handle {
+  float: left;
+  width: 0.25%;
+  height: 100%;
+  background: #cdcdcd;
+  cursor: col-resize; }
+
+.resizing {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  cursor: col-resize; }
 
 
 

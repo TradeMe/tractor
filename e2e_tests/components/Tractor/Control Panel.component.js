@@ -43,23 +43,23 @@ module.exports = function () {
         this.stepDefinitionEditorLink = element(by.css('[href="#/step-definition-editor"]'));
         this.mockDataEditorLink = element(by.css('[href="#/mock-data-editor"]'));
     };
-    ControlPanel.prototype.runProtractor = function () {
+   ControlPanel.prototype.runProtractor = function () {
         var self = this;
         return self.runProtractorButton.click();
     };
-    ControlPanel.prototype.goToComponentEditor = function () {
+   ControlPanel.prototype.goToComponentEditor = function () {
         var self = this;
         return self.componentEditorLink.click();
     };
-    ControlPanel.prototype.goToFeatureEditor = function () {
+   ControlPanel.prototype.goToFeatureEditor = function () {
         var self = this;
         return self.featureEditorLink.click();
     };
-    ControlPanel.prototype.goToStepDefinitionEditor = function () {
+   ControlPanel.prototype.goToStepDefinitionEditor = function () {
         var self = this;
         return self.stepDefinitionEditorLink.click();
     };
-    ControlPanel.prototype.goToMockDataEditor = function () {
+   ControlPanel.prototype.goToMockDataEditor = function () {
         var self = this;
         return self.mockDataEditorLink.click();
     };

@@ -14,12 +14,13 @@ require('../../Services/FileTreeService');
 
 var createTransform = {
     '.component.js': function (oldName, newName) {
+        var nonalphaquote = '([^a-zA-Z0-9\"])';
         return [{
-            replace: oldName,
-            with: newName
+            replace: nonalphaquote + pascal(oldName) + nonalphaquote,
+            with: '$1' + pascal(newName) + '$2'
         }, {
-            replace: pascal(oldName),
-            with: pascal(newName)
+            replace: '\"' + oldName + '\"',
+            with: '"' + newName + '"'
         }]
     }
 };
@@ -144,10 +145,11 @@ var FileTreeController = (function () {
         if ((item.files && item.files.length) || (item.directories && item.directories.length)) {
             alert('Cannot delete a directory with files in it.');
         } else {
+            var extension = item.extension || '';
             this.fileTreeService.deleteFile({
                 root: this.fileStructure.path,
                 path: item.path,
-                name: item.name
+                name: item.name + extension
             })
             .then(function (fileStructure) {
                 this.fileStructure = fileStructure

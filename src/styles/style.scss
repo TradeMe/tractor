@@ -42,3 +42,16 @@ main {
 .hidden {
     display: none !important;
 }
+
+tractor-resize-handle {
+    float: left;
+    width: 0.25%;
+    height: 100%;
+    background: rgba(205, 205, 205, 1);
+    cursor: col-resize;
+}
+
+.resizing {
+    user-select: none;
+    cursor: col-resize;
+}

@@ -14,6 +14,7 @@ require('./Directives/DropFile/DropFileDirective');
 require('./Directives/FileTree/FileTreeDirective');
 require('./Directives/GiveFocus/GiveFocusDirective');
 require('./Directives/LiteralInput/LiteralInputDirective');
+require('./Directives/ResizeHandle/ResizeHandleDirective');
 require('./Directives/SelectInput/SelectInputDirective');
 require('./Directives/StepInput/StepInputDirective');
 require('./Directives/Submit/SubmitDirective');

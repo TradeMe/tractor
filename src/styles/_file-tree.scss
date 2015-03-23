@@ -2,7 +2,7 @@ tractor-file-tree {
     background: $background-lightest;
 
     float: left;
-    width: 20%;
+    width: 19.75%;
     height: 100%;
 
     overflow-x: hidden;
@@ -11,12 +11,7 @@ tractor-file-tree {
 
 tractor-file-tree .file-tree__container {
     float: left;
-    width: 99%;
     height: 100%;
-}
-
-tractor-file-tree .file-tree {
-    width: 500%;
 }
 
 tractor-file-tree .file-tree__header {
@@ -77,6 +72,14 @@ tractor-file-tree .file-tree__file-list-item {
         font-weight: bolder;
     }
 
+    &:hover > [ng-include] > .file-tree__item-options {
+        background-image: url('./images/options.png');
+    }
+
+    & > [ng-include] > .file-tree__item-options.file-tree__item-active-options {
+        background-image: url('./images/active-options.png');
+    }
+
     &.active {
         display: block;
         transform: translateX($large-spacing);
@@ -100,20 +103,14 @@ tractor-file-tree .file-tree__item-options {
     left: -($large-spacing + $small-spacing);
     height: $huge-spacing;
     width: $huge-spacing;
-
-    &:hover {
-        background-image: url('./images/options.png');
-    }
-
-    &.file-tree__item-active-options {
-        background-image: url('./images/active-options.png');
-    }
 }
 
 tractor-file-tree .file-tree__item-options-panel {
     position: absolute;
     top: $huge-spacing;
     left: -($large-spacing + $small-spacing);
+    margin-top: -$huge-spacing;
+    padding-top: $huge-spacing;
     z-index: 1;
     width: 8rem;
 
@@ -129,12 +126,4 @@ tractor-file-tree tractor-action button {
     &:hover {
         background: rgba(225, 225, 225, 1);
     }
-}
-
-tractor-file-tree .file-tree__resize-handle {
-    float: left;
-    width: 1%;
-    height: 100%;
-    background: rgba(205, 205, 205, 1);
-    cursor: col-resize;
 }
