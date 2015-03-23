@@ -50,6 +50,7 @@ module.exports = (function () {
         application.post('/add-directory', require('./actions/file-operations/add-directory'));
         application.post('/edit-name', require('./actions/file-operations/edit-name'));
         application.post('/move-file', require('./actions/file-operations/move-file'));
+        application.post('/delete-file', require('./actions/file-operations/delete-file'));
 
         application.get('/open-component-file', openFile(constants.COMPONENTS_DIR, { parseJS: true }));
         application.get('/open-feature-file', openFile(constants.FEATURES_DIR, { lexFeature: true }));

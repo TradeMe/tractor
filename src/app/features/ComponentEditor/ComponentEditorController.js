@@ -19,7 +19,7 @@ var ComponentEditorController = (function () {
         ComponentFileService,
         ComponentParserService,
         ComponentModel,
-        componentFolderStructure,
+        componentFileStructure,
         componentFile
     ) {
         this.$scope = $scope;
@@ -29,7 +29,7 @@ var ComponentEditorController = (function () {
         this.componentFileService = ComponentFileService;
         this.componentParserService = ComponentParserService;
 
-        this.folderStructure = componentFolderStructure;
+        this.fileStructure = componentFileStructure;
 
         if (componentFile) {
             parseComponentFile.call(this, componentFile);
@@ -50,10 +50,10 @@ var ComponentEditorController = (function () {
             this.componentFileService.saveComponentFile(ast, name)
             .then(function () {
                 this.component.isSaved = true;
-                return this.componentFileService.getComponentFolderStructure();
+                return this.componentFileService.getComponentFileStructure();
             }.bind(this))
-            .then(function (componentFolderStructure) {
-                this.folderStructure = componentFolderStructure;
+            .then(function (componentFileStructure) {
+                this.fileStructure = componentFileStructure;
             }.bind(this));
         }
     };
@@ -77,7 +77,7 @@ var ComponentEditorController = (function () {
     }
 
     function componentAlreadyExists (componentName, directory) {
-        return _.some(directory || this.componentFolderStructure, function (info, name) {
+        return _.some(directory || this.componentFileStructure, function (info, name) {
             // Directory:
             if (info['-type'] === 'd') {
                 return componentAlreadyExists.call(this, componentName, info);

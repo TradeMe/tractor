@@ -11,6 +11,7 @@ var jsondir = Promise.promisifyAll(require('jsondir'));
 
 module.exports = {
     createModifier: createModifier,
+    deletePaths: deletePaths,
     findDirectory: findDirectory,
     findContainingDirectory: findContainingDirectory
 };
@@ -20,23 +21,34 @@ function createModifier (modifier, errorMessage) {
         jsondir.dir2jsonAsync(request.body.root, {
             attributes: ['content']
         })
-        .then(function (folderStructure) {
-            folderStructure = modifier(folderStructure, request);
-            return jsondir.json2dirAsync(folderStructure, {
+        .then(function (fileStructure) {
+            fileStructure = modifier(fileStructure, request);
+            return jsondir.json2dirAsync(fileStructure, {
                 nuke: true
             });
         })
         .then(function () {
             return jsondir.dir2jsonAsync(request.body.root);
         })
-        .then(function (newFolderStructure) {
-            response.send(JSON.stringify(newFolderStructure));
+        .then(function (newFileStructure) {
+            response.send(JSON.stringify(newFileStructure));
         })
         .catch(function (error) {
             console.log(error);
             errorHandler(response, error, errorMessage);
         });
     };
+}
+
+function deletePaths (directory) {
+    delete directory['-path'];
+    _.each(directory, function (item) {
+        delete item['-path'];
+        if (item['-type'] === 'd') {
+            item = deletePaths(item);
+        }
+    });
+    return directory;
 }
 
 function findDirectory (directory, itemPath) {

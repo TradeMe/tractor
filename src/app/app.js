@@ -11,6 +11,7 @@ require('angular-messages');
 require('angular-mocks');
 require('angular-ui-router');
 require('angular-sortable');
+require('angular-local-storage');
 
 require('./features/ControlPanel/ControlPanel');
 require('./features/ControlPanel/ControlPanelController');
@@ -41,6 +42,7 @@ angular.module('tractor', [
   'ngMessages',
   'ui.router',
   'ui.sortable',
+  'LocalStorageModule',
   'Core',
   'Notifier',
   'ControlPanel',
@@ -49,7 +51,9 @@ angular.module('tractor', [
   'StepDefinitionEditor',
   'MockDataEditor'
 ])
-.config(function ($stateProvider, $urlRouterProvider) {
+.config(function ($stateProvider, $urlRouterProvider, localStorageServiceProvider) {
+    localStorageServiceProvider.setPrefix('tractor');
+
     $urlRouterProvider.otherwise('/');
 
     $stateProvider
@@ -67,8 +71,8 @@ angular.module('tractor', [
         /* eslint-enable no-path-concat */
         controller: 'ComponentEditorController as componentEditor',
         resolve: {
-            componentFolderStructure: function (ComponentFileService) {
-                return ComponentFileService.getComponentFolderStructure();
+            componentFileStructure: function (ComponentFileService) {
+                return ComponentFileService.getComponentFileStructure();
             },
             componentFile: function ($stateParams, ComponentFileService) {
                 var componentName = $stateParams.component;

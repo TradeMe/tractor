@@ -28,7 +28,7 @@ function createHandlerForDirectory (directory, options) {
 }
 
 function openFile (directory, options, extension, request, response) {
-    var name = decodeURIComponent(request.query.name) + extension;
+    var name = decodeURIComponent(request.query.name);// + extension;
 
     return fs.readFileAsync(path.join(config.testDirectory, directory, name), 'utf-8')
     .then(function (contents) {

@@ -1,62 +1,90 @@
-<script type="text/ng-template" id="folder-structure.html">
+<script type="text/ng-template" id="file-options.html">
+    <div class="file-tree__item-options"
+         ng-class="{ 'file-tree__item-active-options': item.showOptions }"
+         ng-click="fileTree.showOptions(item)">
+    </div>
+    <div class="file-tree__item-options-panel"
+         ng-if="item.showOptions"
+         ng-mouseleave="fileTree.hideOptions(item)">
+        <tractor-action
+                model="fileTree"
+                action="Edit name"
+                argument="item">
+        </tractor-action>
+        <tractor-action
+                model="fileTree"
+                action="Delete"
+                argument="item">
+        </tractor-action>
+    </div>
+</script>
+
+<script type="text/ng-template" id="rename-input.html">
+    <input class="file-tree__item-rename"
+           ng-if="item.editingName"
+           ng-model="item.name"
+           ng-blur="fileTree.saveNewName(item)"
+           ng-keypress="fileTree.renameOnEnter($event, item)"
+           tractor-give-focus
+           focus-on="item.editingName">
+    </input>
+</script>
+
+<script type="text/ng-template" id="file-structure.html">
+    <div ng-include="'file-options.html'"></div>
+
     <p class="file-tree__item-name"
         ng-if="item.name && !item.editingName"
-        ng-dblclick="fileTree.startEditingName(item)">
+        ng-click="fileTree.expandDirectory(item)"
+        ng-dblclick="fileTree.editName(item)">
         {{ item.name }}
     </p>
-    <input class="file-tree__item-rename"
-        ng-if="item.editingName"
-        ng-model="item.name"
-        ng-blur="fileTree.editName(item)"
-        ng-keypress="fileTree.renameOnEnter($event, item)"
-        tractor-give-focus
-        focus-on="item.editingName">
-    </input>
+    <div ng-include="'rename-input.html'"></div>
 
-    <ul class="file-tree__file-list">
+    <ul class="file-tree__file-list"
+        ng-if="(item || fileTree.fileStructure).expanded">
         <li class="file-tree__file-list-item file-tree__file-list-item--new-directory">
-            <tractor-action class="file-tree__add-directory"
+            <tractor-action
                 model="fileTree"
                 action="Add directory"
-                argument="item || fileTree.folderStructure">
+                argument="item || fileTree.fileStructure">
             </tractor-action>
         </li>
 
         <li class="file-tree__file-list-item file-tree__file-list-item--directory"
-            ng-repeat="item in (item || fileTree.folderStructure).directories"
-            ng-include="'folder-structure.html'"
+            ng-class="{ 'file-tree__file-list-item--expanded-directory': item.expanded }"
+            ng-repeat="item in (item || fileTree.fileStructure).directories"
+            ng-include="'file-structure.html'"
             tractor-drop-file
             on-drop="fileTree.moveFile"
             drop-directory="item">
         </li>
 
         <li class="file-tree__file-list-item"
-            ng-repeat="item in (item || fileTree.folderStructure).files"
+            ng-repeat="item in (item || fileTree.fileStructure).files"
             tractor-drag-file>
+            <div ng-include="'file-options.html'"></div>
+
             <p class="file-tree__item-name"
-                ng-if="!item.editingName"
+                ng-if="item.name && !item.editingName"
                 ng-click="fileTree.openFile(item)"
-                ng-dblclick="fileTree.startEditingName(item)">
+                ng-dblclick="fileTree.editName(item)">
                 {{ item.name }}
             </p>
-            <input class="file-tree__item-rename"
-                ng-if="item.editingName"
-                ng-model="item.name"
-                ng-blur="fileTree.editName(item)"
-                ng-keypress="fileTree.renameOnEnter($event, item)"
-                tractor-give-focus
-                focus-on="item.editingName">
-            </input>
+            <div ng-include="'rename-input.html'"></div>
         </li>
     </ul>
 </script>
 
-<section class="file-tree__container">
+<section class="file-tree__container"
+    tractor-drop-file
+    on-drop="fileTree.moveFile"
+    drop-directory="fileTree.fileStructure">
     <h2 class="file-tree__header">
         {{ fileTree.headerName }} files:
     </h2>
     <div class="file-tree file-tree--javascript"
-        ng-include="'folder-structure.html'">
+        ng-include="'file-structure.html'">
     </div>
 </section>
 <div class="file-tree__resize-handle"></div>

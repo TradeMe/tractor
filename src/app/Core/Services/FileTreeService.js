@@ -7,31 +7,60 @@ var _ = require('lodash');
 var Core = require('../Core');
 
 var FileTreeService = function FileTreeService (
-    $http
+    $http,
+    localStorageService
 ) {
     var STARTS_WITH_DOT = /^\./;
     var FILE_NAME = /(.*?)\./;
     var FILE_EXTENSION = /(\..*)/;
 
+    var EXPANDED_STORAGE_KEY = 'FileTreeExpanded';
+
     return {
         addDirectory: addDirectory,
+        deleteFile: deleteFile,
         editName: editName,
-        organiseFolderStructure: organiseFolderStructure
+        getExpanded: getExpanded,
+        setExpanded: setExpanded,
+        moveFile: moveFile,
+        organiseFileStructure: organiseFileStructure
     };
 
     function addDirectory (options) {
-        return $http.post('/add-directory', options);
+        return $http.post('/add-directory', options)
+        .then(updateFileStructure);
+    }
+
+    function deleteFile (options) {
+        return $http.post('/delete-file', options)
+            .then(updateFileStructure);
     }
 
     function editName (options) {
-        return $http.post('/edit-name', options);
+        return $http.post('/edit-name', options)
+        .then(updateFileStructure);
+    }
+
+    function getExpanded () {
+        return localStorageService.get(EXPANDED_STORAGE_KEY) || {};
+    }
+
+    function setExpanded (expanded) {
+        localStorageService.set(EXPANDED_STORAGE_KEY, expanded);
     }
 
     function moveFile (options) {
-        return $http.post('/move-file', options);
+        return $http.post('/move-file', options)
+        .then(updateFileStructure);
     }
 
-    function organiseFolderStructure (directory) {
+    function updateFileStructure (fileStructure) {
+        fileStructure = organiseFileStructure(fileStructure);
+        fileStructure.expanded = true;
+        return fileStructure;
+    }
+
+    function organiseFileStructure (directory) {
         var skip = ['name', '-name', 'path', '-path', '-type'];
         _.each(directory, function (info, name) {
             var type = info['-type'];
@@ -41,7 +70,7 @@ var FileTreeService = function FileTreeService (
                 info.name = name;
                 info.path = path;
                 directory.directories = directory.directories || [];
-                directory.directories.push(organiseFolderStructure(info));
+                directory.directories.push(organiseFileStructure(info));
             } else if (!_.contains(skip, name)) {
                 // File:
                 // Skip hidden files (starting with ".")...
@@ -56,6 +85,7 @@ var FileTreeService = function FileTreeService (
             }
         });
         directory.path = directory['-path'];
+        directory.expanded = !!getExpanded()[directory.path];
         return directory;
     }
 };

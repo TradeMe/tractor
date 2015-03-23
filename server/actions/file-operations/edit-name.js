@@ -1,36 +1,26 @@
 'use strict';
 
-// Utilities:
-var _ = require('lodash');
-
 // Dependenices:
-var fileStructure = require('./file-structure');
+var fileStructureUtils = require('./file-structure');
 
 // Constants:
 var ERROR_MESSAGE = 'Editing name failed.';
 
-module.exports = fileStructure.createModifier(editName, ERROR_MESSAGE);
+module.exports = fileStructureUtils.createModifier(editName, ERROR_MESSAGE);
 
-function editName (folderStructure, request) {
-    var directory = fileStructure.findContainingDirectory(folderStructure, request.body.path);
-    directory[request.body.newName] = deletePaths(directory[request.body.oldName]);
-    if (request.body.transform) {
-        var transform = request.body.transform;
-        var content = directory[request.body.newName]['-content'];
-        content = content.replace(new RegExp(transform.replace, 'g'), transform.with);
-        directory[request.body.newName]['-content'] = content;
+function editName (fileStructure, request) {
+    var directory = fileStructureUtils.findContainingDirectory(fileStructure, request.body.path);
+    var newName = request.body.newName;
+    var oldName = request.body.oldName;
+    var transforms = request.body.transforms;
+    directory[newName] = fileStructureUtils.deletePaths(directory[oldName]);
+    if (Array.isArray(transforms)) {
+        transforms.forEach(function (transform) {
+            var content = directory[newName]['-content'];
+            content = content.replace(new RegExp(transform.replace, 'g'), transform.with);
+            directory[newName]['-content'] = content;
+        });
     }
-    delete directory[request.body.oldName];
-    return folderStructure;
-}
-
-function deletePaths (directory) {
-    delete directory['-path'];
-    _.each(directory, function (item) {
-        delete item['-path'];
-        if (item['-type'] === 'd') {
-            item = deletePaths(item);
-        }
-    });
-    return directory;
+    delete directory[oldName];
+    return fileStructure;
 }

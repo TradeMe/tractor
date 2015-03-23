@@ -17,7 +17,7 @@ var ComponentFileService = function ComponentFileService (
     return {
         openComponentFile: openComponentFile,
         saveComponentFile: saveComponentFile,
-        getComponentFolderStructure: getComponentFolderStructure,
+        getComponentFileStructure: getComponentFileStructure,
         getAllComponents: getAllComponents
     };
 
@@ -32,12 +32,12 @@ var ComponentFileService = function ComponentFileService (
         });
     }
 
-    function getComponentFolderStructure () {
+    function getComponentFileStructure () {
         return $http.get('/get-file-structure?directory=components');
     }
 
     function getAllComponents () {
-        return this.getComponentFolderStructure()
+        return this.getComponentFileStructure()
         .then(function (componentFileNames) {
             var openComponentFiles = _.map(componentFileNames, function (componentFileName) {
                 return openComponentFile(componentFileName);

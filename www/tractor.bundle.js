@@ -12,6 +12,7 @@ require('angular-messages');
 require('angular-mocks');
 require('angular-ui-router');
 require('angular-sortable');
+require('angular-local-storage');
 
 require('./features/ControlPanel/ControlPanel');
 require('./features/ControlPanel/ControlPanelController');
@@ -42,6 +43,7 @@ angular.module('tractor', [
   'ngMessages',
   'ui.router',
   'ui.sortable',
+  'LocalStorageModule',
   'Core',
   'Notifier',
   'ControlPanel',
@@ -50,7 +52,9 @@ angular.module('tractor', [
   'StepDefinitionEditor',
   'MockDataEditor'
 ])
-.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
+.config(['$stateProvider', '$urlRouterProvider', 'localStorageServiceProvider', function ($stateProvider, $urlRouterProvider, localStorageServiceProvider) {
+    localStorageServiceProvider.setPrefix('tractor');
+
     $urlRouterProvider.otherwise('/');
 
     $stateProvider
@@ -68,8 +72,8 @@ angular.module('tractor', [
         /* eslint-enable no-path-concat */
         controller: 'ComponentEditorController as componentEditor',
         resolve: {
-            componentFolderStructure: ['ComponentFileService', function (ComponentFileService) {
-                return ComponentFileService.getComponentFolderStructure();
+            componentFileStructure: ['ComponentFileService', function (ComponentFileService) {
+                return ComponentFileService.getComponentFileStructure();
             }],
             componentFile: ['$stateParams', 'ComponentFileService', function ($stateParams, ComponentFileService) {
                 var componentName = $stateParams.component;
@@ -139,7 +143,463 @@ angular.module('tractor', [
     });
 }]);
 
-},{"./Core/Core":119,"./Core/Services/ConfigService":134,"./Core/Services/HttpResponseInterceptor":136,"./Core/Services/RealTimeService":137,"./features/ComponentEditor/ComponentEditor":142,"./features/ComponentEditor/ComponentEditorController":143,"./features/ComponentEditor/Services/ComponentFileService":155,"./features/ControlPanel/ControlPanel":161,"./features/ControlPanel/ControlPanelController":162,"./features/FeatureEditor/FeatureEditor":164,"./features/FeatureEditor/FeatureEditorController":165,"./features/FeatureEditor/Services/FeatureFileService":171,"./features/MockDataEditor/MockDataEditorController":176,"./features/MockDataEditor/Services/MockDataFileService":178,"./features/Notifier/Notifier":181,"./features/StepDefinitionEditor/Services/StepDefinitionFileService":192,"./features/StepDefinitionEditor/StepDefinitionEditorController":197,"angular":6,"angular-messages":2,"angular-mocks":3,"angular-sanitize":4,"angular-sortable":70,"angular-ui-router":5,"bluebird":9}],2:[function(require,module,exports){
+},{"./Core/Core":121,"./Core/Services/ConfigService":136,"./Core/Services/HttpResponseInterceptor":138,"./Core/Services/RealTimeService":139,"./features/ComponentEditor/ComponentEditor":144,"./features/ComponentEditor/ComponentEditorController":145,"./features/ComponentEditor/Services/ComponentFileService":157,"./features/ControlPanel/ControlPanel":163,"./features/ControlPanel/ControlPanelController":164,"./features/FeatureEditor/FeatureEditor":166,"./features/FeatureEditor/FeatureEditorController":167,"./features/FeatureEditor/Services/FeatureFileService":173,"./features/MockDataEditor/MockDataEditorController":178,"./features/MockDataEditor/Services/MockDataFileService":180,"./features/Notifier/Notifier":183,"./features/StepDefinitionEditor/Services/StepDefinitionFileService":194,"./features/StepDefinitionEditor/StepDefinitionEditorController":199,"angular":7,"angular-local-storage":2,"angular-messages":3,"angular-mocks":4,"angular-sanitize":5,"angular-sortable":72,"angular-ui-router":6,"bluebird":10}],2:[function(require,module,exports){
+/**
+ * An Angular module that gives you access to the browsers local storage
+ * @version v0.1.5 - 2014-11-04
+ * @link https://github.com/grevory/angular-local-storage
+ * @author grevory <greg@gregpike.ca>
+ * @license MIT License, http://www.opensource.org/licenses/MIT
+ */
+(function ( window, angular, undefined ) {
+/*jshint globalstrict:true*/
+'use strict';
+
+var isDefined = angular.isDefined,
+  isUndefined = angular.isUndefined,
+  isNumber = angular.isNumber,
+  isObject = angular.isObject,
+  isArray = angular.isArray,
+  extend = angular.extend,
+  toJson = angular.toJson,
+  fromJson = angular.fromJson;
+
+
+// Test if string is only contains numbers
+// e.g '1' => true, "'1'" => true
+function isStringNumber(num) {
+  return  /^-?\d+\.?\d*$/.test(num.replace(/["']/g, ''));
+}
+
+var angularLocalStorage = angular.module('LocalStorageModule', []);
+
+angularLocalStorage.provider('localStorageService', function() {
+
+  // You should set a prefix to avoid overwriting any local storage variables from the rest of your app
+  // e.g. localStorageServiceProvider.setPrefix('youAppName');
+  // With provider you can use config as this:
+  // myApp.config(function (localStorageServiceProvider) {
+  //    localStorageServiceProvider.prefix = 'yourAppName';
+  // });
+  this.prefix = 'ls';
+
+  // You could change web storage type localstorage or sessionStorage
+  this.storageType = 'localStorage';
+
+  // Cookie options (usually in case of fallback)
+  // expiry = Number of days before cookies expire // 0 = Does not expire
+  // path = The web path the cookie represents
+  this.cookie = {
+    expiry: 30,
+    path: '/'
+  };
+
+  // Send signals for each of the following actions?
+  this.notify = {
+    setItem: true,
+    removeItem: false
+  };
+
+  // Setter for the prefix
+  this.setPrefix = function(prefix) {
+    this.prefix = prefix;
+    return this;
+  };
+
+   // Setter for the storageType
+   this.setStorageType = function(storageType) {
+     this.storageType = storageType;
+     return this;
+   };
+
+  // Setter for cookie config
+  this.setStorageCookie = function(exp, path) {
+    this.cookie = {
+      expiry: exp,
+      path: path
+    };
+    return this;
+  };
+
+  // Setter for cookie domain
+  this.setStorageCookieDomain = function(domain) {
+    this.cookie.domain = domain;
+    return this;
+  };
+
+  // Setter for notification config
+  // itemSet & itemRemove should be booleans
+  this.setNotify = function(itemSet, itemRemove) {
+    this.notify = {
+      setItem: itemSet,
+      removeItem: itemRemove
+    };
+    return this;
+  };
+
+  this.$get = ['$rootScope', '$window', '$document', '$parse', function($rootScope, $window, $document, $parse) {
+    var self = this;
+    var prefix = self.prefix;
+    var cookie = self.cookie;
+    var notify = self.notify;
+    var storageType = self.storageType;
+    var webStorage;
+
+    // When Angular's $document is not available
+    if (!$document) {
+      $document = document;
+    } else if ($document[0]) {
+      $document = $document[0];
+    }
+
+    // If there is a prefix set in the config lets use that with an appended period for readability
+    if (prefix.substr(-1) !== '.') {
+      prefix = !!prefix ? prefix + '.' : '';
+    }
+    var deriveQualifiedKey = function(key) {
+      return prefix + key;
+    };
+    // Checks the browser to see if local storage is supported
+    var browserSupportsLocalStorage = (function () {
+      try {
+        var supported = (storageType in $window && $window[storageType] !== null);
+
+        // When Safari (OS X or iOS) is in private browsing mode, it appears as though localStorage
+        // is available, but trying to call .setItem throws an exception.
+        //
+        // "QUOTA_EXCEEDED_ERR: DOM Exception 22: An attempt was made to add something to storage
+        // that exceeded the quota."
+        var key = deriveQualifiedKey('__' + Math.round(Math.random() * 1e7));
+        if (supported) {
+          webStorage = $window[storageType];
+          webStorage.setItem(key, '');
+          webStorage.removeItem(key);
+        }
+
+        return supported;
+      } catch (e) {
+        storageType = 'cookie';
+        $rootScope.$broadcast('LocalStorageModule.notification.error', e.message);
+        return false;
+      }
+    }());
+
+
+
+    // Directly adds a value to local storage
+    // If local storage is not available in the browser use cookies
+    // Example use: localStorageService.add('library','angular');
+    var addToLocalStorage = function (key, value) {
+      // Let's convert undefined values to null to get the value consistent
+      if (isUndefined(value)) {
+        value = null;
+      } else if (isObject(value) || isArray(value) || isNumber(+value || value)) {
+        value = toJson(value);
+      }
+
+      // If this browser does not support local storage use cookies
+      if (!browserSupportsLocalStorage || self.storageType === 'cookie') {
+        if (!browserSupportsLocalStorage) {
+            $rootScope.$broadcast('LocalStorageModule.notification.warning', 'LOCAL_STORAGE_NOT_SUPPORTED');
+        }
+
+        if (notify.setItem) {
+          $rootScope.$broadcast('LocalStorageModule.notification.setitem', {key: key, newvalue: value, storageType: 'cookie'});
+        }
+        return addToCookies(key, value);
+      }
+
+      try {
+        if (isObject(value) || isArray(value)) {
+          value = toJson(value);
+        }
+        if (webStorage) {webStorage.setItem(deriveQualifiedKey(key), value)};
+        if (notify.setItem) {
+          $rootScope.$broadcast('LocalStorageModule.notification.setitem', {key: key, newvalue: value, storageType: self.storageType});
+        }
+      } catch (e) {
+        $rootScope.$broadcast('LocalStorageModule.notification.error', e.message);
+        return addToCookies(key, value);
+      }
+      return true;
+    };
+
+    // Directly get a value from local storage
+    // Example use: localStorageService.get('library'); // returns 'angular'
+    var getFromLocalStorage = function (key) {
+
+      if (!browserSupportsLocalStorage || self.storageType === 'cookie') {
+        if (!browserSupportsLocalStorage) {
+          $rootScope.$broadcast('LocalStorageModule.notification.warning','LOCAL_STORAGE_NOT_SUPPORTED');
+        }
+
+        return getFromCookies(key);
+      }
+
+      var item = webStorage ? webStorage.getItem(deriveQualifiedKey(key)) : null;
+      // angular.toJson will convert null to 'null', so a proper conversion is needed
+      // FIXME not a perfect solution, since a valid 'null' string can't be stored
+      if (!item || item === 'null') {
+        return null;
+      }
+
+      if (item.charAt(0) === "{" || item.charAt(0) === "[" || isStringNumber(item)) {
+        return fromJson(item);
+      }
+
+      return item;
+    };
+
+    // Remove an item from local storage
+    // Example use: localStorageService.remove('library'); // removes the key/value pair of library='angular'
+    var removeFromLocalStorage = function (key) {
+      if (!browserSupportsLocalStorage || self.storageType === 'cookie') {
+        if (!browserSupportsLocalStorage) {
+          $rootScope.$broadcast('LocalStorageModule.notification.warning', 'LOCAL_STORAGE_NOT_SUPPORTED');
+        }
+
+        if (notify.removeItem) {
+          $rootScope.$broadcast('LocalStorageModule.notification.removeitem', {key: key, storageType: 'cookie'});
+        }
+        return removeFromCookies(key);
+      }
+
+      try {
+        webStorage.removeItem(deriveQualifiedKey(key));
+        if (notify.removeItem) {
+          $rootScope.$broadcast('LocalStorageModule.notification.removeitem', {key: key, storageType: self.storageType});
+        }
+      } catch (e) {
+        $rootScope.$broadcast('LocalStorageModule.notification.error', e.message);
+        return removeFromCookies(key);
+      }
+      return true;
+    };
+
+    // Return array of keys for local storage
+    // Example use: var keys = localStorageService.keys()
+    var getKeysForLocalStorage = function () {
+
+      if (!browserSupportsLocalStorage) {
+        $rootScope.$broadcast('LocalStorageModule.notification.warning', 'LOCAL_STORAGE_NOT_SUPPORTED');
+        return false;
+      }
+
+      var prefixLength = prefix.length;
+      var keys = [];
+      for (var key in webStorage) {
+        // Only return keys that are for this app
+        if (key.substr(0,prefixLength) === prefix) {
+          try {
+            keys.push(key.substr(prefixLength));
+          } catch (e) {
+            $rootScope.$broadcast('LocalStorageModule.notification.error', e.Description);
+            return [];
+          }
+        }
+      }
+      return keys;
+    };
+
+    // Remove all data for this app from local storage
+    // Also optionally takes a regular expression string and removes the matching key-value pairs
+    // Example use: localStorageService.clearAll();
+    // Should be used mostly for development purposes
+    var clearAllFromLocalStorage = function (regularExpression) {
+
+      regularExpression = regularExpression || "";
+      //accounting for the '.' in the prefix when creating a regex
+      var tempPrefix = prefix.slice(0, -1);
+      var testRegex = new RegExp(tempPrefix + '.' + regularExpression);
+
+      if (!browserSupportsLocalStorage || self.storageType === 'cookie') {
+        if (!browserSupportsLocalStorage) {
+          $rootScope.$broadcast('LocalStorageModule.notification.warning', 'LOCAL_STORAGE_NOT_SUPPORTED');
+        }
+
+        return clearAllFromCookies();
+      }
+
+      var prefixLength = prefix.length;
+
+      for (var key in webStorage) {
+        // Only remove items that are for this app and match the regular expression
+        if (testRegex.test(key)) {
+          try {
+            removeFromLocalStorage(key.substr(prefixLength));
+          } catch (e) {
+            $rootScope.$broadcast('LocalStorageModule.notification.error',e.message);
+            return clearAllFromCookies();
+          }
+        }
+      }
+      return true;
+    };
+
+    // Checks the browser to see if cookies are supported
+    var browserSupportsCookies = (function() {
+      try {
+        return $window.navigator.cookieEnabled ||
+          ("cookie" in $document && ($document.cookie.length > 0 ||
+          ($document.cookie = "test").indexOf.call($document.cookie, "test") > -1));
+      } catch (e) {
+          $rootScope.$broadcast('LocalStorageModule.notification.error', e.message);
+          return false;
+      }
+    }());
+
+    // Directly adds a value to cookies
+    // Typically used as a fallback is local storage is not available in the browser
+    // Example use: localStorageService.cookie.add('library','angular');
+    var addToCookies = function (key, value) {
+
+      if (isUndefined(value)) {
+        return false;
+      } else if(isArray(value) || isObject(value)) {
+        value = toJson(value);
+      }
+
+      if (!browserSupportsCookies) {
+        $rootScope.$broadcast('LocalStorageModule.notification.error', 'COOKIES_NOT_SUPPORTED');
+        return false;
+      }
+
+      try {
+        var expiry = '',
+            expiryDate = new Date(),
+            cookieDomain = '';
+
+        if (value === null) {
+          // Mark that the cookie has expired one day ago
+          expiryDate.setTime(expiryDate.getTime() + (-1 * 24 * 60 * 60 * 1000));
+          expiry = "; expires=" + expiryDate.toGMTString();
+          value = '';
+        } else if (cookie.expiry !== 0) {
+          expiryDate.setTime(expiryDate.getTime() + (cookie.expiry * 24 * 60 * 60 * 1000));
+          expiry = "; expires=" + expiryDate.toGMTString();
+        }
+        if (!!key) {
+          var cookiePath = "; path=" + cookie.path;
+          if(cookie.domain){
+            cookieDomain = "; domain=" + cookie.domain;
+          }
+          $document.cookie = deriveQualifiedKey(key) + "=" + encodeURIComponent(value) + expiry + cookiePath + cookieDomain;
+        }
+      } catch (e) {
+        $rootScope.$broadcast('LocalStorageModule.notification.error',e.message);
+        return false;
+      }
+      return true;
+    };
+
+    // Directly get a value from a cookie
+    // Example use: localStorageService.cookie.get('library'); // returns 'angular'
+    var getFromCookies = function (key) {
+      if (!browserSupportsCookies) {
+        $rootScope.$broadcast('LocalStorageModule.notification.error', 'COOKIES_NOT_SUPPORTED');
+        return false;
+      }
+
+      var cookies = $document.cookie && $document.cookie.split(';') || [];
+      for(var i=0; i < cookies.length; i++) {
+        var thisCookie = cookies[i];
+        while (thisCookie.charAt(0) === ' ') {
+          thisCookie = thisCookie.substring(1,thisCookie.length);
+        }
+        if (thisCookie.indexOf(deriveQualifiedKey(key) + '=') === 0) {
+          var storedValues = decodeURIComponent(thisCookie.substring(prefix.length + key.length + 1, thisCookie.length))
+          try{
+            var obj = JSON.parse(storedValues);
+            return fromJson(obj)
+          }catch(e){
+            return storedValues
+          }
+        }
+      }
+      return null;
+    };
+
+    var removeFromCookies = function (key) {
+      addToCookies(key,null);
+    };
+
+    var clearAllFromCookies = function () {
+      var thisCookie = null, thisKey = null;
+      var prefixLength = prefix.length;
+      var cookies = $document.cookie.split(';');
+      for(var i = 0; i < cookies.length; i++) {
+        thisCookie = cookies[i];
+
+        while (thisCookie.charAt(0) === ' ') {
+          thisCookie = thisCookie.substring(1, thisCookie.length);
+        }
+
+        var key = thisCookie.substring(prefixLength, thisCookie.indexOf('='));
+        removeFromCookies(key);
+      }
+    };
+
+    var getStorageType = function() {
+      return storageType;
+    };
+
+    // Add a listener on scope variable to save its changes to local storage
+    // Return a function which when called cancels binding
+    var bindToScope = function(scope, key, def, lsKey) {
+      lsKey = lsKey || key;
+      var value = getFromLocalStorage(lsKey);
+
+      if (value === null && isDefined(def)) {
+        value = def;
+      } else if (isObject(value) && isObject(def)) {
+        value = extend(def, value);
+      }
+
+      $parse(key).assign(scope, value);
+
+      return scope.$watch(key, function(newVal) {
+        addToLocalStorage(lsKey, newVal);
+      }, isObject(scope[key]));
+    };
+
+    // Return localStorageService.length
+    // ignore keys that not owned
+    var lengthOfLocalStorage = function() {
+      var count = 0;
+      var storage = $window[storageType];
+      for(var i = 0; i < storage.length; i++) {
+        if(storage.key(i).indexOf(prefix) === 0 ) {
+          count++;
+        }
+      }
+      return count;
+    };
+
+    return {
+      isSupported: browserSupportsLocalStorage,
+      getStorageType: getStorageType,
+      set: addToLocalStorage,
+      add: addToLocalStorage, //DEPRECATED
+      get: getFromLocalStorage,
+      keys: getKeysForLocalStorage,
+      remove: removeFromLocalStorage,
+      clearAll: clearAllFromLocalStorage,
+      bind: bindToScope,
+      deriveKey: deriveQualifiedKey,
+      length: lengthOfLocalStorage,
+      cookie: {
+        isSupported: browserSupportsCookies,
+        set: addToCookies,
+        add: addToCookies, //DEPRECATED
+        get: getFromCookies,
+        remove: removeFromCookies,
+        clearAll: clearAllFromCookies
+      }
+    };
+  }];
+});
+})( window, window.angular );
+},{}],3:[function(require,module,exports){
 /**
  * @license AngularJS v1.3.10
  * (c) 2010-2014 Google, Inc. http://angularjs.org
@@ -541,7 +1001,7 @@ angular.module('ngMessages', [])
 
 })(window, window.angular);
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 /**
  * @license AngularJS v1.3.10
  * (c) 2010-2014 Google, Inc. http://angularjs.org
@@ -2925,7 +3385,7 @@ if (window.jasmine || window.mocha) {
 
 })(window, window.angular);
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 /**
  * @license AngularJS v1.3.10
  * (c) 2010-2014 Google, Inc. http://angularjs.org
@@ -3607,7 +4067,7 @@ angular.module('ngSanitize').filter('linky', ['$sanitize', function($sanitize) {
 
 })(window, window.angular);
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 /**
  * State-based routing for AngularJS
  * @version v0.2.13
@@ -7840,7 +8300,7 @@ angular.module('ui.router.state')
   .filter('isState', $IsStateFilter)
   .filter('includedByState', $IncludedByStateFilter);
 })(window, window.angular);
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 (function (global){
 ;__browserify_shim_require__=require;(function browserifyShim(module, exports, require, define, browserify_shim__define__module__export__) {
 /**
@@ -33939,7 +34399,7 @@ var minlengthDirective = function() {
 }).call(global, undefined, undefined, undefined, undefined, function defineExport(ex) { module.exports = ex; });
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -33989,7 +34449,7 @@ Promise.prototype.any = function Promise$any() {
 
 };
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 (function (process){
 /**
  * The MIT License (MIT)
@@ -34106,7 +34566,7 @@ Async.prototype._reset = function Async$_reset() {
 module.exports = new Async();
 
 }).call(this,require('_process'))
-},{"./queue.js":31,"./schedule.js":34,"./util.js":41,"_process":44}],9:[function(require,module,exports){
+},{"./queue.js":32,"./schedule.js":35,"./util.js":42,"_process":46}],10:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -34134,7 +34594,7 @@ module.exports = new Async();
 "use strict";
 var Promise = require("./promise.js")();
 module.exports = Promise;
-},{"./promise.js":26}],10:[function(require,module,exports){
+},{"./promise.js":27}],11:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -34257,7 +34717,7 @@ Promise.prototype.get = function Promise$get(propertyName) {
 };
 };
 
-},{"./util.js":41}],11:[function(require,module,exports){
+},{"./util.js":42}],12:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -34337,7 +34797,7 @@ function Promise$fork(didFulfill, didReject, didProgress) {
 };
 };
 
-},{"./async.js":8,"./errors.js":16}],12:[function(require,module,exports){
+},{"./async.js":9,"./errors.js":17}],13:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -34583,7 +35043,7 @@ var captureStackTrace = (function stackDetection() {
 return CapturedTrace;
 };
 
-},{"./es5.js":18,"./util.js":41}],13:[function(require,module,exports){
+},{"./es5.js":19,"./util.js":42}],14:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -34681,7 +35141,7 @@ CatchFilter.prototype.doFilter = function CatchFilter$_doFilter(e) {
 return CatchFilter;
 };
 
-},{"./errors.js":16,"./es5.js":18,"./util.js":41}],14:[function(require,module,exports){
+},{"./errors.js":17,"./es5.js":19,"./util.js":42}],15:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -34763,7 +35223,7 @@ function Promise$thenThrow(reason) {
 };
 };
 
-},{"./util.js":41}],15:[function(require,module,exports){
+},{"./util.js":42}],16:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -34801,7 +35261,7 @@ Promise.each = function Promise$Each(promises, fn) {
 };
 };
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -34950,7 +35410,7 @@ module.exports = {
     canAttach: canAttach
 };
 
-},{"./es5.js":18,"./util.js":41}],17:[function(require,module,exports){
+},{"./es5.js":19,"./util.js":42}],18:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -34992,7 +35452,7 @@ function apiRejection(msg) {
 return apiRejection;
 };
 
-},{"./errors.js":16}],18:[function(require,module,exports){
+},{"./errors.js":17}],19:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -35083,7 +35543,7 @@ if (isES5) {
     };
 }
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -35121,7 +35581,7 @@ Promise.filter = function Promise$Filter(promises, fn, options) {
 };
 };
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -35245,7 +35705,7 @@ Promise.prototype.tap = function Promise$tap(handler) {
 };
 };
 
-},{"./util.js":41}],21:[function(require,module,exports){
+},{"./util.js":42}],22:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -35400,7 +35860,7 @@ Promise.spawn = function Promise$Spawn(generatorFunction) {
 };
 };
 
-},{"./errors.js":16,"./util.js":41}],22:[function(require,module,exports){
+},{"./errors.js":17,"./util.js":42}],23:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -35526,7 +35986,7 @@ Promise.join = function Promise$Join() {
 
 };
 
-},{"./util.js":41}],23:[function(require,module,exports){
+},{"./util.js":42}],24:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -35679,7 +36139,7 @@ Promise.map = function Promise$Map(promises, fn, options, _filter) {
 
 };
 
-},{"./util.js":41}],24:[function(require,module,exports){
+},{"./util.js":42}],25:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -35759,7 +36219,7 @@ Promise.prototype.nodeify = function Promise$nodeify(nodeback, options) {
 };
 };
 
-},{"./async.js":8,"./util.js":41}],25:[function(require,module,exports){
+},{"./async.js":9,"./util.js":42}],26:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -35875,7 +36335,7 @@ function Promise$_progressUnchecked(progressValue) {
 };
 };
 
-},{"./async.js":8,"./errors.js":16,"./util.js":41}],26:[function(require,module,exports){
+},{"./async.js":9,"./errors.js":17,"./util.js":42}],27:[function(require,module,exports){
 (function (process){
 /**
  * The MIT License (MIT)
@@ -36975,7 +37435,7 @@ return Promise;
 };
 
 }).call(this,require('_process'))
-},{"./any.js":7,"./async.js":8,"./call_get.js":10,"./cancel.js":11,"./captured_trace.js":12,"./catch_filter.js":13,"./direct_resolve.js":14,"./each.js":15,"./errors.js":16,"./errors_api_rejection":17,"./filter.js":19,"./finally.js":20,"./generators.js":21,"./join.js":22,"./map.js":23,"./nodeify.js":24,"./progress.js":25,"./promise_array.js":27,"./promise_resolver.js":28,"./promisify.js":29,"./props.js":30,"./race.js":32,"./reduce.js":33,"./settle.js":35,"./some.js":36,"./synchronous_inspection.js":37,"./thenables.js":38,"./timers.js":39,"./using.js":40,"./util.js":41,"_process":44}],27:[function(require,module,exports){
+},{"./any.js":8,"./async.js":9,"./call_get.js":11,"./cancel.js":12,"./captured_trace.js":13,"./catch_filter.js":14,"./direct_resolve.js":15,"./each.js":16,"./errors.js":17,"./errors_api_rejection":18,"./filter.js":20,"./finally.js":21,"./generators.js":22,"./join.js":23,"./map.js":24,"./nodeify.js":25,"./progress.js":26,"./promise_array.js":28,"./promise_resolver.js":29,"./promisify.js":30,"./props.js":31,"./race.js":33,"./reduce.js":34,"./settle.js":36,"./some.js":37,"./synchronous_inspection.js":38,"./thenables.js":39,"./timers.js":40,"./using.js":41,"./util.js":42,"_process":46}],28:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -37181,7 +37641,7 @@ function PromiseArray$getActualLength(len) {
 return PromiseArray;
 };
 
-},{"./errors.js":16,"./util.js":41}],28:[function(require,module,exports){
+},{"./errors.js":17,"./util.js":42}],29:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -37343,7 +37803,7 @@ function PromiseResolver$_setCarriedStackTrace(trace) {
 
 module.exports = PromiseResolver;
 
-},{"./async.js":8,"./errors.js":16,"./es5.js":18,"./util.js":41}],29:[function(require,module,exports){
+},{"./async.js":9,"./errors.js":17,"./es5.js":19,"./util.js":42}],30:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -37673,7 +38133,7 @@ Promise.promisifyAll = function Promise$PromisifyAll(target, options) {
 };
 
 
-},{"./errors":16,"./promise_resolver.js":28,"./util.js":41}],30:[function(require,module,exports){
+},{"./errors":17,"./promise_resolver.js":29,"./util.js":42}],31:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -37785,7 +38245,7 @@ Promise.props = function Promise$Props(promises) {
 };
 };
 
-},{"./errors_api_rejection":17,"./es5.js":18,"./util.js":41}],31:[function(require,module,exports){
+},{"./errors_api_rejection":18,"./es5.js":19,"./util.js":42}],32:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -37904,7 +38364,7 @@ Queue.prototype._resizeTo = function Queue$_resizeTo(capacity) {
 
 module.exports = Queue;
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -37980,7 +38440,7 @@ Promise.prototype.race = function Promise$race() {
 
 };
 
-},{"./errors_api_rejection.js":17,"./util.js":41}],33:[function(require,module,exports){
+},{"./errors_api_rejection.js":18,"./util.js":42}],34:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -38165,7 +38625,7 @@ Promise.reduce = function Promise$Reduce(promises, fn, initialValue, _each) {
 };
 };
 
-},{"./util.js":41}],34:[function(require,module,exports){
+},{"./util.js":42}],35:[function(require,module,exports){
 (function (process){
 /**
  * The MIT License (MIT)
@@ -38232,7 +38692,7 @@ else throw new Error("no async scheduler available");
 module.exports = schedule;
 
 }).call(this,require('_process'))
-},{"_process":44}],35:[function(require,module,exports){
+},{"_process":46}],36:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -38303,7 +38763,7 @@ Promise.prototype.settle = function Promise$settle() {
 };
 };
 
-},{"./util.js":41}],36:[function(require,module,exports){
+},{"./util.js":42}],37:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -38468,7 +38928,7 @@ Promise.prototype.some = function Promise$some(howMany) {
 Promise._SomePromiseArray = SomePromiseArray;
 };
 
-},{"./errors.js":16,"./util.js":41}],37:[function(require,module,exports){
+},{"./errors.js":17,"./util.js":42}],38:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -38548,7 +39008,7 @@ Promise.prototype.isResolved = function Promise$isResolved() {
 Promise.PromiseInspection = PromiseInspection;
 };
 
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -38685,7 +39145,7 @@ function Promise$_doThenable(x, then, originalPromise) {
 return Promise$_Cast;
 };
 
-},{"./errors.js":16,"./util.js":41}],39:[function(require,module,exports){
+},{"./errors.js":17,"./util.js":42}],40:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -38795,7 +39255,7 @@ Promise.prototype.timeout = function Promise$timeout(ms, message) {
 
 };
 
-},{"./errors.js":16,"./errors_api_rejection":17,"./util.js":41}],40:[function(require,module,exports){
+},{"./errors.js":17,"./errors_api_rejection":18,"./util.js":42}],41:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -38989,7 +39449,7 @@ module.exports = function (Promise, apiRejection, cast) {
 
 };
 
-},{"./errors.js":16,"./util.js":41}],41:[function(require,module,exports){
+},{"./errors.js":17,"./util.js":42}],42:[function(require,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -39261,7 +39721,7 @@ var ret = {
 
 module.exports = ret;
 
-},{"./es5.js":18}],42:[function(require,module,exports){
+},{"./es5.js":19}],43:[function(require,module,exports){
 // http://wiki.commonjs.org/wiki/Unit_Testing/1.0
 //
 // THIS IS NOT TESTED NOR LIKELY TO WORK OUTSIDE V8!
@@ -39622,7 +40082,7 @@ var objectKeys = Object.keys || function (obj) {
   return keys;
 };
 
-},{"util/":46}],43:[function(require,module,exports){
+},{"util/":48}],44:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -39647,7 +40107,235 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
+(function (process){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+// resolves . and .. elements in a path array with directory names there
+// must be no slashes, empty elements, or device names (c:\) in the array
+// (so also no leading and trailing slashes - it does not distinguish
+// relative and absolute paths)
+function normalizeArray(parts, allowAboveRoot) {
+  // if the path tries to go above the root, `up` ends up > 0
+  var up = 0;
+  for (var i = parts.length - 1; i >= 0; i--) {
+    var last = parts[i];
+    if (last === '.') {
+      parts.splice(i, 1);
+    } else if (last === '..') {
+      parts.splice(i, 1);
+      up++;
+    } else if (up) {
+      parts.splice(i, 1);
+      up--;
+    }
+  }
+
+  // if the path is allowed to go above the root, restore leading ..s
+  if (allowAboveRoot) {
+    for (; up--; up) {
+      parts.unshift('..');
+    }
+  }
+
+  return parts;
+}
+
+// Split a filename into [root, dir, basename, ext], unix version
+// 'root' is just a slash, or nothing.
+var splitPathRe =
+    /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
+var splitPath = function(filename) {
+  return splitPathRe.exec(filename).slice(1);
+};
+
+// path.resolve([from ...], to)
+// posix version
+exports.resolve = function() {
+  var resolvedPath = '',
+      resolvedAbsolute = false;
+
+  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
+    var path = (i >= 0) ? arguments[i] : process.cwd();
+
+    // Skip empty and invalid entries
+    if (typeof path !== 'string') {
+      throw new TypeError('Arguments to path.resolve must be strings');
+    } else if (!path) {
+      continue;
+    }
+
+    resolvedPath = path + '/' + resolvedPath;
+    resolvedAbsolute = path.charAt(0) === '/';
+  }
+
+  // At this point the path should be resolved to a full absolute path, but
+  // handle relative paths to be safe (might happen when process.cwd() fails)
+
+  // Normalize the path
+  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
+    return !!p;
+  }), !resolvedAbsolute).join('/');
+
+  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
+};
+
+// path.normalize(path)
+// posix version
+exports.normalize = function(path) {
+  var isAbsolute = exports.isAbsolute(path),
+      trailingSlash = substr(path, -1) === '/';
+
+  // Normalize the path
+  path = normalizeArray(filter(path.split('/'), function(p) {
+    return !!p;
+  }), !isAbsolute).join('/');
+
+  if (!path && !isAbsolute) {
+    path = '.';
+  }
+  if (path && trailingSlash) {
+    path += '/';
+  }
+
+  return (isAbsolute ? '/' : '') + path;
+};
+
+// posix version
+exports.isAbsolute = function(path) {
+  return path.charAt(0) === '/';
+};
+
+// posix version
+exports.join = function() {
+  var paths = Array.prototype.slice.call(arguments, 0);
+  return exports.normalize(filter(paths, function(p, index) {
+    if (typeof p !== 'string') {
+      throw new TypeError('Arguments to path.join must be strings');
+    }
+    return p;
+  }).join('/'));
+};
+
+
+// path.relative(from, to)
+// posix version
+exports.relative = function(from, to) {
+  from = exports.resolve(from).substr(1);
+  to = exports.resolve(to).substr(1);
+
+  function trim(arr) {
+    var start = 0;
+    for (; start < arr.length; start++) {
+      if (arr[start] !== '') break;
+    }
+
+    var end = arr.length - 1;
+    for (; end >= 0; end--) {
+      if (arr[end] !== '') break;
+    }
+
+    if (start > end) return [];
+    return arr.slice(start, end - start + 1);
+  }
+
+  var fromParts = trim(from.split('/'));
+  var toParts = trim(to.split('/'));
+
+  var length = Math.min(fromParts.length, toParts.length);
+  var samePartsLength = length;
+  for (var i = 0; i < length; i++) {
+    if (fromParts[i] !== toParts[i]) {
+      samePartsLength = i;
+      break;
+    }
+  }
+
+  var outputParts = [];
+  for (var i = samePartsLength; i < fromParts.length; i++) {
+    outputParts.push('..');
+  }
+
+  outputParts = outputParts.concat(toParts.slice(samePartsLength));
+
+  return outputParts.join('/');
+};
+
+exports.sep = '/';
+exports.delimiter = ':';
+
+exports.dirname = function(path) {
+  var result = splitPath(path),
+      root = result[0],
+      dir = result[1];
+
+  if (!root && !dir) {
+    // No dirname whatsoever
+    return '.';
+  }
+
+  if (dir) {
+    // It has a dirname, strip trailing slash
+    dir = dir.substr(0, dir.length - 1);
+  }
+
+  return root + dir;
+};
+
+
+exports.basename = function(path, ext) {
+  var f = splitPath(path)[2];
+  // TODO: make this comparison case-insensitive on windows?
+  if (ext && f.substr(-1 * ext.length) === ext) {
+    f = f.substr(0, f.length - ext.length);
+  }
+  return f;
+};
+
+
+exports.extname = function(path) {
+  return splitPath(path)[3];
+};
+
+function filter (xs, f) {
+    if (xs.filter) return xs.filter(f);
+    var res = [];
+    for (var i = 0; i < xs.length; i++) {
+        if (f(xs[i], i, xs)) res.push(xs[i]);
+    }
+    return res;
+}
+
+// String.prototype.substr - negative index don't work in IE8
+var substr = 'ab'.substr(-1) === 'b'
+    ? function (str, start, len) { return str.substr(start, len) }
+    : function (str, start, len) {
+        if (start < 0) start = str.length + start;
+        return str.substr(start, len);
+    }
+;
+
+}).call(this,require('_process'))
+},{"_process":46}],46:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -39684,6 +40372,7 @@ process.browser = true;
 process.env = {};
 process.argv = [];
 process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
 
 function noop() {}
 
@@ -39706,14 +40395,14 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],45:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],46:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -40303,7 +40992,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":45,"_process":44,"inherits":43}],47:[function(require,module,exports){
+},{"./support/isBuffer":47,"_process":46,"inherits":44}],49:[function(require,module,exports){
 /**
  * Directly export with short aliases to support browserify.
  */
@@ -40323,7 +41012,7 @@ exports.isUpper  = exports.isUpperCase    = require('is-upper-case');
 exports.isLower  = exports.isLowerCase    = require('is-lower-case');
 exports.ucFirst  = exports.upperCaseFirst = require('upper-case-first');
 
-},{"camel-case":48,"constant-case":49,"dot-case":50,"is-lower-case":51,"is-upper-case":52,"lower-case":53,"param-case":54,"pascal-case":55,"path-case":56,"sentence-case":57,"snake-case":61,"swap-case":62,"title-case":63,"upper-case":65,"upper-case-first":64}],48:[function(require,module,exports){
+},{"camel-case":50,"constant-case":51,"dot-case":52,"is-lower-case":53,"is-upper-case":54,"lower-case":55,"param-case":56,"pascal-case":57,"path-case":58,"sentence-case":59,"snake-case":63,"swap-case":64,"title-case":65,"upper-case":67,"upper-case-first":66}],50:[function(require,module,exports){
 var upperCase    = require('upper-case');
 var sentenceCase = require('sentence-case');
 
@@ -40344,7 +41033,7 @@ module.exports = function (string, locale) {
     });
 };
 
-},{"sentence-case":57,"upper-case":65}],49:[function(require,module,exports){
+},{"sentence-case":59,"upper-case":67}],51:[function(require,module,exports){
 var upperCase = require('upper-case');
 var snakeCase = require('snake-case');
 
@@ -40359,7 +41048,7 @@ module.exports = function (string, locale) {
   return upperCase(snakeCase(string, locale), locale);
 };
 
-},{"snake-case":61,"upper-case":65}],50:[function(require,module,exports){
+},{"snake-case":63,"upper-case":67}],52:[function(require,module,exports){
 var sentenceCase = require('sentence-case');
 
 /**
@@ -40370,36 +41059,38 @@ var sentenceCase = require('sentence-case');
  * @return {String}
  */
 module.exports = function (string, locale) {
-  return sentenceCase(string, locale).replace(/ /g, '.');
+  return sentenceCase(string, locale, '.');
 };
 
-},{"sentence-case":57}],51:[function(require,module,exports){
-var lowerCase = require('lower-case');
+},{"sentence-case":59}],53:[function(require,module,exports){
+var lowerCase = require('lower-case')
 
 /**
  * Check if a string is lower case.
  *
  * @param  {String}  string
+ * @param  {String}  [locale]
  * @return {Boolean}
  */
 module.exports = function (string, locale) {
-  return lowerCase(string, locale) === string;
-};
+  return lowerCase(string, locale) === string
+}
 
-},{"lower-case":53}],52:[function(require,module,exports){
-var upperCase = require('upper-case');
+},{"lower-case":55}],54:[function(require,module,exports){
+var upperCase = require('upper-case')
 
 /**
  * Check if a string is upper case.
  *
  * @param  {String}  string
+ * @param  {String}  [locale]
  * @return {Boolean}
  */
 module.exports = function (string, locale) {
-  return upperCase(string, locale) === string;
-};
+  return upperCase(string, locale) === string
+}
 
-},{"upper-case":65}],53:[function(require,module,exports){
+},{"upper-case":67}],55:[function(require,module,exports){
 /**
  * Special language-specific overrides.
  *
@@ -40407,7 +41098,7 @@ module.exports = function (string, locale) {
  *
  * @type {Object}
  */
-var languages = {
+var LANGUAGES = {
   tr: {
     regexp: /\u0130|\u0049|\u0049\u0307/g,
     map: {
@@ -40435,7 +41126,7 @@ var languages = {
       '\u0128': '\u0069\u0307\u0303'
     }
   }
-};
+}
 
 /**
  * Lowercase a string.
@@ -40444,18 +41135,18 @@ var languages = {
  * @return {String}
  */
 module.exports = function (str, locale) {
-  var lang = languages[locale];
+  var lang = LANGUAGES[locale]
 
-  str = str == null ? '' : String(str);
+  str = str == null ? '' : String(str)
 
   if (lang) {
-    str = str.replace(lang.regexp, function (m) { return lang.map[m]; });
+    str = str.replace(lang.regexp, function (m) { return lang.map[m] })
   }
 
-  return str.toLowerCase();
-};
+  return str.toLowerCase()
+}
 
-},{}],54:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 var sentenceCase = require('sentence-case');
 
 /**
@@ -40466,10 +41157,10 @@ var sentenceCase = require('sentence-case');
  * @return {String}
  */
 module.exports = function (string, locale) {
-  return sentenceCase(string, locale).replace(/ /g, '-');
+  return sentenceCase(string, locale, '-');
 };
 
-},{"sentence-case":57}],55:[function(require,module,exports){
+},{"sentence-case":59}],57:[function(require,module,exports){
 var camelCase      = require('camel-case');
 var upperCaseFirst = require('upper-case-first');
 
@@ -40484,7 +41175,7 @@ module.exports = function (string, locale) {
   return upperCaseFirst(camelCase(string, locale), locale);
 };
 
-},{"camel-case":48,"upper-case-first":64}],56:[function(require,module,exports){
+},{"camel-case":50,"upper-case-first":66}],58:[function(require,module,exports){
 var sentenceCase = require('sentence-case');
 
 /**
@@ -40495,48 +41186,61 @@ var sentenceCase = require('sentence-case');
  * @return {String}
  */
 module.exports = function (string, locale) {
-  return sentenceCase(string, locale).replace(/ /g, '/');
+  return sentenceCase(string, locale, '/');
 };
 
-},{"sentence-case":57}],57:[function(require,module,exports){
-var lowerCase = require('lower-case');
+},{"sentence-case":59}],59:[function(require,module,exports){
+var lowerCase = require('lower-case')
 
-var NON_WORD_REGEXP       = require('./vendor/non-word-regexp');
-var CAMEL_CASE_REGEXP     = require('./vendor/camel-case-regexp');
-var TRAILING_DIGIT_REGEXP = require('./vendor/trailing-digit-regexp');
+var NON_WORD_REGEXP = require('./vendor/non-word-regexp')
+var CAMEL_CASE_REGEXP = require('./vendor/camel-case-regexp')
+var TRAILING_DIGIT_REGEXP = require('./vendor/trailing-digit-regexp')
 
 /**
  * Sentence case a string.
  *
  * @param  {String} str
+ * @param  {String} locale
+ * @param  {String} replacement
  * @return {String}
  */
-module.exports = function (str, locale) {
+module.exports = function (str, locale, replacement) {
   if (str == null) {
-    return '';
+    return ''
+  }
+
+  replacement = replacement || ' '
+
+  function replace (match, index, string) {
+    if (index === 0 || index === (string.length - match.length)) {
+      return ''
+    }
+
+    return replacement
   }
 
   str = String(str)
-    // Enable camel case support.
+    // Support camel case ("camelCase" -> "camel Case").
     .replace(CAMEL_CASE_REGEXP, '$1 $2')
-    // Add a space after any digit groups.
+    // Support digit groups ("test2012" -> "test 2012").
     .replace(TRAILING_DIGIT_REGEXP, '$1 $2')
     // Remove all non-word characters and replace with a single space.
-    .replace(NON_WORD_REGEXP, ' ')
-    // Trim whitespace around the string.
-    .replace(/^ | $/g, '');
+    .replace(NON_WORD_REGEXP, replace)
 
   // Lower case the entire string.
-  return lowerCase(str, locale);
-};
+  return lowerCase(str, locale)
+}
 
-},{"./vendor/camel-case-regexp":58,"./vendor/non-word-regexp":59,"./vendor/trailing-digit-regexp":60,"lower-case":53}],58:[function(require,module,exports){
-module.exports = /([\u0061-\u007A\u00B5\u00DF-\u00F6\u00F8-\u00FF\u0101\u0103\u0105\u0107\u0109\u010B\u010D\u010F\u0111\u0113\u0115\u0117\u0119\u011B\u011D\u011F\u0121\u0123\u0125\u0127\u0129\u012B\u012D\u012F\u0131\u0133\u0135\u0137\u0138\u013A\u013C\u013E\u0140\u0142\u0144\u0146\u0148\u0149\u014B\u014D\u014F\u0151\u0153\u0155\u0157\u0159\u015B\u015D\u015F\u0161\u0163\u0165\u0167\u0169\u016B\u016D\u016F\u0171\u0173\u0175\u0177\u017A\u017C\u017E-\u0180\u0183\u0185\u0188\u018C\u018D\u0192\u0195\u0199-\u019B\u019E\u01A1\u01A3\u01A5\u01A8\u01AA\u01AB\u01AD\u01B0\u01B4\u01B6\u01B9\u01BA\u01BD-\u01BF\u01C6\u01C9\u01CC\u01CE\u01D0\u01D2\u01D4\u01D6\u01D8\u01DA\u01DC\u01DD\u01DF\u01E1\u01E3\u01E5\u01E7\u01E9\u01EB\u01ED\u01EF\u01F0\u01F3\u01F5\u01F9\u01FB\u01FD\u01FF\u0201\u0203\u0205\u0207\u0209\u020B\u020D\u020F\u0211\u0213\u0215\u0217\u0219\u021B\u021D\u021F\u0221\u0223\u0225\u0227\u0229\u022B\u022D\u022F\u0231\u0233-\u0239\u023C\u023F\u0240\u0242\u0247\u0249\u024B\u024D\u024F-\u0293\u0295-\u02AF\u0371\u0373\u0377\u037B-\u037D\u0390\u03AC-\u03CE\u03D0\u03D1\u03D5-\u03D7\u03D9\u03DB\u03DD\u03DF\u03E1\u03E3\u03E5\u03E7\u03E9\u03EB\u03ED\u03EF-\u03F3\u03F5\u03F8\u03FB\u03FC\u0430-\u045F\u0461\u0463\u0465\u0467\u0469\u046B\u046D\u046F\u0471\u0473\u0475\u0477\u0479\u047B\u047D\u047F\u0481\u048B\u048D\u048F\u0491\u0493\u0495\u0497\u0499\u049B\u049D\u049F\u04A1\u04A3\u04A5\u04A7\u04A9\u04AB\u04AD\u04AF\u04B1\u04B3\u04B5\u04B7\u04B9\u04BB\u04BD\u04BF\u04C2\u04C4\u04C6\u04C8\u04CA\u04CC\u04CE\u04CF\u04D1\u04D3\u04D5\u04D7\u04D9\u04DB\u04DD\u04DF\u04E1\u04E3\u04E5\u04E7\u04E9\u04EB\u04ED\u04EF\u04F1\u04F3\u04F5\u04F7\u04F9\u04FB\u04FD\u04FF\u0501\u0503\u0505\u0507\u0509\u050B\u050D\u050F\u0511\u0513\u0515\u0517\u0519\u051B\u051D\u051F\u0521\u0523\u0525\u0527\u0561-\u0587\u1D00-\u1D2B\u1D6B-\u1D77\u1D79-\u1D9A\u1E01\u1E03\u1E05\u1E07\u1E09\u1E0B\u1E0D\u1E0F\u1E11\u1E13\u1E15\u1E17\u1E19\u1E1B\u1E1D\u1E1F\u1E21\u1E23\u1E25\u1E27\u1E29\u1E2B\u1E2D\u1E2F\u1E31\u1E33\u1E35\u1E37\u1E39\u1E3B\u1E3D\u1E3F\u1E41\u1E43\u1E45\u1E47\u1E49\u1E4B\u1E4D\u1E4F\u1E51\u1E53\u1E55\u1E57\u1E59\u1E5B\u1E5D\u1E5F\u1E61\u1E63\u1E65\u1E67\u1E69\u1E6B\u1E6D\u1E6F\u1E71\u1E73\u1E75\u1E77\u1E79\u1E7B\u1E7D\u1E7F\u1E81\u1E83\u1E85\u1E87\u1E89\u1E8B\u1E8D\u1E8F\u1E91\u1E93\u1E95-\u1E9D\u1E9F\u1EA1\u1EA3\u1EA5\u1EA7\u1EA9\u1EAB\u1EAD\u1EAF\u1EB1\u1EB3\u1EB5\u1EB7\u1EB9\u1EBB\u1EBD\u1EBF\u1EC1\u1EC3\u1EC5\u1EC7\u1EC9\u1ECB\u1ECD\u1ECF\u1ED1\u1ED3\u1ED5\u1ED7\u1ED9\u1EDB\u1EDD\u1EDF\u1EE1\u1EE3\u1EE5\u1EE7\u1EE9\u1EEB\u1EED\u1EEF\u1EF1\u1EF3\u1EF5\u1EF7\u1EF9\u1EFB\u1EFD\u1EFF-\u1F07\u1F10-\u1F15\u1F20-\u1F27\u1F30-\u1F37\u1F40-\u1F45\u1F50-\u1F57\u1F60-\u1F67\u1F70-\u1F7D\u1F80-\u1F87\u1F90-\u1F97\u1FA0-\u1FA7\u1FB0-\u1FB4\u1FB6\u1FB7\u1FBE\u1FC2-\u1FC4\u1FC6\u1FC7\u1FD0-\u1FD3\u1FD6\u1FD7\u1FE0-\u1FE7\u1FF2-\u1FF4\u1FF6\u1FF7\u210A\u210E\u210F\u2113\u212F\u2134\u2139\u213C\u213D\u2146-\u2149\u214E\u2184\u2C30-\u2C5E\u2C61\u2C65\u2C66\u2C68\u2C6A\u2C6C\u2C71\u2C73\u2C74\u2C76-\u2C7B\u2C81\u2C83\u2C85\u2C87\u2C89\u2C8B\u2C8D\u2C8F\u2C91\u2C93\u2C95\u2C97\u2C99\u2C9B\u2C9D\u2C9F\u2CA1\u2CA3\u2CA5\u2CA7\u2CA9\u2CAB\u2CAD\u2CAF\u2CB1\u2CB3\u2CB5\u2CB7\u2CB9\u2CBB\u2CBD\u2CBF\u2CC1\u2CC3\u2CC5\u2CC7\u2CC9\u2CCB\u2CCD\u2CCF\u2CD1\u2CD3\u2CD5\u2CD7\u2CD9\u2CDB\u2CDD\u2CDF\u2CE1\u2CE3\u2CE4\u2CEC\u2CEE\u2CF3\u2D00-\u2D25\u2D27\u2D2D\uA641\uA643\uA645\uA647\uA649\uA64B\uA64D\uA64F\uA651\uA653\uA655\uA657\uA659\uA65B\uA65D\uA65F\uA661\uA663\uA665\uA667\uA669\uA66B\uA66D\uA681\uA683\uA685\uA687\uA689\uA68B\uA68D\uA68F\uA691\uA693\uA695\uA697\uA723\uA725\uA727\uA729\uA72B\uA72D\uA72F-\uA731\uA733\uA735\uA737\uA739\uA73B\uA73D\uA73F\uA741\uA743\uA745\uA747\uA749\uA74B\uA74D\uA74F\uA751\uA753\uA755\uA757\uA759\uA75B\uA75D\uA75F\uA761\uA763\uA765\uA767\uA769\uA76B\uA76D\uA76F\uA771-\uA778\uA77A\uA77C\uA77F\uA781\uA783\uA785\uA787\uA78C\uA78E\uA791\uA793\uA7A1\uA7A3\uA7A5\uA7A7\uA7A9\uA7FA\uFB00-\uFB06\uFB13-\uFB17\uFF41-\uFF5A])([\u0041-\u005A\u00C0-\u00D6\u00D8-\u00DE\u0100\u0102\u0104\u0106\u0108\u010A\u010C\u010E\u0110\u0112\u0114\u0116\u0118\u011A\u011C\u011E\u0120\u0122\u0124\u0126\u0128\u012A\u012C\u012E\u0130\u0132\u0134\u0136\u0139\u013B\u013D\u013F\u0141\u0143\u0145\u0147\u014A\u014C\u014E\u0150\u0152\u0154\u0156\u0158\u015A\u015C\u015E\u0160\u0162\u0164\u0166\u0168\u016A\u016C\u016E\u0170\u0172\u0174\u0176\u0178\u0179\u017B\u017D\u0181\u0182\u0184\u0186\u0187\u0189-\u018B\u018E-\u0191\u0193\u0194\u0196-\u0198\u019C\u019D\u019F\u01A0\u01A2\u01A4\u01A6\u01A7\u01A9\u01AC\u01AE\u01AF\u01B1-\u01B3\u01B5\u01B7\u01B8\u01BC\u01C4\u01C7\u01CA\u01CD\u01CF\u01D1\u01D3\u01D5\u01D7\u01D9\u01DB\u01DE\u01E0\u01E2\u01E4\u01E6\u01E8\u01EA\u01EC\u01EE\u01F1\u01F4\u01F6-\u01F8\u01FA\u01FC\u01FE\u0200\u0202\u0204\u0206\u0208\u020A\u020C\u020E\u0210\u0212\u0214\u0216\u0218\u021A\u021C\u021E\u0220\u0222\u0224\u0226\u0228\u022A\u022C\u022E\u0230\u0232\u023A\u023B\u023D\u023E\u0241\u0243-\u0246\u0248\u024A\u024C\u024E\u0370\u0372\u0376\u0386\u0388-\u038A\u038C\u038E\u038F\u0391-\u03A1\u03A3-\u03AB\u03CF\u03D2-\u03D4\u03D8\u03DA\u03DC\u03DE\u03E0\u03E2\u03E4\u03E6\u03E8\u03EA\u03EC\u03EE\u03F4\u03F7\u03F9\u03FA\u03FD-\u042F\u0460\u0462\u0464\u0466\u0468\u046A\u046C\u046E\u0470\u0472\u0474\u0476\u0478\u047A\u047C\u047E\u0480\u048A\u048C\u048E\u0490\u0492\u0494\u0496\u0498\u049A\u049C\u049E\u04A0\u04A2\u04A4\u04A6\u04A8\u04AA\u04AC\u04AE\u04B0\u04B2\u04B4\u04B6\u04B8\u04BA\u04BC\u04BE\u04C0\u04C1\u04C3\u04C5\u04C7\u04C9\u04CB\u04CD\u04D0\u04D2\u04D4\u04D6\u04D8\u04DA\u04DC\u04DE\u04E0\u04E2\u04E4\u04E6\u04E8\u04EA\u04EC\u04EE\u04F0\u04F2\u04F4\u04F6\u04F8\u04FA\u04FC\u04FE\u0500\u0502\u0504\u0506\u0508\u050A\u050C\u050E\u0510\u0512\u0514\u0516\u0518\u051A\u051C\u051E\u0520\u0522\u0524\u0526\u0531-\u0556\u10A0-\u10C5\u10C7\u10CD\u1E00\u1E02\u1E04\u1E06\u1E08\u1E0A\u1E0C\u1E0E\u1E10\u1E12\u1E14\u1E16\u1E18\u1E1A\u1E1C\u1E1E\u1E20\u1E22\u1E24\u1E26\u1E28\u1E2A\u1E2C\u1E2E\u1E30\u1E32\u1E34\u1E36\u1E38\u1E3A\u1E3C\u1E3E\u1E40\u1E42\u1E44\u1E46\u1E48\u1E4A\u1E4C\u1E4E\u1E50\u1E52\u1E54\u1E56\u1E58\u1E5A\u1E5C\u1E5E\u1E60\u1E62\u1E64\u1E66\u1E68\u1E6A\u1E6C\u1E6E\u1E70\u1E72\u1E74\u1E76\u1E78\u1E7A\u1E7C\u1E7E\u1E80\u1E82\u1E84\u1E86\u1E88\u1E8A\u1E8C\u1E8E\u1E90\u1E92\u1E94\u1E9E\u1EA0\u1EA2\u1EA4\u1EA6\u1EA8\u1EAA\u1EAC\u1EAE\u1EB0\u1EB2\u1EB4\u1EB6\u1EB8\u1EBA\u1EBC\u1EBE\u1EC0\u1EC2\u1EC4\u1EC6\u1EC8\u1ECA\u1ECC\u1ECE\u1ED0\u1ED2\u1ED4\u1ED6\u1ED8\u1EDA\u1EDC\u1EDE\u1EE0\u1EE2\u1EE4\u1EE6\u1EE8\u1EEA\u1EEC\u1EEE\u1EF0\u1EF2\u1EF4\u1EF6\u1EF8\u1EFA\u1EFC\u1EFE\u1F08-\u1F0F\u1F18-\u1F1D\u1F28-\u1F2F\u1F38-\u1F3F\u1F48-\u1F4D\u1F59\u1F5B\u1F5D\u1F5F\u1F68-\u1F6F\u1FB8-\u1FBB\u1FC8-\u1FCB\u1FD8-\u1FDB\u1FE8-\u1FEC\u1FF8-\u1FFB\u2102\u2107\u210B-\u210D\u2110-\u2112\u2115\u2119-\u211D\u2124\u2126\u2128\u212A-\u212D\u2130-\u2133\u213E\u213F\u2145\u2183\u2C00-\u2C2E\u2C60\u2C62-\u2C64\u2C67\u2C69\u2C6B\u2C6D-\u2C70\u2C72\u2C75\u2C7E-\u2C80\u2C82\u2C84\u2C86\u2C88\u2C8A\u2C8C\u2C8E\u2C90\u2C92\u2C94\u2C96\u2C98\u2C9A\u2C9C\u2C9E\u2CA0\u2CA2\u2CA4\u2CA6\u2CA8\u2CAA\u2CAC\u2CAE\u2CB0\u2CB2\u2CB4\u2CB6\u2CB8\u2CBA\u2CBC\u2CBE\u2CC0\u2CC2\u2CC4\u2CC6\u2CC8\u2CCA\u2CCC\u2CCE\u2CD0\u2CD2\u2CD4\u2CD6\u2CD8\u2CDA\u2CDC\u2CDE\u2CE0\u2CE2\u2CEB\u2CED\u2CF2\uA640\uA642\uA644\uA646\uA648\uA64A\uA64C\uA64E\uA650\uA652\uA654\uA656\uA658\uA65A\uA65C\uA65E\uA660\uA662\uA664\uA666\uA668\uA66A\uA66C\uA680\uA682\uA684\uA686\uA688\uA68A\uA68C\uA68E\uA690\uA692\uA694\uA696\uA722\uA724\uA726\uA728\uA72A\uA72C\uA72E\uA732\uA734\uA736\uA738\uA73A\uA73C\uA73E\uA740\uA742\uA744\uA746\uA748\uA74A\uA74C\uA74E\uA750\uA752\uA754\uA756\uA758\uA75A\uA75C\uA75E\uA760\uA762\uA764\uA766\uA768\uA76A\uA76C\uA76E\uA779\uA77B\uA77D\uA77E\uA780\uA782\uA784\uA786\uA78B\uA78D\uA790\uA792\uA7A0\uA7A2\uA7A4\uA7A6\uA7A8\uA7AA\uFF21-\uFF3A\u0030-\u0039\u00B2\u00B3\u00B9\u00BC-\u00BE\u0660-\u0669\u06F0-\u06F9\u07C0-\u07C9\u0966-\u096F\u09E6-\u09EF\u09F4-\u09F9\u0A66-\u0A6F\u0AE6-\u0AEF\u0B66-\u0B6F\u0B72-\u0B77\u0BE6-\u0BF2\u0C66-\u0C6F\u0C78-\u0C7E\u0CE6-\u0CEF\u0D66-\u0D75\u0E50-\u0E59\u0ED0-\u0ED9\u0F20-\u0F33\u1040-\u1049\u1090-\u1099\u1369-\u137C\u16EE-\u16F0\u17E0-\u17E9\u17F0-\u17F9\u1810-\u1819\u1946-\u194F\u19D0-\u19DA\u1A80-\u1A89\u1A90-\u1A99\u1B50-\u1B59\u1BB0-\u1BB9\u1C40-\u1C49\u1C50-\u1C59\u2070\u2074-\u2079\u2080-\u2089\u2150-\u2182\u2185-\u2189\u2460-\u249B\u24EA-\u24FF\u2776-\u2793\u2CFD\u3007\u3021-\u3029\u3038-\u303A\u3192-\u3195\u3220-\u3229\u3248-\u324F\u3251-\u325F\u3280-\u3289\u32B1-\u32BF\uA620-\uA629\uA6E6-\uA6EF\uA830-\uA835\uA8D0-\uA8D9\uA900-\uA909\uA9D0-\uA9D9\uAA50-\uAA59\uABF0-\uABF9\uFF10-\uFF19])/g;
-},{}],59:[function(require,module,exports){
-module.exports = /[^\u0041-\u005A\u0061-\u007A\u00AA\u00B5\u00BA\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02C1\u02C6-\u02D1\u02E0-\u02E4\u02EC\u02EE\u0370-\u0374\u0376\u0377\u037A-\u037D\u0386\u0388-\u038A\u038C\u038E-\u03A1\u03A3-\u03F5\u03F7-\u0481\u048A-\u0527\u0531-\u0556\u0559\u0561-\u0587\u05D0-\u05EA\u05F0-\u05F2\u0620-\u064A\u066E\u066F\u0671-\u06D3\u06D5\u06E5\u06E6\u06EE\u06EF\u06FA-\u06FC\u06FF\u0710\u0712-\u072F\u074D-\u07A5\u07B1\u07CA-\u07EA\u07F4\u07F5\u07FA\u0800-\u0815\u081A\u0824\u0828\u0840-\u0858\u08A0\u08A2-\u08AC\u0904-\u0939\u093D\u0950\u0958-\u0961\u0971-\u0977\u0979-\u097F\u0985-\u098C\u098F\u0990\u0993-\u09A8\u09AA-\u09B0\u09B2\u09B6-\u09B9\u09BD\u09CE\u09DC\u09DD\u09DF-\u09E1\u09F0\u09F1\u0A05-\u0A0A\u0A0F\u0A10\u0A13-\u0A28\u0A2A-\u0A30\u0A32\u0A33\u0A35\u0A36\u0A38\u0A39\u0A59-\u0A5C\u0A5E\u0A72-\u0A74\u0A85-\u0A8D\u0A8F-\u0A91\u0A93-\u0AA8\u0AAA-\u0AB0\u0AB2\u0AB3\u0AB5-\u0AB9\u0ABD\u0AD0\u0AE0\u0AE1\u0B05-\u0B0C\u0B0F\u0B10\u0B13-\u0B28\u0B2A-\u0B30\u0B32\u0B33\u0B35-\u0B39\u0B3D\u0B5C\u0B5D\u0B5F-\u0B61\u0B71\u0B83\u0B85-\u0B8A\u0B8E-\u0B90\u0B92-\u0B95\u0B99\u0B9A\u0B9C\u0B9E\u0B9F\u0BA3\u0BA4\u0BA8-\u0BAA\u0BAE-\u0BB9\u0BD0\u0C05-\u0C0C\u0C0E-\u0C10\u0C12-\u0C28\u0C2A-\u0C33\u0C35-\u0C39\u0C3D\u0C58\u0C59\u0C60\u0C61\u0C85-\u0C8C\u0C8E-\u0C90\u0C92-\u0CA8\u0CAA-\u0CB3\u0CB5-\u0CB9\u0CBD\u0CDE\u0CE0\u0CE1\u0CF1\u0CF2\u0D05-\u0D0C\u0D0E-\u0D10\u0D12-\u0D3A\u0D3D\u0D4E\u0D60\u0D61\u0D7A-\u0D7F\u0D85-\u0D96\u0D9A-\u0DB1\u0DB3-\u0DBB\u0DBD\u0DC0-\u0DC6\u0E01-\u0E30\u0E32\u0E33\u0E40-\u0E46\u0E81\u0E82\u0E84\u0E87\u0E88\u0E8A\u0E8D\u0E94-\u0E97\u0E99-\u0E9F\u0EA1-\u0EA3\u0EA5\u0EA7\u0EAA\u0EAB\u0EAD-\u0EB0\u0EB2\u0EB3\u0EBD\u0EC0-\u0EC4\u0EC6\u0EDC-\u0EDF\u0F00\u0F40-\u0F47\u0F49-\u0F6C\u0F88-\u0F8C\u1000-\u102A\u103F\u1050-\u1055\u105A-\u105D\u1061\u1065\u1066\u106E-\u1070\u1075-\u1081\u108E\u10A0-\u10C5\u10C7\u10CD\u10D0-\u10FA\u10FC-\u1248\u124A-\u124D\u1250-\u1256\u1258\u125A-\u125D\u1260-\u1288\u128A-\u128D\u1290-\u12B0\u12B2-\u12B5\u12B8-\u12BE\u12C0\u12C2-\u12C5\u12C8-\u12D6\u12D8-\u1310\u1312-\u1315\u1318-\u135A\u1380-\u138F\u13A0-\u13F4\u1401-\u166C\u166F-\u167F\u1681-\u169A\u16A0-\u16EA\u1700-\u170C\u170E-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176C\u176E-\u1770\u1780-\u17B3\u17D7\u17DC\u1820-\u1877\u1880-\u18A8\u18AA\u18B0-\u18F5\u1900-\u191C\u1950-\u196D\u1970-\u1974\u1980-\u19AB\u19C1-\u19C7\u1A00-\u1A16\u1A20-\u1A54\u1AA7\u1B05-\u1B33\u1B45-\u1B4B\u1B83-\u1BA0\u1BAE\u1BAF\u1BBA-\u1BE5\u1C00-\u1C23\u1C4D-\u1C4F\u1C5A-\u1C7D\u1CE9-\u1CEC\u1CEE-\u1CF1\u1CF5\u1CF6\u1D00-\u1DBF\u1E00-\u1F15\u1F18-\u1F1D\u1F20-\u1F45\u1F48-\u1F4D\u1F50-\u1F57\u1F59\u1F5B\u1F5D\u1F5F-\u1F7D\u1F80-\u1FB4\u1FB6-\u1FBC\u1FBE\u1FC2-\u1FC4\u1FC6-\u1FCC\u1FD0-\u1FD3\u1FD6-\u1FDB\u1FE0-\u1FEC\u1FF2-\u1FF4\u1FF6-\u1FFC\u2071\u207F\u2090-\u209C\u2102\u2107\u210A-\u2113\u2115\u2119-\u211D\u2124\u2126\u2128\u212A-\u212D\u212F-\u2139\u213C-\u213F\u2145-\u2149\u214E\u2183\u2184\u2C00-\u2C2E\u2C30-\u2C5E\u2C60-\u2CE4\u2CEB-\u2CEE\u2CF2\u2CF3\u2D00-\u2D25\u2D27\u2D2D\u2D30-\u2D67\u2D6F\u2D80-\u2D96\u2DA0-\u2DA6\u2DA8-\u2DAE\u2DB0-\u2DB6\u2DB8-\u2DBE\u2DC0-\u2DC6\u2DC8-\u2DCE\u2DD0-\u2DD6\u2DD8-\u2DDE\u2E2F\u3005\u3006\u3031-\u3035\u303B\u303C\u3041-\u3096\u309D-\u309F\u30A1-\u30FA\u30FC-\u30FF\u3105-\u312D\u3131-\u318E\u31A0-\u31BA\u31F0-\u31FF\u3400-\u4DB5\u4E00-\u9FCC\uA000-\uA48C\uA4D0-\uA4FD\uA500-\uA60C\uA610-\uA61F\uA62A\uA62B\uA640-\uA66E\uA67F-\uA697\uA6A0-\uA6E5\uA717-\uA71F\uA722-\uA788\uA78B-\uA78E\uA790-\uA793\uA7A0-\uA7AA\uA7F8-\uA801\uA803-\uA805\uA807-\uA80A\uA80C-\uA822\uA840-\uA873\uA882-\uA8B3\uA8F2-\uA8F7\uA8FB\uA90A-\uA925\uA930-\uA946\uA960-\uA97C\uA984-\uA9B2\uA9CF\uAA00-\uAA28\uAA40-\uAA42\uAA44-\uAA4B\uAA60-\uAA76\uAA7A\uAA80-\uAAAF\uAAB1\uAAB5\uAAB6\uAAB9-\uAABD\uAAC0\uAAC2\uAADB-\uAADD\uAAE0-\uAAEA\uAAF2-\uAAF4\uAB01-\uAB06\uAB09-\uAB0E\uAB11-\uAB16\uAB20-\uAB26\uAB28-\uAB2E\uABC0-\uABE2\uAC00-\uD7A3\uD7B0-\uD7C6\uD7CB-\uD7FB\uF900-\uFA6D\uFA70-\uFAD9\uFB00-\uFB06\uFB13-\uFB17\uFB1D\uFB1F-\uFB28\uFB2A-\uFB36\uFB38-\uFB3C\uFB3E\uFB40\uFB41\uFB43\uFB44\uFB46-\uFBB1\uFBD3-\uFD3D\uFD50-\uFD8F\uFD92-\uFDC7\uFDF0-\uFDFB\uFE70-\uFE74\uFE76-\uFEFC\uFF21-\uFF3A\uFF41-\uFF5A\uFF66-\uFFBE\uFFC2-\uFFC7\uFFCA-\uFFCF\uFFD2-\uFFD7\uFFDA-\uFFDC\u0030-\u0039\u00B2\u00B3\u00B9\u00BC-\u00BE\u0660-\u0669\u06F0-\u06F9\u07C0-\u07C9\u0966-\u096F\u09E6-\u09EF\u09F4-\u09F9\u0A66-\u0A6F\u0AE6-\u0AEF\u0B66-\u0B6F\u0B72-\u0B77\u0BE6-\u0BF2\u0C66-\u0C6F\u0C78-\u0C7E\u0CE6-\u0CEF\u0D66-\u0D75\u0E50-\u0E59\u0ED0-\u0ED9\u0F20-\u0F33\u1040-\u1049\u1090-\u1099\u1369-\u137C\u16EE-\u16F0\u17E0-\u17E9\u17F0-\u17F9\u1810-\u1819\u1946-\u194F\u19D0-\u19DA\u1A80-\u1A89\u1A90-\u1A99\u1B50-\u1B59\u1BB0-\u1BB9\u1C40-\u1C49\u1C50-\u1C59\u2070\u2074-\u2079\u2080-\u2089\u2150-\u2182\u2185-\u2189\u2460-\u249B\u24EA-\u24FF\u2776-\u2793\u2CFD\u3007\u3021-\u3029\u3038-\u303A\u3192-\u3195\u3220-\u3229\u3248-\u324F\u3251-\u325F\u3280-\u3289\u32B1-\u32BF\uA620-\uA629\uA6E6-\uA6EF\uA830-\uA835\uA8D0-\uA8D9\uA900-\uA909\uA9D0-\uA9D9\uAA50-\uAA59\uABF0-\uABF9\uFF10-\uFF19]+/g;
-},{}],60:[function(require,module,exports){
-module.exports = /([\u0030-\u0039\u00B2\u00B3\u00B9\u00BC-\u00BE\u0660-\u0669\u06F0-\u06F9\u07C0-\u07C9\u0966-\u096F\u09E6-\u09EF\u09F4-\u09F9\u0A66-\u0A6F\u0AE6-\u0AEF\u0B66-\u0B6F\u0B72-\u0B77\u0BE6-\u0BF2\u0C66-\u0C6F\u0C78-\u0C7E\u0CE6-\u0CEF\u0D66-\u0D75\u0E50-\u0E59\u0ED0-\u0ED9\u0F20-\u0F33\u1040-\u1049\u1090-\u1099\u1369-\u137C\u16EE-\u16F0\u17E0-\u17E9\u17F0-\u17F9\u1810-\u1819\u1946-\u194F\u19D0-\u19DA\u1A80-\u1A89\u1A90-\u1A99\u1B50-\u1B59\u1BB0-\u1BB9\u1C40-\u1C49\u1C50-\u1C59\u2070\u2074-\u2079\u2080-\u2089\u2150-\u2182\u2185-\u2189\u2460-\u249B\u24EA-\u24FF\u2776-\u2793\u2CFD\u3007\u3021-\u3029\u3038-\u303A\u3192-\u3195\u3220-\u3229\u3248-\u324F\u3251-\u325F\u3280-\u3289\u32B1-\u32BF\uA620-\uA629\uA6E6-\uA6EF\uA830-\uA835\uA8D0-\uA8D9\uA900-\uA909\uA9D0-\uA9D9\uAA50-\uAA59\uABF0-\uABF9\uFF10-\uFF19])([^\u0030-\u0039\u00B2\u00B3\u00B9\u00BC-\u00BE\u0660-\u0669\u06F0-\u06F9\u07C0-\u07C9\u0966-\u096F\u09E6-\u09EF\u09F4-\u09F9\u0A66-\u0A6F\u0AE6-\u0AEF\u0B66-\u0B6F\u0B72-\u0B77\u0BE6-\u0BF2\u0C66-\u0C6F\u0C78-\u0C7E\u0CE6-\u0CEF\u0D66-\u0D75\u0E50-\u0E59\u0ED0-\u0ED9\u0F20-\u0F33\u1040-\u1049\u1090-\u1099\u1369-\u137C\u16EE-\u16F0\u17E0-\u17E9\u17F0-\u17F9\u1810-\u1819\u1946-\u194F\u19D0-\u19DA\u1A80-\u1A89\u1A90-\u1A99\u1B50-\u1B59\u1BB0-\u1BB9\u1C40-\u1C49\u1C50-\u1C59\u2070\u2074-\u2079\u2080-\u2089\u2150-\u2182\u2185-\u2189\u2460-\u249B\u24EA-\u24FF\u2776-\u2793\u2CFD\u3007\u3021-\u3029\u3038-\u303A\u3192-\u3195\u3220-\u3229\u3248-\u324F\u3251-\u325F\u3280-\u3289\u32B1-\u32BF\uA620-\uA629\uA6E6-\uA6EF\uA830-\uA835\uA8D0-\uA8D9\uA900-\uA909\uA9D0-\uA9D9\uAA50-\uAA59\uABF0-\uABF9\uFF10-\uFF19])/g;
+},{"./vendor/camel-case-regexp":60,"./vendor/non-word-regexp":61,"./vendor/trailing-digit-regexp":62,"lower-case":55}],60:[function(require,module,exports){
+module.exports = /([\u0061-\u007A\u00B5\u00DF-\u00F6\u00F8-\u00FF\u0101\u0103\u0105\u0107\u0109\u010B\u010D\u010F\u0111\u0113\u0115\u0117\u0119\u011B\u011D\u011F\u0121\u0123\u0125\u0127\u0129\u012B\u012D\u012F\u0131\u0133\u0135\u0137\u0138\u013A\u013C\u013E\u0140\u0142\u0144\u0146\u0148\u0149\u014B\u014D\u014F\u0151\u0153\u0155\u0157\u0159\u015B\u015D\u015F\u0161\u0163\u0165\u0167\u0169\u016B\u016D\u016F\u0171\u0173\u0175\u0177\u017A\u017C\u017E-\u0180\u0183\u0185\u0188\u018C\u018D\u0192\u0195\u0199-\u019B\u019E\u01A1\u01A3\u01A5\u01A8\u01AA\u01AB\u01AD\u01B0\u01B4\u01B6\u01B9\u01BA\u01BD-\u01BF\u01C6\u01C9\u01CC\u01CE\u01D0\u01D2\u01D4\u01D6\u01D8\u01DA\u01DC\u01DD\u01DF\u01E1\u01E3\u01E5\u01E7\u01E9\u01EB\u01ED\u01EF\u01F0\u01F3\u01F5\u01F9\u01FB\u01FD\u01FF\u0201\u0203\u0205\u0207\u0209\u020B\u020D\u020F\u0211\u0213\u0215\u0217\u0219\u021B\u021D\u021F\u0221\u0223\u0225\u0227\u0229\u022B\u022D\u022F\u0231\u0233-\u0239\u023C\u023F\u0240\u0242\u0247\u0249\u024B\u024D\u024F-\u0293\u0295-\u02AF\u0371\u0373\u0377\u037B-\u037D\u0390\u03AC-\u03CE\u03D0\u03D1\u03D5-\u03D7\u03D9\u03DB\u03DD\u03DF\u03E1\u03E3\u03E5\u03E7\u03E9\u03EB\u03ED\u03EF-\u03F3\u03F5\u03F8\u03FB\u03FC\u0430-\u045F\u0461\u0463\u0465\u0467\u0469\u046B\u046D\u046F\u0471\u0473\u0475\u0477\u0479\u047B\u047D\u047F\u0481\u048B\u048D\u048F\u0491\u0493\u0495\u0497\u0499\u049B\u049D\u049F\u04A1\u04A3\u04A5\u04A7\u04A9\u04AB\u04AD\u04AF\u04B1\u04B3\u04B5\u04B7\u04B9\u04BB\u04BD\u04BF\u04C2\u04C4\u04C6\u04C8\u04CA\u04CC\u04CE\u04CF\u04D1\u04D3\u04D5\u04D7\u04D9\u04DB\u04DD\u04DF\u04E1\u04E3\u04E5\u04E7\u04E9\u04EB\u04ED\u04EF\u04F1\u04F3\u04F5\u04F7\u04F9\u04FB\u04FD\u04FF\u0501\u0503\u0505\u0507\u0509\u050B\u050D\u050F\u0511\u0513\u0515\u0517\u0519\u051B\u051D\u051F\u0521\u0523\u0525\u0527\u0561-\u0587\u1D00-\u1D2B\u1D6B-\u1D77\u1D79-\u1D9A\u1E01\u1E03\u1E05\u1E07\u1E09\u1E0B\u1E0D\u1E0F\u1E11\u1E13\u1E15\u1E17\u1E19\u1E1B\u1E1D\u1E1F\u1E21\u1E23\u1E25\u1E27\u1E29\u1E2B\u1E2D\u1E2F\u1E31\u1E33\u1E35\u1E37\u1E39\u1E3B\u1E3D\u1E3F\u1E41\u1E43\u1E45\u1E47\u1E49\u1E4B\u1E4D\u1E4F\u1E51\u1E53\u1E55\u1E57\u1E59\u1E5B\u1E5D\u1E5F\u1E61\u1E63\u1E65\u1E67\u1E69\u1E6B\u1E6D\u1E6F\u1E71\u1E73\u1E75\u1E77\u1E79\u1E7B\u1E7D\u1E7F\u1E81\u1E83\u1E85\u1E87\u1E89\u1E8B\u1E8D\u1E8F\u1E91\u1E93\u1E95-\u1E9D\u1E9F\u1EA1\u1EA3\u1EA5\u1EA7\u1EA9\u1EAB\u1EAD\u1EAF\u1EB1\u1EB3\u1EB5\u1EB7\u1EB9\u1EBB\u1EBD\u1EBF\u1EC1\u1EC3\u1EC5\u1EC7\u1EC9\u1ECB\u1ECD\u1ECF\u1ED1\u1ED3\u1ED5\u1ED7\u1ED9\u1EDB\u1EDD\u1EDF\u1EE1\u1EE3\u1EE5\u1EE7\u1EE9\u1EEB\u1EED\u1EEF\u1EF1\u1EF3\u1EF5\u1EF7\u1EF9\u1EFB\u1EFD\u1EFF-\u1F07\u1F10-\u1F15\u1F20-\u1F27\u1F30-\u1F37\u1F40-\u1F45\u1F50-\u1F57\u1F60-\u1F67\u1F70-\u1F7D\u1F80-\u1F87\u1F90-\u1F97\u1FA0-\u1FA7\u1FB0-\u1FB4\u1FB6\u1FB7\u1FBE\u1FC2-\u1FC4\u1FC6\u1FC7\u1FD0-\u1FD3\u1FD6\u1FD7\u1FE0-\u1FE7\u1FF2-\u1FF4\u1FF6\u1FF7\u210A\u210E\u210F\u2113\u212F\u2134\u2139\u213C\u213D\u2146-\u2149\u214E\u2184\u2C30-\u2C5E\u2C61\u2C65\u2C66\u2C68\u2C6A\u2C6C\u2C71\u2C73\u2C74\u2C76-\u2C7B\u2C81\u2C83\u2C85\u2C87\u2C89\u2C8B\u2C8D\u2C8F\u2C91\u2C93\u2C95\u2C97\u2C99\u2C9B\u2C9D\u2C9F\u2CA1\u2CA3\u2CA5\u2CA7\u2CA9\u2CAB\u2CAD\u2CAF\u2CB1\u2CB3\u2CB5\u2CB7\u2CB9\u2CBB\u2CBD\u2CBF\u2CC1\u2CC3\u2CC5\u2CC7\u2CC9\u2CCB\u2CCD\u2CCF\u2CD1\u2CD3\u2CD5\u2CD7\u2CD9\u2CDB\u2CDD\u2CDF\u2CE1\u2CE3\u2CE4\u2CEC\u2CEE\u2CF3\u2D00-\u2D25\u2D27\u2D2D\uA641\uA643\uA645\uA647\uA649\uA64B\uA64D\uA64F\uA651\uA653\uA655\uA657\uA659\uA65B\uA65D\uA65F\uA661\uA663\uA665\uA667\uA669\uA66B\uA66D\uA681\uA683\uA685\uA687\uA689\uA68B\uA68D\uA68F\uA691\uA693\uA695\uA697\uA723\uA725\uA727\uA729\uA72B\uA72D\uA72F-\uA731\uA733\uA735\uA737\uA739\uA73B\uA73D\uA73F\uA741\uA743\uA745\uA747\uA749\uA74B\uA74D\uA74F\uA751\uA753\uA755\uA757\uA759\uA75B\uA75D\uA75F\uA761\uA763\uA765\uA767\uA769\uA76B\uA76D\uA76F\uA771-\uA778\uA77A\uA77C\uA77F\uA781\uA783\uA785\uA787\uA78C\uA78E\uA791\uA793\uA7A1\uA7A3\uA7A5\uA7A7\uA7A9\uA7FA\uFB00-\uFB06\uFB13-\uFB17\uFF41-\uFF5A])([\u0041-\u005A\u00C0-\u00D6\u00D8-\u00DE\u0100\u0102\u0104\u0106\u0108\u010A\u010C\u010E\u0110\u0112\u0114\u0116\u0118\u011A\u011C\u011E\u0120\u0122\u0124\u0126\u0128\u012A\u012C\u012E\u0130\u0132\u0134\u0136\u0139\u013B\u013D\u013F\u0141\u0143\u0145\u0147\u014A\u014C\u014E\u0150\u0152\u0154\u0156\u0158\u015A\u015C\u015E\u0160\u0162\u0164\u0166\u0168\u016A\u016C\u016E\u0170\u0172\u0174\u0176\u0178\u0179\u017B\u017D\u0181\u0182\u0184\u0186\u0187\u0189-\u018B\u018E-\u0191\u0193\u0194\u0196-\u0198\u019C\u019D\u019F\u01A0\u01A2\u01A4\u01A6\u01A7\u01A9\u01AC\u01AE\u01AF\u01B1-\u01B3\u01B5\u01B7\u01B8\u01BC\u01C4\u01C7\u01CA\u01CD\u01CF\u01D1\u01D3\u01D5\u01D7\u01D9\u01DB\u01DE\u01E0\u01E2\u01E4\u01E6\u01E8\u01EA\u01EC\u01EE\u01F1\u01F4\u01F6-\u01F8\u01FA\u01FC\u01FE\u0200\u0202\u0204\u0206\u0208\u020A\u020C\u020E\u0210\u0212\u0214\u0216\u0218\u021A\u021C\u021E\u0220\u0222\u0224\u0226\u0228\u022A\u022C\u022E\u0230\u0232\u023A\u023B\u023D\u023E\u0241\u0243-\u0246\u0248\u024A\u024C\u024E\u0370\u0372\u0376\u0386\u0388-\u038A\u038C\u038E\u038F\u0391-\u03A1\u03A3-\u03AB\u03CF\u03D2-\u03D4\u03D8\u03DA\u03DC\u03DE\u03E0\u03E2\u03E4\u03E6\u03E8\u03EA\u03EC\u03EE\u03F4\u03F7\u03F9\u03FA\u03FD-\u042F\u0460\u0462\u0464\u0466\u0468\u046A\u046C\u046E\u0470\u0472\u0474\u0476\u0478\u047A\u047C\u047E\u0480\u048A\u048C\u048E\u0490\u0492\u0494\u0496\u0498\u049A\u049C\u049E\u04A0\u04A2\u04A4\u04A6\u04A8\u04AA\u04AC\u04AE\u04B0\u04B2\u04B4\u04B6\u04B8\u04BA\u04BC\u04BE\u04C0\u04C1\u04C3\u04C5\u04C7\u04C9\u04CB\u04CD\u04D0\u04D2\u04D4\u04D6\u04D8\u04DA\u04DC\u04DE\u04E0\u04E2\u04E4\u04E6\u04E8\u04EA\u04EC\u04EE\u04F0\u04F2\u04F4\u04F6\u04F8\u04FA\u04FC\u04FE\u0500\u0502\u0504\u0506\u0508\u050A\u050C\u050E\u0510\u0512\u0514\u0516\u0518\u051A\u051C\u051E\u0520\u0522\u0524\u0526\u0531-\u0556\u10A0-\u10C5\u10C7\u10CD\u1E00\u1E02\u1E04\u1E06\u1E08\u1E0A\u1E0C\u1E0E\u1E10\u1E12\u1E14\u1E16\u1E18\u1E1A\u1E1C\u1E1E\u1E20\u1E22\u1E24\u1E26\u1E28\u1E2A\u1E2C\u1E2E\u1E30\u1E32\u1E34\u1E36\u1E38\u1E3A\u1E3C\u1E3E\u1E40\u1E42\u1E44\u1E46\u1E48\u1E4A\u1E4C\u1E4E\u1E50\u1E52\u1E54\u1E56\u1E58\u1E5A\u1E5C\u1E5E\u1E60\u1E62\u1E64\u1E66\u1E68\u1E6A\u1E6C\u1E6E\u1E70\u1E72\u1E74\u1E76\u1E78\u1E7A\u1E7C\u1E7E\u1E80\u1E82\u1E84\u1E86\u1E88\u1E8A\u1E8C\u1E8E\u1E90\u1E92\u1E94\u1E9E\u1EA0\u1EA2\u1EA4\u1EA6\u1EA8\u1EAA\u1EAC\u1EAE\u1EB0\u1EB2\u1EB4\u1EB6\u1EB8\u1EBA\u1EBC\u1EBE\u1EC0\u1EC2\u1EC4\u1EC6\u1EC8\u1ECA\u1ECC\u1ECE\u1ED0\u1ED2\u1ED4\u1ED6\u1ED8\u1EDA\u1EDC\u1EDE\u1EE0\u1EE2\u1EE4\u1EE6\u1EE8\u1EEA\u1EEC\u1EEE\u1EF0\u1EF2\u1EF4\u1EF6\u1EF8\u1EFA\u1EFC\u1EFE\u1F08-\u1F0F\u1F18-\u1F1D\u1F28-\u1F2F\u1F38-\u1F3F\u1F48-\u1F4D\u1F59\u1F5B\u1F5D\u1F5F\u1F68-\u1F6F\u1FB8-\u1FBB\u1FC8-\u1FCB\u1FD8-\u1FDB\u1FE8-\u1FEC\u1FF8-\u1FFB\u2102\u2107\u210B-\u210D\u2110-\u2112\u2115\u2119-\u211D\u2124\u2126\u2128\u212A-\u212D\u2130-\u2133\u213E\u213F\u2145\u2183\u2C00-\u2C2E\u2C60\u2C62-\u2C64\u2C67\u2C69\u2C6B\u2C6D-\u2C70\u2C72\u2C75\u2C7E-\u2C80\u2C82\u2C84\u2C86\u2C88\u2C8A\u2C8C\u2C8E\u2C90\u2C92\u2C94\u2C96\u2C98\u2C9A\u2C9C\u2C9E\u2CA0\u2CA2\u2CA4\u2CA6\u2CA8\u2CAA\u2CAC\u2CAE\u2CB0\u2CB2\u2CB4\u2CB6\u2CB8\u2CBA\u2CBC\u2CBE\u2CC0\u2CC2\u2CC4\u2CC6\u2CC8\u2CCA\u2CCC\u2CCE\u2CD0\u2CD2\u2CD4\u2CD6\u2CD8\u2CDA\u2CDC\u2CDE\u2CE0\u2CE2\u2CEB\u2CED\u2CF2\uA640\uA642\uA644\uA646\uA648\uA64A\uA64C\uA64E\uA650\uA652\uA654\uA656\uA658\uA65A\uA65C\uA65E\uA660\uA662\uA664\uA666\uA668\uA66A\uA66C\uA680\uA682\uA684\uA686\uA688\uA68A\uA68C\uA68E\uA690\uA692\uA694\uA696\uA722\uA724\uA726\uA728\uA72A\uA72C\uA72E\uA732\uA734\uA736\uA738\uA73A\uA73C\uA73E\uA740\uA742\uA744\uA746\uA748\uA74A\uA74C\uA74E\uA750\uA752\uA754\uA756\uA758\uA75A\uA75C\uA75E\uA760\uA762\uA764\uA766\uA768\uA76A\uA76C\uA76E\uA779\uA77B\uA77D\uA77E\uA780\uA782\uA784\uA786\uA78B\uA78D\uA790\uA792\uA7A0\uA7A2\uA7A4\uA7A6\uA7A8\uA7AA\uFF21-\uFF3A\u0030-\u0039\u00B2\u00B3\u00B9\u00BC-\u00BE\u0660-\u0669\u06F0-\u06F9\u07C0-\u07C9\u0966-\u096F\u09E6-\u09EF\u09F4-\u09F9\u0A66-\u0A6F\u0AE6-\u0AEF\u0B66-\u0B6F\u0B72-\u0B77\u0BE6-\u0BF2\u0C66-\u0C6F\u0C78-\u0C7E\u0CE6-\u0CEF\u0D66-\u0D75\u0E50-\u0E59\u0ED0-\u0ED9\u0F20-\u0F33\u1040-\u1049\u1090-\u1099\u1369-\u137C\u16EE-\u16F0\u17E0-\u17E9\u17F0-\u17F9\u1810-\u1819\u1946-\u194F\u19D0-\u19DA\u1A80-\u1A89\u1A90-\u1A99\u1B50-\u1B59\u1BB0-\u1BB9\u1C40-\u1C49\u1C50-\u1C59\u2070\u2074-\u2079\u2080-\u2089\u2150-\u2182\u2185-\u2189\u2460-\u249B\u24EA-\u24FF\u2776-\u2793\u2CFD\u3007\u3021-\u3029\u3038-\u303A\u3192-\u3195\u3220-\u3229\u3248-\u324F\u3251-\u325F\u3280-\u3289\u32B1-\u32BF\uA620-\uA629\uA6E6-\uA6EF\uA830-\uA835\uA8D0-\uA8D9\uA900-\uA909\uA9D0-\uA9D9\uAA50-\uAA59\uABF0-\uABF9\uFF10-\uFF19])/g
+
 },{}],61:[function(require,module,exports){
+module.exports = /[^\u0041-\u005A\u0061-\u007A\u00AA\u00B5\u00BA\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02C1\u02C6-\u02D1\u02E0-\u02E4\u02EC\u02EE\u0370-\u0374\u0376\u0377\u037A-\u037D\u0386\u0388-\u038A\u038C\u038E-\u03A1\u03A3-\u03F5\u03F7-\u0481\u048A-\u0527\u0531-\u0556\u0559\u0561-\u0587\u05D0-\u05EA\u05F0-\u05F2\u0620-\u064A\u066E\u066F\u0671-\u06D3\u06D5\u06E5\u06E6\u06EE\u06EF\u06FA-\u06FC\u06FF\u0710\u0712-\u072F\u074D-\u07A5\u07B1\u07CA-\u07EA\u07F4\u07F5\u07FA\u0800-\u0815\u081A\u0824\u0828\u0840-\u0858\u08A0\u08A2-\u08AC\u0904-\u0939\u093D\u0950\u0958-\u0961\u0971-\u0977\u0979-\u097F\u0985-\u098C\u098F\u0990\u0993-\u09A8\u09AA-\u09B0\u09B2\u09B6-\u09B9\u09BD\u09CE\u09DC\u09DD\u09DF-\u09E1\u09F0\u09F1\u0A05-\u0A0A\u0A0F\u0A10\u0A13-\u0A28\u0A2A-\u0A30\u0A32\u0A33\u0A35\u0A36\u0A38\u0A39\u0A59-\u0A5C\u0A5E\u0A72-\u0A74\u0A85-\u0A8D\u0A8F-\u0A91\u0A93-\u0AA8\u0AAA-\u0AB0\u0AB2\u0AB3\u0AB5-\u0AB9\u0ABD\u0AD0\u0AE0\u0AE1\u0B05-\u0B0C\u0B0F\u0B10\u0B13-\u0B28\u0B2A-\u0B30\u0B32\u0B33\u0B35-\u0B39\u0B3D\u0B5C\u0B5D\u0B5F-\u0B61\u0B71\u0B83\u0B85-\u0B8A\u0B8E-\u0B90\u0B92-\u0B95\u0B99\u0B9A\u0B9C\u0B9E\u0B9F\u0BA3\u0BA4\u0BA8-\u0BAA\u0BAE-\u0BB9\u0BD0\u0C05-\u0C0C\u0C0E-\u0C10\u0C12-\u0C28\u0C2A-\u0C33\u0C35-\u0C39\u0C3D\u0C58\u0C59\u0C60\u0C61\u0C85-\u0C8C\u0C8E-\u0C90\u0C92-\u0CA8\u0CAA-\u0CB3\u0CB5-\u0CB9\u0CBD\u0CDE\u0CE0\u0CE1\u0CF1\u0CF2\u0D05-\u0D0C\u0D0E-\u0D10\u0D12-\u0D3A\u0D3D\u0D4E\u0D60\u0D61\u0D7A-\u0D7F\u0D85-\u0D96\u0D9A-\u0DB1\u0DB3-\u0DBB\u0DBD\u0DC0-\u0DC6\u0E01-\u0E30\u0E32\u0E33\u0E40-\u0E46\u0E81\u0E82\u0E84\u0E87\u0E88\u0E8A\u0E8D\u0E94-\u0E97\u0E99-\u0E9F\u0EA1-\u0EA3\u0EA5\u0EA7\u0EAA\u0EAB\u0EAD-\u0EB0\u0EB2\u0EB3\u0EBD\u0EC0-\u0EC4\u0EC6\u0EDC-\u0EDF\u0F00\u0F40-\u0F47\u0F49-\u0F6C\u0F88-\u0F8C\u1000-\u102A\u103F\u1050-\u1055\u105A-\u105D\u1061\u1065\u1066\u106E-\u1070\u1075-\u1081\u108E\u10A0-\u10C5\u10C7\u10CD\u10D0-\u10FA\u10FC-\u1248\u124A-\u124D\u1250-\u1256\u1258\u125A-\u125D\u1260-\u1288\u128A-\u128D\u1290-\u12B0\u12B2-\u12B5\u12B8-\u12BE\u12C0\u12C2-\u12C5\u12C8-\u12D6\u12D8-\u1310\u1312-\u1315\u1318-\u135A\u1380-\u138F\u13A0-\u13F4\u1401-\u166C\u166F-\u167F\u1681-\u169A\u16A0-\u16EA\u1700-\u170C\u170E-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176C\u176E-\u1770\u1780-\u17B3\u17D7\u17DC\u1820-\u1877\u1880-\u18A8\u18AA\u18B0-\u18F5\u1900-\u191C\u1950-\u196D\u1970-\u1974\u1980-\u19AB\u19C1-\u19C7\u1A00-\u1A16\u1A20-\u1A54\u1AA7\u1B05-\u1B33\u1B45-\u1B4B\u1B83-\u1BA0\u1BAE\u1BAF\u1BBA-\u1BE5\u1C00-\u1C23\u1C4D-\u1C4F\u1C5A-\u1C7D\u1CE9-\u1CEC\u1CEE-\u1CF1\u1CF5\u1CF6\u1D00-\u1DBF\u1E00-\u1F15\u1F18-\u1F1D\u1F20-\u1F45\u1F48-\u1F4D\u1F50-\u1F57\u1F59\u1F5B\u1F5D\u1F5F-\u1F7D\u1F80-\u1FB4\u1FB6-\u1FBC\u1FBE\u1FC2-\u1FC4\u1FC6-\u1FCC\u1FD0-\u1FD3\u1FD6-\u1FDB\u1FE0-\u1FEC\u1FF2-\u1FF4\u1FF6-\u1FFC\u2071\u207F\u2090-\u209C\u2102\u2107\u210A-\u2113\u2115\u2119-\u211D\u2124\u2126\u2128\u212A-\u212D\u212F-\u2139\u213C-\u213F\u2145-\u2149\u214E\u2183\u2184\u2C00-\u2C2E\u2C30-\u2C5E\u2C60-\u2CE4\u2CEB-\u2CEE\u2CF2\u2CF3\u2D00-\u2D25\u2D27\u2D2D\u2D30-\u2D67\u2D6F\u2D80-\u2D96\u2DA0-\u2DA6\u2DA8-\u2DAE\u2DB0-\u2DB6\u2DB8-\u2DBE\u2DC0-\u2DC6\u2DC8-\u2DCE\u2DD0-\u2DD6\u2DD8-\u2DDE\u2E2F\u3005\u3006\u3031-\u3035\u303B\u303C\u3041-\u3096\u309D-\u309F\u30A1-\u30FA\u30FC-\u30FF\u3105-\u312D\u3131-\u318E\u31A0-\u31BA\u31F0-\u31FF\u3400-\u4DB5\u4E00-\u9FCC\uA000-\uA48C\uA4D0-\uA4FD\uA500-\uA60C\uA610-\uA61F\uA62A\uA62B\uA640-\uA66E\uA67F-\uA697\uA6A0-\uA6E5\uA717-\uA71F\uA722-\uA788\uA78B-\uA78E\uA790-\uA793\uA7A0-\uA7AA\uA7F8-\uA801\uA803-\uA805\uA807-\uA80A\uA80C-\uA822\uA840-\uA873\uA882-\uA8B3\uA8F2-\uA8F7\uA8FB\uA90A-\uA925\uA930-\uA946\uA960-\uA97C\uA984-\uA9B2\uA9CF\uAA00-\uAA28\uAA40-\uAA42\uAA44-\uAA4B\uAA60-\uAA76\uAA7A\uAA80-\uAAAF\uAAB1\uAAB5\uAAB6\uAAB9-\uAABD\uAAC0\uAAC2\uAADB-\uAADD\uAAE0-\uAAEA\uAAF2-\uAAF4\uAB01-\uAB06\uAB09-\uAB0E\uAB11-\uAB16\uAB20-\uAB26\uAB28-\uAB2E\uABC0-\uABE2\uAC00-\uD7A3\uD7B0-\uD7C6\uD7CB-\uD7FB\uF900-\uFA6D\uFA70-\uFAD9\uFB00-\uFB06\uFB13-\uFB17\uFB1D\uFB1F-\uFB28\uFB2A-\uFB36\uFB38-\uFB3C\uFB3E\uFB40\uFB41\uFB43\uFB44\uFB46-\uFBB1\uFBD3-\uFD3D\uFD50-\uFD8F\uFD92-\uFDC7\uFDF0-\uFDFB\uFE70-\uFE74\uFE76-\uFEFC\uFF21-\uFF3A\uFF41-\uFF5A\uFF66-\uFFBE\uFFC2-\uFFC7\uFFCA-\uFFCF\uFFD2-\uFFD7\uFFDA-\uFFDC\u0030-\u0039\u00B2\u00B3\u00B9\u00BC-\u00BE\u0660-\u0669\u06F0-\u06F9\u07C0-\u07C9\u0966-\u096F\u09E6-\u09EF\u09F4-\u09F9\u0A66-\u0A6F\u0AE6-\u0AEF\u0B66-\u0B6F\u0B72-\u0B77\u0BE6-\u0BF2\u0C66-\u0C6F\u0C78-\u0C7E\u0CE6-\u0CEF\u0D66-\u0D75\u0E50-\u0E59\u0ED0-\u0ED9\u0F20-\u0F33\u1040-\u1049\u1090-\u1099\u1369-\u137C\u16EE-\u16F0\u17E0-\u17E9\u17F0-\u17F9\u1810-\u1819\u1946-\u194F\u19D0-\u19DA\u1A80-\u1A89\u1A90-\u1A99\u1B50-\u1B59\u1BB0-\u1BB9\u1C40-\u1C49\u1C50-\u1C59\u2070\u2074-\u2079\u2080-\u2089\u2150-\u2182\u2185-\u2189\u2460-\u249B\u24EA-\u24FF\u2776-\u2793\u2CFD\u3007\u3021-\u3029\u3038-\u303A\u3192-\u3195\u3220-\u3229\u3248-\u324F\u3251-\u325F\u3280-\u3289\u32B1-\u32BF\uA620-\uA629\uA6E6-\uA6EF\uA830-\uA835\uA8D0-\uA8D9\uA900-\uA909\uA9D0-\uA9D9\uAA50-\uAA59\uABF0-\uABF9\uFF10-\uFF19]+/g
+
+},{}],62:[function(require,module,exports){
+module.exports = /([\u0030-\u0039\u00B2\u00B3\u00B9\u00BC-\u00BE\u0660-\u0669\u06F0-\u06F9\u07C0-\u07C9\u0966-\u096F\u09E6-\u09EF\u09F4-\u09F9\u0A66-\u0A6F\u0AE6-\u0AEF\u0B66-\u0B6F\u0B72-\u0B77\u0BE6-\u0BF2\u0C66-\u0C6F\u0C78-\u0C7E\u0CE6-\u0CEF\u0D66-\u0D75\u0E50-\u0E59\u0ED0-\u0ED9\u0F20-\u0F33\u1040-\u1049\u1090-\u1099\u1369-\u137C\u16EE-\u16F0\u17E0-\u17E9\u17F0-\u17F9\u1810-\u1819\u1946-\u194F\u19D0-\u19DA\u1A80-\u1A89\u1A90-\u1A99\u1B50-\u1B59\u1BB0-\u1BB9\u1C40-\u1C49\u1C50-\u1C59\u2070\u2074-\u2079\u2080-\u2089\u2150-\u2182\u2185-\u2189\u2460-\u249B\u24EA-\u24FF\u2776-\u2793\u2CFD\u3007\u3021-\u3029\u3038-\u303A\u3192-\u3195\u3220-\u3229\u3248-\u324F\u3251-\u325F\u3280-\u3289\u32B1-\u32BF\uA620-\uA629\uA6E6-\uA6EF\uA830-\uA835\uA8D0-\uA8D9\uA900-\uA909\uA9D0-\uA9D9\uAA50-\uAA59\uABF0-\uABF9\uFF10-\uFF19])([^\u0030-\u0039\u00B2\u00B3\u00B9\u00BC-\u00BE\u0660-\u0669\u06F0-\u06F9\u07C0-\u07C9\u0966-\u096F\u09E6-\u09EF\u09F4-\u09F9\u0A66-\u0A6F\u0AE6-\u0AEF\u0B66-\u0B6F\u0B72-\u0B77\u0BE6-\u0BF2\u0C66-\u0C6F\u0C78-\u0C7E\u0CE6-\u0CEF\u0D66-\u0D75\u0E50-\u0E59\u0ED0-\u0ED9\u0F20-\u0F33\u1040-\u1049\u1090-\u1099\u1369-\u137C\u16EE-\u16F0\u17E0-\u17E9\u17F0-\u17F9\u1810-\u1819\u1946-\u194F\u19D0-\u19DA\u1A80-\u1A89\u1A90-\u1A99\u1B50-\u1B59\u1BB0-\u1BB9\u1C40-\u1C49\u1C50-\u1C59\u2070\u2074-\u2079\u2080-\u2089\u2150-\u2182\u2185-\u2189\u2460-\u249B\u24EA-\u24FF\u2776-\u2793\u2CFD\u3007\u3021-\u3029\u3038-\u303A\u3192-\u3195\u3220-\u3229\u3248-\u324F\u3251-\u325F\u3280-\u3289\u32B1-\u32BF\uA620-\uA629\uA6E6-\uA6EF\uA830-\uA835\uA8D0-\uA8D9\uA900-\uA909\uA9D0-\uA9D9\uAA50-\uAA59\uABF0-\uABF9\uFF10-\uFF19])/g
+
+},{}],63:[function(require,module,exports){
 var sentenceCase = require('sentence-case');
 
 /**
@@ -40547,10 +41251,10 @@ var sentenceCase = require('sentence-case');
  * @return {String}
  */
 module.exports = function (str, locale) {
-  return sentenceCase(str, locale).replace(/ /g, '_');
+  return sentenceCase(str, locale, '_');
 };
 
-},{"sentence-case":57}],62:[function(require,module,exports){
+},{"sentence-case":59}],64:[function(require,module,exports){
 var upperCase = require('upper-case');
 var lowerCase = require('lower-case');
 
@@ -40579,7 +41283,7 @@ module.exports = function (str, locale) {
   return result;
 };
 
-},{"lower-case":53,"upper-case":65}],63:[function(require,module,exports){
+},{"lower-case":55,"upper-case":67}],65:[function(require,module,exports){
 var upperCase    = require('upper-case');
 var sentenceCase = require('sentence-case');
 
@@ -40596,7 +41300,7 @@ module.exports = function (str, locale) {
   });
 };
 
-},{"sentence-case":57,"upper-case":65}],64:[function(require,module,exports){
+},{"sentence-case":59,"upper-case":67}],66:[function(require,module,exports){
 var upperCase = require('upper-case');
 
 /**
@@ -40615,7 +41319,7 @@ module.exports = function (str, locale) {
   return upperCase(str.charAt(0), locale) + str.substr(1);
 };
 
-},{"upper-case":65}],65:[function(require,module,exports){
+},{"upper-case":67}],67:[function(require,module,exports){
 /**
  * Special language-specific overrides.
  *
@@ -40623,7 +41327,7 @@ module.exports = function (str, locale) {
  *
  * @type {Object}
  */
-var languages = {
+var LANGUAGES = {
   tr: {
     regexp: /[\u0069]/g,
     map: {
@@ -40647,7 +41351,7 @@ var languages = {
       '\u0069\u0307\u0303': '\u0128'
     }
   }
-};
+}
 
 /**
  * Upper case a string.
@@ -40656,18 +41360,18 @@ var languages = {
  * @return {String}
  */
 module.exports = function (str, locale) {
-  var lang = languages[locale];
+  var lang = LANGUAGES[locale]
 
-  str = str == null ? '' : String(str);
+  str = str == null ? '' : String(str)
 
   if (lang) {
-    str = str.replace(lang.regexp, function (m) { return lang.map[m]; });
+    str = str.replace(lang.regexp, function (m) { return lang.map[m] })
   }
 
-  return str.toUpperCase();
-};
+  return str.toUpperCase()
+}
 
-},{}],66:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 /*
   Copyright (C) 2013 Ariya Hidayat <ariya.hidayat@gmail.com>
   Copyright (C) 2013 Thaddee Tyl <thaddee.tyl@gmail.com>
@@ -44425,7 +45129,7 @@ parseStatement: true, parseSourceElement: true */
 }));
 /* vim: set sw=4 ts=4 et tw=80 : */
 
-},{}],67:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 /*
  * estemplate
  * https://github.com/RReverser/estemplate
@@ -44560,7 +45264,7 @@ tmpl.compile = function (str, options) {
 };
 
 module.exports = tmpl;
-},{"esprima":66,"estraverse":68}],68:[function(require,module,exports){
+},{"esprima":68,"estraverse":70}],70:[function(require,module,exports){
 /*
   Copyright (C) 2012-2013 Yusuke Suzuki <utatane.tea@gmail.com>
   Copyright (C) 2012 Ariya Hidayat <ariya.hidayat@gmail.com>
@@ -45407,7 +46111,7 @@ module.exports = tmpl;
 }));
 /* vim: set sw=4 ts=4 et tw=80 : */
 
-},{}],69:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -52196,7 +52900,7 @@ module.exports = tmpl;
 }.call(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],70:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 /*
  The MIT License (MIT)
 
@@ -53232,11 +53936,11 @@ module.exports = tmpl;
     }]);
 
 }());
-},{}],71:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 
 module.exports = require('./lib/');
 
-},{"./lib/":72}],72:[function(require,module,exports){
+},{"./lib/":74}],74:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -53325,7 +54029,7 @@ exports.connect = lookup;
 exports.Manager = require('./manager');
 exports.Socket = require('./socket');
 
-},{"./manager":73,"./socket":75,"./url":76,"debug":80,"socket.io-parser":114}],73:[function(require,module,exports){
+},{"./manager":75,"./socket":77,"./url":78,"debug":82,"socket.io-parser":116}],75:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -53830,7 +54534,7 @@ Manager.prototype.onreconnect = function(){
   this.emitAll('reconnect', attempt);
 };
 
-},{"./on":74,"./socket":75,"./url":76,"backo2":77,"component-bind":78,"component-emitter":79,"debug":80,"engine.io-client":81,"indexof":110,"object-component":111,"socket.io-parser":114}],74:[function(require,module,exports){
+},{"./on":76,"./socket":77,"./url":78,"backo2":79,"component-bind":80,"component-emitter":81,"debug":82,"engine.io-client":83,"indexof":112,"object-component":113,"socket.io-parser":116}],76:[function(require,module,exports){
 
 /**
  * Module exports.
@@ -53856,7 +54560,7 @@ function on(obj, ev, fn) {
   };
 }
 
-},{}],75:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -54243,7 +54947,7 @@ Socket.prototype.disconnect = function(){
   return this;
 };
 
-},{"./on":74,"component-bind":78,"component-emitter":79,"debug":80,"has-binary":108,"socket.io-parser":114,"to-array":118}],76:[function(require,module,exports){
+},{"./on":76,"component-bind":80,"component-emitter":81,"debug":82,"has-binary":110,"socket.io-parser":116,"to-array":120}],78:[function(require,module,exports){
 (function (global){
 
 /**
@@ -54320,7 +55024,7 @@ function url(uri, loc){
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"debug":80,"parseuri":112}],77:[function(require,module,exports){
+},{"debug":82,"parseuri":114}],79:[function(require,module,exports){
 
 /**
  * Expose `Backoff`.
@@ -54407,7 +55111,7 @@ Backoff.prototype.setJitter = function(jitter){
 };
 
 
-},{}],78:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 /**
  * Slice reference.
  */
@@ -54432,7 +55136,7 @@ module.exports = function(obj, fn){
   }
 };
 
-},{}],79:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 
 /**
  * Expose `Emitter`.
@@ -54598,7 +55302,7 @@ Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
 };
 
-},{}],80:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 
 /**
  * Expose `debug()` as the module.
@@ -54737,11 +55441,11 @@ try {
   if (window.localStorage) debug.enable(localStorage.debug);
 } catch(e){}
 
-},{}],81:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 
 module.exports =  require('./lib/');
 
-},{"./lib/":82}],82:[function(require,module,exports){
+},{"./lib/":84}],84:[function(require,module,exports){
 
 module.exports = require('./socket');
 
@@ -54753,7 +55457,7 @@ module.exports = require('./socket');
  */
 module.exports.parser = require('engine.io-parser');
 
-},{"./socket":83,"engine.io-parser":95}],83:[function(require,module,exports){
+},{"./socket":85,"engine.io-parser":97}],85:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -55462,7 +56166,7 @@ Socket.prototype.filterUpgrades = function (upgrades) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./transport":84,"./transports":85,"component-emitter":79,"debug":92,"engine.io-parser":95,"indexof":110,"parsejson":104,"parseqs":105,"parseuri":106}],84:[function(require,module,exports){
+},{"./transport":86,"./transports":87,"component-emitter":81,"debug":94,"engine.io-parser":97,"indexof":112,"parsejson":106,"parseqs":107,"parseuri":108}],86:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -55623,7 +56327,7 @@ Transport.prototype.onClose = function () {
   this.emit('close');
 };
 
-},{"component-emitter":79,"engine.io-parser":95}],85:[function(require,module,exports){
+},{"component-emitter":81,"engine.io-parser":97}],87:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies
@@ -55680,7 +56384,7 @@ function polling(opts){
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./polling-jsonp":86,"./polling-xhr":87,"./websocket":89,"xmlhttprequest":90}],86:[function(require,module,exports){
+},{"./polling-jsonp":88,"./polling-xhr":89,"./websocket":91,"xmlhttprequest":92}],88:[function(require,module,exports){
 (function (global){
 
 /**
@@ -55917,7 +56621,7 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./polling":88,"component-inherit":91}],87:[function(require,module,exports){
+},{"./polling":90,"component-inherit":93}],89:[function(require,module,exports){
 (function (global){
 /**
  * Module requirements.
@@ -56305,7 +57009,7 @@ function unloadHandler() {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./polling":88,"component-emitter":79,"component-inherit":91,"debug":92,"xmlhttprequest":90}],88:[function(require,module,exports){
+},{"./polling":90,"component-emitter":81,"component-inherit":93,"debug":94,"xmlhttprequest":92}],90:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -56552,7 +57256,7 @@ Polling.prototype.uri = function(){
   return schema + '://' + this.hostname + port + this.path + query;
 };
 
-},{"../transport":84,"component-inherit":91,"debug":92,"engine.io-parser":95,"parseqs":105,"xmlhttprequest":90}],89:[function(require,module,exports){
+},{"../transport":86,"component-inherit":93,"debug":94,"engine.io-parser":97,"parseqs":107,"xmlhttprequest":92}],91:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -56792,7 +57496,7 @@ WS.prototype.check = function(){
   return !!WebSocket && !('__initialize' in WebSocket && this.name === WS.prototype.name);
 };
 
-},{"../transport":84,"component-inherit":91,"debug":92,"engine.io-parser":95,"parseqs":105,"ws":107}],90:[function(require,module,exports){
+},{"../transport":86,"component-inherit":93,"debug":94,"engine.io-parser":97,"parseqs":107,"ws":109}],92:[function(require,module,exports){
 // browser shim for xmlhttprequest module
 var hasCORS = require('has-cors');
 
@@ -56830,7 +57534,7 @@ module.exports = function(opts) {
   }
 }
 
-},{"has-cors":102}],91:[function(require,module,exports){
+},{"has-cors":104}],93:[function(require,module,exports){
 
 module.exports = function(a, b){
   var fn = function(){};
@@ -56838,7 +57542,7 @@ module.exports = function(a, b){
   a.prototype = new fn;
   a.prototype.constructor = a;
 };
-},{}],92:[function(require,module,exports){
+},{}],94:[function(require,module,exports){
 
 /**
  * This is the web browser implementation of `debug()`.
@@ -56987,7 +57691,7 @@ function load() {
 
 exports.enable(load());
 
-},{"./debug":93}],93:[function(require,module,exports){
+},{"./debug":95}],95:[function(require,module,exports){
 
 /**
  * This is the common logic for both the Node.js and web browser
@@ -57186,7 +57890,7 @@ function coerce(val) {
   return val;
 }
 
-},{"ms":94}],94:[function(require,module,exports){
+},{"ms":96}],96:[function(require,module,exports){
 /**
  * Helpers.
  */
@@ -57299,7 +58003,7 @@ function plural(ms, n, name) {
   return Math.ceil(ms / n) + ' ' + name + 's';
 }
 
-},{}],95:[function(require,module,exports){
+},{}],97:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -57897,7 +58601,7 @@ exports.decodePayloadAsBinary = function (data, binaryType, callback) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./keys":96,"after":97,"arraybuffer.slice":98,"base64-arraybuffer":99,"blob":100,"has-binary":108,"utf8":101}],96:[function(require,module,exports){
+},{"./keys":98,"after":99,"arraybuffer.slice":100,"base64-arraybuffer":101,"blob":102,"has-binary":110,"utf8":103}],98:[function(require,module,exports){
 
 /**
  * Gets the keys for an object.
@@ -57918,7 +58622,7 @@ module.exports = Object.keys || function keys (obj){
   return arr;
 };
 
-},{}],97:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 module.exports = after
 
 function after(count, callback, err_cb) {
@@ -57948,7 +58652,7 @@ function after(count, callback, err_cb) {
 
 function noop() {}
 
-},{}],98:[function(require,module,exports){
+},{}],100:[function(require,module,exports){
 /**
  * An abstraction for slicing an arraybuffer even when
  * ArrayBuffer.prototype.slice is not supported
@@ -57979,7 +58683,7 @@ module.exports = function(arraybuffer, start, end) {
   return result.buffer;
 };
 
-},{}],99:[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 /*
  * base64-arraybuffer
  * https://github.com/niklasvh/base64-arraybuffer
@@ -58040,7 +58744,7 @@ module.exports = function(arraybuffer, start, end) {
   };
 })("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/");
 
-},{}],100:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 (function (global){
 /**
  * Create a blob builder even when vendor prefixes exist
@@ -58093,7 +58797,7 @@ module.exports = (function() {
 })();
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],101:[function(require,module,exports){
+},{}],103:[function(require,module,exports){
 (function (global){
 /*! http://mths.be/utf8js v2.0.0 by @mathias */
 ;(function(root) {
@@ -58336,7 +59040,7 @@ module.exports = (function() {
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],102:[function(require,module,exports){
+},{}],104:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -58361,7 +59065,7 @@ try {
   module.exports = false;
 }
 
-},{"global":103}],103:[function(require,module,exports){
+},{"global":105}],105:[function(require,module,exports){
 
 /**
  * Returns `this`. Execute this without a "context" (i.e. without it being
@@ -58371,7 +59075,7 @@ try {
 
 module.exports = (function () { return this; })();
 
-},{}],104:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 (function (global){
 /**
  * JSON parse.
@@ -58406,7 +59110,7 @@ module.exports = function parsejson(data) {
   }
 };
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],105:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 /**
  * Compiles a querystring
  * Returns string representation of the object
@@ -58445,7 +59149,7 @@ exports.decode = function(qs){
   return qry;
 };
 
-},{}],106:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 /**
  * Parses an URI
  *
@@ -58486,7 +59190,7 @@ module.exports = function parseuri(str) {
     return uri;
 };
 
-},{}],107:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -58531,7 +59235,7 @@ function ws(uri, protocols, opts) {
 
 if (WebSocket) ws.prototype = WebSocket.prototype;
 
-},{}],108:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 (function (global){
 
 /*
@@ -58593,12 +59297,12 @@ function hasBinary(data) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"isarray":109}],109:[function(require,module,exports){
+},{"isarray":111}],111:[function(require,module,exports){
 module.exports = Array.isArray || function (arr) {
   return Object.prototype.toString.call(arr) == '[object Array]';
 };
 
-},{}],110:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 
 var indexOf = [].indexOf;
 
@@ -58609,7 +59313,7 @@ module.exports = function(arr, obj){
   }
   return -1;
 };
-},{}],111:[function(require,module,exports){
+},{}],113:[function(require,module,exports){
 
 /**
  * HOP ref.
@@ -58694,7 +59398,7 @@ exports.length = function(obj){
 exports.isEmpty = function(obj){
   return 0 == exports.length(obj);
 };
-},{}],112:[function(require,module,exports){
+},{}],114:[function(require,module,exports){
 /**
  * Parses an URI
  *
@@ -58721,7 +59425,7 @@ module.exports = function parseuri(str) {
   return uri;
 };
 
-},{}],113:[function(require,module,exports){
+},{}],115:[function(require,module,exports){
 (function (global){
 /*global Blob,File*/
 
@@ -58866,7 +59570,7 @@ exports.removeBlobs = function(data, callback) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./is-buffer":115,"isarray":116}],114:[function(require,module,exports){
+},{"./is-buffer":117,"isarray":118}],116:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -59264,7 +59968,7 @@ function error(data){
   };
 }
 
-},{"./binary":113,"./is-buffer":115,"component-emitter":79,"debug":80,"isarray":116,"json3":117}],115:[function(require,module,exports){
+},{"./binary":115,"./is-buffer":117,"component-emitter":81,"debug":82,"isarray":118,"json3":119}],117:[function(require,module,exports){
 (function (global){
 
 module.exports = isBuf;
@@ -59281,9 +59985,9 @@ function isBuf(obj) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],116:[function(require,module,exports){
-arguments[4][109][0].apply(exports,arguments)
-},{"dup":109}],117:[function(require,module,exports){
+},{}],118:[function(require,module,exports){
+arguments[4][111][0].apply(exports,arguments)
+},{"dup":111}],119:[function(require,module,exports){
 /*! JSON v3.2.6 | http://bestiejs.github.io/json3 | Copyright 2012-2013, Kit Cambridge | http://kit.mit-license.org */
 ;(function (window) {
   // Convenience aliases.
@@ -60146,7 +60850,7 @@ arguments[4][109][0].apply(exports,arguments)
   }
 }(this));
 
-},{}],118:[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 module.exports = toArray
 
 function toArray(list, index) {
@@ -60161,7 +60865,7 @@ function toArray(list, index) {
     return array
 }
 
-},{}],119:[function(require,module,exports){
+},{}],121:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -60187,7 +60891,7 @@ require('./Directives/VariableInput/VariableInputDirective');
 require('./Validators/VariableNameValidator');
 require('./Validators/ExampleNameValidator');
 
-},{"./Directives/Action/ActionDirective":120,"./Directives/Checkbox/CheckboxDirective":121,"./Directives/DragFile/DragFileDirective":122,"./Directives/DropFile/DropFileDirective":123,"./Directives/FileTree/FileTreeDirective":125,"./Directives/GiveFocus/GiveFocusDirective":126,"./Directives/LiteralInput/LiteralInputDirective":127,"./Directives/SelectInput/SelectInputDirective":128,"./Directives/StepInput/StepInputDirective":129,"./Directives/Submit/SubmitDirective":130,"./Directives/TextInput/TextInputDirective":131,"./Directives/VariableInput/VariableInputDirective":132,"./Validators/ExampleNameValidator":140,"./Validators/VariableNameValidator":141,"angular":6}],120:[function(require,module,exports){
+},{"./Directives/Action/ActionDirective":122,"./Directives/Checkbox/CheckboxDirective":123,"./Directives/DragFile/DragFileDirective":124,"./Directives/DropFile/DropFileDirective":125,"./Directives/FileTree/FileTreeDirective":127,"./Directives/GiveFocus/GiveFocusDirective":128,"./Directives/LiteralInput/LiteralInputDirective":129,"./Directives/SelectInput/SelectInputDirective":130,"./Directives/StepInput/StepInputDirective":131,"./Directives/Submit/SubmitDirective":132,"./Directives/TextInput/TextInputDirective":133,"./Directives/VariableInput/VariableInputDirective":134,"./Validators/ExampleNameValidator":142,"./Validators/VariableNameValidator":143,"angular":7}],122:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -60233,7 +60937,7 @@ var ActionDirective = function () {
 
 Core.directive('tractorAction', ActionDirective);
 
-},{"../../Core":119,"change-case":47,"lodash":69}],121:[function(require,module,exports){
+},{"../../Core":121,"change-case":49,"lodash":71}],123:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -60277,7 +60981,7 @@ var CheckboxDirective = function () {
 
 Core.directive('tractorCheckbox', CheckboxDirective);
 
-},{"../../Core":119,"change-case":47,"lodash":69}],122:[function(require,module,exports){
+},{"../../Core":121,"change-case":49,"lodash":71}],124:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -60303,7 +61007,7 @@ var DragFileDirective = function () {
 
     function dragstart ($scope, event) {
         event.dataTransfer.effectAllowed = 'move';
-        event.dataTransfer.setData('path', $scope.fileTree.folderStructure.path);
+        event.dataTransfer.setData('path', $scope.fileTree.fileStructure.path);
         event.dataTransfer.setData('file', JSON.stringify($scope.item));
         this.classList.add('drag');
         return false;
@@ -60317,7 +61021,7 @@ var DragFileDirective = function () {
 
 Core.directive('tractorDragFile', DragFileDirective);
 
-},{"../../Core":119,"lodash":69}],123:[function(require,module,exports){
+},{"../../Core":121,"lodash":71}],125:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -60386,8 +61090,11 @@ var DropFileDirective = function () {
 
 Core.directive('tractorDropFile', DropFileDirective);
 
-},{"../../Core":119,"lodash":69}],124:[function(require,module,exports){
+},{"../../Core":121,"lodash":71}],126:[function(require,module,exports){
 'use strict';
+
+// Utilities:
+var path = require('path');
 
 // Module:
 var Core = require('../../Core');
@@ -60398,12 +61105,15 @@ var pascal = changecase.pascal;
 var title = changecase.title;
 require('../../Services/FileTreeService');
 
-var transforms = {
+var createTransform = {
     '.component.js': function (oldName, newName) {
-        return {
+        return [{
+            replace: oldName,
+            with: newName
+        }, {
             replace: pascal(oldName),
             with: pascal(newName)
-        }
+        }]
     }
 };
 
@@ -60418,26 +61128,30 @@ var FileTreeController = (function () {
         this.fileTreeService = FileTreeService;
 
         this.headerName = title(this.type);
-        this.folderStructure = this.fileTreeService.organiseFolderStructure(this.model.folderStructure);
+        this.fileStructure = this.fileTreeService.organiseFileStructure(this.model.fileStructure);
+        this.fileStructure.expanded = true;
+
+        this.moveFile = this.moveFile.bind(this);
     };
     FileTreeController.$inject = ['$state', '$timeout', 'FileTreeService'];
 
     FileTreeController.prototype.addDirectory = function (directory) {
         this.fileTreeService.addDirectory({
-            root: this.folderStructure.path,
+            root: this.fileStructure.path,
             path: directory.path
         })
-        .then(function (folderStructure) {
-            this.folderStructure = this.fileTreeService.organiseFolderStructure(folderStructure);
+        .then(function (fileStructure) {
+            this.fileStructure = fileStructure
         }.bind(this));
     };
 
-    FileTreeController.prototype.startEditingName = function (item) {
+    FileTreeController.prototype.editName = function (item) {
         item.editingName = true;
         item.previousName = item.name;
+        this.hideOptions(item);
     };
 
-    FileTreeController.prototype.editName = function (item) {
+    FileTreeController.prototype.saveNewName = function (item) {
         item.editingName = false;
         if (!item.name.trim().length) {
             item.name = item.previousName;
@@ -60446,27 +61160,28 @@ var FileTreeController = (function () {
             var oldName = item.previousName;
             var newName = item.name;
             var extension = item.extension || '';
-            var transform = transforms[item.extension];
-            if (transform) {
-                transform = transform(oldName, newName);
+            var create = createTransform[item.extension];
+            var transforms;
+            if (create) {
+                transforms = create(oldName, newName);
             }
 
             this.fileTreeService.editName({
-                root: this.folderStructure.path,
+                root: this.fileStructure.path,
                 path: item.path,
                 oldName: oldName + extension,
                 newName: newName + extension,
-                transform: transform
+                transforms: transforms
             })
-            .then(function (folderStructure) {
-                this.folderStructure = this.fileTreeService.organiseFolderStructure(folderStructure);
+            .then(function (fileStructure) {
+                this.fileStructure = fileStructure
             }.bind(this));
         }
     };
 
     FileTreeController.prototype.renameOnEnter = function ($event, item) {
         if ($event.keyCode === 13) {
-            this.editName(item);
+            this.saveNewName(item);
         }
     };
 
@@ -60474,22 +61189,72 @@ var FileTreeController = (function () {
         this.$timeout(function () {
             if (!item.editingName) {
                 var params = {};
-                params[this.type] = item.name;
+                // Sw33t hax()rz to get around the browserify "path" shim not working on Windows.
+                var directoryPath = this.fileStructure.path.replace(/\\/g, '/');
+                var filePath = item.path.replace(/\\/g, '/');
+                params[this.type] = path.relative(directoryPath, filePath);
                 this.$state.go('tractor.' + this.type + '-editor', params)
             }
         }.bind(this), 200);
-    }
+    };
 
     FileTreeController.prototype.moveFile = function (root, file, directory) {
-        debugger;
-    }
+        this.fileTreeService.moveFile({
+            root: root,
+            fileName: file.name + file.extension,
+            filePath: file.path,
+            directoryPath: directory.path
+        })
+        .then(function (fileStructure) {
+            this.fileStructure = fileStructure
+        }.bind(this));
+    };
+
+    FileTreeController.prototype.expandDirectory = function (item) {
+        this.$timeout(function () {
+            if (!item.editingName) {
+                item.expanded = !item.expanded;
+                var expanded = this.fileTreeService.getExpanded();
+                if (item.expanded) {
+                    expanded[item.path] = item.expanded;
+                } else {
+                    delete expanded[item.path];
+                }
+                this.fileTreeService.setExpanded(expanded);
+            }
+        }.bind(this), 200);
+    };
+
+    FileTreeController.prototype.showOptions = function (item) {
+        item.showOptions = true;
+    };
+
+    FileTreeController.prototype.hideOptions = function (item) {
+        item.showOptions = false;
+    };
+
+    FileTreeController.prototype.delete = function (item) {
+        this.hideOptions(item);
+        if ((item.files && item.files.length) || (item.directories && item.directories.length)) {
+            alert('Cannot delete a directory with files in it.');
+        } else {
+            this.fileTreeService.deleteFile({
+                root: this.fileStructure.path,
+                path: item.path,
+                name: item.name
+            })
+            .then(function (fileStructure) {
+                this.fileStructure = fileStructure
+            }.bind(this));
+        }
+    };
 
     return FileTreeController;
 })();
 
 Core.controller('FileTreeController', FileTreeController);
 
-},{"../../Core":119,"../../Services/FileTreeService":135,"change-case":47}],125:[function(require,module,exports){
+},{"../../Core":121,"../../Services/FileTreeService":137,"change-case":49,"path":45}],127:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -60512,7 +61277,7 @@ var FileTreeDirective = function () {
         },
 
         /* eslint-disable no-path-concat */
-        template: "<script type=\"text/ng-template\" id=\"folder-structure.html\">\n    <p class=\"file-tree__item-name\"\n        ng-if=\"item.name && !item.editingName\"\n        ng-dblclick=\"fileTree.startEditingName(item)\">\n        {{ item.name }}\n    </p>\n    <input class=\"file-tree__item-rename\"\n        ng-if=\"item.editingName\"\n        ng-model=\"item.name\"\n        ng-blur=\"fileTree.editName(item)\"\n        ng-keypress=\"fileTree.renameOnEnter($event, item)\"\n        tractor-give-focus\n        focus-on=\"item.editingName\">\n    </input>\n\n    <ul class=\"file-tree__file-list\">\n        <li class=\"file-tree__file-list-item file-tree__file-list-item--new-directory\">\n            <tractor-action class=\"file-tree__add-directory\"\n                model=\"fileTree\"\n                action=\"Add directory\"\n                argument=\"item || fileTree.folderStructure\">\n            </tractor-action>\n        </li>\n\n        <li class=\"file-tree__file-list-item file-tree__file-list-item--directory\"\n            ng-repeat=\"item in (item || fileTree.folderStructure).directories\"\n            ng-include=\"'folder-structure.html'\"\n            tractor-drop-file\n            on-drop=\"fileTree.moveFile\"\n            drop-directory=\"item\">\n        </li>\n\n        <li class=\"file-tree__file-list-item\"\n            ng-repeat=\"item in (item || fileTree.folderStructure).files\"\n            tractor-drag-file>\n            <p class=\"file-tree__item-name\"\n                ng-if=\"!item.editingName\"\n                ng-click=\"fileTree.openFile(item)\"\n                ng-dblclick=\"fileTree.startEditingName(item)\">\n                {{ item.name }}\n            </p>\n            <input class=\"file-tree__item-rename\"\n                ng-if=\"item.editingName\"\n                ng-model=\"item.name\"\n                ng-blur=\"fileTree.editName(item)\"\n                ng-keypress=\"fileTree.renameOnEnter($event, item)\"\n                tractor-give-focus\n                focus-on=\"item.editingName\">\n            </input>\n        </li>\n    </ul>\n</script>\n\n<section class=\"file-tree__container\">\n    <h2 class=\"file-tree__header\">\n        {{ fileTree.headerName }} files:\n    </h2>\n    <div class=\"file-tree file-tree--javascript\"\n        ng-include=\"'folder-structure.html'\">\n    </div>\n</section>\n<div class=\"file-tree__resize-handle\"></div>\n",
+        template: "<script type=\"text/ng-template\" id=\"file-options.html\">\r\n    <div class=\"file-tree__item-options\"\r\n         ng-class=\"{ 'file-tree__item-active-options': item.showOptions }\"\r\n         ng-click=\"fileTree.showOptions(item)\">\r\n    </div>\r\n    <div class=\"file-tree__item-options-panel\"\r\n         ng-if=\"item.showOptions\"\r\n         ng-mouseleave=\"fileTree.hideOptions(item)\">\r\n        <tractor-action\r\n                model=\"fileTree\"\r\n                action=\"Edit name\"\r\n                argument=\"item\">\r\n        </tractor-action>\r\n        <tractor-action\r\n                model=\"fileTree\"\r\n                action=\"Delete\"\r\n                argument=\"item\">\r\n        </tractor-action>\r\n    </div>\r\n</script>\r\n\r\n<script type=\"text/ng-template\" id=\"rename-input.html\">\r\n    <input class=\"file-tree__item-rename\"\r\n           ng-if=\"item.editingName\"\r\n           ng-model=\"item.name\"\r\n           ng-blur=\"fileTree.saveNewName(item)\"\r\n           ng-keypress=\"fileTree.renameOnEnter($event, item)\"\r\n           tractor-give-focus\r\n           focus-on=\"item.editingName\">\r\n    </input>\r\n</script>\r\n\r\n<script type=\"text/ng-template\" id=\"file-structure.html\">\r\n    <div ng-include=\"'file-options.html'\"></div>\r\n\r\n    <p class=\"file-tree__item-name\"\r\n        ng-if=\"item.name && !item.editingName\"\r\n        ng-click=\"fileTree.expandDirectory(item)\"\r\n        ng-dblclick=\"fileTree.editName(item)\">\r\n        {{ item.name }}\r\n    </p>\r\n    <div ng-include=\"'rename-input.html'\"></div>\r\n\r\n    <ul class=\"file-tree__file-list\"\r\n        ng-if=\"(item || fileTree.fileStructure).expanded\">\r\n        <li class=\"file-tree__file-list-item file-tree__file-list-item--new-directory\">\r\n            <tractor-action\r\n                model=\"fileTree\"\r\n                action=\"Add directory\"\r\n                argument=\"item || fileTree.fileStructure\">\r\n            </tractor-action>\r\n        </li>\r\n\r\n        <li class=\"file-tree__file-list-item file-tree__file-list-item--directory\"\r\n            ng-class=\"{ 'file-tree__file-list-item--expanded-directory': item.expanded }\"\r\n            ng-repeat=\"item in (item || fileTree.fileStructure).directories\"\r\n            ng-include=\"'file-structure.html'\"\r\n            tractor-drop-file\r\n            on-drop=\"fileTree.moveFile\"\r\n            drop-directory=\"item\">\r\n        </li>\r\n\r\n        <li class=\"file-tree__file-list-item\"\r\n            ng-repeat=\"item in (item || fileTree.fileStructure).files\"\r\n            tractor-drag-file>\r\n            <div ng-include=\"'file-options.html'\"></div>\r\n\r\n            <p class=\"file-tree__item-name\"\r\n                ng-if=\"item.name && !item.editingName\"\r\n                ng-click=\"fileTree.openFile(item)\"\r\n                ng-dblclick=\"fileTree.editName(item)\">\r\n                {{ item.name }}\r\n            </p>\r\n            <div ng-include=\"'rename-input.html'\"></div>\r\n        </li>\r\n    </ul>\r\n</script>\r\n\r\n<section class=\"file-tree__container\"\r\n    tractor-drop-file\r\n    on-drop=\"fileTree.moveFile\"\r\n    drop-directory=\"fileTree.fileStructure\">\r\n    <h2 class=\"file-tree__header\">\r\n        {{ fileTree.headerName }} files:\r\n    </h2>\r\n    <div class=\"file-tree file-tree--javascript\"\r\n        ng-include=\"'file-structure.html'\">\r\n    </div>\r\n</section>\r\n<div class=\"file-tree__resize-handle\"></div>\r\n",
         /* eslint-enable no-path-concat */
 
         controller: 'FileTreeController',
@@ -60534,7 +61299,7 @@ var FileTreeDirective = function () {
 
 Core.directive('tractorFileTree', FileTreeDirective);
 
-},{"../../Core":119,"./FileTreeController":124,"lodash":69}],126:[function(require,module,exports){
+},{"../../Core":121,"./FileTreeController":126,"lodash":71}],128:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -60569,7 +61334,7 @@ var GiveFocusDirective = function () {
 
 Core.directive('tractorGiveFocus', GiveFocusDirective);
 
-},{"../../Core":119,"lodash":69}],127:[function(require,module,exports){
+},{"../../Core":121,"lodash":71}],129:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -60618,7 +61383,7 @@ var LiteralInputDirective = function () {
 
 Core.directive('tractorLiteralInput', LiteralInputDirective);
 
-},{"../../Core":119,"lodash":69}],128:[function(require,module,exports){
+},{"../../Core":121,"lodash":71}],130:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -60677,7 +61442,7 @@ var SelectInputDirective = function () {
 
 Core.directive('tractorSelect', SelectInputDirective);
 
-},{"../../Core":119,"change-case":47,"lodash":69}],129:[function(require,module,exports){
+},{"../../Core":121,"change-case":49,"lodash":71}],131:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -60730,7 +61495,7 @@ var StepInputDirective = function () {
 
 Core.directive('tractorStepInput', StepInputDirective);
 
-},{"../../Core":119,"../../Validators/ExampleNameValidator":140,"change-case":47,"lodash":69}],130:[function(require,module,exports){
+},{"../../Core":121,"../../Validators/ExampleNameValidator":142,"change-case":49,"lodash":71}],132:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -60764,7 +61529,7 @@ var SubmitDirective = function () {
 
 Core.directive('tractorSubmit', SubmitDirective);
 
-},{"../../Core":119,"lodash":69}],131:[function(require,module,exports){
+},{"../../Core":121,"lodash":71}],133:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -60816,7 +61581,7 @@ var TextInputDirective = function () {
 
 Core.directive('tractorTextInput', TextInputDirective);
 
-},{"../../Core":119,"change-case":47,"lodash":69}],132:[function(require,module,exports){
+},{"../../Core":121,"change-case":49,"lodash":71}],134:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -60870,7 +61635,7 @@ var VariableInputDirective = function () {
 
 Core.directive('tractorVariableInput', VariableInputDirective);
 
-},{"../../Core":119,"../../Validators/VariableNameValidator":141,"change-case":47,"lodash":69}],133:[function(require,module,exports){
+},{"../../Core":121,"../../Validators/VariableNameValidator":143,"change-case":49,"lodash":71}],135:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -61084,7 +61849,7 @@ var ASTCreatorService = function () {
 
 Core.service('ASTCreatorService', ASTCreatorService);
 
-},{"../Core":119,"estemplate":67,"lodash":69}],134:[function(require,module,exports){
+},{"../Core":121,"estemplate":69,"lodash":71}],136:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -61105,7 +61870,7 @@ ConfigService.$inject = ['$http'];
 
 Core.service('ConfigService', ConfigService);
 
-},{"../Core":119}],135:[function(require,module,exports){
+},{"../Core":121}],137:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -61115,31 +61880,60 @@ var _ = require('lodash');
 var Core = require('../Core');
 
 var FileTreeService = function FileTreeService (
-    $http
+    $http,
+    localStorageService
 ) {
     var STARTS_WITH_DOT = /^\./;
     var FILE_NAME = /(.*?)\./;
     var FILE_EXTENSION = /(\..*)/;
 
+    var EXPANDED_STORAGE_KEY = 'FileTreeExpanded';
+
     return {
         addDirectory: addDirectory,
+        deleteFile: deleteFile,
         editName: editName,
-        organiseFolderStructure: organiseFolderStructure
+        getExpanded: getExpanded,
+        setExpanded: setExpanded,
+        moveFile: moveFile,
+        organiseFileStructure: organiseFileStructure
     };
 
     function addDirectory (options) {
-        return $http.post('/add-directory', options);
+        return $http.post('/add-directory', options)
+        .then(updateFileStructure);
+    }
+
+    function deleteFile (options) {
+        return $http.post('/delete-file', options)
+            .then(updateFileStructure);
     }
 
     function editName (options) {
-        return $http.post('/edit-name', options);
+        return $http.post('/edit-name', options)
+        .then(updateFileStructure);
+    }
+
+    function getExpanded () {
+        return localStorageService.get(EXPANDED_STORAGE_KEY) || {};
+    }
+
+    function setExpanded (expanded) {
+        localStorageService.set(EXPANDED_STORAGE_KEY, expanded);
     }
 
     function moveFile (options) {
-        return $http.post('/move-file', options);
+        return $http.post('/move-file', options)
+        .then(updateFileStructure);
     }
 
-    function organiseFolderStructure (directory) {
+    function updateFileStructure (fileStructure) {
+        fileStructure = organiseFileStructure(fileStructure);
+        fileStructure.expanded = true;
+        return fileStructure;
+    }
+
+    function organiseFileStructure (directory) {
         var skip = ['name', '-name', 'path', '-path', '-type'];
         _.each(directory, function (info, name) {
             var type = info['-type'];
@@ -61149,7 +61943,7 @@ var FileTreeService = function FileTreeService (
                 info.name = name;
                 info.path = path;
                 directory.directories = directory.directories || [];
-                directory.directories.push(organiseFolderStructure(info));
+                directory.directories.push(organiseFileStructure(info));
             } else if (!_.contains(skip, name)) {
                 // File:
                 // Skip hidden files (starting with ".")...
@@ -61164,14 +61958,15 @@ var FileTreeService = function FileTreeService (
             }
         });
         directory.path = directory['-path'];
+        directory.expanded = !!getExpanded()[directory.path];
         return directory;
     }
 };
-FileTreeService.$inject = ['$http'];
+FileTreeService.$inject = ['$http', 'localStorageService'];
 
 Core.service('FileTreeService', FileTreeService);
 
-},{"../Core":119,"lodash":69}],136:[function(require,module,exports){
+},{"../Core":121,"lodash":71}],138:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -61206,7 +62001,7 @@ Core.factory('HttpResponseInterceptor', ['NotifierService', function (
     $httpProvider.interceptors.push('HttpResponseInterceptor');
 }]);
 
-},{"../Core":119,"bluebird":9}],137:[function(require,module,exports){
+},{"../Core":121,"bluebird":10}],139:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -61242,7 +62037,7 @@ RealTimeService.$inject = ['ConfigService'];
 
 Core.service('RealTimeService', RealTimeService);
 
-},{"../Core":119,"lodash":69,"socket.io-client":71}],138:[function(require,module,exports){
+},{"../Core":121,"lodash":71,"socket.io-client":73}],140:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -61293,7 +62088,7 @@ var StringToLiteralService = function () {
 
 Core.service('StringToLiteralService', StringToLiteralService);
 
-},{"../Core":119,"lodash":69}],139:[function(require,module,exports){
+},{"../Core":121,"lodash":71}],141:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -61317,7 +62112,7 @@ ValidationService.$inject = ['$http'];
 
 Core.service('ValidationService', ValidationService);
 
-},{"../Core":119}],140:[function(require,module,exports){
+},{"../Core":121}],142:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -61358,7 +62153,7 @@ ExampleNameValidator.$inject = ['ValidationService', 'StepDeclarationModel'];
 
 Core.directive('exampleName', ExampleNameValidator);
 
-},{"../../features/FeatureEditor/Models/StepDeclarationModel":169,"../Core":119,"../Services/ValidationService":139,"bluebird":9,"lodash":69}],141:[function(require,module,exports){
+},{"../../features/FeatureEditor/Models/StepDeclarationModel":171,"../Core":121,"../Services/ValidationService":141,"bluebird":10,"lodash":71}],143:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -61422,7 +62217,7 @@ VariableNameValidator.$inject = ['$rootScope', 'ValidationService'];
 
 Core.directive('variableName', VariableNameValidator);
 
-},{"../Core":119,"../Services/ValidationService":139,"change-case":47,"lodash":69}],142:[function(require,module,exports){
+},{"../Core":121,"../Services/ValidationService":141,"change-case":49,"lodash":71}],144:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -61435,7 +62230,7 @@ var ComponentEditor = angular.module('ComponentEditor', ['Core']);
 
 module.exports = ComponentEditor;
 
-},{"../../Core/Core":119,"angular":6}],143:[function(require,module,exports){
+},{"../../Core/Core":121,"angular":7}],145:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -61457,7 +62252,7 @@ var ComponentEditorController = (function () {
         ComponentFileService,
         ComponentParserService,
         ComponentModel,
-        componentFolderStructure,
+        componentFileStructure,
         componentFile
     ) {
         this.$scope = $scope;
@@ -61467,7 +62262,7 @@ var ComponentEditorController = (function () {
         this.componentFileService = ComponentFileService;
         this.componentParserService = ComponentParserService;
 
-        this.folderStructure = componentFolderStructure;
+        this.fileStructure = componentFileStructure;
 
         if (componentFile) {
             parseComponentFile.call(this, componentFile);
@@ -61477,7 +62272,7 @@ var ComponentEditorController = (function () {
             this.component.addAction();
         }
     };
-    ComponentEditorController.$inject = ['$scope', '$window', 'NotifierService', 'ComponentFileService', 'ComponentParserService', 'ComponentModel', 'componentFolderStructure', 'componentFile'];
+    ComponentEditorController.$inject = ['$scope', '$window', 'NotifierService', 'ComponentFileService', 'ComponentParserService', 'ComponentModel', 'componentFileStructure', 'componentFile'];
 
     ComponentEditorController.prototype.saveComponentFile = function () {
         var ast = this.component.ast;
@@ -61489,10 +62284,10 @@ var ComponentEditorController = (function () {
             this.componentFileService.saveComponentFile(ast, name)
             .then(function () {
                 this.component.isSaved = true;
-                return this.componentFileService.getComponentFolderStructure();
+                return this.componentFileService.getComponentFileStructure();
             }.bind(this))
-            .then(function (componentFolderStructure) {
-                this.folderStructure = componentFolderStructure;
+            .then(function (componentFileStructure) {
+                this.fileStructure = componentFileStructure;
             }.bind(this));
         }
     };
@@ -61516,7 +62311,7 @@ var ComponentEditorController = (function () {
     }
 
     function componentAlreadyExists (componentName, directory) {
-        return _.some(directory || this.componentFolderStructure, function (info, name) {
+        return _.some(directory || this.componentFileStructure, function (info, name) {
             // Directory:
             if (info['-type'] === 'd') {
                 return componentAlreadyExists.call(this, componentName, info);
@@ -61532,7 +62327,7 @@ var ComponentEditorController = (function () {
 
 ComponentEditor.controller('ComponentEditorController', ComponentEditorController);
 
-},{"./ComponentEditor":142,"./Models/ComponentModel":147,"./Services/ComponentFileService":155,"./Services/ComponentParserService":156,"lodash":69}],144:[function(require,module,exports){
+},{"./ComponentEditor":144,"./Models/ComponentModel":149,"./Services/ComponentFileService":157,"./Services/ComponentParserService":158,"lodash":71}],146:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -61679,7 +62474,7 @@ ComponentEditor.factory('ActionModel', ['ASTCreatorService', 'ParameterModel', '
     return createActionModelConstructor(ASTCreatorService, ParameterModel, InteractionModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":133,"../ComponentEditor":142,"./InteractionModel":150,"./ParameterModel":152,"change-case":47,"lodash":69}],145:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":135,"../ComponentEditor":144,"./InteractionModel":152,"./ParameterModel":154,"change-case":49,"lodash":71}],147:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -61771,7 +62566,7 @@ ComponentEditor.factory('ArgumentModel', ['ASTCreatorService', 'StringToLiteralS
     return createArgumentModelConstructor(ASTCreatorService, StringToLiteralService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":133,"../../../Core/Services/StringToLiteralService":138,"../ComponentEditor":142,"lodash":69}],146:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":135,"../../../Core/Services/StringToLiteralService":140,"../ComponentEditor":144,"lodash":71}],148:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -61835,7 +62630,7 @@ ComponentEditor.factory('BrowserModel', function () {
     return createBrowserModelConstructor();
 });
 
-},{"../ComponentEditor":142}],147:[function(require,module,exports){
+},{"../ComponentEditor":144}],149:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -61989,7 +62784,7 @@ ComponentEditor.factory('ComponentModel', ['ASTCreatorService', 'BrowserModel', 
     return createComponentModelConstructor(ASTCreatorService, BrowserModel, ElementModel, ActionModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":133,"../ComponentEditor":142,"./ActionModel":144,"./BrowserModel":146,"./ElementModel":148,"change-case":47,"lodash":69}],148:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":135,"../ComponentEditor":144,"./ActionModel":146,"./BrowserModel":148,"./ElementModel":150,"change-case":49,"lodash":71}],150:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -62197,7 +62992,7 @@ ComponentEditor.factory('ElementModel', ['ASTCreatorService', 'StringToLiteralSe
     return createElementModelConstructor(ASTCreatorService, StringToLiteralService, FilterModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":133,"../../../Core/Services/StringToLiteralService":138,"../ComponentEditor":142,"./FilterModel":149,"change-case":47,"lodash":69}],149:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":135,"../../../Core/Services/StringToLiteralService":140,"../ComponentEditor":144,"./FilterModel":151,"change-case":49,"lodash":71}],151:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -62295,7 +63090,7 @@ ComponentEditor.factory('FilterModel', ['ASTCreatorService', 'StringToLiteralSer
     return createFilterModelConstructor(ASTCreatorService, StringToLiteralService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":133,"../../../Core/Services/StringToLiteralService":138,"../ComponentEditor":142,"lodash":69}],150:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":135,"../../../Core/Services/StringToLiteralService":140,"../ComponentEditor":144,"lodash":71}],152:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -62404,7 +63199,7 @@ ComponentEditor.factory('InteractionModel', ['ASTCreatorService', 'MethodModel',
     return createInteractionModelConstructor(ASTCreatorService, MethodModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":133,"../ComponentEditor":142,"./MethodModel":151,"lodash":69}],151:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":135,"../ComponentEditor":144,"./MethodModel":153,"lodash":71}],153:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -62461,7 +63256,7 @@ ComponentEditor.factory('MethodModel', ['ArgumentModel', function (ArgumentModel
     return createMethodModelConstructor(ArgumentModel);
 }]);
 
-},{"../ComponentEditor":142,"./ArgumentModel":145,"lodash":69}],152:[function(require,module,exports){
+},{"../ComponentEditor":144,"./ArgumentModel":147,"lodash":71}],154:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -62526,7 +63321,7 @@ ComponentEditor.factory('ParameterModel', ['ASTCreatorService', function (ASTCre
     return createParameterModelConstructor(ASTCreatorService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":133,"../ComponentEditor":142,"change-case":47,"lodash":69}],153:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":135,"../ComponentEditor":144,"change-case":49,"lodash":71}],155:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -62594,7 +63389,7 @@ ActionParserService.$inject = ['ParameterParserService', 'InteractionParserServi
 
 ComponentEditor.service('ActionParserService', ActionParserService);
 
-},{"../ComponentEditor":142,"../Models/ActionModel":144,"./InteractionParserService":159,"./ParameterParserService":160,"assert":42,"lodash":69}],154:[function(require,module,exports){
+},{"../ComponentEditor":144,"../Models/ActionModel":146,"./InteractionParserService":161,"./ParameterParserService":162,"assert":43,"lodash":71}],156:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -62619,7 +63414,7 @@ ArgumentParserService.$inject = ['ArgumentModel'];
 
 ComponentEditor.service('ArgumentParserService', ArgumentParserService);
 
-},{"../ComponentEditor":142,"../Models/ArgumentModel":145}],155:[function(require,module,exports){
+},{"../ComponentEditor":144,"../Models/ArgumentModel":147}],157:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -62639,7 +63434,7 @@ var ComponentFileService = function ComponentFileService (
     return {
         openComponentFile: openComponentFile,
         saveComponentFile: saveComponentFile,
-        getComponentFolderStructure: getComponentFolderStructure,
+        getComponentFileStructure: getComponentFileStructure,
         getAllComponents: getAllComponents
     };
 
@@ -62654,12 +63449,12 @@ var ComponentFileService = function ComponentFileService (
         });
     }
 
-    function getComponentFolderStructure () {
+    function getComponentFileStructure () {
         return $http.get('/get-file-structure?directory=components');
     }
 
     function getAllComponents () {
-        return this.getComponentFolderStructure()
+        return this.getComponentFileStructure()
         .then(function (componentFileNames) {
             var openComponentFiles = _.map(componentFileNames, function (componentFileName) {
                 return openComponentFile(componentFileName);
@@ -62677,7 +63472,7 @@ ComponentFileService.$inject = ['$http', 'ComponentParserService'];
 
 ComponentEditor.service('ComponentFileService', ComponentFileService);
 
-},{"../ComponentEditor":142,"./ComponentParserService":156,"bluebird":9,"lodash":69}],156:[function(require,module,exports){
+},{"../ComponentEditor":144,"./ComponentParserService":158,"bluebird":10,"lodash":71}],158:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -62757,7 +63552,7 @@ ComponentParserService.$inject = ['ElementParserService', 'ActionParserService',
 
 ComponentEditor.service('ComponentParserService', ComponentParserService);
 
-},{"../ComponentEditor":142,"../Models/ComponentModel":147,"../Services/ActionParserService":153,"../Services/ElementParserService":157,"assert":42,"lodash":69}],157:[function(require,module,exports){
+},{"../ComponentEditor":144,"../Models/ComponentModel":149,"../Services/ActionParserService":155,"../Services/ElementParserService":159,"assert":43,"lodash":71}],159:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -62885,7 +63680,7 @@ ElementParserService.$inject = ['FilterParserService', 'ElementModel'];
 
 ComponentEditor.service('ElementParserService', ElementParserService);
 
-},{"../ComponentEditor":142,"../Models/ElementModel":148,"../Services/FilterParserService":158,"assert":42,"lodash":69}],158:[function(require,module,exports){
+},{"../ComponentEditor":144,"../Models/ElementModel":150,"../Services/FilterParserService":160,"assert":43,"lodash":71}],160:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -62967,7 +63762,7 @@ FilterParserService.$inject = ['FilterModel'];
 
 ComponentEditor.service('FilterParserService', FilterParserService);
 
-},{"../ComponentEditor":142,"../Models/FilterModel":149,"assert":42,"lodash":69}],159:[function(require,module,exports){
+},{"../ComponentEditor":144,"../Models/FilterModel":151,"assert":43,"lodash":71}],161:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -63081,7 +63876,7 @@ InteractionParserService.$inject = ['ArgumentParserService', 'InteractionModel']
 
 ComponentEditor.service('InteractionParserService', InteractionParserService);
 
-},{"../ComponentEditor":142,"../Models/InteractionModel":150,"./ArgumentParserService":154,"assert":42,"lodash":69}],160:[function(require,module,exports){
+},{"../ComponentEditor":144,"../Models/InteractionModel":152,"./ArgumentParserService":156,"assert":43,"lodash":71}],162:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -63103,7 +63898,7 @@ ParameterParserService.$inject = ['ParameterModel'];
 
 ComponentEditor.service('ParameterParserService', ParameterParserService);
 
-},{"../ComponentEditor":142,"../Models/ParameterModel":152}],161:[function(require,module,exports){
+},{"../ComponentEditor":144,"../Models/ParameterModel":154}],163:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -63116,7 +63911,7 @@ var ControlPanel = angular.module('ControlPanel', ['Core']);
 
 module.exports = ControlPanel;
 
-},{"../../Core/Core":119,"angular":6}],162:[function(require,module,exports){
+},{"../../Core/Core":121,"angular":7}],164:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -63151,7 +63946,7 @@ var ControlPanelController = (function () {
 
 ControlPanel.controller('ControlPanelController', ControlPanelController);
 
-},{"./ControlPanel":161,"./Services/RunnerService":163,"lodash":69}],163:[function(require,module,exports){
+},{"./ControlPanel":163,"./Services/RunnerService":165,"lodash":71}],165:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -63187,7 +63982,7 @@ RunnerService.$inject = ['NotifierService', 'RealTimeService'];
 
 ControlPanel.service('RunnerService', RunnerService);
 
-},{"../../Notifier/Services/NotifierService":182,"../ControlPanel":161}],164:[function(require,module,exports){
+},{"../../Notifier/Services/NotifierService":184,"../ControlPanel":163}],166:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -63203,7 +63998,7 @@ FeatureEditor.constant('FeatureNewLine', '%%NEWLINE%%');
 
 module.exports = FeatureEditor;
 
-},{"../../Core/Core":119,"angular":6}],165:[function(require,module,exports){
+},{"../../Core/Core":121,"angular":7}],167:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -63295,7 +64090,7 @@ var FeatureEditorController = (function () {
 
 FeatureEditor.controller('FeatureEditorController', FeatureEditorController);
 
-},{"./FeatureEditor":164,"./Models/FeatureModel":167,"./Services/FeatureFileService":171,"./Services/FeatureParserService":172,"change-case":47,"lodash":69}],166:[function(require,module,exports){
+},{"./FeatureEditor":166,"./Models/FeatureModel":169,"./Services/FeatureFileService":173,"./Services/FeatureParserService":174,"change-case":49,"lodash":71}],168:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -63355,7 +64150,7 @@ FeatureEditor.factory('ExampleModel', ['StringToLiteralService', 'FeatureIndent'
     return createExampleModelConstructor(StringToLiteralService, FeatureIndent);
 }]);
 
-},{"../../../Core/Services/StringToLiteralService":138,"../FeatureEditor":164,"lodash":69}],167:[function(require,module,exports){
+},{"../../../Core/Services/StringToLiteralService":140,"../FeatureEditor":166,"lodash":71}],169:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -63428,7 +64223,7 @@ FeatureEditor.factory('FeatureModel', ['ScenarioModel', 'FeatureIndent', 'Featur
     return createFeatureModelConstructor(ScenarioModel, FeatureIndent, FeatureNewLine);
 }]);
 
-},{"../FeatureEditor":164,"./ScenarioModel":168,"lodash":69}],168:[function(require,module,exports){
+},{"../FeatureEditor":166,"./ScenarioModel":170,"lodash":71}],170:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -63535,7 +64330,7 @@ FeatureEditor.factory('ScenarioModel', ['StepDeclarationModel', 'ExampleModel', 
     return createScenarioModelConstructor(StepDeclarationModel, ExampleModel, FeatureIndent, FeatureNewLine);
 }]);
 
-},{"../FeatureEditor":164,"./ExampleModel":166,"./StepDeclarationModel":169,"lodash":69}],169:[function(require,module,exports){
+},{"../FeatureEditor":166,"./ExampleModel":168,"./StepDeclarationModel":171,"lodash":71}],171:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -63578,7 +64373,7 @@ FeatureEditor.factory('StepDeclarationModel', function () {
     return createStepDeclarationModelConstructor();
 });
 
-},{"../FeatureEditor":164,"lodash":69}],170:[function(require,module,exports){
+},{"../FeatureEditor":166,"lodash":71}],172:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -63609,7 +64404,7 @@ ExampleParserService.$inject = ['ExampleModel'];
 
 FeatureEditor.service('ExampleParserService', ExampleParserService);
 
-},{"../FeatureEditor":164,"../Models/ExampleModel":166,"lodash":69}],171:[function(require,module,exports){
+},{"../FeatureEditor":166,"../Models/ExampleModel":168,"lodash":71}],173:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -63642,7 +64437,7 @@ FeatureFileService.$inject = ['$http'];
 
 FeatureEditor.service('FeatureFileService', FeatureFileService);
 
-},{"../FeatureEditor":164}],172:[function(require,module,exports){
+},{"../FeatureEditor":166}],174:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -63696,7 +64491,7 @@ FeatureParserService.$inject = ['ScenarioParserService', 'FeatureModel'];
 
 FeatureEditor.service('FeatureParserService', FeatureParserService);
 
-},{"../FeatureEditor":164,"../Models/FeatureModel":167,"./ScenarioParserService":173,"assert":42,"lodash":69}],173:[function(require,module,exports){
+},{"../FeatureEditor":166,"../Models/FeatureModel":169,"./ScenarioParserService":175,"assert":43,"lodash":71}],175:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -63765,7 +64560,7 @@ ScenarioParserService.$inject = ['StepDeclarationParserService', 'ExampleParserS
 
 FeatureEditor.service('ScenarioParserService', ScenarioParserService);
 
-},{"../FeatureEditor":164,"../Models/ScenarioModel":168,"./ExampleParserService":170,"./StepDeclarationParserService":174,"assert":42,"lodash":69}],174:[function(require,module,exports){
+},{"../FeatureEditor":166,"../Models/ScenarioModel":170,"./ExampleParserService":172,"./StepDeclarationParserService":176,"assert":43,"lodash":71}],176:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -63792,7 +64587,7 @@ StepDeclarationParserService.$inject = ['StepDeclarationModel'];
 
 FeatureEditor.service('StepDeclarationParserService', StepDeclarationParserService);
 
-},{"../FeatureEditor":164,"../Models/StepDeclarationModel":169}],175:[function(require,module,exports){
+},{"../FeatureEditor":166,"../Models/StepDeclarationModel":171}],177:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -63805,7 +64600,7 @@ var MockDataEditor = angular.module('MockDataEditor', ['Core']);
 
 module.exports = MockDataEditor;
 
-},{"../../Core/Core":119,"angular":6}],176:[function(require,module,exports){
+},{"../../Core/Core":121,"angular":7}],178:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -63892,7 +64687,7 @@ var MockDataEditorController = (function () {
 
 MockDataEditor.controller('MockDataEditorController', MockDataEditorController);
 
-},{"./MockDataEditor":175,"./Models/MockDataModel":177,"./Services/MockDataFileService":178,"./Services/MockDataParserService":179,"lodash":69}],177:[function(require,module,exports){
+},{"./MockDataEditor":177,"./Models/MockDataModel":179,"./Services/MockDataFileService":180,"./Services/MockDataParserService":181,"lodash":71}],179:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -63929,7 +64724,7 @@ MockDataEditor.factory('MockDataModel', function () {
     return createMockDataModelConstructor();
 });
 
-},{"../MockDataEditor":175}],178:[function(require,module,exports){
+},{"../MockDataEditor":177}],180:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -63987,7 +64782,7 @@ MockDataFileService.$inject = ['$http', 'MockDataParserService'];
 
 MockDataEditor.service('MockDataFileService', MockDataFileService);
 
-},{"../MockDataEditor":175,"./MockDataParserService":179,"bluebird":9,"lodash":69}],179:[function(require,module,exports){
+},{"../MockDataEditor":177,"./MockDataParserService":181,"bluebird":10,"lodash":71}],181:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -64011,7 +64806,7 @@ MockDataParserService.$inject = ['MockDataModel'];
 
 MockDataEditor.service('MockDataParserService', MockDataParserService);
 
-},{"../MockDataEditor":175,"../Models/MockDataModel":177}],180:[function(require,module,exports){
+},{"../MockDataEditor":177,"../Models/MockDataModel":179}],182:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -64028,7 +64823,7 @@ var NotifierDirective = function (NotifierService) {
         restrict: 'E',
 
         /* eslint-disable no-path-concat */
-        template: "<aside>\n    <ul class=\"notifier__notifications\">\n        <li ng-repeat=\"notification in notifications\"\n            ng-class=\"'notifier__notification notifier__notification--' + notification.type\">\n            <span class=\"notifier__notification-message\">{{ notification.message }}</span>\n\n            <button ng-click=\"dismiss(notification)\"\n                    class=\"notifier__notification-dismiss\"\n                    type=\"button\"\n                    title=\"Dismiss\">\n            </button>\n        </li>\n    </ul>\n</aside>\n",
+        template: "<aside>\r\n    <ul class=\"notifier__notifications\">\r\n        <li ng-repeat=\"notification in notifications\"\r\n            ng-class=\"'notifier__notification notifier__notification--' + notification.type\">\r\n            <span class=\"notifier__notification-message\">{{ notification.message }}</span>\r\n\r\n            <button ng-click=\"dismiss(notification)\"\r\n                    class=\"notifier__notification-dismiss\"\r\n                    type=\"button\"\r\n                    title=\"Dismiss\">\r\n            </button>\r\n        </li>\r\n    </ul>\r\n</aside>\r\n",
         /* eslint-enable no-path-concat */
 
         link: function ($scope) {
@@ -64041,7 +64836,7 @@ NotifierDirective.$inject = ['NotifierService'];
 
 Notifier.directive('tractorNotifier', NotifierDirective);
 
-},{"../Notifier":181,"../Services/NotifierService":182}],181:[function(require,module,exports){
+},{"../Notifier":183,"../Services/NotifierService":184}],183:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -64053,7 +64848,7 @@ module.exports = Notifier;
 
 require('./Directives/NotifierDirective');
 
-},{"./Directives/NotifierDirective":180,"angular":6}],182:[function(require,module,exports){
+},{"./Directives/NotifierDirective":182,"angular":7}],184:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -64116,7 +64911,7 @@ NotifierService.$inject = ['$timeout'];
 
 Notifier.service('NotifierService', NotifierService);
 
-},{"../Notifier":181,"lodash":69}],183:[function(require,module,exports){
+},{"../Notifier":183,"lodash":71}],185:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -64169,7 +64964,7 @@ StepDefinitionEditor.factory('ComponentInstanceModel', ['ASTCreatorService', fun
     return createComponentInstanceModelConstructor(ASTCreatorService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":133,"../StepDefinitionEditor":196}],184:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":135,"../StepDefinitionEditor":198}],186:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -64275,7 +65070,7 @@ StepDefinitionEditor.factory('ExpectationModel', ['ASTCreatorService', 'StringTo
     return createExpectationModelConstructor(ASTCreatorService, StringToLiteralService, ArgumentModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":133,"../../../Core/Services/StringToLiteralService":138,"../../ComponentEditor/Models/ArgumentModel":145,"../StepDefinitionEditor":196,"lodash":69}],185:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":135,"../../../Core/Services/StringToLiteralService":140,"../../ComponentEditor/Models/ArgumentModel":147,"../StepDefinitionEditor":198,"lodash":71}],187:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -64328,7 +65123,7 @@ StepDefinitionEditor.factory('MockDataInstanceModel', ['ASTCreatorService', func
     return createMockDataInstanceModelConstructor(ASTCreatorService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":133,"../StepDefinitionEditor":196}],186:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":135,"../StepDefinitionEditor":198}],188:[function(require,module,exports){
 'use strict';
 
 // Utilities;
@@ -64393,7 +65188,7 @@ StepDefinitionEditor.factory('MockModel', ['ASTCreatorService', function (
     return createMockModelConstructor(ASTCreatorService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":133,"../StepDefinitionEditor":196,"lodash":69}],187:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":135,"../StepDefinitionEditor":198,"lodash":71}],189:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -64498,7 +65293,7 @@ StepDefinitionEditor.factory('StepDefinitionModel', ['ASTCreatorService', 'Compo
     return createStepDefinitionModelConstructor(ASTCreatorService, ComponentInstanceModel, MockDataInstanceModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":133,"../StepDefinitionEditor":196,"./ComponentInstanceModel":183,"./MockDataInstanceModel":185,"lodash":69}],188:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":135,"../StepDefinitionEditor":198,"./ComponentInstanceModel":185,"./MockDataInstanceModel":187,"lodash":71}],190:[function(require,module,exports){
 'use strict';
 
 // Utilities;
@@ -64662,7 +65457,7 @@ StepDefinitionEditor.factory('StepModel', ['ASTCreatorService', 'ExpectationMode
     return createStepModelConstructor(ASTCreatorService, ExpectationModel, TaskModel, MockModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":133,"../StepDefinitionEditor":196,"./ExpectationModel":184,"./MockModel":186,"./TaskModel":189,"lodash":69}],189:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":135,"../StepDefinitionEditor":198,"./ExpectationModel":186,"./MockModel":188,"./TaskModel":191,"lodash":71}],191:[function(require,module,exports){
 'use strict';
 
 // Utilities;
@@ -64755,7 +65550,7 @@ StepDefinitionEditor.factory('TaskModel', ['ASTCreatorService', 'ArgumentModel',
     return createTaskModelConstructor(ASTCreatorService, ArgumentModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":133,"../../ComponentEditor/Models/ArgumentModel":145,"../StepDefinitionEditor":196,"lodash":69}],190:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":135,"../../ComponentEditor/Models/ArgumentModel":147,"../StepDefinitionEditor":198,"lodash":71}],192:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -64800,7 +65595,7 @@ ExpectationParserService.$inject = ['ExpectationModel'];
 
 StepDefinitionEditor.service('ExpectationParserService', ExpectationParserService);
 
-},{"../Models/ExpectationModel":184,"../StepDefinitionEditor":196,"lodash":69}],191:[function(require,module,exports){
+},{"../Models/ExpectationModel":186,"../StepDefinitionEditor":198,"lodash":71}],193:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -64851,7 +65646,7 @@ MockParserService.$inject = ['MockModel'];
 
 StepDefinitionEditor.service('MockParserService', MockParserService);
 
-},{"../Models/MockModel":186,"../StepDefinitionEditor":196,"assert":42,"lodash":69}],192:[function(require,module,exports){
+},{"../Models/MockModel":188,"../StepDefinitionEditor":198,"assert":43,"lodash":71}],194:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -64883,7 +65678,7 @@ StepDefinitionFileService.$inject = ['$http'];
 
 StepDefinitionEditor.service('StepDefinitionFileService', StepDefinitionFileService);
 
-},{"../StepDefinitionEditor":196}],193:[function(require,module,exports){
+},{"../StepDefinitionEditor":198}],195:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -64976,7 +65771,7 @@ StepDefinitionParserService.$inject = ['StepParserService', 'StepDefinitionModel
 
 StepDefinitionEditor.service('StepDefinitionParserService', StepDefinitionParserService);
 
-},{"../Models/StepDefinitionModel":187,"../Services/StepParserService":194,"../StepDefinitionEditor":196,"assert":42,"change-case":47,"lodash":69}],194:[function(require,module,exports){
+},{"../Models/StepDefinitionModel":189,"../Services/StepParserService":196,"../StepDefinitionEditor":198,"assert":43,"change-case":49,"lodash":71}],196:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -65069,7 +65864,7 @@ StepParserService.$inject = ['MockParserService', 'TaskParserService', 'Expectat
 
 StepDefinitionEditor.service('StepParserService', StepParserService);
 
-},{"../Models/StepModel":188,"../Services/ExpectationParserService":190,"../Services/MockParserService":191,"../Services/TaskParserService":195,"../StepDefinitionEditor":196,"assert":42,"lodash":69}],195:[function(require,module,exports){
+},{"../Models/StepModel":190,"../Services/ExpectationParserService":192,"../Services/MockParserService":193,"../Services/TaskParserService":197,"../StepDefinitionEditor":198,"assert":43,"lodash":71}],197:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -65144,7 +65939,7 @@ TaskParserService.$inject = ['TaskModel'];
 
 StepDefinitionEditor.service('TaskParserService', TaskParserService);
 
-},{"../Models/TaskModel":189,"../StepDefinitionEditor":196,"assert":42,"lodash":69}],196:[function(require,module,exports){
+},{"../Models/TaskModel":191,"../StepDefinitionEditor":198,"assert":43,"lodash":71}],198:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -65157,7 +65952,7 @@ var StepDefinitionEditor = angular.module('StepDefinitionEditor', ['Core']);
 
 module.exports = StepDefinitionEditor;
 
-},{"../../Core/Core":119,"angular":6}],197:[function(require,module,exports){
+},{"../../Core/Core":121,"angular":7}],199:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -65290,4 +66085,4 @@ var StepDefinitionEditorController = (function () {
 
 StepDefinitionEditor.controller('StepDefinitionEditorController', StepDefinitionEditorController);
 
-},{"./Services/StepDefinitionFileService":192,"./Services/StepDefinitionParserService":193,"./StepDefinitionEditor":196,"lodash":69}]},{},[1]);
+},{"./Services/StepDefinitionFileService":194,"./Services/StepDefinitionParserService":195,"./StepDefinitionEditor":198,"lodash":71}]},{},[1]);
