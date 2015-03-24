@@ -15,6 +15,7 @@ var config = require('../utils/get-config')();
 var childProcess = Promise.promisifyAll(require('child_process'));
 var fs = Promise.promisifyAll(require('fs'));
 var pascal = require('change-case').pascal;
+var fileStructureUtils = require('./file-operations/file-structure');
 var stripcolorcodes = require('stripcolorcodes');
 
 module.exports = saveFeatureFile;
@@ -24,26 +25,57 @@ function saveFeatureFile (request, response) {
     var feature = request.body.feature.replace(new RegExp(constants.FEATURE_NEWLINE, 'g'), os.EOL);
 
     var featurePath = path.join(config.testDirectory, constants.FEATURES_DIR, name);
+
+    var fileNames = generateFileNames(feature);
+
     return fs.writeFileAsync(featurePath, feature)
     .then(function () {
-        return childProcess.execAsync(constants.CUCUMBER_COMMAND + featurePath);
+        return childProcess.execAsync(constants.CUCUMBER_COMMAND + '"' + featurePath + '"');
     })
-    .spread(generateStepDefinitions)
+    .spread(generateStepDefinitions.bind(null, fileNames))
     .then(function () {
         response.send(JSON.stringify({
             message: 'Cucumber stubs generated.'
         }));
     })
     .catch(function (error) {
+        console.log(error);
         errorHandler(response, error, 'Generating Cucumber stubs failed.');
     });
 }
 
-function generateStepDefinitions (result) {
-    return fs.readdirAsync(path.join(config.testDirectory, constants.STEP_DEFINITIONS_DIR))
-    .then(function (stepDefinitionFiles) {
-        return Promise.all(splitResultToStubs(result).map(function (stub) {
-            return generateStepDefinitionFile(stepDefinitionFiles, stub);
+
+function generateFileNames (feature) {
+    return stripcolorcodes(feature)
+    // Split on new-lines:
+    .split(/\r\n|\n/)
+    // Remove whitespace:
+    .map(function (line) {
+        return line.trim();
+    })
+    // Get out each step name:
+    .filter(function (line) {
+        return /^(Given|Then|When|And|But)/.test(line);
+    })
+    // Replace <s and >s
+    .map(function (fileName) {
+        return fileName.replace(/</g, '_').replace(/>/g, '_');
+    })
+    // Replace money:
+    .map(function (fileName) {
+        return fileName.replace(/\$\d+/g, '\$amount');
+    })
+    // Replace numbers:
+    .map(function (fileName) {
+        return fileName.replace(/\d+/g, '\$number');
+    });
+}
+
+function generateStepDefinitions (fileNames, result) {
+    return fileStructureUtils.getFileNames(path.join(config.testDirectory, constants.STEP_DEFINITIONS_DIR))
+    .then(function (stepDefinitionFileNames) {
+        return Promise.all(splitResultToStubs(result).map(function (stub, index) {
+            return generateStepDefinitionFile(stepDefinitionFileNames, stub, fileNames[index]);
         }));
     });
 }
@@ -58,22 +90,14 @@ function splitResultToStubs (result) {
     });
 }
 
-function generateStepDefinitionFile (stepDefinitionFiles, stub) {
-    var name = createStepDefinitionFileName(stub) + constants.STEP_DEFINITIONS_EXTENSION;
-    var stepPath = path.join(config.testDirectory, constants.STEP_DEFINITIONS_DIR, name);
-    if (!_.contains(stepDefinitionFiles, name)) {
+function generateStepDefinitionFile (stepDefinitionFileNames, stub, fileName) {
+    fileName = fileName + constants.STEP_DEFINITIONS_EXTENSION;
+    var stepPath = path.join(config.testDirectory, constants.STEP_DEFINITIONS_DIR, fileName);
+    if (!_.contains(stepDefinitionFileNames, fileName)) {
         return fs.writeFileAsync(stepPath, formatStubCode(stub));
     } else {
         return false;
     }
-}
-
-function createStepDefinitionFileName (stub) {
-    // Find the type of the step stub:
-    var type = /^this\.(Given|Then|When)/.exec(stub);
-    // Pull out the regex from the stub:
-    var match = /\^(.*)\$/.exec(stub);
-    return type[1] + pascal(match[1]);
 }
 
 function formatStubCode (stub) {

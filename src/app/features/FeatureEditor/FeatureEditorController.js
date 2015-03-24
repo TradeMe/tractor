@@ -2,7 +2,6 @@
 
 // Utilities:
 var _ = require('lodash');
-var pascal = require('change-case').pascal;
 
 // Module:
 var FeatureEditor = require('./FeatureEditor');
@@ -20,7 +19,7 @@ var FeatureEditorController = (function () {
         FeatureFileService,
         FeatureParserService,
         FeatureModel,
-        featureFileNames,
+        featureFileStructure,
         featureFile
     ) {
         this.$scope = $scope;
@@ -29,35 +28,31 @@ var FeatureEditorController = (function () {
 
         this.featureFileService = FeatureFileService;
         this.featureParserService = FeatureParserService;
-        this.featureFileNames = featureFileNames;
+
+        this.fileStructure = featureFileStructure;
 
         if (featureFile) {
             parseFeatureFile.call(this, featureFile);
         } else {
             this.feature = new FeatureModel();
         }
-
-        Object.defineProperty(this, 'featureName', {
-            get: function () {
-                return pascal(this.feature.name);
-            }
-        });
     };
 
     FeatureEditorController.prototype.saveFeatureFile = function () {
-        var featureFileNames = this.featureFileNames;
         var featureString = this.feature.featureString;
-        var name = this.featureName;
+        var name = this.feature.name;
 
-        var exists = _.contains(featureFileNames, name);
+        var exists = fileAlreadyExists(name, this.fileStructure);
 
         if (!exists || this.$window.confirm('This will overwrite "' + name + '". Continue?')) {
             this.featureFileService.saveFeatureFile(featureString, name)
             .then(function () {
-                if (!exists) {
-                    featureFileNames.push(name);
-                }
-            });
+                this.feature.isSaved = true;
+                return this.featureFileService.getFeatureFileStructure();
+            }.bind(this))
+            .then(function (featureFileStructure) {
+                this.fileStructure = featureFileStructure;
+            }.bind(this));
         }
     };
 
@@ -78,9 +73,19 @@ var FeatureEditorController = (function () {
     };
 
     function parseFeatureFile (featureFile) {
-        try {
-            this.feature = this.featureParserService.parse(featureFile.tokens);
-        } catch (e) { }
+        this.feature = this.featureParserService.parse(featureFile.tokens);
+    }
+
+    function fileAlreadyExists (fileName, directory) {
+        return _.some(directory, function (info, name) {
+            if (info['-type'] === 'd') {
+                // Directory:
+                return fileAlreadyExists(fileName, info);
+            } else if (name !== '-type' && name !== '-path') {
+                // File:
+                return new RegExp(fileName + '\.').test(name);
+            }
+        });
     }
 
     return FeatureEditorController;

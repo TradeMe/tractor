@@ -7,7 +7,7 @@ var FeatureFileService = function FeatureFileService ($http) {
     return {
         openFeatureFile: openFeatureFile,
         saveFeatureFile: saveFeatureFile,
-        getFeatureFileNames: getFeatureFileNames
+        getFeatureFileStructure: getFeatureFileStructure
     };
 
     function openFeatureFile (fileName) {
@@ -22,8 +22,8 @@ var FeatureFileService = function FeatureFileService ($http) {
         });
     }
 
-    function getFeatureFileNames () {
-        return $http.get('/get-feature-file-names');
+    function getFeatureFileStructure () {
+        return $http.get('/get-file-structure?directory=features');
     }
 };
 

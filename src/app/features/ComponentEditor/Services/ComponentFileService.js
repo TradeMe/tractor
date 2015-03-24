@@ -14,6 +14,9 @@ var ComponentFileService = function ComponentFileService (
     $http,
     ComponentParserService
 ) {
+    var STARTS_WITH_DOT = /^\./;
+    var FILE_NAME = /(.*?)\./;
+
     return {
         openComponentFile: openComponentFile,
         saveComponentFile: saveComponentFile,
@@ -38,7 +41,9 @@ var ComponentFileService = function ComponentFileService (
 
     function getAllComponents () {
         return this.getComponentFileStructure()
-        .then(function (componentFileNames) {
+        .then(function (componentFileStructure) {
+            debugger;
+            var componentFileNames = getComponentNames(componentFileStructure);
             var openComponentFiles = _.map(componentFileNames, function (componentFileName) {
                 return openComponentFile(componentFileName);
             });
@@ -49,6 +54,25 @@ var ComponentFileService = function ComponentFileService (
                 });
             });
         });
+    }
+
+    function getComponentNames (directory, names) {
+        var skip = ['-name', '-path', '-type'];
+        names = names || [];
+        _.each(directory, function (item, name) {
+            var type = item['-type'];
+            if (type === 'd') {
+                // Directory:
+                getComponentNames(item, names);
+            } else if (!_.contains(skip, name)) {
+                // File:
+                // Skip hidden files (starting with ".")...
+                if (!STARTS_WITH_DOT.test(name)) {
+                    names.push(_.last(FILE_NAME.exec(name)));
+                }
+            }
+        });
+        return names;
     }
 };
 

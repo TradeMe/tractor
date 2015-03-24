@@ -83,7 +83,11 @@
     <h2 class="file-tree__header">
         {{ fileTree.headerName }} files:
     </h2>
-    <div class="file-tree file-tree--javascript"
+    <div class="file-tree"
+        ng-class="{
+            'file-tree--javascript': fileTree.type === 'component' || fileTree.type === 'step-definition',
+            'file-tree--feature': fileTree.type === 'feature'
+        }"
         ng-include="'file-structure.html'">
     </div>
 </section>

@@ -87,8 +87,8 @@ angular.module('tractor', [
         /* eslint-enable no-path-concat */
         controller: 'FeatureEditorController as featureEditor',
         resolve: {
-            featureFileNames: function (FeatureFileService) {
-                return FeatureFileService.getFeatureFileNames();
+            featureFileStructure: function (FeatureFileService) {
+                return FeatureFileService.getFeatureFileStructure();
             },
             featureFile: function ($stateParams, FeatureFileService) {
                 var feature = $stateParams.feature;
@@ -103,18 +103,18 @@ angular.module('tractor', [
         /* eslint-enable no-path-concat */
         controller: 'StepDefinitionEditorController as stepDefinitionEditor',
         resolve: {
-            stepDefinitionFileNames: function (StepDefinitionFileService) {
-                return StepDefinitionFileService.getStepDefinitionFileNames();
+            stepDefinitionFileStructure: function (StepDefinitionFileService) {
+                return StepDefinitionFileService.getStepDefinitionFileStructure();
             },
             stepDefinitionFile: function ($stateParams, StepDefinitionFileService) {
                 var stepDefinition = $stateParams.stepDefinition;
                 return stepDefinition ? StepDefinitionFileService.openStepDefinitionFile(stepDefinition) : null;
             },
             components: function (ComponentFileService) {
-                return ComponentFileService.getAllComponents();
+                //return ComponentFileService.getAllComponents();
             },
             mockData: function (MockDataFileService) {
-                return MockDataFileService.getAllMockData();
+                //return MockDataFileService.getAllMockData();
             }
         }
     })

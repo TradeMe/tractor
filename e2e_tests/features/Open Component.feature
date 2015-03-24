@@ -1,4 +1,4 @@
-Feature: OpenComponent
+Feature: Open Component
   In order to modify a component that makes up a page
   As a tractor user
   I want to be able to open a component file

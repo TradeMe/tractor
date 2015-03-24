@@ -604,7 +604,8 @@ tractor-file-tree .file-tree__item-name {
   margin: 0;
   display: inline-block;
   text-decoration: none;
-  color: black; }
+  color: black;
+  white-space: nowrap; }
 
 tractor-file-tree .file-tree__item-rename {
   line-height: 1.5rem;
@@ -625,6 +626,8 @@ tractor-file-tree .file-tree--javascript li {
 
 tractor-file-tree .file-tree--feature li {
   background-image: url("./images/feature.png"); }
+  tractor-file-tree .file-tree--feature li.dragover {
+    background-image: url("./images/move-feature-to-directory.png"); }
 
 tractor-file-tree .file-tree--json li {
   background-image: url("./images/json.png"); }
@@ -676,7 +679,8 @@ tractor-file-tree .file-tree__item-options-panel {
 
 tractor-file-tree tractor-action button {
   background: #cdcdcd;
-  color: black; }
+  color: black;
+  white-space: nowrap; }
   tractor-file-tree tractor-action button:hover {
     background: #e1e1e1; }
 

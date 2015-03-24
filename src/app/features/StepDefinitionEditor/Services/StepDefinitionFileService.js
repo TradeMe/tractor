@@ -7,7 +7,7 @@ var StepDefinitionFileService = function StepDefinitionFileService ($http) {
     return {
         openStepDefinitionFile: openStepDefinitionFile,
         saveStepDefinitionFile: saveStepDefinitionFile,
-        getStepDefinitionFileNames: getStepDefinitionFileNames
+        getStepDefinitionFileStructure: getStepDefinitionFileStructure
     };
 
     function openStepDefinitionFile (fileName) {
@@ -21,8 +21,8 @@ var StepDefinitionFileService = function StepDefinitionFileService ($http) {
         });
     }
 
-    function getStepDefinitionFileNames () {
-        return $http.get('/get-step-definition-file-names');
+    function getStepDefinitionFileStructure () {
+        return $http.get('/get-file-structure?directory=step_definitions');
     }
 };
 

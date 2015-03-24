@@ -63,7 +63,7 @@ describe('server/actions: open-file:', function () {
             .then(function () {
                 expect(response.status).to.have.been.calledWith(500);
                 var responseData = JSON.parse(response.send.firstCall.args[0]);
-                expect(responseData.error).to.equal('Reading "component.component.js" failed.');
+                expect(responseData.error).to.equal('Reading "component" failed.');
             })
             .finally(function () {
                 fs.readFileAsync.restore();
@@ -124,7 +124,7 @@ describe('server/actions: open-file:', function () {
             .then(function () {
                 expect(response.status).to.have.been.calledWith(400);
                 var responseData = JSON.parse(response.send.firstCall.args[0]);
-                expect(responseData.error).to.equal('Parsing "component.component.js" failed.');
+                expect(responseData.error).to.equal('Parsing "component" failed.');
             })
             .finally(function () {
                 fs.readFileAsync.restore();
@@ -190,7 +190,7 @@ describe('server/actions: open-file:', function () {
             .then(function () {
                 expect(response.status).to.have.been.calledWith(400);
                 var responseData = JSON.parse(response.send.firstCall.args[0]);
-                expect(responseData.error).to.equal('Lexing "feature.feature" failed.');
+                expect(responseData.error).to.equal('Lexing "feature" failed.');
             })
             .finally(function () {
                 fs.readFileAsync.restore();

@@ -1,14 +1,5 @@
-<section class="file-tree">
-    <h2>Step Definition files:</h2>
-    <ul class='file-tree__file-list file-tree__file-list--javascript'>
-        <li ng-repeat="stepDefinitionFileName in stepDefinitionEditor.stepDefinitionFileNames"
-            ng-class="{ true: 'active' }[stepDefinitionFileName === stepDefinitionEditor.stepDefinition.name]"
-            class="file-tree__file-list-file">
-            <a ui-sref="tractor.step-definition-editor({ stepDefinition: stepDefinitionFileName })">{{ stepDefinitionFileName }}</a>
-        </li>
-    </ul>
-</section>
-
+<tractor-file-tree model="stepDefinitionEditor" type="step-definition"></tractor-file-tree>
+<tractor-resize-handle></tractor-resize-handle>
 <form class="file" name="step-definition-editor" novalidate
     ng-submit="stepDefinitionEditor.showErrors() && stepDefinitionEditor.saveStepDefinitionFile()">
     <section class="file-options" ng-if="stepDefinitionEditor.stepDefinition">

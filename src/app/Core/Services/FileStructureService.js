@@ -6,7 +6,7 @@ var _ = require('lodash');
 // Module:
 var Core = require('../Core');
 
-var FileTreeService = function FileTreeService (
+var FileStructureService = function FileStructureService (
     $http,
     localStorageService
 ) {
@@ -62,15 +62,15 @@ var FileTreeService = function FileTreeService (
 
     function organiseFileStructure (directory) {
         var skip = ['name', '-name', 'path', '-path', '-type'];
-        _.each(directory, function (info, name) {
-            var type = info['-type'];
-            var path = info['-path'];
+        _.each(directory, function (item, name) {
+            var type = item['-type'];
+            var path = item['-path'];
             if (type === 'd') {
                 // Directory:
-                info.name = name;
-                info.path = path;
+                item.name = name;
+                item.path = path;
                 directory.directories = directory.directories || [];
-                directory.directories.push(organiseFileStructure(info));
+                directory.directories.push(organiseFileStructure(item));
             } else if (!_.contains(skip, name)) {
                 // File:
                 // Skip hidden files (starting with ".")...
@@ -90,4 +90,4 @@ var FileTreeService = function FileTreeService (
     }
 };
 
-Core.service('FileTreeService', FileTreeService);
+Core.service('FileStructureService', FileStructureService);

@@ -10,7 +10,7 @@ var Core = require('../../Core');
 var changecase = require('change-case');
 var pascal = changecase.pascal;
 var title = changecase.title;
-require('../../Services/FileTreeService');
+require('../../Services/FileStructureService');
 
 var createTransform = {
     '.component.js': function (oldName, newName) {
@@ -22,6 +22,12 @@ var createTransform = {
             replace: '\"' + oldName + '\"',
             with: '"' + newName + '"'
         }]
+    },
+    '.feature': function (oldName, newName) {
+        return [{
+            replace: '(\\s)' + oldName + '(\\r\\n|\\n)',
+            with: '$1' + newName + '$2'
+        }];
     }
 };
 
@@ -29,21 +35,21 @@ var FileTreeController = (function () {
     var FileTreeController = function FileTreeController (
         $state,
         $timeout,
-        FileTreeService
+        FileStructureService
     ) {
         this.$state = $state;
         this.$timeout = $timeout;
-        this.fileTreeService = FileTreeService;
+        this.fileStructureService = FileStructureService;
 
         this.headerName = title(this.type);
-        this.fileStructure = this.fileTreeService.organiseFileStructure(this.model.fileStructure);
+        this.fileStructure = this.fileStructureService.organiseFileStructure(this.model.fileStructure);
         this.fileStructure.expanded = true;
 
         this.moveFile = this.moveFile.bind(this);
     };
 
     FileTreeController.prototype.addDirectory = function (directory) {
-        this.fileTreeService.addDirectory({
+        this.fileStructureService.addDirectory({
             root: this.fileStructure.path,
             path: directory.path
         })
@@ -73,7 +79,7 @@ var FileTreeController = (function () {
                 transforms = create(oldName, newName);
             }
 
-            this.fileTreeService.editName({
+            this.fileStructureService.editName({
                 root: this.fileStructure.path,
                 path: item.path,
                 oldName: oldName + extension,
@@ -106,7 +112,7 @@ var FileTreeController = (function () {
     };
 
     FileTreeController.prototype.moveFile = function (root, file, directory) {
-        this.fileTreeService.moveFile({
+        this.fileStructureService.moveFile({
             root: root,
             fileName: file.name + file.extension,
             filePath: file.path,
@@ -121,13 +127,13 @@ var FileTreeController = (function () {
         this.$timeout(function () {
             if (!item.editingName) {
                 item.expanded = !item.expanded;
-                var expanded = this.fileTreeService.getExpanded();
+                var expanded = this.fileStructureService.getExpanded();
                 if (item.expanded) {
                     expanded[item.path] = item.expanded;
                 } else {
                     delete expanded[item.path];
                 }
-                this.fileTreeService.setExpanded(expanded);
+                this.fileStructureService.setExpanded(expanded);
             }
         }.bind(this), 200);
     };
@@ -146,7 +152,7 @@ var FileTreeController = (function () {
             alert('Cannot delete a directory with files in it.');
         } else {
             var extension = item.extension || '';
-            this.fileTreeService.deleteFile({
+            this.fileStructureService.deleteFile({
                 root: this.fileStructure.path,
                 path: item.path,
                 name: item.name + extension

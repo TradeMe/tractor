@@ -44,7 +44,7 @@ var ComponentEditorController = (function () {
         var ast = this.component.ast;
         var name = this.component.name;
 
-        var exists = componentAlreadyExists.call(this, name);
+        var exists = fileAlreadyExists(name, this.fileStructure);
 
         if (!exists || this.$window.confirm('This will overwrite "' + name + '". Continue?')) {
             this.componentFileService.saveComponentFile(ast, name)
@@ -76,14 +76,14 @@ var ComponentEditorController = (function () {
         this.component = this.componentParserService.parse(componentFile.ast);
     }
 
-    function componentAlreadyExists (componentName, directory) {
-        return _.some(directory || this.componentFileStructure, function (info, name) {
-            // Directory:
+    function fileAlreadyExists (fileName, directory) {
+        return _.some(directory, function (info, name) {
             if (info['-type'] === 'd') {
-                return componentAlreadyExists.call(this, componentName, info);
-            // File:
+                // Directory:
+                return fileAlreadyExists(fileName, info);
             } else if (name !== '-type' && name !== '-path') {
-                return new RegExp(componentName).test(name);
+                // File:
+                return new RegExp(fileName + '\.').test(name);
             }
         });
     }

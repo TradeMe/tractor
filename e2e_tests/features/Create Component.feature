@@ -1,4 +1,4 @@
-Feature: CreateComponent
+Feature: Create Component
   In order to describe the behaviour of a part of an application
   As a person who is trying to test an application
   I want to be able to create a new Component

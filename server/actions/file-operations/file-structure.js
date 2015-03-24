@@ -13,7 +13,8 @@ module.exports = {
     createModifier: createModifier,
     deletePaths: deletePaths,
     findDirectory: findDirectory,
-    findContainingDirectory: findContainingDirectory
+    findContainingDirectory: findContainingDirectory,
+    getFileNames: getFileNames
 };
 
 function createModifier (modifier, errorMessage) {
@@ -70,4 +71,28 @@ function findDirectory (directory, itemPath) {
 
 function findContainingDirectory (directory, itemPath) {
     return findDirectory(directory, path.dirname(itemPath));
+}
+
+function getFileNames (directoryPath, extension) {
+    return jsondir.dir2jsonAsync(directoryPath)
+    .then(function (fileStructure) {
+        return getFileNamesInDirectory(fileStructure)
+        .filter(function (name) {
+            return !extension || name.match(new RegExp(extension + '$'));
+        });
+    });
+}
+
+function getFileNamesInDirectory (directory, names) {
+    var names = names || [];
+    _.each(directory, function (item, name) {
+        if (item['-type'] === 'd') {
+            // Directory:
+            getFileNamesInDirectory(item, names);
+        } else if (name !== '-type' && name !== '-path') {
+            // File:
+            names.push(name);
+        }
+    });
+    return names;
 }

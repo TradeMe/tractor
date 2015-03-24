@@ -1,20 +1,12 @@
-<section class="file-tree">
-    <h2>Feature files:</h2>
-    <ul class='file-tree__file-list file-tree__file-list--feature'>
-        <li ng-repeat="featureFileName in featureEditor.featureFileNames"
-            ng-class="{ true: 'active' }[featureFileName === featureEditor.featureName]"
-            class="file-tree__file-list-file">
-            <a ui-sref="tractor.feature-editor({ feature: featureFileName })">{{ featureFileName }}</a>
-        </li>
-    </ul>
-</section>
-
+<tractor-file-tree model="featureEditor" type="feature"></tractor-file-tree>
+<tractor-resize-handle></tractor-resize-handle>
 <form class="file" name="feature-editor" novalidate
     ng-submit="featureEditor.showErrors() && featureEditor.saveFeatureFile()">
     <section class="file-options">
-        <h1 class="file-options__name">{{ featureEditor.featureName }}</h1>
+        <h1 class="file-options__name">{{ featureEditor.feature.name }}</h1>
         <div>
             <tractor-text-input class="file-options__name-input"
+                ng-if="!featureEditor.feature.isSaved"
                 form="feature-editor"
                 label="Name"
                 model="featureEditor.feature"

@@ -92,7 +92,7 @@ describe('server/actions: save-feature-file:', function () {
         .then(function () {
             var cucumberPath = path.join('node_modules', 'cucumber', 'bin', 'cucumber');
             var featurePath = path.join('e2e_tests', 'features' , 'feature.feature');
-            expect(childProcess.execAsync).to.have.been.calledWith('node ' + cucumberPath + ' ' + featurePath);
+            expect(childProcess.execAsync).to.have.been.calledWith('node ' + cucumberPath + ' "' + featurePath + '"');
         })
         .finally(function () {
             childProcess.execAsync.restore();

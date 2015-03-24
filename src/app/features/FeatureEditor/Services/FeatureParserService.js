@@ -20,31 +20,32 @@ var FeatureParserService = function FeatureParserService (
     };
 
     function parse (tokens) {
-        var feature = new FeatureModel();
+        try {
+            var feature = new FeatureModel({
+                isSaved: true
+            });
 
-        var featureTokens = _.first(tokens);
-        feature.name = featureTokens.name;
-        feature.inOrderTo = featureTokens.inOrderTo;
-        feature.asA = featureTokens.asA;
-        feature.iWant = featureTokens.iWant;
+            var featureTokens = _.first(tokens);
+            feature.name = featureTokens.name;
+            feature.inOrderTo = featureTokens.inOrderTo;
+            feature.asA = featureTokens.asA;
+            feature.iWant = featureTokens.iWant;
 
-        _.each(featureTokens.elements, function (element, index) {
-            var notScenario = false;
+            _.each(featureTokens.elements, function (element, index) {
+                try {
+                    var parsedScenario = ScenarioParserService.parse(feature, element);
+                    assert(parsedScenario);
+                    feature.scenarios.push(parsedScenario);
+                    return;
+                } catch (e) { }
 
-            try {
-                var parsedScenario = ScenarioParserService.parse(feature, element);
-                assert(parsedScenario);
-                feature.scenarios.push(parsedScenario);
-            } catch (e) {
-                notScenario = true;
-            }
+                console.warn('Invalid Feature:', element, index);
+            });
 
-            if (notScenario) {
-                console.log(element, index);
-            }
-        });
-
-        return feature;
+            return feature;
+        } catch (e) {
+            return new FeatureModel();
+        }
     }
 };
 

@@ -18,7 +18,7 @@ var StepDefinitionEditorController = (function () {
         NotifierService,
         StepDefinitionFileService,
         StepDefinitionParserService,
-        stepDefinitionFileNames,
+        stepDefinitionFileStructure,
         stepDefinitionFile,
         components,
         mockData
@@ -30,7 +30,8 @@ var StepDefinitionEditorController = (function () {
         this.stepDefinitionFileService = StepDefinitionFileService;
         this.stepDefinitionParserService = StepDefinitionParserService;
 
-        this.stepDefinitionFileNames = stepDefinitionFileNames;
+        this.fileStructure = stepDefinitionFileStructure;
+
         this.availableComponents = components;
         this.availableMockData = mockData;
 
@@ -86,19 +87,19 @@ var StepDefinitionEditorController = (function () {
     };
 
     StepDefinitionEditorController.prototype.saveStepDefinitionFile = function () {
-        var stepDefinitionFileNames = this.stepDefinitionFileNames;
         var ast = this.stepDefinition.ast;
         var name = this.stepDefinition.name;
 
-        var exists = _.contains(stepDefinitionFileNames, name);
+        var exists = fileAlreadyExists(name, this.fileStructure);
 
         if (!exists || this.$window.confirm('This will overwrite "' + name + '". Continue?')) {
             this.stepDefinitionFileService.saveStepDefinitionFile(ast, name)
             .then(function () {
-                if (!exists) {
-                    stepDefinitionFileNames.push(name);
-                }
-            });
+                return this.stepDefinitionFileService.getStepDefinitionFileStructure();
+            }.bind(this))
+            .then(function (stepDefinitionFileStructure) {
+                this.fileStructure = stepDefinitionFileStructure;
+            }.bind(this));
         }
     };
 
@@ -122,6 +123,18 @@ var StepDefinitionEditorController = (function () {
         try {
             this.stepDefinition = this.stepDefinitionParserService.parse(stepDefinitionFile.ast, filename, this.availableComponents, this.availableMockData);
         } catch (e) { }
+    }
+
+    function fileAlreadyExists (fileName, directory) {
+        return _.some(directory, function (info, name) {
+            if (info['-type'] === 'd') {
+                // Directory:
+                return fileAlreadyExists(fileName, info);
+            } else if (name !== '-type' && name !== '-path') {
+                // File:
+                return new RegExp(fileName + '\.').test(name);
+            }
+        });
     }
 
     return StepDefinitionEditorController;
