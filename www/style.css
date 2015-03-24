@@ -631,6 +631,8 @@ tractor-file-tree .file-tree--feature li {
 
 tractor-file-tree .file-tree--json li {
   background-image: url("./images/json.png"); }
+  tractor-file-tree .file-tree--json li.dragover {
+    background-image: url("./images/move-json-to-directory.png"); }
 
 tractor-file-tree .file-tree__file-list-item {
   position: relative;

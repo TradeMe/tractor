@@ -14,31 +14,78 @@ module.exports = {
     deletePaths: deletePaths,
     findDirectory: findDirectory,
     findContainingDirectory: findContainingDirectory,
-    getFileNames: getFileNames
+    getFileNames: getFileNames,
+    noop: noop
 };
 
-function createModifier (modifier, errorMessage) {
+function createModifier (preModifier, postModifier, errorMessage) {
     return function (request, response) {
         jsondir.dir2jsonAsync(request.body.root, {
             attributes: ['content']
         })
         .then(function (fileStructure) {
-            fileStructure = modifier(fileStructure, request);
+            fileStructure = preModifier(fileStructure, request);
             return jsondir.json2dirAsync(fileStructure, {
                 nuke: true
             });
         })
         .then(function () {
-            return jsondir.dir2jsonAsync(request.body.root);
+            return jsondir.dir2jsonAsync(request.body.root, {
+                attributes: ['content']
+            });
         })
         .then(function (newFileStructure) {
-            response.send(JSON.stringify(newFileStructure));
+            newFileStructure = organiseFileStructure(newFileStructure, newFileStructure);
+            response.send(JSON.stringify(postModifier(newFileStructure, request)));
         })
         .catch(function (error) {
             console.log(error);
             errorHandler(response, error, errorMessage);
         });
     };
+}
+
+function organiseFileStructure (directory, fileStructure) {
+    fileStructure.allFiles = fileStructure.allFiles || [];
+
+    var skip = ['name', '-name', 'path', '-path', '-type', 'allFiles', 'files', 'directories', 'isDirectory'];
+    _.each(directory, function (item, name) {
+        if (item['-type'] === 'd') {
+            // Directory:
+            directory.directories = directory.directories || [];
+            item.isDirectory = true;
+            item.name = name;
+            item.path = item['-path'];
+            directory.directories.push(organiseFileStructure(item, fileStructure));
+
+            delete directory[name];
+        } else if (!_.contains(skip, name)) {
+            // File:
+            // Skip hidden files (starting with ".")...
+            if (!/^\./.test(name)) {
+                directory.files = directory.files || [];
+                item.name = _.last(/(.*?)\./.exec(name));
+                item.extension = _.last(/(\..*)/.exec(name));
+                item.path = item['-path'];
+                item.content = item['-content'];
+                directory.files.push(item);
+                fileStructure.allFiles.push(item);
+            }
+
+            delete directory[name];
+        }
+
+        delete item['-content'];
+        delete item['-path'];
+        delete item['-type'];
+    });
+    directory.path = directory['-path'];
+
+    delete directory['-name'];
+    delete directory['-path'];
+    delete directory['-type'];
+
+    return directory;
 }
 
 function deletePaths (directory) {
@@ -95,4 +142,8 @@ function getFileNamesInDirectory (directory, names) {
         }
     });
     return names;
+}
+
+function noop (fileStructure) {
+    return fileStructure;
 }

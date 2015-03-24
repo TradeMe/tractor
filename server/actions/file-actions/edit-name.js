@@ -6,7 +6,7 @@ var fileStructureUtils = require('./file-structure');
 // Constants:
 var ERROR_MESSAGE = 'Editing name failed.';
 
-module.exports = fileStructureUtils.createModifier(editName, ERROR_MESSAGE);
+module.exports = fileStructureUtils.createModifier(editName, fileStructureUtils.noop, ERROR_MESSAGE);
 
 function editName (fileStructure, request) {
     var directory = fileStructureUtils.findContainingDirectory(fileStructure, request.body.path);

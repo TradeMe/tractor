@@ -15,8 +15,11 @@ var config = require('../utils/get-config')();
 var childProcess = Promise.promisifyAll(require('child_process'));
 var fs = Promise.promisifyAll(require('fs'));
 var pascal = require('change-case').pascal;
-var fileStructureUtils = require('./file-operations/file-structure');
+var fileStructureUtils = require('./file-actions/file-structure');
 var stripcolorcodes = require('stripcolorcodes');
+
+var GIVEN_WHEN_THEN_REGEX = /^(Given|When|Then)/;
+var AND_BUT_REGEX = /^(And|But)/;
 
 module.exports = saveFeatureFile;
 
@@ -55,7 +58,15 @@ function generateFileNames (feature) {
     })
     // Get out each step name:
     .filter(function (line) {
-        return /^(Given|Then|When|And|But)/.test(line);
+        return GIVEN_WHEN_THEN_REGEX.test(line) || AND_BUT_REGEX.test(line);
+    })
+    .map(function (fileName, index, fileNames) {
+        if (AND_BUT_REGEX.test(fileName)) {
+            var previousType = _.last(fileNames[index - 1].match(GIVEN_WHEN_THEN_REGEX));
+            return fileName.replace(AND_BUT_REGEX, previousType);
+        } else {
+            return fileName;
+        }
     })
     // Replace <s and >s
     .map(function (fileName) {

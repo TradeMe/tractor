@@ -38,19 +38,21 @@ module.exports = (function () {
 
         application.use(cors());
 
-        var getFileStructure = require('./actions/file-operations/get-file-structure');
+        var getFileStructure = require('./actions/file-actions/get-file-structure');
         var getListOfFileNames = require('./actions/get-list-of-file-names');
         var openFile = require('./actions/open-file');
+
+        application.get('/get-component-path', require('./actions/component-actions/get-component-path'));
 
         application.get('/get-file-structure', getFileStructure);
         application.get('/get-feature-file-names', getListOfFileNames(constants.FEATURES_DIR, constants.FEATURES_EXTENSION));
         application.get('/get-step-definition-file-names', getListOfFileNames(constants.STEP_DEFINITIONS_DIR, constants.STEP_DEFINITIONS_EXTENSION));
         application.get('/get-mock-data-file-names', getListOfFileNames(constants.MOCK_DATA_DIR, constants.MOCK_DATA_EXTENSION));
 
-        application.post('/add-directory', require('./actions/file-operations/add-directory'));
-        application.post('/edit-name', require('./actions/file-operations/edit-name'));
-        application.post('/move-file', require('./actions/file-operations/move-file'));
-        application.post('/delete-file', require('./actions/file-operations/delete-file'));
+        application.post('/add-directory', require('./actions/file-actions/add-directory'));
+        application.post('/edit-name', require('./actions/file-actions/edit-name'));
+        application.post('/move-file', require('./actions/file-actions/move-file'));
+        application.post('/delete-file', require('./actions/file-actions/delete-file'));
 
         application.get('/open-component-file', openFile(constants.COMPONENTS_DIR, { parseJS: true }));
         application.get('/open-feature-file', openFile(constants.FEATURES_DIR, { lexFeature: true }));

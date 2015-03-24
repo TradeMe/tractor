@@ -1,8 +1,5 @@
 'use strict';
 
-// Utilities:
-var _ = require('lodash');
-
 // Module:
 var Core = require('../Core');
 
@@ -10,21 +7,23 @@ var FileStructureService = function FileStructureService (
     $http,
     localStorageService
 ) {
-    var STARTS_WITH_DOT = /^\./;
-    var FILE_NAME = /(.*?)\./;
-    var FILE_EXTENSION = /(\..*)/;
-
     var EXPANDED_STORAGE_KEY = 'FileTreeExpanded';
 
     return {
+        getFileStructure: getFileStructure,
         addDirectory: addDirectory,
         deleteFile: deleteFile,
         editName: editName,
         getExpanded: getExpanded,
         setExpanded: setExpanded,
-        moveFile: moveFile,
-        organiseFileStructure: organiseFileStructure
+        moveFile: moveFile
     };
+
+    function getFileStructure (directory, options) {
+        var parse = !!(options && options.parse);
+        return $http.get('/get-file-structure?directory=' + directory + '&parse=' + parse)
+        .then(updateFileStructure);
+    }
 
     function addDirectory (options) {
         return $http.post('/add-directory', options)
@@ -33,7 +32,7 @@ var FileStructureService = function FileStructureService (
 
     function deleteFile (options) {
         return $http.post('/delete-file', options)
-            .then(updateFileStructure);
+        .then(updateFileStructure);
     }
 
     function editName (options) {
@@ -55,36 +54,17 @@ var FileStructureService = function FileStructureService (
     }
 
     function updateFileStructure (fileStructure) {
-        fileStructure = organiseFileStructure(fileStructure);
+        var fileStructure = restoreExpanded(fileStructure);
         fileStructure.expanded = true;
         return fileStructure;
     }
 
-    function organiseFileStructure (directory) {
-        var skip = ['name', '-name', 'path', '-path', '-type'];
-        _.each(directory, function (item, name) {
-            var type = item['-type'];
-            var path = item['-path'];
-            if (type === 'd') {
-                // Directory:
-                item.name = name;
-                item.path = path;
-                directory.directories = directory.directories || [];
-                directory.directories.push(organiseFileStructure(item));
-            } else if (!_.contains(skip, name)) {
-                // File:
-                // Skip hidden files (starting with ".")...
-                if (!STARTS_WITH_DOT.test(name)) {
-                    directory.files = directory.files || [];
-                    directory.files.push({
-                        name: _.last(FILE_NAME.exec(name)),
-                        extension: _.last(FILE_EXTENSION.exec(name)),
-                        path: path
-                    });
-                }
-            }
-        });
-        directory.path = directory['-path'];
+    function restoreExpanded (directory) {
+        if (directory.directories) {
+            directory.directories.forEach(function (directory) {
+                restoreExpanded(directory);
+            });
+        }
         directory.expanded = !!getExpanded()[directory.path];
         return directory;
     }

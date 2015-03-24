@@ -4,9 +4,10 @@
 var MockDataEditor = require('../MockDataEditor');
 
 var createMockDataModelConstructor = function () {
-    var MockDataModel = function MockDataModel (json) {
-        json = json || '';
+    var MockDataModel = function MockDataModel (json, options) {
+        json = json || '""';
 
+        this.isSaved = !!(options && options.isSaved);
         this.name = '';
 
         Object.defineProperties(this, {

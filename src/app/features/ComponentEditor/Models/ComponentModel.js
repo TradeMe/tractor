@@ -24,9 +24,18 @@ var createComponentModelConstructor = function (
         var elements = [browser];
         var domElements = [];
         var actions = [];
-        this.isSaved = !!(options && options.isSaved);
 
         Object.defineProperties(this, {
+            isSaved: {
+                get: function () {
+                    return !!(options && options.isSaved);
+                }
+            },
+            path: {
+                get: function () {
+                    return options && options.path;
+                }
+            },
             browser: {
                 get: function () {
                     return browser;

@@ -42,18 +42,18 @@
     <div ng-include="'rename-input.html'"></div>
 
     <ul class="file-tree__file-list"
-        ng-if="(item || fileTree.fileStructure).expanded">
+        ng-if="(item || fileTree.model.fileStructure).expanded">
         <li class="file-tree__file-list-item file-tree__file-list-item--new-directory">
             <tractor-action
                 model="fileTree"
                 action="Add directory"
-                argument="item || fileTree.fileStructure">
+                argument="item || fileTree.model.fileStructure">
             </tractor-action>
         </li>
 
         <li class="file-tree__file-list-item file-tree__file-list-item--directory"
             ng-class="{ 'file-tree__file-list-item--expanded-directory': item.expanded }"
-            ng-repeat="item in (item || fileTree.fileStructure).directories"
+            ng-repeat="item in (item || fileTree.model.fileStructure).directories"
             ng-include="'file-structure.html'"
             tractor-drop-file
             on-drop="fileTree.moveFile"
@@ -61,7 +61,7 @@
         </li>
 
         <li class="file-tree__file-list-item"
-            ng-repeat="item in (item || fileTree.fileStructure).files"
+            ng-repeat="item in (item || fileTree.model.fileStructure).files"
             tractor-drag-file>
             <div ng-include="'file-options.html'"></div>
 
@@ -79,14 +79,15 @@
 <section class="file-tree__container"
     tractor-drop-file
     on-drop="fileTree.moveFile"
-    drop-directory="fileTree.fileStructure">
+    drop-directory="fileTree.model.fileStructure">
     <h2 class="file-tree__header">
         {{ fileTree.headerName }} files:
     </h2>
     <div class="file-tree"
         ng-class="{
             'file-tree--javascript': fileTree.type === 'component' || fileTree.type === 'step-definition',
-            'file-tree--feature': fileTree.type === 'feature'
+            'file-tree--feature': fileTree.type === 'feature',
+            'file-tree--json': fileTree.type === 'mock-data'
         }"
         ng-include="'file-structure.html'">
     </div>

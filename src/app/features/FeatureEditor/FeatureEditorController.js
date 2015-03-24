@@ -8,7 +8,6 @@ var FeatureEditor = require('./FeatureEditor');
 
 // Dependencies:
 require('./Services/FeatureFileService');
-require('./Services/FeatureParserService');
 require('./Models/FeatureModel');
 
 var FeatureEditorController = (function () {
@@ -16,26 +15,22 @@ var FeatureEditorController = (function () {
         $scope,
         $window,
         NotifierService,
+        FileStructureService,
         FeatureFileService,
-        FeatureParserService,
         FeatureModel,
         featureFileStructure,
-        featureFile
+        feature
     ) {
         this.$scope = $scope;
         this.$window = $window;
         this.notifierService = NotifierService;
 
+        this.fileStructureService = FileStructureService;
         this.featureFileService = FeatureFileService;
-        this.featureParserService = FeatureParserService;
 
         this.fileStructure = featureFileStructure;
 
-        if (featureFile) {
-            parseFeatureFile.call(this, featureFile);
-        } else {
-            this.feature = new FeatureModel();
-        }
+        this.feature = feature || new FeatureModel();
     };
 
     FeatureEditorController.prototype.saveFeatureFile = function () {
@@ -48,7 +43,7 @@ var FeatureEditorController = (function () {
             this.featureFileService.saveFeatureFile(featureString, name)
             .then(function () {
                 this.feature.isSaved = true;
-                return this.featureFileService.getFeatureFileStructure();
+                return this.fileStructureService.getFileStructure('features');
             }.bind(this))
             .then(function (featureFileStructure) {
                 this.fileStructure = featureFileStructure;
@@ -71,10 +66,6 @@ var FeatureEditorController = (function () {
             return true;
         }
     };
-
-    function parseFeatureFile (featureFile) {
-        this.feature = this.featureParserService.parse(featureFile.tokens);
-    }
 
     function fileAlreadyExists (fileName, directory) {
         return _.some(directory, function (info, name) {

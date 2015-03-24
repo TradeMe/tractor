@@ -3,15 +3,23 @@
 // Module:
 var FeatureEditor = require('../FeatureEditor');
 
-var FeatureFileService = function FeatureFileService ($http) {
+// Dependencies:
+require('./FeatureParserService');
+
+var FeatureFileService = function FeatureFileService (
+    $http,
+    FeatureParserService
+) {
     return {
         openFeatureFile: openFeatureFile,
-        saveFeatureFile: saveFeatureFile,
-        getFeatureFileStructure: getFeatureFileStructure
+        saveFeatureFile: saveFeatureFile
     };
 
     function openFeatureFile (fileName) {
-        return $http.get('/open-feature-file?name=' + encodeURIComponent(fileName));
+        return $http.get('/open-feature-file?name=' + encodeURIComponent(fileName))
+        .then(function (featureFile) {
+            return FeatureParserService.parse(featureFile.tokens);
+        });
     }
 
     function saveFeatureFile (feature, name) {
@@ -20,10 +28,6 @@ var FeatureFileService = function FeatureFileService ($http) {
             feature: feature,
             name: name
         });
-    }
-
-    function getFeatureFileStructure () {
-        return $http.get('/get-file-structure?directory=features');
     }
 };
 

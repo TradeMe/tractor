@@ -7,7 +7,7 @@ var fileStructureUtils = require('./file-structure');
 var NEW_DIRECTORY = 'New Directory';
 var ERROR_MESSAGE = 'Adding new directory failed.';
 
-module.exports = fileStructureUtils.createModifier(addDirectory, ERROR_MESSAGE);
+module.exports = fileStructureUtils.createModifier(addDirectory, fileStructureUtils.noop, ERROR_MESSAGE);
 
 function addDirectory (fileStructure, request) {
     var directory = fileStructureUtils.findDirectory(fileStructure, request.body.path);

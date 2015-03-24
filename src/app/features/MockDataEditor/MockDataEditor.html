@@ -1,20 +1,12 @@
-<section class="file-tree">
-    <h2>Mock Data files:</h2>
-    <ul class='file-tree__file-list file-tree__file-list--json'>
-        <li ng-repeat="mockDataFileName in mockDataEditor.mockDataFileNames"
-            ng-class="{ true: 'active' }[mockDataFileName === mockDataEditor.mockData.name]"
-            class="file-tree__file-list-file">
-            <a ui-sref="tractor.mock-data-editor({ mockData: mockDataFileName })">{{ mockDataFileName }}</a>
-        </li>
-    </ul>
-</section>
-
+<tractor-file-tree model="mockDataEditor" type="mock-data"></tractor-file-tree>
+<tractor-resize-handle></tractor-resize-handle>
 <form class="file" name="mock-data-editor" novalidate
     ng-submit="mockDataEditor.showErrors() && mockDataEditor.saveMockDataFile()">
     <section class="file-options">
         <h1 class="file-options__name">{{ mockDataEditor.mockData.name }}</h1>
         <div>
             <tractor-text-input class="file-options__name-input"
+                ng-if="!mockDataEditor.mockData.isSaved"
                 form="mock-data-editor"
                 label="Name"
                 model="mockDataEditor.mockData"

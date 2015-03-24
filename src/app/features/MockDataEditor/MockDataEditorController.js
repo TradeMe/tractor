@@ -8,51 +8,45 @@ var MockDataEditor = require('./MockDataEditor');
 
 // Dependencies:
 require('./Services/MockDataFileService');
-require('./Services/MockDataParserService');
 require('./Models/MockDataModel');
 
 var MockDataEditorController = (function () {
     var MockDataEditorController = function MockDataEditorController (
-        $stateParams,
         $scope,
         $window,
         NotifierService,
+        FileStructureService,
         MockDataFileService,
-        MockDataParserService,
         MockDataModel,
-        mockDataFileNames,
-        mockDataFile
+        mockDataFileStructure,
+        mockData
     ) {
         this.$window = $window;
         this.$scope = $scope;
         this.notifierService = NotifierService;
 
+        this.fileStructureService = FileStructureService;
         this.mockDataFileService = MockDataFileService;
-        this.mockDataParserService = MockDataParserService;
 
-        this.mockDataFileNames = mockDataFileNames;
-
-        if (mockDataFile) {
-            parseMockDataFile.call(this, $stateParams.mockData, mockDataFile);
-        } else {
-            this.mockData = new MockDataModel();
-        }
+        this.fileStructure = mockDataFileStructure;
+        this.mockData = mockData || new MockDataModel();
     };
 
     MockDataEditorController.prototype.saveMockDataFile = function () {
-        var mockDataFileNames = this.mockDataFileNames;
         var json = this.mockData.json;
         var name = this.mockData.name;
 
-        var exists = _.contains(mockDataFileNames, name);
+        var exists = fileAlreadyExists(name, this.fileStructure);
 
         if (!exists || this.$window.confirm('This will overwrite "' + name + '". Continue?')) {
             this.mockDataFileService.saveMockDataFile(json, name)
             .then(function () {
-                if (!exists) {
-                    mockDataFileNames.push(name);
-                }
-            });
+                this.mockData.isSaved = true;
+                return this.fileStructureService.getFileStructure('mock_data');
+            }.bind(this))
+            .then(function (mockDataFileStructure) {
+                this.fileStructure = mockDataFileStructure;
+            }.bind(this));
         }
     };
 
@@ -72,10 +66,16 @@ var MockDataEditorController = (function () {
         }
     };
 
-    function parseMockDataFile (fileName, mockDataFile) {
-        try {
-            this.mockData = this.mockDataParserService.parse(mockDataFile.contents, fileName);
-        } catch (e) { }
+    function fileAlreadyExists (fileName, directory) {
+        return _.some(directory, function (info, name) {
+            if (info['-type'] === 'd') {
+                // Directory:
+                return fileAlreadyExists(fileName, info);
+            } else if (name !== '-type' && name !== '-path') {
+                // File:
+                return new RegExp(fileName + '\.').test(name);
+            }
+        });
     }
 
     return MockDataEditorController;

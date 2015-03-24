@@ -21,19 +21,18 @@ var ComponentParserService = function ComponentParserService (
         parse: parse
     };
 
-    function parse (astObject) {
+    function parse (componentFile) {
         try {
-            var meta = {};
-            try {
-                meta = JSON.parse(_.first(astObject.comments).value);
-            } catch (e) { }
+            var ast = componentFile.ast;
+            var meta = JSON.parse(_.first(ast.comments).value);
 
             var component = new ComponentModel({
-                isSaved: true
+                isSaved: true,
+                path: componentFile.path
             });
             component.name = meta.name;
 
-            var componentModuleExpressionStatement = _.first(astObject.body);
+            var componentModuleExpressionStatement = _.first(ast.body);
             var moduleBlockStatement = componentModuleExpressionStatement.expression.right.callee.body;
 
             _.each(moduleBlockStatement.body, function (statement, index) {

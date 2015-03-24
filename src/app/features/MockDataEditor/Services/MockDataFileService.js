@@ -17,12 +17,14 @@ var MockDataFileService = function MockDataFileService (
     return {
         openMockDataFile: openMockDataFile,
         saveMockDataFile: saveMockDataFile,
-        getMockDataFileNames: getMockDataFileNames,
         getAllMockData: getAllMockData
     };
 
     function openMockDataFile (fileName) {
-        return $http.get('/open-mock-data-file?name=' + encodeURIComponent(fileName));
+        return $http.get('/open-mock-data-file?name=' + encodeURIComponent(fileName))
+        .then(function (mockDataFile) {
+            return MockDataParserService.parse(mockDataFile.contents, fileName.replace(/\.mock\.json$/, ''));
+        });
     }
 
     function saveMockDataFile (data, name) {
@@ -32,23 +34,19 @@ var MockDataFileService = function MockDataFileService (
         });
     }
 
-    function getMockDataFileNames () {
-        return $http.get('/get-mock-data-file-names');
-    }
-
     function getAllMockData () {
-        return this.getMockDataFileNames()
-        .then(function (mockDataFileNames) {
-            var openMockDataFiles = _.map(mockDataFileNames, function (mockDataFileName) {
-                return openMockDataFile(mockDataFileName);
-            });
-            return Promise.all(openMockDataFiles)
-            .then(function (results) {
-                return _.map(results, function (result, index) {
-                    return MockDataParserService.parse(result.contents, mockDataFileNames[index]);
-                });
-            });
-        });
+    //     return this.getMockDataFileNames()
+    //     .then(function (mockDataFileNames) {
+    //         var openMockDataFiles = _.map(mockDataFileNames, function (mockDataFileName) {
+    //             return openMockDataFile(mockDataFileName);
+    //         });
+    //         return Promise.all(openMockDataFiles)
+    //         .then(function (results) {
+    //             return _.map(results, function (result, index) {
+    //                 return MockDataParserService.parse(result.contents, mockDataFileNames[index]);
+    //             });
+    //         });
+    //     });
     }
 };
 

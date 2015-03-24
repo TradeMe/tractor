@@ -6,7 +6,7 @@ var fileStructureUtils = require('./file-structure');
 // Constants:
 var ERROR_MESSAGE = 'Moving file failed.';
 
-module.exports = fileStructureUtils.createModifier(moveFile, ERROR_MESSAGE);
+module.exports = fileStructureUtils.createModifier(moveFile, fileStructureUtils.noop, ERROR_MESSAGE);
 
 function moveFile (fileStructure, request) {
     var directoryPath = request.body.directoryPath;

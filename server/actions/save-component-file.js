@@ -19,11 +19,9 @@ var GenerateJavaScriptError = require('../Errors/GenerateJavaScriptError');
 module.exports = saveComponentFile;
 
 function saveComponentFile (request, response) {
-    var name = request.body.name + constants.COMPONENTS_EXTENSION;
-
     var javascript = null;
     try {
-        javascript = escodegen.generate(request.body.program, {
+        javascript = escodegen.generate(request.body.ast, {
             comment: true
         });
     } catch (e) {
@@ -31,12 +29,11 @@ function saveComponentFile (request, response) {
         return Promise.resolve();
     }
 
-    return saveJavaScriptFile(name, javascript, response);
+    return saveJavaScriptFile(request.body.path, request.body.name, javascript, response);
 }
 
-function saveJavaScriptFile (name, javascript, response) {
-    var componentPath = path.join(config.testDirectory, constants.COMPONENTS_DIR, name);
-    return fs.writeFileAsync(componentPath, javascript)
+function saveJavaScriptFile (path, name, javascript, response) {
+    return fs.writeFileAsync(path, javascript)
     .then(function () {
         response.send(JSON.stringify({
             message: '"' + name + '" saved successfully.'

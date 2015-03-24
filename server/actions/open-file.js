@@ -42,6 +42,7 @@ function openFile (directory, options, extension, request, response) {
         errorHandler(response, error);
     })
     .catch(function (error) {
+        console.log(error);
         var message = 'Reading "' + name + '" failed.';
         errorHandler(response, error, message);
     });

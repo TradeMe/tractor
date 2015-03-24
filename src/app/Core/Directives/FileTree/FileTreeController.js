@@ -42,19 +42,17 @@ var FileTreeController = (function () {
         this.fileStructureService = FileStructureService;
 
         this.headerName = title(this.type);
-        this.fileStructure = this.fileStructureService.organiseFileStructure(this.model.fileStructure);
-        this.fileStructure.expanded = true;
 
         this.moveFile = this.moveFile.bind(this);
     };
 
     FileTreeController.prototype.addDirectory = function (directory) {
         this.fileStructureService.addDirectory({
-            root: this.fileStructure.path,
+            root: this.model.fileStructure.path,
             path: directory.path
         })
         .then(function (fileStructure) {
-            this.fileStructure = fileStructure
+            this.model.fileStructure = fileStructure;
         }.bind(this));
     };
 
@@ -80,14 +78,14 @@ var FileTreeController = (function () {
             }
 
             this.fileStructureService.editName({
-                root: this.fileStructure.path,
+                root: this.model.fileStructure.path,
                 path: item.path,
                 oldName: oldName + extension,
                 newName: newName + extension,
                 transforms: transforms
             })
             .then(function (fileStructure) {
-                this.fileStructure = fileStructure
+                this.model.fileStructure = fileStructure;
             }.bind(this));
         }
     };
@@ -103,10 +101,12 @@ var FileTreeController = (function () {
             if (!item.editingName) {
                 var params = {};
                 // Sw33t hax()rz to get around the browserify "path" shim not working on Windows.
-                var directoryPath = this.fileStructure.path.replace(/\\/g, '/');
+                var directoryPath = this.model.fileStructure.path.replace(/\\/g, '/');
                 var filePath = item.path.replace(/\\/g, '/');
-                params[this.type] = path.relative(directoryPath, filePath);
-                this.$state.go('tractor.' + this.type + '-editor', params)
+                var relativePath = path.relative(directoryPath, filePath);
+                var pathWithoutExtension = relativePath.replace(item.extension, '');
+                params[this.type] = pathWithoutExtension;
+                this.$state.go('tractor.' + this.type + '-editor', params);
             }
         }.bind(this), 200);
     };
@@ -119,7 +119,7 @@ var FileTreeController = (function () {
             directoryPath: directory.path
         })
         .then(function (fileStructure) {
-            this.fileStructure = fileStructure
+            this.model.fileStructure = fileStructure;
         }.bind(this));
     };
 
@@ -153,12 +153,12 @@ var FileTreeController = (function () {
         } else {
             var extension = item.extension || '';
             this.fileStructureService.deleteFile({
-                root: this.fileStructure.path,
+                root: this.model.fileStructure.path,
                 path: item.path,
                 name: item.name + extension
             })
             .then(function (fileStructure) {
-                this.fileStructure = fileStructure
+                this.model.fileStructure = fileStructure;
             }.bind(this));
         }
     };

@@ -1,14 +1,11 @@
 'use strict';
 
-// Utilities:
-var _ = require('lodash');
-
 // Module:
 var ComponentEditor = require('./ComponentEditor');
 
 // Dependencies:
+require('../Notifier/Services/NotifierService');
 require('./Services/ComponentFileService');
-require('./Services/ComponentParserService');
 require('./Models/ComponentModel');
 
 var ComponentEditorController = (function () {
@@ -17,45 +14,46 @@ var ComponentEditorController = (function () {
         $window,
         NotifierService,
         ComponentFileService,
-        ComponentParserService,
         ComponentModel,
         componentFileStructure,
-        componentFile
+        componentPath
     ) {
         this.$scope = $scope;
         this.$window = $window;
         this.notifierService = NotifierService;
-
         this.componentFileService = ComponentFileService;
-        this.componentParserService = ComponentParserService;
 
         this.fileStructure = componentFileStructure;
 
-        if (componentFile) {
-            parseComponentFile.call(this, componentFile);
-        } else {
-            this.component = new ComponentModel();
-            this.component.addElement();
-            this.component.addAction();
+        if (componentPath) {
+            this.component = this.componentFileService.openComponent(this.fileStructure, componentPath.path);
         }
+        this.component = this.component || new ComponentModel();
     };
 
     ComponentEditorController.prototype.saveComponentFile = function () {
-        var ast = this.component.ast;
-        var name = this.component.name;
+        this.componentFileService.getComponentPath({
+            name: this.component.name,
+            path: this.component.path
+        })
+        .then(function (componentPath) {
+            var exists = this.componentFileService.checkComponentExists(this.fileStructure, componentPath.path);
 
-        var exists = fileAlreadyExists(name, this.fileStructure);
-
-        if (!exists || this.$window.confirm('This will overwrite "' + name + '". Continue?')) {
-            this.componentFileService.saveComponentFile(ast, name)
-            .then(function () {
-                this.component.isSaved = true;
-                return this.componentFileService.getComponentFileStructure();
-            }.bind(this))
-            .then(function (componentFileStructure) {
-                this.fileStructure = componentFileStructure;
-            }.bind(this));
-        }
+            if (!exists || this.$window.confirm('This will overwrite "' + this.component.name + '". Continue?')) {
+                this.componentFileService.saveComponent({
+                    ast: this.component.ast,
+                    name: this.component.name,
+                    path: componentPath.path
+                })
+                .then(function () {
+                    return this.componentFileService.getComponentFileStructure();
+                }.bind(this))
+                .then(function (componentFileStructure) {
+                    this.fileStructure = componentFileStructure;
+                    this.component = this.componentFileService.openComponent(this.fileStructure, componentPath.path);
+                }.bind(this));
+            }
+        }.bind(this));
     };
 
     ComponentEditorController.prototype.showErrors = function () {
@@ -71,22 +69,6 @@ var ComponentEditorController = (function () {
         }
         return componentEditor.$valid;
     };
-
-    function parseComponentFile (componentFile) {
-        this.component = this.componentParserService.parse(componentFile.ast);
-    }
-
-    function fileAlreadyExists (fileName, directory) {
-        return _.some(directory, function (info, name) {
-            if (info['-type'] === 'd') {
-                // Directory:
-                return fileAlreadyExists(fileName, info);
-            } else if (name !== '-type' && name !== '-path') {
-                // File:
-                return new RegExp(fileName + '\.').test(name);
-            }
-        });
-    }
 
     return ComponentEditorController;
 })();
