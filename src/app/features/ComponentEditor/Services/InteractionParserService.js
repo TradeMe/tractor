@@ -94,6 +94,12 @@ var InteractionParserService = function InteractionParserService (
             var args = _.map(interactionCallExpression.arguments, function (argument, index) {
                 var arg = ArgumentParserService.parse(interaction.methodInstance, interaction.method.arguments[index], argument);
                 assert(arg);
+                var parameter = _.find(action.parameters, function (parameter) {
+                    return parameter.variableName === arg.value;
+                });
+                if (parameter) {
+                    arg.value = parameter.name;
+                }
                 return arg;
             });
             interaction.methodInstance.arguments = args;

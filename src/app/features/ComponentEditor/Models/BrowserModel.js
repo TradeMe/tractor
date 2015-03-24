@@ -6,6 +6,7 @@ var ComponentEditor = require('../ComponentEditor');
 var createBrowserModelConstructor = function () {
     var BrowserModel = function BrowserModel () {
         this.name = 'browser';
+        this.variableName = this.name;
     };
 
     BrowserModel.prototype.methods = [{

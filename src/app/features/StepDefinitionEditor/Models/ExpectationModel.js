@@ -58,7 +58,7 @@ var createExpectationModelConstructor = function (
         });
 
         this.component = _.first(this.step.stepDefinition.componentInstances);
-        this.expectedResult = '';
+        this.value = '';
     };
 
     return ExpectationModel;
@@ -77,11 +77,11 @@ var createExpectationModelConstructor = function (
         var eventuallyMemberExpression = ast.memberExpression(toMemberExpression, ast.identifier('eventually'));
         var equalMemberExpression = ast.memberExpression(eventuallyMemberExpression, ast.identifier('equal'));
 
-        var expectedResultLiteral = StringToLiteralService.toLiteral(this.expectedResult);
+        var expectedResultLiteral = StringToLiteralService.toLiteral(this.value);
         if (expectedResultLiteral) {
             return ast.callExpression(equalMemberExpression, [ast.literal(expectedResultLiteral)]);
         } else {
-            return ast.callExpression(equalMemberExpression, [ast.literal(this.expectedResult)]);
+            return ast.callExpression(equalMemberExpression, [ast.literal(this.value)]);
         }
     }
 

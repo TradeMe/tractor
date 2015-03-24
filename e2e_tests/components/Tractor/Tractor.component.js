@@ -7,10 +7,16 @@
     ],
     "actions": [
         {
-            "name": "get title"
+            "name": "get title",
+            "parameters": []
         },
         {
-            "name": "get"
+            "name": "get",
+            "parameters": [
+                {
+                    "name": "hello there"
+                }
+            ]
         }
     ]
 }*/
@@ -22,10 +28,10 @@ module.exports = function () {
         var self = this;
         return self.title.getInnerHtml();
     };
-    Tractor.prototype.get = function () {
+    Tractor.prototype.get = function (helloThere) {
         var self = this;
         return new Promise(function (resolve) {
-            resolve(browser.get('http://localhost:3000', null));
+            resolve(browser.get('http://localhost:3000', helloThere));
         });
     };
     return Tractor;
