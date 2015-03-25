@@ -18,30 +18,37 @@ var MockParserService = function MockParserService (
     };
 
     function parse (step, statement) {
-        var mock = new MockModel(step);
-
-        var action = _.first(statement.expression.callee.object.arguments).value;
-        var url = _.last(statement.expression.callee.object.arguments).value;
-        assert(_.contains(mock.actions, action));
-
-        mock.action = action;
-        mock.url = url;
-
         try {
-            var instanceName = _.first(statement.expression.arguments).name;
-            mock.data = _.find(step.stepDefinition.mockDataInstances, function (mockDataInstance) {
-                return mockDataInstance.name === instanceName;
-            });
-            return mock;
-        } catch (e) { }
+            var mock = new MockModel(step);
 
-        try {
-            assert(statement.expression.callee.property.name === 'passThrough')
-            mock.passThrough = true;
-            return mock;
-        } catch (e) { }
+            var action = _.first(statement.expression.callee.object.arguments).value;
+            var url = _.last(statement.expression.callee.object.arguments).value;
 
-        return mock;
+            assert(action);
+            assert(url);
+            assert(_.contains(mock.actions, action));
+
+            mock.action = action;
+            mock.url = url;
+
+            try {
+                var instanceName = _.first(statement.expression.arguments).name;
+                mock.data = _.find(step.stepDefinition.mockDataInstances, function (mockDataInstance) {
+                    return mockDataInstance.variableName === instanceName;
+                });
+                return mock;
+            } catch (e) { }
+
+            try {
+                assert(statement.expression.callee.property.name === 'passThrough');
+                mock.passThrough = true;
+                return mock;
+            } catch (e) { }
+
+            console.warn('Invalid "MockModel"', statement);
+        } catch (e) {
+            return null;
+        }
     }
 };
 

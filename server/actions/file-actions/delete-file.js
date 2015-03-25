@@ -11,7 +11,9 @@ module.exports = fileStructureUtils.createModifier(deleteFile, fileStructureUtil
 function deleteFile (fileStructure, request) {
     var name = request.body.name;
     var path = request.body.path;
+
     var directory = fileStructureUtils.findContainingDirectory(fileStructure, path);
-    delete directory[name];
+    var toDeleteName = directory[name] ? name : name + fileStructureUtils.getExtensionFromRoot(request.body.root);
+    delete directory[toDeleteName];
     return fileStructure;
 }

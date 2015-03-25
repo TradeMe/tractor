@@ -1,20 +1,15 @@
 'use strict';
 
 // Utilities:
-var errorHandler = require('../utils/error-handler');
-var path = require('path');
+var errorHandler = require('../../utils/error-handler');
 var Promise = require('bluebird');
-
-// Config:
-var config = require('../utils/get-config')();
-var constants = require('../constants');
 
 // Dependencies:
 var escodegen = require('escodegen');
 var fs = Promise.promisifyAll(require('fs'));
 
 // Errors:
-var GenerateJavaScriptError = require('../Errors/GenerateJavaScriptError');
+var GenerateJavaScriptError = require('../../Errors/GenerateJavaScriptError');
 
 module.exports = saveComponentFile;
 

@@ -8,7 +8,6 @@ var assert = require('assert');
 var StepDefinitionEditor = require('../StepDefinitionEditor');
 
 // Dependencies:
-var ucFirst = require('change-case').ucFirst;
 require('../Services/StepParserService');
 require('../Models/StepDefinitionModel');
 
@@ -20,70 +19,65 @@ var StepDefinitionParserService = function StepDefinitionParserService (
         parse: parse
     };
 
-    function parse (astObject, fileName, availableComponents, availableMockData) {
-        var stepDefinition = new StepDefinitionModel(fileName, availableComponents, availableMockData);
+    function parse (stepDefinitionFile, components, mockData) {
+        try {
+            debugger;
+            var stepDefinition = new StepDefinitionModel(stepDefinitionFile.name, {
+                availableComponents: components,
+                availableMockData: mockData,
+                path: stepDefinitionFile.path
+            });
 
-        var module = _.first(astObject.body);
-        var moduleBody = module.expression.right.body.body;
+            var ast = stepDefinitionFile.ast;
+            var meta = JSON.parse(_.first(ast.comments).value);
 
-        _.each(moduleBody, function (statement, index) {
-            var notStepDefinition = false;
-            var notComponentConstructorRequire = false;
-            var notComponent = false;
-            var notMockDataRequire = false;
+            var module = _.first(ast.body);
+            var moduleBody = module.expression.right.body.body;
 
-            try {
-                var step = StepParserService.parse(stepDefinition, statement);
-                assert(step);
-                stepDefinition.step = step;
-            } catch (e) {
-                notStepDefinition = true;
-            }
+            _.each(moduleBody, function (statement, index) {
+                try {
+                    var step = StepParserService.parse(stepDefinition, statement);
+                    assert(step);
+                    stepDefinition.step = step;
+                    return;
+                } catch (e) { }
 
-            var declarator;
-            var name;
+                var declarator;
+                var name;
 
-            try {
-                if (notStepDefinition) {
+                try {
                     declarator = _.first(statement.declarations);
                     name = declarator.init.callee.name;
                     var path = _.first(declarator.init.arguments);
                     assert(path.value.match(/\.component$/));
                     assert(name === 'require');
-                }
-            } catch (e) {
-                notComponentConstructorRequire = true;
-            }
+                    return;
+                } catch (e) { }
 
-            try {
-                if (notComponentConstructorRequire) {
+                try {
                     declarator = _.first(statement.declarations);
                     name = declarator.init.callee.name;
                     assert(name !== 'require');
-                    stepDefinition.addComponent(name);
-                }
-            } catch (e) {
-                notComponent = true;
-            }
+                    stepDefinition.addComponent(meta.components[stepDefinition.components.length].name);
+                    return;
+                } catch (e) { }
 
-            try {
-                if (notComponent) {
+                try {
                     declarator = _.first(statement.declarations);
                     name = declarator.id.name;
                     var path = _.first(declarator.init.arguments);
                     assert(path.value.match(/\.mock.json$/));
-                    stepDefinition.addMock(ucFirst(name));
-                }
-            } catch (e) {
-                notComponentConstructorRequire = true;
-            }
+                    stepDefinition.addMock(meta.mockData[stepDefinition.mockData.length].name);
+                    return;
+                } catch (e) { }
 
-            if (notStepDefinition && notComponentConstructorRequire && notComponent && notMockDataRequire) {
-                console.log(statement, index);
-            }
-        });
+                console.warn('Invalid step definition', statement, index);
+            });
 
-        return stepDefinition;
+            return stepDefinition;
+        } catch (e) {
+            return null;
+        }
     }
 };
 

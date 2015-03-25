@@ -11,12 +11,13 @@ var MockDataParserService = function MockDataParserService (MockDataModel) {
         parse: parse
     };
 
-    function parse (json, name) {
+    function parse (mockDataFile) {
         try {
-            var mockDataModel = new MockDataModel(json, {
-                isSaved: true
+            var mockDataModel = new MockDataModel(mockDataFile.content, {
+                isSaved: true,
+                path: mockDataFile.path
             });
-            mockDataModel.name = name;
+            mockDataModel.name = mockDataFile.name;
             return mockDataModel;
         } catch (e) {
             return new MockDataModel();

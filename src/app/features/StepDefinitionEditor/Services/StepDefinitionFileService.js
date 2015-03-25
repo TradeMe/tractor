@@ -1,28 +1,58 @@
 'use strict';
 
+// Utilities:
+var _ = require('lodash');
+
 // Module:
 var StepDefinitionEditor = require('../StepDefinitionEditor');
 
-var StepDefinitionFileService = function StepDefinitionFileService ($http) {
+// Dependencies:
+require('./StepDefinitionParserService');
+require('../../../Core/Services/FileStructureService');
+
+var StepDefinitionFileService = function StepDefinitionFileService (
+    $http,
+    StepDefinitionParserService,
+    FileStructureService
+) {
     return {
-        openStepDefinitionFile: openStepDefinitionFile,
-        saveStepDefinitionFile: saveStepDefinitionFile,
-        getStepDefinitionFileStructure: getStepDefinitionFileStructure
+        checkStepDefinitionExists: checkStepDefinitionExists,
+        getStepDefinitionFileStructure: getStepDefinitionFileStructure,
+        getStepDefinitionPath: getStepDefinitionPath,
+        openStepDefinition: openStepDefinition,
+        saveStepDefinition: saveStepDefinition
     };
 
-    function openStepDefinitionFile (fileName) {
-        return $http.get('/open-step-definition-file?name=' + encodeURIComponent(fileName));
-    }
-
-    function saveStepDefinitionFile (program, name) {
-        return $http.post('/save-step-definition-file', {
-            program: program,
-            name: name
-        });
+    function checkStepDefinitionExists (stepDefinitionFileStructure, stepDefinitionFilePath) {
+        return !!findStepDefinitionByPath(stepDefinitionFileStructure, stepDefinitionFilePath);
     }
 
     function getStepDefinitionFileStructure () {
-        return $http.get('/get-file-structure?directory=step_definitions');
+        return FileStructureService.getFileStructure({
+            directory: 'step_definitions',
+            parse: true
+        });
+    }
+
+    function getStepDefinitionPath (options) {
+        return $http.get('/get-step-definition-path', {
+            params: options
+        });
+    }
+
+    function openStepDefinition (stepDefinitionFileStructure, stepDefinitionFilePath, components, mockData) {
+        var stepDefinitionFile = findStepDefinitionByPath(stepDefinitionFileStructure, stepDefinitionFilePath);
+        return stepDefinitionFile ? StepDefinitionParserService.parse(stepDefinitionFile, components, mockData) : null;
+    }
+
+    function saveStepDefinition (options) {
+        return $http.post('/save-step-definition-file', options);
+    }
+
+    function findStepDefinitionByPath (stepDefinitionFileStructure, stepDefinitionFilePath) {
+        return _.find(stepDefinitionFileStructure.allFiles, function (stepDefinitionFile) {
+            return stepDefinitionFile.path.includes(stepDefinitionFilePath);
+        });
     }
 };
 

@@ -2,7 +2,6 @@
 
 // Utilities:
 var _ = require('lodash');
-var angular = require('angular');
 
 // Module:
 var Core = require('../../Core');
@@ -32,7 +31,7 @@ var ResizeHandleDirective = function () {
         element.addEventListener('mousedown', mousedown);
     }
 
-    function mousedown (event) {
+    function mousedown () {
         document.body.classList.add('resizing');
         document.body.addEventListener('mousemove', mousemove);
         document.body.addEventListener('mouseup', mouseup);
@@ -40,10 +39,10 @@ var ResizeHandleDirective = function () {
 
     function mousemove (event) {
         var containerWidth = parseFloat(window.getComputedStyle(parent).width);
-        var percent = Math.max(10, (event.clientX / containerWidth) * 100);
+        var percent = Math.max(10, event.clientX / containerWidth * 100);
         percent = Math.min(percent, 70);
         beforeElement.style.width = percent + '%';
-        afterElement.style.width = (100 - 0.25 - percent) + '%';
+        afterElement.style.width = 100 - 0.25 - percent + '%';
     }
 
     function mouseup () {

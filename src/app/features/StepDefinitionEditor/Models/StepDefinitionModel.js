@@ -16,11 +16,8 @@ var createStepDefinitionModelConstructor = function (
     ComponentInstanceModel,
     MockDataInstanceModel
 ) {
-    var StepDefinitionModel = function StepDefinitionModel (fileName, availableComponents, availableMockData) {
-        this.name = fileName.replace('.step.js', '');
-
-        this.availableComponents = availableComponents;
-        this.availableMockData = availableMockData;
+    var StepDefinitionModel = function StepDefinitionModel (fileName, options) {
+        this.name = fileName;
 
         this.components = [];
         this.componentInstances = [];
@@ -28,9 +25,39 @@ var createStepDefinitionModelConstructor = function (
         this.mockData = [];
         this.mockDataInstances = [];
 
-        Object.defineProperty(this, 'ast', {
-            get: function () {
-                return this.toAST();
+        Object.defineProperties(this, {
+            availableComponents: {
+                get: function () {
+                    return options.availableComponents;
+                }
+            },
+            availableMockData: {
+                get: function () {
+                    return options.availableMockData;
+                }
+            },
+            path: {
+                get: function () {
+                    return options.path;
+                }
+            },
+            meta: {
+                get: function () {
+                    return JSON.stringify({
+                        name: this.name,
+                        components: this.componentInstances.map(function (component) {
+                            return component.meta;
+                        }),
+                        mockData: this.mockDataInstances.map(function (mockData) {
+                            return mockData.meta;
+                        })
+                    }, null, '    ');
+                }
+            },
+            ast: {
+                get: function () {
+                    return this.toAST();
+                }
             }
         });
     };
@@ -41,7 +68,7 @@ var createStepDefinitionModelConstructor = function (
         });
         if (!_.contains(this.components, component)) {
             this.components.push(component);
-            this.componentInstances.push(new ComponentInstanceModel(component));
+            this.componentInstances.push(new ComponentInstanceModel(component, this));
         }
     };
 
@@ -57,7 +84,7 @@ var createStepDefinitionModelConstructor = function (
         });
         if (!_.contains(this.mockData, mockData)) {
             this.mockData.push(mockData);
-            this.mockDataInstances.push(new MockDataInstanceModel(mockData));
+            this.mockDataInstances.push(new MockDataInstanceModel(mockData, this));
         }
     };
 
@@ -70,25 +97,31 @@ var createStepDefinitionModelConstructor = function (
     StepDefinitionModel.prototype.toAST = function () {
         var ast = ASTCreatorService;
 
-        var components = _.map(this.componentInstances, function (component) {
+        var components = this.componentInstances.map(function (component) {
             return component.ast;
         });
 
-        var mockData = _.map(this.mockDataInstances, function (mockData) {
+        var mockData = this.mockDataInstances.map(function (mockData) {
             return mockData.ast;
         });
 
-        var moduleBody = _.flatten([components, mockData, this.step.ast]);
+        var template = 'module.exports = function () { ';
+        if (components) {
+            template += '%= components %; ';
+        }
+        if (mockData) {
+            template += '%= mockData %; ';
+        }
+        template += '%= step %; ';
+        template += '};';
 
-        var moduleBlockStatement = ast.blockStatement(moduleBody);
-        var moduleFunctionExpression = ast.functionExpression(null, null, moduleBlockStatement);
-
-        var moduleExportsMemberExpression = ast.memberExpression(ast.identifier('module'), ast.identifier('exports'));
-
-        var componentModuleAssignmentExpression = ast.assignmentExpression(moduleExportsMemberExpression, ast.AssignmentOperators.ASSIGNMENT, moduleFunctionExpression);
-        var componentModuleExpressionStatement = ast.expressionStatement(componentModuleAssignmentExpression);
-
-        return ast.program([componentModuleExpressionStatement]);
+        var stepDefinitionAST = ast.template(template, {
+            components: components,
+            mockData: mockData,
+            step: this.step.ast
+        });
+        stepDefinitionAST.expression.leadingComments = [ast.blockComment(this.meta)];
+        return stepDefinitionAST;
     };
 
     return StepDefinitionModel;

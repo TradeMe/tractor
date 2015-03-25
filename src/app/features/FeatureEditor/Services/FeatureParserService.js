@@ -19,13 +19,14 @@ var FeatureParserService = function FeatureParserService (
         parse: parse
     };
 
-    function parse (tokens) {
+    function parse (featureFile) {
         try {
             var feature = new FeatureModel({
-                isSaved: true
+                isSaved: true,
+                path: featureFile.path
             });
 
-            var featureTokens = _.first(tokens);
+            var featureTokens = _.first(featureFile.tokens);
             feature.name = featureTokens.name;
             feature.inOrderTo = featureTokens.inOrderTo;
             feature.asA = featureTokens.asA;

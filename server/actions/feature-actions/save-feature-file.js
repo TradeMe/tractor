@@ -2,20 +2,19 @@
 
 // Utilities:
 var _ = require('lodash');
-var constants = require('../constants');
-var errorHandler = require('../utils/error-handler');
+var constants = require('../../constants');
+var errorHandler = require('../../utils/error-handler');
 var os = require('os');
 var path = require('path');
 var Promise = require('bluebird');
 
 // Config:
-var config = require('../utils/get-config')();
+var config = require('../../utils/get-config')();
 
 // Dependencies:
 var childProcess = Promise.promisifyAll(require('child_process'));
 var fs = Promise.promisifyAll(require('fs'));
-var pascal = require('change-case').pascal;
-var fileStructureUtils = require('./file-actions/file-structure');
+var fileStructureUtils = require('../file-actions/file-structure');
 var stripcolorcodes = require('stripcolorcodes');
 
 var GIVEN_WHEN_THEN_REGEX = /^(Given|When|Then)/;
@@ -24,10 +23,8 @@ var AND_BUT_REGEX = /^(And|But)/;
 module.exports = saveFeatureFile;
 
 function saveFeatureFile (request, response) {
-    var name = request.body.name + constants.FEATURES_EXTENSION;
     var feature = request.body.feature.replace(new RegExp(constants.FEATURE_NEWLINE, 'g'), os.EOL);
-
-    var featurePath = path.join(config.testDirectory, constants.FEATURES_DIR, name);
+    var featurePath = request.body.path;
 
     var fileNames = generateFileNames(feature);
 
@@ -46,7 +43,6 @@ function saveFeatureFile (request, response) {
         errorHandler(response, error, 'Generating Cucumber stubs failed.');
     });
 }
-
 
 function generateFileNames (feature) {
     return stripcolorcodes(feature)

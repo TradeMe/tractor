@@ -2,6 +2,7 @@
 
 // Utilities:
 var _ = require('lodash');
+var constants = require('../../constants');
 var errorHandler = require('../../utils/error-handler');
 var path = require('path');
 var Promise = require('bluebird');
@@ -15,6 +16,7 @@ module.exports = {
     findDirectory: findDirectory,
     findContainingDirectory: findContainingDirectory,
     getFileNames: getFileNames,
+    getExtensionFromRoot: getExtensionFromRoot,
     noop: noop
 };
 
@@ -65,7 +67,6 @@ function organiseFileStructure (directory, fileStructure) {
             if (!/^\./.test(name)) {
                 directory.files = directory.files || [];
                 item.name = _.last(/(.*?)\./.exec(name));
-                item.extension = _.last(/(\..*)/.exec(name));
                 item.path = item['-path'];
                 item.content = item['-content'];
                 directory.files.push(item);
@@ -131,7 +132,7 @@ function getFileNames (directoryPath, extension) {
 }
 
 function getFileNamesInDirectory (directory, names) {
-    var names = names || [];
+    names = names || [];
     _.each(directory, function (item, name) {
         if (item['-type'] === 'd') {
             // Directory:
@@ -142,6 +143,12 @@ function getFileNamesInDirectory (directory, names) {
         }
     });
     return names;
+}
+
+function getExtensionFromRoot (root) {
+    var rootDirectoryName = path.basename(root);
+    var extensionKey = rootDirectoryName.toUpperCase() + '_EXTENSION';
+    return constants[extensionKey];
 }
 
 function noop (fileStructure) {

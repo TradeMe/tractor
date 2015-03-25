@@ -29,7 +29,7 @@ var DragFileDirective = function () {
         return false;
     }
 
-    function dragend (event) {
+    function dragend () {
         this.classList.remove('drag');
         return false;
     }

@@ -1,8 +1,5 @@
 'use strict';
 
-// Utilities:
-var _ = require('lodash');
-
 // Module:
 var MockDataEditor = require('./MockDataEditor');
 
@@ -15,39 +12,48 @@ var MockDataEditorController = (function () {
         $scope,
         $window,
         NotifierService,
-        FileStructureService,
         MockDataFileService,
         MockDataModel,
         mockDataFileStructure,
-        mockData
+        mockDataPath
     ) {
         this.$window = $window;
         this.$scope = $scope;
         this.notifierService = NotifierService;
 
-        this.fileStructureService = FileStructureService;
         this.mockDataFileService = MockDataFileService;
 
         this.fileStructure = mockDataFileStructure;
-        this.mockData = mockData || new MockDataModel();
+
+        if (mockDataPath) {
+            this.mockData = this.mockDataFileService.openMockData(this.fileStructure, mockDataPath.path);
+        }
+        this.mockData = this.mockData || new MockDataModel();
     };
 
     MockDataEditorController.prototype.saveMockDataFile = function () {
-        var json = this.mockData.json;
-        var name = this.mockData.name;
+        this.mockDataFileService.getMockDataPath({
+            name: this.mockData.name,
+            path: this.mockData.path
+        })
+        .then(function (mockDataPath) {
+            var exists = this.mockDataFileService.checkMockDataExists(this.fileStructure, mockDataPath.path);
 
-        var exists = fileAlreadyExists(name, this.fileStructure);
-
-        if (!exists || this.$window.confirm('This will overwrite "' + name + '". Continue?')) {
-            this.mockDataFileService.saveMockDataFile(json, name)
-            .then(function () {
-                this.mockData.isSaved = true;
-                return this.fileStructureService.getFileStructure('mock_data');
-            }.bind(this))
-            .then(function (mockDataFileStructure) {
-                this.fileStructure = mockDataFileStructure;
-            }.bind(this));
-        }
+            if (!exists || this.$window.confirm('This will overwrite "' + this.mockData.name + '". Continue?')) {
+                this.mockDataFileService.saveMockData({
+                    data: this.mockData.json,
+                    name: this.mockData.name,
+                    path: mockDataPath.path
+                })
+                .then(function () {
+                    return this.mockDataFileService.getMockDataFileStructure();
+                }.bind(this))
+                .then(function (mockDataFileStructure) {
+                    this.fileStructure = mockDataFileStructure;
+                    this.mockData = this.mockDataFileService.openMockData(this.fileStructure, mockDataPath.path);
+                }.bind(this));
+            }
+        }.bind(this));
     };
 
     MockDataEditorController.prototype.showErrors = function () {
@@ -65,18 +71,6 @@ var MockDataEditorController = (function () {
             return true;
         }
     };
-
-    function fileAlreadyExists (fileName, directory) {
-        return _.some(directory, function (info, name) {
-            if (info['-type'] === 'd') {
-                // Directory:
-                return fileAlreadyExists(fileName, info);
-            } else if (name !== '-type' && name !== '-path') {
-                // File:
-                return new RegExp(fileName + '\.').test(name);
-            }
-        });
-    }
 
     return MockDataEditorController;
 })();

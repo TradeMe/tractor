@@ -1,25 +1,19 @@
 'use strict';
 
-// Utilities:
-var _ = require('lodash');
-
 // Module:
 var StepDefinitionEditor = require('./StepDefinitionEditor');
 
 // Dependencies:
 require('./Services/StepDefinitionFileService');
-require('./Services/StepDefinitionParserService');
 
 var StepDefinitionEditorController = (function () {
     var StepDefinitionEditorController = function StepDefinitionEditorController (
-        $stateParams,
         $scope,
         $window,
         NotifierService,
         StepDefinitionFileService,
-        StepDefinitionParserService,
         stepDefinitionFileStructure,
-        stepDefinitionFile,
+        stepDefinitionPath,
         components,
         mockData
     ) {
@@ -28,12 +22,14 @@ var StepDefinitionEditorController = (function () {
         this.notifierService = NotifierService;
 
         this.stepDefinitionFileService = StepDefinitionFileService;
-        this.stepDefinitionParserService = StepDefinitionParserService;
 
         this.fileStructure = stepDefinitionFileStructure;
-
         this.availableComponents = components;
         this.availableMockData = mockData;
+
+        if (stepDefinitionPath) {
+            this.stepDefinition = this.stepDefinitionFileService.openStepDefinition(this.fileStructure, stepDefinitionPath.path, this.availableComponents, this.availableMockData);
+        }
 
         Object.defineProperties(this, {
             canAddComponents: {
@@ -80,27 +76,31 @@ var StepDefinitionEditorController = (function () {
                 }
             }
         });
-
-        if (stepDefinitionFile) {
-            parseStepDefinitionFile.call(this, $stateParams.stepDefinition, stepDefinitionFile);
-        }
     };
 
     StepDefinitionEditorController.prototype.saveStepDefinitionFile = function () {
-        var ast = this.stepDefinition.ast;
-        var name = this.stepDefinition.name;
+        this.stepDefinitionFileService.getStepDefinitionPath({
+            name: this.stepDefinition.name,
+            path: this.stepDefinition.path
+        })
+        .then(function (stepDefinitionPath) {
+            var exists = this.stepDefinitionFileService.checkStepDefinitionExists(this.fileStructure, stepDefinitionPath.path);
 
-        var exists = fileAlreadyExists(name, this.fileStructure);
-
-        if (!exists || this.$window.confirm('This will overwrite "' + name + '". Continue?')) {
-            this.stepDefinitionFileService.saveStepDefinitionFile(ast, name)
-            .then(function () {
-                return this.stepDefinitionFileService.getStepDefinitionFileStructure();
-            }.bind(this))
-            .then(function (stepDefinitionFileStructure) {
-                this.fileStructure = stepDefinitionFileStructure;
-            }.bind(this));
-        }
+            if (!exists || this.$window.confirm('This will overwrite "' + this.stepDefinition.name + '". Continue?')) {
+                this.stepDefinitionFileService.saveStepDefinition({
+                    ast: this.stepDefinition.ast,
+                    name: this.stepDefinition.name,
+                    path: stepDefinitionPath.path
+                })
+                .then(function () {
+                    return this.stepDefinitionFileService.getStepDefinitionFileStructure();
+                }.bind(this))
+                .then(function (stepDefinitionFileStructure) {
+                    this.fileStructure = stepDefinitionFileStructure;
+                    this.stepDefinition = this.stepDefinitionFileService.openStepDefinition(this.fileStructure, stepDefinitionPath.path, this.availableComponents, this.availableMocks);
+                }.bind(this));
+            }
+        }.bind(this));
     };
 
     StepDefinitionEditorController.prototype.showErrors = function () {
@@ -118,24 +118,6 @@ var StepDefinitionEditorController = (function () {
             return true;
         }
     };
-
-    function parseStepDefinitionFile (filename, stepDefinitionFile) {
-        try {
-            this.stepDefinition = this.stepDefinitionParserService.parse(stepDefinitionFile.ast, filename, this.availableComponents, this.availableMockData);
-        } catch (e) { }
-    }
-
-    function fileAlreadyExists (fileName, directory) {
-        return _.some(directory, function (info, name) {
-            if (info['-type'] === 'd') {
-                // Directory:
-                return fileAlreadyExists(fileName, info);
-            } else if (name !== '-type' && name !== '-path') {
-                // File:
-                return new RegExp(fileName + '\.').test(name);
-            }
-        });
-    }
 
     return StepDefinitionEditorController;
 })();

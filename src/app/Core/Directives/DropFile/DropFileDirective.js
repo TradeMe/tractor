@@ -38,7 +38,7 @@ var DropFileDirective = function () {
         return false;
     }
 
-    function dragenter (event) {
+    function dragenter () {
         Array.prototype.forEach.call(document.querySelectorAll('.dragover'), function (element) {
             element.classList.remove('dragover');
         });
@@ -46,7 +46,7 @@ var DropFileDirective = function () {
         return false;
     }
 
-    function dragleave (event) {
+    function dragleave () {
         this.classList.remove('dragover');
         return false;
     }

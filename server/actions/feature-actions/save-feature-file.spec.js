@@ -1,4 +1,4 @@
-/* global describe:true, it:true */
+/* global describe:true, it:true, xit:true */
 'use strict';
 
 var chai = require('chai');
@@ -12,17 +12,17 @@ chai.use(sinonChai);
 
 var saveFeatureFile = require('./save-feature-file');
 
-describe('server/actions: save-feature-file:', function () {
+describe('server/actions/feature-actions: save-feature-file:', function () {
     it('should build the correct `featurePath` and save the `feature` to a ".feature" file', function () {
         var childProcess = require('child_process');
         var fs = require('fs');
-        var path = require('path');
         sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(['']));
         sinon.stub(fs, 'writeFileAsync').returns(Promise.resolve());
         sinon.stub(fs, 'readdirAsync').returns(Promise.resolve());
         var request = {
             body: {
                 name: 'feature',
+                path: 'e2e_tests/features/feature.feature',
                 feature: 'feature'
             }
         };
@@ -32,8 +32,7 @@ describe('server/actions: save-feature-file:', function () {
 
         return saveFeatureFile(request, response)
         .then(function () {
-            var featurePath = path.join('e2e_tests', 'features' , 'feature.feature');
-            expect(fs.writeFileAsync).to.have.been.calledWith(featurePath, 'feature');
+            expect(fs.writeFileAsync).to.have.been.calledWith('e2e_tests/features/feature.feature', 'feature');
         })
         .finally(function () {
             childProcess.execAsync.restore();
@@ -45,13 +44,13 @@ describe('server/actions: save-feature-file:', function () {
     it('should replace any occurences of "%%NEWLINE%%" with a new line', function () {
         var childProcess = require('child_process');
         var fs = require('fs');
-        var path = require('path');
         sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(['']));
         sinon.stub(fs, 'writeFileAsync').returns(Promise.resolve());
         sinon.stub(fs, 'readdirAsync').returns(Promise.resolve());
         var request = {
             body: {
                 name: 'feature',
+                path: 'e2e_tests/features/feature.feature',
                 feature: '%%NEWLINE%%'
             }
         };
@@ -61,8 +60,7 @@ describe('server/actions: save-feature-file:', function () {
 
         return saveFeatureFile(request, response)
         .then(function () {
-            var featurePath = path.join('e2e_tests', 'features' , 'feature.feature');
-            expect(fs.writeFileAsync).to.have.been.calledWith(featurePath, require('os').EOL);
+            expect(fs.writeFileAsync).to.have.been.calledWith('e2e_tests/features/feature.feature', require('os').EOL);
         })
         .finally(function () {
             childProcess.execAsync.restore();
@@ -81,6 +79,7 @@ describe('server/actions: save-feature-file:', function () {
         var request = {
             body: {
                 name: 'feature',
+                path: 'e2e_tests/features/feature.feature',
                 feature: '%%NEWLINE%%'
             }
         };
@@ -91,8 +90,7 @@ describe('server/actions: save-feature-file:', function () {
         return saveFeatureFile(request, response)
         .then(function () {
             var cucumberPath = path.join('node_modules', 'cucumber', 'bin', 'cucumber');
-            var featurePath = path.join('e2e_tests', 'features' , 'feature.feature');
-            expect(childProcess.execAsync).to.have.been.calledWith('node ' + cucumberPath + ' "' + featurePath + '"');
+            expect(childProcess.execAsync).to.have.been.calledWith('node ' + cucumberPath + ' "e2e_tests/features/feature.feature"');
         })
         .finally(function () {
             childProcess.execAsync.restore();
@@ -104,7 +102,7 @@ describe('server/actions: save-feature-file:', function () {
     it('should return an error if the "cucumber" execution fails', function () {
         var childProcess = require('child_process');
         var fs = require('fs');
-        var logging = require('../utils/logging');
+        var logging = require('../../utils/logging');
         sinon.stub(childProcess, 'execAsync').returns(Promise.reject(new Error()));
         sinon.stub(fs, 'writeFileAsync').returns(Promise.resolve());
         sinon.stub(logging, 'error');
@@ -182,7 +180,7 @@ describe('server/actions: save-feature-file:', function () {
         var request = {
             body: {
                 name: '',
-                feature: ''
+                feature: 'When some step'
             }
         };
         var response = {
@@ -195,7 +193,7 @@ describe('server/actions: save-feature-file:', function () {
         return saveFeatureFile(request, response)
         .then(function () {
             var stepPath = fs.writeFileAsync.getCall(1).args[0];
-            var expectedPath = path.join('e2e_tests', 'step_definitions', 'WhenSomeStep.step.js');
+            var expectedPath = path.join('e2e_tests', 'step_definitions', 'When some step.step.js');
             expect(stepPath).to.equal(expectedPath);
         })
         .finally(function () {
@@ -270,7 +268,7 @@ describe('server/actions: save-feature-file:', function () {
         });
     });
 
-    it('should not save a new file if one with the same name already exists', function () {
+    xit('should not save a new file if one with the same name already exists', function () {
         var childProcess = require('child_process');
         var eol = require('os').EOL;
         var fs = require('fs');

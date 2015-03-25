@@ -12,7 +12,7 @@ require('../../../Core/Services/ASTCreatorService');
 var createMockModelConstructor = function (
     ASTCreatorService
 ) {
-    var MockModel = function TaskModel (step) {
+    var MockModel = function MockModel (step) {
         Object.defineProperties(this, {
             step: {
                 get: function () {
@@ -39,20 +39,18 @@ var createMockModelConstructor = function (
     function toAST () {
         var ast = ASTCreatorService;
 
-        var httpBackendOnLoadMemberExpression = ast.memberExpression(ast.identifier('httpBackend'), ast.identifier('onLoad'));
-        var httpBackendWhenMemberExpression = ast.memberExpression(httpBackendOnLoadMemberExpression, ast.identifier('when'));
-        var httpBackendWhenCallExpression = ast.callExpression(httpBackendWhenMemberExpression, [ast.literal(this.action), ast.literal(this.url)]);
-
-        var httpBackendCallExpression;
+        var template = 'httpBackend.onLoad.when(%= action %, %= url %)';
         if (this.passThrough) {
-            var httpBackendRespondMemberExpression = ast.memberExpression(httpBackendWhenCallExpression, ast.identifier('passThrough'));
-            httpBackendCallExpression = ast.callExpression(httpBackendRespondMemberExpression);
+            template += '.passThrough(); ';
         } else {
-            var httpBackendRespondMemberExpression = ast.memberExpression(httpBackendWhenCallExpression, ast.identifier('respond'));
-            httpBackendCallExpression = ast.callExpression(httpBackendRespondMemberExpression, [ast.identifier(this.data.name)]);
+            template += '.respond(%= dataName %); ';
         }
 
-        return ast.expressionStatement(httpBackendCallExpression);
+        return ast.template(template, {
+            action: ast.literal(this.action),
+            url: ast.literal(this.url),
+            dataName: ast.identifier(this.data.variableName)
+        });
     }
 };
 

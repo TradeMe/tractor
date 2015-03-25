@@ -1,9 +1,21 @@
+/*{
+    "name": "Given I have a saved component",
+    "components": [],
+    "mockData": [
+        {
+            "name": "Mock Get Component File Names Data"
+        },
+        {
+            "name": "Mock Open Component File Example Component"
+        }
+    ]
+}*/
 module.exports = function () {
-    var mockGetComponentFileNamesData = require('../mock_data/MockGetComponentFileNamesData.mock.json');
-    var mockOpenComponentFileExampleComponent = require('../mock_data/MockOpenComponentFileExampleComponent.mock.json');
+    var mockGetComponentFileNamesData = require('../../../mock_data/Mock Get Component File Names Data.mock.json');
+    var mockOpenComponentFileExampleComponent = require('../../../mock_data/Mock Open Component File Example Component.mock.json');
     this.Given(/^I have a saved component$/, function (done) {
-        httpBackend.onLoad.when('GET', '/get-component-file-names').respond(mockGetComponentFileNamesData);
-        httpBackend.onLoad.when('GET', '/open-component-file?name=ExampleComponent').respond(mockOpenComponentFileExampleComponent);
+        httpBackend.onLoad.when('GET', 'hello').respond(mockGetComponentFileNamesData);
+        httpBackend.onLoad.when('GET', 'hello').respond(mockOpenComponentFileExampleComponent);
         done();
     });
 };

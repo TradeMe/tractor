@@ -2,40 +2,34 @@
 
 // Utilities:
 var _ = require('lodash');
-var errorHandler = require('../utils/error-handler');
-var path = require('path');
+var errorHandler = require('../../utils/error-handler');
 var Promise = require('bluebird');
-
-// Config:
-var config = require('../utils/get-config')();
-var constants = require('../constants');
 
 // Dependencies:
 var fs = Promise.promisifyAll(require('fs'));
 var escodegen = require('escodegen');
 
 // Errors:
-var GenerateJavaScriptError = require('../Errors/GenerateJavaScriptError');
+var GenerateJavaScriptError = require('../../Errors/GenerateJavaScriptError');
 
 module.exports = saveStepDefinitionFile;
 
 function saveStepDefinitionFile (request, response) {
-    var name = request.body.name + constants.STEP_DEFINITIONS_EXTENSION;
-
     var javascript = null;
     try {
-        generateJavaScript(request);
+        javascript = generateJavaScript(request.body.ast);
     } catch (e) {
         errorHandler(response, new GenerateJavaScriptError('Invalid step definition.'));
         return Promise.resolve();
     }
 
-    return saveJavaScriptFile(name, javascript, response);
+    return saveJavaScriptFile(request.body.path, request.body.name, javascript, response);
 }
 
-function generateJavaScript (request) {
-    var program = rebuildRegExps(request.body.program);
-    return escodegen.generate(program);
+function generateJavaScript (ast) {
+    return escodegen.generate(rebuildRegExps(ast), {
+        comment: true
+    });
 }
 
 function rebuildRegExps (object) {
@@ -49,9 +43,8 @@ function rebuildRegExps (object) {
     return object;
 }
 
-function saveJavaScriptFile (name, javascript, response) {
-    var stepPath = path.join(config.testDirectory, constants.STEP_DEFINITIONS_DIR, name);
-    return fs.writeFileAsync(stepPath, javascript)
+function saveJavaScriptFile (path, name, javascript, response) {
+    return fs.writeFileAsync(path, javascript)
     .then(function () {
         response.send(JSON.stringify({
             message: '"' + name + '" saved successfully.'

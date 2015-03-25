@@ -12,11 +12,14 @@ function moveFile (fileStructure, request) {
     var directoryPath = request.body.directoryPath;
     var fileName = request.body.fileName;
     var filePath = request.body.filePath;
+    var extension = fileStructureUtils.getExtensionFromRoot(request.body.root);
+
     var originalDirectory = fileStructureUtils.findContainingDirectory(fileStructure, filePath);
     var newDirectory = fileStructureUtils.findDirectory(fileStructure, directoryPath);
+
     if (originalDirectory !== newDirectory) {
-        newDirectory[fileName] = fileStructureUtils.deletePaths(originalDirectory[fileName]);
-        delete originalDirectory[fileName];
+        newDirectory[fileName + extension] = fileStructureUtils.deletePaths(originalDirectory[fileName + extension]);
+        delete originalDirectory[fileName + extension];
     }
     return fileStructure;
 }

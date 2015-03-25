@@ -11,14 +11,14 @@ var GiveFocusDirective = function () {
         restrict: 'A',
 
         scope: {
-            focusOn: "="
+            focusOn: '='
         },
 
         link: link
     };
 
     function link ($scope, $element) {
-        $scope.$watch('focusOn', function (currentValue, previousValue) {
+        $scope.$watch('focusOn', function (currentValue) {
             var input = _.first($element);
             if (currentValue) {
                 input.focus();
@@ -26,7 +26,7 @@ var GiveFocusDirective = function () {
             } else {
                 input.blur();
             }
-        })
+        });
     }
 };
 

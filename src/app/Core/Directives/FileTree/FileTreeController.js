@@ -1,44 +1,26 @@
 'use strict';
 
 // Utilities:
+var _ = require('lodash');
 var path = require('path');
 
 // Module:
 var Core = require('../../Core');
 
 // Dependencies:
-var changecase = require('change-case');
-var pascal = changecase.pascal;
-var title = changecase.title;
+var title = require('change-case').title;
 require('../../Services/FileStructureService');
-
-var createTransform = {
-    '.component.js': function (oldName, newName) {
-        var nonalphaquote = '([^a-zA-Z0-9\"])';
-        return [{
-            replace: nonalphaquote + pascal(oldName) + nonalphaquote,
-            with: '$1' + pascal(newName) + '$2'
-        }, {
-            replace: '\"' + oldName + '\"',
-            with: '"' + newName + '"'
-        }]
-    },
-    '.feature': function (oldName, newName) {
-        return [{
-            replace: '(\\s)' + oldName + '(\\r\\n|\\n)',
-            with: '$1' + newName + '$2'
-        }];
-    }
-};
 
 var FileTreeController = (function () {
     var FileTreeController = function FileTreeController (
         $state,
         $timeout,
+        $window,
         FileStructureService
     ) {
         this.$state = $state;
         this.$timeout = $timeout;
+        this.$window = $window;
         this.fileStructureService = FileStructureService;
 
         this.headerName = title(this.type);
@@ -70,19 +52,12 @@ var FileTreeController = (function () {
         if (item.name !== item.previousName) {
             var oldName = item.previousName;
             var newName = item.name;
-            var extension = item.extension || '';
-            var create = createTransform[item.extension];
-            var transforms;
-            if (create) {
-                transforms = create(oldName, newName);
-            }
 
             this.fileStructureService.editName({
                 root: this.model.fileStructure.path,
                 path: item.path,
-                oldName: oldName + extension,
-                newName: newName + extension,
-                transforms: transforms
+                oldName: oldName,
+                newName: newName
             })
             .then(function (fileStructure) {
                 this.model.fileStructure = fileStructure;
@@ -104,8 +79,7 @@ var FileTreeController = (function () {
                 var directoryPath = this.model.fileStructure.path.replace(/\\/g, '/');
                 var filePath = item.path.replace(/\\/g, '/');
                 var relativePath = path.relative(directoryPath, filePath);
-                var pathWithoutExtension = relativePath.replace(item.extension, '');
-                params[this.type] = pathWithoutExtension;
+                params[this.type] = _.last(relativePath.match(/(.*?)\..*/));
                 this.$state.go('tractor.' + this.type + '-editor', params);
             }
         }.bind(this), 200);
@@ -114,7 +88,7 @@ var FileTreeController = (function () {
     FileTreeController.prototype.moveFile = function (root, file, directory) {
         this.fileStructureService.moveFile({
             root: root,
-            fileName: file.name + file.extension,
+            fileName: file.name,
             filePath: file.path,
             directoryPath: directory.path
         })
@@ -148,14 +122,13 @@ var FileTreeController = (function () {
 
     FileTreeController.prototype.delete = function (item) {
         this.hideOptions(item);
-        if ((item.files && item.files.length) || (item.directories && item.directories.length)) {
-            alert('Cannot delete a directory with files in it.');
+        if (item.files && item.files.length || item.directories && item.directories.length) {
+            this.$window.alert('Cannot delete a directory with files in it.');
         } else {
-            var extension = item.extension || '';
             this.fileStructureService.deleteFile({
                 root: this.model.fileStructure.path,
                 path: item.path,
-                name: item.name + extension
+                name: item.name
             })
             .then(function (fileStructure) {
                 this.model.fileStructure = fileStructure;

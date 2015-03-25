@@ -1,8 +1,5 @@
 'use strict';
 
-// Utilities:
-var _ = require('lodash');
-
 // Module:
 var FeatureEditor = require('./FeatureEditor');
 
@@ -15,40 +12,48 @@ var FeatureEditorController = (function () {
         $scope,
         $window,
         NotifierService,
-        FileStructureService,
         FeatureFileService,
         FeatureModel,
         featureFileStructure,
-        feature
+        featurePath
     ) {
         this.$scope = $scope;
         this.$window = $window;
         this.notifierService = NotifierService;
 
-        this.fileStructureService = FileStructureService;
         this.featureFileService = FeatureFileService;
 
         this.fileStructure = featureFileStructure;
 
-        this.feature = feature || new FeatureModel();
+        if (featurePath) {
+            this.feature = this.featureFileService.openFeature(this.fileStructure, featurePath.path);
+        }
+        this.feature = this.feature || new FeatureModel();
     };
 
     FeatureEditorController.prototype.saveFeatureFile = function () {
-        var featureString = this.feature.featureString;
-        var name = this.feature.name;
+        this.featureFileService.getFeaturePath({
+            name: this.feature.name,
+            path: this.feature.path
+        })
+        .then(function (featurePath) {
+            var exists = this.featureFileService.checkFeatureExists(this.fileStructure, featurePath.path);
 
-        var exists = fileAlreadyExists(name, this.fileStructure);
-
-        if (!exists || this.$window.confirm('This will overwrite "' + name + '". Continue?')) {
-            this.featureFileService.saveFeatureFile(featureString, name)
-            .then(function () {
-                this.feature.isSaved = true;
-                return this.fileStructureService.getFileStructure('features');
-            }.bind(this))
-            .then(function (featureFileStructure) {
-                this.fileStructure = featureFileStructure;
-            }.bind(this));
-        }
+            if (!exists || this.$window.confirm('This will overwrite "' + this.feature.name + '". Continue?')) {
+                this.featureFileService.saveFeature({
+                    feature: this.feature.featureString,
+                    name: this.feature.name,
+                    path: featurePath.path
+                })
+                .then(function () {
+                    return this.featureFileService.getFeatureFileStructure();
+                }.bind(this))
+                .then(function (featureFileStructure) {
+                    this.fileStructure = featureFileStructure;
+                    this.mockData = this.featureFileService.openFeature(this.fileStructure, featurePath.path);
+                }.bind(this));
+            }
+        }.bind(this));
     };
 
     FeatureEditorController.prototype.showErrors = function () {
@@ -66,18 +71,6 @@ var FeatureEditorController = (function () {
             return true;
         }
     };
-
-    function fileAlreadyExists (fileName, directory) {
-        return _.some(directory, function (info, name) {
-            if (info['-type'] === 'd') {
-                // Directory:
-                return fileAlreadyExists(fileName, info);
-            } else if (name !== '-type' && name !== '-path') {
-                // File:
-                return new RegExp(fileName + '\.').test(name);
-            }
-        });
-    }
 
     return FeatureEditorController;
 })();

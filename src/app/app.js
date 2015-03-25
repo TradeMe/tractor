@@ -87,12 +87,12 @@ angular.module('tractor', [
         /* eslint-enable no-path-concat */
         controller: 'FeatureEditorController as featureEditor',
         resolve: {
-            featureFileStructure: function (FileStructureService) {
-                return FileStructureService.getFileStructure('features');
+            featureFileStructure: function (FeatureFileService) {
+                return FeatureFileService.getFeatureFileStructure();
             },
-            feature: function ($stateParams, FeatureFileService) {
+            featurePath: function ($stateParams, FeatureFileService) {
                 var feature = $stateParams.feature;
-                return feature ? FeatureFileService.openFeatureFile(feature) : null;
+                return feature ? FeatureFileService.getFeaturePath({ name: feature }) : null;
             }
         }
     })
@@ -106,15 +106,15 @@ angular.module('tractor', [
             stepDefinitionFileStructure: function (StepDefinitionFileService) {
                 return StepDefinitionFileService.getStepDefinitionFileStructure();
             },
-            stepDefinitionFile: function ($stateParams, StepDefinitionFileService) {
+            stepDefinitionPath: function ($stateParams, StepDefinitionFileService) {
                 var stepDefinition = $stateParams['step-definition'];
-                return stepDefinition ? StepDefinitionFileService.openStepDefinitionFile(stepDefinition) : null;
+                return stepDefinition ? StepDefinitionFileService.getStepDefinitionPath({ name: stepDefinition }) : null;
             },
             components: function (ComponentFileService) {
                 return ComponentFileService.getAllComponents();
             },
             mockData: function (MockDataFileService) {
-                //return MockDataFileService.getAllMockData();
+                return MockDataFileService.getAllMockData();
             }
         }
     })
@@ -125,12 +125,12 @@ angular.module('tractor', [
         /* eslint-enable no-path-concat */
         controller: 'MockDataEditorController as mockDataEditor',
         resolve: {
-            mockDataFileStructure: function (FileStructureService) {
-                return FileStructureService.getFileStructure('mock_data');
+            mockDataFileStructure: function (MockDataFileService) {
+                return MockDataFileService.getMockDataFileStructure();
             },
-            mockData: function ($stateParams, MockDataFileService) {
-                var mockData = $stateParams['mock-data'];
-                return mockData ? MockDataFileService.openMockDataFile(mockData) : null;
+            mockDataPath: function ($stateParams, MockDataFileService) {
+                var mockDataName = $stateParams['mock-data'];
+                return mockDataName ? MockDataFileService.getMockDataPath({ name: mockDataName }) : null;
             }
         }
     });

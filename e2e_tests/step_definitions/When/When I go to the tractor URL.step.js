@@ -1,10 +1,6 @@
 module.exports = function () {
-    var Tractor = require('../components/Tractor.component');
-    var tractor = new Tractor();
-    this.When(/^I go to the tractor URL$/, function (done) {
-        var tasks = tractor.get();
-        Promise.all([tasks]).then(function () {
-            done();
-        });
+    this.When(/^I go to the tractor URL$/, function (callback) {
+      // Write code here that turns the phrase above into concrete actions
+      callback.pending();
     });
 };

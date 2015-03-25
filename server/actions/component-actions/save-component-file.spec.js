@@ -12,7 +12,7 @@ chai.use(sinonChai);
 
 var saveComponentFile = require('./save-component-file');
 
-describe('server/actions: save-component-file:', function () {
+describe('server/actions/component-actions: save-component-file:', function () {
     it('should generate a JavaScript file from an AST and save it', function () {
         var escodegen = require('escodegen');
         var fs = require('fs');
@@ -31,7 +31,7 @@ describe('server/actions: save-component-file:', function () {
         return saveComponentFile(request, response)
         .then(function () {
             var responseData = JSON.parse(response.send.firstCall.args[0]);
-            expect(responseData.message).to.equal('"component.component.js" saved successfully.');
+            expect(responseData.message).to.equal('"component" saved successfully.');
         })
         .finally(function () {
             escodegen.generate.restore();
@@ -41,7 +41,7 @@ describe('server/actions: save-component-file:', function () {
 
     it('should return an error if it cannot generate a JavaScript file', function () {
         var escodegen = require('escodegen');
-        var logging = require('../utils/logging');
+        var logging = require('../../utils/logging');
         sinon.stub(escodegen, 'generate', function () {
             throw new Error();
         });
@@ -73,7 +73,7 @@ describe('server/actions: save-component-file:', function () {
     it('should return an error if the file cannot be saved', function () {
         var escodegen = require('escodegen');
         var fs = require('fs');
-        var logging = require('../utils/logging');
+        var logging = require('../../utils/logging');
         sinon.stub(fs, 'writeFileAsync').returns(Promise.reject(new Error()));
         sinon.stub(escodegen, 'generate').returns('');
         sinon.stub(logging, 'error');
@@ -93,7 +93,7 @@ describe('server/actions: save-component-file:', function () {
         .then(function () {
             expect(response.status).to.have.been.calledWith(500);
             var responseData = JSON.parse(response.send.firstCall.args[0]);
-            expect(responseData.error).to.equal('Saving "component.component.js" failed.');
+            expect(responseData.error).to.equal('Saving "component" failed.');
         })
         .finally(function () {
             escodegen.generate.restore();

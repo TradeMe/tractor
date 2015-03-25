@@ -19,9 +19,10 @@ var FileStructureService = function FileStructureService (
         moveFile: moveFile
     };
 
-    function getFileStructure (directory, options) {
-        var parse = !!(options && options.parse);
-        return $http.get('/get-file-structure?directory=' + directory + '&parse=' + parse)
+    function getFileStructure (options) {
+        return $http.get('/get-file-structure', {
+            params: options
+        })
         .then(updateFileStructure);
     }
 
@@ -54,7 +55,7 @@ var FileStructureService = function FileStructureService (
     }
 
     function updateFileStructure (fileStructure) {
-        var fileStructure = restoreExpanded(fileStructure);
+        fileStructure = restoreExpanded(fileStructure);
         fileStructure.expanded = true;
         return fileStructure;
     }

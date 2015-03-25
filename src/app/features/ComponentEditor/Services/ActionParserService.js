@@ -28,7 +28,7 @@ var ActionParserService = function ActionParserService (
         var actionBody = actionFunctionExpression.body.body;
 
         _.each(actionFunctionExpression.params, function (param) {
-            var parameter = ParameterParserService.parse(action, param);
+            var parameter = ParameterParserService.parse(action);
             assert(parameter);
             parameter.name = meta.parameters[action.parameters.length].name;
             action.parameters.push(parameter);

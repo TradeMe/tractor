@@ -2,51 +2,66 @@
 
 // Utilities:
 var _ = require('lodash');
-var Promise = require('bluebird');
 
 // Module:
 var MockDataEditor = require('../MockDataEditor');
 
 // Dependencies:
 require('./MockDataParserService');
+require('../../../Core/Services/FileStructureService');
 
 var MockDataFileService = function MockDataFileService (
     $http,
-    MockDataParserService
+    MockDataParserService,
+    FileStructureService
 ) {
     return {
-        openMockDataFile: openMockDataFile,
-        saveMockDataFile: saveMockDataFile,
-        getAllMockData: getAllMockData
+        checkMockDataExists: checkMockDataExists,
+        getAllMockData: getAllMockData,
+        getMockDataFileStructure: getMockDataFileStructure,
+        getMockDataPath: getMockDataPath,
+        openMockData: openMockData,
+        saveMockData: saveMockData
     };
 
-    function openMockDataFile (fileName) {
-        return $http.get('/open-mock-data-file?name=' + encodeURIComponent(fileName))
-        .then(function (mockDataFile) {
-            return MockDataParserService.parse(mockDataFile.contents, fileName.replace(/\.mock\.json$/, ''));
-        });
-    }
-
-    function saveMockDataFile (data, name) {
-        return $http.post('/save-mock-data-file', {
-            data: data,
-            name: name
-        });
+    function checkMockDataExists (mockDataFileStructure, mockDataFilePath) {
+        return !!findMockDataByPath(mockDataFileStructure, mockDataFilePath);
     }
 
     function getAllMockData () {
-    //     return this.getMockDataFileNames()
-    //     .then(function (mockDataFileNames) {
-    //         var openMockDataFiles = _.map(mockDataFileNames, function (mockDataFileName) {
-    //             return openMockDataFile(mockDataFileName);
-    //         });
-    //         return Promise.all(openMockDataFiles)
-    //         .then(function (results) {
-    //             return _.map(results, function (result, index) {
-    //                 return MockDataParserService.parse(result.contents, mockDataFileNames[index]);
-    //             });
-    //         });
-    //     });
+        return this.getMockDataFileStructure()
+        .then(function (mockDataFileStructure) {
+            return mockDataFileStructure.allFiles.map(function (mockDataFile) {
+                return MockDataParserService.parse(mockDataFile);
+            });
+        });
+    }
+
+    function getMockDataFileStructure () {
+        return FileStructureService.getFileStructure({
+            directory: 'mock_data'
+        });
+    }
+
+    function getMockDataPath (options) {
+        return $http.get('/get-mock-data-path', {
+            params: options
+        });
+    }
+
+    function openMockData (mockDataFileStructure, mockDataFilePath) {
+        var mockDataFile = findMockDataByPath(mockDataFileStructure, mockDataFilePath);
+        return mockDataFile ? MockDataParserService.parse(mockDataFile) : null;
+    }
+
+    function saveMockData (options) {
+        return $http.post('/save-mock-data-file', options);
+    }
+
+    function findMockDataByPath (mockDataFileStructure, mockDataFilePath) {
+        return _.find(mockDataFileStructure.allFiles, function (mockDataFile) {
+            return mockDataFile.path.includes(mockDataFilePath);
+        });
     }
 };
 

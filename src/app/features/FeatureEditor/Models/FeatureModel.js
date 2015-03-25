@@ -16,9 +16,18 @@ var createFeatureModelConstructor = function (
 ) {
     var FeatureModel = function FeatureModel (options) {
         var scenarios = [];
-        this.isSaved = !!(options && options.isSaved);
 
         Object.defineProperties(this, {
+            isSaved: {
+                get: function () {
+                    return !!(options && options.isSaved);
+                }
+            },
+            path: {
+                get: function () {
+                    return options && options.path;
+                }
+            },
             scenarios: {
                 get: function () {
                     return scenarios;

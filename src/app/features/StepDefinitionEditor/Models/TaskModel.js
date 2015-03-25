@@ -64,13 +64,17 @@ var createTaskModelConstructor = function (
     function toAST () {
         var ast = ASTCreatorService;
 
-        var argumentValues = _.map(this.arguments, function (argument) {
+        var template = '<%= component %>.<%= action %>(%= taskArguments %)';
+
+        var taskArguments = _.map(this.arguments, function (argument) {
             return argument.ast;
         });
 
-        var taskMemberExpression = ast.memberExpression(ast.identifier(this.component.name), ast.identifier(this.action.name));
-        var taskCallExpression = ast.callExpression(taskMemberExpression, argumentValues);
-        return ast.expressionStatement(taskCallExpression);
+        return ast.template(template, {
+            component: ast.identifier(this.component.name),
+            action: ast.identifier(this.action.name),
+            taskArguments: taskArguments
+        }).expression;
     }
 
     function parseArguments () {

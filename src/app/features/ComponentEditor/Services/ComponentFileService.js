@@ -38,17 +38,15 @@ var ComponentFileService = function ComponentFileService (
     }
 
     function getComponentFileStructure () {
-        return FileStructureService.getFileStructure('components', {
+        return FileStructureService.getFileStructure({
+            directory: 'components',
             parse: true
         });
     }
 
     function getComponentPath (options) {
         return $http.get('/get-component-path', {
-            params: {
-                name: options.name,
-                path: options.path
-            }
+            params: options
         });
     }
 
@@ -58,11 +56,7 @@ var ComponentFileService = function ComponentFileService (
     }
 
     function saveComponent (options) {
-        return $http.post('/save-component-file', {
-            ast: options.ast,
-            name: options.name,
-            path: options.path
-        });
+        return $http.post('/save-component-file', options);
     }
 
     function findComponentByPath (componentFileStructure, componentFilePath) {
