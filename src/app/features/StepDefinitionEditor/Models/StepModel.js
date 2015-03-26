@@ -98,30 +98,20 @@ var createStepModelConstructor = function (
         var template = 'this.<%= type %>(<%= regex %>, function (done) { ';
         if (mocks.length) {
             template += '%= mocks %; ';
-        }
-
-        if (tasks.length) {
+            template += 'done();';
+        } else if (tasks.length) {
             template += 'var tasks = <%= tasks[0] %>';
             tasks.slice(1).forEach(function (taskAST, index) {
-                template += '.then(function () { return %= tasks[' + (index + 1) + '] %; })';
+                template += '.then(function () { return <%= tasks[' + (index + 1) + '] %>; })';
             });
             template += '; ';
-        }
-
-        if (tasks.length) {
-            template += 'Promise.all(tasks)';
-        }
-        if (expectations.length) {
-            template += 'Promise.all([%= expectations %])';
-        }
-
-        var done = tasks.length || expectations.length || mocks.length ? 'done(); ' : 'done.pending(); ';
-        if (tasks.length || expectations.length) {
-            template += '.then(function () { ' + done + ' }); ';
+            template += 'Promise.all(tasks).then(function () { done(); });';
+        } else if (expectations.length) {
+            template += 'Promise.all([%= expectations %]).then(function () { done(); });';
         } else {
-            template += done;
+            template += 'done.pending();';
         }
-        template += '}); ';
+        template += '});';
 
         return ast.template(template, {
             type: ast.identifier(this.type),

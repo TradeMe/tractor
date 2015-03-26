@@ -55,13 +55,18 @@ var createComponentInstanceModelConstructor = function (
     function toAST () {
         var ast = ASTCreatorService;
 
-        var template = 'var <%= constructor %> = require(<%= path %>); ';
-        template += 'var <%= name %> = new <%= constructor %>(); ';
+        var template = 'var <%= constructor %> = require(<%= path %>), ';
+        template += '<%= name %> = new <%= constructor %>(); ';
+
+        // Sw33t hax()rz to get around the browserify "path" shim not working on Windows.
+        var stepDefinitionPath = this.stepDefinition.path.replace(/^[A-Z]:\\/, '').replace(/\\/g, '/');
+        var componentPath = this.component.path.replace(/^[A-Z]:\\/, '').replace(/\\/g, '/');
+        var relativePath = path.relative(path.dirname(stepDefinitionPath), componentPath);
 
         return ast.template(template, {
             constructor: ast.identifier(this.component.variableName),
-            path: ast.literal(path.relative(this.stepDefinition.path, this.component.path)),
-            name: ast.identifier(this.component.name)
+            path: ast.literal(relativePath),
+            name: ast.identifier(this.variableName)
         });
     }
 };

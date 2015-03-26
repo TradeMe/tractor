@@ -74,8 +74,8 @@ var createExpectationModelConstructor = function (
         var expectedResult = ast.literal(StringToLiteralService.toLiteral(this.value) || this.value);
 
         return ast.template(template, {
-            component: ast.identifier(this.component.name),
-            action: ast.identifier(this.action.name),
+            component: ast.identifier(this.component.variableName),
+            action: ast.identifier(this.action.variableName),
             expectationArguments: expectationArguments,
             expectedResult: expectedResult
         }).expression;
@@ -83,11 +83,8 @@ var createExpectationModelConstructor = function (
 
     function parseArguments () {
         return this.action.parameters.map(function (parameter) {
-            var name = parameter.name;
-            name = name.replace(/([A-Z])/g, ' $1');
-            name = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
             return new ArgumentModel(null, {
-                name: name
+                name: parameter.name
             });
         });
     }

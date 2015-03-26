@@ -38,11 +38,11 @@ module.exports = function () {
     };
     ComponentFileOptions.prototype.getComponentName = function () {
         var self = this;
-        return self.componentName.getInnerHtml();
+        return self.componentName.getText();
     };
     ComponentFileOptions.prototype.setComponentName = function (componentName) {
         var self = this;
-        return self.componentNameInput.sendKeys('componentName');
+        return self.componentNameInput.sendKeys(componentName);
     };
     ComponentFileOptions.prototype.saveComponent = function () {
         var self = this;

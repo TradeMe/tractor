@@ -1,6 +1,18 @@
+/*{
+    "name": "When I open a component",
+    "components": [
+        {
+            "name": "Component File Tree"
+        }
+    ],
+    "mockData": []
+}*/
 module.exports = function () {
-    this.When(/^I open a component$/, function (callback) {
-      // Write code here that turns the phrase above into concrete actions
-      callback.pending();
+    var ComponentFileTree = require('../../components/Component Editor/Component File Tree.component.js'), componentFileTree = new ComponentFileTree();
+    this.When(/^I open a component$/, function (done) {
+        var tasks = componentFileTree.openExampleComponent();
+        Promise.all(tasks).then(function () {
+            done();
+        });
     });
 };

@@ -1,6 +1,17 @@
+/*{
+    "name": "Then I can see tractor running",
+    "components": [
+        {
+            "name": "Tractor"
+        }
+    ],
+    "mockData": []
+}*/
 module.exports = function () {
-    this.Then(/^I can see tractor running$/, function (callback) {
-      // Write code here that turns the phrase above into concrete actions
-      callback.pending();
+    var Tractor = require('../../components/Tractor/Tractor.component.js'), tractor = new Tractor();
+    this.Then(/^I can see tractor running$/, function (done) {
+        Promise.all([expect(tractor.getTitle()).to.eventually.equal('tractor')]).then(function () {
+            done();
+        });
     });
 };

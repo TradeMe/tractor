@@ -1,6 +1,18 @@
+/*{
+    "name": "When I set the name of a Component",
+    "components": [
+        {
+            "name": "Component File Options"
+        }
+    ],
+    "mockData": []
+}*/
 module.exports = function () {
-    this.When(/^I set the name of a Component$/, function (callback) {
-      // Write code here that turns the phrase above into concrete actions
-      callback.pending();
+    var ComponentFileOptions = require('../../components/Component Editor/Component File Options.component.js'), componentFileOptions = new ComponentFileOptions();
+    this.When(/^I set the name of a Component$/, function (done) {
+        var tasks = componentFileOptions.setComponentName('Example Component');
+        Promise.all(tasks).then(function () {
+            done();
+        });
     });
 };

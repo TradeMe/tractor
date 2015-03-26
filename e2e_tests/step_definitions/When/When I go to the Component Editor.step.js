@@ -1,6 +1,18 @@
+/*{
+    "name": "When I go to the Component Editor",
+    "components": [
+        {
+            "name": "Control Panel"
+        }
+    ],
+    "mockData": []
+}*/
 module.exports = function () {
-    this.When(/^I go to the Component Editor$/, function (callback) {
-      // Write code here that turns the phrase above into concrete actions
-      callback.pending();
+    var ControlPanel = require('../../components/Tractor/Control Panel.component.js'), controlPanel = new ControlPanel();
+    this.When(/^I go to the Component Editor$/, function (done) {
+        var tasks = controlPanel.goToComponentEditor();
+        Promise.all(tasks).then(function () {
+            done();
+        });
     });
 };

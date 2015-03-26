@@ -1,6 +1,17 @@
+/*{
+    "name": "Then that component should appear in the editor",
+    "components": [
+        {
+            "name": "Component File Options"
+        }
+    ],
+    "mockData": []
+}*/
 module.exports = function () {
-    this.Then(/^that component should appear in the editor$/, function (callback) {
-      // Write code here that turns the phrase above into concrete actions
-      callback.pending();
+    var ComponentFileOptions = require('../../components/Component Editor/Component File Options.component.js'), componentFileOptions = new ComponentFileOptions();
+    this.Then(/^that component should appear in the editor$/, function (done) {
+        Promise.all([expect(componentFileOptions.getComponentName()).to.eventually.equal('Example Component')]).then(function () {
+            done();
+        });
     });
 };

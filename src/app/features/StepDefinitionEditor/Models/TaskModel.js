@@ -71,8 +71,8 @@ var createTaskModelConstructor = function (
         });
 
         return ast.template(template, {
-            component: ast.identifier(this.component.name),
-            action: ast.identifier(this.action.name),
+            component: ast.identifier(this.component.variableName),
+            action: ast.identifier(this.action.variableName),
             taskArguments: taskArguments
         }).expression;
     }

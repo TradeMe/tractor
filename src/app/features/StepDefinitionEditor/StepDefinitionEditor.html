@@ -68,7 +68,6 @@
                     <li ng-repeat="mockData in stepDefinitionEditor.stepDefinition.mockDataInstances">
                         <span> {{ mockData.mockData.name }} </span>
                         <tractor-action
-                            form="step-definition-editor"
                             model="stepDefinitionEditor.stepDefinition"
                             action="Remove mock"
                             argument="mock"
@@ -124,14 +123,15 @@
         <section class="file-editor__container" ng-if="stepDefinitionEditor.showTasksSection">
             <h2>Tasks:</h2>
 
-            <ul>
-                <li class="file-editor__list-item" ng-repeat="task in stepDefinitionEditor.stepDefinition.step.tasks">
+            <ol ng-if="stepDefinitionEditor.stepDefinition.step.tasks.length" as-sortable ng-model="stepDefinitionEditor.stepDefinition.step.tasks" is-disabled="stepDefinitionEditor.stepDefinition.step.tasks.length < 2">
+                <li class="file-editor__list-item" ng-repeat="task in stepDefinitionEditor.stepDefinition.step.tasks" as-sortable-item>
                     <tractor-action
                         model="stepDefinitionEditor.stepDefinition.step"
                         action="Remove task"
                         argument="task"
                         icon="remove">
                     </tractor-action>
+                    <div ng-if="stepDefinitionEditor.stepDefinition.step.tasks.length > 1" class="file-editor__sort-handle" as-sortable-item-handle title="Drag to sort"></div>
 
                     <tractor-select
                         label="Component"
@@ -149,11 +149,12 @@
                         <tractor-literal-input
                             form="step-definition-editor"
                             name="argument.name"
-                            model="argument">
+                            model="argument"
+                            required>
                         </tractor-literal-input>
                     </div>
                 </li>
-            </ul>
+            </ol>
 
             <tractor-action
                 model="stepDefinitionEditor.stepDefinition.step"
@@ -194,6 +195,7 @@
                         </tractor-literal-input>
                     </div>
                     <tractor-literal-input
+                        form="step-definition-editor"
                         name="'Expected result'"
                         model="expectation">
                     </tractor-literal-input>

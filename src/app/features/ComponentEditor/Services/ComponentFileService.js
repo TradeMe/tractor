@@ -32,7 +32,7 @@ var ComponentFileService = function ComponentFileService (
         return this.getComponentFileStructure()
         .then(function (componentFileStructure) {
             return componentFileStructure.allFiles.map(function (componentFile) {
-                return ComponentParserService.parse(componentFile.ast);
+                return ComponentParserService.parse(componentFile);
             });
         });
     }

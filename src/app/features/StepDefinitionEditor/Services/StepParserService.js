@@ -23,67 +23,89 @@ var StepParserService = function StepParserService (
         parse: parse
     };
 
-    function parse (stepDefinition, astObject) {
+    function parse (stepDefinition, ast) {
         try {
             var step = new StepModel(stepDefinition);
 
-            var type = astObject.expression.callee.property.name;
-            var stepRegexArgument = _.first(astObject.expression.arguments);
-            var regex = stepRegexArgument.raw.replace(/^\//, '').replace(/\/$/, '');
-            assert(_.contains(step.stepTypes, type));
-            assert(regex);
-            step.type = type;
-            step.regex = new RegExp(regex);
+            var stepCallExpression = ast.expression;
+            step.type = parseType(step, stepCallExpression);
+            step.regex = parseRegex(step, stepCallExpression);
 
-            var stepFunction = _.last(astObject.expression.arguments);
-
-            _.each(stepFunction.body.body, function (statement, index) {
-                try {
-                    var httpBackendOnloadMemberExpression = statement.expression.callee.object.callee.object;
-                    assert(httpBackendOnloadMemberExpression.object.name === 'httpBackend');
-                    assert(httpBackendOnloadMemberExpression.property.name === 'onLoad');
-                    var mock = MockParserService.parse(step, statement);
-                    assert(mock);
-                    step.mocks.push(mock);
-                    return;
-                } catch (e) { }
-
-                try {
-                    var tasksDeclaration = _.first(statement.declarations);
-                    assert(tasksDeclaration.id.name === 'tasks');
-                    TaskParserService.parse(step, tasksDeclaration.init);
-                    return;
-                } catch (e) { }
-
-                try {
-                    var expectations = _.first(statement.expression.callee.object.arguments).elements;
-                    _.each(expectations, function (expectation) {
-                        assert(!(expectation.name && expectation.name === 'tasks'));
-                        expectation = ExpectationParserService.parse(step, expectation);
-                        assert(expectation);
-                        step.expectations.push(expectation);
-                    });
-                    return;
-                } catch (e) { }
-
-                try {
-                    assert(statement.expression.callee.object.name === 'callback');
-                    assert(statement.expression.callee.property.name === 'pending');
-                    return;
-                } catch (e) { }
-
-                try {
-                    assert(statement.expression.callee.name === 'done');
-                    return;
-                } catch (e) { }
-
-                console.warn('Invalid "StepModel"', statement, index);
-            });
+            var stepFunction = _.last(ast.expression.arguments);
+            var statements = stepFunction.body.body;
+            var parsers = [parseMock, parseTask, parseExpectation, parsePending, parseDone];
+            tryParse(step, statements, parsers);
 
             return step;
         } catch (e) {
+            console.warn('Invalid step:', ast);
             return null;
         }
+    }
+
+    function parseType (step, stepCallExpression) {
+        var type = stepCallExpression.callee.property.name;
+        assert(_.contains(step.stepTypes, type));
+        return type;
+    }
+
+    function parseRegex (step, stepCallExpression) {
+        var stepRegexArgument = _.first(stepCallExpression.arguments);
+        var regex = stepRegexArgument.raw.replace(/^\//, '').replace(/\/$/, '');
+        assert(regex);
+        return new RegExp(regex);
+    }
+
+    function tryParse (step, statements, parsers) {
+        statements.map(function (statement) {
+            var parsed = parsers.some(function (parser) {
+                try {
+                    return parser(step, statement);
+                } catch (e) { }
+            });
+            if (!parsed) {
+                throw new Error();
+            }
+        });
+    }
+
+    function parseMock (step, statement) {
+        var httpBackendOnloadMemberExpression = statement.expression.callee.object.callee.object;
+        assert(httpBackendOnloadMemberExpression.object.name === 'httpBackend');
+        assert(httpBackendOnloadMemberExpression.property.name === 'onLoad');
+        var mock = MockParserService.parse(step, statement);
+        assert(mock);
+        step.mocks.push(mock);
+        return true;
+    }
+
+    function parseTask (step, statement) {
+        var tasksDeclaration = _.first(statement.declarations);
+        assert(tasksDeclaration.id.name === 'tasks');
+        TaskParserService.parse(step, tasksDeclaration.init);
+        return true;
+    }
+
+    function parseExpectation (step, statement) {
+        var elements = _.first(statement.expression.callee.object.arguments).elements;
+        _.each(elements, function (element) {
+            assert(!(element.name && element.name === 'tasks'));
+            var expectation = ExpectationParserService.parse(step, element);
+            assert(expectation);
+            step.expectations.push(expectation);
+        });
+        return true;
+    }
+
+    function parsePending (step, statement) {
+        assert(statement.expression.callee.object.name === 'callback');
+        assert(statement.expression.callee.property.name === 'pending');
+        return true;
+    }
+
+    function parseDone (step, statement) {
+        assert(statement.expression.callee.name === 'done');
+        return true;
     }
 };
 

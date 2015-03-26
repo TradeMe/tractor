@@ -106,10 +106,10 @@ var createStepDefinitionModelConstructor = function (
         });
 
         var template = 'module.exports = function () { ';
-        if (components) {
+        if (components.length) {
             template += '%= components %; ';
         }
-        if (mockData) {
+        if (mockData.length) {
             template += '%= mockData %; ';
         }
         template += '%= step %; ';

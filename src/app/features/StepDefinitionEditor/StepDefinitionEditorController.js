@@ -97,7 +97,7 @@ var StepDefinitionEditorController = (function () {
                 }.bind(this))
                 .then(function (stepDefinitionFileStructure) {
                     this.fileStructure = stepDefinitionFileStructure;
-                    this.stepDefinition = this.stepDefinitionFileService.openStepDefinition(this.fileStructure, stepDefinitionPath.path, this.availableComponents, this.availableMocks);
+                    this.stepDefinition = this.stepDefinitionFileService.openStepDefinition(this.fileStructure, stepDefinitionPath.path, this.availableComponents, this.availableMockData);
                 }.bind(this));
             }
         }.bind(this));

@@ -57,9 +57,14 @@ var createMockDataInstanceModelConstructor = function (
 
         var template = 'var <%= name %> = require(<%= path %>); ';
 
+        // Sw33t hax()rz to get around the browserify "path" shim not working on Windows.
+        var stepDefinitionPath = this.stepDefinition.path.replace(/\\/g, '/');
+        var mockDataPath = this.mockData.path.replace(/\\/g, '/');
+        var relativePath = path.relative(path.dirname(stepDefinitionPath), mockDataPath);
+
         return ast.template(template, {
             name: ast.identifier(this.variableName),
-            path: ast.literal(path.relative(this.stepDefinition.path, this.mockData.path))
+            path: ast.literal(relativePath)
         });
     }
 };

@@ -16,30 +16,40 @@ var ExpectationParserService = function ExpectationParserService (
         parse: parse
     };
 
-    function parse (step, astObject) {
+    function parse (step, ast) {
         try {
             var expectation = new ExpectationModel(step);
+            expectation.value = _.first(ast.arguments).value;
 
-            expectation.value = _.first(astObject.arguments).value;
+            var expectationCallExpression = _.first(ast.callee.object.object.object.arguments);
 
-            var actionCallExpression = _.first(astObject.callee.object.object.object.arguments);
-
-            expectation.component = _.find(expectation.step.stepDefinition.componentInstances, function (componentInstance) {
-                return componentInstance.name === actionCallExpression.callee.object.name;
-            });
-
-            expectation.action = _.find(expectation.component.component.actions, function (action) {
-                return action.name === actionCallExpression.callee.property.name;
-            });
-
-            _.each(actionCallExpression.arguments, function (argument, index) {
-                expectation.arguments[index].value = argument.value;
-            });
+            expectation.component = parseComponent(expectation, expectationCallExpression);
+            expectation.action = parseAction(expectation, expectationCallExpression);
+            parseArguments(expectation, expectationCallExpression);
 
             return expectation;
         } catch (e) {
+            console.warn('Invalid expectation:', ast);
             return null;
         }
+    }
+
+    function parseComponent (expectation, expectationCallExpression) {
+        return _.find(expectation.step.stepDefinition.componentInstances, function (componentInstance) {
+            return expectationCallExpression.callee.object.name === componentInstance.variableName;
+        });
+    }
+
+    function parseAction (expectation, expectationCallExpression) {
+        return _.find(expectation.component.component.actions, function (action) {
+            return expectationCallExpression.callee.property.name === action.variableName;
+        });
+    }
+
+    function parseArguments (expectation, expectationCallExpression) {
+        _.each(expectationCallExpression.arguments, function (argument, index) {
+            expectation.arguments[index].value = argument.value;
+        });
     }
 };
 

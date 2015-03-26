@@ -1,6 +1,18 @@
+/*{
+    "name": "When I go to the tractor URL",
+    "components": [
+        {
+            "name": "Tractor"
+        }
+    ],
+    "mockData": []
+}*/
 module.exports = function () {
-    this.When(/^I go to the tractor URL$/, function (callback) {
-      // Write code here that turns the phrase above into concrete actions
-      callback.pending();
+    var Tractor = require('../../components/Tractor/Tractor.component.js'), tractor = new Tractor();
+    this.When(/^I go to the tractor URL$/, function (done) {
+        var tasks = tractor.get();
+        Promise.all(tasks).then(function () {
+            done();
+        });
     });
 };
