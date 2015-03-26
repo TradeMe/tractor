@@ -14,7 +14,7 @@ module.exports = fileStructureUtils.createModifier(editName, fileStructureUtils.
 
 var transformCreators = {
     components: componentTransform,
-    feaures: featureTransform
+    features: featureTransform
 };
 
 function editName (fileStructure, request) {
@@ -23,30 +23,28 @@ function editName (fileStructure, request) {
     var rootDirectoryName = path.basename(request.body.root);
 
     var directory = fileStructureUtils.findContainingDirectory(fileStructure, request.body.path);
+    var isDirectory = !!directory[oldName];
 
-    var moveFromName;
-    var moveToName;
-    if (directory[oldName]) {
-        moveFromName = oldName;
-        moveToName = newName;
-    } else {
+    var moveFromName = oldName;
+    var moveToName = newName;
+    if (!isDirectory) {
         var extension = fileStructureUtils.getExtensionFromRoot(rootDirectoryName);
-        moveFromName = oldName + extension;
-        moveToName = newName + extension;
+        moveFromName += extension;
+        moveToName += extension;
+
+        var transformCreator = transformCreators[rootDirectoryName];
+        if (transformCreator) {
+            var transforms = transformCreator(oldName, newName);
+            transforms.forEach(function (transform) {
+                var content = directory[moveFromName]['-content'];
+                content = content.replace(new RegExp(transform.replace, 'g'), transform.with);
+                directory[moveFromName]['-content'] = content;
+            });
+        }
     }
 
     directory[moveToName] = fileStructureUtils.deletePaths(directory[moveFromName]);
     delete directory[moveFromName];
-
-    var transformCreator = transformCreators[rootDirectoryName];
-    if (transformCreator) {
-        var transforms = transformCreator(oldName, newName);
-        transforms.forEach(function (transform) {
-            var content = directory[newName + extension]['-content'];
-            content = content.replace(new RegExp(transform.replace, 'g'), transform.with);
-            directory[newName + extension]['-content'] = content;
-        });
-    }
 
     return fileStructure;
 }

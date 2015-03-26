@@ -1,9 +1,9 @@
 {
     "allFiles": [
         {
-            "name": "ExampleComponent",
-            "path": "C:\\Users\\CSPENCE\\Desktop\\Dev\\tractor\\e2e_tests\\components\\ExampleComponent.component.js",
-            "content": "/*{\n    \"name\": \"ExampleComponent\",\n    \"elements\": [],\n    \"actions\": []\n}*/\nmodule.exports = function () {\n    var ExampleComponent = function ExampleComponent() {\n    };\n    return ExampleComponent;\n}();",
+            "name": "Example Component",
+            "path": "C:\\Users\\CSPENCE\\Desktop\\Dev\\tractor\\e2e_tests\\components\\Example Component.component.js",
+            "content": "/*{\n    \"name\": \"Example Component\",\n    \"elements\": [],\n    \"actions\": []\n}*/\nmodule.exports = function () {\n    var ExampleComponent = function ExampleComponent() {\n    };\n    return ExampleComponent;\n}();",
             "ast": {
                 "type": "Program",
                 "body": [
@@ -84,7 +84,7 @@
                 "comments": [
                     {
                         "type": "Block",
-                        "value": "{\n    \"name\": \"ExampleComponent\",\n    \"elements\": [],\n    \"actions\": []\n}"
+                        "value": "{\n    \"name\": \"Example Component\",\n    \"elements\": [],\n    \"actions\": []\n}"
                     }
                 ]
             }
@@ -92,9 +92,9 @@
     ],
     "files": [
         {
-            "name": "ExampleComponent",
-            "path": "C:\\Users\\CSPENCE\\Desktop\\Dev\\tractor\\e2e_tests\\components\\ExampleComponent.component.js",
-            "content": "/*{\n    \"name\": \"ExampleComponent\",\n    \"elements\": [],\n    \"actions\": []\n}*/\nmodule.exports = function () {\n    var ExampleComponent = function ExampleComponent() {\n    };\n    return ExampleComponent;\n}();",
+            "name": "Example Component",
+            "path": "C:\\Users\\CSPENCE\\Desktop\\Dev\\tractor\\e2e_tests\\components\\Example Component.component.js",
+            "content": "/*{\n    \"name\": \"Example Component\",\n    \"elements\": [],\n    \"actions\": []\n}*/\nmodule.exports = function () {\n    var ExampleComponent = function ExampleComponent() {\n    };\n    return ExampleComponent;\n}();",
             "ast": {
                 "type": "Program",
                 "body": [
@@ -175,7 +175,7 @@
                 "comments": [
                     {
                         "type": "Block",
-                        "value": "{\n    \"name\": \"ExampleComponent\",\n    \"elements\": [],\n    \"actions\": []\n}"
+                        "value": "{\n    \"name\": \"Example Component\",\n    \"elements\": [],\n    \"actions\": []\n}"
                     }
                 ]
             }

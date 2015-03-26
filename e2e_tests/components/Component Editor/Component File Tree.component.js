@@ -6,6 +6,9 @@
         },
         {
             "name": "example component file"
+        },
+        {
+            "name": "root add directory button"
         }
     ],
     "actions": [
@@ -15,6 +18,10 @@
         },
         {
             "name": "open example component",
+            "parameters": []
+        },
+        {
+            "name": "add directory",
             "parameters": []
         }
     ]
@@ -27,6 +34,7 @@ module.exports = function () {
                 return text.indexOf('Example Component') !== -1;
             });
         }).get(0);
+        this.rootAddDirectoryButton = element(by.css('.file-tree > .file-tree__file-list > li > tractor-action[action="Add directory"]'));
     };
     ComponentFileTree.prototype.getTitleText = function () {
         var self = this;
@@ -35,6 +43,10 @@ module.exports = function () {
     ComponentFileTree.prototype.openExampleComponent = function () {
         var self = this;
         return self.exampleComponentFile.click();
+    };
+    ComponentFileTree.prototype.addDirectory = function () {
+        var self = this;
+        return self.rootAddDirectoryButton.click();
     };
     return ComponentFileTree;
 }();

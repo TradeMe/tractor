@@ -40,17 +40,17 @@ require('./features/Notifier/Notifier');
 
 // Application Init:
 angular.module('tractor', [
-  'ngMessages',
-  'ui.router',
-  'ui.sortable',
-  'LocalStorageModule',
-  'Core',
-  'Notifier',
-  'ControlPanel',
-  'ComponentEditor',
-  'FeatureEditor',
-  'StepDefinitionEditor',
-  'MockDataEditor'
+    'ngMessages',
+    'ui.router',
+    'ui.sortable',
+    'LocalStorageModule',
+    'Core',
+    'Notifier',
+    'ControlPanel',
+    'ComponentEditor',
+    'FeatureEditor',
+    'StepDefinitionEditor',
+    'MockDataEditor'
 ])
 .config(['$stateProvider', '$urlRouterProvider', 'localStorageServiceProvider', function ($stateProvider, $urlRouterProvider, localStorageServiceProvider) {
     localStorageServiceProvider.setPrefix('tractor');
@@ -65284,7 +65284,7 @@ var createMockModelConstructor = function (
     function toAST () {
         var ast = ASTCreatorService;
 
-        var template = 'httpBackend.onLoad.when(%= action %, %= url %)';
+        var template = 'httpBackend.when(%= action %, %= url %)';
         if (this.passThrough) {
             template += '.passThrough(); ';
         } else {

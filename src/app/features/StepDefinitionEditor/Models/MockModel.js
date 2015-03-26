@@ -39,7 +39,7 @@ var createMockModelConstructor = function (
     function toAST () {
         var ast = ASTCreatorService;
 
-        var template = 'httpBackend.onLoad.when(%= action %, %= url %)';
+        var template = 'httpBackend.when(%= action %, %= url %)';
         if (this.passThrough) {
             template += '.passThrough(); ';
         } else {

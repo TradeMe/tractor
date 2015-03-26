@@ -39,17 +39,17 @@ require('./features/Notifier/Notifier');
 
 // Application Init:
 angular.module('tractor', [
-  'ngMessages',
-  'ui.router',
-  'ui.sortable',
-  'LocalStorageModule',
-  'Core',
-  'Notifier',
-  'ControlPanel',
-  'ComponentEditor',
-  'FeatureEditor',
-  'StepDefinitionEditor',
-  'MockDataEditor'
+    'ngMessages',
+    'ui.router',
+    'ui.sortable',
+    'LocalStorageModule',
+    'Core',
+    'Notifier',
+    'ControlPanel',
+    'ComponentEditor',
+    'FeatureEditor',
+    'StepDefinitionEditor',
+    'MockDataEditor'
 ])
 .config(function ($stateProvider, $urlRouterProvider, localStorageServiceProvider) {
     localStorageServiceProvider.setPrefix('tractor');
