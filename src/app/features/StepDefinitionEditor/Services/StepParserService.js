@@ -33,7 +33,7 @@ var StepParserService = function StepParserService (
 
             var stepFunction = _.last(ast.expression.arguments);
             var statements = stepFunction.body.body;
-            var parsers = [parseMock, parseTask, parseExpectation, parsePending, parseDone];
+            var parsers = [parseMock, parseTask, parseExpectation, parsePending, parseMockDone, parseTaskDone];
             tryParse(step, statements, parsers);
 
             return step;
@@ -103,8 +103,13 @@ var StepParserService = function StepParserService (
         return true;
     }
 
-    function parseDone (step, statement) {
+    function parseMockDone (step, statement) {
         assert(statement.expression.callee.name === 'done');
+        return true;
+    }
+
+    function parseTaskDone (step, statement) {
+        assert(statement.expression.arguments[0].name === 'done');
         return true;
     }
 };

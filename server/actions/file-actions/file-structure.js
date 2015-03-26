@@ -3,11 +3,14 @@
 // Utilities:
 var _ = require('lodash');
 var constants = require('../../constants');
+var domain = require('domain');
 var errorHandler = require('../../utils/error-handler');
+var log = require('../../utils/logging');
 var path = require('path');
 var Promise = require('bluebird');
 
-// Dependenices:
+// Dependencies:
+var del = Promise.promisify(require('del'));
 var jsondir = Promise.promisifyAll(require('jsondir'));
 
 module.exports = {
@@ -22,27 +25,57 @@ module.exports = {
 
 function createModifier (preModifier, postModifier, errorMessage) {
     return function (request, response) {
-        jsondir.dir2jsonAsync(request.body.root, {
-            attributes: ['content']
-        })
-        .then(function (fileStructure) {
-            fileStructure = preModifier(fileStructure, request);
-            return jsondir.json2dirAsync(fileStructure, {
-                nuke: true
-            });
-        })
-        .then(function () {
-            return jsondir.dir2jsonAsync(request.body.root, {
+        var random = Math.floor(Math.random() * Date.now()).toString();
+        var parentDirectoryName = path.dirname(request.body.root);
+        var directoryName = path.basename(request.body.root);
+        var backupPath = path.join(parentDirectoryName, directoryName + '__backup__' + random);
+        var oldFileStructure;
+        var newFileStructure;
+
+        var fileStructureModifier = domain.create();
+
+        fileStructureModifier.run(function () {
+            jsondir.dir2jsonAsync(request.body.root, {
                 attributes: ['content']
+            })
+            .then(function (fileStructure) {
+                oldFileStructure = _.clone(fileStructure);
+                newFileStructure = _.clone(preModifier(fileStructure, request));
+
+                oldFileStructure = deletePaths(oldFileStructure);
+                oldFileStructure['-path'] = backupPath;
+                return jsondir.json2dirAsync(oldFileStructure, {
+                    nuke: true
+                });
+            })
+            .then(function () {
+                return jsondir.json2dirAsync(newFileStructure, {
+                    nuke: true
+                });
+            })
+            .then(function () {
+                return jsondir.dir2jsonAsync(request.body.root, {
+                    attributes: ['content']
+                });
+            })
+            .then(function (newFileStructure) {
+                newFileStructure = organiseFileStructure(newFileStructure, newFileStructure);
+                response.send(JSON.stringify(postModifier(newFileStructure, request)));
+            })
+            .then(function () {
+                return del(backupPath, { force: true });
+            })
+            .catch(function (error) {
+                console.log(error);
+                errorHandler(response, error, errorMessage);
             });
-        })
-        .then(function (newFileStructure) {
-            newFileStructure = organiseFileStructure(newFileStructure, newFileStructure);
-            response.send(JSON.stringify(postModifier(newFileStructure, request)));
-        })
-        .catch(function (error) {
-            console.log(error);
-            errorHandler(response, error, errorMessage);
+        });
+
+        fileStructureModifier.on('error', function () {
+            log.warn('File structure modification failed!');
+            log.info('The old file structure was saved in "' + backupPath + '".');
+            log.info('Please make sure you have don\'t have any Tractor Files open.');
+            errorHandler(response, new Error('File structure modification failed.'));
         });
     };
 }

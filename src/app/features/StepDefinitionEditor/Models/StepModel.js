@@ -105,9 +105,9 @@ var createStepModelConstructor = function (
                 template += '.then(function () { return <%= tasks[' + (index + 1) + '] %>; })';
             });
             template += '; ';
-            template += 'Promise.all(tasks).then(function () { done(); });';
+            template += 'tasks.then(done);';
         } else if (expectations.length) {
-            template += 'Promise.all([%= expectations %]).then(function () { done(); });';
+            template += 'Promise.all([%= expectations %]).then(done);';
         } else {
             template += 'done.pending();';
         }

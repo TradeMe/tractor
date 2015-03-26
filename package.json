@@ -36,6 +36,7 @@
     "chai-as-promised": "4.1.1",
     "change-case": "2.2.0",
     "cucumber": "0.4.4",
+    "del": "1.1.1",
     "estemplate": "0.4.0",
     "gulp": "3.8.11",
     "gulp-autoprefixer": "2.0.0",
