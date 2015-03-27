@@ -39,18 +39,19 @@ var createMockModelConstructor = function (
     function toAST () {
         var ast = ASTCreatorService;
 
+        var data = {
+            action: ast.literal(this.action),
+            url: ast.literal(this.url)
+        };
         var template = 'httpBackend.when(%= action %, %= url %)';
         if (this.passThrough) {
             template += '.passThrough(); ';
         } else {
             template += '.respond(%= dataName %); ';
+            data.dataName = ast.identifier(this.data.variableName);
         }
 
-        return ast.template(template, {
-            action: ast.literal(this.action),
-            url: ast.literal(this.url),
-            dataName: ast.identifier(this.data.variableName)
-        });
+        return ast.template(template, data);
     }
 };
 

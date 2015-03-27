@@ -3,6 +3,7 @@ Feature: Open Component
   As a tractor user
   I want to be able to open a component file
   Scenario: Open Component
+    Given the default config
     Given I have a saved component
     When I go to the Component Editor
     And I open a component

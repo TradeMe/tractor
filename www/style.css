@@ -745,9 +745,11 @@ nav li a:focus {
 
 tractor-notifier {
   position: absolute;
-  top: 2rem;
+  bottom: 0rem;
   right: 0.5rem;
-  width: 45%; }
+  max-width: 100%;
+  max-height: 100%;
+  overflow-y: hidden; }
 
 .notifier__notifications {
   list-style: none; }
@@ -756,10 +758,12 @@ tractor-notifier {
   position: relative;
   margin-bottom: 0.5rem;
   padding: 0.5rem;
-  line-height: 2rem;
+  line-height: 1rem;
   letter-spacing: 1px;
-  font-size: 1rem;
-  word-break: break-all; }
+  font-size: 0.875rem;
+  width: auto;
+  text-align: right;
+  padding-right: 2.5rem; }
 
 .notifier__notification--info {
   background: rgba(245, 245, 245, 0.9); }
@@ -769,15 +773,12 @@ tractor-notifier {
   color: whitesmoke; }
 
 .notifier__notification-message {
-  display: inline-block;
-  white-space: pre;
-  word-break: break-word; }
+  white-space: pre; }
 
 .notifier__notification-dismiss {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  bottom: 0;
+  top: 0rem;
+  right: 0rem;
   height: 2rem;
   width: 2rem;
   -webkit-appearance: none;
@@ -785,17 +786,7 @@ tractor-notifier {
   border: none;
   outline: none;
   background-color: #6e6e6e;
-  background-image: url(./images/dismiss.png);
-  transition: all 0.1s;
-  -webkit-transform: scale(1);
-          transform: scale(1); }
-  .notifier__notification-dismiss:hover {
-    background-color: #828282;
-    -webkit-transform: scale(1.125);
-            transform: scale(1.125); }
-  .notifier__notification-dismiss:active {
-    -webkit-transform: scale(1.25);
-            transform: scale(1.25); }
+  background-image: url(./images/dismiss.png); }
 
 .as-sortable-item, .as-sortable-placeholder {
   margin-bottom: 0.5rem;

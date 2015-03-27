@@ -22,6 +22,7 @@ function editName (fileStructure, request) {
     var newName = request.body.newName;
     var rootDirectoryName = path.basename(request.body.root);
 
+    debugger;
     var directory = fileStructureUtils.findContainingDirectory(fileStructure, request.body.path);
     var isDirectory = !!directory[oldName];
 

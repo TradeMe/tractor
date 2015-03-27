@@ -9,6 +9,9 @@
         },
         {
             "name": "root add directory button"
+        },
+        {
+            "name": "first directory in root"
         }
     ],
     "actions": [
@@ -23,6 +26,10 @@
         {
             "name": "add directory",
             "parameters": []
+        },
+        {
+            "name": "get name of first directory in root",
+            "parameters": []
         }
     ]
 }*/
@@ -35,6 +42,7 @@ module.exports = function () {
             });
         }).get(0);
         this.rootAddDirectoryButton = element(by.css('.file-tree > .file-tree__file-list > li > tractor-action[action="Add directory"]'));
+        this.firstDirectoryInRoot = element.all(by.repeater('item in (item || fileTree.model.fileStructure).directories')).get(0);
     };
     ComponentFileTree.prototype.getTitleText = function () {
         var self = this;
@@ -47,6 +55,10 @@ module.exports = function () {
     ComponentFileTree.prototype.addDirectory = function () {
         var self = this;
         return self.rootAddDirectoryButton.click();
+    };
+    ComponentFileTree.prototype.getNameOfFirstDirectoryInRoot = function () {
+        var self = this;
+        return self.firstDirectoryInRoot.getText();
     };
     return ComponentFileTree;
 }();

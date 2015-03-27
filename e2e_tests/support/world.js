@@ -26,6 +26,7 @@ module.exports = function () {
     /* eslint-disable new-cap */
     this.After(function(callback) {
     /* eslint-enable new-cap */
+        global.httpBackend.reset();
         callback();
     });
 

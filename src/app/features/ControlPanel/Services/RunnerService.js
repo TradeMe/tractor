@@ -16,17 +16,13 @@ var RunnerService = function RunnerService (
 
     function runProtractor () {
         RealTimeService.connect('run-protractor', {
-            'protractor-out': protractorOut,
-            'protractor-err': protractorErr
+            'protractor-out': notify,
+            'protractor-err': notify
         });
     }
 
-    function protractorOut (data) {
-        NotifierService.info(data);
-    }
-
-    function protractorErr (data) {
-        NotifierService.error(data);
+    function notify (data) {
+        NotifierService[data.type](data.message);
     }
 };
 

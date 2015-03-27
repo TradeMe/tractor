@@ -3,7 +3,10 @@
 // Utilities:
 var _ = require('lodash');
 var log = require('../utils/logging');
+var noop = require('node-noop');
+var os = require('os');
 var path = require('path');
+var Promise = require('bluebird');
 
 // Config:
 var config = require('../utils/get-config')();
@@ -15,45 +18,112 @@ var childProcess = require('child_process');
 var stripcolorcodes = require('stripcolorcodes');
 var trim = require('trim');
 
+// Errors:
+var ProtractorRunError = require('../errors/ProtractorRunError');
+
 module.exports = setupProtractorListener;
 
 function setupProtractorListener (sockets) {
     sockets.of('/run-protractor')
-    .on('connection', runProtractor);
+    .on('connection', startProtractor);
+}
+
+function startProtractor (socket) {
+    if (!module.exports.running) {
+        module.exports.running = true;
+
+        return Promise.resolve((config.beforeRunProtractor.bind(config) || noop.noop)())
+        .then(function () {
+            log.important('Starting Protractor...\n');
+            return runProtractor(socket);
+        })
+        .catch(function (err) {
+            log.error(err.message + _.first(socket.lastMessage.split(/\r\n|\n/)));
+        })
+        .finally(function () {
+            socket.disconnect();
+            Promise.resolve((config.afterRunProtractor.bind(config) || noop.noop)())
+            .then(function () {
+                module.exports.running = false;
+                log.info('Protractor finished.');
+            });
+        });
+    } else {
+        log.error('Protractor already running.');
+    }
 }
 
 function runProtractor (socket) {
+    var resolve;
+    var reject;
+    var deferred = new Promise(function () {
+        resolve = arguments[0];
+        reject = arguments[1];
+    });
+
     var protractor = childProcess.spawn('node', [protractorPath, e2ePath]);
 
-    protractor.stdout.on('data', _.bind(sendDataToClient, socket));
-    protractor.stderr.on('data', _.bind(sendErrorToClient, socket));
-    protractor.on('exit', function () {
-        socket.disconnect();
+    protractor.stdout.on('data', sendDataToClient.bind(socket));
+    protractor.stderr.on('data', sendErrorToClient.bind( socket));
+    protractor.stdout.pipe(process.stdout);
+    protractor.stderr.pipe(process.stderr);
+
+    protractor.on('error', function (error) {
+        reject(new ProtractorRunError(error.message));
     });
+    protractor.on('exit', function (code) {
+        if (code !== 0) {
+            reject(new ProtractorRunError('Protractor Exit Error - '));
+        } else {
+            resolve();
+        }
+    });
+    return deferred;
 }
 
 function sendDataToClient (data) {
-    data = formatData(trim(stripcolorcodes(data.toString())));
-    if (data.length) {
-        log.info(data);
-        this.emit('protractor-out', data);
-    }
+    this.lastMessage = data.message;
+    var messages = data.toString().split(/\r\n|\n/);
+    messages.forEach(function (message) {
+        data = formatMessage(trim(stripcolorcodes(message)));
+        if (data && data.message.length) {
+            this.emit('protractor-out', data);
+        }
+    }.bind(this));
 }
 
-function formatData (data) {
+function formatMessage (message) {
+    // If it looks like an error:
+    if (message.match(/Error\:/)) {
+        return {
+            message: message,
+            type: 'error'
+        }
+    }
+
     // Remove line numbers from step definitions:
-    data = data.replace(/\s*?# .*/g, '...');
+    message = message.replace(/\s*?# .*/g, '...');
     // Trim leading whitespace from scenario outlines:
-    data = data.replace(/^\s*/gm, '');
+    message = message.replace(/^\s*/gm, '');
     // Remove server URL:
-    data = data.replace(/ at http.*/g, '.');
-    return data;
+    message = message.replace(/ at http.*/g, '.');
+    // Really shitty match for some Error messages.
+    // I'm not actually sure why these come back on stdout...?
+
+    // If it's not something we care about, ignore it:
+    if (!message.match(/^(Feature|Scenario|Given|Then|When)/)) {
+        return null;
+    }
+
+    return {
+        message: message,
+        type: 'info'
+    };
 }
 
-function sendErrorToClient (data) {
-    data = trim(stripcolorcodes(data.toString()));
-    if (data.length) {
-        log.error(data);
-        this.emit('protractor-err', data);
-    }
+function sendErrorToClient () {
+    this.emit('protractor-err', {
+        message: 'Something went really wrong - check the console for details.',
+        type: 'error'
+    });
 }

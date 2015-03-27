@@ -6,7 +6,9 @@ var _ = require('lodash');
 // Module:
 var Notifier = require('../Notifier');
 
-var NotifierService = function ($timeout) {
+var NotifierService = function (
+    $interval
+) {
     var NotificationTypes = {
         SUCCESS: 'success',
         INFO: 'info',
@@ -25,10 +27,10 @@ var NotifierService = function ($timeout) {
 
     function addNotification (notification) {
         notifications.push(notification);
-        $timeout(function () { });
-        $timeout(function () {
-            dismiss(notification);
-        }, 10000);
+        $interval(function () { }, 0, 1);
+        $interval(function () {
+            //dismiss(notification);
+        }, 10000, 1);
     }
 
     function success (message) {
