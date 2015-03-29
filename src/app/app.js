@@ -32,6 +32,7 @@ require('./features/MockDataEditor/MockDataEditorController');
 
 require('./Core/Core');
 require('./Core/Services/ConfigService');
+require('./Core/Services/FileStructureService');
 require('./Core/Services/HttpResponseInterceptor');
 require('./Core/Services/RealTimeService');
 
@@ -77,6 +78,9 @@ angular.module('tractor', [
             componentPath: function ($stateParams, ComponentFileService) {
                 var componentName = $stateParams.component;
                 return componentName ? ComponentFileService.getComponentPath({ name: componentName }) : null;
+            },
+            fileUsages: function (FileStructureService) {
+                return FileStructureService.getFileUsages();
             }
         }
     })
@@ -93,6 +97,9 @@ angular.module('tractor', [
             featurePath: function ($stateParams, FeatureFileService) {
                 var feature = $stateParams.feature;
                 return feature ? FeatureFileService.getFeaturePath({ name: feature }) : null;
+            },
+            fileUsages: function (FileStructureService) {
+                return FileStructureService.getFileUsages();
             }
         }
     })
@@ -115,6 +122,9 @@ angular.module('tractor', [
             },
             mockData: function (MockDataFileService) {
                 return MockDataFileService.getAllMockData();
+            },
+            fileUsages: function (FileStructureService) {
+                return FileStructureService.getFileUsages();
             }
         }
     })
@@ -131,6 +141,9 @@ angular.module('tractor', [
             mockDataPath: function ($stateParams, MockDataFileService) {
                 var mockDataName = $stateParams['mock-data'];
                 return mockDataName ? MockDataFileService.getMockDataPath({ name: mockDataName }) : null;
+            },
+            fileUsages: function (FileStructureService) {
+                return FileStructureService.getFileUsages();
             }
         }
     });

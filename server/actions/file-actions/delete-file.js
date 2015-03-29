@@ -1,19 +1,22 @@
 'use strict';
 
+// Utilities:
+var path = require('path');
+
 // Dependencies:
-var fileStructureUtils = require('./file-structure');
+var fileStructureUtils = require('../../utils/file-structure');
 
-// Constants:
-var ERROR_MESSAGE = 'Deleting file failed.';
-
-module.exports = fileStructureUtils.createModifier(deleteFile, fileStructureUtils.noop, ERROR_MESSAGE);
+module.exports = fileStructureUtils.createModifier({
+    pre: deleteFile
+});
 
 function deleteFile (fileStructure, request) {
     var name = request.body.name;
-    var path = request.body.path;
+    var filePath = request.body.path;
+    var isDirectory = request.body.isDirectory;
 
-    var directory = fileStructureUtils.findContainingDirectory(fileStructure, path);
-    var toDeleteName = directory[name] ? name : name + fileStructureUtils.getExtensionFromRoot(request.body.root);
+    var directory = fileStructureUtils.findDirectory(fileStructure, path.dirname(filePath));
+    var toDeleteName = isDirectory ? name : name + fileStructureUtils.getExtension(filePath);
     delete directory[toDeleteName];
     return fileStructure;
 }

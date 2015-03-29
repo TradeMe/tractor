@@ -82,7 +82,7 @@ function runProtractor (socket) {
 }
 
 function sendDataToClient (data) {
-    this.lastMessage = data.message;
+    this.lastMessage = data.toString();
     var messages = data.toString().split(/\r\n|\n/);
     messages.forEach(function (message) {
         data = formatMessage(trim(stripcolorcodes(message)));

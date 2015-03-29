@@ -23,7 +23,6 @@ var DragFileDirective = function () {
 
     function dragstart ($scope, event) {
         event.dataTransfer.effectAllowed = 'move';
-        event.dataTransfer.setData('path', $scope.fileTree.model.fileStructure.path);
         event.dataTransfer.setData('file', JSON.stringify($scope.item));
         this.classList.add('drag');
         return false;

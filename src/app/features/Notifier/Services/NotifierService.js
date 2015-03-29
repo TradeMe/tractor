@@ -29,7 +29,7 @@ var NotifierService = function (
         notifications.push(notification);
         $interval(function () { }, 0, 1);
         $interval(function () {
-            //dismiss(notification);
+            dismiss(notification);
         }, 10000, 1);
     }
 

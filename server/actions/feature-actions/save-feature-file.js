@@ -14,7 +14,7 @@ var config = require('../../utils/get-config')();
 // Dependencies:
 var childProcess = Promise.promisifyAll(require('child_process'));
 var fs = Promise.promisifyAll(require('fs'));
-var fileStructureUtils = require('../file-actions/file-structure');
+var fileStructureUtils = require('../../utils/file-structure');
 var stripcolorcodes = require('stripcolorcodes');
 
 var GIVEN_WHEN_THEN_REGEX = /^(Given|When|Then)/;

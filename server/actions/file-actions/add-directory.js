@@ -1,13 +1,14 @@
 'use strict';
 
 // Dependenices:
-var fileStructureUtils = require('./file-structure');
+var fileStructureUtils = require('../../utils/file-structure');
 
 // Constants:
 var NEW_DIRECTORY = 'New Directory';
-var ERROR_MESSAGE = 'Adding new directory failed.';
 
-module.exports = fileStructureUtils.createModifier(addDirectory, fileStructureUtils.noop, ERROR_MESSAGE);
+module.exports = fileStructureUtils.createModifier({
+    pre: addDirectory
+});
 
 function addDirectory (fileStructure, request) {
     var directory = fileStructureUtils.findDirectory(fileStructure, request.body.path);

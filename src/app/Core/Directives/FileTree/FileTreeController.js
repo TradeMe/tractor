@@ -30,7 +30,6 @@ var FileTreeController = (function () {
 
     FileTreeController.prototype.addDirectory = function (directory) {
         this.fileStructureService.addDirectory({
-            root: this.model.fileStructure.path,
             path: directory.path
         })
         .then(function (fileStructure) {
@@ -53,11 +52,13 @@ var FileTreeController = (function () {
             var oldName = item.previousName;
             var newName = item.name;
 
-            this.fileStructureService.editName({
-                root: this.model.fileStructure.path,
-                path: item.path,
+            // Sw33t hax()rz to get around the browserify "path" shim not working on Windows.
+            var oldDirectoryPath = path.dirname(item.path.replace(/\\/g, '/'));
+            this.fileStructureService.moveFile({
+                directoryPath: oldDirectoryPath,
                 oldName: oldName,
-                newName: newName
+                newName: newName,
+                isDirectory: !!item.isDirectory
             })
             .then(function (fileStructure) {
                 this.model.fileStructure = fileStructure;
@@ -85,16 +86,20 @@ var FileTreeController = (function () {
         }.bind(this), 200);
     };
 
-    FileTreeController.prototype.moveFile = function (root, file, directory) {
-        this.fileStructureService.moveFile({
-            root: root,
-            fileName: file.name,
-            filePath: file.path,
-            directoryPath: directory.path
-        })
-        .then(function (fileStructure) {
-            this.model.fileStructure = fileStructure;
-        }.bind(this));
+    FileTreeController.prototype.moveFile = function (file, directory) {
+        // Sw33t hax()rz to get around the browserify "path" shim not working on Windows.
+        var oldDirectoryPath = path.dirname(file.path.replace(/\\/g, '/'));
+        if (oldDirectoryPath !== directory.path) {
+            this.fileStructureService.moveFile({
+                oldDirectoryPath: oldDirectoryPath,
+                newDirectoryPath: directory.path,
+                name: file.name,
+                isDirectory: false
+            })
+            .then(function (fileStructure) {
+                this.model.fileStructure = fileStructure;
+            }.bind(this));
+        }
     };
 
     FileTreeController.prototype.expandDirectory = function (item) {
@@ -126,9 +131,9 @@ var FileTreeController = (function () {
             this.$window.alert('Cannot delete a directory with files in it.');
         } else {
             this.fileStructureService.deleteFile({
-                root: this.model.fileStructure.path,
                 path: item.path,
-                name: item.name
+                name: item.name,
+                isDirectory: item.isDirectory
             })
             .then(function (fileStructure) {
                 this.model.fileStructure = fileStructure;

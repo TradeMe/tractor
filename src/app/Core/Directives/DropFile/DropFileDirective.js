@@ -55,11 +55,10 @@ var DropFileDirective = function () {
         event.preventDefault();
         event.stopPropagation();
         this.classList.remove('dragover');
-        var root = event.dataTransfer.getData('path');
         var file = JSON.parse(event.dataTransfer.getData('file'));
         var directory = $scope.dropDirectory;
         var dropHandler = $scope.onDrop();
-        dropHandler(root, file, directory);
+        dropHandler(file, directory);
         return false;
     }
 };

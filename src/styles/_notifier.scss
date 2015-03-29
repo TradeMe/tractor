@@ -12,36 +12,31 @@ tractor-notifier {
 }
 
 .notifier__notification  {
-    position: relative;
-    margin-bottom: 0.5rem;
-    padding: 0.5rem;
-    line-height: 1rem;
-    letter-spacing: 1px;
-    font-size: 0.875rem;
-    width: auto;
     text-align: right;
-    padding-right: 2.5rem;
+    font-size: 0;
+      margin-bottom: 0.5rem;
 }
 
-.notifier__notification--info {
+.notifier__notification--info .notifier__notification-message {
     background: rgba(245, 245, 245, 0.9);
 }
 
-.notifier__notification--error {
+.notifier__notification--error .notifier__notification-message {
     background: rgba(255, 50, 50, 0.9);
     color: rgba(245, 245, 245, 1);
 }
 
 .notifier__notification-message {
-    white-space: pre;
+    line-height: 2rem;
+    font-size: 1rem;
+    display: inline-block;
+    padding: 0 0.5rem;
 }
 
 .notifier__notification-dismiss {
-    position: absolute;
-    top: 0rem;
-    right: 0rem;
     height: 2rem;
     width: 2rem;
+    vertical-align: bottom;
 
     -webkit-appearance: none;
     appearance: none;

@@ -14,9 +14,10 @@ var FileStructureService = function FileStructureService (
         addDirectory: addDirectory,
         deleteFile: deleteFile,
         editName: editName,
+        moveFile: moveFile,
+        getFileUsages: getFileUsages,
         getExpanded: getExpanded,
-        setExpanded: setExpanded,
-        moveFile: moveFile
+        setExpanded: setExpanded
     };
 
     function getFileStructure (options) {
@@ -41,23 +42,27 @@ var FileStructureService = function FileStructureService (
         .then(updateFileStructure);
     }
 
-    function getExpanded () {
-        return localStorageService.get(EXPANDED_STORAGE_KEY) || {};
-    }
-
-    function setExpanded (expanded) {
-        localStorageService.set(EXPANDED_STORAGE_KEY, expanded);
-    }
-
     function moveFile (options) {
         return $http.post('/move-file', options)
         .then(updateFileStructure);
+    }
+
+    function getFileUsages () {
+        return $http.get('/get-file-usages');
     }
 
     function updateFileStructure (fileStructure) {
         fileStructure = restoreExpanded(fileStructure);
         fileStructure.expanded = true;
         return fileStructure;
+    }
+
+    function getExpanded () {
+        return localStorageService.get(EXPANDED_STORAGE_KEY) || {};
+    }
+
+    function setExpanded (expanded) {
+        localStorageService.set(EXPANDED_STORAGE_KEY, expanded);
     }
 
     function restoreExpanded (directory) {

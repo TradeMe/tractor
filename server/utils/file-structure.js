@@ -1,9 +1,12 @@
 'use strict';
 
+// Config:
+var config = require('./get-config')();
+
 // Utilities:
 var _ = require('lodash');
-var constants = require('../../constants');
-var errorHandler = require('../../utils/error-handler');
+var constants = require('../constants');
+var errorHandler = require('./error-handler');
 var path = require('path');
 var Promise = require('bluebird');
 
@@ -14,40 +17,55 @@ module.exports = {
     createModifier: createModifier,
     deletePaths: deletePaths,
     findDirectory: findDirectory,
-    findContainingDirectory: findContainingDirectory,
+    findFile: findFile,
+    getExtension: getExtension,
     getFileNames: getFileNames,
-    getExtensionFromRoot: getExtensionFromRoot,
-    noop: noop
+    getFileUsages: getFileUsages
 };
 
-function createModifier (preModifier, postModifier, errorMessage) {
+function createModifier (options) {
+    var preModifier = options && options.pre || Promise.resolve;
+    var postModifier = options && options.post || Promise.resolve;
     return function (request, response) {
-        jsondir.dir2jsonAsync(request.body.root, {
-            attributes: ['content']
+        var structureRoot = options.root || config.testDirectory;
+        getFileStructure(structureRoot)
+        .then(function (fileStructure) {
+            return preModifier(fileStructure, request);
         })
         .then(function (fileStructure) {
-            fileStructure = preModifier(fileStructure, request);
             return jsondir.json2dirAsync(fileStructure, {
                 nuke: true
             });
         })
         .then(function () {
-            return jsondir.dir2jsonAsync(request.body.root, {
-                attributes: ['content']
+            return getFileStructure(structureRoot, {
+                organise: true
             });
         })
         .then(function (newFileStructure) {
-            newFileStructure = organiseFileStructure(newFileStructure, newFileStructure);
-            response.send(JSON.stringify(postModifier(newFileStructure, request)));
+            return postModifier(newFileStructure, request);
+        })
+        .then(function (newFileStructure) {
+            response.send(JSON.stringify(newFileStructure));
         })
         .catch(function (error) {
             console.log(error);
-            errorHandler(response, error, errorMessage);
+            errorHandler(response, error, 'Operation failed.');
         });
     };
 }
 
+function getFileStructure (directoryPath, options) {
+    return jsondir.dir2jsonAsync(directoryPath, {
+        attributes: ['content']
+    })
+    .then(function (fileStructure) {
+        return options && options.organise ? organiseFileStructure(fileStructure) : fileStructure;
+    });
+}
+
 function organiseFileStructure (directory, fileStructure) {
+    fileStructure = fileStructure || directory;
     fileStructure.allFiles = fileStructure.allFiles || [];
 
     var skip = ['name', '-name', 'path', '-path', '-type', 'allFiles', 'files', 'directories', 'isDirectory'];
@@ -100,25 +118,35 @@ function deletePaths (directory) {
     return directory;
 }
 
-function findDirectory (directory, itemPath) {
-    var dir;
-    if (directory['-path'] === itemPath) {
+function findDirectory (directory, directoryPath) {
+    if (directory['-path'] === directoryPath) {
         return directory;
     }
+    var dir;
     _.each(directory, function (item) {
         if (!dir && item['-type'] === 'd') {
-            if (item['-path'] === itemPath) {
+            if (item['-path'] === directoryPath) {
                 dir = item;
             } else {
-                dir = findDirectory(item, itemPath);
+                dir = findDirectory(item, directoryPath);
             }
         }
     });
     return dir;
 }
 
-function findContainingDirectory (directory, itemPath) {
-    return findDirectory(directory, path.dirname(itemPath));
+function findFile (directory, filePath) {
+    var file;
+    _.each(directory, function (item) {
+        if (!file) {
+            if (item['-path'] === filePath) {
+                file = item;
+            } else if (item['-type'] === 'd') {
+                file = findFile(item, filePath);
+            }
+        }
+    });
+    return file;
 }
 
 function getFileNames (directoryPath, extension) {
@@ -129,6 +157,18 @@ function getFileNames (directoryPath, extension) {
             return !extension || name.match(new RegExp(extension + '$'));
         });
     });
+}
+
+function getExtension (directoryPath) {
+    debugger;
+    var extension = '';
+    do {
+        var directoryName = path.basename(directoryPath);
+        var extensionKey = directoryName.toUpperCase() + '_EXTENSION';
+        var extension = constants[extensionKey];
+        directoryPath = path.dirname(directoryPath);
+    } while (!extension)
+    return extension;
 }
 
 function getFileNamesInDirectory (directory, names) {
@@ -145,12 +185,22 @@ function getFileNamesInDirectory (directory, names) {
     return names;
 }
 
-function getExtensionFromRoot (root) {
-    var rootDirectoryName = path.basename(root);
-    var extensionKey = rootDirectoryName.toUpperCase() + '_EXTENSION';
-    return constants[extensionKey];
-}
-
-function noop (fileStructure) {
-    return fileStructure;
+function getFileUsages (directoryPath) {
+    return getFileStructure(directoryPath, {
+        organise: true,
+    })
+    .then(function (fileStructure)  {
+        var usages = {};
+        var match;
+        fileStructure.allFiles.forEach(function (file) {
+            var findRequires = /require\([\'\"]([\.\/].*?)[\'\"]\)/gm;
+            while ((match = findRequires.exec(file.content)) !== null) {
+                var usedPath = path.resolve(path.dirname(file.path), _.last(match));
+                usages[usedPath] = usages[usedPath] || [];
+                usages[usedPath].push(file.path);
+            }
+        });
+        fileStructure.usages = usages;
+        return fileStructure;
+    });
 }

@@ -9,12 +9,9 @@ var path = require('path');
 
 // Dependencies:
 var esprima = require('esprima');
-var fileStructureUtils = require('./file-structure');
+var fileStructureUtils = require('../../utils/file-structure');
 var Formatter = require('../../utils/feature-lexer-formatter');
 var gherkin = require('gherkin');
-
-// Constants:
-var ERROR_MESSAGE = 'Reading file structure failed.';
 
 // Errors:
 var ParseJavaScriptError = require('../../errors/ParseJavaScriptError');
@@ -23,10 +20,13 @@ var LexFeatureError = require('../../errors/LexFeatureError');
 module.exports = createFileStructureHandler();
 
 function createFileStructureHandler () {
-    var handler = fileStructureUtils.createModifier(fileStructureUtils.noop, transform, ERROR_MESSAGE);
+    var options = {
+        post: transform
+    };
+    var handler = fileStructureUtils.createModifier(options);
     return function (request, response) {
         var directoryKey = request.query.directory.toUpperCase() + '_DIR';
-        request.body.root = path.join(config.testDirectory, constants[directoryKey]);
+        options.root = path.join(config.testDirectory, constants[directoryKey]);
         handler(request, response);
     };
 }
