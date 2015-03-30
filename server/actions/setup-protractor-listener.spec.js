@@ -1,4 +1,4 @@
-/* global describe:true, it:true, xit: true */
+/* global describe:true, xit: true */
 'use strict';
 
 var chai = require('chai');
@@ -33,7 +33,7 @@ describe('server/actions: setup-protractor-listener:', function () {
             var childProcess = require('child_process');
 			var path = require('path');
 			var Promise = require('bluebird');
-			
+
             var socketEmitter = new EventEmitter();
             var spawnEmitter = new EventEmitter();
             spawnEmitter.stdout = new EventEmitter();
@@ -43,7 +43,7 @@ describe('server/actions: setup-protractor-listener:', function () {
             };
             sinon.stub(sockets, 'of').returns(socketEmitter);
             sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
-			sinon.stub(Promise, 'resolve').returns({ 
+			sinon.stub(Promise, 'resolve').returns({
 				then: function (func) {
 					func();
 				}

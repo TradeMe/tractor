@@ -3,6 +3,8 @@
 var path = require('path');
 
 module.exports = {
+    JAVASCRIPT_EXTENSION: '.js',
+
     COMPONENTS_EXTENSION: '.component.js',
     COMPONENTS_DIR: 'components',
 

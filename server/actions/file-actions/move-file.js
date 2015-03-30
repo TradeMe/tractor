@@ -1,12 +1,7 @@
 'use strict';
 
-// Config:
-var config = require('../../utils/get-config')();
-
 // Utilities:
-var _ = require('lodash');
 var path = require('path');
-var Promise = require('bluebird');
 
 // Dependencies:
 var changecase = require('change-case');
@@ -20,8 +15,8 @@ module.exports = fileStructureUtils.createModifier({
 
 var transformCreators = {
     '.component.js': componentTransform,
-    '.feature': featureTransform,
-    '.mock.json': mockDataTransform
+    //'.feature': featureTransform,
+    //'.mock.json': mockDataTransform
 };
 
 function moveFile (fileStructure, request) {
@@ -46,67 +41,56 @@ function moveFile (fileStructure, request) {
     newDirectory[moveToName] = oldDirectory[moveFromName];
     delete oldDirectory[moveFromName];
 
-    if (extension) {
-        var transformCreator = transformCreators[extension];
-        if (transformCreator) {
-            return transformCreator(oldName, newName, oldPath, newPath)
-            .then(function (fileTransforms) {
-                fileTransforms.forEach(function (fileTransform) {
-                    var file = fileStructureUtils.findFile(fileStructure, fileTransform.path);
-                    fileTransform.transforms.forEach(function (transform) {
-                        var content = file['-content'];
-                        content = content.replace(new RegExp(transform.replace.replace(/\./g, '\\.'), 'g'), transform.with);
-                        file['-content'] = content;
-                    });
-                });
-                return fileStructure;
+    var transformCreator = transformCreators[extension];
+    if (transformCreator) {
+        var fileTransforms = transformCreator(fileStructure, oldName, newName, oldPath, newPath);
+        fileTransforms.forEach(function (fileTransform) {
+            var file = fileStructureUtils.findFile(fileStructure, fileTransform.path);
+            fileTransform.transforms.forEach(function (transform) {
+                var content = file['-content'];
+                content = content.replace(new RegExp(transform.replace.replace(/\./g, '\\.'), 'g'), transform.with);
+                file['-content'] = content;
             });
-        }
+        });
     }
     fileStructureUtils.deletePaths(newDirectory[moveToName]);
     return fileStructure;
 }
 
-function componentTransform (oldName, newName, oldComponentPath, newComponentPath) {
-    return fileStructureUtils.getFileUsages(config.testDirectory)
-    .then(function (fileStructure) {
-        var nonalphaquote = '([^a-zA-Z0-9\"])';
-        var componentUsages = fileStructure.usages[oldComponentPath];
-        if (componentUsages) {
-            componentUsages.push(oldComponentPath);
-            return componentUsages.map(function (usagePath) {
-                return {
-                    path: usagePath,
-                    transforms: [{
-                        replace: nonalphaquote + pascal(oldName) + nonalphaquote,
-                        with: '$1' + pascal(newName) + '$2'
-                    }, {
-                        replace: nonalphaquote + camel(oldName) + nonalphaquote,
-                        with: '$1' + camel(newName) + '$2'
-                    }, {
-                        replace: '\"' + oldName + '\"',
-                        with: '"' + newName + '"'
-                    }, {
-                        replace: path.relative(path.dirname(usagePath), oldComponentPath),
-                        with: path.relative(path.dirname(usagePath), newComponentPath)
-                    }]
-                };
-            });
-        }
-        return [];
+function componentTransform (fileStructure, oldName, newName, oldComponentPath, newComponentPath) {
+    var nonalphaquote = '([^a-zA-Z0-9\"])';
+    var componentUsages = fileStructure.usages[oldComponentPath] || [];
+    componentUsages.push(oldComponentPath);
+    return componentUsages.map(function (usagePath) {
+        return {
+            path: usagePath,
+            transforms: [{
+                replace: nonalphaquote + pascal(oldName) + nonalphaquote,
+                with: '$1' + pascal(newName) + '$2'
+            }, {
+                replace: nonalphaquote + camel(oldName) + nonalphaquote,
+                with: '$1' + camel(newName) + '$2'
+            }, {
+                replace: '\"' + oldName + '\"',
+                with: '"' + newName + '"'
+            }, {
+                replace: path.relative(path.dirname(usagePath), oldComponentPath),
+                with: path.relative(path.dirname(usagePath), newComponentPath)
+            }]
+        };
     });
 }
 
-function featureTransform (oldName, newName) {
-    return Promise.resolve([{
-        replace: '(\\s)' + oldName + '(\\r\\n|\\n)',
-        with: '$1' + newName + '$2'
-    }]);
-}
-
-function mockDataTransform (oldName, newName) {
-    return fileStructureUtils.getFileUsages(config.testDirectory)
-    .then(function () {
-        return [];
-    });
-}
+//function featureTransform (oldName, newName) {
+//    return Promise.resolve([{
+//        replace: '(\\s)' + oldName + '(\\r\\n|\\n)',
+//        with: '$1' + newName + '$2'
+//    }]);
+//}
+//
+//function mockDataTransform (oldName, newName) {
+//    return fileStructureUtils.getFileUsages(config.testDirectory)
+//    .then(function () {
+//        return [];
+//    });
+//}

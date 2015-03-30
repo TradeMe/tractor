@@ -38,9 +38,11 @@ var ComponentFileService = function ComponentFileService (
     }
 
     function getComponentFileStructure () {
-        return FileStructureService.getFileStructure({
-            directory: 'components',
-            parse: true
+        return FileStructureService.getFileStructure()
+        .then(function (fileStructure) {
+            return _.find(fileStructure.directories, function (directory) {
+                return directory.name === 'components';
+            });
         });
     }
 

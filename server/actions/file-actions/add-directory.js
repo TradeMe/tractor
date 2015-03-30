@@ -1,6 +1,6 @@
 'use strict';
 
-// Dependenices:
+// Dependencies:
 var fileStructureUtils = require('../../utils/file-structure');
 
 // Constants:

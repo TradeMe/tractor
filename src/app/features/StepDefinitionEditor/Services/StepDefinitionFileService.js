@@ -28,9 +28,11 @@ var StepDefinitionFileService = function StepDefinitionFileService (
     }
 
     function getStepDefinitionFileStructure () {
-        return FileStructureService.getFileStructure({
-            directory: 'step_definitions',
-            parse: true
+        return FileStructureService.getFileStructure()
+        .then(function (fileStructure) {
+            return _.find(fileStructure.directories, function (directory) {
+                return directory.name === 'step_definitions';
+            });
         });
     }
 

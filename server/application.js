@@ -43,8 +43,6 @@ module.exports = (function () {
         application.post('/move-file', require('./actions/file-actions/move-file'));
         application.post('/delete-file', require('./actions/file-actions/delete-file'));
 
-        application.get('/get-file-usages', require('./actions/file-actions/get-file-usages'))
-
         application.get('/get-component-path', require('./actions/component-actions/get-component-path'));
         application.post('/save-component-file', require('./actions/component-actions/save-component-file'));
 

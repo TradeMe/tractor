@@ -28,9 +28,11 @@ var FeatureFileService = function FeatureFileService (
     }
 
     function getFeatureFileStructure () {
-        return FileStructureService.getFileStructure({
-            directory: 'features',
-            lex: true
+        return FileStructureService.getFileStructure()
+        .then(function (fileStructure) {
+            return _.find(fileStructure.directories, function (directory) {
+                return directory.name === 'features';
+            });
         });
     }
 

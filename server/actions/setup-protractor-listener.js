@@ -4,7 +4,6 @@
 var _ = require('lodash');
 var log = require('../utils/logging');
 var noop = require('node-noop');
-var os = require('os');
 var path = require('path');
 var Promise = require('bluebird');
 
@@ -98,7 +97,7 @@ function formatMessage (message) {
         return {
             message: message,
             type: 'error'
-        }
+        };
     }
 
     // Remove line numbers from step definitions:

@@ -19,48 +19,47 @@ module.exports = {
     findDirectory: findDirectory,
     findFile: findFile,
     getExtension: getExtension,
-    getFileNames: getFileNames,
-    getFileUsages: getFileUsages
+    getFileNames: getFileNames
 };
 
 function createModifier (options) {
-    var preModifier = options && options.pre || Promise.resolve;
-    var postModifier = options && options.post || Promise.resolve;
+    var preModifier = options && options.pre;
+    var postModifier = options && options.post;
+
     return function (request, response) {
-        var structureRoot = options.root || config.testDirectory;
-        getFileStructure(structureRoot)
+        getFileStructure(config.testDirectory)
         .then(function (fileStructure) {
-            return preModifier(fileStructure, request);
-        })
-        .then(function (fileStructure) {
-            return jsondir.json2dirAsync(fileStructure, {
-                nuke: true
-            });
-        })
-        .then(function () {
-            return getFileStructure(structureRoot, {
-                organise: true
-            });
+            if (preModifier) {
+                return saveFileStructure(preModifier(fileStructure, request))
+                .then(function () {
+                    return getFileStructure(config.testDirectory);
+                });
+            }
+            return fileStructure;
         })
         .then(function (newFileStructure) {
-            return postModifier(newFileStructure, request);
-        })
-        .then(function (newFileStructure) {
+            newFileStructure = postModifier ? postModifier(newFileStructure, request) : newFileStructure;
             response.send(JSON.stringify(newFileStructure));
         })
         .catch(function (error) {
-            console.log(error);
             errorHandler(response, error, 'Operation failed.');
         });
     };
 }
 
-function getFileStructure (directoryPath, options) {
+function getFileStructure (directoryPath) {
     return jsondir.dir2jsonAsync(directoryPath, {
         attributes: ['content']
     })
     .then(function (fileStructure) {
-        return options && options.organise ? organiseFileStructure(fileStructure) : fileStructure;
+        return getFileUsages(organiseFileStructure(fileStructure));
+    });
+}
+
+function saveFileStructure (fileStructure) {
+    debugger;
+    return jsondir.json2dirAsync(disorganiseFileStructure(fileStructure), {
+        nuke: true
     });
 }
 
@@ -104,6 +103,32 @@ function organiseFileStructure (directory, fileStructure) {
     delete directory['-path'];
     delete directory['-type'];
 
+    return directory;
+}
+
+function disorganiseFileStructure (directory) {
+    directory['-path'] = directory.path;
+    directory['-type'] = 'd';
+
+    (directory.files || []).forEach(function (file) {
+        var extension = _.last(/(\..*)$/.exec(file.path));
+        directory[file.name + extension] = {
+            '-content': file.content,
+            '-path': file.path,
+            '-type': '-'
+        };
+    });
+
+    (directory.directories || []).forEach(function (subDirectory) {
+        directory[subDirectory.name] = disorganiseFileStructure(subDirectory);
+    });
+
+    delete directory.path;
+    delete directory.files;
+    delete directory.directories;
+    delete directory.allFiles;
+    delete directory.usages;
+    delete directory.isDirectory;
     return directory;
 }
 
@@ -160,12 +185,11 @@ function getFileNames (directoryPath, extension) {
 }
 
 function getExtension (directoryPath) {
-    debugger;
     var extension = '';
     do {
         var directoryName = path.basename(directoryPath);
         var extensionKey = directoryName.toUpperCase() + '_EXTENSION';
-        var extension = constants[extensionKey];
+        extension = constants[extensionKey];
         directoryPath = path.dirname(directoryPath);
     } while (!extension)
     return extension;
@@ -185,22 +209,17 @@ function getFileNamesInDirectory (directory, names) {
     return names;
 }
 
-function getFileUsages (directoryPath) {
-    return getFileStructure(directoryPath, {
-        organise: true,
-    })
-    .then(function (fileStructure)  {
-        var usages = {};
-        var match;
-        fileStructure.allFiles.forEach(function (file) {
-            var findRequires = /require\([\'\"]([\.\/].*?)[\'\"]\)/gm;
-            while ((match = findRequires.exec(file.content)) !== null) {
-                var usedPath = path.resolve(path.dirname(file.path), _.last(match));
-                usages[usedPath] = usages[usedPath] || [];
-                usages[usedPath].push(file.path);
-            }
-        });
-        fileStructure.usages = usages;
-        return fileStructure;
+function getFileUsages (fileStructure)  {
+    var usages = {};
+    var match;
+    fileStructure.allFiles.forEach(function (file) {
+        var findRequires = /require\([\'\"]([\.\/].*?)[\'\"]\)/gm;
+        while ((match = findRequires.exec(file.content)) !== null) {
+            var usedPath = path.resolve(path.dirname(file.path), _.last(match));
+            usages[usedPath] = usages[usedPath] || [];
+            usages[usedPath].push(file.path);
+        }
     });
+    fileStructure.usages = usages;
+    return fileStructure;
 }

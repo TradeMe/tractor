@@ -18,6 +18,7 @@ var FileTreeController = (function () {
         $window,
         FileStructureService
     ) {
+        debugger;
         this.$state = $state;
         this.$timeout = $timeout;
         this.$window = $window;
@@ -32,9 +33,7 @@ var FileTreeController = (function () {
         this.fileStructureService.addDirectory({
             path: directory.path
         })
-        .then(function (fileStructure) {
-            this.model.fileStructure = fileStructure;
-        }.bind(this));
+        .then(setFileStructure.bind(this));
     };
 
     FileTreeController.prototype.editName = function (item) {
@@ -60,9 +59,7 @@ var FileTreeController = (function () {
                 newName: newName,
                 isDirectory: !!item.isDirectory
             })
-            .then(function (fileStructure) {
-                this.model.fileStructure = fileStructure;
-            }.bind(this));
+            .then(setFileStructure.bind(this));
         }
     };
 
@@ -96,9 +93,7 @@ var FileTreeController = (function () {
                 name: file.name,
                 isDirectory: false
             })
-            .then(function (fileStructure) {
-                this.model.fileStructure = fileStructure;
-            }.bind(this));
+            .then(setFileStructure.bind(this));
         }
     };
 
@@ -135,11 +130,24 @@ var FileTreeController = (function () {
                 name: item.name,
                 isDirectory: item.isDirectory
             })
-            .then(function (fileStructure) {
-                this.model.fileStructure = fileStructure;
-            }.bind(this));
+            .then(setFileStructure.bind(this));
         }
     };
+
+    var directoryNames = {
+        'component': 'components',
+        'feature': 'features',
+        'step-definition': 'step_definitions',
+        'mock-data': 'mock_data'
+    };
+
+    function setFileStructure (fileStructure) {
+        debugger;
+        var directory = _.find(fileStructure.directories, function (directory) {
+            return directory.name = directoryNames[this.type];
+        }.bind(type));
+        this.model.fileStructure = directory;
+    }
 
     return FileTreeController;
 })();

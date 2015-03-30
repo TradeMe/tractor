@@ -38,8 +38,11 @@ var MockDataFileService = function MockDataFileService (
     }
 
     function getMockDataFileStructure () {
-        return FileStructureService.getFileStructure({
-            directory: 'mock_data'
+        return FileStructureService.getFileStructure()
+        .then(function (fileStructure) {
+            return _.find(fileStructure.directories, function (directory) {
+                return directory.name === 'mock_data';
+            });
         });
     }
 

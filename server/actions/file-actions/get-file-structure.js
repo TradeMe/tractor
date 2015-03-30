@@ -1,11 +1,6 @@
 'use strict';
 
-// Config:
-var config = require('../../utils/get-config')();
-
-// Utilities:
-var constants = require('../../constants');
-var path = require('path');
+var constants = require('../..//constants');
 
 // Dependencies:
 var esprima = require('esprima');
@@ -17,54 +12,48 @@ var gherkin = require('gherkin');
 var ParseJavaScriptError = require('../../errors/ParseJavaScriptError');
 var LexFeatureError = require('../../errors/LexFeatureError');
 
-module.exports = createFileStructureHandler();
+module.exports = fileStructureUtils.createModifier({
+    post: transform
+});
 
-function createFileStructureHandler () {
-    var options = {
-        post: transform
-    };
-    var handler = fileStructureUtils.createModifier(options);
-    return function (request, response) {
-        var directoryKey = request.query.directory.toUpperCase() + '_DIR';
-        options.root = path.join(config.testDirectory, constants[directoryKey]);
-        handler(request, response);
-    };
-}
-
-function transform (fileStructure, request) {
-    parse(fileStructure, request);
-    lex(fileStructure, request);
+function transform (fileStructure) {
+    parse(fileStructure);
+    lex(fileStructure);
     return fileStructure;
 }
 
-function parse (fileStructure, request) {
-    if (request.query.parse === 'true') {
-        fileStructure.allFiles.forEach(function (file) {
-            try {
-                file.ast = esprima.parse(file.content, {
-                    comment: true
-                });
-            } catch (e) {
-                throw new ParseJavaScriptError('Parsing "' + file.name + '" failed.');
-            }
-        });
-    }
+function parse (fileStructure) {
+    var javaScriptFiles = fileStructure.allFiles.filter(function (file) {
+        var extension = constants.JAVASCRIPT_EXTENSION.replace(/\./g, '\\.');
+        return new RegExp(extension + '$').test(file.path);
+    });
+    javaScriptFiles.forEach(function (file) {
+        try {
+            file.ast = esprima.parse(file.content, {
+                comment: true
+            });
+        } catch (e) {
+            throw new ParseJavaScriptError('Parsing "' + file.name + '" failed.');
+        }
+    });
 }
 
-function lex (fileStructure, request) {
-    if (request.query.lex === 'true') {
-        fileStructure.allFiles.forEach(function (file) {
-            try {
-                var formatter = new Formatter();
-                /* eslint-disable new-cap */
-                var EnLexer = gherkin.Lexer('en');
-                /* eslint-enable new-cap */
-                var enLexer = new EnLexer(formatter);
-                enLexer.scan(file.content);
-                file.tokens = formatter.done();
-            } catch (e) {
-                throw new LexFeatureError('Lexing "' + file.name + '" failed.');
-            }
-        });
-    }
+function lex (fileStructure) {
+    var featureFiles = fileStructure.allFiles.filter(function (file) {
+        var extension = constants.FEATURES_EXTENSION.replace(/\./g, '\\.');
+        return new RegExp(extension + '$').test(file.path);
+    });
+    featureFiles.forEach(function (file) {
+        try {
+            var formatter = new Formatter();
+            /* eslint-disable new-cap */
+            var EnLexer = gherkin.Lexer('en');
+            /* eslint-enable new-cap */
+            var enLexer = new EnLexer(formatter);
+            enLexer.scan(file.content);
+            file.tokens = formatter.done();
+        } catch (e) {
+            throw new LexFeatureError('Lexing "' + file.name + '" failed.');
+        }
+    });
 }

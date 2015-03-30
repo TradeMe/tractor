@@ -13,9 +13,7 @@ var FileStructureService = function FileStructureService (
         getFileStructure: getFileStructure,
         addDirectory: addDirectory,
         deleteFile: deleteFile,
-        editName: editName,
         moveFile: moveFile,
-        getFileUsages: getFileUsages,
         getExpanded: getExpanded,
         setExpanded: setExpanded
     };
@@ -37,23 +35,16 @@ var FileStructureService = function FileStructureService (
         .then(updateFileStructure);
     }
 
-    function editName (options) {
-        return $http.post('/edit-name', options)
-        .then(updateFileStructure);
-    }
-
     function moveFile (options) {
         return $http.post('/move-file', options)
         .then(updateFileStructure);
     }
 
-    function getFileUsages () {
-        return $http.get('/get-file-usages');
-    }
-
     function updateFileStructure (fileStructure) {
         fileStructure = restoreExpanded(fileStructure);
-        fileStructure.expanded = true;
+        fileStructure.directories.forEach(function (topLevelDirectory) {
+            topLevelDirectory.expanded = true;
+        });
         return fileStructure;
     }
 
