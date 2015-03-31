@@ -18,7 +18,6 @@ var FileTreeController = (function () {
         $window,
         FileStructureService
     ) {
-        debugger;
         this.$state = $state;
         this.$timeout = $timeout;
         this.$window = $window;
@@ -51,8 +50,7 @@ var FileTreeController = (function () {
             var oldName = item.previousName;
             var newName = item.name;
 
-            // Sw33t hax()rz to get around the browserify "path" shim not working on Windows.
-            var oldDirectoryPath = path.dirname(item.path.replace(/\\/g, '/'));
+            var oldDirectoryPath = getDirname(item.path);
             this.fileStructureService.moveFile({
                 directoryPath: oldDirectoryPath,
                 oldName: oldName,
@@ -73,8 +71,7 @@ var FileTreeController = (function () {
         this.$timeout(function () {
             if (!item.editingName) {
                 var params = {};
-                // Sw33t hax()rz to get around the browserify "path" shim not working on Windows.
-                var directoryPath = this.model.fileStructure.path.replace(/\\/g, '/');
+                var directoryPath = getDirname(this.model.fileStructure.path);
                 var filePath = item.path.replace(/\\/g, '/');
                 var relativePath = path.relative(directoryPath, filePath);
                 params[this.type] = _.last(relativePath.match(/(.*?)\..*/));
@@ -84,8 +81,7 @@ var FileTreeController = (function () {
     };
 
     FileTreeController.prototype.moveFile = function (file, directory) {
-        // Sw33t hax()rz to get around the browserify "path" shim not working on Windows.
-        var oldDirectoryPath = path.dirname(file.path.replace(/\\/g, '/'));
+        var oldDirectoryPath = getDirname(file.path);
         if (oldDirectoryPath !== directory.path) {
             this.fileStructureService.moveFile({
                 oldDirectoryPath: oldDirectoryPath,
@@ -128,7 +124,7 @@ var FileTreeController = (function () {
             this.fileStructureService.deleteFile({
                 path: item.path,
                 name: item.name,
-                isDirectory: item.isDirectory
+                isDirectory: !!item.isDirectory
             })
             .then(setFileStructure.bind(this));
         }
@@ -142,11 +138,15 @@ var FileTreeController = (function () {
     };
 
     function setFileStructure (fileStructure) {
-        debugger;
         var directory = _.find(fileStructure.directories, function (directory) {
             return directory.name = directoryNames[this.type];
-        }.bind(type));
+        }.bind(this));
         this.model.fileStructure = directory;
+    }
+
+    function getDirname (filePath) {
+        // Sw33t hax()rz to get around the browserify "path" shim not working on Windows.
+        return path.dirname(filePath.replace(/\\/g, '/')).replace(/\//g, '\\');
     }
 
     return FileTreeController;

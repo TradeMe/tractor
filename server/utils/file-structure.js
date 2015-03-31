@@ -15,7 +15,6 @@ var jsondir = Promise.promisifyAll(require('jsondir'));
 
 module.exports = {
     createModifier: createModifier,
-    deletePaths: deletePaths,
     findDirectory: findDirectory,
     findFile: findFile,
     getExtension: getExtension,
@@ -42,6 +41,7 @@ function createModifier (options) {
             response.send(JSON.stringify(newFileStructure));
         })
         .catch(function (error) {
+            console.log(error);
             errorHandler(response, error, 'Operation failed.');
         });
     };
@@ -52,47 +52,43 @@ function getFileStructure (directoryPath) {
         attributes: ['content']
     })
     .then(function (fileStructure) {
-        return getFileUsages(organiseFileStructure(fileStructure));
+        fileStructure = normaliseFileStructure(fileStructure);
+        fileStructure.allFiles = findAllFiles(fileStructure);
+        return getFileUsages(fileStructure);
     });
 }
 
 function saveFileStructure (fileStructure) {
-    debugger;
-    return jsondir.json2dirAsync(disorganiseFileStructure(fileStructure), {
+    return jsondir.json2dirAsync(denormaliseFileStructure(fileStructure), {
         nuke: true
     });
 }
 
-function organiseFileStructure (directory, fileStructure) {
+function normaliseFileStructure (directory, fileStructure) {
     fileStructure = fileStructure || directory;
-    fileStructure.allFiles = fileStructure.allFiles || [];
 
-    var skip = ['name', '-name', 'path', '-path', '-type', 'allFiles', 'files', 'directories', 'isDirectory'];
+    var skip = ['name', '-name', 'path', '-path', '-type', 'files', 'directories', 'isDirectory', 'isTopLevel'];
     _.each(directory, function (item, name) {
         if (item['-type'] === 'd') {
             // Directory:
-            directory.directories = directory.directories || [];
             item.isDirectory = true;
             item.name = name;
             item.path = item['-path'];
-            directory.directories.push(organiseFileStructure(item, fileStructure));
-
+            directory.directories = directory.directories || [];
+            directory.directories.push(normaliseFileStructure(item, fileStructure));
             delete directory[name];
         } else if (!_.contains(skip, name)) {
             // File:
             // Skip hidden files (starting with ".")...
             if (!/^\./.test(name)) {
-                directory.files = directory.files || [];
                 item.name = _.last(/(.*?)\./.exec(name));
                 item.path = item['-path'];
                 item.content = item['-content'];
+                directory.files = directory.files || [];
                 directory.files.push(item);
-                fileStructure.allFiles.push(item);
             }
-
             delete directory[name];
         }
-
         delete item['-content'];
         delete item['-path'];
         delete item['-type'];
@@ -106,11 +102,30 @@ function organiseFileStructure (directory, fileStructure) {
     return directory;
 }
 
-function disorganiseFileStructure (directory) {
-    directory['-path'] = directory.path;
+function findAllFiles (directory, allFiles) {
+    _.each(directory.directories, function (directory) {
+        if (allFiles) {
+            allFiles = findAllFiles(directory, allFiles);
+        } else {
+            directory.allFiles = findAllFiles(directory, []);
+        }
+    });
+    if (!allFiles) {
+        allFiles = _.reduce(directory.directories, function (all, directory) {
+            return all.concat(directory.allFiles || []);
+        }, []);
+    }
+    return allFiles.concat(directory.files || []);
+}
+
+function denormaliseFileStructure (directory) {
+    directory['-name'] = directory.name;
+    if (directory.path) {
+        directory['-path'] = directory.path;
+    }
     directory['-type'] = 'd';
 
-    (directory.files || []).forEach(function (file) {
+    _.forEach(directory.files, function (file) {
         var extension = _.last(/(\..*)$/.exec(file.path));
         directory[file.name + extension] = {
             '-content': file.content,
@@ -119,10 +134,11 @@ function disorganiseFileStructure (directory) {
         };
     });
 
-    (directory.directories || []).forEach(function (subDirectory) {
-        directory[subDirectory.name] = disorganiseFileStructure(subDirectory);
+    _.forEach(directory.directories, function (subDirectory) {
+        directory[subDirectory.name] = denormaliseFileStructure(subDirectory);
     });
 
+    delete directory.name;
     delete directory.path;
     delete directory.files;
     delete directory.directories;
@@ -132,28 +148,17 @@ function disorganiseFileStructure (directory) {
     return directory;
 }
 
-function deletePaths (directory) {
-    delete directory['-path'];
-    _.each(directory, function (item) {
-        delete item['-path'];
-        if (item['-type'] === 'd') {
-            item = deletePaths(item);
-        }
-    });
-    return directory;
-}
-
 function findDirectory (directory, directoryPath) {
-    if (directory['-path'] === directoryPath) {
+    if (directory.path === directoryPath) {
         return directory;
     }
     var dir;
-    _.each(directory, function (item) {
-        if (!dir && item['-type'] === 'd') {
-            if (item['-path'] === directoryPath) {
-                dir = item;
+    _.each(directory.directories, function (directory) {
+        if (!dir) {
+            if (directory.path === directoryPath) {
+                dir = directory;
             } else {
-                dir = findDirectory(item, directoryPath);
+                dir = findDirectory(directory, directoryPath);
             }
         }
     });
@@ -161,23 +166,17 @@ function findDirectory (directory, directoryPath) {
 }
 
 function findFile (directory, filePath) {
-    var file;
-    _.each(directory, function (item) {
-        if (!file) {
-            if (item['-path'] === filePath) {
-                file = item;
-            } else if (item['-type'] === 'd') {
-                file = findFile(item, filePath);
-            }
-        }
+    return _.find(directory.files, function (file) {
+        return file.path === filePath;
     });
-    return file;
 }
 
 function getFileNames (directoryPath, extension) {
     return jsondir.dir2jsonAsync(directoryPath)
     .then(function (fileStructure) {
-        return getFileNamesInDirectory(fileStructure)
+        return _.map(fileStructure.allFiles, function (file) {
+            return file.name;
+        })
         .filter(function (name) {
             return !extension || name.match(new RegExp(extension + '$'));
         });
@@ -185,28 +184,13 @@ function getFileNames (directoryPath, extension) {
 }
 
 function getExtension (directoryPath) {
-    var extension = '';
-    do {
-        var directoryName = path.basename(directoryPath);
+    return _(directoryPath.split(path.sep))
+    .map(function (directoryName) {
         var extensionKey = directoryName.toUpperCase() + '_EXTENSION';
-        extension = constants[extensionKey];
-        directoryPath = path.dirname(directoryPath);
-    } while (!extension)
-    return extension;
-}
-
-function getFileNamesInDirectory (directory, names) {
-    names = names || [];
-    _.each(directory, function (item, name) {
-        if (item['-type'] === 'd') {
-            // Directory:
-            getFileNamesInDirectory(item, names);
-        } else if (name !== '-type' && name !== '-path') {
-            // File:
-            names.push(name);
-        }
-    });
-    return names;
+        return constants[extensionKey];
+    })
+    .compact()
+    .first();
 }
 
 function getFileUsages (fileStructure)  {

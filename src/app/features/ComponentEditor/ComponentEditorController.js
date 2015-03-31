@@ -18,7 +18,6 @@ var ComponentEditorController = (function () {
         componentFileStructure,
         componentPath
     ) {
-        debugger;
         this.$scope = $scope;
         this.$window = $window;
         this.notifierService = NotifierService;

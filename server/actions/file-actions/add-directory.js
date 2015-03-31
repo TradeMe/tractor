@@ -1,5 +1,8 @@
 'use strict';
 
+// Utilities:
+var _ = require('lodash');
+
 // Dependencies:
 var fileStructureUtils = require('../../utils/file-structure');
 
@@ -13,9 +16,10 @@ module.exports = fileStructureUtils.createModifier({
 function addDirectory (fileStructure, request) {
     var directory = fileStructureUtils.findDirectory(fileStructure, request.body.path);
     var newDirectoryName = getNewDirectoryName(directory);
-    directory[newDirectoryName] = {
-        '-type': 'd'
-    };
+    directory.directories = directory.directories || [];
+        directory.directories.push({
+        name: newDirectoryName
+    });
     return fileStructure;
 }
 
@@ -34,5 +38,7 @@ function createNewDirectoryName (n) {
 }
 
 function newDirectoryNameExists (directory, newDirectoryName) {
-    return !!directory[newDirectoryName];
+    return !!_.find(directory.directories, function (directory) {
+        return directory.name === newDirectoryName;
+    });
 }

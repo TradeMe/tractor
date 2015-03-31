@@ -1,6 +1,7 @@
 'use strict';
 
 // Utilities:
+var _ = require('lodash');
 var path = require('path');
 
 // Dependencies:
@@ -13,11 +14,11 @@ module.exports = fileStructureUtils.createModifier({
     pre: moveFile
 });
 
-var transformCreators = {
-    '.component.js': componentTransform,
-    //'.feature': featureTransform,
-    //'.mock.json': mockDataTransform
-};
+//var transformCreators = {
+//    '.component.js': componentTransform,
+//    '.feature': featureTransform,
+//    '.mock.json': mockDataTransform
+//};
 
 function moveFile (fileStructure, request) {
     debugger;
@@ -38,48 +39,50 @@ function moveFile (fileStructure, request) {
     var oldPath = path.join(oldDirectoryPath, moveFromName);
     var newPath = path.join(newDirectoryPath, moveToName);
 
-    newDirectory[moveToName] = oldDirectory[moveFromName];
-    delete oldDirectory[moveFromName];
+    var file = fileStructureUtils.findFile(oldDirectory, oldPath);
+    newDirectory.files = newDirectory.files || [];
+    newDirectory.files.push(file);
+    _.remove(oldDirectory, file);
 
-    var transformCreator = transformCreators[extension];
-    if (transformCreator) {
-        var fileTransforms = transformCreator(fileStructure, oldName, newName, oldPath, newPath);
-        fileTransforms.forEach(function (fileTransform) {
-            var file = fileStructureUtils.findFile(fileStructure, fileTransform.path);
-            fileTransform.transforms.forEach(function (transform) {
-                var content = file['-content'];
-                content = content.replace(new RegExp(transform.replace.replace(/\./g, '\\.'), 'g'), transform.with);
-                file['-content'] = content;
-            });
-        });
-    }
-    fileStructureUtils.deletePaths(newDirectory[moveToName]);
+    //var transformCreator = transformCreators[extension];
+    //if (transformCreator) {
+    //    var fileTransforms = transformCreator(fileStructure, oldName, newName, oldPath, newPath);
+    //    fileTransforms.forEach(function (fileTransform) {
+    //        var file = fileStructureUtils.findFile(fileStructure, fileTransform.path);
+    //        fileTransform.transforms.forEach(function (transform) {
+    //            var content = file['-content'];
+    //            content = content.replace(new RegExp(transform.replace.replace(/\./g, '\\.'), 'g'), transform.with);
+    //            file['-content'] = content;
+    //        });
+    //    });
+    //}
+    deletePaths(newDirectory[moveToName]);
     return fileStructure;
 }
 
-function componentTransform (fileStructure, oldName, newName, oldComponentPath, newComponentPath) {
-    var nonalphaquote = '([^a-zA-Z0-9\"])';
-    var componentUsages = fileStructure.usages[oldComponentPath] || [];
-    componentUsages.push(oldComponentPath);
-    return componentUsages.map(function (usagePath) {
-        return {
-            path: usagePath,
-            transforms: [{
-                replace: nonalphaquote + pascal(oldName) + nonalphaquote,
-                with: '$1' + pascal(newName) + '$2'
-            }, {
-                replace: nonalphaquote + camel(oldName) + nonalphaquote,
-                with: '$1' + camel(newName) + '$2'
-            }, {
-                replace: '\"' + oldName + '\"',
-                with: '"' + newName + '"'
-            }, {
-                replace: path.relative(path.dirname(usagePath), oldComponentPath),
-                with: path.relative(path.dirname(usagePath), newComponentPath)
-            }]
-        };
-    });
-}
+//function componentTransform (fileStructure, oldName, newName, oldComponentPath, newComponentPath) {
+//    var nonalphaquote = '([^a-zA-Z0-9\"])';
+//    var componentUsages = fileStructure.usages[oldComponentPath] || [];
+//    componentUsages.push(oldComponentPath);
+//    return componentUsages.map(function (usagePath) {
+//        return {
+//            path: usagePath,
+//            transforms: [{
+//                replace: nonalphaquote + pascal(oldName) + nonalphaquote,
+//                with: '$1' + pascal(newName) + '$2'
+//            }, {
+//                replace: nonalphaquote + camel(oldName) + nonalphaquote,
+//                with: '$1' + camel(newName) + '$2'
+//            }, {
+//                replace: '\"' + oldName + '\"',
+//                with: '"' + newName + '"'
+//            }, {
+//                replace: path.relative(path.dirname(usagePath), oldComponentPath),
+//                with: path.relative(path.dirname(usagePath), newComponentPath)
+//            }]
+//        };
+//    });
+//}
 
 //function featureTransform (oldName, newName) {
 //    return Promise.resolve([{
@@ -94,3 +97,11 @@ function componentTransform (fileStructure, oldName, newName, oldComponentPath, 
 //        return [];
 //    });
 //}
+
+function deletePaths (directory) {
+    _.each(directory.directories, deletePaths)
+    _.each(function (file) {
+        delete file.path;
+    });
+    delete directory.path;
+}

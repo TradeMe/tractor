@@ -1,6 +1,7 @@
 'use strict';
 
 // Utilities:
+var _ = require('lodash');
 var path = require('path');
 
 // Dependencies:
@@ -16,7 +17,12 @@ function deleteFile (fileStructure, request) {
     var isDirectory = request.body.isDirectory;
 
     var directory = fileStructureUtils.findDirectory(fileStructure, path.dirname(filePath));
-    var toDeleteName = isDirectory ? name : name + fileStructureUtils.getExtension(filePath);
-    delete directory[toDeleteName];
+    _.remove(isDirectory ? directory.directories : directory.files, nameEquals(name));
     return fileStructure;
+}
+
+function nameEquals (name) {
+    return function (item) {
+        return item.name === name;
+    };
 }
