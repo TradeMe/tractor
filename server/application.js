@@ -40,7 +40,7 @@ module.exports = (function () {
         application.get('/get-file-structure', require('./actions/file-actions/get-file-structure'));
 
         application.post('/add-directory', require('./actions/file-actions/add-directory'));
-        application.post('/move-file', require('./actions/file-actions/move-file'));
+        application.post('/edit-item-path', require('./actions/file-actions/edit-item-path'));
         application.post('/delete-file', require('./actions/file-actions/delete-file'));
 
         application.get('/get-component-path', require('./actions/component-actions/get-component-path'));

@@ -59,7 +59,9 @@ function getFileStructure (directoryPath) {
 }
 
 function saveFileStructure (fileStructure) {
-    return jsondir.json2dirAsync(denormaliseFileStructure(fileStructure), {
+    var fileStructure = denormaliseFileStructure(fileStructure);
+    console.log(fileStructure.components);
+    return jsondir.json2dirAsync(fileStructure, {
         nuke: true
     });
 }
@@ -119,19 +121,27 @@ function findAllFiles (directory, allFiles) {
 }
 
 function denormaliseFileStructure (directory) {
-    directory['-name'] = directory.name;
+    if (directory.name) {
+        directory['-name'] = directory.name;
+    }
     if (directory.path) {
         directory['-path'] = directory.path;
     }
     directory['-type'] = 'd';
 
     _.forEach(directory.files, function (file) {
-        var extension = _.last(/(\..*)$/.exec(file.path));
-        directory[file.name + extension] = {
-            '-content': file.content,
-            '-path': file.path,
-            '-type': '-'
-        };
+        if (file.path) {
+            file['-path'] = file.path;
+        }
+        if (file.content) {
+            file['-content'] = file.content;
+        }
+        file['-type'] = '-';
+        directory[file.name + getExtension(directory.path)] = file;
+
+        delete file.path;
+        delete file.content;
+        delete file.name;
     });
 
     _.forEach(directory.directories, function (subDirectory) {
@@ -190,7 +200,7 @@ function getExtension (directoryPath) {
         return constants[extensionKey];
     })
     .compact()
-    .first();
+    .first() || '';
 }
 
 function getFileUsages (fileStructure)  {

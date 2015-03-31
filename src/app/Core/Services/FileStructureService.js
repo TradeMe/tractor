@@ -13,7 +13,7 @@ var FileStructureService = function FileStructureService (
         getFileStructure: getFileStructure,
         addDirectory: addDirectory,
         deleteFile: deleteFile,
-        moveFile: moveFile,
+        editItemPath: editItemPath,
         getExpanded: getExpanded,
         setExpanded: setExpanded
     };
@@ -35,8 +35,8 @@ var FileStructureService = function FileStructureService (
         .then(updateFileStructure);
     }
 
-    function moveFile (options) {
-        return $http.post('/move-file', options)
+    function editItemPath (options) {
+        return $http.post('/edit-item-path', options)
         .then(updateFileStructure);
     }
 
