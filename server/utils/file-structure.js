@@ -2,15 +2,16 @@
 
 // Config:
 var config = require('./get-config')();
+var constants = require('../constants');
 
 // Utilities:
 var _ = require('lodash');
-var constants = require('../constants');
 var errorHandler = require('./error-handler');
 var path = require('path');
 var Promise = require('bluebird');
 
 // Dependencies:
+var astUtils = require('./ast-utils');
 var jsondir = Promise.promisifyAll(require('jsondir'));
 
 module.exports = {
@@ -29,9 +30,10 @@ function createModifier (options) {
         getFileStructure(config.testDirectory)
         .then(function (fileStructure) {
             if (preModifier) {
-                return saveFileStructure(preModifier(fileStructure, request))
+                var fileStructure = preModifier(fileStructure, request);
+                return saveFileStructure(fileStructure)
                 .then(function () {
-                    return getFileStructure(config.testDirectory);
+                    return fileStructure;
                 });
             }
             return fileStructure;
@@ -54,14 +56,14 @@ function getFileStructure (directoryPath) {
     .then(function (fileStructure) {
         fileStructure = normaliseFileStructure(fileStructure);
         fileStructure.allFiles = findAllFiles(fileStructure);
+        fileStructure = parseJavaScriptFiles(fileStructure);
         return getFileUsages(fileStructure);
     });
 }
 
 function saveFileStructure (fileStructure) {
-    var fileStructure = denormaliseFileStructure(fileStructure);
-    console.log(fileStructure.components);
-    return jsondir.json2dirAsync(fileStructure, {
+    fileStructure = generateJavaScriptFiles(fileStructure);
+    return jsondir.json2dirAsync(denormaliseFileStructure(fileStructure), {
         nuke: true
     });
 }
@@ -106,17 +108,11 @@ function normaliseFileStructure (directory, fileStructure) {
 
 function findAllFiles (directory, allFiles) {
     _.each(directory.directories, function (directory) {
-        if (allFiles) {
-            allFiles = findAllFiles(directory, allFiles);
-        } else {
-            directory.allFiles = findAllFiles(directory, []);
-        }
+        directory.allFiles = findAllFiles(directory, []);
     });
-    if (!allFiles) {
-        allFiles = _.reduce(directory.directories, function (all, directory) {
-            return all.concat(directory.allFiles || []);
-        }, []);
-    }
+    allFiles = _.reduce(directory.directories, function (all, directory) {
+        return all.concat(directory.allFiles || []);
+    }, []);
     return allFiles.concat(directory.files || []);
 }
 
@@ -142,6 +138,8 @@ function denormaliseFileStructure (directory) {
         delete file.path;
         delete file.content;
         delete file.name;
+        delete file.ast;
+        delete file.tokens;
     });
 
     _.forEach(directory.directories, function (subDirectory) {
@@ -156,6 +154,24 @@ function denormaliseFileStructure (directory) {
     delete directory.usages;
     delete directory.isDirectory;
     return directory;
+}
+
+function parseJavaScriptFiles (fileStructure) {
+    _(fileStructure.allFiles).filter(function (file) {
+        var extension = constants.JAVASCRIPT_EXTENSION.replace(/\./g, '\\.');
+        return new RegExp(extension + '$').test(file.path);
+    })
+    .each(astUtils.parseJS).value();
+    return fileStructure;
+}
+
+function generateJavaScriptFiles (fileStructure) {
+    _(fileStructure.allFiles).filter(function (file) {
+        var extension = constants.JAVASCRIPT_EXTENSION.replace(/\./g, '\\.');
+        return new RegExp(extension + '$').test(file.path);
+    })
+    .each(astUtils.generateJS).value();
+    return fileStructure;
 }
 
 function findDirectory (directory, directoryPath) {
@@ -176,21 +192,21 @@ function findDirectory (directory, directoryPath) {
 }
 
 function findFile (directory, filePath) {
-    return _.find(directory.files, function (file) {
+    return _.find(directory.allFiles, function (file) {
         return file.path === filePath;
     });
 }
 
 function getFileNames (directoryPath, extension) {
     return jsondir.dir2jsonAsync(directoryPath)
-    .then(function (fileStructure) {
-        return _.map(fileStructure.allFiles, function (file) {
-            return file.name;
-        })
-        .filter(function (name) {
-            return !extension || name.match(new RegExp(extension + '$'));
+        .then(function (fileStructure) {
+            return _.map(fileStructure.allFiles, function (file) {
+                return file.name;
+            })
+                .filter(function (name) {
+                    return !extension || name.match(new RegExp(extension + '$'));
+                });
         });
-    });
 }
 
 function getExtension (directoryPath) {
@@ -203,17 +219,3 @@ function getExtension (directoryPath) {
     .first() || '';
 }
 
-function getFileUsages (fileStructure)  {
-    var usages = {};
-    var match;
-    fileStructure.allFiles.forEach(function (file) {
-        var findRequires = /require\([\'\"]([\.\/].*?)[\'\"]\)/gm;
-        while ((match = findRequires.exec(file.content)) !== null) {
-            var usedPath = path.resolve(path.dirname(file.path), _.last(match));
-            usages[usedPath] = usages[usedPath] || [];
-            usages[usedPath].push(file.path);
-        }
-    });
-    fileStructure.usages = usages;
-    return fileStructure;
-}

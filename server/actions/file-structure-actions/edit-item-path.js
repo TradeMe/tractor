@@ -7,10 +7,12 @@ var path = require('path');
 // Dependencies:
 var changecase = require('change-case');
 var camel = changecase.camel;
+var esquery = require('esquery');
 var pascal = changecase.pascal;
+var fileStructureModifier = require('./file-structure-utils/file-structure-modifier');
 var fileStructureUtils = require('../../utils/file-structure');
 
-module.exports = fileStructureUtils.createModifier({
+module.exports = fileStructureModifier.create({
     pre: editItemPath
 });
 
@@ -24,15 +26,13 @@ function editItemPath (fileStructure, request) {
     var body = request.body;
     var isDirectory = body.isDirectory;
     if (isDirectory && body.oldName && body.newName) {
-        // Rename directory
         renameDirectory(fileStructure, request);
     } else if (isDirectory && body.oldDirectoryPath && body.newDirectoryPath) {
-        // Move directory
+        // Move directory (can't do this yet/ever?)
     } else if (!isDirectory && body.oldName && body.newName) {
-        // Rename file
         renameFile(fileStructure, request);
     } else if (!isDirectory && body.oldDirectoryPath && body.newDirectoryPath) {
-        // Move file
+        moveFile(fileStructure, request);
     }
     return fileStructure;
 
@@ -91,13 +91,29 @@ function renameDirectory (fileStructure, request) {
     var newPath = path.join(directoryPath, newName);
 
     var directory = fileStructureUtils.findDirectory(fileStructure, oldPath);
+    deletePaths(directory);
     directory.name = newName;
     directory.path = newPath;
-    deletePaths(directory);
+
+    var extension = fileStructureUtils.getExtension(directoryPath);
+    _.each(directory.allFiles, function (file) {
+        var oldFilePath = path.join(oldPath, file.name + extension);
+        var newFilePath = path.join(newPath, file.name + extension);
+        var usagePaths = fileStructure.usages[oldFilePath];
+        if (usagePaths) {
+            _.each(usagePaths, function (usagePath) {
+                var usage = fileStructureUtils.findFile(fileStructure, usagePath);
+                transformContents({
+                    file: usage,
+                    replace: getRelativeNodePath(path.dirname(usagePath), oldFilePath),
+                    with: getRelativeNodePath(path.dirname(usagePath), newFilePath)
+                });
+            });
+        }
+    });
 }
 
 function renameFile (fileStructure, request) {
-    debugger;
     var body = request.body;
     var oldName = body.oldName;
     var newName = body.newName;
@@ -110,8 +126,48 @@ function renameFile (fileStructure, request) {
 
     var directory = fileStructureUtils.findDirectory(fileStructure, directoryPath);
     var file = fileStructureUtils.findFile(directory, oldPath);
+    deletePaths(file);
     file.name = newName;
-    file.path = newPath;
+}
+
+function moveFile (fileStructure, request) {
+    var body = request.body;
+    var name = body.name;
+
+    var oldDirectoryPath = request.body.oldDirectoryPath;
+    var newDirectoryPath = request.body.newDirectoryPath;
+    var extension = fileStructureUtils.getExtension(oldDirectoryPath);
+
+    var oldPath = path.join(oldDirectoryPath, name + extension);
+    var newPath = path.join(newDirectoryPath, name + extension);
+
+    var oldDirectory = fileStructureUtils.findDirectory(fileStructure, oldDirectoryPath);
+    var newDirectory = fileStructureUtils.findDirectory(fileStructure, newDirectoryPath);
+
+    var file = fileStructureUtils.findFile(oldDirectory, oldPath);
+    _.remove(oldDirectory.files, file);
+    newDirectory.files = newDirectory.files || [];
+    deletePaths(file);
+    newDirectory.files.push(file);
+}
+
+function deletePaths (item) {
+    _.each(item.directories, deletePaths)
+    _.each(item.files, function (file) {
+        delete file.path;
+    });
+    delete item.path;
+}
+
+function getRelativeNodePath (from, to) {
+    return path.relative(from, to).replace(/\\/g, '/');
+}
+
+function transformContents (transform) {
+    var file = transform.file;
+    var literal = _.first(esquery(file.ast, 'CallExpression[callee.name="require"] Literal[value="' + transform.replace + '"]'));
+    literal.value = transform.with;
+    literal.raw = '\'' + transform.with + '\'';
 }
 
 //function componentTransform (fileStructure, oldName, newName, oldComponentPath, newComponentPath) {
@@ -151,10 +207,3 @@ function renameFile (fileStructure, request) {
 //        return [];
 //    });
 //}
-
-function deletePaths (item) {
-    _.each(item.directories, deletePaths)
-    _.each(item.files, function (file) {
-        delete file.path;
-    });
-}

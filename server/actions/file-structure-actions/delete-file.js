@@ -5,9 +5,10 @@ var _ = require('lodash');
 var path = require('path');
 
 // Dependencies:
+var fileStructureModifier = require('./file-structure-utils/file-structure-modifier');
 var fileStructureUtils = require('../../utils/file-structure');
 
-module.exports = fileStructureUtils.createModifier({
+module.exports = fileStructureModifier.create({
     pre: deleteFile
 });
 

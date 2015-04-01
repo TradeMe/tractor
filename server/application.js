@@ -37,11 +37,11 @@ module.exports = (function () {
 
         application.use(cors());
 
-        application.get('/get-file-structure', require('./actions/file-actions/get-file-structure'));
+        application.get('/get-file-structure', require('./actions/file-structure-actions/get-file-structure'));
 
-        application.post('/add-directory', require('./actions/file-actions/add-directory'));
-        application.post('/edit-item-path', require('./actions/file-actions/edit-item-path'));
-        application.post('/delete-file', require('./actions/file-actions/delete-file'));
+        application.post('/add-directory', require('./actions/file-structure-actions/add-directory'));
+        application.post('/edit-item-path', require('./actions/file-structure-actions/edit-item-path'));
+        application.post('/delete-file', require('./actions/file-structure-actions/delete-file'));
 
         application.get('/get-component-path', require('./actions/component-actions/get-component-path'));
         application.post('/save-component-file', require('./actions/component-actions/save-component-file'));

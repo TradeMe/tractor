@@ -4,12 +4,13 @@
 var _ = require('lodash');
 
 // Dependencies:
+var fileStructureModifier = require('./file-structure-utils/file-structure-modifier');
 var fileStructureUtils = require('../../utils/file-structure');
 
 // Constants:
 var NEW_DIRECTORY = 'New Directory';
 
-module.exports = fileStructureUtils.createModifier({
+module.exports = fileStructureModifier.create({
     pre: addDirectory
 });
 
