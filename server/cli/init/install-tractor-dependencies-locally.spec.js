@@ -60,7 +60,7 @@ describe('server/cli/init: install-tractor-dependencies-locally:', function () {
             expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact chai@1.10.0');
             expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact chai-as-promised@4.1.1');
             expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact cucumber@0.4.4');
-            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact http-backend-proxy@1.4.2');
+            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact httpbackend@1.2.0');
             expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact protractor@1.4.0');
         })
         .finally(function () {
@@ -91,7 +91,7 @@ describe('server/cli/init: install-tractor-dependencies-locally:', function () {
             expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact chai@1.10.0');
             expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact chai-as-promised@4.1.1');
             expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact cucumber@0.4.4');
-            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact http-backend-proxy@1.4.2');
+            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact httpbackend@1.2.0');
             expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact protractor@1.4.0');
         })
         .finally(function () {
@@ -139,7 +139,7 @@ describe('server/cli/init: install-tractor-dependencies-locally:', function () {
         sinon.stub(childProcess, 'exec').returns({
             stdout: {
                 on: function (event, callback) {
-                    callback('bluebird@2.3.11 chai@1.10.0 chai-as-promised@4.1.1 cucumber@0.4.4 http-backend-proxy@1.4.2 protractor@1.4.0');
+                    callback('bluebird@2.3.11 chai@1.10.0 chai-as-promised@4.1.1 cucumber@0.4.4 httpbackend@1.2.0 protractor@1.4.0');
                 }
             }
         });

@@ -1,14 +1,16 @@
 'use strict';
 
 // Config:
-var constants = require('../constants');
+var constants = require('../../../constants');
 
 // Utilities:
 var _ = require('lodash');
+var path = require('path');
 var Promise = require('bluebird');
 
 // Dependencies:
 var astUtils = require('../../../utils/ast-utils');
+var esquery = require('esquery');
 var jsondir = Promise.promisifyAll(require('jsondir'));
 
 module.exports = getFileStructure;
@@ -18,19 +20,15 @@ function getFileStructure (directoryPath) {
         attributes: ['content']
     })
     .then(function (fileStructure) {
-        var transform = _.compose([
-            normaliseFileStructure,
-            findAllFiles,
-            parseJavaScriptFiles,
-            getFileUsages
-        ]);
-        return transform(fileStructure);
+        fileStructure = normaliseFileStructure(fileStructure);
+        findAllFiles(fileStructure);
+        parseJavaScriptFiles(fileStructure);
+        getFileUsages(fileStructure);
+        return fileStructure;
     });
 }
 
-function normaliseFileStructure (directory, fileStructure) {
-    fileStructure = fileStructure || directory;
-
+function normaliseFileStructure (directory) {
     var skip = ['name', '-name', 'path', '-path', '-type', 'files', 'directories', 'isDirectory', 'isTopLevel'];
     _.each(directory, function (item, name) {
         if (item['-type'] === 'd') {
@@ -39,7 +37,7 @@ function normaliseFileStructure (directory, fileStructure) {
             item.name = name;
             item.path = item['-path'];
             directory.directories = directory.directories || [];
-            directory.directories.push(normaliseFileStructure(item, fileStructure));
+            directory.directories.push(normaliseFileStructure(item));
             delete directory[name];
         } else if (!_.contains(skip, name)) {
             // File:
@@ -67,9 +65,7 @@ function normaliseFileStructure (directory, fileStructure) {
 }
 
 function findAllFiles (directory) {
-    _.each(directory.directories, function (directory) {
-        findAllFiles(directory, []);
-    });
+    _.forEach(directory.directories, findAllFiles);
     directory.allFiles = _.reduce(directory.directories, function (all, directory) {
         return all.concat(directory.allFiles || []);
     }, []).concat(directory.files || []);
@@ -80,22 +76,19 @@ function parseJavaScriptFiles (fileStructure) {
         var extension = constants.JAVASCRIPT_EXTENSION.replace(/\./g, '\\.');
         return new RegExp(extension + '$').test(file.path);
     })
-    .each(astUtils.parseJS)
-    .value();
-    return fileStructure;
+    .each(astUtils.parseJS);
 }
 
 function getFileUsages (fileStructure)  {
     var usages = {};
     var match;
     _.each(fileStructure.allFiles, function (file) {
-        var findRequires = /require\([\'\"]([\.\/].*?)[\'\"]\)/gm;
-        while ((match = findRequires.exec(file.content)) !== null) {
-            var usedPath = path.resolve(path.dirname(file.path), _.last(match));
+        var requirePaths = esquery(file.ast, 'CallExpression[callee.name="require"] Literal');
+        _.each(requirePaths, function (requirePath) {
+            var usedPath = path.resolve(path.dirname(file.path), requirePath.value);
             usages[usedPath] = usages[usedPath] || [];
             usages[usedPath].push(file.path);
-        }
+        });
     });
     fileStructure.usages = usages;
-    return fileStructure;
 }

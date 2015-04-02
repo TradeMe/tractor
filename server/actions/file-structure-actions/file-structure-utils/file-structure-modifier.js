@@ -2,17 +2,13 @@
 
 // Config:
 var config = require('../../../utils/get-config')();
-var constants = require('../constants');
 
 // Utilities:
-var _ = require('lodash');
 var errorHandler = require('../../../utils/error-handler');
-var Promise = require('bluebird');
 
 // Dependencies:
 var getFileStructure = require('./get-file-structure');
 var saveFileStructure = require('./save-file-structure');
-var jsondir = Promise.promisifyAll(require('jsondir'));
 
 module.exports = {
     create: create
@@ -26,21 +22,22 @@ function create (options) {
         getFileStructure(config.testDirectory)
         .then(function (fileStructure) {
             if (preModifier) {
-                var fileStructure = preModifier(fileStructure, request);
+                fileStructure = preModifier(fileStructure, request);
                 return saveFileStructure(fileStructure)
-                    .then(function () {
-                        return fileStructure;
-                    });
+                .then(function () {
+                    return getFileStructure(config.testDirectory);
+                });
             }
             return fileStructure;
         })
         .then(function (fileStructure) {
             if (postModifier) {
-                fileStructure = postModifier(fileStructure, request)
+                fileStructure = postModifier(fileStructure, request);
             }
             response.send(JSON.stringify(fileStructure));
         })
         .catch(function (error) {
+            console.log(error);
             errorHandler(response, error, 'Operation failed.');
         });
     };

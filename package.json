@@ -52,7 +52,7 @@
     "gulp-notify": "2.1.0",
     "gulp-ruby-sass": "1.0.0-alpha.3",
     "gulp-sourcemaps": "1.3.0",
-    "httpbackend": "git://github.com/phenomnomnominal/httpbackend.git#allow-strict-di",
+    "httpbackend": "1.2.0",
     "istanbul": "0.3.7",
     "jsondir": "git://github.com/phenomnomnominal/node-jsondir",
     "karma": "0.12.31",

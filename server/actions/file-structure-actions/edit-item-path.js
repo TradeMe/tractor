@@ -16,12 +16,6 @@ module.exports = fileStructureModifier.create({
     pre: editItemPath
 });
 
-//var transformCreators = {
-//    '.component.js': componentTransform,
-//    '.feature': featureTransform,
-//    '.mock.json': mockDataTransform
-//};
-
 function editItemPath (fileStructure, request) {
     var body = request.body;
     var isDirectory = body.isDirectory;
@@ -35,52 +29,9 @@ function editItemPath (fileStructure, request) {
         moveFile(fileStructure, request);
     }
     return fileStructure;
-
-    // var oldName = request.body.oldName || request.body.name;
-    // var newName = request.body.newName || request.body.name;
-    //
-    // var oldDirectoryPath = request.body.oldDirectoryPath || request.body.directoryPath;
-    // var newDirectoryPath = request.body.newDirectoryPath || request.body.directoryPath;
-    // var oldDirectory = fileStructureUtils.findDirectory(fileStructure, oldDirectoryPath);
-    // var newDirectory = fileStructureUtils.findDirectory(fileStructure, newDirectoryPath);
-    //
-    // if (isDirectory) {
-    //     var oldParentDirectory = fileStructure.findDirectory(fileStructure, path.dirname(oldDirectoryPath));
-    //     var newParentDirectory = fileStructure.findDirectory(fileStructure, path.dirname(newDirectoryPath));
-    //     newParentDirectory.directories = newParentDirectory.directories || [];
-    //     newParentDirectory.directories.push(oldDirectory);
-    //     _.remove(oldParentDirectory.directories, oldDirectory);
-    // } else {
-    //     var extension = fileStructureUtils.getExtension(oldDirectoryPath);
-    //
-    //     oldName += extension;
-    //     newName += extension;
-    //     var oldPath = path.join(oldDirectoryPath, oldName);
-    //     var newPath = path.join(newDirectoryPath, newName);
-    //
-    //     var file = fileStructureUtils.findFile(oldDirectory, oldPath);
-    //     newDirectory.files = newDirectory.files || [];
-    //     newDirectory.files.push(file);
-    //     _.remove(oldDirectory.files, file);
-    // }
-
-    //var transformCreator = transformCreators[extension];
-    //if (transformCreator) {
-    //    var fileTransforms = transformCreator(fileStructure, oldName, newName, oldPath, newPath);
-    //    fileTransforms.forEach(function (fileTransform) {
-    //        var file = fileStructureUtils.findFile(fileStructure, fileTransform.path);
-    //        fileTransform.transforms.forEach(function (transform) {
-    //            var content = file['-content'];
-    //            content = content.replace(new RegExp(transform.replace.replace(/\./g, '\\.'), 'g'), transform.with);
-    //            file['-content'] = content;
-    //        });
-    //    });
-    //}
-    // return fileStructure;
 }
 
 function renameDirectory (fileStructure, request) {
-    debugger;
     var body = request.body;
     var oldName = body.oldName;
     var newName = body.newName;
@@ -97,19 +48,9 @@ function renameDirectory (fileStructure, request) {
 
     var extension = fileStructureUtils.getExtension(directoryPath);
     _.each(directory.allFiles, function (file) {
-        var oldFilePath = path.join(oldPath, file.name + extension);
+        var oldFilePath = path.join(oldPath, file.name + extension)
         var newFilePath = path.join(newPath, file.name + extension);
-        var usagePaths = fileStructure.usages[oldFilePath];
-        if (usagePaths) {
-            _.each(usagePaths, function (usagePath) {
-                var usage = fileStructureUtils.findFile(fileStructure, usagePath);
-                transformContents({
-                    file: usage,
-                    replace: getRelativeNodePath(path.dirname(usagePath), oldFilePath),
-                    with: getRelativeNodePath(path.dirname(usagePath), newFilePath)
-                });
-            });
-        }
+        updateFileReferences(fileStructure, oldFilePath,newFilePath);
     });
 }
 
@@ -121,13 +62,16 @@ function renameFile (fileStructure, request) {
     var directoryPath = body.directoryPath;
     var extension = fileStructureUtils.getExtension(directoryPath);
 
-    var oldPath = path.join(directoryPath, oldName + extension);
-    var newPath = path.join(directoryPath, newName + extension);
+    var oldFilePath = path.join(directoryPath, oldName + extension);
+    var newFilePath = path.join(directoryPath, newName + extension);
 
     var directory = fileStructureUtils.findDirectory(fileStructure, directoryPath);
-    var file = fileStructureUtils.findFile(directory, oldPath);
+    var file = fileStructureUtils.findFile(directory, oldFilePath);
     deletePaths(file);
     file.name = newName;
+
+    var extension = fileStructureUtils.getExtension(directoryPath);
+    updateFileReferences(fileStructure, oldFilePath,newFilePath);
 }
 
 function moveFile (fileStructure, request) {
@@ -138,17 +82,20 @@ function moveFile (fileStructure, request) {
     var newDirectoryPath = request.body.newDirectoryPath;
     var extension = fileStructureUtils.getExtension(oldDirectoryPath);
 
-    var oldPath = path.join(oldDirectoryPath, name + extension);
-    var newPath = path.join(newDirectoryPath, name + extension);
+    var oldFilePath = path.join(oldDirectoryPath, name + extension);
+    var newFilePath = path.join(newDirectoryPath, name + extension);
 
     var oldDirectory = fileStructureUtils.findDirectory(fileStructure, oldDirectoryPath);
     var newDirectory = fileStructureUtils.findDirectory(fileStructure, newDirectoryPath);
 
-    var file = fileStructureUtils.findFile(oldDirectory, oldPath);
+    var file = fileStructureUtils.findFile(oldDirectory, oldFilePath);
     _.remove(oldDirectory.files, file);
     newDirectory.files = newDirectory.files || [];
     deletePaths(file);
     newDirectory.files.push(file);
+
+    var extension = fileStructureUtils.getExtension(oldDirectoryPath);
+    updateFileReferences(fileStructure, oldFilePath,newFilePath);
 }
 
 function deletePaths (item) {
@@ -159,15 +106,21 @@ function deletePaths (item) {
     delete item.path;
 }
 
-function getRelativeNodePath (from, to) {
-    return path.relative(from, to).replace(/\\/g, '/');
+function updateFileReferences (fileStructure, oldFilePath, newFilePath) {
+    var usagePaths = fileStructure.usages[oldFilePath];
+    _.each(usagePaths, function (usagePath) {
+        var file = fileStructureUtils.findFile(fileStructure, usagePath);
+        var oldRequirePath = getRelativeNodePath(path.dirname(usagePath), oldFilePath);
+        var newRequirePath = getRelativeNodePath(path.dirname(usagePath), newFilePath);
+        _.each(esquery(file.ast, 'CallExpression[callee.name="require"] Literal[value="' + oldRequirePathh + '"]'), function (requirePathLiteral) {
+            requirePathLiteral.value = newRequirePath;
+            requirePathLiteral.raw = '\'' + newRequirePath + '\'';
+        });
+    });
 }
 
-function transformContents (transform) {
-    var file = transform.file;
-    var literal = _.first(esquery(file.ast, 'CallExpression[callee.name="require"] Literal[value="' + transform.replace + '"]'));
-    literal.value = transform.with;
-    literal.raw = '\'' + transform.with + '\'';
+function getRelativeNodePath (from, to) {
+    return path.relative(from, to).replace(/\\/g, '/');
 }
 
 //function componentTransform (fileStructure, oldName, newName, oldComponentPath, newComponentPath) {

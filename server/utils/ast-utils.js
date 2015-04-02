@@ -1,8 +1,12 @@
 'use strict';
 
+// Utilities:
+var _ = require('lodash');
+
 // Dependencies:
 var escodegen = require('escodegen');
 var esprima = require('esprima');
+var esquery = require('esquery');
 var Formatter = require('./feature-lexer-formatter');
 var gherkin = require('gherkin');
 
@@ -19,11 +23,14 @@ module.exports = {
 
 function generateJS (file) {
     try {
+        var moduleAssignmentExpression = _.first(esquery.query(file.ast, 'AssignmentExpression'));
+        moduleAssignmentExpression.leadingComments = file.ast.comments;
         file.content = escodegen.generate(file.ast, {
             comment: true
         });
         delete file.ast;
     } catch (e) {
+        console.log(e);
         throw new GenerateJavaScriptError('Generating "' + file.name + ' failed.');
     }
 }

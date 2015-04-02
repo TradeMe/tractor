@@ -13,7 +13,7 @@ var TO_INSTALL = [
     'chai@1.10.0',
     'chai-as-promised@4.1.1',
     'cucumber@0.4.4',
-    'git://github.com/phenomnomnominal/httpbackend.git#allow-strict-di',
+    'httpbackend@1.2.0',
     'protractor@1.4.0'
 ];
 

@@ -1,35 +1,29 @@
 'use strict';
 
-// Config:
-var constants = require('../constants');
-
 // Utilities:
 var _ = require('lodash');
 var Promise = require('bluebird');
 
 // Dependencies:
 var astUtils = require('../../../utils/ast-utils');
+var fileStructureUtils = require('../../../utils/file-structure');
 var jsondir = Promise.promisifyAll(require('jsondir'));
 
 module.exports = saveFileStructure;
 
 function saveFileStructure (fileStructure) {
-    var transform = _.compose([
-        generateJavaScriptFiles,
-        denormaliseFileStructure
-    ]);
-    return jsondir.json2dirAsync(transform(fileStructure), {
+    generateJavaScriptFiles(fileStructure);
+    fileStructure = denormaliseFileStructure(fileStructure);
+    return jsondir.json2dirAsync(fileStructure, {
         nuke: true
     });
 }
 
 function generateJavaScriptFiles (fileStructure) {
     _(fileStructure.allFiles).filter(function (file) {
-        var extension = constants.JAVASCRIPT_EXTENSION.replace(/\./g, '\\.');
-        return new RegExp(extension + '$').test(file.path);
+        return !!file.ast;
     })
-        .each(astUtils.generateJS).value();
-    return fileStructure;
+    .each(astUtils.generateJS);
 }
 
 function denormaliseFileStructure (directory) {
@@ -49,7 +43,7 @@ function denormaliseFileStructure (directory) {
             file['-content'] = file.content;
         }
         file['-type'] = '-';
-        directory[file.name + getExtension(directory.path)] = file;
+        directory[file.name + fileStructureUtils.getExtension(directory.path)] = file;
 
         delete file.path;
         delete file.content;
@@ -71,4 +65,3 @@ function denormaliseFileStructure (directory) {
     delete directory.isDirectory;
     return directory;
 }
-
