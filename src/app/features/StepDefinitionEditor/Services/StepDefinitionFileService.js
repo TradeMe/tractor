@@ -37,7 +37,7 @@ var StepDefinitionFileService = function StepDefinitionFileService (
     }
 
     function getStepDefinitionPath (options) {
-        return $http.get('/get-step-definition-path', {
+        return $http.get('/step_definitions/path', {
             params: options
         });
     }

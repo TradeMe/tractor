@@ -3,7 +3,6 @@
 // Utilities:
 var _ = require('lodash');
 var log = require('../utils/logging');
-var noop = require('node-noop');
 var path = require('path');
 var Promise = require('bluebird');
 
@@ -20,28 +19,24 @@ var trim = require('trim');
 // Errors:
 var ProtractorRunError = require('../errors/ProtractorRunError');
 
-module.exports = setupProtractorListener;
+module.exports = runProtractor;
 
-function setupProtractorListener (sockets) {
-    sockets.of('/run-protractor')
-    .on('connection', startProtractor);
-}
-
-function startProtractor (socket) {
+function runProtractor (socket) {
     if (!module.exports.running) {
         module.exports.running = true;
 
-        return Promise.resolve((config.beforeRunProtractor.bind(config) || noop.noop)())
+        return Promise.resolve(config.beforeProtractor())
         .then(function () {
             log.important('Starting Protractor...\n');
-            return runProtractor(socket);
+            return startProtractor(socket);
         })
-        .catch(function (err) {
-            log.error(err.message + _.first(socket.lastMessage.split(/\r\n|\n/)));
+        .catch(function (error) {
+            socket.lastMessage = socket.lastMessage || '';
+            log.error(error.message + _.first(socket.lastMessage.split(/\r\n|\n/)));
         })
         .finally(function () {
             socket.disconnect();
-            Promise.resolve((config.afterRunProtractor.bind(config) || noop.noop)())
+            return Promise.resolve(config.afterProtractor())
             .then(function () {
                 module.exports.running = false;
                 log.info('Protractor finished.');
@@ -49,10 +44,11 @@ function startProtractor (socket) {
         });
     } else {
         log.error('Protractor already running.');
+        return Promise.reject(new ProtractorRunError('Protractor already running.'));
     }
 }
 
-function runProtractor (socket) {
+function startProtractor (socket) {
     var resolve;
     var reject;
     var deferred = new Promise(function () {
@@ -63,7 +59,7 @@ function runProtractor (socket) {
     var protractor = childProcess.spawn('node', [protractorPath, e2ePath]);
 
     protractor.stdout.on('data', sendDataToClient.bind(socket));
-    protractor.stderr.on('data', sendErrorToClient.bind( socket));
+    protractor.stderr.on('data', sendErrorToClient.bind(socket));
     protractor.stdout.pipe(process.stdout);
     protractor.stderr.pipe(process.stderr);
 

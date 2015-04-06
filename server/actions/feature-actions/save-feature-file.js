@@ -39,7 +39,6 @@ function saveFeatureFile (request, response) {
         }));
     })
     .catch(function (error) {
-        console.log(error);
         errorHandler(response, error, 'Generating Cucumber stubs failed.');
     });
 }

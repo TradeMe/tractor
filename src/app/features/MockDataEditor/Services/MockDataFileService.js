@@ -47,7 +47,7 @@ var MockDataFileService = function MockDataFileService (
     }
 
     function getMockDataPath (options) {
-        return $http.get('/get-mock-data-path', {
+        return $http.get('/mock_data/path', {
             params: options
         });
     }

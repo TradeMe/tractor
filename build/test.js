@@ -29,7 +29,8 @@ function server (reportTaskDone) {
     .pipe(istanbul.hookRequire())
     .on('finish', function () {
         gulp.src(['server/**/*.spec.js'])
-        .pipe(mocha().on('error', function () {
+        .pipe(mocha().on('error', function (error) {
+            console.log(error);
             this.destroy();
             reportTaskDone();
         }))

@@ -47,7 +47,7 @@ var ComponentFileService = function ComponentFileService (
     }
 
     function getComponentPath (options) {
-        return $http.get('/get-component-path', {
+        return $http.get('/components/path', {
             params: options
         });
     }

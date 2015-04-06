@@ -10,7 +10,7 @@
 module.exports = function () {
     var mockGetComponentFileStructureEmpty = require('../../mock_data/Mock get component file structure (empty).mock.json');
     this.Given(/^I do not have existing component data$/, function (done) {
-        httpBackend.when('GET', '/get-file-structure?directory=components&parse=true').respond(mockGetComponentFileStructureEmpty);
+        httpBackend.whenGET('/get-file-structure').respond(mockGetComponentFileStructureEmpty);
         done();
     });
 };

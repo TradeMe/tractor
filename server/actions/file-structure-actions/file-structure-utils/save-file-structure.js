@@ -5,7 +5,7 @@ var _ = require('lodash');
 var Promise = require('bluebird');
 
 // Dependencies:
-var astUtils = require('../../../utils/ast-utils');
+var generateJS = require('./generate-js');
 var fileStructureUtils = require('../../../utils/file-structure');
 var jsondir = Promise.promisifyAll(require('jsondir'));
 
@@ -23,7 +23,7 @@ function generateJavaScriptFiles (fileStructure) {
     _(fileStructure.allFiles).filter(function (file) {
         return !!file.ast;
     })
-    .each(astUtils.generateJS);
+    .each(generateJS);
 }
 
 function denormaliseFileStructure (directory) {

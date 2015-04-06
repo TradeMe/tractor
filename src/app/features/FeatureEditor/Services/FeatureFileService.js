@@ -37,7 +37,7 @@ var FeatureFileService = function FeatureFileService (
     }
 
     function getFeaturePath (options) {
-        return $http.get('/get-feature-path', {
+        return $http.get('/features/path', {
             params: options
         });
     }

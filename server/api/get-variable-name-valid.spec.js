@@ -9,14 +9,14 @@ var noop = function () { };
 var expect = chai.expect;
 chai.use(sinonChai);
 
-var validateJavaScriptVariableName = require('./validate-javascript-variable-name');
+var getVariableNameValid = require('./get-variable-name-valid');
 
-describe('server/actions: validate-javascript-variable-name:', function () {
+describe('server/api: get-variable-name-valid:', function () {
     it('should return true if the given `variableName` is a valid JavaScript variable name', function () {
         var charFunk = require('CharFunk');
         sinon.stub(charFunk, 'isValidName').returns(true);
         var request = {
-            body: {
+            query: {
                 variableName: ''
             }
         };
@@ -25,7 +25,7 @@ describe('server/actions: validate-javascript-variable-name:', function () {
         };
         sinon.spy(response, 'send');
 
-        validateJavaScriptVariableName(request, response);
+        getVariableNameValid(request, response);
 
         var responseData = JSON.parse(response.send.firstCall.args[0]);
         expect(responseData.result).to.equal(true);
@@ -39,7 +39,7 @@ describe('server/actions: validate-javascript-variable-name:', function () {
         sinon.stub(charFunk, 'isValidName').returns(false);
         sinon.stub(logging, 'error');
         var request = {
-            body: {
+            query: {
                 variableName: ''
             }
         };
@@ -50,7 +50,7 @@ describe('server/actions: validate-javascript-variable-name:', function () {
         sinon.spy(response, 'status');
         sinon.spy(response, 'send');
 
-        validateJavaScriptVariableName(request, response);
+        getVariableNameValid(request, response);
 
         expect(response.status).to.have.been.calledWith(400);
         var responseData = JSON.parse(response.send.firstCall.args[0]);

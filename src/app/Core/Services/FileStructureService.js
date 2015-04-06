@@ -12,6 +12,7 @@ var FileStructureService = function FileStructureService (
     return {
         getFileStructure: getFileStructure,
         addDirectory: addDirectory,
+        copyFile: copyFile,
         deleteFile: deleteFile,
         editItemPath: editItemPath,
         getExpanded: getExpanded,
@@ -27,6 +28,11 @@ var FileStructureService = function FileStructureService (
 
     function addDirectory (options) {
         return $http.post('/add-directory', options)
+        .then(updateFileStructure);
+    }
+
+    function copyFile (options) {
+        return $http.post('/copy-file', options)
         .then(updateFileStructure);
     }
 

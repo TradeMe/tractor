@@ -11,7 +11,7 @@ chai.use(sinonChai);
 
 var getConfig = require('./get-config');
 
-describe('server/actions: get-config', function () {
+describe('server/api: get-config', function () {
     it('should respond with the current config:', function () {
         var response = {
             send: noop

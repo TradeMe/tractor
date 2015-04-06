@@ -24,6 +24,7 @@ var FileTreeController = (function () {
         this.fileStructureService = FileStructureService;
 
         this.headerName = title(this.type);
+        this.canModify = this.type !== 'step-definition';
 
         this.editItemPath = this.editItemPath.bind(this);
     };
@@ -36,9 +37,11 @@ var FileTreeController = (function () {
     };
 
     FileTreeController.prototype.editName = function (item) {
-        item.editingName = true;
-        item.previousName = item.name;
-        this.hideOptions(item);
+        if (this.canModify) {
+            item.editingName = true;
+            item.previousName = item.name;
+            this.hideOptions(item);
+        }
     };
 
     FileTreeController.prototype.saveNewName = function (item) {
@@ -71,7 +74,7 @@ var FileTreeController = (function () {
         this.$timeout(function () {
             if (!item.editingName) {
                 var params = {};
-                var directoryPath = getDirname(this.model.fileStructure.path);
+                var directoryPath = this.model.fileStructure.path;
                 var filePath = item.path.replace(/\\/g, '/');
                 var relativePath = path.relative(directoryPath, filePath);
                 params[this.type] = _.last(relativePath.match(/(.*?)\..*/));
@@ -130,6 +133,13 @@ var FileTreeController = (function () {
         }
     };
 
+    FileTreeController.prototype.copy = function (item) {
+        this.fileStructureService.copyFile({
+            path: item.path
+        })
+        .then(setFileStructure.bind(this));
+    };
+
     var directoryNames = {
         'component': 'components',
         'feature': 'features',
@@ -139,7 +149,7 @@ var FileTreeController = (function () {
 
     function setFileStructure (fileStructure) {
         var directory = _.find(fileStructure.directories, function (directory) {
-            return directory.name = directoryNames[this.type];
+            return directory.name === directoryNames[this.type];
         }.bind(this));
         this.model.fileStructure = directory;
     }

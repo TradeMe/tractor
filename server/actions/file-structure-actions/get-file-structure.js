@@ -7,7 +7,7 @@ var constants = require('../../constants');
 var _ = require('lodash');
 
 // Dependencies:
-var astUtils = require('../../utils/ast-utils');
+var lexFeature = require('./file-structure-utils/lex-feature');
 var fileStructureModifier = require('./file-structure-utils/file-structure-modifier');
 
 module.exports = fileStructureModifier.create({
@@ -19,6 +19,6 @@ function lexFeatures (fileStructure) {
         var extension = constants.FEATURES_EXTENSION.replace(/\./g, '\\.');
         return new RegExp(extension + '$').test(file.path);
     })
-    .each(astUtils.lexFeature).value();
+    .each(lexFeature).value();
     return fileStructure;
 }

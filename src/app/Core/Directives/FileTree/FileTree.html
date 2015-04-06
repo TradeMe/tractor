@@ -7,14 +7,21 @@
          ng-if="item.showOptions"
          ng-mouseleave="fileTree.hideOptions(item)">
         <tractor-action
-                model="fileTree"
-                action="Edit name"
-                argument="item">
+            ng-if="fileTree.canModify"
+            model="fileTree"
+            action="Edit name"
+            argument="item">
         </tractor-action>
         <tractor-action
-                model="fileTree"
-                action="Delete"
-                argument="item">
+            ng-if="fileTree.canModify && !item.isDirectory"
+            model="fileTree"
+            action="Copy"
+            argument="item">
+        </tractor-action>
+        <tractor-action
+            model="fileTree"
+            action="Delete"
+            argument="item">
         </tractor-action>
     </div>
 </script>

@@ -12,12 +12,12 @@ var TRACTOR_E2E_TESTS_RUNNING = './tractor_e2e_tests_running';
 
 module.exports = {
     appRootUrl: 'http://localhost:3000',
-	beforeRunProtractor: function () {
+	beforeProtractor: function () {
 		this._testDirectory = this.testDirectory;
 		this.testDirectory = TRACTOR_E2E_TESTS_RUNNING;
 		return createTestDirectoryStructure.run(this.testDirectory);
 	},
-	afterRunProtractor: function () {
+	afterProtractor: function () {
 		this.testDirectory = this._testDirectory;
 		delete this._testDirectory;
         return del(TRACTOR_E2E_TESTS_RUNNING, {

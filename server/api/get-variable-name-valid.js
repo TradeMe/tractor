@@ -9,11 +9,11 @@ var charFunk = require('CharFunk');
 // Errors:
 var InvalidVariableNameError = require('../Errors/InvalidVariableNameError');
 
-module.exports = valiateJavaScriptVariableName;
+module.exports = getVariableNameValid;
 
-function valiateJavaScriptVariableName (request, response) {
+function getVariableNameValid (request, response) {
     var data = {
-        result: charFunk.isValidName(request.body.variableName, true)
+        result: charFunk.isValidName(request.query.variableName, true)
     };
 
     if (data.result) {

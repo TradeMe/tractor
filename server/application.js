@@ -37,29 +37,25 @@ module.exports = (function () {
 
         application.use(cors());
 
+        application.get('/:type/path', require('./api/get-path'));
+
         application.get('/get-file-structure', require('./actions/file-structure-actions/get-file-structure'));
 
         application.post('/add-directory', require('./actions/file-structure-actions/add-directory'));
         application.post('/edit-item-path', require('./actions/file-structure-actions/edit-item-path'));
+        application.post('/copy-file', require('./actions/file-structure-actions/copy-file'));
         application.post('/delete-file', require('./actions/file-structure-actions/delete-file'));
 
-        application.get('/get-component-path', require('./actions/component-actions/get-component-path'));
         application.post('/save-component-file', require('./actions/component-actions/save-component-file'));
-
-        application.get('/get-mock-data-path', require('./actions/mock-data-actions/get-mock-data-path'));
         application.post('/save-mock-data-file', require('./actions/mock-data-actions/save-mock-data-file'));
-
-        application.get('/get-feature-path', require('./actions/feature-actions/get-feature-path'));
         application.post('/save-feature-file', require('./actions/feature-actions/save-feature-file'));
-
-        application.get('/get-step-definition-path', require('./actions/step-definition-actions/get-step-definition-path'));
         application.post('/save-step-definition-file', require('./actions/step-definition-actions/save-step-definition-file'));
 
-        application.get('/get-config', require('./actions/get-config'));
+        application.get('/config', require('./api/get-config'));
+        application.get('/variable-name-valid', require('./api/get-variable-name-valid'));
 
-        application.post('/validate-javascript-variable-name', require('./actions/validate-javascript-variable-name'));
-
-        require('./actions/setup-protractor-listener')(sockets);
+        sockets.of('/run-protractor')
+        .on('connection', require('./api/run-protractor'));
 
         return server;
     }

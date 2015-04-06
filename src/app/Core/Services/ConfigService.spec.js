@@ -33,11 +33,11 @@ describe('ConfigService.js:', function () {
     });
 
     describe('ConfigService.getConfig:', function () {
-        it('should call the `/get-config` endpoint:', function () {
+        it('should call the `/config` endpoint:', function () {
             sinon.stub($http, 'get').returns(Promise.resolve());
             return ConfigService.getConfig()
             .then(function () {
-                expect($http.get).to.have.been.calledWith('/get-config');
+                expect($http.get).to.have.been.calledWith('/config');
             });
         });
     });

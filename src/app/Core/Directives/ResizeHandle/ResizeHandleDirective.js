@@ -6,7 +6,11 @@ var _ = require('lodash');
 // Module:
 var Core = require('../../Core');
 
-var ResizeHandleDirective = function () {
+var ResizeHandleDirective = function (
+    localStorageService
+) {
+    var RESIZE_HANDLER_KEY = 'ResizeHandlerPosition';
+
     return {
         restrict: 'E',
         link: link
@@ -29,6 +33,10 @@ var ResizeHandleDirective = function () {
 
         var element = _.first($element);
         element.addEventListener('mousedown', mousedown);
+
+        var resizeHandlerPosition = localStorageService.get(RESIZE_HANDLER_KEY);
+        beforeElement.style.width = resizeHandlerPosition.before;
+        afterElement.style.width = resizeHandlerPosition.after;
     }
 
     function mousedown () {
@@ -49,6 +57,10 @@ var ResizeHandleDirective = function () {
         document.body.classList.remove('resizing');
         document.body.removeEventListener('mousemove', mousemove);
         document.body.removeEventListener('mouseup', mouseup);
+        localStorageService.set(RESIZE_HANDLER_KEY, {
+            before: beforeElement.style.width,
+            after: afterElement.style.width
+        });
     }
 };
 

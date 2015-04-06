@@ -7,7 +7,7 @@ var CustomWorld = (function () {
 
     var CustomWorld = function CustomWorld () {
         global.browser = global.protractor = require('protractor').getInstance();
-        global.httpBackend = new HttpBackend(global.browser);
+        global.httpBackend = new HttpBackend(global.browser, { autoSync: false });
         global.By = global.protractor.By;
         chai.use(chaiAsPromised);
         global.expect = chai.expect;

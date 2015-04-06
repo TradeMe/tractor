@@ -2,7 +2,7 @@
 
 // Utilities:
 var last = require('array-last');
-var noop = require('node-noop');
+var noop = require('node-noop').noop;
 var os = require('os');
 
 var FeatureLexerFormatter = function FeatureLexerFormatter () {
@@ -88,10 +88,10 @@ FeatureLexerFormatter.prototype.done = function () {
     return this.features;
 };
 
-FeatureLexerFormatter.prototype.comment = noop.noop;
-FeatureLexerFormatter.prototype.doc_string = noop.noop;
-FeatureLexerFormatter.prototype.examples = noop.noop;
-FeatureLexerFormatter.prototype.eof = noop.noop;
-FeatureLexerFormatter.prototype.tag = noop.noop;
+FeatureLexerFormatter.prototype.comment = noop;
+FeatureLexerFormatter.prototype.doc_string = noop;
+FeatureLexerFormatter.prototype.examples = noop;
+FeatureLexerFormatter.prototype.eof = noop;
+FeatureLexerFormatter.prototype.tag = noop;
 
 module.exports = FeatureLexerFormatter;
