@@ -7,7 +7,7 @@ var CustomWorld = (function () {
 
     var CustomWorld = function CustomWorld () {
         global.browser = global.protractor = require('protractor').getInstance();
-        global.httpBackend = new HttpBackend(global.browser, { autoSync: false });
+        global.httpBackend = new HttpBackend(global.browser);
         global.By = global.protractor.By;
         chai.use(chaiAsPromised);
         global.expect = chai.expect;
@@ -26,7 +26,7 @@ module.exports = function () {
     /* eslint-disable new-cap */
     this.After(function(callback) {
     /* eslint-enable new-cap */
-        global.httpBackend.reset();
+        //global.httpBackend.reset();
         callback();
     });
 

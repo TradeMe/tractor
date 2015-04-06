@@ -3,14 +3,14 @@
     "components": [],
     "mockData": [
         {
-            "name": "Mock get component file structure"
+            "name": "Mock get file structure with component"
         }
     ]
 }*/
 module.exports = function () {
-    var mockGetComponentFileStructure = require('../../mock_data/Mock get component file structure.mock.json');
+    var mockGetFileStructureWithComponent = require('../../mock_data/Mock get file structure with component.mock.json');
     this.Given(/^I have a saved component$/, function (done) {
-        httpBackend.whenGET('/get-file-structure').respond(mockGetComponentFileStructure);
+        httpBackend.whenGET('/get-file-structure').respond(mockGetFileStructureWithComponent);
         done();
     });
 };

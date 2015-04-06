@@ -35,8 +35,10 @@ var ResizeHandleDirective = function (
         element.addEventListener('mousedown', mousedown);
 
         var resizeHandlerPosition = localStorageService.get(RESIZE_HANDLER_KEY);
-        beforeElement.style.width = resizeHandlerPosition.before;
-        afterElement.style.width = resizeHandlerPosition.after;
+        if (resizeHandlerPosition) {
+            beforeElement.style.width = resizeHandlerPosition.before;
+            afterElement.style.width = resizeHandlerPosition.after;
+        }
     }
 
     function mousedown () {

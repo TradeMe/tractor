@@ -42,7 +42,7 @@ var MockParserService = function MockParserService (
     }
 
     function parseAction (mock, mockCallExpression) {
-        var action = _.first(mockCallExpression.callee.object.arguments).value;
+        var action = mockCallExpression.callee.object.callee.property.name.replace(/^when/, '');
         assert(action);
         assert(_.contains(mock.actions, action));
         return action;

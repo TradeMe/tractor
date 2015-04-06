@@ -40,10 +40,9 @@ var createMockModelConstructor = function (
         var ast = ASTCreatorService;
 
         var data = {
-            action: ast.literal(this.action),
             url: ast.literal(this.url)
         };
-        var template = 'httpBackend.when(%= action %, %= url %)';
+        var template = 'httpBackend.when' + this.action + '(%= url %)';
         if (this.passThrough) {
             template += '.passThrough(); ';
         } else {

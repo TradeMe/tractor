@@ -61414,8 +61414,10 @@ var ResizeHandleDirective = function (
         element.addEventListener('mousedown', mousedown);
 
         var resizeHandlerPosition = localStorageService.get(RESIZE_HANDLER_KEY);
-        beforeElement.style.width = resizeHandlerPosition.before;
-        afterElement.style.width = resizeHandlerPosition.after;
+        if (resizeHandlerPosition) {
+            beforeElement.style.width = resizeHandlerPosition.before;
+            afterElement.style.width = resizeHandlerPosition.after;
+        }
     }
 
     function mousedown () {
@@ -65334,10 +65336,9 @@ var createMockModelConstructor = function (
         var ast = ASTCreatorService;
 
         var data = {
-            action: ast.literal(this.action),
             url: ast.literal(this.url)
         };
-        var template = 'httpBackend.when(%= action %, %= url %)';
+        var template = 'httpBackend.when' + this.action + '(%= url %)';
         if (this.passThrough) {
             template += '.passThrough(); ';
         } else {
@@ -65829,7 +65830,7 @@ var MockParserService = function MockParserService (
     }
 
     function parseAction (mock, mockCallExpression) {
-        var action = _.first(mockCallExpression.callee.object.arguments).value;
+        var action = mockCallExpression.callee.object.callee.property.name.replace(/^when/, '');
         assert(action);
         assert(_.contains(mock.actions, action));
         return action;
@@ -66090,7 +66091,7 @@ var StepParserService = function StepParserService (
     function parseMock (step, statement) {
         var httpBackendOnloadMemberExpression = statement.expression.callee.object.callee;
         assert(httpBackendOnloadMemberExpression.object.name === 'httpBackend');
-        assert(httpBackendOnloadMemberExpression.property.name === 'when');
+        assert(httpBackendOnloadMemberExpression.property.name.indexOf('when') === 0);
         var mock = MockParserService.parse(step, statement);
         assert(mock);
         step.mocks.push(mock);

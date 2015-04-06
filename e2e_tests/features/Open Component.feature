@@ -5,6 +5,7 @@ Feature: Open Component
   Scenario: Open Component
     Given the default config
     Given I have a saved component
+    Given that component path is a pass-through
     When I go to the Component Editor
     And I open a component
     Then that component should appear in the editor

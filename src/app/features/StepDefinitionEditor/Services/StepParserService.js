@@ -72,7 +72,7 @@ var StepParserService = function StepParserService (
     function parseMock (step, statement) {
         var httpBackendOnloadMemberExpression = statement.expression.callee.object.callee;
         assert(httpBackendOnloadMemberExpression.object.name === 'httpBackend');
-        assert(httpBackendOnloadMemberExpression.property.name === 'when');
+        assert(httpBackendOnloadMemberExpression.property.name.indexOf('when') === 0);
         var mock = MockParserService.parse(step, statement);
         assert(mock);
         step.mocks.push(mock);

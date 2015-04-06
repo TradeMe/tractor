@@ -4,14 +4,6 @@
             "isDirectory": true,
             "name": "components",
             "path": "/Users/craigspence/Documents/Dev Projects/tractor/tractor_e2e_tests_running/components",
-            "directories": [
-                {
-                    "isDirectory": true,
-                    "name": "New Directory",
-                    "path": "/Users/craigspence/Documents/Dev Projects/tractor/tractor_e2e_tests_running/components/New Directory",
-                    "allFiles": []
-                }
-            ],
             "allFiles": []
         },
         {
