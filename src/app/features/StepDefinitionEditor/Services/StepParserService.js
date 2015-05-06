@@ -87,7 +87,7 @@ var StepParserService = function StepParserService (
     }
 
     function parseExpectation (step, statement) {
-        var elements = _.first(statement.expression.callee.object.arguments).elements;
+        var elements = _.first(statement.expression.callee.object.callee.object.arguments).elements;
         _.each(elements, function (element) {
             assert(!(element.name && element.name === 'tasks'));
             var expectation = ExpectationParserService.parse(step, element);
@@ -98,8 +98,9 @@ var StepParserService = function StepParserService (
     }
 
     function parsePending (step, statement) {
-        assert(statement.expression.callee.object.name === 'callback');
-        assert(statement.expression.callee.property.name === 'pending');
+        var callee = statement.expression.callee;
+        assert(callee.object.name === 'callback' || callee.object.name === 'done');
+        assert(callee.property.name === 'pending');
         return true;
     }
 
@@ -109,7 +110,7 @@ var StepParserService = function StepParserService (
     }
 
     function parseTaskDone (step, statement) {
-        assert(statement.expression.arguments[0].name === 'done');
+        assert(statement.expression.callee.object.arguments[0].name === 'done');
         return true;
     }
 };

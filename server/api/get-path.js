@@ -4,7 +4,7 @@
 var path = require('path');
 
 // Config:
-var config = require('../utils/get-config')();
+var config = require('../utils/create-config')();
 var constants = require('../constants');
 
 module.exports = getPath;
@@ -18,7 +18,7 @@ function getPath (request, response) {
 
     if (!filePath) {
         var fileName = request.query.name + extension;
-        filePath = path.join(config.testDirectory, directoryName, fileName);
+        filePath = path.join(process.cwd(), config.testDirectory, directoryName, fileName);
     }
 
     response.send(JSON.stringify({

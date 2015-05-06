@@ -2,21 +2,21 @@
     "name": "When I go to the Component Editor",
     "components": [
         {
-            "name": "Control Panel"
+            "name": "Tractor"
         },
         {
-            "name": "Tractor"
+            "name": "Control Panel"
         }
     ],
     "mockData": []
 }*/
 module.exports = function () {
-    var ControlPanel = require('../../components/Tractor/Control Panel.component.js'), controlPanel = new ControlPanel();
-    var Tractor = require('../../components/Tractor/Tractor.component.js'), tractor = new Tractor();
+    var Tractor = require('../../components/Tractor.component.js'), tractor = new Tractor();
+    var ControlPanel = require('../../components/Control Panel.component.js'), controlPanel = new ControlPanel();
     this.When(/^I go to the Component Editor$/, function (done) {
         var tasks = tractor.get().then(function () {
-            return controlPanel.goToComponentEditor();
+            return controlPanel.goToComponents();
         });
-        tasks.then(done);
+        Promise.resolve(tasks).then(done).catch(done.fail);
     });
 };

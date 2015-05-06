@@ -36,8 +36,6 @@ require('./Core/Services/FileStructureService');
 require('./Core/Services/HttpResponseInterceptor');
 require('./Core/Services/RealTimeService');
 
-require('./features/Notifier/Notifier');
-
 // Application Init:
 angular.module('tractor', [
     'ngMessages',
@@ -45,7 +43,6 @@ angular.module('tractor', [
     'ui.sortable',
     'LocalStorageModule',
     'Core',
-    'Notifier',
     'ControlPanel',
     'ComponentEditor',
     'FeatureEditor',
@@ -66,72 +63,72 @@ angular.module('tractor', [
         controller: 'ControlPanelController as controlPanel'
     })
     .state('tractor.component-editor', {
-        url: 'component-editor?component',
+        url: 'component-editor/:component',
         /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/features/ComponentEditor/ComponentEditor.html', 'utf8'),
         /* eslint-enable no-path-concat */
         controller: 'ComponentEditorController as componentEditor',
         resolve: {
             componentFileStructure: function (ComponentFileService) {
-                return ComponentFileService.getComponentFileStructure();
+                return ComponentFileService.getFileStructure();
             },
             componentPath: function ($stateParams, ComponentFileService) {
                 var componentName = $stateParams.component;
-                return componentName ? ComponentFileService.getComponentPath({ name: componentName }) : null;
+                return componentName ? ComponentFileService.getPath({ name: componentName }) : null;
             }
         }
     })
     .state('tractor.feature-editor', {
-        url: 'feature-editor?feature',
+        url: 'feature-editor/:feature',
         /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/features/FeatureEditor/FeatureEditor.html', 'utf8'),
         /* eslint-enable no-path-concat */
         controller: 'FeatureEditorController as featureEditor',
         resolve: {
             featureFileStructure: function (FeatureFileService) {
-                return FeatureFileService.getFeatureFileStructure();
+                return FeatureFileService.getFileStructure();
             },
             featurePath: function ($stateParams, FeatureFileService) {
                 var feature = $stateParams.feature;
-                return feature ? FeatureFileService.getFeaturePath({ name: feature }) : null;
+                return feature ? FeatureFileService.getPath({ name: feature }) : null;
             }
         }
     })
     .state('tractor.step-definition-editor', {
-        url: 'step-definition-editor?step-definition',
+        url: 'step-definition-editor/:stepDefinition',
         /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/features/StepDefinitionEditor/StepDefinitionEditor.html', 'utf8'),
         /* eslint-enable no-path-concat */
         controller: 'StepDefinitionEditorController as stepDefinitionEditor',
         resolve: {
             stepDefinitionFileStructure: function (StepDefinitionFileService) {
-                return StepDefinitionFileService.getStepDefinitionFileStructure();
+                return StepDefinitionFileService.getFileStructure();
             },
             stepDefinitionPath: function ($stateParams, StepDefinitionFileService) {
-                var stepDefinition = $stateParams['step-definition'];
-                return stepDefinition ? StepDefinitionFileService.getStepDefinitionPath({ name: stepDefinition }) : null;
+                var stepDefinition = $stateParams.stepDefinition;
+                return stepDefinition ? StepDefinitionFileService.getPath({ name: stepDefinition }) : null;
             },
             components: function (ComponentFileService) {
-                return ComponentFileService.getAllComponents();
+                return ComponentFileService.getAll();
             },
             mockData: function (MockDataFileService) {
-                return MockDataFileService.getAllMockData();
+                return MockDataFileService.getAll();
             }
         }
     })
     .state('tractor.mock-data-editor', {
-        url: 'mock-data-editor?mock-data',
+        url: 'mock-data-editor/:mockData',
         /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/features/MockDataEditor/MockDataEditor.html', 'utf8'),
         /* eslint-enable no-path-concat */
         controller: 'MockDataEditorController as mockDataEditor',
         resolve: {
             mockDataFileStructure: function (MockDataFileService) {
-                return MockDataFileService.getMockDataFileStructure();
+                return MockDataFileService.getFileStructure();
             },
             mockDataPath: function ($stateParams, MockDataFileService) {
-                var mockDataName = $stateParams['mock-data'];
-                return mockDataName ? MockDataFileService.getMockDataPath({ name: mockDataName }) : null;
+                var mockDataName = $stateParams.mockData;
+                return mockDataName ? MockDataFileService.getPath({ name: mockDataName }) : null;
             }
         }
     });

@@ -1,12 +1,10 @@
 'use strict';
 
-// Utilities:
-var _ = require('lodash');
-
 // Module:
 var MockDataEditor = require('../MockDataEditor');
 
 // Dependencies:
+var FileService = require('../../../Core/Services/FileService');
 require('./MockDataParserService');
 require('../../../Core/Services/FileStructureService');
 
@@ -15,55 +13,17 @@ var MockDataFileService = function MockDataFileService (
     MockDataParserService,
     FileStructureService
 ) {
-    return {
-        checkMockDataExists: checkMockDataExists,
-        getAllMockData: getAllMockData,
-        getMockDataFileStructure: getMockDataFileStructure,
-        getMockDataPath: getMockDataPath,
-        openMockData: openMockData,
-        saveMockData: saveMockData
-    };
+    var service = FileService($http, MockDataParserService, FileStructureService, 'mock_data');
+    service.getAll = getAll;
+    return service;
 
-    function checkMockDataExists (mockDataFileStructure, mockDataFilePath) {
-        return !!findMockDataByPath(mockDataFileStructure, mockDataFilePath);
-    }
 
-    function getAllMockData () {
-        return this.getMockDataFileStructure()
-        .then(function (mockDataFileStructure) {
-            return mockDataFileStructure.allFiles.map(function (mockDataFile) {
-                return MockDataParserService.parse(mockDataFile);
-            });
-        });
-    }
-
-    function getMockDataFileStructure () {
-        return FileStructureService.getFileStructure()
+    function getAll () {
+        return this.getFileStructure()
         .then(function (fileStructure) {
-            return _.find(fileStructure.directories, function (directory) {
-                return directory.name === 'mock_data';
+            return fileStructure.allFiles.map(function (file) {
+                return MockDataParserService.parse(file);
             });
-        });
-    }
-
-    function getMockDataPath (options) {
-        return $http.get('/mock_data/path', {
-            params: options
-        });
-    }
-
-    function openMockData (mockDataFileStructure, mockDataFilePath) {
-        var mockDataFile = findMockDataByPath(mockDataFileStructure, mockDataFilePath);
-        return mockDataFile ? MockDataParserService.parse(mockDataFile) : null;
-    }
-
-    function saveMockData (options) {
-        return $http.post('/save-mock-data-file', options);
-    }
-
-    function findMockDataByPath (mockDataFileStructure, mockDataFilePath) {
-        return _.find(mockDataFileStructure.allFiles, function (mockDataFile) {
-            return mockDataFile.path.includes(mockDataFilePath);
         });
     }
 };

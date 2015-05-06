@@ -1,5 +1,0 @@
-{
-    "appRootUrl": "http://localhost:3000",
-    "testDirectory": "./e2e_tests",
-    "port": 4000
-}

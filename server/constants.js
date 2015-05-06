@@ -31,5 +31,5 @@ module.exports = {
 
     CUCUMBER_COMMAND: 'node ' + path.join('node_modules', 'cucumber', 'bin', 'cucumber') + ' ',
 
-    FEATURE_NEWLINE: '%%NEWLINE%%'
+    FEATURE_NEWLINE: /%%NEWLINE%%/g
 };

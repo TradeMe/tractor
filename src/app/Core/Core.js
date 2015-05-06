@@ -7,19 +7,21 @@ var Core = angular.module('Core', []);
 
 module.exports = Core;
 
-require('./Directives/Action/ActionDirective');
-require('./Directives/Checkbox/CheckboxDirective');
-require('./Directives/DragFile/DragFileDirective');
-require('./Directives/DropFile/DropFileDirective');
-require('./Directives/FileTree/FileTreeDirective');
-require('./Directives/GiveFocus/GiveFocusDirective');
-require('./Directives/LiteralInput/LiteralInputDirective');
-require('./Directives/ResizeHandle/ResizeHandleDirective');
-require('./Directives/SelectInput/SelectInputDirective');
-require('./Directives/StepInput/StepInputDirective');
-require('./Directives/Submit/SubmitDirective');
-require('./Directives/TextInput/TextInputDirective');
-require('./Directives/VariableInput/VariableInputDirective');
+require('./Components/Action/ActionDirective');
+require('./Components/Checkbox/CheckboxDirective');
+require('./Components/DragFile/DragFileDirective');
+require('./Components/DropFile/DropFileDirective');
+require('./Components/FileTree/FileTreeDirective');
+require('./Components/GiveFocus/GiveFocusDirective');
+require('./Components/LiteralInput/LiteralInputDirective');
+require('./Components/Notifier/NotifierDirective');
+require('./Components/ResizeHandle/ResizeHandleDirective');
+require('./Components/SelectInput/SelectInputDirective');
+require('./Components/StepInput/StepInputDirective');
+require('./Components/Submit/SubmitDirective');
+require('./Components/TextInput/TextInputDirective');
+require('./Components/VariableInput/VariableInputDirective');
 
 require('./Validators/VariableNameValidator');
+require('./Validators/FileNameValidator');
 require('./Validators/ExampleNameValidator');

@@ -6,7 +6,7 @@ var angular = require('angular');
 require('angular-mocks');
 
 // Mocks:
-var MockNotifierService = require('../../features/Notifier/Services/NotifierService.mock');
+var MockNotifierService = require('../Components/Notifier/NotifierService.mock');
 
 // Testing:
 require('./HttpResponseInterceptor');

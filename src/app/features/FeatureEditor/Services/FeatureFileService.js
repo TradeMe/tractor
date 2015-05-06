@@ -7,6 +7,7 @@ var _ = require('lodash');
 var FeatureEditor = require('../FeatureEditor');
 
 // Dependencies:
+var FileService = require('../../../Core/Services/FileService');
 require('./FeatureParserService');
 require('../../../Core/Services/FileStructureService');
 
@@ -15,47 +16,14 @@ var FeatureFileService = function FeatureFileService (
     FeatureParserService,
     FileStructureService
 ) {
-    return {
-        checkFeatureExists: checkFeatureExists,
-        getFeatureFileStructure: getFeatureFileStructure,
-        getFeaturePath: getFeaturePath,
-        openFeature: openFeature,
-        saveFeature: saveFeature
-    };
+    var service = FileService($http, FeatureParserService, FileStructureService, 'features');
+    var save = service.saveFile;
+    service.saveFile = _.compose(save, fixFeatureParameters);
+    return service;
 
-    function checkFeatureExists (featureFileStructure, featureFilePath) {
-        return !!findFeatureByPath(featureFileStructure, featureFilePath);
-    }
-
-    function getFeatureFileStructure () {
-        return FileStructureService.getFileStructure()
-        .then(function (fileStructure) {
-            return _.find(fileStructure.directories, function (directory) {
-                return directory.name === 'features';
-            });
-        });
-    }
-
-    function getFeaturePath (options) {
-        return $http.get('/features/path', {
-            params: options
-        });
-    }
-
-    function openFeature (featureFileStructure, featureFilePath) {
-        var featureFile = findFeatureByPath(featureFileStructure, featureFilePath);
-        return featureFile ? FeatureParserService.parse(featureFile) : null;
-    }
-
-    function saveFeature (options) {
-        options.feature = options.feature.replace(/"</g, '\'<').replace(/>"/g, '>\'');
-        return $http.post('/save-feature-file', options);
-    }
-
-    function findFeatureByPath (featureFileStructure, featureFilePath) {
-        return _.find(featureFileStructure.allFiles, function (featureFile) {
-            return featureFile.path.includes(featureFilePath);
-        });
+    function fixFeatureParameters (options) {
+        options.data = options.data.replace(/"</g, '\'<').replace(/>"/g, '>\'');
+        return options;
     }
 };
 

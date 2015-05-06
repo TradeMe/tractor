@@ -37,8 +37,6 @@ require('./Core/Services/FileStructureService');
 require('./Core/Services/HttpResponseInterceptor');
 require('./Core/Services/RealTimeService');
 
-require('./features/Notifier/Notifier');
-
 // Application Init:
 angular.module('tractor', [
     'ngMessages',
@@ -46,7 +44,6 @@ angular.module('tractor', [
     'ui.sortable',
     'LocalStorageModule',
     'Core',
-    'Notifier',
     'ControlPanel',
     'ComponentEditor',
     'FeatureEditor',
@@ -67,72 +64,72 @@ angular.module('tractor', [
         controller: 'ControlPanelController as controlPanel'
     })
     .state('tractor.component-editor', {
-        url: 'component-editor?component',
+        url: 'component-editor/:component',
         /* eslint-disable no-path-concat */
-        template: "<tractor-file-tree model=\"componentEditor\" type=\"component\"></tractor-file-tree>\r\n<tractor-resize-handle></tractor-resize-handle>\r\n<form class=\"file\" name=\"component-editor\" novalidate\r\n    ng-submit=\"componentEditor.showErrors() && componentEditor.saveComponentFile()\">\r\n    <section class=\"file-options\">\r\n        <h1 class=\"file-options__name\">{{ componentEditor.component.name }}</h1>\r\n        <div>\r\n            <tractor-variable-input class=\"file-options__name-input\"\r\n                ng-if=\"!componentEditor.component.isSaved\"\r\n                form=\"component-editor\"\r\n                label=\"Name\"\r\n                model=\"componentEditor.component\"\r\n                example=\"Component\"\r\n                is-class>\r\n            </tractor-variable-input>\r\n            <tractor-submit class=\"file-options__save-file\"\r\n                action=\"Save component file\">\r\n            </tractor-submit>\r\n        </div>\r\n    </section>\r\n\r\n    <section class=\"file-editor\">\r\n        <section ng-show=\"componentEditor.component.name\">\r\n            <section class=\"file-editor__container\">\r\n                <h2>Elements:</h2>\r\n\r\n                <section ng-if=\"componentEditor.component.domElements.length\">\r\n                    <ul>\r\n                        <li class=\"file-editor__list-item\" ng-repeat=\"domElement in componentEditor.component.domElements\">\r\n                            <tractor-action\r\n                                model=\"componentEditor.component\"\r\n                                action=\"Remove element\"\r\n                                argument=\"domElement\"\r\n                                icon=\"remove\">\r\n                            </tractor-action>\r\n\r\n                            <tractor-variable-input\r\n                                form=\"component-editor\"\r\n                                label=\"Name\"\r\n                                model=\"domElement\"\r\n                                example=\"element\">\r\n                            </tractor-variable-input>\r\n                            <tractor-select\r\n                                label=\"Type\"\r\n                                model=\"domElement.selector\">\r\n                            </tractor-select>\r\n                            <tractor-text-input\r\n                                form=\"component-editor\"\r\n                                label=\"Locator\"\r\n                                model=\"domElement.selector\"\r\n                                example=\"someController.someModel\">\r\n                            </tractor-text-input>\r\n\r\n                            <section>\r\n                                <h3>Filters:</h3>\r\n\r\n                                <ol ng-if=\"domElement.filters.length > 1\" as-sortable ng-model=\"domElement.sortableFilters\" is-disabled=\"domElement.filters.length < 3\">\r\n                                    <li class=\"file-editor__list-item\" ng-repeat=\"filter in domElement.sortableFilters\" as-sortable-item>\r\n                                        <tractor-action\r\n                                                model=\"domElement\"\r\n                                                action=\"Remove filter\"\r\n                                                argument=\"filter\"\r\n                                                icon=\"remove\">\r\n                                        </tractor-action>\r\n                                        <div class=\"file-editor__sort-handle\" title=\"Drag to sort\"\r\n                                             ng-if=\"domElement.filters.length > 2\"\r\n                                             as-sortable-item-handle>\r\n                                        </div>\r\n\r\n                                        <tractor-select ng-if=\"!domElement.filters[$index].isAll\"\r\n                                                        label=\"Type\"\r\n                                                        model=\"filter\">\r\n                                        </tractor-select>\r\n                                        <tractor-text-input\r\n                                                form=\"component-editor\"\r\n                                                label=\"Locator\"\r\n                                                model=\"filter\"\r\n                                                example=\"someController.someModel\">\r\n                                        </tractor-text-input>\r\n                                    </li>\r\n                                </ol>\r\n\r\n                                <tractor-action\r\n                                    model=\"domElement\"\r\n                                    action=\"Add filter\">\r\n                                </tractor-action>\r\n                            </section>\r\n                        </li>\r\n                    </ul>\r\n                </section>\r\n\r\n                <tractor-action\r\n                    model=\"componentEditor.component\"\r\n                    action=\"Add element\">\r\n                </tractor-action>\r\n            </section>\r\n\r\n            <section class=\"file-editor__container\">\r\n                <h2>Actions:</h2>\r\n\r\n                <section ng-if=\"componentEditor.component.actions.length\">\r\n                    <ul>\r\n                        <li class=\"file-editor__list-item\" ng-repeat=\"action in componentEditor.component.actions\">\r\n                            <tractor-action\r\n                                model=\"componentEditor.component\"\r\n                                action=\"Remove action\"\r\n                                argument=\"action\"\r\n                                icon=\"remove\">\r\n                            </tractor-action>\r\n\r\n                            <tractor-variable-input\r\n                                form=\"component-editor\"\r\n                                label=\"Name\"\r\n                                model=\"action\"\r\n                                example=\"action\">\r\n                            </tractor-variable-input>\r\n\r\n                            <section>\r\n                                <h3>Parameters:</h3>\r\n\r\n                                <ol ng-if=\"action.parameters.length\" as-sortable ng-model=\"action.parameters\" is-disabled=\"action.parameters.length < 2\">\r\n                                    <li class=\"file-editor__list-item\" ng-repeat=\"parameter in action.parameters\" as-sortable-item>\r\n                                        <tractor-action\r\n                                            model=\"action\"\r\n                                            action=\"Remove parameter\"\r\n                                            argument=\"parameter\"\r\n                                            icon=\"remove\">\r\n                                        </tractor-action>\r\n                                        <div ng-if=\"action.parameters.length > 1\" class=\"file-editor__sort-handle\" as-sortable-item-handle title=\"Drag to sort\"></div>\r\n\r\n                                        <tractor-variable-input\r\n                                            form=\"component-editor\"\r\n                                            label=\"Name\"\r\n                                            model=\"parameter\"\r\n                                            example=\"parameter\">\r\n                                        </tractor-variable-input>\r\n                                    </li>\r\n                                </ol>\r\n\r\n                                <tractor-action\r\n                                    model=\"action\"\r\n                                    action=\"Add parameter\">\r\n                                </tractor-action>\r\n                            </section>\r\n\r\n                            <section>\r\n                                <h3>Interactions:</h3>\r\n\r\n                                <ol ng-if=\"action.interactions.length\" as-sortable ng-model=\"action.interactions\" is-disabled=\"action.interactions.length < 2\">\r\n                                    <li class=\"file-editor__list-item\" ng-repeat=\"interaction in action.interactions\" as-sortable-item>\r\n                                        <tractor-action\r\n                                            model=\"action\"\r\n                                            action=\"Remove interaction\"\r\n                                            argument=\"interaction\"\r\n                                            icon=\"remove\">\r\n                                        </tractor-action>\r\n                                        <div ng-if=\"action.interactions.length > 1\" class=\"file-editor__sort-handle\" as-sortable-item-handle title=\"Drag to sort\"></div>\r\n\r\n                                        <tractor-select\r\n                                            label=\"Element\"\r\n                                            model=\"interaction\"\r\n                                            options=\"componentEditor.component.elements\"\r\n                                            as=\"name\">\r\n                                        </tractor-select>\r\n                                        <tractor-select\r\n                                            label=\"Method\"\r\n                                            model=\"interaction\"\r\n                                            options=\"interaction.element.methods\"\r\n                                            as=\"name\">\r\n                                        </tractor-select>\r\n\r\n                                        <div ng-repeat=\"argument in interaction.arguments\">\r\n                                            <tractor-literal-input\r\n                                                form=\"component-editor\"\r\n                                                name=\"argument.name\"\r\n                                                model=\"argument\"\r\n                                                description=\"argument.description\"\r\n                                                required=\"argument.required\"\r\n                                                type=\"argument.type\">\r\n                                            </tractor-literal-input>\r\n                                        </div>\r\n                                    </li>\r\n                                </ol>\r\n\r\n                                <tractor-action\r\n                                    model=\"action\"\r\n                                    action=\"Add interaction\">\r\n                                </tractor-action>\r\n                            </section>\r\n                        </li>\r\n                    </ul>\r\n                </section>\r\n\r\n                <tractor-action\r\n                    model=\"componentEditor.component\"\r\n                    action=\"Add action\">\r\n                </tractor-action>\r\n            </section>\r\n        </section>\r\n    </section>\r\n</form>\r\n",
+        template: "<tractor-file-tree model=\"componentEditor\" type=\"component\"></tractor-file-tree>\r\n<tractor-resize-handle></tractor-resize-handle>\r\n<form class=\"file\" name=\"file-editor\" novalidate\r\n    ng-submit=\"componentEditor.showErrors() && componentEditor.saveFile()\">\r\n    <section class=\"file-options\">\r\n        <h1 class=\"file-options__name\">{{ componentEditor.fileModel.name }}</h1>\r\n        <div>\r\n            <tractor-variable-input class=\"file-options__name-input\"\r\n                ng-if=\"!componentEditor.fileModel.isSaved\"\r\n                form=\"file-editor\"\r\n                label=\"Name\"\r\n                model=\"componentEditor.fileModel\"\r\n                example=\"Component\"\r\n                is-class>\r\n            </tractor-variable-input>\r\n            <tractor-submit class=\"file-options__save-file\"\r\n                action=\"Save component file\">\r\n            </tractor-submit>\r\n        </div>\r\n    </section>\r\n\r\n    <section class=\"file-editor\">\r\n        <section ng-show=\"componentEditor.fileModel.name\">\r\n            <section class=\"file-editor__container\">\r\n                <h2>Elements:</h2>\r\n\r\n                <section ng-if=\"componentEditor.fileModel.domElements.length\">\r\n                    <ul>\r\n                        <li class=\"file-editor__list-item\" ng-repeat=\"domElement in componentEditor.fileModel.domElements\">\r\n                            <tractor-action\r\n                                model=\"componentEditor.fileModel\"\r\n                                action=\"Remove element\"\r\n                                argument=\"domElement\"\r\n                                icon=\"remove\">\r\n                            </tractor-action>\r\n\r\n                            <tractor-variable-input\r\n                                form=\"file-editor\"\r\n                                label=\"Name\"\r\n                                model=\"domElement\"\r\n                                example=\"element\">\r\n                            </tractor-variable-input>\r\n                            <tractor-select\r\n                                label=\"Type\"\r\n                                model=\"domElement.selector\">\r\n                            </tractor-select>\r\n                            <tractor-text-input\r\n                                form=\"file-editor\"\r\n                                label=\"Locator\"\r\n                                model=\"domElement.selector\"\r\n                                example=\"someController.someModel\">\r\n                            </tractor-text-input>\r\n\r\n                            <section>\r\n                                <h3>Filters:</h3>\r\n\r\n                                <ol ng-if=\"domElement.filters.length > 1\" as-sortable ng-model=\"domElement.sortableFilters\" is-disabled=\"domElement.filters.length < 3\">\r\n                                    <li class=\"file-editor__list-item\" ng-repeat=\"filter in domElement.sortableFilters\" as-sortable-item>\r\n                                        <tractor-action\r\n                                                model=\"domElement\"\r\n                                                action=\"Remove filter\"\r\n                                                argument=\"filter\"\r\n                                                icon=\"remove\">\r\n                                        </tractor-action>\r\n                                        <div class=\"file-editor__sort-handle\" title=\"Drag to sort\"\r\n                                             ng-if=\"domElement.filters.length > 2\"\r\n                                             as-sortable-item-handle>\r\n                                        </div>\r\n\r\n                                        <tractor-select ng-if=\"!domElement.filters[$index].isAll\"\r\n                                                        label=\"Type\"\r\n                                                        model=\"filter\">\r\n                                        </tractor-select>\r\n                                        <tractor-text-input\r\n                                                form=\"file-editor\"\r\n                                                label=\"Locator\"\r\n                                                model=\"filter\"\r\n                                                example=\"someController.someModel\">\r\n                                        </tractor-text-input>\r\n                                    </li>\r\n                                </ol>\r\n\r\n                                <tractor-action\r\n                                    model=\"domElement\"\r\n                                    action=\"Add filter\">\r\n                                </tractor-action>\r\n                            </section>\r\n                        </li>\r\n                    </ul>\r\n                </section>\r\n\r\n                <tractor-action\r\n                    model=\"componentEditor.fileModel\"\r\n                    action=\"Add element\">\r\n                </tractor-action>\r\n            </section>\r\n\r\n            <section class=\"file-editor__container\">\r\n                <h2>Actions:</h2>\r\n\r\n                <section ng-if=\"componentEditor.fileModel.actions.length\">\r\n                    <ul>\r\n                        <li class=\"file-editor__list-item\" ng-repeat=\"action in componentEditor.fileModel.actions\">\r\n                            <tractor-action\r\n                                model=\"componentEditor.fileModel\"\r\n                                action=\"Remove action\"\r\n                                argument=\"action\"\r\n                                icon=\"remove\">\r\n                            </tractor-action>\r\n\r\n                            <tractor-variable-input\r\n                                form=\"file-editor\"\r\n                                label=\"Name\"\r\n                                model=\"action\"\r\n                                example=\"action\">\r\n                            </tractor-variable-input>\r\n\r\n                            <section>\r\n                                <h3>Parameters:</h3>\r\n\r\n                                <ol ng-if=\"action.parameters.length\" as-sortable ng-model=\"action.parameters\" is-disabled=\"action.parameters.length < 2\">\r\n                                    <li class=\"file-editor__list-item\" ng-repeat=\"parameter in action.parameters\" as-sortable-item>\r\n                                        <tractor-action\r\n                                            model=\"action\"\r\n                                            action=\"Remove parameter\"\r\n                                            argument=\"parameter\"\r\n                                            icon=\"remove\">\r\n                                        </tractor-action>\r\n                                        <div ng-if=\"action.parameters.length > 1\" class=\"file-editor__sort-handle\" as-sortable-item-handle title=\"Drag to sort\"></div>\r\n\r\n                                        <tractor-variable-input\r\n                                            form=\"file-editor\"\r\n                                            label=\"Name\"\r\n                                            model=\"parameter\"\r\n                                            example=\"parameter\">\r\n                                        </tractor-variable-input>\r\n                                    </li>\r\n                                </ol>\r\n\r\n                                <tractor-action\r\n                                    model=\"action\"\r\n                                    action=\"Add parameter\">\r\n                                </tractor-action>\r\n                            </section>\r\n\r\n                            <section>\r\n                                <h3>Interactions:</h3>\r\n\r\n                                <ol ng-if=\"action.interactions.length\" as-sortable ng-model=\"action.interactions\" is-disabled=\"action.interactions.length < 2\">\r\n                                    <li class=\"file-editor__list-item\" ng-repeat=\"interaction in action.interactions\" as-sortable-item>\r\n                                        <tractor-action\r\n                                            model=\"action\"\r\n                                            action=\"Remove interaction\"\r\n                                            argument=\"interaction\"\r\n                                            icon=\"remove\">\r\n                                        </tractor-action>\r\n                                        <div ng-if=\"action.interactions.length > 1\" class=\"file-editor__sort-handle\" as-sortable-item-handle title=\"Drag to sort\"></div>\r\n\r\n                                        <tractor-select\r\n                                            label=\"Element\"\r\n                                            model=\"interaction\"\r\n                                            options=\"componentEditor.fileModel.elements\"\r\n                                            as=\"name\">\r\n                                        </tractor-select>\r\n                                        <tractor-select\r\n                                            label=\"Method\"\r\n                                            model=\"interaction\"\r\n                                            options=\"interaction.element.methods\"\r\n                                            as=\"name\">\r\n                                        </tractor-select>\r\n\r\n                                        <div ng-repeat=\"argument in interaction.arguments\">\r\n                                            <tractor-literal-input\r\n                                                form=\"file-editor\"\r\n                                                name=\"argument.name\"\r\n                                                model=\"argument\"\r\n                                                description=\"argument.description\"\r\n                                                required=\"argument.required\"\r\n                                                type=\"argument.type\">\r\n                                            </tractor-literal-input>\r\n                                        </div>\r\n                                    </li>\r\n                                </ol>\r\n\r\n                                <tractor-action\r\n                                    model=\"action\"\r\n                                    action=\"Add interaction\">\r\n                                </tractor-action>\r\n                            </section>\r\n                        </li>\r\n                    </ul>\r\n                </section>\r\n\r\n                <tractor-action\r\n                    model=\"componentEditor.fileModel\"\r\n                    action=\"Add action\">\r\n                </tractor-action>\r\n            </section>\r\n        </section>\r\n    </section>\r\n</form>\r\n",
         /* eslint-enable no-path-concat */
         controller: 'ComponentEditorController as componentEditor',
         resolve: {
             componentFileStructure: ['ComponentFileService', function (ComponentFileService) {
-                return ComponentFileService.getComponentFileStructure();
+                return ComponentFileService.getFileStructure();
             }],
             componentPath: ['$stateParams', 'ComponentFileService', function ($stateParams, ComponentFileService) {
                 var componentName = $stateParams.component;
-                return componentName ? ComponentFileService.getComponentPath({ name: componentName }) : null;
+                return componentName ? ComponentFileService.getPath({ name: componentName }) : null;
             }]
         }
     })
     .state('tractor.feature-editor', {
-        url: 'feature-editor?feature',
+        url: 'feature-editor/:feature',
         /* eslint-disable no-path-concat */
-        template: "<tractor-file-tree model=\"featureEditor\" type=\"feature\"></tractor-file-tree>\r\n<tractor-resize-handle></tractor-resize-handle>\r\n<form class=\"file\" name=\"feature-editor\" novalidate\r\n    ng-submit=\"featureEditor.showErrors() && featureEditor.saveFeatureFile()\">\r\n    <section class=\"file-options\">\r\n        <h1 class=\"file-options__name\">{{ featureEditor.feature.name }}</h1>\r\n        <div>\r\n            <tractor-text-input class=\"file-options__name-input\"\r\n                ng-if=\"!featureEditor.feature.isSaved\"\r\n                form=\"feature-editor\"\r\n                label=\"Name\"\r\n                model=\"featureEditor.feature\"\r\n                example=\"Feature\">\r\n            </tractor-text-input>\r\n            <tractor-submit class=\"file-options__save-file\"\r\n                action=\"Save feature file\">\r\n            </tractor-submit>\r\n        </div>\r\n    </section>\r\n\r\n    <section class=\"file-editor\">\r\n        <section ng-show=\"featureEditor.feature.name\">\r\n            <section class=\"file-editor__container\">\r\n                <h2>Feature:</h2>\r\n\r\n                <tractor-text-input\r\n                    form=\"feature-editor\"\r\n                    label=\"In order to\"\r\n                    model=\"featureEditor.feature\"\r\n                    example=\"achieve some goal\">\r\n                </tractor-text-input>\r\n                <tractor-text-input\r\n                    form=\"feature-editor\"\r\n                    label=\"As a\"\r\n                    model=\"featureEditor.feature\"\r\n                    example=\"certain type of user\">\r\n                </tractor-text-input>\r\n                <tractor-text-input\r\n                    form=\"feature-editor\"\r\n                    label=\"I want\"\r\n                    model=\"featureEditor.feature\"\r\n                    example=\"to be able to do something\">\r\n                </tractor-text-input>\r\n            </section>\r\n\r\n            <section class=\"file-editor__container\">\r\n                <h2>Scenarios:</h2>\r\n\r\n                <ul ng-if=\"featureEditor.feature.scenarios.length\">\r\n                    <li class=\"file-editor__list-item\" ng-repeat=\"scenario in featureEditor.feature.scenarios\">\r\n                        <tractor-action\r\n                            model=\"featureEditor.feature\"\r\n                            action=\"Remove scenario\"\r\n                            argument=\"scenario\"\r\n                            icon=\"remove\"></tractor-action>\r\n\r\n                        <tractor-text-input\r\n                            form=\"feature-editor\"\r\n                            label=\"Name\"\r\n                            model=\"scenario\"\r\n                            example=\"Scenario\">\r\n                        </tractor-text-input>\r\n\r\n                        <section>\r\n                            <h3>Step Declarations:</h3>\r\n\r\n                            <ol ng-if=\"scenario.stepDeclarations.length\" as-sortable ng-model=\"scenario.stepDeclarations\" is-disabled=\"scenario.stepDeclarations.length < 2\">\r\n                                <li class=\"file-editor__list-item\" ng-repeat=\"stepDeclaration in scenario.stepDeclarations\" as-sortable-item>\r\n                                    <tractor-action\r\n                                        model=\"scenario\"\r\n                                        action=\"Remove step declaration\"\r\n                                        argument=\"stepDeclaration\"\r\n                                        icon=\"remove\">\r\n                                    </tractor-action>\r\n                                    <div ng-if=\"scenario.stepDeclarations.length > 1\" class=\"file-editor__sort-handle\" as-sortable-item-handle title=\"Drag to sort\"></div>\r\n\r\n                                    <tractor-select label=\"Type\" model=\"stepDeclaration\"></tractor-select>\r\n                                    <tractor-step-input\r\n                                        form=\"feature-editor\"\r\n                                        label=\"Step\"\r\n                                        model=\"stepDeclaration\"\r\n                                        example=\"something happens\">\r\n                                    </tractor-step-input>\r\n                                </li>\r\n                            </ol>\r\n\r\n                            <tractor-action\r\n                                model=\"scenario\"\r\n                                action=\"Add step declaration\">\r\n                            </tractor-action>\r\n                        </section>\r\n\r\n                        <section ng-show=\"scenario.exampleVariables.length\">\r\n                            <h3>Examples:</h3>\r\n                            <ul>\r\n                                <li class=\"file-editor__list-item\" ng-repeat=\"example in scenario.examples\">\r\n                                    <tractor-action\r\n                                        model=\"scenario\"\r\n                                        action=\"Remove example\"\r\n                                        argument=\"example\"\r\n                                        icon=\"remove\">\r\n                                    </tractor-action>\r\n\r\n                                    <tractor-literal-input ng-repeat=\"exampleVariable in scenario.exampleVariables\"\r\n                                        form=\"feature-editor\"\r\n                                        name=\"exampleVariable\"\r\n                                        model=\"example.values[exampleVariable]\"\r\n                                        type=\"argument.type\">\r\n                                    </tractor-literal-input>\r\n                                </li>\r\n                            </ul>\r\n\r\n                            <tractor-action\r\n                                model=\"scenario\"\r\n                                action=\"Add example\">\r\n                            </tractor-action>\r\n                        </section>\r\n                    </li>\r\n                </ul>\r\n\r\n                <tractor-action\r\n                    model=\"featureEditor.feature\"\r\n                    action=\"Add scenario\">\r\n                </tractor-action>\r\n            </section>\r\n        </section>\r\n    </section>\r\n</form>\r\n",
+        template: "<tractor-file-tree model=\"featureEditor\" type=\"feature\"></tractor-file-tree>\r\n<tractor-resize-handle></tractor-resize-handle>\r\n<form class=\"file\" name=\"file-editor\" novalidate\r\n    ng-submit=\"featureEditor.showErrors() && featureEditor.saveFile()\">\r\n    <section class=\"file-options\">\r\n        <h1 class=\"file-options__name\">{{ featureEditor.fileModel.name }}</h1>\r\n        <div>\r\n            <tractor-text-input class=\"file-options__name-input\"\r\n                ng-if=\"!featureEditor.fileModel.isSaved\"\r\n                form=\"file-editor\"\r\n                label=\"Name\"\r\n                model=\"featureEditor.fileModel\"\r\n                example=\"Feature\"\r\n                validate-file-name>\r\n            </tractor-text-input>\r\n            <tractor-submit class=\"file-options__save-file\"\r\n                action=\"Save feature file\">\r\n            </tractor-submit>\r\n        </div>\r\n    </section>\r\n\r\n    <section class=\"file-editor\">\r\n        <section ng-show=\"featureEditor.fileModel.name\">\r\n            <section class=\"file-editor__container\">\r\n                <h2>Feature:</h2>\r\n\r\n                <tractor-text-input\r\n                    form=\"file-editor\"\r\n                    label=\"In order to\"\r\n                    model=\"featureEditor.fileModel\"\r\n                    example=\"achieve some goal\">\r\n                </tractor-text-input>\r\n                <tractor-text-input\r\n                    form=\"file-editor\"\r\n                    label=\"As a\"\r\n                    model=\"featureEditor.fileModel\"\r\n                    example=\"certain type of user\">\r\n                </tractor-text-input>\r\n                <tractor-text-input\r\n                    form=\"file-editor\"\r\n                    label=\"I want\"\r\n                    model=\"featureEditor.fileModel\"\r\n                    example=\"to be able to do something\">\r\n                </tractor-text-input>\r\n            </section>\r\n\r\n            <section class=\"file-editor__container\">\r\n                <h2>Scenarios:</h2>\r\n\r\n                <ul ng-if=\"featureEditor.fileModel.scenarios.length\">\r\n                    <li class=\"file-editor__list-item\" ng-repeat=\"scenario in featureEditor.fileModel.scenarios\">\r\n                        <tractor-action\r\n                            model=\"featureEditor.fileModel\"\r\n                            action=\"Remove scenario\"\r\n                            argument=\"scenario\"\r\n                            icon=\"remove\"></tractor-action>\r\n\r\n                        <tractor-text-input\r\n                            form=\"file-editor\"\r\n                            label=\"Name\"\r\n                            model=\"scenario\"\r\n                            example=\"Scenario\">\r\n                        </tractor-text-input>\r\n\r\n                        <section>\r\n                            <h3>Step Declarations:</h3>\r\n\r\n                            <ol ng-if=\"scenario.stepDeclarations.length\" as-sortable ng-model=\"scenario.stepDeclarations\" is-disabled=\"scenario.stepDeclarations.length < 2\">\r\n                                <li class=\"file-editor__list-item\" ng-repeat=\"stepDeclaration in scenario.stepDeclarations\" as-sortable-item>\r\n                                    <tractor-action\r\n                                        model=\"scenario\"\r\n                                        action=\"Remove step declaration\"\r\n                                        argument=\"stepDeclaration\"\r\n                                        icon=\"remove\">\r\n                                    </tractor-action>\r\n                                    <div ng-if=\"scenario.stepDeclarations.length > 1\" class=\"file-editor__sort-handle\" as-sortable-item-handle title=\"Drag to sort\"></div>\r\n\r\n                                    <tractor-select label=\"Type\" model=\"stepDeclaration\"></tractor-select>\r\n                                    <tractor-step-input\r\n                                        form=\"file-editor\"\r\n                                        label=\"Step\"\r\n                                        model=\"stepDeclaration\"\r\n                                        example=\"something happens\">\r\n                                    </tractor-step-input>\r\n                                </li>\r\n                            </ol>\r\n\r\n                            <tractor-action\r\n                                model=\"scenario\"\r\n                                action=\"Add step declaration\">\r\n                            </tractor-action>\r\n                        </section>\r\n\r\n                        <section ng-show=\"scenario.exampleVariables.length\">\r\n                            <h3>Examples:</h3>\r\n                            <ul>\r\n                                <li class=\"file-editor__list-item\" ng-repeat=\"example in scenario.examples\">\r\n                                    <tractor-action\r\n                                        model=\"scenario\"\r\n                                        action=\"Remove example\"\r\n                                        argument=\"example\"\r\n                                        icon=\"remove\">\r\n                                    </tractor-action>\r\n\r\n                                    <tractor-literal-input ng-repeat=\"exampleVariable in scenario.exampleVariables\"\r\n                                        form=\"file-editor\"\r\n                                        name=\"exampleVariable\"\r\n                                        model=\"example.values[exampleVariable]\"\r\n                                        type=\"argument.type\">\r\n                                    </tractor-literal-input>\r\n                                </li>\r\n                            </ul>\r\n\r\n                            <tractor-action\r\n                                model=\"scenario\"\r\n                                action=\"Add example\">\r\n                            </tractor-action>\r\n                        </section>\r\n                    </li>\r\n                </ul>\r\n\r\n                <tractor-action\r\n                    model=\"featureEditor.fileModel\"\r\n                    action=\"Add scenario\">\r\n                </tractor-action>\r\n            </section>\r\n        </section>\r\n    </section>\r\n</form>\r\n",
         /* eslint-enable no-path-concat */
         controller: 'FeatureEditorController as featureEditor',
         resolve: {
             featureFileStructure: ['FeatureFileService', function (FeatureFileService) {
-                return FeatureFileService.getFeatureFileStructure();
+                return FeatureFileService.getFileStructure();
             }],
             featurePath: ['$stateParams', 'FeatureFileService', function ($stateParams, FeatureFileService) {
                 var feature = $stateParams.feature;
-                return feature ? FeatureFileService.getFeaturePath({ name: feature }) : null;
+                return feature ? FeatureFileService.getPath({ name: feature }) : null;
             }]
         }
     })
     .state('tractor.step-definition-editor', {
-        url: 'step-definition-editor?step-definition',
+        url: 'step-definition-editor/:stepDefinition',
         /* eslint-disable no-path-concat */
-        template: "<tractor-file-tree model=\"stepDefinitionEditor\" type=\"step-definition\"></tractor-file-tree>\r\n<tractor-resize-handle></tractor-resize-handle>\r\n<form class=\"file\" name=\"step-definition-editor\" novalidate\r\n    ng-submit=\"stepDefinitionEditor.showErrors() && stepDefinitionEditor.saveStepDefinitionFile()\">\r\n    <section class=\"file-options\" ng-if=\"stepDefinitionEditor.stepDefinition\">\r\n        <h1 class=\"file-options__name\">{{ stepDefinitionEditor.stepDefinition.name }}</h1>\r\n        <div>\r\n            <tractor-submit class=\"file-options__save-file\"\r\n                action=\"Save step definition file\">\r\n            </tractor-submit>\r\n        </div>\r\n    </section>\r\n\r\n    <section class=\"file-editor\" ng-if=\"stepDefinitionEditor.stepDefinition\">\r\n        <section ng-if=\"stepDefinitionEditor.canAddComponents\">\r\n            <section class=\"file-editor__container\">\r\n                <h2>Available components:</h2>\r\n                <ul>\r\n                    <li ng-repeat=\"component in stepDefinitionEditor.stepDefinition.availableComponents\"\r\n                        ng-if=\"stepDefinitionEditor.stepDefinition.components.indexOf(component) === -1\">\r\n                        <span> {{ component.name }} </spam>\r\n                        <tractor-action\r\n                            model=\"stepDefinitionEditor.stepDefinition\"\r\n                            action=\"Add component\"\r\n                            argument=\"component.name\">\r\n                        </tractor-action>\r\n                    </li>\r\n                </ul>\r\n            </section>\r\n\r\n            <section class=\"file-editor__container\"\r\n                ng-if=\"stepDefinitionEditor.hasComponents\">\r\n                <h2>Active components:</h2>\r\n                <ul>\r\n                    <li ng-repeat=\"component in stepDefinitionEditor.stepDefinition.componentInstances\">\r\n                        <span> {{ component.component.name }} </span>\r\n                        <tractor-action\r\n                            model=\"stepDefinitionEditor.stepDefinition\"\r\n                            action=\"Remove component\"\r\n                            argument=\"component\"\r\n                            icon=\"remove\">\r\n                        </tractor-action>\r\n                    </li>\r\n                </ul>\r\n            </section>\r\n        </section>\r\n\r\n        <section ng-if=\"stepDefinitionEditor.canAddMockData\">\r\n            <section class=\"file-editor__container\">\r\n                <h2>Available mock data:</h2>\r\n                <ul>\r\n                    <li ng-repeat=\"mockData in stepDefinitionEditor.stepDefinition.availableMockData\"\r\n                        ng-if=\"stepDefinitionEditor.stepDefinition.mockData.indexOf(mockData) === -1\">\r\n                        <span> {{ mockData.name }} </spam>\r\n                        <tractor-action\r\n                            model=\"stepDefinitionEditor.stepDefinition\"\r\n                            action=\"Add mock\"\r\n                            argument=\"mockData.name\">\r\n                        </tractor-action>\r\n                    </li>\r\n                </ul>\r\n            </section>\r\n\r\n            <section class=\"file-editor__container\"\r\n                ng-if=\"stepDefinitionEditor.hasMockData\">\r\n                <h2>Active mock data:</h2>\r\n                <ul>\r\n                    <li ng-repeat=\"mockData in stepDefinitionEditor.stepDefinition.mockDataInstances\">\r\n                        <span> {{ mockData.mockData.name }} </span>\r\n                        <tractor-action\r\n                            model=\"stepDefinitionEditor.stepDefinition\"\r\n                            action=\"Remove mock\"\r\n                            argument=\"mock\"\r\n                            icon=\"remove\">\r\n                        </tractor-action>\r\n                    </li>\r\n                </ul>\r\n            </section>\r\n        </section>\r\n\r\n        <section class=\"file-editor__container\" ng-if=\"stepDefinitionEditor.showMockDataSection\">\r\n            <h2>Mock Data:</h2>\r\n\r\n            <ul>\r\n                <li class=\"file-editor__list-item\" ng-repeat=\"mock in stepDefinitionEditor.stepDefinition.step.mocks\">\r\n                    <tractor-action\r\n                        model=\"stepDefinitionEditor.stepDefinition.step\"\r\n                        action=\"Remove mock\"\r\n                        argument=\"mock\"\r\n                        icon=\"remove\">\r\n                    </tractor-action>\r\n\r\n                    <tractor-text-input\r\n                        form=\"step-definition-editor\"\r\n                        label=\"URL\"\r\n                        model=\"mock\"\r\n                        example=\"http://example.com\">\r\n                    </tractor-text-input>\r\n                    <tractor-select\r\n                        label=\"Action\"\r\n                        model=\"mock\">\r\n                    </tractor-select>\r\n                    <tractor-checkbox\r\n                        label=\"Pass through\"\r\n                        model=\"mock\">\r\n                    </tractor-checkbox>\r\n                    <tractor-select\r\n                        ng-if=\"!mock.passThrough && stepDefinitionEditor.hasMockData\"\r\n                        label=\"Data\"\r\n                        model=\"mock\"\r\n                        options=\"stepDefinitionEditor.stepDefinition.mockDataInstances\"\r\n                        as=\"name\">\r\n                    </tractor-select>\r\n                </li>\r\n            </ul>\r\n\r\n            <tractor-action\r\n                model=\"stepDefinitionEditor.stepDefinition.step\"\r\n                action=\"Add mock\">\r\n            </tractor-action>\r\n        </section>\r\n\r\n        <section class=\"file-editor__container\" ng-if=\"stepDefinitionEditor.showTasksSection\">\r\n            <h2>Tasks:</h2>\r\n\r\n            <ol ng-if=\"stepDefinitionEditor.stepDefinition.step.tasks.length\" as-sortable ng-model=\"stepDefinitionEditor.stepDefinition.step.tasks\" is-disabled=\"stepDefinitionEditor.stepDefinition.step.tasks.length < 2\">\r\n                <li class=\"file-editor__list-item\" ng-repeat=\"task in stepDefinitionEditor.stepDefinition.step.tasks\" as-sortable-item>\r\n                    <tractor-action\r\n                        model=\"stepDefinitionEditor.stepDefinition.step\"\r\n                        action=\"Remove task\"\r\n                        argument=\"task\"\r\n                        icon=\"remove\">\r\n                    </tractor-action>\r\n                    <div ng-if=\"stepDefinitionEditor.stepDefinition.step.tasks.length > 1\" class=\"file-editor__sort-handle\" as-sortable-item-handle title=\"Drag to sort\"></div>\r\n\r\n                    <tractor-select\r\n                        label=\"Component\"\r\n                        model=\"task\"\r\n                        options=\"stepDefinitionEditor.stepDefinition.componentInstances\"\r\n                        as=\"name\">\r\n                    </tractor-select>\r\n                    <tractor-select\r\n                        label=\"Action\"\r\n                        model=\"task\"\r\n                        options=\"task.component.component.actions\"\r\n                        as=\"name\">\r\n                    </tractor-select>\r\n                    <div ng-repeat=\"argument in task.arguments\">\r\n                        <tractor-literal-input\r\n                            form=\"step-definition-editor\"\r\n                            name=\"argument.name\"\r\n                            model=\"argument\"\r\n                            required>\r\n                        </tractor-literal-input>\r\n                    </div>\r\n                </li>\r\n            </ol>\r\n\r\n            <tractor-action\r\n                model=\"stepDefinitionEditor.stepDefinition.step\"\r\n                action=\"Add task\">\r\n            </tractor-action>\r\n        </section>\r\n\r\n        <section  class=\"file-editor__container\" ng-if=\"stepDefinitionEditor.showExpectationsSection\">\r\n            <h2>Expectations:</h2>\r\n\r\n            <ul>\r\n                <li class=\"file-editor__list-item\" ng-repeat=\"expectation in stepDefinitionEditor.stepDefinition.step.expectations\">\r\n                    <tractor-action\r\n                        model=\"stepDefinitionEditor.stepDefinition.step\"\r\n                        action=\"Remove expectation\"\r\n                        argument=\"expectation\"\r\n                        icon=\"remove\">\r\n                    </tractor-action>\r\n\r\n                    <tractor-select\r\n                        label=\"Component\"\r\n                        model=\"expectation\"\r\n                        options=\"stepDefinitionEditor.stepDefinition.componentInstances\"\r\n                        as=\"name\">\r\n                    </tractor-select>\r\n                    <tractor-select\r\n                        label=\"Action\"\r\n                        model=\"expectation\"\r\n                        options=\"expectation.component.component.actions\"\r\n                        as=\"name\">\r\n                    </tractor-select>\r\n                    <div ng-repeat=\"argument in expectation.arguments\">\r\n                        <tractor-literal-input\r\n                            form=\"step-definition-editor\"\r\n                            name=\"argument.name\"\r\n                            model=\"argument\"\r\n                            type=\"argument.type\">\r\n                        </tractor-literal-input>\r\n                    </div>\r\n                    <tractor-literal-input\r\n                        form=\"step-definition-editor\"\r\n                        name=\"'Expected result'\"\r\n                        model=\"expectation\">\r\n                    </tractor-literal-input>\r\n                </li>\r\n            </ul>\r\n\r\n            <tractor-action\r\n                model=\"stepDefinitionEditor.stepDefinition.step\"\r\n                action=\"Add expectation\">\r\n            </tractor-action>\r\n        </section>\r\n    </section>\r\n</form>\r\n",
+        template: "<tractor-file-tree model=\"stepDefinitionEditor\" type=\"step-definition\"></tractor-file-tree>\r\n<tractor-resize-handle></tractor-resize-handle>\r\n<form class=\"file\" name=\"file-editor\" novalidate\r\n    ng-submit=\"stepDefinitionEditor.showErrors() && stepDefinitionEditor.saveFile()\">\r\n    <section class=\"file-options\" ng-if=\"stepDefinitionEditor.fileModel\">\r\n        <h1 class=\"file-options__name\">{{ stepDefinitionEditor.fileModel.name }}</h1>\r\n        <div>\r\n            <tractor-submit class=\"file-options__save-file\"\r\n                action=\"Save step definition file\">\r\n            </tractor-submit>\r\n        </div>\r\n    </section>\r\n\r\n    <section class=\"file-editor\" ng-if=\"stepDefinitionEditor.fileModel\">\r\n        <section ng-if=\"stepDefinitionEditor.canAddComponents\">\r\n            <section class=\"file-editor__container\">\r\n                <h2>Available components:</h2>\r\n                <ul>\r\n                    <li ng-repeat=\"component in stepDefinitionEditor.fileModel.availableComponents\"\r\n                        ng-if=\"stepDefinitionEditor.fileModel.components.indexOf(component) === -1\">\r\n                        <span> {{ component.name }} </spam>\r\n                        <tractor-action\r\n                            model=\"stepDefinitionEditor.fileModel\"\r\n                            action=\"Add component\"\r\n                            argument=\"component.name\">\r\n                        </tractor-action>\r\n                    </li>\r\n                </ul>\r\n            </section>\r\n\r\n            <section class=\"file-editor__container\"\r\n                ng-if=\"stepDefinitionEditor.hasComponents\">\r\n                <h2>Active components:</h2>\r\n                <ul>\r\n                    <li ng-repeat=\"component in stepDefinitionEditor.fileModel.componentInstances\">\r\n                        <span> {{ component.component.name }} </span>\r\n                        <tractor-action\r\n                            model=\"stepDefinitionEditor.fileModel\"\r\n                            action=\"Remove component\"\r\n                            argument=\"component\"\r\n                            icon=\"remove\">\r\n                        </tractor-action>\r\n                    </li>\r\n                </ul>\r\n            </section>\r\n        </section>\r\n\r\n        <section ng-if=\"stepDefinitionEditor.canAddMockData\">\r\n            <section class=\"file-editor__container\">\r\n                <h2>Available mock data:</h2>\r\n                <ul>\r\n                    <li ng-repeat=\"mockData in stepDefinitionEditor.fileModel.availableMockData\"\r\n                        ng-if=\"stepDefinitionEditor.fileModel.mockData.indexOf(mockData) === -1\">\r\n                        <span> {{ mockData.name }} </spam>\r\n                        <tractor-action\r\n                            model=\"stepDefinitionEditor.fileModel\"\r\n                            action=\"Add mock\"\r\n                            argument=\"mockData.name\">\r\n                        </tractor-action>\r\n                    </li>\r\n                </ul>\r\n            </section>\r\n\r\n            <section class=\"file-editor__container\"\r\n                ng-if=\"stepDefinitionEditor.hasMockData\">\r\n                <h2>Active mock data:</h2>\r\n                <ul>\r\n                    <li ng-repeat=\"mockData in stepDefinitionEditor.fileModel.mockDataInstances\">\r\n                        <span> {{ mockData.mockData.name }} </span>\r\n                        <tractor-action\r\n                            model=\"stepDefinitionEditor.fileModel\"\r\n                            action=\"Remove mock\"\r\n                            argument=\"mock\"\r\n                            icon=\"remove\">\r\n                        </tractor-action>\r\n                    </li>\r\n                </ul>\r\n            </section>\r\n        </section>\r\n\r\n        <section class=\"file-editor__container\" ng-if=\"stepDefinitionEditor.showMockDataSection\">\r\n            <h2>Mock Data:</h2>\r\n\r\n            <ul>\r\n                <li class=\"file-editor__list-item\" ng-repeat=\"mock in stepDefinitionEditor.fileModel.step.mocks\">\r\n                    <tractor-action\r\n                        model=\"stepDefinitionEditor.fileModel.step\"\r\n                        action=\"Remove mock\"\r\n                        argument=\"mock\"\r\n                        icon=\"remove\">\r\n                    </tractor-action>\r\n\r\n                    <tractor-text-input\r\n                        form=\"file-editor\"\r\n                        label=\"URL\"\r\n                        model=\"mock\"\r\n                        example=\"http://example.com\">\r\n                    </tractor-text-input>\r\n                    <tractor-select\r\n                        label=\"Action\"\r\n                        model=\"mock\">\r\n                    </tractor-select>\r\n                    <tractor-checkbox\r\n                        label=\"Pass through\"\r\n                        model=\"mock\">\r\n                    </tractor-checkbox>\r\n                    <tractor-select\r\n                        ng-if=\"!mock.passThrough && stepDefinitionEditor.hasMockData\"\r\n                        label=\"Data\"\r\n                        model=\"mock\"\r\n                        options=\"stepDefinitionEditor.fileModel.mockDataInstances\"\r\n                        as=\"name\">\r\n                    </tractor-select>\r\n                </li>\r\n            </ul>\r\n\r\n            <tractor-action\r\n                model=\"stepDefinitionEditor.fileModel.step\"\r\n                action=\"Add mock\">\r\n            </tractor-action>\r\n        </section>\r\n\r\n        <section class=\"file-editor__container\" ng-if=\"stepDefinitionEditor.showTasksSection\">\r\n            <h2>Tasks:</h2>\r\n\r\n            <ol ng-if=\"stepDefinitionEditor.fileModel.step.tasks.length\" as-sortable ng-model=\"stepDefinitionEditor.fileModel.step.tasks\" is-disabled=\"stepDefinitionEditor.fileModel.step.tasks.length < 2\">\r\n                <li class=\"file-editor__list-item\" ng-repeat=\"task in stepDefinitionEditor.fileModel.step.tasks\" as-sortable-item>\r\n                    <tractor-action\r\n                        model=\"stepDefinitionEditor.fileModel.step\"\r\n                        action=\"Remove task\"\r\n                        argument=\"task\"\r\n                        icon=\"remove\">\r\n                    </tractor-action>\r\n                    <div ng-if=\"stepDefinitionEditor.fileModel.step.tasks.length > 1\" class=\"file-editor__sort-handle\" as-sortable-item-handle title=\"Drag to sort\"></div>\r\n\r\n                    <tractor-select\r\n                        label=\"Component\"\r\n                        model=\"task\"\r\n                        options=\"stepDefinitionEditor.fileModel.componentInstances\"\r\n                        as=\"name\">\r\n                    </tractor-select>\r\n                    <tractor-select\r\n                        label=\"Action\"\r\n                        model=\"task\"\r\n                        options=\"task.component.component.actions\"\r\n                        as=\"name\">\r\n                    </tractor-select>\r\n                    <div ng-repeat=\"argument in task.arguments\">\r\n                        <tractor-literal-input\r\n                            form=\"file-editor\"\r\n                            name=\"argument.name\"\r\n                            model=\"argument\"\r\n                            required>\r\n                        </tractor-literal-input>\r\n                    </div>\r\n                </li>\r\n            </ol>\r\n\r\n            <tractor-action\r\n                model=\"stepDefinitionEditor.fileModel.step\"\r\n                action=\"Add task\">\r\n            </tractor-action>\r\n        </section>\r\n\r\n        <section  class=\"file-editor__container\" ng-if=\"stepDefinitionEditor.showExpectationsSection\">\r\n            <h2>Expectations:</h2>\r\n\r\n            <ul>\r\n                <li class=\"file-editor__list-item\" ng-repeat=\"expectation in stepDefinitionEditor.fileModel.step.expectations\">\r\n                    <tractor-action\r\n                        model=\"stepDefinitionEditor.fileModel.step\"\r\n                        action=\"Remove expectation\"\r\n                        argument=\"expectation\"\r\n                        icon=\"remove\">\r\n                    </tractor-action>\r\n\r\n                    <tractor-select\r\n                        label=\"Component\"\r\n                        model=\"expectation\"\r\n                        options=\"stepDefinitionEditor.fileModel.componentInstances\"\r\n                        as=\"name\">\r\n                    </tractor-select>\r\n                    <tractor-select\r\n                        label=\"Action\"\r\n                        model=\"expectation\"\r\n                        options=\"expectation.component.component.actions\"\r\n                        as=\"name\">\r\n                    </tractor-select>\r\n                    <div ng-repeat=\"argument in expectation.arguments\">\r\n                        <tractor-literal-input\r\n                            form=\"file-editor\"\r\n                            name=\"argument.name\"\r\n                            model=\"argument\"\r\n                            type=\"argument.type\">\r\n                        </tractor-literal-input>\r\n                    </div>\r\n                    <tractor-literal-input\r\n                        form=\"file-editor\"\r\n                        name=\"'Expected result'\"\r\n                        model=\"expectation\">\r\n                    </tractor-literal-input>\r\n                </li>\r\n            </ul>\r\n\r\n            <tractor-action\r\n                model=\"stepDefinitionEditor.fileModel.step\"\r\n                action=\"Add expectation\">\r\n            </tractor-action>\r\n        </section>\r\n    </section>\r\n</form>\r\n",
         /* eslint-enable no-path-concat */
         controller: 'StepDefinitionEditorController as stepDefinitionEditor',
         resolve: {
             stepDefinitionFileStructure: ['StepDefinitionFileService', function (StepDefinitionFileService) {
-                return StepDefinitionFileService.getStepDefinitionFileStructure();
+                return StepDefinitionFileService.getFileStructure();
             }],
             stepDefinitionPath: ['$stateParams', 'StepDefinitionFileService', function ($stateParams, StepDefinitionFileService) {
-                var stepDefinition = $stateParams['step-definition'];
-                return stepDefinition ? StepDefinitionFileService.getStepDefinitionPath({ name: stepDefinition }) : null;
+                var stepDefinition = $stateParams.stepDefinition;
+                return stepDefinition ? StepDefinitionFileService.getPath({ name: stepDefinition }) : null;
             }],
             components: ['ComponentFileService', function (ComponentFileService) {
-                return ComponentFileService.getAllComponents();
+                return ComponentFileService.getAll();
             }],
             mockData: ['MockDataFileService', function (MockDataFileService) {
-                return MockDataFileService.getAllMockData();
+                return MockDataFileService.getAll();
             }]
         }
     })
     .state('tractor.mock-data-editor', {
-        url: 'mock-data-editor?mock-data',
+        url: 'mock-data-editor/:mockData',
         /* eslint-disable no-path-concat */
-        template: "<tractor-file-tree model=\"mockDataEditor\" type=\"mock-data\"></tractor-file-tree>\r\n<tractor-resize-handle></tractor-resize-handle>\r\n<form class=\"file\" name=\"mock-data-editor\" novalidate\r\n    ng-submit=\"mockDataEditor.showErrors() && mockDataEditor.saveMockDataFile()\">\r\n    <section class=\"file-options\">\r\n        <h1 class=\"file-options__name\">{{ mockDataEditor.mockData.name }}</h1>\r\n        <div>\r\n            <tractor-text-input class=\"file-options__name-input\"\r\n                ng-if=\"!mockDataEditor.mockData.isSaved\"\r\n                form=\"mock-data-editor\"\r\n                label=\"Name\"\r\n                model=\"mockDataEditor.mockData\"\r\n                example=\"Data\">\r\n            </tractor-text-input>\r\n            <tractor-submit class=\"file-options__save-file\"\r\n                action=\"Save mock data file\">\r\n            </tractor-submit>\r\n        </div>\r\n    </section>\r\n\r\n    <section class=\"file-editor\">\r\n        <section class=\"file-editor__container\">\r\n            <h2>JSON data:</h2>\r\n            <textarea\r\n                ng-model=\"mockDataEditor.mockData.json\"\r\n                required>\r\n            </textarea>\r\n        </section>\r\n    </section>\r\n</form>\r\n",
+        template: "<tractor-file-tree model=\"mockDataEditor\" type=\"mock-data\"></tractor-file-tree>\r\n<tractor-resize-handle></tractor-resize-handle>\r\n<form class=\"file\" name=\"file-editor\" novalidate\r\n    ng-submit=\"mockDataEditor.showErrors() && mockDataEditor.saveFile()\">\r\n    <section class=\"file-options\">\r\n        <h1 class=\"file-options__name\">{{ mockDataEditor.fileModel.name }}</h1>\r\n        <div>\r\n            <tractor-text-input class=\"file-options__name-input\"\r\n                ng-if=\"!mockDataEditor.fileModel.isSaved\"\r\n                form=\"file-editor\"\r\n                label=\"Name\"\r\n                model=\"mockDataEditor.fileModel\"\r\n                example=\"Data\"\r\n                validate-file-name>\r\n            </tractor-text-input>\r\n            <tractor-submit class=\"file-options__save-file\"\r\n                action=\"Save mock data file\">\r\n            </tractor-submit>\r\n        </div>\r\n    </section>\r\n\r\n    <section class=\"file-editor\">\r\n        <section class=\"file-editor__container\">\r\n            <h2>JSON data:</h2>\r\n            <textarea\r\n                ng-model=\"mockDataEditor.fileModel.json\"\r\n                required>\r\n            </textarea>\r\n        </section>\r\n    </section>\r\n</form>\r\n",
         /* eslint-enable no-path-concat */
         controller: 'MockDataEditorController as mockDataEditor',
         resolve: {
             mockDataFileStructure: ['MockDataFileService', function (MockDataFileService) {
-                return MockDataFileService.getMockDataFileStructure();
+                return MockDataFileService.getFileStructure();
             }],
             mockDataPath: ['$stateParams', 'MockDataFileService', function ($stateParams, MockDataFileService) {
-                var mockDataName = $stateParams['mock-data'];
-                return mockDataName ? MockDataFileService.getMockDataPath({ name: mockDataName }) : null;
+                var mockDataName = $stateParams.mockData;
+                return mockDataName ? MockDataFileService.getPath({ name: mockDataName }) : null;
             }]
         }
     });
@@ -144,7 +141,7 @@ angular.module('tractor', [
     });
 }]);
 
-},{"./Core/Core":121,"./Core/Services/ConfigService":137,"./Core/Services/FileStructureService":138,"./Core/Services/HttpResponseInterceptor":139,"./Core/Services/RealTimeService":140,"./features/ComponentEditor/ComponentEditor":145,"./features/ComponentEditor/ComponentEditorController":146,"./features/ComponentEditor/Services/ComponentFileService":158,"./features/ControlPanel/ControlPanel":164,"./features/ControlPanel/ControlPanelController":165,"./features/FeatureEditor/FeatureEditor":167,"./features/FeatureEditor/FeatureEditorController":168,"./features/FeatureEditor/Services/FeatureFileService":174,"./features/MockDataEditor/MockDataEditorController":179,"./features/MockDataEditor/Services/MockDataFileService":181,"./features/Notifier/Notifier":184,"./features/StepDefinitionEditor/Services/StepDefinitionFileService":195,"./features/StepDefinitionEditor/StepDefinitionEditorController":200,"angular":7,"angular-local-storage":2,"angular-messages":3,"angular-mocks":4,"angular-sanitize":5,"angular-sortable":72,"angular-ui-router":6,"bluebird":10}],2:[function(require,module,exports){
+},{"./Core/Core":137,"./Core/Services/ConfigService":139,"./Core/Services/FileStructureService":141,"./Core/Services/HttpResponseInterceptor":142,"./Core/Services/RealTimeService":143,"./features/ComponentEditor/ComponentEditor":149,"./features/ComponentEditor/ComponentEditorController":150,"./features/ComponentEditor/Services/ComponentFileService":162,"./features/ControlPanel/ControlPanel":168,"./features/ControlPanel/ControlPanelController":169,"./features/FeatureEditor/FeatureEditor":171,"./features/FeatureEditor/FeatureEditorController":172,"./features/FeatureEditor/Services/FeatureFileService":178,"./features/MockDataEditor/MockDataEditorController":184,"./features/MockDataEditor/Services/MockDataFileService":186,"./features/StepDefinitionEditor/Services/StepDefinitionFileService":197,"./features/StepDefinitionEditor/StepDefinitionEditorController":202,"angular":7,"angular-local-storage":2,"angular-messages":3,"angular-mocks":4,"angular-sanitize":5,"angular-sortable":72,"angular-ui-router":6,"bluebird":10}],2:[function(require,module,exports){
 /**
  * An Angular module that gives you access to the browsers local storage
  * @version v0.1.5 - 2014-11-04
@@ -60854,33 +60851,6 @@ function toArray(list, index) {
 'use strict';
 
 // Utilities:
-var angular = require('angular');
-
-var Core = angular.module('Core', []);
-
-module.exports = Core;
-
-require('./Directives/Action/ActionDirective');
-require('./Directives/Checkbox/CheckboxDirective');
-require('./Directives/DragFile/DragFileDirective');
-require('./Directives/DropFile/DropFileDirective');
-require('./Directives/FileTree/FileTreeDirective');
-require('./Directives/GiveFocus/GiveFocusDirective');
-require('./Directives/LiteralInput/LiteralInputDirective');
-require('./Directives/ResizeHandle/ResizeHandleDirective');
-require('./Directives/SelectInput/SelectInputDirective');
-require('./Directives/StepInput/StepInputDirective');
-require('./Directives/Submit/SubmitDirective');
-require('./Directives/TextInput/TextInputDirective');
-require('./Directives/VariableInput/VariableInputDirective');
-
-require('./Validators/VariableNameValidator');
-require('./Validators/ExampleNameValidator');
-
-},{"./Directives/Action/ActionDirective":122,"./Directives/Checkbox/CheckboxDirective":123,"./Directives/DragFile/DragFileDirective":124,"./Directives/DropFile/DropFileDirective":125,"./Directives/FileTree/FileTreeDirective":127,"./Directives/GiveFocus/GiveFocusDirective":128,"./Directives/LiteralInput/LiteralInputDirective":129,"./Directives/ResizeHandle/ResizeHandleDirective":130,"./Directives/SelectInput/SelectInputDirective":131,"./Directives/StepInput/StepInputDirective":132,"./Directives/Submit/SubmitDirective":133,"./Directives/TextInput/TextInputDirective":134,"./Directives/VariableInput/VariableInputDirective":135,"./Validators/ExampleNameValidator":143,"./Validators/VariableNameValidator":144,"angular":7}],122:[function(require,module,exports){
-'use strict';
-
-// Utilities:
 var _ = require('lodash');
 
 
@@ -60923,7 +60893,7 @@ var ActionDirective = function () {
 
 Core.directive('tractorAction', ActionDirective);
 
-},{"../../Core":121,"change-case":49,"lodash":71}],123:[function(require,module,exports){
+},{"../../Core":137,"change-case":49,"lodash":71}],122:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -60967,7 +60937,7 @@ var CheckboxDirective = function () {
 
 Core.directive('tractorCheckbox', CheckboxDirective);
 
-},{"../../Core":121,"change-case":49,"lodash":71}],124:[function(require,module,exports){
+},{"../../Core":137,"change-case":49,"lodash":71}],123:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -61006,7 +60976,7 @@ var DragFileDirective = function () {
 
 Core.directive('tractorDragFile', DragFileDirective);
 
-},{"../../Core":121,"lodash":71}],125:[function(require,module,exports){
+},{"../../Core":137,"lodash":71}],124:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -61074,7 +61044,7 @@ var DropFileDirective = function () {
 
 Core.directive('tractorDropFile', DropFileDirective);
 
-},{"../../Core":121,"lodash":71}],126:[function(require,module,exports){
+},{"../../Core":137,"lodash":71}],125:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -61085,37 +61055,49 @@ var path = require('path');
 var Core = require('../../Core');
 
 // Dependencies:
+var camel = require('change-case').camel;
 var title = require('change-case').title;
 require('../../Services/FileStructureService');
 
 var FileTreeController = (function () {
     var FileTreeController = function FileTreeController (
         $state,
-        $timeout,
+        $interval,
         $window,
+        NotifierService,
         FileStructureService
     ) {
         this.$state = $state;
-        this.$timeout = $timeout;
+        this.$interval = $interval;
         this.$window = $window;
+        this.notifierService = NotifierService;
         this.fileStructureService = FileStructureService;
 
         this.headerName = title(this.type);
         this.canModify = this.type !== 'step-definition';
 
-        this.editItemPath = this.editItemPath.bind(this);
+        this.editFilePath = this.editFilePath.bind(this);
     };
-    FileTreeController.$inject = ['$state', '$timeout', '$window', 'FileStructureService'];
+    FileTreeController.$inject = ['$state', '$interval', '$window', 'NotifierService', 'FileStructureService'];
+
+    FileTreeController.prototype.getName = function (item) {
+        if (item.ast) {
+            var metaComment = _.first(item.ast.comments);
+            var meta = JSON.parse(metaComment.value);
+            return meta.name;
+        }
+        return item.name;
+    }
 
     FileTreeController.prototype.addDirectory = function (directory) {
-        this.fileStructureService.addDirectory({
+        this.fileStructureService.addDirectory(this.type, {
             path: directory.path
         })
         .then(setFileStructure.bind(this));
     };
 
     FileTreeController.prototype.editName = function (item) {
-        if (this.canModify) {
+        if (this.canModify || item.isDirectory) {
             item.editingName = true;
             item.previousName = item.name;
             this.hideOptions(item);
@@ -61124,21 +61106,50 @@ var FileTreeController = (function () {
 
     FileTreeController.prototype.saveNewName = function (item) {
         item.editingName = false;
+
+        var valid = true;
+        if (_.contains(item.name, '_')) {
+            this.notifierService.error('Invalid character: "_"');
+            valid = false;
+        }
+        if (_.contains(item.name, '/')) {
+            this.notifierService.error('Invalid character: "/"');
+            valid = false;
+        }
+        if (_.contains(item.name, '\\')) {
+            this.notifierService.error('Invalid character: "\\"');
+            valid = false;
+        }
         if (!item.name.trim().length) {
+            valid = false;
+        }
+
+        if (!valid) {
             item.name = item.previousName;
         }
+
         if (item.name !== item.previousName) {
             var oldName = item.previousName;
             var newName = item.name;
 
             var oldDirectoryPath = getDirname(item.path);
-            this.fileStructureService.editItemPath({
-                directoryPath: oldDirectoryPath,
-                oldName: oldName,
-                newName: newName,
-                isDirectory: !!item.isDirectory
-            })
-            .then(setFileStructure.bind(this));
+
+            var isDirectory = !!item.isDirectory;
+            if (isDirectory) {
+                this.fileStructureService.editDirectoryPath(this.type, {
+                    directoryPath: oldDirectoryPath,
+                    oldName: oldName,
+                    newName: newName
+                })
+                .then(setFileStructure.bind(this));
+            } else {
+                this.fileStructureService.editFilePath(this.type, {
+                    directoryPath: oldDirectoryPath,
+                    oldName: oldName,
+                    newName: newName
+                })
+                .then(setFileStructure.bind(this));
+            }
         }
     };
 
@@ -61149,44 +61160,35 @@ var FileTreeController = (function () {
     };
 
     FileTreeController.prototype.openFile = function (item) {
-        this.$timeout(function () {
-            if (!item.editingName) {
-                var params = {};
-                var directoryPath = this.model.fileStructure.path;
-                var filePath = item.path.replace(/\\/g, '/');
-                var relativePath = path.relative(directoryPath, filePath);
-                params[this.type] = _.last(relativePath.match(/(.*?)\..*/));
-                this.$state.go('tractor.' + this.type + '-editor', params);
-            }
-        }.bind(this), 200);
+        var params = {};
+        var directoryPath = this.model.fileStructure.path;
+        var filePath = item.path.replace(/\\/g, '/');
+        var relativePath = path.relative(directoryPath, filePath);
+        params[camel(this.type)] = _.last(relativePath.match(/(.*?)\..*/));
+        this.$state.go('tractor.' + this.type + '-editor', params);
     };
 
-    FileTreeController.prototype.editItemPath = function (file, directory) {
+    FileTreeController.prototype.editFilePath = function (file, directory) {
         var oldDirectoryPath = getDirname(file.path);
         if (oldDirectoryPath !== directory.path) {
-            this.fileStructureService.editItemPath({
+            this.fileStructureService.editFilePath(this.type, {
                 oldDirectoryPath: oldDirectoryPath,
                 newDirectoryPath: directory.path,
-                name: file.name,
-                isDirectory: false
+                name: file.name
             })
             .then(setFileStructure.bind(this));
         }
     };
 
     FileTreeController.prototype.expandDirectory = function (item) {
-        this.$timeout(function () {
-            if (!item.editingName) {
-                item.expanded = !item.expanded;
-                var expanded = this.fileStructureService.getExpanded();
-                if (item.expanded) {
-                    expanded[item.path] = item.expanded;
-                } else {
-                    delete expanded[item.path];
-                }
-                this.fileStructureService.setExpanded(expanded);
-            }
-        }.bind(this), 200);
+        item.expanded = !item.expanded;
+        var expanded = this.fileStructureService.getExpanded();
+        if (item.expanded) {
+            expanded[item.path] = item.expanded;
+        } else {
+            delete expanded[item.path];
+        }
+        this.fileStructureService.setExpanded(expanded);
     };
 
     FileTreeController.prototype.showOptions = function (item) {
@@ -61202,17 +61204,22 @@ var FileTreeController = (function () {
         if (item.files && item.files.length || item.directories && item.directories.length) {
             this.$window.alert('Cannot delete a directory with files in it.');
         } else {
-            this.fileStructureService.deleteFile({
+            var deleteOptions = {
                 path: item.path,
-                name: item.name,
-                isDirectory: !!item.isDirectory
-            })
-            .then(setFileStructure.bind(this));
+                name: item.name
+            };
+            if (item.isDirectory) {
+                this.fileStructureService.deleteDirectory(this.type, deleteOptions)
+                .then(setFileStructure.bind(this));
+            } else {
+                this.fileStructureService.deleteFile(this.type, deleteOptions)
+                .then(setFileStructure.bind(this));
+            }
         }
     };
 
     FileTreeController.prototype.copy = function (item) {
-        this.fileStructureService.copyFile({
+        this.fileStructureService.copyFile(this.type, {
             path: item.path
         })
         .then(setFileStructure.bind(this));
@@ -61247,7 +61254,7 @@ var FileTreeController = (function () {
 
 Core.controller('FileTreeController', FileTreeController);
 
-},{"../../Core":121,"../../Services/FileStructureService":138,"change-case":49,"lodash":71,"path":45}],127:[function(require,module,exports){
+},{"../../Core":137,"../../Services/FileStructureService":141,"change-case":49,"lodash":71,"path":45}],126:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -61270,7 +61277,7 @@ var FileTreeDirective = function () {
         },
 
         /* eslint-disable no-path-concat */
-        template: "<script type=\"text/ng-template\" id=\"file-options.html\">\n    <div class=\"file-tree__item-options\"\n         ng-class=\"{ 'file-tree__item-active-options': item.showOptions }\"\n         ng-click=\"fileTree.showOptions(item)\">\n    </div>\n    <div class=\"file-tree__item-options-panel\"\n         ng-if=\"item.showOptions\"\n         ng-mouseleave=\"fileTree.hideOptions(item)\">\n        <tractor-action\n            ng-if=\"fileTree.canModify\"\n            model=\"fileTree\"\n            action=\"Edit name\"\n            argument=\"item\">\n        </tractor-action>\n        <tractor-action\n            ng-if=\"fileTree.canModify && !item.isDirectory\"\n            model=\"fileTree\"\n            action=\"Copy\"\n            argument=\"item\">\n        </tractor-action>\n        <tractor-action\n            model=\"fileTree\"\n            action=\"Delete\"\n            argument=\"item\">\n        </tractor-action>\n    </div>\n</script>\n\n<script type=\"text/ng-template\" id=\"rename-input.html\">\n    <input class=\"file-tree__item-rename\"\n           ng-if=\"item.editingName\"\n           ng-model=\"item.name\"\n           ng-blur=\"fileTree.saveNewName(item)\"\n           ng-keypress=\"fileTree.renameOnEnter($event, item)\"\n           tractor-give-focus\n           focus-on=\"item.editingName\">\n    </input>\n</script>\n\n<script type=\"text/ng-template\" id=\"file-structure.html\">\n    <div ng-include=\"'file-options.html'\"></div>\n\n    <p class=\"file-tree__item-name\"\n        ng-if=\"item.name && !item.editingName\"\n        ng-click=\"fileTree.expandDirectory(item)\"\n        ng-dblclick=\"fileTree.editName(item)\">\n        {{ item.name }}\n    </p>\n    <div ng-include=\"'rename-input.html'\"></div>\n\n    <ul class=\"file-tree__file-list\"\n        ng-if=\"(item || fileTree.model.fileStructure).expanded\">\n        <li class=\"file-tree__file-list-item file-tree__file-list-item--new-directory\">\n            <tractor-action\n                model=\"fileTree\"\n                action=\"Add directory\"\n                argument=\"item || fileTree.model.fileStructure\">\n            </tractor-action>\n        </li>\n\n        <li class=\"file-tree__file-list-item file-tree__file-list-item--directory\"\n            ng-class=\"{ 'file-tree__file-list-item--expanded-directory': item.expanded }\"\n            ng-repeat=\"item in (item || fileTree.model.fileStructure).directories\"\n            ng-include=\"'file-structure.html'\"\n            tractor-drop-file\n            on-drop=\"fileTree.editItemPath\"\n            drop-directory=\"item\">\n        </li>\n\n        <li class=\"file-tree__file-list-item\"\n            ng-repeat=\"item in (item || fileTree.model.fileStructure).files\"\n            tractor-drag-file>\n            <div ng-include=\"'file-options.html'\"></div>\n\n            <p class=\"file-tree__item-name\"\n                ng-if=\"item.name && !item.editingName\"\n                ng-click=\"fileTree.openFile(item)\"\n                ng-dblclick=\"fileTree.editName(item)\">\n                {{ item.name }}\n            </p>\n            <div ng-include=\"'rename-input.html'\"></div>\n        </li>\n    </ul>\n</script>\n\n<section class=\"file-tree__container\"\n    tractor-drop-file\n    on-drop=\"fileTree.editItemPath\"\n    drop-directory=\"fileTree.model.fileStructure\">\n\n    <h2 class=\"file-tree__header\">\n        {{ fileTree.headerName }} files:\n    </h2>\n    <div class=\"file-tree\"\n        ng-class=\"{\n            'file-tree--javascript': fileTree.type === 'component' || fileTree.type === 'step-definition',\n            'file-tree--feature': fileTree.type === 'feature',\n            'file-tree--json': fileTree.type === 'mock-data'\n        }\"\n        ng-include=\"'file-structure.html'\">\n    </div>\n</section>\n",
+        template: "<script type=\"text/ng-template\" id=\"file-options.html\">\n    <div class=\"file-tree__item-options\"\n         ng-class=\"{ 'file-tree__item-active-options': item.showOptions }\"\n         ng-click=\"fileTree.showOptions(item)\">\n    </div>\n    <div class=\"file-tree__item-options-panel\"\n         ng-if=\"item.showOptions\"\n         ng-mouseleave=\"fileTree.hideOptions(item)\">\n        <tractor-action\n            ng-if=\"fileTree.canModify\"\n            model=\"fileTree\"\n            action=\"Edit name\"\n            argument=\"item\">\n        </tractor-action>\n        <tractor-action\n            ng-if=\"fileTree.canModify && !item.isDirectory\"\n            model=\"fileTree\"\n            action=\"Copy\"\n            argument=\"item\">\n        </tractor-action>\n        <tractor-action\n            model=\"fileTree\"\n            action=\"Delete\"\n            argument=\"item\">\n        </tractor-action>\n    </div>\n</script>\n\n<script type=\"text/ng-template\" id=\"rename-input.html\">\n    <input class=\"file-tree__item-rename\"\n            ng-if=\"item.editingName\"\n            ng-model=\"item.name\"\n            ng-blur=\"fileTree.saveNewName(item)\"\n            ng-keypress=\"fileTree.renameOnEnter($event, item)\"\n            tractor-give-focus\n            focus-on=\"item.editingName\">\n    </input>\n</script>\n\n<script type=\"text/ng-template\" id=\"file-structure.html\">\n    <div ng-include=\"'file-options.html'\"></div>\n\n    <p class=\"file-tree__item-name\"\n        ng-if=\"item.name && !item.editingName\"\n        ng-click=\"fileTree.expandDirectory(item)\"\n        ng-dblclick=\"fileTree.editName(item)\">\n        {{ item.name }}\n    </p>\n    <div ng-include=\"'rename-input.html'\"></div>\n\n    <ul class=\"file-tree__file-list\"\n        ng-if=\"(item || fileTree.model.fileStructure).expanded\">\n        <li class=\"file-tree__file-list-item file-tree__file-list-item--new-directory\">\n            <tractor-action\n                model=\"fileTree\"\n                action=\"Add directory\"\n                argument=\"item || fileTree.model.fileStructure\">\n            </tractor-action>\n        </li>\n\n        <li class=\"file-tree__file-list-item file-tree__file-list-item--directory\"\n            ng-class=\"{ 'file-tree__file-list-item--expanded-directory': item.expanded }\"\n            ng-repeat=\"item in (item || fileTree.model.fileStructure).directories\"\n            ng-include=\"'file-structure.html'\"\n            tractor-drop-file\n            on-drop=\"fileTree.editFilePath\"\n            drop-directory=\"item\">\n        </li>\n\n        <li class=\"file-tree__file-list-item\"\n            ng-repeat=\"item in (item || fileTree.model.fileStructure).files\"\n            tractor-drag-file>\n            <div ng-include=\"'file-options.html'\"></div>\n\n            <p class=\"file-tree__item-name\"\n                ng-if=\"item.name && !item.editingName\"\n                ng-click=\"fileTree.openFile(item)\"\n                ng-dblclick=\"fileTree.editName(item)\">\n                {{ fileTree.getName(item) }}\n            </p>\n            <div ng-include=\"'rename-input.html'\"></div>\n        </li>\n    </ul>\n</script>\n\n<section class=\"file-tree__container\"\n    tractor-drop-file\n    on-drop=\"fileTree.editFilePath\"\n    drop-directory=\"fileTree.model.fileStructure\">\n\n    <h2 class=\"file-tree__header\">\n        {{ fileTree.headerName }} files:\n    </h2>\n    <div class=\"file-tree\"\n        ng-class=\"{\n            'file-tree--javascript': fileTree.type === 'component' || fileTree.type === 'step-definition',\n            'file-tree--feature': fileTree.type === 'feature',\n            'file-tree--json': fileTree.type === 'mock-data'\n        }\"\n        ng-include=\"'file-structure.html'\">\n    </div>\n</section>\n",
         /* eslint-enable no-path-concat */
 
         controller: 'FileTreeController',
@@ -61292,7 +61299,7 @@ var FileTreeDirective = function () {
 
 Core.directive('tractorFileTree', FileTreeDirective);
 
-},{"../../Core":121,"./FileTreeController":126,"lodash":71}],128:[function(require,module,exports){
+},{"../../Core":137,"./FileTreeController":125,"lodash":71}],127:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -61327,7 +61334,7 @@ var GiveFocusDirective = function () {
 
 Core.directive('tractorGiveFocus', GiveFocusDirective);
 
-},{"../../Core":121,"lodash":71}],129:[function(require,module,exports){
+},{"../../Core":137,"lodash":71}],128:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -61376,7 +61383,102 @@ var LiteralInputDirective = function () {
 
 Core.directive('tractorLiteralInput', LiteralInputDirective);
 
-},{"../../Core":121,"lodash":71}],130:[function(require,module,exports){
+},{"../../Core":137,"lodash":71}],129:[function(require,module,exports){
+'use strict';
+
+// Utilities:
+
+
+// Module:
+var Core = require('../../Core');
+
+// Dependencies:
+require('./NotifierService');
+
+var NotifierDirective = function (NotifierService) {
+    return {
+        restrict: 'E',
+
+        /* eslint-disable no-path-concat */
+        template: "<aside>\n    <ul class=\"notifier__notifications\">\n        <li ng-repeat=\"notification in notifications\"\n            ng-class=\"'notifier__notification notifier__notification--' + notification.type\">\n            <span class=\"notifier__notification-message\">{{ notification.message }}</span>\n\n            <button ng-click=\"dismiss(notification)\"\n                    class=\"notifier__notification-dismiss\"\n                    type=\"button\"\n                    title=\"Dismiss\">\n            </button>\n        </li>\n    </ul>\n</aside>\n",
+        /* eslint-enable no-path-concat */
+
+        link: function ($scope) {
+            $scope.notifications = NotifierService.notifications;
+            $scope.dismiss = NotifierService.dismiss;
+        }
+    };
+};
+NotifierDirective.$inject = ['NotifierService'];
+
+Core.directive('tractorNotifier', NotifierDirective);
+
+},{"../../Core":137,"./NotifierService":130}],130:[function(require,module,exports){
+'use strict';
+
+// Utilities:
+var _ = require('lodash');
+
+// Module:
+var Core = require('../../Core');
+
+var NotifierService = function (
+    $interval
+) {
+    var NotificationTypes = {
+        SUCCESS: 'success',
+        INFO: 'info',
+        ERROR: 'error'
+    };
+
+    var notifications = [];
+
+    return {
+        success: success,
+        info: info,
+        error: error,
+        dismiss: dismiss,
+        notifications: notifications
+    };
+
+    function addNotification (notification) {
+        notifications.push(notification);
+        $interval(function () { }, 0, 1);
+        $interval(function () {
+            dismiss(notification);
+        }, 10000, 1);
+    }
+
+    function success (message) {
+        addNotification({
+            message: message,
+            type: NotificationTypes.SUCCESS
+        });
+    }
+
+    function info (message) {
+        addNotification({
+            message: message,
+            type: NotificationTypes.INFO
+        });
+    }
+
+    function error (message) {
+        addNotification({
+            message: message,
+            type: NotificationTypes.ERROR
+        });
+    }
+
+    function dismiss (notification) {
+        _.remove(notifications, notification);
+    }
+};
+NotifierService.$inject = ['$interval'];
+
+Core.service('NotifierService', NotifierService);
+
+},{"../../Core":137,"lodash":71}],131:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -61448,7 +61550,7 @@ ResizeHandleDirective.$inject = ['localStorageService'];
 
 Core.directive('tractorResizeHandle', ResizeHandleDirective);
 
-},{"../../Core":121,"lodash":71}],131:[function(require,module,exports){
+},{"../../Core":137,"lodash":71}],132:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -61507,7 +61609,7 @@ var SelectInputDirective = function () {
 
 Core.directive('tractorSelect', SelectInputDirective);
 
-},{"../../Core":121,"change-case":49,"lodash":71}],132:[function(require,module,exports){
+},{"../../Core":137,"change-case":49,"lodash":71}],133:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -61532,7 +61634,7 @@ var StepInputDirective = function () {
         },
 
         /* eslint-disable no-path-concat */
-        template: "<label>{{ label }}: </label>\r\n<input name=\"step-{{ id }}\" type=\"text\" placeholder=\"e.g. {{ example }}\"\r\n    ng-model=\"model[property]\"\r\n    ng-model-options=\"{ allowInvalid: true }\"\r\n    example-name\r\n    required />\r\n<div ng-messages=\"form['step-' + id].$error\">\r\n    <ng-message when=\"required\">Required</ng-message>\r\n    <ng-message when=\"validExampleName\">That is not a valid example name</ng-message>\r\n</div>\r\n",
+        template: "<label>{{ label }}: </label>\r\n<input name=\"step-{{ id }}\" type=\"text\" placeholder=\"e.g. {{ example }}\"\r\n    ng-model=\"model[property]\"\r\n    ng-model-options=\"{ allowInvalid: true }\"\r\n    example-name\r\n    required />\r\n<div ng-messages=\"form['step-' + id].$error\">\r\n    <ng-message when=\"required\">Required</ng-message>\r\n    <ng-message when=\"exampleName\">That is not a valid example name</ng-message>\r\n</div>\r\n",
         /* eslint-enable no-path-concat */
 
         link: link
@@ -61560,7 +61662,7 @@ var StepInputDirective = function () {
 
 Core.directive('tractorStepInput', StepInputDirective);
 
-},{"../../Core":121,"../../Validators/ExampleNameValidator":143,"change-case":49,"lodash":71}],133:[function(require,module,exports){
+},{"../../Core":137,"../../Validators/ExampleNameValidator":146,"change-case":49,"lodash":71}],134:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -61594,7 +61696,7 @@ var SubmitDirective = function () {
 
 Core.directive('tractorSubmit', SubmitDirective);
 
-},{"../../Core":121,"lodash":71}],134:[function(require,module,exports){
+},{"../../Core":137,"lodash":71}],135:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -61618,7 +61720,7 @@ var TextInputDirective = function () {
         },
 
         /* eslint-disable no-path-concat */
-        template: "<label>{{ label }}: </label>\r\n<input name=\"text-{{ id }}\" type=\"text\" placeholder=\"e.g. {{ example }}\"\r\n    ng-model=\"model[property]\"\r\n    ng-model-options=\"{ allowInvalid: true }\"\r\n    required />\r\n<div ng-messages=\"form['text-' + id].$error\">\r\n    <ng-message when=\"required\">Required</ng-message>\r\n</div>\r\n",
+        template: "<label>{{ label }}: </label>\r\n<input name=\"text-{{ id }}\" type=\"text\" placeholder=\"e.g. {{ example }}\"\r\n    ng-if=\"!validateFileName\"\r\n    ng-model=\"model[property]\"\r\n    ng-model-options=\"{ allowInvalid: true }\"\r\n    required />\r\n<input name=\"text-{{ id }}\" type=\"text\" placeholder=\"e.g. {{ example }}\"\r\n    ng-if=\"validateFileName\"\r\n    ng-model=\"model[property]\"\r\n    ng-model-options=\"{ allowInvalid: true }\"\r\n    file-name\r\n    required />\r\n<div ng-messages=\"form['text-' + id].$error\">\r\n    <ng-message when=\"fileName\">That is not a valid input</ng-message>\r\n    <ng-message when=\"required\">Required</ng-message>\r\n</div>\r\n",
         /* eslint-enable no-path-concat */
 
         link: link
@@ -61639,6 +61741,7 @@ var TextInputDirective = function () {
 
         $scope.form = $scope.$parent[$attrs.form];
         $scope.id = Math.floor(Math.random() * Date.now());
+        $scope.validateFileName = Object.prototype.hasOwnProperty.call($attrs, 'validateFileName');
 
         $scope.property = camelcase($scope.label);
     }
@@ -61646,7 +61749,7 @@ var TextInputDirective = function () {
 
 Core.directive('tractorTextInput', TextInputDirective);
 
-},{"../../Core":121,"change-case":49,"lodash":71}],135:[function(require,module,exports){
+},{"../../Core":137,"change-case":49,"lodash":71}],136:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -61671,7 +61774,7 @@ var VariableInputDirective = function () {
         },
 
         /* eslint-disable no-path-concat */
-        template: "<label>{{ label }}: </label>\r\n<input name=\"variable-input-{{ id }}\" type=\"text\" placeholder=\"e.g. {{ example }}\"\r\n    ng-model=\"model[property]\"\r\n    ng-model-options=\"{ allowInvalid: true }\"\r\n    ng-blur=\"blur(model[property])\"\r\n    required\r\n    variable-name\r\n    variable-name-model=\"model\" />\r\n<div ng-messages=\"form['variable-input-' + id].$error\">\r\n    <ng-message when=\"required\">Required</ng-message>\r\n    <ng-message when=\"validVariableName\">That is not a valid name</ng-message>\r\n    <ng-message when=\"uniqueVariableName\">There is something else with the same name</ng-message>\r\n</div>\r\n",
+        template: "<label>{{ label }}: </label>\r\n<input name=\"variable-input-{{ id }}\" type=\"text\" placeholder=\"e.g. {{ example }}\"\r\n    ng-model=\"model[property]\"\r\n    ng-model-options=\"{ allowInvalid: true }\"\r\n    ng-blur=\"blur(model[property])\"\r\n    required\r\n    file-name\r\n    variable-name\r\n    variable-name-model=\"model\"/>\r\n<div ng-messages=\"form['variable-input-' + id].$error\">\r\n    <ng-message when=\"required\">Required</ng-message>\r\n    <ng-message when=\"fileName\">That is not a valid name</ng-message>\r\n    <ng-message when=\"variableNameValid\">That is not a valid name</ng-message>\r\n    <ng-message when=\"variableNameUnique\">There is something else with the same name</ng-message>\r\n</div>\r\n",
         /* eslint-enable no-path-concat */
 
         link: link
@@ -61700,7 +61803,36 @@ var VariableInputDirective = function () {
 
 Core.directive('tractorVariableInput', VariableInputDirective);
 
-},{"../../Core":121,"../../Validators/VariableNameValidator":144,"change-case":49,"lodash":71}],136:[function(require,module,exports){
+},{"../../Core":137,"../../Validators/VariableNameValidator":148,"change-case":49,"lodash":71}],137:[function(require,module,exports){
+'use strict';
+
+// Utilities:
+var angular = require('angular');
+
+var Core = angular.module('Core', []);
+
+module.exports = Core;
+
+require('./Components/Action/ActionDirective');
+require('./Components/Checkbox/CheckboxDirective');
+require('./Components/DragFile/DragFileDirective');
+require('./Components/DropFile/DropFileDirective');
+require('./Components/FileTree/FileTreeDirective');
+require('./Components/GiveFocus/GiveFocusDirective');
+require('./Components/LiteralInput/LiteralInputDirective');
+require('./Components/Notifier/NotifierDirective');
+require('./Components/ResizeHandle/ResizeHandleDirective');
+require('./Components/SelectInput/SelectInputDirective');
+require('./Components/StepInput/StepInputDirective');
+require('./Components/Submit/SubmitDirective');
+require('./Components/TextInput/TextInputDirective');
+require('./Components/VariableInput/VariableInputDirective');
+
+require('./Validators/VariableNameValidator');
+require('./Validators/FileNameValidator');
+require('./Validators/ExampleNameValidator');
+
+},{"./Components/Action/ActionDirective":121,"./Components/Checkbox/CheckboxDirective":122,"./Components/DragFile/DragFileDirective":123,"./Components/DropFile/DropFileDirective":124,"./Components/FileTree/FileTreeDirective":126,"./Components/GiveFocus/GiveFocusDirective":127,"./Components/LiteralInput/LiteralInputDirective":128,"./Components/Notifier/NotifierDirective":129,"./Components/ResizeHandle/ResizeHandleDirective":131,"./Components/SelectInput/SelectInputDirective":132,"./Components/StepInput/StepInputDirective":133,"./Components/Submit/SubmitDirective":134,"./Components/TextInput/TextInputDirective":135,"./Components/VariableInput/VariableInputDirective":136,"./Validators/ExampleNameValidator":146,"./Validators/FileNameValidator":147,"./Validators/VariableNameValidator":148,"angular":7}],138:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -61914,7 +62046,7 @@ var ASTCreatorService = function () {
 
 Core.service('ASTCreatorService', ASTCreatorService);
 
-},{"../Core":121,"estemplate":69,"lodash":71}],137:[function(require,module,exports){
+},{"../Core":137,"estemplate":69,"lodash":71}],139:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -61935,7 +62067,67 @@ ConfigService.$inject = ['$http'];
 
 Core.service('ConfigService', ConfigService);
 
-},{"../Core":121}],138:[function(require,module,exports){
+},{"../Core":137}],140:[function(require,module,exports){
+'use strict';
+
+// Utilities:
+var _ = require('lodash');
+
+// Dependencies:
+require('./FileStructureService');
+
+var FileService = function FileService (
+    $http,
+    ParserService,
+    FileStructureService,
+    type
+) {
+    return {
+        checkFileExists: checkFileExists,
+        getFileStructure: getFileStructure,
+        getPath: getPath,
+        openFile: openFile,
+        saveFile: saveFile
+    };
+
+    function checkFileExists (fileStructure, filePath) {
+        return !!findFileByPath(fileStructure, filePath);
+    }
+
+    function findFileByPath (fileStructure, filePath) {
+        return _.find(fileStructure.allFiles, function (file) {
+            return file.path.includes(filePath);
+        });
+    }
+
+    function getFileStructure () {
+        return FileStructureService.getFileStructure()
+        .then(function (fileStructure) {
+            return _.find(fileStructure.directories, function (directory) {
+                return directory.name === type;
+            });
+        });
+    }
+
+    function getPath (options) {
+        return $http.get('/' + type + '/file/path', {
+            params: options
+        });
+    }
+
+    function openFile (fileStructure, filePath, components, mockData) {
+        var file = findFileByPath(fileStructure, filePath);
+        return file ? ParserService.parse(file, components, mockData) : null;
+    }
+
+    function saveFile (options) {
+        return $http.put('/' + type + '/file', options);
+    }
+};
+
+module.exports = FileService;
+
+},{"./FileStructureService":141,"lodash":71}],141:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -61951,36 +62143,54 @@ var FileStructureService = function FileStructureService (
         getFileStructure: getFileStructure,
         addDirectory: addDirectory,
         copyFile: copyFile,
+        deleteDirectory: deleteDirectory,
         deleteFile: deleteFile,
-        editItemPath: editItemPath,
+        editDirectoryPath: editDirectoryPath,
+        editFilePath: editFilePath,
         getExpanded: getExpanded,
         setExpanded: setExpanded
     };
 
     function getFileStructure (options) {
-        return $http.get('/get-file-structure', {
+        return $http.get('/file-structure', {
             params: options
         })
         .then(updateFileStructure);
     }
 
-    function addDirectory (options) {
-        return $http.post('/add-directory', options)
+    function addDirectory (type, options) {
+        return $http.post('/' + type + '/directory', options)
         .then(updateFileStructure);
     }
 
-    function copyFile (options) {
-        return $http.post('/copy-file', options)
+    function copyFile (type, options) {
+        return $http.post('/' + type + '/file/copy', options)
         .then(updateFileStructure);
     }
 
-    function deleteFile (options) {
-        return $http.post('/delete-file', options)
+    function deleteDirectory (type, options) {
+        options.isDirectory = true;
+        return $http.delete('/' + type + '/directory', {
+            params: options
+        })
         .then(updateFileStructure);
     }
 
-    function editItemPath (options) {
-        return $http.post('/edit-item-path', options)
+    function deleteFile (type, options) {
+        return $http.delete('/' + type + '/file', {
+            params: options
+        })
+        .then(updateFileStructure);
+    }
+
+    function editDirectoryPath (type, options) {
+        options.isDirectory = true;
+        return $http.patch('/' + type + '/directory/path', options)
+        .then(updateFileStructure);
+    }
+
+    function editFilePath (type, options) {
+        return $http.patch('/' + type + '/file/path', options)
         .then(updateFileStructure);
     }
 
@@ -62014,7 +62224,7 @@ FileStructureService.$inject = ['$http', 'localStorageService'];
 
 Core.service('FileStructureService', FileStructureService);
 
-},{"../Core":121}],139:[function(require,module,exports){
+},{"../Core":137}],142:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -62049,7 +62259,7 @@ Core.factory('HttpResponseInterceptor', ['NotifierService', function (
     $httpProvider.interceptors.push('HttpResponseInterceptor');
 }]);
 
-},{"../Core":121,"bluebird":10}],140:[function(require,module,exports){
+},{"../Core":137,"bluebird":10}],143:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -62085,7 +62295,7 @@ RealTimeService.$inject = ['ConfigService'];
 
 Core.service('RealTimeService', RealTimeService);
 
-},{"../Core":121,"lodash":71,"socket.io-client":73}],141:[function(require,module,exports){
+},{"../Core":137,"lodash":71,"socket.io-client":73}],144:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -62136,7 +62346,7 @@ var StringToLiteralService = function () {
 
 Core.service('StringToLiteralService', StringToLiteralService);
 
-},{"../Core":121,"lodash":71}],142:[function(require,module,exports){
+},{"../Core":137,"lodash":71}],145:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -62162,7 +62372,7 @@ ValidationService.$inject = ['$http'];
 
 Core.service('ValidationService', ValidationService);
 
-},{"../Core":121}],143:[function(require,module,exports){
+},{"../Core":137}],146:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -62189,7 +62399,7 @@ var ExampleNameValidator = function (
     };
 
     function link ($scope, $element, $attrs, ngModelController) {
-        ngModelController.$asyncValidators.validExampleName = function (value) {
+        ngModelController.$asyncValidators.exampleName = function (value) {
             var variableNames = StepDeclarationModel.getExampleVariableNames(value);
             var validations = _.map(variableNames, function (variableName) {
                 return ValidationService.validateVariableName(variableName);
@@ -62203,7 +62413,7 @@ ExampleNameValidator.$inject = ['ValidationService', 'StepDeclarationModel'];
 
 Core.directive('exampleName', ExampleNameValidator);
 
-},{"../../features/FeatureEditor/Models/StepDeclarationModel":172,"../Core":121,"../Services/ValidationService":142,"bluebird":10,"lodash":71}],144:[function(require,module,exports){
+},{"../../features/FeatureEditor/Models/StepDeclarationModel":176,"../Core":137,"../Services/ValidationService":145,"bluebird":10,"lodash":71}],147:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -62213,12 +62423,60 @@ var _ = require('lodash');
 var Core = require('../Core');
 
 // Dependencies:
+require('../Components/Notifier/NotifierService');
+
+var FileNameValidator = function FileNameValidator (
+    NotifierService
+) {
+    return {
+        restrict: 'A',
+
+        require: 'ngModel',
+
+        link: link
+    };
+
+    function link ($scope, $element, $attrs, ngModelController) {
+        ngModelController.$validators.fileName = function (value) {
+            if (_.contains(value, '_')) {
+                NotifierService.error('Invalid character: "_"');
+                return false;
+            }
+            if (_.contains(value, '/')) {
+                NotifierService.error('Invalid character: "/"');
+                return false;
+            }
+            if (_.contains(value, '\\')) {
+                NotifierService.error('Invalid character: "\\"');
+                return false;
+            }
+            return true;
+        };
+    }
+};
+FileNameValidator.$inject = ['NotifierService'];
+
+Core.directive('fileName', FileNameValidator);
+
+},{"../Components/Notifier/NotifierService":130,"../Core":137,"lodash":71}],148:[function(require,module,exports){
+'use strict';
+
+// Utilities:
+var _ = require('lodash');
+var Promise = require('bluebird');
+
+// Module:
+var Core = require('../Core');
+
+// Dependencies:
 var camelcase = require('change-case').camel;
 var pascalcase = require('change-case').pascal;
+require('../Components/Notifier/NotifierService');
 require('../Services/ValidationService');
 
 var VariableNameValidator = function (
     $rootScope,
+    NotifierService,
     ValidationService
 ) {
     var ModelChangeEvent = 'VariableNameValidator:ModelChange';
@@ -62251,23 +62509,27 @@ var VariableNameValidator = function (
             destroy();
         });
 
-        ngModelController.$validators.uniqueVariableName = function (value) {
+        ngModelController.$validators.variableNameUnique = function (value) {
             var allVariableNames = $scope.variableNameModel.getAllVariableNames();
             var result = !_.contains(allVariableNames, value);
             return result;
         };
 
-        ngModelController.$asyncValidators.validVariableName = function (value) {
+        ngModelController.$asyncValidators.variableNameValid = function (value) {
             var variableName = $scope.$parent.isClass ? pascalcase(value) : camelcase(value);
+            if (variableName.length === 0) {
+                NotifierService.error('Invalid: must include some alpha-numeric characters.');
+                return Promise.reject();
+            }
             return ValidationService.validateVariableName(variableName);
         };
     }
 };
-VariableNameValidator.$inject = ['$rootScope', 'ValidationService'];
+VariableNameValidator.$inject = ['$rootScope', 'NotifierService', 'ValidationService'];
 
 Core.directive('variableName', VariableNameValidator);
 
-},{"../Core":121,"../Services/ValidationService":142,"change-case":49,"lodash":71}],145:[function(require,module,exports){
+},{"../Components/Notifier/NotifierService":130,"../Core":137,"../Services/ValidationService":145,"bluebird":10,"change-case":49,"lodash":71}],149:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -62280,19 +62542,28 @@ var ComponentEditor = angular.module('ComponentEditor', ['Core']);
 
 module.exports = ComponentEditor;
 
-},{"../../Core/Core":121,"angular":7}],146:[function(require,module,exports){
+},{"../../Core/Core":137,"angular":7}],150:[function(require,module,exports){
 'use strict';
 
 // Module:
 var ComponentEditor = require('./ComponentEditor');
 
 // Dependencies:
-require('../Notifier/Services/NotifierService');
+var FileEditorController = require('../FileEditor/FileEditorController');
+require('../../Core/Components/Notifier/NotifierService');
 require('./Services/ComponentFileService');
 require('./Models/ComponentModel');
 
-var ComponentEditorController = (function () {
-    var ComponentEditorController = function ComponentEditorController (
+var ComponentEditorController = function ComponentEditorController (
+    $scope,
+    $window,
+    NotifierService,
+    ComponentFileService,
+    ComponentModel,
+    componentFileStructure,
+    componentPath
+) {
+    var controller = new FileEditorController(
         $scope,
         $window,
         NotifierService,
@@ -62300,66 +62571,15 @@ var ComponentEditorController = (function () {
         ComponentModel,
         componentFileStructure,
         componentPath
-    ) {
-        this.$scope = $scope;
-        this.$window = $window;
-        this.notifierService = NotifierService;
-        this.componentFileService = ComponentFileService;
-
-        this.fileStructure = componentFileStructure;
-
-        if (componentPath) {
-            this.component = this.componentFileService.openComponent(this.fileStructure, componentPath.path);
-        }
-        this.component = this.component || new ComponentModel();
-    };
-    ComponentEditorController.$inject = ['$scope', '$window', 'NotifierService', 'ComponentFileService', 'ComponentModel', 'componentFileStructure', 'componentPath'];
-
-    ComponentEditorController.prototype.saveComponentFile = function () {
-        this.componentFileService.getComponentPath({
-            name: this.component.name,
-            path: this.component.path
-        })
-        .then(function (componentPath) {
-            var exists = this.componentFileService.checkComponentExists(this.fileStructure, componentPath.path);
-
-            if (!exists || this.$window.confirm('This will overwrite "' + this.component.name + '". Continue?')) {
-                this.componentFileService.saveComponent({
-                    ast: this.component.ast,
-                    name: this.component.name,
-                    path: componentPath.path
-                })
-                .then(function () {
-                    return this.componentFileService.getComponentFileStructure();
-                }.bind(this))
-                .then(function (componentFileStructure) {
-                    this.fileStructure = componentFileStructure;
-                    this.component = this.componentFileService.openComponent(this.fileStructure, componentPath.path);
-                }.bind(this));
-            }
-        }.bind(this));
-    };
-
-    ComponentEditorController.prototype.showErrors = function () {
-        var componentEditor = this.$scope['component-editor'];
-        if (componentEditor.$invalid) {
-            Object.keys(componentEditor.$error).forEach(function (invalidType) {
-                var errors = componentEditor.$error[invalidType];
-                errors.forEach(function (element) {
-                    element.$setTouched();
-                });
-            });
-            this.notifierService.error('Can\'t save component, something is invalid.');
-        }
-        return componentEditor.$valid;
-    };
-
-    return ComponentEditorController;
-})();
+    );
+    controller.component = controller.fileModel;
+    return controller;
+};
+ComponentEditorController.$inject = ['$scope', '$window', 'NotifierService', 'ComponentFileService', 'ComponentModel', 'componentFileStructure', 'componentPath'];
 
 ComponentEditor.controller('ComponentEditorController', ComponentEditorController);
 
-},{"../Notifier/Services/NotifierService":185,"./ComponentEditor":145,"./Models/ComponentModel":150,"./Services/ComponentFileService":158}],147:[function(require,module,exports){
+},{"../../Core/Components/Notifier/NotifierService":130,"../FileEditor/FileEditorController":182,"./ComponentEditor":149,"./Models/ComponentModel":154,"./Services/ComponentFileService":162}],151:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -62506,7 +62726,7 @@ ComponentEditor.factory('ActionModel', ['ASTCreatorService', 'ParameterModel', '
     return createActionModelConstructor(ASTCreatorService, ParameterModel, InteractionModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":136,"../ComponentEditor":145,"./InteractionModel":153,"./ParameterModel":155,"change-case":49,"lodash":71}],148:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":138,"../ComponentEditor":149,"./InteractionModel":157,"./ParameterModel":159,"change-case":49,"lodash":71}],152:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -62600,7 +62820,7 @@ ComponentEditor.factory('ArgumentModel', ['ASTCreatorService', 'StringToLiteralS
     return createArgumentModelConstructor(ASTCreatorService, StringToLiteralService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":136,"../../../Core/Services/StringToLiteralService":141,"../ComponentEditor":145,"lodash":71}],149:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":138,"../../../Core/Services/StringToLiteralService":144,"../ComponentEditor":149,"lodash":71}],153:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -62665,7 +62885,7 @@ ComponentEditor.factory('BrowserModel', function () {
     return createBrowserModelConstructor();
 });
 
-},{"../ComponentEditor":145}],150:[function(require,module,exports){
+},{"../ComponentEditor":149}],154:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -62746,6 +62966,11 @@ var createComponentModelConstructor = function (
                 get: function () {
                     return toAST.call(this);
                 }
+            },
+            data: {
+                get: function () {
+                    return this.ast;
+                }
             }
         });
 
@@ -62813,9 +63038,9 @@ var createComponentModelConstructor = function (
         var moduleExportsMemberExpression = ast.memberExpression(ast.identifier('module'), ast.identifier('exports'));
         var componentModuleAssignmentExpression = ast.assignmentExpression(moduleExportsMemberExpression, ast.AssignmentOperators.ASSIGNMENT, moduleCallExpression);
         var componentModuleExpressionStatement = ast.expressionStatement(componentModuleAssignmentExpression);
-        componentModuleAssignmentExpression.leadingComments = [ast.blockComment(this.meta)];
-
-        return ast.program([componentModuleExpressionStatement]);
+        var componentAST = ast.program([componentModuleExpressionStatement]);
+        componentAST.comments = [ast.blockComment(this.meta)];
+        return componentAST;
     }
 };
 
@@ -62828,7 +63053,7 @@ ComponentEditor.factory('ComponentModel', ['ASTCreatorService', 'BrowserModel', 
     return createComponentModelConstructor(ASTCreatorService, BrowserModel, ElementModel, ActionModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":136,"../ComponentEditor":145,"./ActionModel":147,"./BrowserModel":149,"./ElementModel":151,"change-case":49,"lodash":71}],151:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":138,"../ComponentEditor":149,"./ActionModel":151,"./BrowserModel":153,"./ElementModel":155,"change-case":49,"lodash":71}],155:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -63036,7 +63261,7 @@ ComponentEditor.factory('ElementModel', ['ASTCreatorService', 'StringToLiteralSe
     return createElementModelConstructor(ASTCreatorService, StringToLiteralService, FilterModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":136,"../../../Core/Services/StringToLiteralService":141,"../ComponentEditor":145,"./FilterModel":152,"change-case":49,"lodash":71}],152:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":138,"../../../Core/Services/StringToLiteralService":144,"../ComponentEditor":149,"./FilterModel":156,"change-case":49,"lodash":71}],156:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -63134,7 +63359,7 @@ ComponentEditor.factory('FilterModel', ['ASTCreatorService', 'StringToLiteralSer
     return createFilterModelConstructor(ASTCreatorService, StringToLiteralService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":136,"../../../Core/Services/StringToLiteralService":141,"../ComponentEditor":145,"lodash":71}],153:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":138,"../../../Core/Services/StringToLiteralService":144,"../ComponentEditor":149,"lodash":71}],157:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -63243,7 +63468,7 @@ ComponentEditor.factory('InteractionModel', ['ASTCreatorService', 'MethodModel',
     return createInteractionModelConstructor(ASTCreatorService, MethodModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":136,"../ComponentEditor":145,"./MethodModel":154,"lodash":71}],154:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":138,"../ComponentEditor":149,"./MethodModel":158,"lodash":71}],158:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -63300,7 +63525,7 @@ ComponentEditor.factory('MethodModel', ['ArgumentModel', function (ArgumentModel
     return createMethodModelConstructor(ArgumentModel);
 }]);
 
-},{"../ComponentEditor":145,"./ArgumentModel":148,"lodash":71}],155:[function(require,module,exports){
+},{"../ComponentEditor":149,"./ArgumentModel":152,"lodash":71}],159:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -63365,7 +63590,7 @@ ComponentEditor.factory('ParameterModel', ['ASTCreatorService', function (ASTCre
     return createParameterModelConstructor(ASTCreatorService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":136,"../ComponentEditor":145,"change-case":49,"lodash":71}],156:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":138,"../ComponentEditor":149,"change-case":49,"lodash":71}],160:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -63433,7 +63658,7 @@ ActionParserService.$inject = ['ParameterParserService', 'InteractionParserServi
 
 ComponentEditor.service('ActionParserService', ActionParserService);
 
-},{"../ComponentEditor":145,"../Models/ActionModel":147,"./InteractionParserService":162,"./ParameterParserService":163,"assert":43,"lodash":71}],157:[function(require,module,exports){
+},{"../ComponentEditor":149,"../Models/ActionModel":151,"./InteractionParserService":166,"./ParameterParserService":167,"assert":43,"lodash":71}],161:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -63458,16 +63683,14 @@ ArgumentParserService.$inject = ['ArgumentModel'];
 
 ComponentEditor.service('ArgumentParserService', ArgumentParserService);
 
-},{"../ComponentEditor":145,"../Models/ArgumentModel":148}],158:[function(require,module,exports){
+},{"../ComponentEditor":149,"../Models/ArgumentModel":152}],162:[function(require,module,exports){
 'use strict';
-
-// Utilities:
-var _ = require('lodash');
 
 // Module:
 var ComponentEditor = require('../ComponentEditor');
 
 // Dependencies:
+var FileService = require('../../../Core/Services/FileService');
 require('./ComponentParserService');
 require('../../../Core/Services/FileStructureService');
 
@@ -63476,55 +63699,16 @@ var ComponentFileService = function ComponentFileService (
     ComponentParserService,
     FileStructureService
 ) {
-    return {
-        checkComponentExists: checkComponentExists,
-        getAllComponents: getAllComponents,
-        getComponentFileStructure: getComponentFileStructure,
-        getComponentPath: getComponentPath,
-        openComponent: openComponent,
-        saveComponent: saveComponent
-    };
+    var service = FileService($http, ComponentParserService, FileStructureService, 'components');
+    service.getAll = getAll;
+    return service;
 
-    function checkComponentExists (componentFileStructure, componentFilePath) {
-        return !!findComponentByPath(componentFileStructure, componentFilePath);
-    }
-
-    function getAllComponents () {
-        return this.getComponentFileStructure()
-        .then(function (componentFileStructure) {
-            return componentFileStructure.allFiles.map(function (componentFile) {
-                return ComponentParserService.parse(componentFile);
-            });
-        });
-    }
-
-    function getComponentFileStructure () {
-        return FileStructureService.getFileStructure()
+    function getAll () {
+        return this.getFileStructure()
         .then(function (fileStructure) {
-            return _.find(fileStructure.directories, function (directory) {
-                return directory.name === 'components';
+            return fileStructure.allFiles.map(function (file) {
+                return ComponentParserService.parse(file);
             });
-        });
-    }
-
-    function getComponentPath (options) {
-        return $http.get('/components/path', {
-            params: options
-        });
-    }
-
-    function openComponent (componentFileStructure, componentFilePath) {
-        var componentFile = findComponentByPath(componentFileStructure, componentFilePath);
-        return componentFile ? ComponentParserService.parse(componentFile) : null;
-    }
-
-    function saveComponent (options) {
-        return $http.post('/save-component-file', options);
-    }
-
-    function findComponentByPath (componentFileStructure, componentFilePath) {
-        return _.find(componentFileStructure.allFiles, function (componentFile) {
-            return componentFile.path.includes(componentFilePath);
         });
     }
 };
@@ -63532,7 +63716,7 @@ ComponentFileService.$inject = ['$http', 'ComponentParserService', 'FileStructur
 
 ComponentEditor.service('ComponentFileService', ComponentFileService);
 
-},{"../../../Core/Services/FileStructureService":138,"../ComponentEditor":145,"./ComponentParserService":159,"lodash":71}],159:[function(require,module,exports){
+},{"../../../Core/Services/FileService":140,"../../../Core/Services/FileStructureService":141,"../ComponentEditor":149,"./ComponentParserService":163}],163:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -63611,7 +63795,7 @@ ComponentParserService.$inject = ['ElementParserService', 'ActionParserService',
 
 ComponentEditor.service('ComponentParserService', ComponentParserService);
 
-},{"../ComponentEditor":145,"../Models/ComponentModel":150,"../Services/ActionParserService":156,"../Services/ElementParserService":160,"assert":43,"lodash":71}],160:[function(require,module,exports){
+},{"../ComponentEditor":149,"../Models/ComponentModel":154,"../Services/ActionParserService":160,"../Services/ElementParserService":164,"assert":43,"lodash":71}],164:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -63739,7 +63923,7 @@ ElementParserService.$inject = ['FilterParserService', 'ElementModel'];
 
 ComponentEditor.service('ElementParserService', ElementParserService);
 
-},{"../ComponentEditor":145,"../Models/ElementModel":151,"../Services/FilterParserService":161,"assert":43,"lodash":71}],161:[function(require,module,exports){
+},{"../ComponentEditor":149,"../Models/ElementModel":155,"../Services/FilterParserService":165,"assert":43,"lodash":71}],165:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -63821,7 +64005,7 @@ FilterParserService.$inject = ['FilterModel'];
 
 ComponentEditor.service('FilterParserService', FilterParserService);
 
-},{"../ComponentEditor":145,"../Models/FilterModel":152,"assert":43,"lodash":71}],162:[function(require,module,exports){
+},{"../ComponentEditor":149,"../Models/FilterModel":156,"assert":43,"lodash":71}],166:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -63941,7 +64125,7 @@ InteractionParserService.$inject = ['ArgumentParserService', 'InteractionModel']
 
 ComponentEditor.service('InteractionParserService', InteractionParserService);
 
-},{"../ComponentEditor":145,"../Models/InteractionModel":153,"./ArgumentParserService":157,"assert":43,"lodash":71}],163:[function(require,module,exports){
+},{"../ComponentEditor":149,"../Models/InteractionModel":157,"./ArgumentParserService":161,"assert":43,"lodash":71}],167:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -63963,7 +64147,7 @@ ParameterParserService.$inject = ['ParameterModel'];
 
 ComponentEditor.service('ParameterParserService', ParameterParserService);
 
-},{"../ComponentEditor":145,"../Models/ParameterModel":155}],164:[function(require,module,exports){
+},{"../ComponentEditor":149,"../Models/ParameterModel":159}],168:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -63976,7 +64160,7 @@ var ControlPanel = angular.module('ControlPanel', ['Core']);
 
 module.exports = ControlPanel;
 
-},{"../../Core/Core":121,"angular":7}],165:[function(require,module,exports){
+},{"../../Core/Core":137,"angular":7}],169:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -64011,14 +64195,14 @@ var ControlPanelController = (function () {
 
 ControlPanel.controller('ControlPanelController', ControlPanelController);
 
-},{"./ControlPanel":164,"./Services/RunnerService":166,"lodash":71}],166:[function(require,module,exports){
+},{"./ControlPanel":168,"./Services/RunnerService":170,"lodash":71}],170:[function(require,module,exports){
 'use strict';
 
 // Module:
 var ControlPanel = require('../ControlPanel');
 
 // Dependencies:
-require('../../Notifier/Services/NotifierService');
+require('../../../Core/Components/Notifier/NotifierService');
 
 var RunnerService = function RunnerService (
     NotifierService,
@@ -64043,7 +64227,7 @@ RunnerService.$inject = ['NotifierService', 'RealTimeService'];
 
 ControlPanel.service('RunnerService', RunnerService);
 
-},{"../../Notifier/Services/NotifierService":185,"../ControlPanel":164}],167:[function(require,module,exports){
+},{"../../../Core/Components/Notifier/NotifierService":130,"../ControlPanel":168}],171:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -64059,18 +64243,28 @@ FeatureEditor.constant('FeatureNewLine', '%%NEWLINE%%');
 
 module.exports = FeatureEditor;
 
-},{"../../Core/Core":121,"angular":7}],168:[function(require,module,exports){
+},{"../../Core/Core":137,"angular":7}],172:[function(require,module,exports){
 'use strict';
 
 // Module:
 var FeatureEditor = require('./FeatureEditor');
 
 // Dependencies:
+var FileEditorController = require('../FileEditor/FileEditorController');
+require('../../Core/Components/Notifier/NotifierService');
 require('./Services/FeatureFileService');
 require('./Models/FeatureModel');
 
-var FeatureEditorController = (function () {
-    var FeatureEditorController = function FeatureEditorController (
+var FeatureEditorController = function FeatureEditorController (
+    $scope,
+    $window,
+    NotifierService,
+    FeatureFileService,
+    FeatureModel,
+    featureFileStructure,
+    featurePath
+) {
+    return new FileEditorController(
         $scope,
         $window,
         NotifierService,
@@ -64078,69 +64272,13 @@ var FeatureEditorController = (function () {
         FeatureModel,
         featureFileStructure,
         featurePath
-    ) {
-        this.$scope = $scope;
-        this.$window = $window;
-        this.notifierService = NotifierService;
-
-        this.featureFileService = FeatureFileService;
-
-        this.fileStructure = featureFileStructure;
-
-        if (featurePath) {
-            this.feature = this.featureFileService.openFeature(this.fileStructure, featurePath.path);
-        }
-        this.feature = this.feature || new FeatureModel();
-    };
-    FeatureEditorController.$inject = ['$scope', '$window', 'NotifierService', 'FeatureFileService', 'FeatureModel', 'featureFileStructure', 'featurePath'];
-
-    FeatureEditorController.prototype.saveFeatureFile = function () {
-        this.featureFileService.getFeaturePath({
-            name: this.feature.name,
-            path: this.feature.path
-        })
-        .then(function (featurePath) {
-            var exists = this.featureFileService.checkFeatureExists(this.fileStructure, featurePath.path);
-
-            if (!exists || this.$window.confirm('This will overwrite "' + this.feature.name + '". Continue?')) {
-                this.featureFileService.saveFeature({
-                    feature: this.feature.featureString,
-                    name: this.feature.name,
-                    path: featurePath.path
-                })
-                .then(function () {
-                    return this.featureFileService.getFeatureFileStructure();
-                }.bind(this))
-                .then(function (featureFileStructure) {
-                    this.fileStructure = featureFileStructure;
-                    this.mockData = this.featureFileService.openFeature(this.fileStructure, featurePath.path);
-                }.bind(this));
-            }
-        }.bind(this));
-    };
-
-    FeatureEditorController.prototype.showErrors = function () {
-        var featureEditor = this.$scope['feature-editor'];
-        if (featureEditor.$invalid) {
-            Object.keys(featureEditor.$error).forEach(function (invalidType) {
-                var errors = featureEditor.$error[invalidType];
-                errors.forEach(function (element) {
-                    element.$setTouched();
-                });
-            });
-            this.notifierService.error('Can\'t save feature, something is invalid.');
-            return false;
-        } else {
-            return true;
-        }
-    };
-
-    return FeatureEditorController;
-})();
+    );
+};
+FeatureEditorController.$inject = ['$scope', '$window', 'NotifierService', 'FeatureFileService', 'FeatureModel', 'featureFileStructure', 'featurePath'];
 
 FeatureEditor.controller('FeatureEditorController', FeatureEditorController);
 
-},{"./FeatureEditor":167,"./Models/FeatureModel":170,"./Services/FeatureFileService":174}],169:[function(require,module,exports){
+},{"../../Core/Components/Notifier/NotifierService":130,"../FileEditor/FileEditorController":182,"./FeatureEditor":171,"./Models/FeatureModel":174,"./Services/FeatureFileService":178}],173:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -64202,7 +64340,7 @@ FeatureEditor.factory('ExampleModel', ['StringToLiteralService', 'FeatureIndent'
     return createExampleModelConstructor(StringToLiteralService, FeatureIndent);
 }]);
 
-},{"../../../Core/Services/StringToLiteralService":141,"../FeatureEditor":167,"lodash":71}],170:[function(require,module,exports){
+},{"../../../Core/Services/StringToLiteralService":144,"../FeatureEditor":171,"lodash":71}],174:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -64241,6 +64379,11 @@ var createFeatureModelConstructor = function (
             featureString: {
                 get: function () {
                     return toFeatureString.call(this);
+                }
+            },
+            data: {
+                get: function () {
+                    return this.featureString;
                 }
             }
         });
@@ -64285,7 +64428,7 @@ FeatureEditor.factory('FeatureModel', ['ScenarioModel', 'FeatureIndent', 'Featur
     return createFeatureModelConstructor(ScenarioModel, FeatureIndent, FeatureNewLine);
 }]);
 
-},{"../FeatureEditor":167,"./ScenarioModel":171,"lodash":71}],171:[function(require,module,exports){
+},{"../FeatureEditor":171,"./ScenarioModel":175,"lodash":71}],175:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -64392,7 +64535,7 @@ FeatureEditor.factory('ScenarioModel', ['StepDeclarationModel', 'ExampleModel', 
     return createScenarioModelConstructor(StepDeclarationModel, ExampleModel, FeatureIndent, FeatureNewLine);
 }]);
 
-},{"../FeatureEditor":167,"./ExampleModel":169,"./StepDeclarationModel":172,"lodash":71}],172:[function(require,module,exports){
+},{"../FeatureEditor":171,"./ExampleModel":173,"./StepDeclarationModel":176,"lodash":71}],176:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -64435,7 +64578,7 @@ FeatureEditor.factory('StepDeclarationModel', function () {
     return createStepDeclarationModelConstructor();
 });
 
-},{"../FeatureEditor":167,"lodash":71}],173:[function(require,module,exports){
+},{"../FeatureEditor":171,"lodash":71}],177:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -64466,7 +64609,7 @@ ExampleParserService.$inject = ['ExampleModel'];
 
 FeatureEditor.service('ExampleParserService', ExampleParserService);
 
-},{"../FeatureEditor":167,"../Models/ExampleModel":169,"lodash":71}],174:[function(require,module,exports){
+},{"../FeatureEditor":171,"../Models/ExampleModel":173,"lodash":71}],178:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -64476,6 +64619,7 @@ var _ = require('lodash');
 var FeatureEditor = require('../FeatureEditor');
 
 // Dependencies:
+var FileService = require('../../../Core/Services/FileService');
 require('./FeatureParserService');
 require('../../../Core/Services/FileStructureService');
 
@@ -64484,54 +64628,21 @@ var FeatureFileService = function FeatureFileService (
     FeatureParserService,
     FileStructureService
 ) {
-    return {
-        checkFeatureExists: checkFeatureExists,
-        getFeatureFileStructure: getFeatureFileStructure,
-        getFeaturePath: getFeaturePath,
-        openFeature: openFeature,
-        saveFeature: saveFeature
-    };
+    var service = FileService($http, FeatureParserService, FileStructureService, 'features');
+    var save = service.saveFile;
+    service.saveFile = _.compose(save, fixFeatureParameters);
+    return service;
 
-    function checkFeatureExists (featureFileStructure, featureFilePath) {
-        return !!findFeatureByPath(featureFileStructure, featureFilePath);
-    }
-
-    function getFeatureFileStructure () {
-        return FileStructureService.getFileStructure()
-        .then(function (fileStructure) {
-            return _.find(fileStructure.directories, function (directory) {
-                return directory.name === 'features';
-            });
-        });
-    }
-
-    function getFeaturePath (options) {
-        return $http.get('/features/path', {
-            params: options
-        });
-    }
-
-    function openFeature (featureFileStructure, featureFilePath) {
-        var featureFile = findFeatureByPath(featureFileStructure, featureFilePath);
-        return featureFile ? FeatureParserService.parse(featureFile) : null;
-    }
-
-    function saveFeature (options) {
-        options.feature = options.feature.replace(/"</g, '\'<').replace(/>"/g, '>\'');
-        return $http.post('/save-feature-file', options);
-    }
-
-    function findFeatureByPath (featureFileStructure, featureFilePath) {
-        return _.find(featureFileStructure.allFiles, function (featureFile) {
-            return featureFile.path.includes(featureFilePath);
-        });
+    function fixFeatureParameters (options) {
+        options.data = options.data.replace(/"</g, '\'<').replace(/>"/g, '>\'');
+        return options;
     }
 };
 FeatureFileService.$inject = ['$http', 'FeatureParserService', 'FileStructureService'];
 
 FeatureEditor.service('FeatureFileService', FeatureFileService);
 
-},{"../../../Core/Services/FileStructureService":138,"../FeatureEditor":167,"./FeatureParserService":175,"lodash":71}],175:[function(require,module,exports){
+},{"../../../Core/Services/FileService":140,"../../../Core/Services/FileStructureService":141,"../FeatureEditor":171,"./FeatureParserService":179,"lodash":71}],179:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -64587,7 +64698,7 @@ FeatureParserService.$inject = ['ScenarioParserService', 'FeatureModel'];
 
 FeatureEditor.service('FeatureParserService', FeatureParserService);
 
-},{"../FeatureEditor":167,"../Models/FeatureModel":170,"./ScenarioParserService":176,"assert":43,"lodash":71}],176:[function(require,module,exports){
+},{"../FeatureEditor":171,"../Models/FeatureModel":174,"./ScenarioParserService":180,"assert":43,"lodash":71}],180:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -64656,7 +64767,7 @@ ScenarioParserService.$inject = ['StepDeclarationParserService', 'ExampleParserS
 
 FeatureEditor.service('ScenarioParserService', ScenarioParserService);
 
-},{"../FeatureEditor":167,"../Models/ScenarioModel":171,"./ExampleParserService":173,"./StepDeclarationParserService":177,"assert":43,"lodash":71}],177:[function(require,module,exports){
+},{"../FeatureEditor":171,"../Models/ScenarioModel":175,"./ExampleParserService":177,"./StepDeclarationParserService":181,"assert":43,"lodash":71}],181:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -64683,7 +64794,93 @@ StepDeclarationParserService.$inject = ['StepDeclarationModel'];
 
 FeatureEditor.service('StepDeclarationParserService', StepDeclarationParserService);
 
-},{"../FeatureEditor":167,"../Models/StepDeclarationModel":172}],178:[function(require,module,exports){
+},{"../FeatureEditor":171,"../Models/StepDeclarationModel":176}],182:[function(require,module,exports){
+'use strict';
+
+// Utilities:
+var _ = require('lodash');
+var Promise = require('bluebird');
+
+var FileEditorController = (function () {
+    var FileEditorController = function FileEditorController (
+        $scope,
+        $window,
+        NotifierService,
+        FileService,
+        FileModel,
+        fileStructure,
+        filePath,
+        components,
+        mockData
+    ) {
+        this.$scope = $scope;
+        this.$window = $window;
+        this.notifierService = NotifierService;
+        this.fileService = FileService;
+        this.fileStructure = fileStructure;
+
+        this.components = components;
+        this.mockData = mockData;
+
+        if (filePath) {
+            this.fileModel = this.fileService.openFile(this.fileStructure, filePath.path, this.components, this.mockData);
+        }
+        if (FileModel) {
+            this.fileModel = this.fileModel || new FileModel();
+        }
+    };
+
+    FileEditorController.prototype.saveFile = function () {
+        var path = null;
+
+        this.fileService.getPath({
+            name: this.fileModel.name,
+            path: this.fileModel.path
+        })
+        .then(function (filePath) {
+            path = filePath.path;
+            var exists = this.fileService.checkFileExists(this.fileStructure, path);
+
+            if (!exists || this.$window.confirm('This will overwrite "' + this.fileModel.name + '". Continue?')) {
+                return this.fileService.saveFile({
+                    data: this.fileModel.data,
+                    path: path
+                });
+            } else {
+                return Promise.reject();
+            }
+        }.bind(this))
+        .then(function () {
+            return this.fileService.getFileStructure();
+        }.bind(this))
+        .then(function (fileStructure) {
+            this.fileStructure = fileStructure;
+            this.fileModel = this.fileService.openFile(this.fileStructure, path, this.components, this.mockData);
+        }.bind(this))
+        .catch(function () {
+            this.notifierService.error('File was not saved.');
+        }.bind(this));
+    };
+
+    FileEditorController.prototype.showErrors = function () {
+        var fileEditor = this.$scope['file-editor'];
+        if (fileEditor.$invalid) {
+            _.each(Object.keys(fileEditor.$error), function (invalidType) {
+                _.each(fileEditor.$error[invalidType], function (element) {
+                    element.$setTouched();
+                });
+            });
+            this.notifierService.error('Can\'t save file, something is invalid.');
+        }
+        return !fileEditor.$invalid;
+    };
+
+    return FileEditorController;
+})();
+
+module.exports = FileEditorController;
+
+},{"bluebird":10,"lodash":71}],183:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -64696,18 +64893,28 @@ var MockDataEditor = angular.module('MockDataEditor', ['Core']);
 
 module.exports = MockDataEditor;
 
-},{"../../Core/Core":121,"angular":7}],179:[function(require,module,exports){
+},{"../../Core/Core":137,"angular":7}],184:[function(require,module,exports){
 'use strict';
 
 // Module:
 var MockDataEditor = require('./MockDataEditor');
 
 // Dependencies:
+var FileEditorController = require('../FileEditor/FileEditorController');
+require('../../Core/Components/Notifier/NotifierService');
 require('./Services/MockDataFileService');
 require('./Models/MockDataModel');
 
-var MockDataEditorController = (function () {
-    var MockDataEditorController = function MockDataEditorController (
+var MockDataEditorController = function MockDataEditorController (
+    $scope,
+    $window,
+    NotifierService,
+    MockDataFileService,
+    MockDataModel,
+    mockDataFileStructure,
+    mockDataPath
+) {
+    return new FileEditorController(
         $scope,
         $window,
         NotifierService,
@@ -64715,69 +64922,13 @@ var MockDataEditorController = (function () {
         MockDataModel,
         mockDataFileStructure,
         mockDataPath
-    ) {
-        this.$window = $window;
-        this.$scope = $scope;
-        this.notifierService = NotifierService;
-
-        this.mockDataFileService = MockDataFileService;
-
-        this.fileStructure = mockDataFileStructure;
-
-        if (mockDataPath) {
-            this.mockData = this.mockDataFileService.openMockData(this.fileStructure, mockDataPath.path);
-        }
-        this.mockData = this.mockData || new MockDataModel();
-    };
-    MockDataEditorController.$inject = ['$scope', '$window', 'NotifierService', 'MockDataFileService', 'MockDataModel', 'mockDataFileStructure', 'mockDataPath'];
-
-    MockDataEditorController.prototype.saveMockDataFile = function () {
-        this.mockDataFileService.getMockDataPath({
-            name: this.mockData.name,
-            path: this.mockData.path
-        })
-        .then(function (mockDataPath) {
-            var exists = this.mockDataFileService.checkMockDataExists(this.fileStructure, mockDataPath.path);
-
-            if (!exists || this.$window.confirm('This will overwrite "' + this.mockData.name + '". Continue?')) {
-                this.mockDataFileService.saveMockData({
-                    data: this.mockData.json,
-                    name: this.mockData.name,
-                    path: mockDataPath.path
-                })
-                .then(function () {
-                    return this.mockDataFileService.getMockDataFileStructure();
-                }.bind(this))
-                .then(function (mockDataFileStructure) {
-                    this.fileStructure = mockDataFileStructure;
-                    this.mockData = this.mockDataFileService.openMockData(this.fileStructure, mockDataPath.path);
-                }.bind(this));
-            }
-        }.bind(this));
-    };
-
-    MockDataEditorController.prototype.showErrors = function () {
-        var mockDataEditor = this.$scope['mock-data-editor'];
-        if (mockDataEditor.$invalid) {
-            Object.keys(mockDataEditor.$error).forEach(function (invalidType) {
-                var errors = mockDataEditor.$error[invalidType];
-                errors.forEach(function (element) {
-                    element.$setTouched();
-                });
-            });
-            this.notifierService.error('Can\'t save mock data, something is invalid.');
-            return false;
-        } else {
-            return true;
-        }
-    };
-
-    return MockDataEditorController;
-})();
+    );
+};
+MockDataEditorController.$inject = ['$scope', '$window', 'NotifierService', 'MockDataFileService', 'MockDataModel', 'mockDataFileStructure', 'mockDataPath'];
 
 MockDataEditor.controller('MockDataEditorController', MockDataEditorController);
 
-},{"./MockDataEditor":178,"./Models/MockDataModel":180,"./Services/MockDataFileService":181}],180:[function(require,module,exports){
+},{"../../Core/Components/Notifier/NotifierService":130,"../FileEditor/FileEditorController":182,"./MockDataEditor":183,"./Models/MockDataModel":185,"./Services/MockDataFileService":186}],185:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -64813,6 +64964,11 @@ var createMockDataModelConstructor = function () {
                 set: function (newVal) {
                     json = newVal;
                 }
+            },
+            data: {
+                get: function () {
+                    return this.json;
+                }
             }
         });
     };
@@ -64824,16 +64980,14 @@ MockDataEditor.factory('MockDataModel', function () {
     return createMockDataModelConstructor();
 });
 
-},{"../MockDataEditor":178}],181:[function(require,module,exports){
+},{"../MockDataEditor":183}],186:[function(require,module,exports){
 'use strict';
-
-// Utilities:
-var _ = require('lodash');
 
 // Module:
 var MockDataEditor = require('../MockDataEditor');
 
 // Dependencies:
+var FileService = require('../../../Core/Services/FileService');
 require('./MockDataParserService');
 require('../../../Core/Services/FileStructureService');
 
@@ -64842,55 +64996,17 @@ var MockDataFileService = function MockDataFileService (
     MockDataParserService,
     FileStructureService
 ) {
-    return {
-        checkMockDataExists: checkMockDataExists,
-        getAllMockData: getAllMockData,
-        getMockDataFileStructure: getMockDataFileStructure,
-        getMockDataPath: getMockDataPath,
-        openMockData: openMockData,
-        saveMockData: saveMockData
-    };
+    var service = FileService($http, MockDataParserService, FileStructureService, 'mock_data');
+    service.getAll = getAll;
+    return service;
 
-    function checkMockDataExists (mockDataFileStructure, mockDataFilePath) {
-        return !!findMockDataByPath(mockDataFileStructure, mockDataFilePath);
-    }
 
-    function getAllMockData () {
-        return this.getMockDataFileStructure()
-        .then(function (mockDataFileStructure) {
-            return mockDataFileStructure.allFiles.map(function (mockDataFile) {
-                return MockDataParserService.parse(mockDataFile);
-            });
-        });
-    }
-
-    function getMockDataFileStructure () {
-        return FileStructureService.getFileStructure()
+    function getAll () {
+        return this.getFileStructure()
         .then(function (fileStructure) {
-            return _.find(fileStructure.directories, function (directory) {
-                return directory.name === 'mock_data';
+            return fileStructure.allFiles.map(function (file) {
+                return MockDataParserService.parse(file);
             });
-        });
-    }
-
-    function getMockDataPath (options) {
-        return $http.get('/mock_data/path', {
-            params: options
-        });
-    }
-
-    function openMockData (mockDataFileStructure, mockDataFilePath) {
-        var mockDataFile = findMockDataByPath(mockDataFileStructure, mockDataFilePath);
-        return mockDataFile ? MockDataParserService.parse(mockDataFile) : null;
-    }
-
-    function saveMockData (options) {
-        return $http.post('/save-mock-data-file', options);
-    }
-
-    function findMockDataByPath (mockDataFileStructure, mockDataFilePath) {
-        return _.find(mockDataFileStructure.allFiles, function (mockDataFile) {
-            return mockDataFile.path.includes(mockDataFilePath);
         });
     }
 };
@@ -64898,7 +65014,7 @@ MockDataFileService.$inject = ['$http', 'MockDataParserService', 'FileStructureS
 
 MockDataEditor.service('MockDataFileService', MockDataFileService);
 
-},{"../../../Core/Services/FileStructureService":138,"../MockDataEditor":178,"./MockDataParserService":182,"lodash":71}],182:[function(require,module,exports){
+},{"../../../Core/Services/FileService":140,"../../../Core/Services/FileStructureService":141,"../MockDataEditor":183,"./MockDataParserService":187}],187:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -64929,114 +65045,7 @@ MockDataParserService.$inject = ['MockDataModel'];
 
 MockDataEditor.service('MockDataParserService', MockDataParserService);
 
-},{"../MockDataEditor":178,"../Models/MockDataModel":180}],183:[function(require,module,exports){
-'use strict';
-
-// Utilities:
-
-
-// Module:
-var Notifier = require('../Notifier');
-
-// Dependencies:
-require('../Services/NotifierService');
-
-var NotifierDirective = function (NotifierService) {
-    return {
-        restrict: 'E',
-
-        /* eslint-disable no-path-concat */
-        template: "<aside>\n    <ul class=\"notifier__notifications\">\n        <li ng-repeat=\"notification in notifications\"\n            ng-class=\"'notifier__notification notifier__notification--' + notification.type\">\n            <span class=\"notifier__notification-message\">{{ notification.message }}</span>\n\n            <button ng-click=\"dismiss(notification)\"\n                    class=\"notifier__notification-dismiss\"\n                    type=\"button\"\n                    title=\"Dismiss\">\n            </button>\n        </li>\n    </ul>\n</aside>\n",
-        /* eslint-enable no-path-concat */
-
-        link: function ($scope) {
-            $scope.notifications = NotifierService.notifications;
-            $scope.dismiss = NotifierService.dismiss;
-        }
-    };
-};
-NotifierDirective.$inject = ['NotifierService'];
-
-Notifier.directive('tractorNotifier', NotifierDirective);
-
-},{"../Notifier":184,"../Services/NotifierService":185}],184:[function(require,module,exports){
-'use strict';
-
-// Utilities:
-var angular = require('angular');
-
-var Notifier = angular.module('Notifier', []);
-
-module.exports = Notifier;
-
-require('./Directives/NotifierDirective');
-
-},{"./Directives/NotifierDirective":183,"angular":7}],185:[function(require,module,exports){
-'use strict';
-
-// Utilities:
-var _ = require('lodash');
-
-// Module:
-var Notifier = require('../Notifier');
-
-var NotifierService = function (
-    $interval
-) {
-    var NotificationTypes = {
-        SUCCESS: 'success',
-        INFO: 'info',
-        ERROR: 'error'
-    };
-
-    var notifications = [];
-
-    return {
-        success: success,
-        info: info,
-        error: error,
-        dismiss: dismiss,
-        notifications: notifications
-    };
-
-    function addNotification (notification) {
-        notifications.push(notification);
-        $interval(function () { }, 0, 1);
-        $interval(function () {
-            dismiss(notification);
-        }, 10000, 1);
-    }
-
-    function success (message) {
-        addNotification({
-            message: message,
-            type: NotificationTypes.SUCCESS
-        });
-    }
-
-    function info (message) {
-        addNotification({
-            message: message,
-            type: NotificationTypes.INFO
-        });
-    }
-
-    function error (message) {
-        addNotification({
-            message: message,
-            type: NotificationTypes.ERROR
-        });
-    }
-
-    function dismiss (notification) {
-        _.remove(notifications, notification);
-    }
-};
-NotifierService.$inject = ['$interval'];
-
-Notifier.service('NotifierService', NotifierService);
-
-},{"../Notifier":184,"lodash":71}],186:[function(require,module,exports){
+},{"../MockDataEditor":183,"../Models/MockDataModel":185}],188:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -65114,7 +65123,7 @@ StepDefinitionEditor.factory('ComponentInstanceModel', ['ASTCreatorService', fun
     return createComponentInstanceModelConstructor(ASTCreatorService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":136,"../StepDefinitionEditor":199,"change-case":49,"path":45}],187:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":138,"../StepDefinitionEditor":201,"change-case":49,"path":45}],189:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -65215,7 +65224,7 @@ StepDefinitionEditor.factory('ExpectationModel', ['ASTCreatorService', 'StringTo
     return createExpectationModelConstructor(ASTCreatorService, StringToLiteralService, ArgumentModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":136,"../../../Core/Services/StringToLiteralService":141,"../../ComponentEditor/Models/ArgumentModel":148,"../StepDefinitionEditor":199,"lodash":71}],188:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":138,"../../../Core/Services/StringToLiteralService":144,"../../ComponentEditor/Models/ArgumentModel":152,"../StepDefinitionEditor":201,"lodash":71}],190:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -65293,7 +65302,7 @@ StepDefinitionEditor.factory('MockDataInstanceModel', ['ASTCreatorService', func
     return createMockDataInstanceModelConstructor(ASTCreatorService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":136,"../StepDefinitionEditor":199,"change-case":49,"path":45}],189:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":138,"../StepDefinitionEditor":201,"change-case":49,"path":45}],191:[function(require,module,exports){
 'use strict';
 
 // Utilities;
@@ -65336,7 +65345,7 @@ var createMockModelConstructor = function (
         var ast = ASTCreatorService;
 
         var data = {
-            url: ast.literal(this.url)
+            url: ast.literal(new RegExp(this.url))
         };
         var template = 'httpBackend.when' + this.action + '(%= url %)';
         if (this.passThrough) {
@@ -65356,7 +65365,7 @@ StepDefinitionEditor.factory('MockModel', ['ASTCreatorService', function (
     return createMockModelConstructor(ASTCreatorService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":136,"../StepDefinitionEditor":199,"lodash":71}],190:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":138,"../StepDefinitionEditor":201,"lodash":71}],192:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -65375,9 +65384,7 @@ var createStepDefinitionModelConstructor = function (
     ComponentInstanceModel,
     MockDataInstanceModel
 ) {
-    var StepDefinitionModel = function StepDefinitionModel (fileName, options) {
-        this.name = fileName;
-
+    var StepDefinitionModel = function StepDefinitionModel (options) {
         this.components = [];
         this.componentInstances = [];
 
@@ -65416,6 +65423,11 @@ var createStepDefinitionModelConstructor = function (
             ast: {
                 get: function () {
                     return this.toAST();
+                }
+            },
+            data: {
+                get: function () {
+                    return this.ast;
                 }
             }
         });
@@ -65479,7 +65491,7 @@ var createStepDefinitionModelConstructor = function (
             mockData: mockData,
             step: this.step.ast
         });
-        stepDefinitionAST.expression.leadingComments = [ast.blockComment(this.meta)];
+        stepDefinitionAST.comments = [ast.blockComment(this.meta)];
         return stepDefinitionAST;
     };
 
@@ -65494,7 +65506,7 @@ StepDefinitionEditor.factory('StepDefinitionModel', ['ASTCreatorService', 'Compo
     return createStepDefinitionModelConstructor(ASTCreatorService, ComponentInstanceModel, MockDataInstanceModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":136,"../StepDefinitionEditor":199,"./ComponentInstanceModel":186,"./MockDataInstanceModel":188,"lodash":71}],191:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":138,"../StepDefinitionEditor":201,"./ComponentInstanceModel":188,"./MockDataInstanceModel":190,"lodash":71}],193:[function(require,module,exports){
 'use strict';
 
 // Utilities;
@@ -65601,10 +65613,10 @@ var createStepModelConstructor = function (
             tasks.slice(1).forEach(function (taskAST, index) {
                 template += '.then(function () { return <%= tasks[' + (index + 1) + '] %>; })';
             });
-            template += '; ';
-            template += 'tasks.then(done);';
+            template += ';';
+            template += 'Promise.resolve(tasks).then(done).catch(done.fail);';
         } else if (expectations.length) {
-            template += 'Promise.all([%= expectations %]).then(done);';
+            template += 'Promise.all([%= expectations %]).spread(function () {  done(); }).catch(done.fail);';
         } else {
             template += 'done.pending();';
         }
@@ -65629,7 +65641,7 @@ StepDefinitionEditor.factory('StepModel', ['ASTCreatorService', 'ExpectationMode
     return createStepModelConstructor(ASTCreatorService, ExpectationModel, TaskModel, MockModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":136,"../StepDefinitionEditor":199,"./ExpectationModel":187,"./MockModel":189,"./TaskModel":192,"lodash":71}],192:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":138,"../StepDefinitionEditor":201,"./ExpectationModel":189,"./MockModel":191,"./TaskModel":194,"lodash":71}],194:[function(require,module,exports){
 'use strict';
 
 // Utilities;
@@ -65726,7 +65738,7 @@ StepDefinitionEditor.factory('TaskModel', ['ASTCreatorService', 'ArgumentModel',
     return createTaskModelConstructor(ASTCreatorService, ArgumentModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":136,"../../ComponentEditor/Models/ArgumentModel":148,"../StepDefinitionEditor":199,"lodash":71}],193:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":138,"../../ComponentEditor/Models/ArgumentModel":152,"../StepDefinitionEditor":201,"lodash":71}],195:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -65785,7 +65797,7 @@ ExpectationParserService.$inject = ['ExpectationModel'];
 
 StepDefinitionEditor.service('ExpectationParserService', ExpectationParserService);
 
-},{"../Models/ExpectationModel":187,"../StepDefinitionEditor":199,"lodash":71}],194:[function(require,module,exports){
+},{"../Models/ExpectationModel":189,"../StepDefinitionEditor":201,"lodash":71}],196:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -65837,9 +65849,10 @@ var MockParserService = function MockParserService (
     }
 
     function parseUrl (mock, mockCallExpression) {
-        var url = _.last(mockCallExpression.callee.object.arguments).value;
-        assert(url);
-        return url;
+        var url = _.last(mockCallExpression.callee.object.arguments).raw;
+        var urlRegex = new RegExp(url.replace(/^\//, '').replace(/\/$/, ''));
+        assert(urlRegex);
+        return urlRegex.source;
     }
 
     function parseData (mock, mockCallExpression) {
@@ -65860,16 +65873,14 @@ MockParserService.$inject = ['MockModel'];
 
 StepDefinitionEditor.service('MockParserService', MockParserService);
 
-},{"../Models/MockModel":189,"../StepDefinitionEditor":199,"assert":43,"lodash":71}],195:[function(require,module,exports){
+},{"../Models/MockModel":191,"../StepDefinitionEditor":201,"assert":43,"lodash":71}],197:[function(require,module,exports){
 'use strict';
-
-// Utilities:
-var _ = require('lodash');
 
 // Module:
 var StepDefinitionEditor = require('../StepDefinitionEditor');
 
 // Dependencies:
+var FileService = require('../../../Core/Services/FileService');
 require('./StepDefinitionParserService');
 require('../../../Core/Services/FileStructureService');
 
@@ -65878,53 +65889,13 @@ var StepDefinitionFileService = function StepDefinitionFileService (
     StepDefinitionParserService,
     FileStructureService
 ) {
-    return {
-        checkStepDefinitionExists: checkStepDefinitionExists,
-        getStepDefinitionFileStructure: getStepDefinitionFileStructure,
-        getStepDefinitionPath: getStepDefinitionPath,
-        openStepDefinition: openStepDefinition,
-        saveStepDefinition: saveStepDefinition
-    };
-
-    function checkStepDefinitionExists (stepDefinitionFileStructure, stepDefinitionFilePath) {
-        return !!findStepDefinitionByPath(stepDefinitionFileStructure, stepDefinitionFilePath);
-    }
-
-    function getStepDefinitionFileStructure () {
-        return FileStructureService.getFileStructure()
-        .then(function (fileStructure) {
-            return _.find(fileStructure.directories, function (directory) {
-                return directory.name === 'step_definitions';
-            });
-        });
-    }
-
-    function getStepDefinitionPath (options) {
-        return $http.get('/step_definitions/path', {
-            params: options
-        });
-    }
-
-    function openStepDefinition (stepDefinitionFileStructure, stepDefinitionFilePath, components, mockData) {
-        var stepDefinitionFile = findStepDefinitionByPath(stepDefinitionFileStructure, stepDefinitionFilePath);
-        return stepDefinitionFile ? StepDefinitionParserService.parse(stepDefinitionFile, components, mockData) : null;
-    }
-
-    function saveStepDefinition (options) {
-        return $http.post('/save-step-definition-file', options);
-    }
-
-    function findStepDefinitionByPath (stepDefinitionFileStructure, stepDefinitionFilePath) {
-        return _.find(stepDefinitionFileStructure.allFiles, function (stepDefinitionFile) {
-            return stepDefinitionFile.path.includes(stepDefinitionFilePath);
-        });
-    }
+    return FileService($http, StepDefinitionParserService, FileStructureService, 'step_definitions');
 };
 StepDefinitionFileService.$inject = ['$http', 'StepDefinitionParserService', 'FileStructureService'];
 
 StepDefinitionEditor.service('StepDefinitionFileService', StepDefinitionFileService);
 
-},{"../../../Core/Services/FileStructureService":138,"../StepDefinitionEditor":199,"./StepDefinitionParserService":196,"lodash":71}],196:[function(require,module,exports){
+},{"../../../Core/Services/FileService":140,"../../../Core/Services/FileStructureService":141,"../StepDefinitionEditor":201,"./StepDefinitionParserService":198}],198:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -65948,18 +65919,15 @@ var StepDefinitionParserService = function StepDefinitionParserService (
 
     function parse (stepDefinitionFile, components, mockData) {
         try {
-            var stepDefinition = new StepDefinitionModel(stepDefinitionFile.name, {
+            var ast = stepDefinitionFile.ast;
+            var meta = JSON.parse(_.first(ast.comments).value);
+
+            var stepDefinition = new StepDefinitionModel({
                 availableComponents: components,
                 availableMockData: mockData,
                 path: stepDefinitionFile.path
             });
-
-            var ast = stepDefinitionFile.ast;
-
-            var meta = {};
-            try {
-                meta = JSON.parse(_.first(ast.comments).value);
-            } catch (e) { }
+            stepDefinition.name = meta.name;
 
             var module = _.first(ast.body);
             var statements = module.expression.right.body.body;
@@ -66016,7 +65984,7 @@ StepDefinitionParserService.$inject = ['StepParserService', 'StepDefinitionModel
 
 StepDefinitionEditor.service('StepDefinitionParserService', StepDefinitionParserService);
 
-},{"../Models/StepDefinitionModel":190,"../Services/StepParserService":197,"../StepDefinitionEditor":199,"assert":43,"lodash":71}],197:[function(require,module,exports){
+},{"../Models/StepDefinitionModel":192,"../Services/StepParserService":199,"../StepDefinitionEditor":201,"assert":43,"lodash":71}],199:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -66106,7 +66074,7 @@ var StepParserService = function StepParserService (
     }
 
     function parseExpectation (step, statement) {
-        var elements = _.first(statement.expression.callee.object.arguments).elements;
+        var elements = _.first(statement.expression.callee.object.callee.object.arguments).elements;
         _.each(elements, function (element) {
             assert(!(element.name && element.name === 'tasks'));
             var expectation = ExpectationParserService.parse(step, element);
@@ -66117,8 +66085,9 @@ var StepParserService = function StepParserService (
     }
 
     function parsePending (step, statement) {
-        assert(statement.expression.callee.object.name === 'callback');
-        assert(statement.expression.callee.property.name === 'pending');
+        var callee = statement.expression.callee;
+        assert(callee.object.name === 'callback' || callee.object.name === 'done');
+        assert(callee.property.name === 'pending');
         return true;
     }
 
@@ -66128,7 +66097,7 @@ var StepParserService = function StepParserService (
     }
 
     function parseTaskDone (step, statement) {
-        assert(statement.expression.arguments[0].name === 'done');
+        assert(statement.expression.callee.object.arguments[0].name === 'done');
         return true;
     }
 };
@@ -66136,7 +66105,7 @@ StepParserService.$inject = ['MockParserService', 'TaskParserService', 'Expectat
 
 StepDefinitionEditor.service('StepParserService', StepParserService);
 
-},{"../Models/StepModel":191,"../Services/ExpectationParserService":193,"../Services/MockParserService":194,"../Services/TaskParserService":198,"../StepDefinitionEditor":199,"assert":43,"lodash":71}],198:[function(require,module,exports){
+},{"../Models/StepModel":193,"../Services/ExpectationParserService":195,"../Services/MockParserService":196,"../Services/TaskParserService":200,"../StepDefinitionEditor":201,"assert":43,"lodash":71}],200:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -66224,7 +66193,7 @@ TaskParserService.$inject = ['TaskModel'];
 
 StepDefinitionEditor.service('TaskParserService', TaskParserService);
 
-},{"../Models/TaskModel":192,"../StepDefinitionEditor":199,"assert":43,"lodash":71}],199:[function(require,module,exports){
+},{"../Models/TaskModel":194,"../StepDefinitionEditor":201,"assert":43,"lodash":71}],201:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -66237,132 +66206,91 @@ var StepDefinitionEditor = angular.module('StepDefinitionEditor', ['Core']);
 
 module.exports = StepDefinitionEditor;
 
-},{"../../Core/Core":121,"angular":7}],200:[function(require,module,exports){
+},{"../../Core/Core":137,"angular":7}],202:[function(require,module,exports){
 'use strict';
 
 // Module:
 var StepDefinitionEditor = require('./StepDefinitionEditor');
 
 // Dependencies:
+var FileEditorController = require('../FileEditor/FileEditorController');
+require('../../Core/Components/Notifier/NotifierService');
 require('./Services/StepDefinitionFileService');
 
-var StepDefinitionEditorController = (function () {
-    var StepDefinitionEditorController = function StepDefinitionEditorController (
+var StepDefinitionEditorController = function StepDefinitionEditorController (
+    $scope,
+    $window,
+    NotifierService,
+    StepDefinitionFileService,
+    stepDefinitionFileStructure,
+    stepDefinitionPath,
+    components,
+    mockData
+) {
+    var controller = new FileEditorController(
         $scope,
         $window,
         NotifierService,
         StepDefinitionFileService,
+        null,
         stepDefinitionFileStructure,
         stepDefinitionPath,
         components,
         mockData
-    ) {
-        this.$window = $window;
-        this.$scope = $scope;
-        this.notifierService = NotifierService;
+    );
+    controller.availableComponents = components;
+    controller.availableMockData = mockData;
 
-        this.stepDefinitionFileService = StepDefinitionFileService;
-
-        this.fileStructure = stepDefinitionFileStructure;
-        this.availableComponents = components;
-        this.availableMockData = mockData;
-
-        if (stepDefinitionPath) {
-            this.stepDefinition = this.stepDefinitionFileService.openStepDefinition(this.fileStructure, stepDefinitionPath.path, this.availableComponents, this.availableMockData);
-        }
-
-        Object.defineProperties(this, {
-            canAddComponents: {
-                get: function () {
-                    return this.availableComponents.length > 0
-                        && this.stepDefinition.step.type !== 'Given';
-                }
-            },
-            canAddMockData: {
-                get: function () {
-                    return this.availableMockData.length > 0
-                        && this.stepDefinition.step.type === 'Given';
-                }
-            },
-            hasComponents: {
-                get: function () {
-                    return this.stepDefinition
-                        && this.stepDefinition.componentInstances
-                        && this.stepDefinition.componentInstances.length > 0;
-                }
-            },
-            hasMockData: {
-                get: function () {
-                    return this.stepDefinition
-                        && this.stepDefinition.mockDataInstances
-                        && this.stepDefinition.mockDataInstances.length > 0;
-                }
-            },
-            showTasksSection: {
-                get: function () {
-                    return this.hasComponents
-                        && this.stepDefinition.step.type === 'When';
-                }
-            },
-            showExpectationsSection: {
-                get: function () {
-                    return this.hasComponents
-                        && this.stepDefinition.step.type === 'Then';
-                }
-            },
-            showMockDataSection: {
-                get: function () {
-                    return this.stepDefinition.step.type === 'Given';
-                }
+    Object.defineProperties(controller, {
+        canAddComponents: {
+            get: function () {
+                return this.availableComponents.length > 0
+                    && this.fileModel.step.type !== 'Given';
             }
-        });
-    };
-    StepDefinitionEditorController.$inject = ['$scope', '$window', 'NotifierService', 'StepDefinitionFileService', 'stepDefinitionFileStructure', 'stepDefinitionPath', 'components', 'mockData'];
-
-    StepDefinitionEditorController.prototype.saveStepDefinitionFile = function () {
-        this.stepDefinitionFileService.getStepDefinitionPath({
-            name: this.stepDefinition.name,
-            path: this.stepDefinition.path
-        })
-        .then(function (stepDefinitionPath) {
-            var exists = this.stepDefinitionFileService.checkStepDefinitionExists(this.fileStructure, stepDefinitionPath.path);
-
-            if (!exists || this.$window.confirm('This will overwrite "' + this.stepDefinition.name + '". Continue?')) {
-                this.stepDefinitionFileService.saveStepDefinition({
-                    ast: this.stepDefinition.ast,
-                    name: this.stepDefinition.name,
-                    path: stepDefinitionPath.path
-                })
-                .then(function () {
-                    return this.stepDefinitionFileService.getStepDefinitionFileStructure();
-                }.bind(this))
-                .then(function (stepDefinitionFileStructure) {
-                    this.fileStructure = stepDefinitionFileStructure;
-                    this.stepDefinition = this.stepDefinitionFileService.openStepDefinition(this.fileStructure, stepDefinitionPath.path, this.availableComponents, this.availableMockData);
-                }.bind(this));
+        },
+        canAddMockData: {
+            get: function () {
+                return this.availableMockData.length > 0
+                    && this.fileModel.step.type === 'Given';
             }
-        }.bind(this));
-    };
-
-    StepDefinitionEditorController.prototype.showErrors = function () {
-        var stepDefinitionEditor = this.$scope['step-definition-editor'];
-        if (stepDefinitionEditor.$invalid) {
-            Object.keys(stepDefinitionEditor.$error).forEach(function (invalidType) {
-                var errors = stepDefinitionEditor.$error[invalidType];
-                errors.forEach(function (element) {
-                    element.$setTouched();
-                });
-            });
-            this.notifierService.error('Can\'t save step definition, something is invalid.');
-            return false;
-        } else {
-            return true;
+        },
+        hasComponents: {
+            get: function () {
+                return this.fileModel
+                    && this.fileModel.componentInstances
+                    && this.fileModel.componentInstances.length > 0;
+            }
+        },
+        hasMockData: {
+            get: function () {
+                return this.fileModel
+                    && this.fileModel.mockDataInstances
+                    && this.fileModel.mockDataInstances.length > 0;
+            }
+        },
+        showTasksSection: {
+            get: function () {
+                return this.hasComponents
+                    && this.fileModel.step.type === 'When';
+            }
+        },
+        showExpectationsSection: {
+            get: function () {
+                return this.hasComponents
+                    && this.fileModel.step.type === 'Then';
+            }
+        },
+        showMockDataSection: {
+            get: function () {
+                return this.fileModel.step.type === 'Given';
+            }
         }
-    };
+    });
 
-    return StepDefinitionEditorController;
-})();
+    return controller;
+};
+StepDefinitionEditorController.$inject = ['$scope', '$window', 'NotifierService', 'StepDefinitionFileService', 'stepDefinitionFileStructure', 'stepDefinitionPath', 'components', 'mockData'];
 
 StepDefinitionEditor.controller('StepDefinitionEditorController', StepDefinitionEditorController);
 
-},{"./Services/StepDefinitionFileService":195,"./StepDefinitionEditor":199}]},{},[1]);
+},{"../../Core/Components/Notifier/NotifierService":130,"../FileEditor/FileEditorController":182,"./Services/StepDefinitionFileService":197,"./StepDefinitionEditor":201}]},{},[1]);

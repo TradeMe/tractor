@@ -24,7 +24,7 @@ var ExampleNameValidator = function (
     };
 
     function link ($scope, $element, $attrs, ngModelController) {
-        ngModelController.$asyncValidators.validExampleName = function (value) {
+        ngModelController.$asyncValidators.exampleName = function (value) {
             var variableNames = StepDeclarationModel.getExampleVariableNames(value);
             var validations = _.map(variableNames, function (variableName) {
                 return ValidationService.validateVariableName(variableName);

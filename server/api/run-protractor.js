@@ -7,7 +7,7 @@ var path = require('path');
 var Promise = require('bluebird');
 
 // Config:
-var config = require('../utils/get-config')();
+var config = require('../utils/create-config')();
 var protractorPath = path.join('node_modules', 'protractor', 'bin', 'protractor');
 var e2ePath = path.join(config.testDirectory, 'protractor.conf.js');
 

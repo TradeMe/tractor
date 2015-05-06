@@ -13,18 +13,19 @@ var getPath = require('./get-path');
 
 describe('server/api: get-path:', function () {
     it('should create a path for a new file:', function () {
+        var path = require('path');
         var tests = [{
             type: 'components',
-            expected: 'e2e_tests/components/name.component.js'
+            expected: path.join(process.cwd(), 'e2e_tests', 'components', 'name.component.js')
         }, {
             type: 'features',
-            expected: 'e2e_tests/features/name.feature'
+            expected: path.join(process.cwd(), 'e2e_tests', 'features', 'name.feature')
         }, {
             type: 'step_definitions',
-            expected: 'e2e_tests/step_definitions/name.step.js'
+            expected: path.join(process.cwd(), 'e2e_tests', 'step_definitions', 'name.step.js')
         }, {
             type: 'mock_data',
-            expected: 'e2e_tests/mock_data/name.mock.json'
+            expected: path.join(process.cwd(), 'e2e_tests', 'mock_data', 'name.mock.json')
         }];
 
         tests.forEach(function (test) {

@@ -37,6 +37,11 @@ var createFeatureModelConstructor = function (
                 get: function () {
                     return toFeatureString.call(this);
                 }
+            },
+            data: {
+                get: function () {
+                    return this.featureString;
+                }
             }
         });
 

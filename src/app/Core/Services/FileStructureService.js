@@ -13,36 +13,54 @@ var FileStructureService = function FileStructureService (
         getFileStructure: getFileStructure,
         addDirectory: addDirectory,
         copyFile: copyFile,
+        deleteDirectory: deleteDirectory,
         deleteFile: deleteFile,
-        editItemPath: editItemPath,
+        editDirectoryPath: editDirectoryPath,
+        editFilePath: editFilePath,
         getExpanded: getExpanded,
         setExpanded: setExpanded
     };
 
     function getFileStructure (options) {
-        return $http.get('/get-file-structure', {
+        return $http.get('/file-structure', {
             params: options
         })
         .then(updateFileStructure);
     }
 
-    function addDirectory (options) {
-        return $http.post('/add-directory', options)
+    function addDirectory (type, options) {
+        return $http.post('/' + type + '/directory', options)
         .then(updateFileStructure);
     }
 
-    function copyFile (options) {
-        return $http.post('/copy-file', options)
+    function copyFile (type, options) {
+        return $http.post('/' + type + '/file/copy', options)
         .then(updateFileStructure);
     }
 
-    function deleteFile (options) {
-        return $http.post('/delete-file', options)
+    function deleteDirectory (type, options) {
+        options.isDirectory = true;
+        return $http.delete('/' + type + '/directory', {
+            params: options
+        })
         .then(updateFileStructure);
     }
 
-    function editItemPath (options) {
-        return $http.post('/edit-item-path', options)
+    function deleteFile (type, options) {
+        return $http.delete('/' + type + '/file', {
+            params: options
+        })
+        .then(updateFileStructure);
+    }
+
+    function editDirectoryPath (type, options) {
+        options.isDirectory = true;
+        return $http.patch('/' + type + '/directory/path', options)
+        .then(updateFileStructure);
+    }
+
+    function editFilePath (type, options) {
+        return $http.patch('/' + type + '/file/path', options)
         .then(updateFileStructure);
     }
 

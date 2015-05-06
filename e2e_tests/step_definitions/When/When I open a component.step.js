@@ -1,16 +1,16 @@
 /*{
-    "name": "When I open a component",
+    "name": "When I open a Component",
     "components": [
         {
-            "name": "Component File Tree"
+            "name": "Component file tree"
         }
     ],
     "mockData": []
 }*/
 module.exports = function () {
-    var ComponentFileTree = require('../../components/Component Editor/Component File Tree.component.js'), componentFileTree = new ComponentFileTree();
-    this.When(/^I open a component$/, function (done) {
-        var tasks = componentFileTree.openExampleComponent();
-        tasks.then(done);
+    var ComponentFileTree = require('../../components/Component Editor/Component file tree.component.js'), componentFileTree = new ComponentFileTree();
+    this.When(/^I open a Component$/, function (done) {
+        var tasks = componentFileTree.openFirstComponent();
+        Promise.resolve(tasks).then(done).catch(done.fail);
     });
 };

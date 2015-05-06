@@ -33,6 +33,11 @@ var createMockDataModelConstructor = function () {
                 set: function (newVal) {
                     json = newVal;
                 }
+            },
+            data: {
+                get: function () {
+                    return this.json;
+                }
             }
         });
     };

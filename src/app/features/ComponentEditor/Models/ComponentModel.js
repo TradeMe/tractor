@@ -78,6 +78,11 @@ var createComponentModelConstructor = function (
                 get: function () {
                     return toAST.call(this);
                 }
+            },
+            data: {
+                get: function () {
+                    return this.ast;
+                }
             }
         });
 
@@ -145,9 +150,9 @@ var createComponentModelConstructor = function (
         var moduleExportsMemberExpression = ast.memberExpression(ast.identifier('module'), ast.identifier('exports'));
         var componentModuleAssignmentExpression = ast.assignmentExpression(moduleExportsMemberExpression, ast.AssignmentOperators.ASSIGNMENT, moduleCallExpression);
         var componentModuleExpressionStatement = ast.expressionStatement(componentModuleAssignmentExpression);
-        componentModuleAssignmentExpression.leadingComments = [ast.blockComment(this.meta)];
-
-        return ast.program([componentModuleExpressionStatement]);
+        var componentAST = ast.program([componentModuleExpressionStatement]);
+        componentAST.comments = [ast.blockComment(this.meta)];
+        return componentAST;
     }
 };
 

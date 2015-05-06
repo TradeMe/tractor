@@ -16,9 +16,7 @@ var createStepDefinitionModelConstructor = function (
     ComponentInstanceModel,
     MockDataInstanceModel
 ) {
-    var StepDefinitionModel = function StepDefinitionModel (fileName, options) {
-        this.name = fileName;
-
+    var StepDefinitionModel = function StepDefinitionModel (options) {
         this.components = [];
         this.componentInstances = [];
 
@@ -57,6 +55,11 @@ var createStepDefinitionModelConstructor = function (
             ast: {
                 get: function () {
                     return this.toAST();
+                }
+            },
+            data: {
+                get: function () {
+                    return this.ast;
                 }
             }
         });
@@ -120,7 +123,7 @@ var createStepDefinitionModelConstructor = function (
             mockData: mockData,
             step: this.step.ast
         });
-        stepDefinitionAST.expression.leadingComments = [ast.blockComment(this.meta)];
+        stepDefinitionAST.comments = [ast.blockComment(this.meta)];
         return stepDefinitionAST;
     };
 

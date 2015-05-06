@@ -40,7 +40,7 @@ var createMockModelConstructor = function (
         var ast = ASTCreatorService;
 
         var data = {
-            url: ast.literal(this.url)
+            url: ast.literal(new RegExp(this.url))
         };
         var template = 'httpBackend.when' + this.action + '(%= url %)';
         if (this.passThrough) {

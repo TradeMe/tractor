@@ -4,7 +4,7 @@
 var ControlPanel = require('../ControlPanel');
 
 // Dependencies:
-require('../../Notifier/Services/NotifierService');
+require('../../../Core/Components/Notifier/NotifierService');
 
 var RunnerService = function RunnerService (
     NotifierService,

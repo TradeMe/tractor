@@ -104,10 +104,10 @@ var createStepModelConstructor = function (
             tasks.slice(1).forEach(function (taskAST, index) {
                 template += '.then(function () { return <%= tasks[' + (index + 1) + '] %>; })';
             });
-            template += '; ';
-            template += 'tasks.then(done);';
+            template += ';';
+            template += 'Promise.resolve(tasks).then(done).catch(done.fail);';
         } else if (expectations.length) {
-            template += 'Promise.all([%= expectations %]).then(done);';
+            template += 'Promise.all([%= expectations %]).spread(function () {  done(); }).catch(done.fail);';
         } else {
             template += 'done.pending();';
         }
