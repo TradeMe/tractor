@@ -1,4 +1,4 @@
-# tractor - v0.3.1
+# tractor - v0.4.0
 
 A UI around [Gherkin](http://cukes.info/gherkin.html) & [Protractor](http://angular.github.io/protractor/) to help write E2E tests for [Angular](https://angularjs.org/) applications without needing to know JavaScript.
 
@@ -33,5 +33,7 @@ If you want to change the port that `tractor` runs at, or the file where it stor
 
     module.exports = {
         testDirectory: 'path/to/test/directory', // defaults to root/e2e_tests
-        port: number                             // defaults to 4000
+        port: number,                            // defaults to 4000
+        beforeProtractor: function,              // a function to run before protractor runs
+        afterProtractor: function                // a function to run after protractor runs
     };
