@@ -11,12 +11,8 @@ var ParameterParserService = function ParameterParserService (ParameterModel) {
         parse: parse
     };
 
-    function parse (action, astObject) {
-       var parameter = new ParameterModel(action);
-
-       parameter.name = astObject.name;
-
-       return parameter;
+    function parse (action) {
+       return new ParameterModel(action);
     }
 };
 

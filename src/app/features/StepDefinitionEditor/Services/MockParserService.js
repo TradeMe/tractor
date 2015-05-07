@@ -17,30 +17,55 @@ var MockParserService = function MockParserService (
         parse: parse
     };
 
-    function parse (step, statement) {
-        var mock = new MockModel(step);
+    function parse (step, ast) {
+        try {
+            var mock = new MockModel(step);
 
-        var action = _.first(statement.expression.callee.object.arguments).value;
-        var url = _.last(statement.expression.callee.object.arguments).value;
+            var mockCallExpression = ast.expression;
+
+            mock.action = parseAction(mock, mockCallExpression);
+            mock.url = parseUrl(mock, mockCallExpression);
+
+            try {
+                return parseData(mock, mockCallExpression);
+            } catch (e) { }
+
+            try {
+                return parsePassThrough(mock, mockCallExpression);
+            } catch (e) { }
+
+            throw new Error();
+        } catch (e) {
+            console.warn('Invalid mock:', ast);
+            return null;
+        }
+    }
+
+    function parseAction (mock, mockCallExpression) {
+        var action = mockCallExpression.callee.object.callee.property.name.replace(/^when/, '');
+        assert(action);
         assert(_.contains(mock.actions, action));
+        return action;
+    }
 
-        mock.action = action;
-        mock.url = url;
+    function parseUrl (mock, mockCallExpression) {
+        var url = _.last(mockCallExpression.callee.object.arguments).raw;
+        var urlRegex = new RegExp(url.replace(/^\//, '').replace(/\/$/, ''));
+        assert(urlRegex);
+        return urlRegex.source;
+    }
 
-        try {
-            var instanceName = _.first(statement.expression.arguments).name;
-            mock.data = _.find(step.stepDefinition.mockDataInstances, function (mockDataInstance) {
-                return mockDataInstance.name === instanceName;
-            });
-            return mock;
-        } catch (e) { }
+    function parseData (mock, mockCallExpression) {
+        var instanceName = _.first(mockCallExpression.arguments).name;
+        mock.data = _.find(mock.step.stepDefinition.mockDataInstances, function (mockDataInstance) {
+            return mockDataInstance.variableName === instanceName;
+        });
+        return mock;
+    }
 
-        try {
-            assert(statement.expression.callee.property.name === 'passThrough')
-            mock.passThrough = true;
-            return mock;
-        } catch (e) { }
-
+    function parsePassThrough (mock, mockCallExpression) {
+        assert(mockCallExpression.callee.property.name === 'passThrough');
+        mock.passThrough = true;
         return mock;
     }
 };

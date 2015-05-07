@@ -1,5 +1,17 @@
 form.file {
+    float: left;
     width: 80%;
+    height: 100%;
+}
+
+.file-editor {
+    height: 90%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.file-editor h3 {
+    display: inline-block;
 }
 
 .file-editor ul,
@@ -13,6 +25,7 @@ form.file {
 .file-editor__list-item {
     position: relative;
     padding: $standard-spacing;
+    padding-bottom: 0;
     margin-right: $standard-spacing + 2;
     margin-bottom: $standard-spacing;
     background: rgba(245, 245, 245, 1);
@@ -30,7 +43,6 @@ form.file {
 .file-editor tractor-checkbox {
     font-size: 0;
     display: inline-block;
-    margin-bottom: $standard-spacing;
     vertical-align: top;
 }
 
@@ -51,7 +63,7 @@ form.file {
 }
 
 .file-editor li > tractor-action:first-of-type button {
-    background-image: url('./images/remove.png')
+    background-image: url('./images/remove.png');
 }
 
 .file-editor li > tractor-action:first-of-type button {

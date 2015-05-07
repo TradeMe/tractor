@@ -25,7 +25,9 @@ var createExampleModelConstructor = function (
             values: {
                 get: function () {
                     _.each(this.scenario.exampleVariables, function (exampleVariable) {
-                        values[exampleVariable] = values[exampleVariable] || '';
+                        values[exampleVariable] = values[exampleVariable] || {
+                            value: ''
+                        };
                     });
                     return values;
                 }
@@ -42,7 +44,7 @@ var createExampleModelConstructor = function (
 
     function toFeature () {
         var values = '| ' + _.map(this.scenario.exampleVariables, function (variable) {
-           var value = this.values[variable];
+           var value = this.values[variable].value;
            var literal = StringToLiteralService.toLiteral(value);
            return !_.isUndefined(literal) ? literal : '"' + value + '"';
         }, this).join(' | ') + ' |';

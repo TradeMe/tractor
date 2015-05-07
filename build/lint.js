@@ -6,10 +6,19 @@ var gulp = require('gulp');
 // Dependencies:
 var eslint = require('gulp-eslint');
 
-module.exports = lint;
+module.exports = {
+    server: server,
+    client: client
+};
 
-function lint () {
-    return gulp.src(['src/**/*.js', 'server/**/*.js'])
+function server () {
+    return gulp.src(['server/**/*.js'])
+    .pipe(eslint())
+    .pipe(eslint.format());
+}
+
+function client () {
+    return gulp.src(['src/**/*.js'])
     .pipe(eslint())
     .pipe(eslint.format());
 }

@@ -9,8 +9,10 @@ var ValidationService = function ($http) {
     };
 
     function validateVariableName (variableName) {
-        return $http.post('/validate-javascript-variable-name', {
-            variableName: variableName
+        return $http.get('/variable-name-valid', {
+            params: {
+                variableName: variableName
+            }
         })
         .then(function () {
             return variableName;

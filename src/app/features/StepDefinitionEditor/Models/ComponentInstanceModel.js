@@ -1,14 +1,25 @@
 'use strict';
 
+// Utilities:
+var path = require('path');
+
 // Module:
 var StepDefinitionEditor = require('../StepDefinitionEditor');
 
 // Depenedencies:
+var camel = require('change-case').camel;
 require('../../../Core/Services/ASTCreatorService');
 
-var createComponentInstanceModelConstructor = function (ASTCreatorService) {
-    var ComponentInstanceModel = function ComponentInstanceModel (component) {
+var createComponentInstanceModelConstructor = function (
+    ASTCreatorService
+) {
+    var ComponentInstanceModel = function ComponentInstanceModel (component, stepDefinition) {
         Object.defineProperties(this, {
+            stepDefinition: {
+                get: function () {
+                    return stepDefinition;
+                }
+            },
             component: {
                 get: function () {
                     return component;
@@ -16,7 +27,19 @@ var createComponentInstanceModelConstructor = function (ASTCreatorService) {
             },
             name: {
                 get: function () {
-                    return component.name.charAt(0).toLowerCase() + component.name.slice(1);
+                    return this.component.name;
+                }
+            },
+            variableName: {
+                get: function () {
+                    return camel(this.component.name);
+                }
+            },
+            meta: {
+                get: function () {
+                    return {
+                        name: this.name
+                    };
                 }
             },
             ast: {
@@ -32,17 +55,19 @@ var createComponentInstanceModelConstructor = function (ASTCreatorService) {
     function toAST () {
         var ast = ASTCreatorService;
 
-        var componentNameIdentifier = ast.identifier(this.component.name);
-        var requirePathLiteral = ast.literal('../components/' + this.component.name + '.component');
-        var requireCallExpression = ast.callExpression(ast.identifier('require'), [requirePathLiteral]);
-        var importDeclarator = ast.variableDeclarator(componentNameIdentifier, requireCallExpression);
-        var importDeclaration = ast.variableDeclaration([importDeclarator]);
+        var template = 'var <%= constructor %> = require(<%= path %>), ';
+        template += '<%= name %> = new <%= constructor %>(); ';
 
-        var newComponentNewStatement = ast.newExpression(componentNameIdentifier);
-        var newComponentIdentifier = ast.identifier(this.name);
-        var newComponentDeclarator = ast.variableDeclarator(newComponentIdentifier, newComponentNewStatement);
-        var newComponentDeclaration = ast.variableDeclaration([newComponentDeclarator]);
-        return [importDeclaration, newComponentDeclaration];
+        // Sw33t hax()rz to get around the browserify "path" shim not working on Windows.
+        var stepDefinitionPath = this.stepDefinition.path.replace(/^[A-Z]:\\/, '').replace(/\\/g, '/');
+        var componentPath = this.component.path.replace(/^[A-Z]:\\/, '').replace(/\\/g, '/');
+        var relativePath = path.relative(path.dirname(stepDefinitionPath), componentPath);
+
+        return ast.template(template, {
+            constructor: ast.identifier(this.component.variableName),
+            path: ast.literal(relativePath),
+            name: ast.identifier(this.variableName)
+        });
     }
 };
 

@@ -7,6 +7,7 @@ var _ = require('lodash');
 var ComponentEditor = require('../ComponentEditor');
 
 // Dependencies:
+var pascalcase = require('change-case').pascal;
 require('../../../Core/Services/ASTCreatorService');
 require('./BrowserModel');
 require('./ElementModel');
@@ -18,13 +19,23 @@ var createComponentModelConstructor = function (
     ElementModel,
     ActionModel
 ) {
-    var ComponentModel = function ComponentModel () {
+    var ComponentModel = function ComponentModel (options) {
         var browser = new BrowserModel();
         var elements = [browser];
         var domElements = [];
         var actions = [];
 
         Object.defineProperties(this, {
+            isSaved: {
+                get: function () {
+                    return !!(options && options.isSaved);
+                }
+            },
+            path: {
+                get: function () {
+                    return options && options.path;
+                }
+            },
             browser: {
                 get: function () {
                     return browser;
@@ -45,9 +56,32 @@ var createComponentModelConstructor = function (
                     return elements;
                 }
             },
+            variableName: {
+                get: function () {
+                    return pascalcase(this.name);
+                }
+            },
+            meta: {
+                get: function () {
+                    return JSON.stringify({
+                        name: this.name,
+                        elements: this.domElements.map(function (element) {
+                            return element.meta;
+                        }),
+                        actions: this.actions.map(function (action) {
+                            return action.meta;
+                        })
+                    }, null, '    ');
+                }
+            },
             ast: {
                 get: function () {
                     return toAST.call(this);
+                }
+            },
+            data: {
+                get: function () {
+                    return this.ast;
                 }
             }
         });
@@ -92,7 +126,7 @@ var createComponentModelConstructor = function (
     function toAST () {
         var ast = ASTCreatorService;
 
-        var nameIdentifier = ast.identifier(this.name);
+        var nameIdentifier = ast.identifier(this.variableName);
         var moduleReturnStatement = ast.returnStatement(nameIdentifier);
 
         var elementASTs = _.map(this.domElements, function (element) {
@@ -116,8 +150,9 @@ var createComponentModelConstructor = function (
         var moduleExportsMemberExpression = ast.memberExpression(ast.identifier('module'), ast.identifier('exports'));
         var componentModuleAssignmentExpression = ast.assignmentExpression(moduleExportsMemberExpression, ast.AssignmentOperators.ASSIGNMENT, moduleCallExpression);
         var componentModuleExpressionStatement = ast.expressionStatement(componentModuleAssignmentExpression);
-
-        return ast.program([componentModuleExpressionStatement]);
+        var componentAST = ast.program([componentModuleExpressionStatement]);
+        componentAST.comments = [ast.blockComment(this.meta)];
+        return componentAST;
     }
 };
 

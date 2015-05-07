@@ -72,7 +72,9 @@ var createArgumentModelConstructor = function (
 
         if (!_.isUndefined(literal)) {
             return ast.literal(literal);
-        } else if (parameter || result) {
+        } else if (parameter) {
+            return ast.identifier(parameter.variableName);
+        } else if (result) {
             return ast.identifier(this.value);
         } else if (this.value) {
             return ast.literal(this.value);

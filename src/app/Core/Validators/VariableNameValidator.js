@@ -2,6 +2,7 @@
 
 // Utilities:
 var _ = require('lodash');
+var Promise = require('bluebird');
 
 // Module:
 var Core = require('../Core');
@@ -9,10 +10,12 @@ var Core = require('../Core');
 // Dependencies:
 var camelcase = require('change-case').camel;
 var pascalcase = require('change-case').pascal;
+require('../Components/Notifier/NotifierService');
 require('../Services/ValidationService');
 
 var VariableNameValidator = function (
     $rootScope,
+    NotifierService,
     ValidationService
 ) {
     var ModelChangeEvent = 'VariableNameValidator:ModelChange';
@@ -45,23 +48,19 @@ var VariableNameValidator = function (
             destroy();
         });
 
-        ngModelController.$parsers.push(function (value) {
-            value = $scope.$parent.isClass ? pascalcase(value) : camelcase(value);
-
-            ngModelController.$setViewValue(value);
-            ngModelController.$render();
-
-            return value;
-        });
-
-        ngModelController.$validators.uniqueVariableName = function (value) {
+        ngModelController.$validators.variableNameUnique = function (value) {
             var allVariableNames = $scope.variableNameModel.getAllVariableNames();
             var result = !_.contains(allVariableNames, value);
             return result;
         };
 
-        ngModelController.$asyncValidators.validVariableName = function (value) {
-            return ValidationService.validateVariableName(value);
+        ngModelController.$asyncValidators.variableNameValid = function (value) {
+            var variableName = $scope.$parent.isClass ? pascalcase(value) : camelcase(value);
+            if (variableName.length === 0) {
+                NotifierService.error('Invalid: must include some alpha-numeric characters.');
+                return Promise.reject();
+            }
+            return ValidationService.validateVariableName(variableName);
         };
     }
 };

@@ -2,6 +2,7 @@
 
 // Utilities:
 var _ = require('lodash');
+var estemplate = require('estemplate');
 
 // Module:
 var Core = require('../Core');
@@ -29,6 +30,8 @@ var ASTCreatorService = function () {
         UnaryOperators: UnaryOperators,
         BinaryOperators: BinaryOperators,
 
+        template: template,
+
         program: program,
 
         blockStatement: blockStatement,
@@ -49,13 +52,19 @@ var ASTCreatorService = function () {
         memberExpression: memberExpression,
 
         identifier: identifier,
-        literal: literal
+        literal: literal,
+        blockComment: blockComment
     };
 
-    function program (body) {
+    function template (template, objects) {
+        return _.first(estemplate(template, objects).body);
+    }
+
+    function program (body, comments) {
         return {
             type: 'Program',
-            body: body || []
+            body: body || [],
+            comments: comments || []
         };
     }
 
@@ -190,6 +199,13 @@ var ASTCreatorService = function () {
           literal.raw = '' + value;
         }
         return literal;
+    }
+
+    function blockComment (value) {
+        return {
+            type: 'Block',
+            value: value
+        };
     }
 };
 

@@ -8,7 +8,6 @@ var assert = require('assert');
 var StepDefinitionEditor = require('../StepDefinitionEditor');
 
 // Dependencies:
-var ucFirst = require('change-case').ucFirst;
 require('../Services/StepParserService');
 require('../Models/StepDefinitionModel');
 
@@ -20,70 +19,67 @@ var StepDefinitionParserService = function StepDefinitionParserService (
         parse: parse
     };
 
-    function parse (astObject, fileName, availableComponents, availableMockData) {
-        var stepDefinition = new StepDefinitionModel(fileName, availableComponents, availableMockData);
+    function parse (stepDefinitionFile, components, mockData) {
+        try {
+            var ast = stepDefinitionFile.ast;
+            var meta = JSON.parse(_.first(ast.comments).value);
 
-        var module = _.first(astObject.body);
-        var moduleBody = module.expression.right.body.body;
+            var stepDefinition = new StepDefinitionModel({
+                availableComponents: components,
+                availableMockData: mockData,
+                path: stepDefinitionFile.path
+            });
+            stepDefinition.name = meta.name;
 
-        _.each(moduleBody, function (statement, index) {
-            var notStepDefinition = false;
-            var notComponentConstructorRequire = false;
-            var notComponent = false;
-            var notMockDataRequire = false;
+            var module = _.first(ast.body);
+            var statements = module.expression.right.body.body;
 
-            try {
-                var step = StepParserService.parse(stepDefinition, statement);
-                assert(step);
-                stepDefinition.step = step;
-            } catch (e) {
-                notStepDefinition = true;
-            }
+            var parsers = [parseComponent, parseMock, parseStep];
+            tryParse(stepDefinition, statements, meta, parsers);
 
-            var declarator;
-            var name;
+            return stepDefinition;
+        } catch (e) {
+            console.warn('Invalid step definition:', stepDefinitionFile.ast);
+            return null;
+        }
+    }
 
-            try {
-                if (notStepDefinition) {
-                    declarator = _.first(statement.declarations);
-                    name = declarator.init.callee.name;
-                    var path = _.first(declarator.init.arguments);
-                    assert(path.value.match(/\.component$/));
-                    assert(name === 'require');
-                }
-            } catch (e) {
-                notComponentConstructorRequire = true;
-            }
-
-            try {
-                if (notComponentConstructorRequire) {
-                    declarator = _.first(statement.declarations);
-                    name = declarator.init.callee.name;
-                    assert(name !== 'require');
-                    stepDefinition.addComponent(name);
-                }
-            } catch (e) {
-                notComponent = true;
-            }
-
-            try {
-                if (notComponent) {
-                    declarator = _.first(statement.declarations);
-                    name = declarator.id.name;
-                    var path = _.first(declarator.init.arguments);
-                    assert(path.value.match(/\.mock.json$/));
-                    stepDefinition.addMock(ucFirst(name));
-                }
-            } catch (e) {
-                notComponentConstructorRequire = true;
-            }
-
-            if (notStepDefinition && notComponentConstructorRequire && notComponent && notMockDataRequire) {
-                console.log(statement, index);
+    function tryParse (stepDefinition, statements, meta, parsers) {
+        statements.map(function (statement) {
+            var parsed = parsers.some(function (parser) {
+                try {
+                    return parser(stepDefinition, statement, meta);
+                } catch (e) { }
+            });
+            if (!parsed) {
+                throw new Error();
             }
         });
+    }
 
-        return stepDefinition;
+    function parseComponent (stepDefinition, statement, meta) {
+        var declarator = _.last(statement.declarations);
+        var name = declarator.init.callee.name;
+        assert(name !== 'require');
+        stepDefinition.addComponent(meta.components[stepDefinition.components.length].name);
+        return true;
+    }
+
+    function parseMock (stepDefinition, statement, meta) {
+        var declarator = _.first(statement.declarations);
+        var name = declarator.init.callee.name;
+        assert(name === 'require');
+        var path = _.first(declarator.init.arguments);
+        assert(path.value.match(/\.mock.json$/));
+        stepDefinition.addMock(meta.mockData[stepDefinition.mockData.length].name);
+        return true;
+    }
+
+    function parseStep (stepDefinition, statement) {
+        var step = StepParserService.parse(stepDefinition, statement);
+        assert(step);
+        stepDefinition.step = step;
+        return true;
     }
 };
 

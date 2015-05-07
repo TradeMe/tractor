@@ -11,7 +11,7 @@ var ConfigService = function ConfigService (
     };
 
     function getConfig () {
-        return $http.get('/get-config');
+        return $http.get('/config');
     }
 };
 

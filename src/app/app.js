@@ -11,6 +11,7 @@ require('angular-messages');
 require('angular-mocks');
 require('angular-ui-router');
 require('angular-sortable');
+require('angular-local-storage');
 
 require('./features/ControlPanel/ControlPanel');
 require('./features/ControlPanel/ControlPanelController');
@@ -31,25 +32,26 @@ require('./features/MockDataEditor/MockDataEditorController');
 
 require('./Core/Core');
 require('./Core/Services/ConfigService');
-require('./Core/Services/ErrorInterceptor');
+require('./Core/Services/FileStructureService');
+require('./Core/Services/HttpResponseInterceptor');
 require('./Core/Services/RealTimeService');
-
-require('./features/Notifier/Notifier');
 
 // Application Init:
 angular.module('tractor', [
-  'ngMessages',
-  'ui.router',
-  'ui.sortable',
-  'Core',
-  'Notifier',
-  'ControlPanel',
-  'ComponentEditor',
-  'FeatureEditor',
-  'StepDefinitionEditor',
-  'MockDataEditor'
+    'ngMessages',
+    'ui.router',
+    'ui.sortable',
+    'LocalStorageModule',
+    'Core',
+    'ControlPanel',
+    'ComponentEditor',
+    'FeatureEditor',
+    'StepDefinitionEditor',
+    'MockDataEditor'
 ])
-.config(function ($stateProvider, $urlRouterProvider) {
+.config(function ($stateProvider, $urlRouterProvider, localStorageServiceProvider) {
+    localStorageServiceProvider.setPrefix('tractor');
+
     $urlRouterProvider.otherwise('/');
 
     $stateProvider
@@ -61,72 +63,72 @@ angular.module('tractor', [
         controller: 'ControlPanelController as controlPanel'
     })
     .state('tractor.component-editor', {
-        url: 'component-editor?component',
+        url: 'component-editor/:component',
         /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/features/ComponentEditor/ComponentEditor.html', 'utf8'),
         /* eslint-enable no-path-concat */
         controller: 'ComponentEditorController as componentEditor',
         resolve: {
-            componentFileNames: function (ComponentFileService) {
-                return ComponentFileService.getComponentFileNames();
+            componentFileStructure: function (ComponentFileService) {
+                return ComponentFileService.getFileStructure();
             },
-            componentFile: function ($stateParams, ComponentFileService) {
-                var component = $stateParams.component;
-                return component ? ComponentFileService.openComponentFile(component) : null;
+            componentPath: function ($stateParams, ComponentFileService) {
+                var componentName = $stateParams.component;
+                return componentName ? ComponentFileService.getPath({ name: componentName }) : null;
             }
         }
     })
     .state('tractor.feature-editor', {
-        url: 'feature-editor?feature',
+        url: 'feature-editor/:feature',
         /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/features/FeatureEditor/FeatureEditor.html', 'utf8'),
         /* eslint-enable no-path-concat */
         controller: 'FeatureEditorController as featureEditor',
         resolve: {
-            featureFileNames: function (FeatureFileService) {
-                return FeatureFileService.getFeatureFileNames();
+            featureFileStructure: function (FeatureFileService) {
+                return FeatureFileService.getFileStructure();
             },
-            featureFile: function ($stateParams, FeatureFileService) {
+            featurePath: function ($stateParams, FeatureFileService) {
                 var feature = $stateParams.feature;
-                return feature ? FeatureFileService.openFeatureFile(feature) : null;
+                return feature ? FeatureFileService.getPath({ name: feature }) : null;
             }
         }
     })
     .state('tractor.step-definition-editor', {
-        url: 'step-definition-editor?stepDefinition',
+        url: 'step-definition-editor/:stepDefinition',
         /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/features/StepDefinitionEditor/StepDefinitionEditor.html', 'utf8'),
         /* eslint-enable no-path-concat */
         controller: 'StepDefinitionEditorController as stepDefinitionEditor',
         resolve: {
-            stepDefinitionFileNames: function (StepDefinitionFileService) {
-                return StepDefinitionFileService.getStepDefinitionFileNames();
+            stepDefinitionFileStructure: function (StepDefinitionFileService) {
+                return StepDefinitionFileService.getFileStructure();
             },
-            stepDefinitionFile: function ($stateParams, StepDefinitionFileService) {
+            stepDefinitionPath: function ($stateParams, StepDefinitionFileService) {
                 var stepDefinition = $stateParams.stepDefinition;
-                return stepDefinition ? StepDefinitionFileService.openStepDefinitionFile(stepDefinition) : null;
+                return stepDefinition ? StepDefinitionFileService.getPath({ name: stepDefinition }) : null;
             },
             components: function (ComponentFileService) {
-                return ComponentFileService.getAllComponents();
+                return ComponentFileService.getAll();
             },
             mockData: function (MockDataFileService) {
-                return MockDataFileService.getAllMockData();
+                return MockDataFileService.getAll();
             }
         }
     })
     .state('tractor.mock-data-editor', {
-        url: 'mock-data-editor?mockData',
+        url: 'mock-data-editor/:mockData',
         /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/features/MockDataEditor/MockDataEditor.html', 'utf8'),
         /* eslint-enable no-path-concat */
         controller: 'MockDataEditorController as mockDataEditor',
         resolve: {
-            mockDataFileNames: function (MockDataFileService) {
-                return MockDataFileService.getMockDataFileNames();
+            mockDataFileStructure: function (MockDataFileService) {
+                return MockDataFileService.getFileStructure();
             },
-            mockDataFile: function ($stateParams, MockDataFileService) {
-                var mockData = $stateParams.mockData;
-                return mockData ? MockDataFileService.openMockDataFile(mockData) : null;
+            mockDataPath: function ($stateParams, MockDataFileService) {
+                var mockDataName = $stateParams.mockData;
+                return mockDataName ? MockDataFileService.getPath({ name: mockDataName }) : null;
             }
         }
     });
