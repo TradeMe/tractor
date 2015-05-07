@@ -1,7 +1,7 @@
 'use strict';
 
 // Config:
-var config = require('../../utils/get-config.js')();
+var config = require('../../utils/create-config.js')();
 
 // Utilities:
 var log = require('../../utils/logging');

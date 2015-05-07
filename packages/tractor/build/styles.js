@@ -22,7 +22,7 @@ module.exports = styles;
 function styles () {
     var cssFilter = filter('*.css');
 
-    return sass(config.src + 'styles/', {
+    return sass(config.stylesDir, {
         sourcemap: true
     })
     .on('error', error)

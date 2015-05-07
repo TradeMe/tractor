@@ -23,67 +23,95 @@ var StepParserService = function StepParserService (
         parse: parse
     };
 
-    function parse (stepDefinition, astObject) {
-        var step = new StepModel(stepDefinition);
+    function parse (stepDefinition, ast) {
+        try {
+            var step = new StepModel(stepDefinition);
 
-        var type = astObject.expression.callee.property.name;
-        var stepRegexArgument = _.first(astObject.expression.arguments);
-        var regex = stepRegexArgument.raw.replace(/^\//, '').replace(/\/$/, '');
+            var stepCallExpression = ast.expression;
+            step.type = parseType(step, stepCallExpression);
+            step.regex = parseRegex(step, stepCallExpression);
+
+            var stepFunction = _.last(ast.expression.arguments);
+            var statements = stepFunction.body.body;
+            var parsers = [parseMock, parseTask, parseExpectation, parsePending, parseMockDone, parseTaskDone];
+            tryParse(step, statements, parsers);
+
+            return step;
+        } catch (e) {
+            console.warn('Invalid step:', ast);
+            return null;
+        }
+    }
+
+    function parseType (step, stepCallExpression) {
+        var type = stepCallExpression.callee.property.name;
         assert(_.contains(step.stepTypes, type));
+        return type;
+    }
+
+    function parseRegex (step, stepCallExpression) {
+        var stepRegexArgument = _.first(stepCallExpression.arguments);
+        var regex = stepRegexArgument.raw.replace(/^\//, '').replace(/\/$/, '');
         assert(regex);
-        step.type = type;
-        step.regex = new RegExp(regex);
+        return new RegExp(regex);
+    }
 
-        var stepFunction = _.last(astObject.expression.arguments);
-
-        _.each(stepFunction.body.body, function (statement, index) {
-            var notMock = false;
-            var notTasks = false;
-            var notExpectations = false;
-            var notPending = false;
-
-            try {
-                var httpBackendOnloadMemberExpression = statement.expression.callee.object.callee.object;
-                assert(httpBackendOnloadMemberExpression.object.name === 'httpBackend');
-                assert(httpBackendOnloadMemberExpression.property.name === 'onLoad');
-                var mock = MockParserService.parse(step, statement);
-                step.mocks.push(mock);
-            } catch (e) {
-                notMock = true;
-            }
-
-            try {
-                var tasksDeclaration = _.first(statement.declarations);
-                assert(tasksDeclaration.id.name === 'tasks');
-                TaskParserService.parse(step, tasksDeclaration.init);
-            } catch (e) {
-                notTasks = true;
-            }
-
-            try {
-                var expectations = _.first(statement.expression.callee.object.arguments).elements;
-                _.each(expectations, function (expectation) {
-                    assert(!(expectation.name && expectation.name === 'tasks'));
-                    expectation = ExpectationParserService.parse(step, expectation);
-                    step.expectations.push(expectation);
-                });
-            } catch (e) {
-                notExpectations = true;
-            }
-
-            try {
-                assert(statement.expression.callee.object.name === 'callback');
-                assert(statement.expression.callee.property.name === 'pending');
-            } catch (e) {
-                notPending = true;
-            }
-
-            if (notMock && notTasks && notExpectations && notPending) {
-                console.log(statement, index);
+    function tryParse (step, statements, parsers) {
+        statements.map(function (statement) {
+            var parsed = parsers.some(function (parser) {
+                try {
+                    return parser(step, statement);
+                } catch (e) { }
+            });
+            if (!parsed) {
+                throw new Error();
             }
         });
+    }
 
-        return step;
+    function parseMock (step, statement) {
+        var httpBackendOnloadMemberExpression = statement.expression.callee.object.callee;
+        assert(httpBackendOnloadMemberExpression.object.name === 'httpBackend');
+        assert(httpBackendOnloadMemberExpression.property.name.indexOf('when') === 0);
+        var mock = MockParserService.parse(step, statement);
+        assert(mock);
+        step.mocks.push(mock);
+        return true;
+    }
+
+    function parseTask (step, statement) {
+        var tasksDeclaration = _.first(statement.declarations);
+        assert(tasksDeclaration.id.name === 'tasks');
+        TaskParserService.parse(step, tasksDeclaration.init);
+        return true;
+    }
+
+    function parseExpectation (step, statement) {
+        var elements = _.first(statement.expression.callee.object.callee.object.arguments).elements;
+        _.each(elements, function (element) {
+            assert(!(element.name && element.name === 'tasks'));
+            var expectation = ExpectationParserService.parse(step, element);
+            assert(expectation);
+            step.expectations.push(expectation);
+        });
+        return true;
+    }
+
+    function parsePending (step, statement) {
+        var callee = statement.expression.callee;
+        assert(callee.object.name === 'callback' || callee.object.name === 'done');
+        assert(callee.property.name === 'pending');
+        return true;
+    }
+
+    function parseMockDone (step, statement) {
+        assert(statement.expression.callee.name === 'done');
+        return true;
+    }
+
+    function parseTaskDone (step, statement) {
+        assert(statement.expression.callee.object.arguments[0].name === 'done');
+        return true;
     }
 };
 

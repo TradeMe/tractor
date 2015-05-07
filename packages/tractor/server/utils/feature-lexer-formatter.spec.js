@@ -130,4 +130,14 @@ describe('server/utils: feature-lexer-formattery:', function () {
             expect(formatter.lastElement.stepDeclarations[0].step).to.equal(step);
         });
     });
+
+    describe('FeatureLexerFormatter::done', function () {
+        it('should return all the features', function () {
+            var formatter = new FeatureLexerFormatter();
+            var features = [];
+            formatter.features = features;
+
+            expect(formatter.done()).to.equal(features);
+        });
+    });
 });

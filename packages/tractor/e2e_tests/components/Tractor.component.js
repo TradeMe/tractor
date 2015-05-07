@@ -1,15 +1,30 @@
+/*{
+    "name": "Tractor",
+    "elements": [],
+    "actions": [
+        {
+            "name": "get",
+            "parameters": []
+        },
+        {
+            "name": "refresh",
+            "parameters": []
+        }
+    ]
+}*/
 module.exports = function () {
     var Tractor = function Tractor() {
-        this.title = element(by.css('head > title'));
-    };
-    Tractor.prototype.getTitle = function () {
-        var self = this;
-        return self.title.getInnerHtml();
     };
     Tractor.prototype.get = function () {
         var self = this;
         return new Promise(function (resolve) {
-            resolve(browser.get('http://localhost:3000', null));
+            resolve(browser.get('http://localhost:4000', null));
+        });
+    };
+    Tractor.prototype.refresh = function () {
+        var self = this;
+        return new Promise(function (resolve) {
+            resolve(browser.refresh(null));
         });
     };
     return Tractor;

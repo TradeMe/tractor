@@ -476,7 +476,17 @@ th {
   font-weight: normal;
   font-style: normal; }
 form.file {
-  width: 80%; }
+  float: left;
+  width: 80%;
+  height: 100%; }
+
+.file-editor {
+  height: 90%;
+  overflow-x: hidden;
+  overflow-y: scroll; }
+
+.file-editor h3 {
+  display: inline-block; }
 
 .file-editor ul,
 .file-editor ol {
@@ -488,6 +498,7 @@ form.file {
 .file-editor__list-item {
   position: relative;
   padding: 0.5rem;
+  padding-bottom: 0;
   margin-right: 2.5rem;
   margin-bottom: 0.5rem;
   background: whitesmoke; }
@@ -503,7 +514,6 @@ form.file {
 .file-editor tractor-checkbox {
   font-size: 0;
   display: inline-block;
-  margin-bottom: 0.5rem;
   vertical-align: top; }
 
 .file-editor section > tractor-action:last-child {
@@ -547,20 +557,18 @@ form.file {
 .file-options {
   font-size: 0;
   height: 10%;
-  background: rgba(240, 240, 240, 0.8); }
+  background: #e1e1e1; }
 
 .file-options__name {
   display: inline-block;
   vertical-align: top;
   padding: 0.5rem;
   margin: 0.5rem 0;
-  max-width: 45%;
   text-overflow: ellipsis;
   overflow: hidden; }
 
 .file-options > div {
   display: inline-block;
-  width: 55%;
   margin-top: 0.5rem; }
 
 .file-options__name-input,
@@ -568,59 +576,118 @@ form.file {
   display: table-cell;
   vertical-align: top; }
 
-.file-options__name-input,
-.file-options__save-file {
-  width: 50%;
-  line-height: 4rem; }
-
 .file-options__save-file button {
   margin-top: 1.5rem; }
 
-.file-tree {
+tractor-file-tree {
   background: #fafafa;
-  width: 20%;
-  padding-left: 0.5rem; }
+  float: left;
+  width: 19.75%;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll; }
 
-.file-tree__file-list li {
-  list-style: none;
-  margin-left: -1rem;
-  padding-left: 1.5rem;
-  background-repeat: no-repeat;
-  background-position: 0 50%; }
+tractor-file-tree .file-tree__container {
+  float: left;
+  height: 100%; }
 
-.file-tree__file-list li a {
+tractor-file-tree .file-tree__header {
+  padding-left: 1rem; }
+
+tractor-file-tree .file-tree__item-name {
+  padding: 0;
+  margin: 0;
+  display: inline-block;
   text-decoration: none;
-  color: black; }
+  color: black;
+  white-space: nowrap; }
 
-.file-tree__file-list--javascript li {
+tractor-file-tree .file-tree__item-rename {
+  line-height: 1.5rem;
+  font-family: "Corbert";
+  margin: 0.1rem 0;
+  padding: 0 0.5rem;
+  border: none;
+  outline: 1px solid #e1e1e1;
+  display: block; }
+
+tractor-file-tree .file-tree__file-list .file-tree__file-list {
+  padding-left: 1rem; }
+
+tractor-file-tree .file-tree--javascript li {
   background-image: url("./images/js.png"); }
+  tractor-file-tree .file-tree--javascript li.dragover {
+    background-image: url("./images/move-js-to-directory.png"); }
 
-.file-tree__file-list--feature li {
+tractor-file-tree .file-tree--feature li {
   background-image: url("./images/feature.png"); }
+  tractor-file-tree .file-tree--feature li.dragover {
+    background-image: url("./images/move-feature-to-directory.png"); }
 
-.file-tree__file-list--json li {
+tractor-file-tree .file-tree--json li {
   background-image: url("./images/json.png"); }
+  tractor-file-tree .file-tree--json li.dragover {
+    background-image: url("./images/move-json-to-directory.png"); }
 
-.file-tree__file-list-file {
+tractor-file-tree .file-tree__file-list-item {
+  position: relative;
+  list-style: none;
+  margin: 0.1rem 0;
+  margin-left: -1rem;
+  padding-left: 2rem;
+  background-repeat: no-repeat;
+  background-position: 0.25rem 0;
   line-height: 1.5rem;
   font-family: "Corbert";
   cursor: pointer; }
-  .file-tree__file-list-file:hover, .file-tree__file-list-file.active {
+  tractor-file-tree .file-tree__file-list-item:hover > p, tractor-file-tree .file-tree__file-list-item.active > p {
     font-weight: bolder; }
-  .file-tree__file-list-file.active {
+  tractor-file-tree .file-tree__file-list-item:hover > [ng-include] > .file-tree__item-options {
+    background-image: url("./images/options.png"); }
+  tractor-file-tree .file-tree__file-list-item > [ng-include] > .file-tree__item-options.file-tree__item-active-options {
+    background-image: url("./images/active-options.png"); }
+  tractor-file-tree .file-tree__file-list-item.active {
     display: block;
     -webkit-transform: translateX(1rem);
             transform: translateX(1rem); }
+  tractor-file-tree .file-tree__file-list-item.file-tree__file-list-item--new-directory {
+    background-image: url("./images/new-directory.png"); }
+  tractor-file-tree .file-tree__file-list-item.file-tree__file-list-item--directory {
+    background-image: url("./images/directory.png"); }
+  tractor-file-tree .file-tree__file-list-item.file-tree__file-list-item--expanded-directory {
+    background-image: url("./images/expanded-directory.png"); }
+
+tractor-file-tree .file-tree__item-options {
+  position: absolute;
+  left: -1.25rem;
+  height: 1.5rem;
+  width: 1.5rem; }
+
+tractor-file-tree .file-tree__item-options-panel {
+  position: absolute;
+  top: 1.5rem;
+  left: -1.25rem;
+  margin-top: -1.5rem;
+  padding-top: 1.5rem;
+  z-index: 1;
+  width: 8rem; }
+  tractor-file-tree .file-tree__item-options-panel tractor-action, tractor-file-tree .file-tree__item-options-panel button {
+    width: 100%; }
+
+tractor-file-tree tractor-action button {
+  background: #cdcdcd;
+  color: black;
+  white-space: nowrap; }
+  tractor-file-tree tractor-action button:hover {
+    background: #e1e1e1; }
 
 header {
+  height: 11.5%;
   background: #42d253;
   padding: 0 1rem; }
 
-header section, header nav {
-  height: 50%; }
-
-.control-panel__top-row {
-  padding: 0.5rem 0; }
+.control-panel__top-row > div {
+  padding: 0.5rem 0 0.25rem; }
 
 .app-root-url {
   display: inline-block;
@@ -646,7 +713,7 @@ nav > * {
 
 nav ul {
   margin: 0;
-  padding: 0;
+  padding: 0.25rem 0 0.5rem;
   font-size: 0; }
 
 nav ul li {
@@ -654,8 +721,8 @@ nav ul li {
 
 nav li a {
   font-family: "LeagueGothic";
-  font-size: 2.25rem;
-  line-height: 3rem;
+  font-size: 1.75rem;
+  line-height: 2.25rem;
   padding: 0 0.5rem;
   margin-right: 0.5rem;
   color: black;
@@ -673,57 +740,43 @@ nav li a:focus {
 
 tractor-notifier {
   position: absolute;
-  top: 2rem;
+  bottom: 0rem;
   right: 0.5rem;
-  width: 45%; }
+  max-width: 100%;
+  max-height: 100%;
+  overflow-y: hidden; }
 
 .notifier__notifications {
   list-style: none; }
 
 .notifier__notification {
-  position: relative;
-  margin-bottom: 0.5rem;
-  padding: 0.5rem;
-  line-height: 2rem;
-  letter-spacing: 1px;
-  font-size: 1rem;
-  word-break: break-all; }
+  text-align: right;
+  font-size: 0;
+  margin-bottom: 0.5rem; }
 
-.notifier__notification--info {
+.notifier__notification--info .notifier__notification-message {
   background: rgba(245, 245, 245, 0.9); }
 
-.notifier__notification--error {
+.notifier__notification--error .notifier__notification-message {
   background: rgba(255, 50, 50, 0.9);
   color: whitesmoke; }
 
 .notifier__notification-message {
+  line-height: 2rem;
+  font-size: 1rem;
   display: inline-block;
-  white-space: pre;
-  word-break: break-word; }
+  padding: 0 0.5rem; }
 
 .notifier__notification-dismiss {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  bottom: 0;
   height: 2rem;
   width: 2rem;
+  vertical-align: bottom;
   -webkit-appearance: none;
   appearance: none;
   border: none;
   outline: none;
   background-color: #6e6e6e;
-  background-image: url(./images/dismiss.png);
-  transition: all 0.1s;
-  -webkit-transform: scale(1);
-          transform: scale(1); }
-  .notifier__notification-dismiss:hover {
-    background-color: #828282;
-    -webkit-transform: scale(1.125);
-            transform: scale(1.125); }
-  .notifier__notification-dismiss:active {
-    -webkit-transform: scale(1.25);
-            transform: scale(1.25); }
+  background-image: url(./images/dismiss.png); }
 
 .as-sortable-item, .as-sortable-placeholder {
   margin-bottom: 0.5rem;
@@ -775,6 +828,7 @@ body {
 h1 {
   font-family: "LeagueGothic";
   font-size: 3rem;
+  font-weight: normal;
   line-height: 3rem;
   margin-top: 1.25rem;
   margin-bottom: 0.875rem; }
@@ -782,14 +836,15 @@ h1 {
 h2 {
   font-family: "LeagueGothic";
   font-size: 1.75rem;
-  line-height: 1.75rem;
+  font-weight: normal;
+  line-height: 2rem;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem; }
 
 h3 {
   font-family: "CodePro";
-  font-size: 0.875rem;
-  line-height: 0.875rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
   margin-top: 0.375rem;
   margin-bottom: 0.375rem; }
 
@@ -818,8 +873,7 @@ sub {
 
 tractor-action,
 tractor-submit {
-  display: inline-block;
-  padding: 0 0.5rem; }
+  display: inline-block; }
 
 tractor-action[icon] {
   width: 2rem;
@@ -881,7 +935,7 @@ tractor-select,
 tractor-step-input,
 tractor-checkbox {
   line-height: 3.5rem;
-  height: 3.5rem;
+  height: 4rem;
   display: block;
   padding-right: 0.5rem;
   margin-bottom: 1px; }
@@ -913,13 +967,14 @@ tractor-checkbox input {
   font-family: "Corbert";
   display: block;
   border: none;
-  border-bottom: 1px solid #c8c8c8;
+  border-bottom: 1px solid #6e6e6e;
   background: white;
   height: 1.5rem;
   line-height: 1.5rem;
   font-size: 1rem;
   width: 100%;
-  padding-left: 1rem; }
+  padding-left: 1rem;
+  appearance: none; }
 
 tractor-variable-input input:active,
 tractor-text-input input:active,
@@ -966,17 +1021,8 @@ html, body {
 body div[ui-view], main {
   width: 100%; }
 
-header {
-  height: 12.5%; }
-
 main {
-  height: 87.5%; }
-
-main > section, main > form {
-  float: left;
-  height: 100%;
-  overflow-y: scroll;
-  overflow-x: hidden; }
+  height: 88.5%; }
 
 .fill {
   position: absolute;
@@ -987,6 +1033,20 @@ main > section, main > form {
 
 .hidden {
   display: none !important; }
+
+tractor-resize-handle {
+  float: left;
+  width: 0.25%;
+  height: 100%;
+  background: #cdcdcd;
+  cursor: col-resize; }
+
+.resizing {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  cursor: col-resize; }
 
 
 

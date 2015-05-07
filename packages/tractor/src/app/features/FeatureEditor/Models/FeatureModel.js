@@ -14,10 +14,20 @@ var createFeatureModelConstructor = function (
     FeatureIndent,
     FeatureNewLine
 ) {
-    var FeatureModel = function FeatureModel () {
+    var FeatureModel = function FeatureModel (options) {
         var scenarios = [];
 
         Object.defineProperties(this, {
+            isSaved: {
+                get: function () {
+                    return !!(options && options.isSaved);
+                }
+            },
+            path: {
+                get: function () {
+                    return options && options.path;
+                }
+            },
             scenarios: {
                 get: function () {
                     return scenarios;
@@ -26,6 +36,11 @@ var createFeatureModelConstructor = function (
             featureString: {
                 get: function () {
                     return toFeatureString.call(this);
+                }
+            },
+            data: {
+                get: function () {
+                    return this.featureString;
                 }
             }
         });

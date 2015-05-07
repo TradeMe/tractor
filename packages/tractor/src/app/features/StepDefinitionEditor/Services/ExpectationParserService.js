@@ -16,26 +16,40 @@ var ExpectationParserService = function ExpectationParserService (
         parse: parse
     };
 
-    function parse (step, astObject) {
-        var expectation = new ExpectationModel(step);
+    function parse (step, ast) {
+        try {
+            var expectation = new ExpectationModel(step);
+            expectation.value = _.first(ast.arguments).value;
 
-        expectation.expectedResult = _.first(astObject.arguments).value;
+            var expectationCallExpression = _.first(ast.callee.object.object.object.arguments);
 
-        var actionCallExpression = _.first(astObject.callee.object.object.object.arguments);
+            expectation.component = parseComponent(expectation, expectationCallExpression);
+            expectation.action = parseAction(expectation, expectationCallExpression);
+            parseArguments(expectation, expectationCallExpression);
 
-        expectation.component = _.find(expectation.step.stepDefinition.componentInstances, function (componentInstance) {
-            return componentInstance.name === actionCallExpression.callee.object.name;
+            return expectation;
+        } catch (e) {
+            console.warn('Invalid expectation:', ast);
+            return null;
+        }
+    }
+
+    function parseComponent (expectation, expectationCallExpression) {
+        return _.find(expectation.step.stepDefinition.componentInstances, function (componentInstance) {
+            return expectationCallExpression.callee.object.name === componentInstance.variableName;
         });
+    }
 
-        expectation.action = _.find(expectation.component.component.actions, function (action) {
-            return action.name === actionCallExpression.callee.property.name;
+    function parseAction (expectation, expectationCallExpression) {
+        return _.find(expectation.component.component.actions, function (action) {
+            return expectationCallExpression.callee.property.name === action.variableName;
         });
+    }
 
-        _.each(actionCallExpression.arguments, function (argument, index) {
+    function parseArguments (expectation, expectationCallExpression) {
+        _.each(expectationCallExpression.arguments, function (argument, index) {
             expectation.arguments[index].value = argument.value;
         });
-
-        return expectation;
     }
 };
 

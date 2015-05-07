@@ -58,7 +58,7 @@ var createExpectationModelConstructor = function (
         });
 
         this.component = _.first(this.step.stepDefinition.componentInstances);
-        this.expectedResult = '';
+        this.value = '';
     };
 
     return ExpectationModel;
@@ -66,31 +66,26 @@ var createExpectationModelConstructor = function (
     function toAST () {
         var ast = ASTCreatorService;
 
-        var argumentValues = _.map(this.arguments, function (argument) {
+        var template = 'expect(<%= component %>.<%= action %>(%= expectationArguments %)).to.eventually.equal(<%= expectedResult %>); ';
+
+        var expectationArguments = this.arguments.map(function (argument) {
             return argument.ast;
         });
+        var expectedResult = ast.literal(StringToLiteralService.toLiteral(this.value) || this.value);
 
-        var actionMemberExpression = ast.memberExpression(ast.identifier(this.component.name), ast.identifier(this.action.name));
-        var actionCallExpression = ast.callExpression(actionMemberExpression, argumentValues);
-        var expectCallExpression = ast.callExpression(ast.identifier('expect'), [actionCallExpression]);
-        var toMemberExpression = ast.memberExpression(expectCallExpression, ast.identifier('to'));
-        var eventuallyMemberExpression = ast.memberExpression(toMemberExpression, ast.identifier('eventually'));
-        var equalMemberExpression = ast.memberExpression(eventuallyMemberExpression, ast.identifier('equal'));
-
-        var expectedResultLiteral = StringToLiteralService.toLiteral(this.expectedResult);
-        if (expectedResultLiteral) {
-            return ast.callExpression(equalMemberExpression, [ast.literal(expectedResultLiteral)]);
-        } else {
-            return ast.callExpression(equalMemberExpression, [ast.literal(this.expectedResult)]);
-        }
+        return ast.template(template, {
+            component: ast.identifier(this.component.variableName),
+            action: ast.identifier(this.action.variableName),
+            expectationArguments: expectationArguments,
+            expectedResult: expectedResult
+        }).expression;
     }
 
     function parseArguments () {
-        return _.map(this.action.parameters, function (parameter) {
-            var name = parameter.name;
-            name = name.replace(/([A-Z])/g, ' $1');
-            name = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-            return new ArgumentModel(null, { name: name });
+        return this.action.parameters.map(function (parameter) {
+            return new ArgumentModel(null, {
+                name: parameter.name
+            });
         });
     }
 };

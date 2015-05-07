@@ -22,7 +22,6 @@ var ElementParserService = function ElementParserService (
     function parse (component, astObject, element) {
         if (!element) {
             element = new ElementModel(component);
-            element.name = astObject.expression.left.property.name;
         }
 
         var elementCallExpression = astObject.expression.right;

@@ -1,10 +1,11 @@
 <header>
     <section class="control-panel__top-row">
-        <div class="app-root-url" title="Modify in tractor.conf.js">
-            <h2>App Root URL:&nbsp;</h2><span>{{ controlPanel.appRootUrl }}</span>
+        <div>
+            <div class="app-root-url" title="Modify in tractor.conf.js">
+                <h2>App Root URL:&nbsp;</h2><span>{{ controlPanel.appRootUrl }}</span>
+            </div>
+            <tractor-action model="controlPanel" action="Run protractor"></tractor-action>
         </div>
-
-        <tractor-action model="controlPanel" action="Run protractor"></tractor-action>
     </section>
 
     <nav>

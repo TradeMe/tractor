@@ -1,14 +1,11 @@
 header {
+    height: 11.5%;
     background: $primary;
     padding: 0 $large-spacing;
 }
 
-header section, header nav {
-    height: 50%;
-}
-
-.control-panel__top-row {
-    padding: $standard-spacing 0;
+.control-panel__top-row > div {
+    padding: $standard-spacing 0 $small-spacing;
 }
 
 .app-root-url {
@@ -44,7 +41,7 @@ nav > * {
 
 nav ul {
     margin: 0;
-    padding: 0;
+    padding: $small-spacing 0 $standard-spacing;
     font-size: 0;
 }
 
@@ -54,8 +51,8 @@ nav ul li {
 
 nav li a {
     font-family: $heading-type;
-    font-size: 2.25rem;
-    line-height: 3rem;
+    font-size: 1.75rem;
+    line-height: 2.25rem;
 
     padding: 0 $standard-spacing;
     margin-right: $standard-spacing;

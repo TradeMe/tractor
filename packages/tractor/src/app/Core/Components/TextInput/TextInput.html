@@ -1,0 +1,16 @@
+<label>{{ label }}: </label>
+<input name="text-{{ id }}" type="text" placeholder="e.g. {{ example }}"
+    ng-if="!validateFileName"
+    ng-model="model[property]"
+    ng-model-options="{ allowInvalid: true }"
+    required />
+<input name="text-{{ id }}" type="text" placeholder="e.g. {{ example }}"
+    ng-if="validateFileName"
+    ng-model="model[property]"
+    ng-model-options="{ allowInvalid: true }"
+    file-name
+    required />
+<div ng-messages="form['text-' + id].$error">
+    <ng-message when="fileName">That is not a valid input</ng-message>
+    <ng-message when="required">Required</ng-message>
+</div>

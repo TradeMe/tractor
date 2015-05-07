@@ -1,29 +1,29 @@
 'use strict';
 
+// Utilities:
+var _ = require('lodash');
+
 // Module:
 var FeatureEditor = require('../FeatureEditor');
 
-var FeatureFileService = function FeatureFileService ($http) {
-    return {
-        openFeatureFile: openFeatureFile,
-        saveFeatureFile: saveFeatureFile,
-        getFeatureFileNames: getFeatureFileNames
-    };
+// Dependencies:
+var FileService = require('../../../Core/Services/FileService');
+require('./FeatureParserService');
+require('../../../Core/Services/FileStructureService');
 
-    function openFeatureFile (fileName) {
-        return $http.get('/open-feature-file?name=' + encodeURIComponent(fileName));
-    }
+var FeatureFileService = function FeatureFileService (
+    $http,
+    FeatureParserService,
+    FileStructureService
+) {
+    var service = FileService($http, FeatureParserService, FileStructureService, 'features');
+    var save = service.saveFile;
+    service.saveFile = _.compose(save, fixFeatureParameters);
+    return service;
 
-    function saveFeatureFile (feature, name) {
-        feature = feature.replace(/"</g, '\'<').replace(/>"/g, '>\'');
-        return $http.post('/save-feature-file', {
-            feature: feature,
-            name: name
-        });
-    }
-
-    function getFeatureFileNames () {
-        return $http.get('/get-feature-file-names');
+    function fixFeatureParameters (options) {
+        options.data = options.data.replace(/"</g, '\'<').replace(/>"/g, '>\'');
+        return options;
     }
 };
 

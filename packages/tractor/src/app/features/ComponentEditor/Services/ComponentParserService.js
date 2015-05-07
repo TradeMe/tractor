@@ -21,41 +21,55 @@ var ComponentParserService = function ComponentParserService (
         parse: parse
     };
 
-    function parse (astObject) {
-        var component = new ComponentModel();
+    function parse (componentFile) {
+        try {
+            var ast = componentFile.ast;
+            var meta = JSON.parse(_.first(ast.comments).value);
 
-        var componentModuleExpressionStatement = _.first(astObject.body);
-        var moduleBlockStatement = componentModuleExpressionStatement.expression.right.callee.body;
+            var component = new ComponentModel({
+                isSaved: true,
+                path: componentFile.path
+            });
+            component.name = meta.name;
 
-        _.each(moduleBlockStatement.body, function (statement, index) {
-            try {
-                component.name = statement.argument.name;
-                return;
-            } catch (e) { }
+            var componentModuleExpressionStatement = _.first(ast.body);
+            var moduleBlockStatement = componentModuleExpressionStatement.expression.right.callee.body;
 
-            try {
-                var constructorDeclarator = _.first(statement.declarations);
-                var constructorBlockStatament = constructorDeclarator.init.body;
-                _.each(constructorBlockStatament.body, function (statement) {
-                    var domElement = ElementParserService.parse(component, statement);
-                    assert(domElement);
-                    component.elements.push(domElement);
-                    component.domElements.push(domElement);
-                });
-                return;
-            } catch (e) { }
+            _.each(moduleBlockStatement.body, function (statement, index) {
+                try {
+                    assert(statement.argument.name);
+                    return;
+                } catch (e) { }
 
-            try {
-                var action = ActionParserService.parse(component, statement);
-                assert(action);
-                component.actions.push(action);
-                return;
-            } catch (e) { }
+                try {
+                    var constructorDeclarator = _.first(statement.declarations);
+                    var constructorBlockStatement = constructorDeclarator.init.body;
+                    _.each(constructorBlockStatement.body, function (statement) {
+                        var domElement = ElementParserService.parse(component, statement);
+                        assert(domElement);
+                        domElement.name = meta.elements[component.domElements.length].name;
+                        component.elements.push(domElement);
+                        component.domElements.push(domElement);
+                    });
+                    return;
+                } catch (e) { }
 
-            console.warn('Invalid Component:', statement, index);
-        });
+                try {
+                    var actionMeta = meta.actions[component.actions.length];
+                    var action = ActionParserService.parse(component, statement, actionMeta);
+                    assert(action);
+                    action.name = actionMeta.name;
+                    component.actions.push(action);
+                    return;
+                } catch (e) { }
 
-        return component;
+                console.warn('Invalid Component:', statement, index);
+            });
+
+            return component;
+        } catch (e) {
+            return new ComponentModel();
+        }
     }
 };
 

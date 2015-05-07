@@ -1,52 +1,27 @@
 'use strict';
 
-// Utilities:
-var _ = require('lodash');
-var Promise = require('bluebird');
-
 // Module:
 var ComponentEditor = require('../ComponentEditor');
 
 // Dependencies:
+var FileService = require('../../../Core/Services/FileService');
 require('./ComponentParserService');
+require('../../../Core/Services/FileStructureService');
 
 var ComponentFileService = function ComponentFileService (
     $http,
-    ComponentParserService
+    ComponentParserService,
+    FileStructureService
 ) {
-    return {
-        openComponentFile: openComponentFile,
-        saveComponentFile: saveComponentFile,
-        getComponentFileNames: getComponentFileNames,
-        getAllComponents: getAllComponents
-    };
+    var service = FileService($http, ComponentParserService, FileStructureService, 'components');
+    service.getAll = getAll;
+    return service;
 
-    function openComponentFile (file) {
-        return $http.get('/open-component-file?name=' + encodeURIComponent(file));
-    }
-
-    function saveComponentFile (program, name) {
-        return $http.post('/save-component-file', {
-            program: program,
-            name: name
-        });
-    }
-
-    function getComponentFileNames () {
-        return $http.get('/get-component-file-names');
-    }
-
-    function getAllComponents () {
-        return this.getComponentFileNames()
-        .then(function (componentFileNames) {
-            var openComponentFiles = _.map(componentFileNames, function (componentFileName) {
-                return openComponentFile(componentFileName);
-            });
-            return Promise.all(openComponentFiles)
-            .then(function (results) {
-                return _.map(results, function (result) {
-                    return ComponentParserService.parse(result.ast);
-                });
+    function getAll () {
+        return this.getFileStructure()
+        .then(function (fileStructure) {
+            return fileStructure.allFiles.map(function (file) {
+                return ComponentParserService.parse(file);
             });
         });
     }

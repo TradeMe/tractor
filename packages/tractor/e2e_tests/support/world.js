@@ -1,13 +1,12 @@
 'use strict';
 
+var HttpBackend = require('httpbackend');
+
 var CustomWorld = (function () {
     var chai = require('chai');
     var chaiAsPromised = require('chai-as-promised');
-    var HttpBackendProxy = require('http-backend-proxy');
-
     var CustomWorld = function CustomWorld () {
         global.browser = global.protractor = require('protractor').getInstance();
-        global.httpBackend = new HttpBackendProxy(global.browser, { buffer: true });
         global.By = global.protractor.By;
         chai.use(chaiAsPromised);
         global.expect = chai.expect;
@@ -24,9 +23,16 @@ module.exports = function () {
     };
 
     /* eslint-disable new-cap */
+    this.Before(function (callback) {
+    /* eslint-enable new-cap */
+        global.httpBackend = new HttpBackend(global.browser);
+        callback();
+    });
+
+    /* eslint-disable new-cap */
     this.After(function(callback) {
     /* eslint-enable new-cap */
-        global.httpBackend.onLoad.reset();
+        global.httpBackend.clear();
         callback();
     });
 

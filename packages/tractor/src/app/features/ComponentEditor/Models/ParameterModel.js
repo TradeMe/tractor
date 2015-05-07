@@ -7,6 +7,7 @@ var _ = require('lodash');
 var ComponentEditor = require('../ComponentEditor');
 
 // Dependencies:
+var camelcase = require('change-case').camel;
 require('../../../Core/Services/ASTCreatorService');
 
 var createParameterModelConstructor = function (ASTCreatorService) {
@@ -15,6 +16,18 @@ var createParameterModelConstructor = function (ASTCreatorService) {
             action: {
                 get: function () {
                     return action;
+                }
+            },
+            variableName: {
+                get: function () {
+                    return camelcase(this.name);
+                }
+            },
+            meta: {
+                get: function () {
+                    return {
+                        name: this.name
+                    };
                 }
             },
             ast: {
@@ -41,7 +54,7 @@ var createParameterModelConstructor = function (ASTCreatorService) {
 
     function toAST () {
         var ast = ASTCreatorService;
-        return ast.identifier(this.name);
+        return ast.identifier(this.variableName);
     }
 };
 

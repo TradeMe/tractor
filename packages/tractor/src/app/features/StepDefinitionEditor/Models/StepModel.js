@@ -83,72 +83,43 @@ var createStepModelConstructor = function (
     function toAST () {
         var ast = ASTCreatorService;
 
-        var thisStep = ast.memberExpression(ast.thisExpression(), ast.identifier(this.type));
-        var stepRegexLiteral = ast.literal(this.regex);
-        var stepDoneIdentifier = ast.identifier('done');
-
-        var expectationASTs = _.map(this.expectations, function (expectation) {
+        var expectations = this.expectations.map(function (expectation) {
             return expectation.ast;
         });
-        var promisesArrayExpression = ast.arrayExpression(expectationASTs);
 
-        var mockASTs = _.map(this.mocks, function (mock) {
+        var mocks = this.mocks.map(function (mock) {
             return mock.ast;
         });
 
-        var taskASTs = _.map(this.tasks, function (task) {
+        var tasks = this.tasks.map(function (task) {
             return task.ast;
         });
 
-        var doneCallExpression;
-        if (this.tasks.length || this.expectations.length || this.mocks.length) {
-            doneCallExpression = ast.callExpression(stepDoneIdentifier);
+        var template = 'this.<%= type %>(<%= regex %>, function (done) { ';
+        if (mocks.length) {
+            template += '%= mocks %; ';
+            template += 'done();';
+        } else if (tasks.length) {
+            template += 'var tasks = <%= tasks[0] %>';
+            tasks.slice(1).forEach(function (taskAST, index) {
+                template += '.then(function () { return <%= tasks[' + (index + 1) + '] %>; })';
+            });
+            template += ';';
+            template += 'Promise.resolve(tasks).then(done).catch(done.fail);';
+        } else if (expectations.length) {
+            template += 'Promise.all([%= expectations %]).spread(function () {  done(); }).catch(done.fail);';
         } else {
-            var pendingMemberExpression = ast.memberExpression(stepDoneIdentifier, ast.identifier('pending'));
-            doneCallExpression = ast.callExpression(pendingMemberExpression);
+            template += 'done.pending();';
         }
-        var doneExpressionStatement = ast.expressionStatement(doneCallExpression);
+        template += '});';
 
-        var blockBody = mockASTs || [];
-
-        if (this.tasks.length) {
-            var firstTask = _.first(taskASTs);
-            var tasksDeclaration;
-            _.each(_.rest(taskASTs), function (taskAST) {
-                var thenIdentifier = ast.identifier('then');
-                var promiseThenMemberExpression = ast.memberExpression(firstTask.expression, thenIdentifier);
-
-                var taskReturnStatement = ast.returnStatement(taskAST.expression);
-                var taskBlockStatement = ast.blockStatement([taskReturnStatement]);
-                var taskFunctionExpression = ast.functionExpression(null, null, taskBlockStatement);
-
-                firstTask.expression = ast.callExpression(promiseThenMemberExpression, [taskFunctionExpression]);
-            }, this);
-
-            var tasksIdentifier = ast.identifier('tasks');
-            var tasksDeclarator = ast.variableDeclarator(tasksIdentifier, firstTask.expression);
-            tasksDeclaration = ast.variableDeclaration([tasksDeclarator]);
-            promisesArrayExpression.elements.push(tasksIdentifier);
-            blockBody.push(tasksDeclaration);
-        }
-
-        if (this.tasks.length || this.expectations.length) {
-            var promiseAllMemberExpression = ast.memberExpression(ast.identifier('Promise'), ast.identifier('all'));
-            var promiseAllCallExpression = ast.callExpression(promiseAllMemberExpression, [promisesArrayExpression]);
-            var promisesMemberExpression = ast.memberExpression(promiseAllCallExpression, ast.identifier('then'));
-            var promisesDoneBlockStatement = ast.blockStatement([doneExpressionStatement]);
-            var promisesDoneFunctionExpression = ast.functionExpression(null, null, promisesDoneBlockStatement);
-            var promisesDoneCallExpression = ast.callExpression(promisesMemberExpression, [promisesDoneFunctionExpression]);
-            var expectationsExpression = ast.expressionStatement(promisesDoneCallExpression);
-            blockBody.push(expectationsExpression);
-        } else {
-            blockBody.push(doneExpressionStatement);
-        }
-
-        var stepBlockStatement = ast.blockStatement(blockBody);
-        var stepFunctionExpression = ast.functionExpression(null, [stepDoneIdentifier], stepBlockStatement);
-        var stepCallExpression = ast.callExpression(thisStep, [stepRegexLiteral, stepFunctionExpression]);
-        return ast.expressionStatement(stepCallExpression);
+        return ast.template(template, {
+            type: ast.identifier(this.type),
+            regex: ast.literal(this.regex),
+            mocks: mocks,
+            tasks: tasks,
+            expectations: expectations
+        });
     }
 };
 
