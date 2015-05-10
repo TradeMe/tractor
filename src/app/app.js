@@ -79,7 +79,7 @@ angular.module('tractor', [
             },
             componentPath: function ($stateParams, ComponentFileService) {
                 var componentName = $stateParams.component;
-                return componentName ? ComponentFileService.getPath({ name: componentName }) : null;
+                return componentName ? ComponentFileService.getPath({ path: componentName }) : null;
             }
         }
     })
@@ -95,7 +95,7 @@ angular.module('tractor', [
             },
             featurePath: function ($stateParams, FeatureFileService) {
                 var feature = $stateParams.feature;
-                return feature ? FeatureFileService.getPath({ name: feature }) : null;
+                return feature ? FeatureFileService.getPath({ path: feature }) : null;
             }
         }
     })
@@ -111,7 +111,7 @@ angular.module('tractor', [
             },
             stepDefinitionPath: function ($stateParams, StepDefinitionFileService) {
                 var stepDefinition = $stateParams.stepDefinition;
-                return stepDefinition ? StepDefinitionFileService.getPath({ name: stepDefinition }) : null;
+                return stepDefinition ? StepDefinitionFileService.getPath({ path: stepDefinition }) : null;
             },
             components: function (ComponentFileService) {
                 return ComponentFileService.getAll();
@@ -133,7 +133,7 @@ angular.module('tractor', [
             },
             mockDataPath: function ($stateParams, MockDataFileService) {
                 var mockDataName = $stateParams.mockData;
-                return mockDataName ? MockDataFileService.getPath({ name: mockDataName }) : null;
+                return mockDataName ? MockDataFileService.getPath({ path: mockDataName }) : null;
             }
         }
     });
