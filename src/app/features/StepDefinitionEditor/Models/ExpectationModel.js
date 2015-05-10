@@ -58,15 +58,18 @@ var createExpectationModelConstructor = function (
         });
 
         this.component = _.first(this.step.stepDefinition.componentInstances);
+        this.condition = _.first(this.conditions);
         this.value = '';
     };
+
+    ExpectationModel.prototype.conditions = ['equal', 'contain'];
 
     return ExpectationModel;
 
     function toAST () {
         var ast = ASTCreatorService;
 
-        var template = 'expect(<%= component %>.<%= action %>(%= expectationArguments %)).to.eventually.equal(<%= expectedResult %>); ';
+        var template = 'expect(<%= component %>.<%= action %>(%= expectationArguments %)).to.eventually.<%= condition %>(<%= expectedResult %>); ';
 
         var expectationArguments = this.arguments.map(function (argument) {
             return argument.ast;
@@ -77,6 +80,7 @@ var createExpectationModelConstructor = function (
             component: ast.identifier(this.component.variableName),
             action: ast.identifier(this.action.variableName),
             expectationArguments: expectationArguments,
+            condition: ast.identifier(this.condition),
             expectedResult: expectedResult
         }).expression;
     }
