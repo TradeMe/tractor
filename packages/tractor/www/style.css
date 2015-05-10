@@ -679,27 +679,25 @@ tractor-file-tree tractor-action button {
     background: #e1e1e1; }
 
 header {
-  height: 11.5%;
   background: #42d253;
   padding: 0 1rem; }
 
 .control-panel__top-row > div {
   padding: 0.5rem 0 0.25rem; }
 
-.app-root-url {
+.control-panel__run-options {
   display: inline-block;
   background: #42e667;
   padding: 0 0.5rem; }
-  .app-root-url > * {
-    display: inline-block; }
-  .app-root-url h3 {
-    margin: 0.5rem 0; }
-  .app-root-url span {
-    vertical-align: top;
+  .control-panel__run-options > * {
+    display: inline-block;
+    width: auto; }
+  .control-panel__run-options tractor-select {
+    margin-top: 0.375rem;
+    margin-bottom: -0.375rem; }
+  .control-panel__run-options tractor-action span {
     line-height: 1.75rem;
-    margin: 0.5rem 0;
-    font-size: 1rem;
-    color: #eee; }
+    margin: 0.5rem 0; }
 
 .control-panel__top-row tractor-action {
   vertical-align: top;
@@ -934,8 +932,7 @@ tractor-checkbox {
   line-height: 3.5rem;
   height: 4rem;
   display: block;
-  padding-right: 0.5rem;
-  margin-bottom: 1px; }
+  padding-right: 0.5rem; }
 
 tractor-variable-input,
 tractor-text-input,
@@ -1012,14 +1009,16 @@ textarea {
   box-sizing: border-box; }
 
 html, body {
+  min-height: 800px;
   min-width: 1200px;
-  min-height: 800px; }
+  height: 100%;
+  width: 100%; }
 
 body div[ui-view], main {
   width: 100%; }
 
 main {
-  height: 88.5%; }
+  height: 86.125%; }
 
 .fill {
   position: absolute;

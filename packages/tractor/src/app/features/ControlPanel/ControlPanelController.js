@@ -12,18 +12,18 @@ require('./Services/RunnerService');
 var ControlPanelController = (function () {
     var ControlPanelController = function ControlPanelController (
         RunnerService,
-        ConfigService
+        config
     ) {
+        debugger;
         this.runnerService = RunnerService;
-
-        ConfigService.getConfig()
-        .then(_.bind(function (config) {
-            this.appRootUrl = config.appRootUrl;
-        }, this));
+        this.environments = config.environments;
+        this.environment = _.first(this.environments);
     };
 
     ControlPanelController.prototype.runProtractor = function () {
-        this.runnerService.runProtractor();
+        this.runnerService.runProtractor({
+            baseUrl: this.environment
+        });
     };
 
     return ControlPanelController;

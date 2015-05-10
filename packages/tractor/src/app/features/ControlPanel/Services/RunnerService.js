@@ -14,10 +14,13 @@ var RunnerService = function RunnerService (
         runProtractor: runProtractor
     };
 
-    function runProtractor () {
+    function runProtractor (options) {
         RealTimeService.connect('run-protractor', {
             'protractor-out': notify,
             'protractor-err': notify
+        })
+        .then(function (connection) {
+            connection.emit('run', options);
         });
     }
 

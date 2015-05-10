@@ -17,7 +17,7 @@ var RealTimeService = function RealTimeService (
     };
 
     function connect (room, events) {
-        ConfigService.getConfig()
+        return ConfigService.getConfig()
         .then(function (config) {
             var url = 'http://localhost:' + config.port + '/' + room;
             var connection = io.connect(url, {
@@ -26,6 +26,7 @@ var RealTimeService = function RealTimeService (
             _.each(events, function (handler, event) {
                 connection.on(event, handler);
             });
+            return connection;
         });
     }
 };

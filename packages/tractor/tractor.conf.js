@@ -11,7 +11,10 @@ var del = Promise.promisify(require('del'));
 var TRACTOR_E2E_TESTS_RUNNING = './tractor_e2e_tests_running';
 
 module.exports = {
-    appRootUrl: 'http://localhost:3000',
+    environments: [
+        'http://localhost:3000',
+        'http://localhost:4000'
+    ],
 	beforeProtractor: function () {
 		this._testDirectory = this.testDirectory;
 		this.testDirectory = TRACTOR_E2E_TESTS_RUNNING;

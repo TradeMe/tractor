@@ -1,10 +1,16 @@
 <header>
     <section class="control-panel__top-row">
         <div>
-            <div class="app-root-url" title="Modify in tractor.conf.js">
-                <h2>App Root URL:&nbsp;</h2><span>{{ controlPanel.appRootUrl }}</span>
-            </div>
-            <tractor-action model="controlPanel" action="Run protractor"></tractor-action>
+            <form class="control-panel__run-options" name="controlPanelOptions" novalidate
+                ng-submit="controlPanel.runProtractor()">
+                <tractor-select
+                    label="Environment"
+                    model="controlPanel">
+                </tractor-select>
+                <tractor-submit
+                    action="Run protractor">
+                </tractor-submit>
+            </form>
         </div>
     </section>
 
