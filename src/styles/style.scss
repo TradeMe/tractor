@@ -19,8 +19,10 @@
 }
 
 html, body {
-    min-width: 1200px;
     min-height: 800px;
+    min-width: 1200px;
+    height: 100%;
+    width: 100%;
 }
 
 body div[ui-view], main {
@@ -28,7 +30,7 @@ body div[ui-view], main {
 }
 
 main {
-    height: 88.5%;
+    height: 86.125%;
 }
 
 .fill {

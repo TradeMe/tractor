@@ -18,7 +18,7 @@ module.exports = function () {
     Tractor.prototype.get = function () {
         var self = this;
         return new Promise(function (resolve) {
-            resolve(browser.get('http://localhost:4000', null));
+            resolve(browser.get('/', null));
         });
     };
     Tractor.prototype.refresh = function () {
