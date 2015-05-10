@@ -59,9 +59,14 @@ angular.module('tractor', [
     .state('tractor', {
         url: '/',
         /* eslint-disable no-path-concat */
-        template: "<header>\r\n    <section class=\"control-panel__top-row\">\r\n        <div>\r\n            <div class=\"app-root-url\" title=\"Modify in tractor.conf.js\">\r\n                <h2>App Root URL:&nbsp;</h2><span>{{ controlPanel.appRootUrl }}</span>\r\n            </div>\r\n            <tractor-action model=\"controlPanel\" action=\"Run protractor\"></tractor-action>\r\n        </div>\r\n    </section>\r\n\r\n    <nav>\r\n        <ul>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".component-editor\">Components</a>\r\n            </li>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".feature-editor\">Features</a>\r\n            </li>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".step-definition-editor\">Step Definitions</a>\r\n            </li>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".mock-data-editor\">Mock Data</a>\r\n            </li>\r\n        </ul>\r\n    </nav>\r\n</header>\r\n\r\n<main ui-view></main>\r\n\r\n<tractor-notifier></tractor-notifier>\r\n",
+        template: "<header>\r\n    <section class=\"control-panel__top-row\">\r\n        <div>\r\n            <form class=\"control-panel__run-options\" name=\"controlPanelOptions\" novalidate\r\n                ng-submit=\"controlPanel.runProtractor()\">\r\n                <tractor-select\r\n                    label=\"Environment\"\r\n                    model=\"controlPanel\">\r\n                </tractor-select>\r\n                <tractor-submit\r\n                    action=\"Run protractor\">\r\n                </tractor-submit>\r\n            </form>\r\n        </div>\r\n    </section>\r\n\r\n    <nav>\r\n        <ul>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".component-editor\">Components</a>\r\n            </li>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".feature-editor\">Features</a>\r\n            </li>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".step-definition-editor\">Step Definitions</a>\r\n            </li>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".mock-data-editor\">Mock Data</a>\r\n            </li>\r\n        </ul>\r\n    </nav>\r\n</header>\r\n\r\n<main ui-view></main>\r\n\r\n<tractor-notifier></tractor-notifier>\r\n",
         /* eslint-enable no-path-concat */
-        controller: 'ControlPanelController as controlPanel'
+        controller: 'ControlPanelController as controlPanel',
+        resolve: {
+            config: ['ConfigService', function (ConfigService) {
+                return ConfigService.getConfig();
+            }]
+        }
     })
     .state('tractor.component-editor', {
         url: 'component-editor/:component',
@@ -67360,7 +67365,7 @@ var SelectInputDirective = function () {
             throw new Error('The "tractor-select" directive requires an "options" attribute, or a "label" attribute that matches a set of options on the "model".');
         }
 
-        $scope.$watch('options', function () {
+        $scope.$watchCollection('options', function () {
             $scope.selectOptions = $scope.options || getOptionsFromProperty($scope);
         });
     }
@@ -68042,7 +68047,7 @@ var RealTimeService = function RealTimeService (
     };
 
     function connect (room, events) {
-        ConfigService.getConfig()
+        return ConfigService.getConfig()
         .then(function (config) {
             var url = 'http://localhost:' + config.port + '/' + room;
             var connection = io.connect(url, {
@@ -68051,6 +68056,7 @@ var RealTimeService = function RealTimeService (
             _.each(events, function (handler, event) {
                 connection.on(event, handler);
             });
+            return connection;
         });
     }
 };
@@ -69938,19 +69944,19 @@ require('./Services/RunnerService');
 var ControlPanelController = (function () {
     var ControlPanelController = function ControlPanelController (
         RunnerService,
-        ConfigService
+        config
     ) {
+        debugger;
         this.runnerService = RunnerService;
-
-        ConfigService.getConfig()
-        .then(_.bind(function (config) {
-            this.appRootUrl = config.appRootUrl;
-        }, this));
+        this.environments = config.environments;
+        this.environment = _.first(this.environments);
     };
-    ControlPanelController.$inject = ['RunnerService', 'ConfigService'];
+    ControlPanelController.$inject = ['RunnerService', 'config'];
 
     ControlPanelController.prototype.runProtractor = function () {
-        this.runnerService.runProtractor();
+        this.runnerService.runProtractor({
+            baseUrl: this.environment
+        });
     };
 
     return ControlPanelController;
@@ -69975,10 +69981,13 @@ var RunnerService = function RunnerService (
         runProtractor: runProtractor
     };
 
-    function runProtractor () {
+    function runProtractor (options) {
         RealTimeService.connect('run-protractor', {
             'protractor-out': notify,
             'protractor-err': notify
+        })
+        .then(function (connection) {
+            connection.emit('run', options);
         });
     }
 

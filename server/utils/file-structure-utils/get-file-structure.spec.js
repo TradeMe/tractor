@@ -1,4 +1,4 @@
-/* global describe:true, beforeEach:true, afterEach:true, it:true */
+/* global describe:true, it:true */
 'use strict';
 
 // Utilities
@@ -7,7 +7,6 @@ var Promise = require('bluebird');
 
 // Test Utilities:
 var chai = require('chai');
-var rewire = require('rewire');
 var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 

@@ -60,7 +60,12 @@ angular.module('tractor', [
         /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/features/ControlPanel/ControlPanel.html', 'utf8'),
         /* eslint-enable no-path-concat */
-        controller: 'ControlPanelController as controlPanel'
+        controller: 'ControlPanelController as controlPanel',
+        resolve: {
+            config: function (ConfigService) {
+                return ConfigService.getConfig();
+            }
+        }
     })
     .state('tractor.component-editor', {
         url: 'component-editor/:component',
