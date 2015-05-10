@@ -1,14 +1,17 @@
 /* global describe:true, it:true */
 'use strict';
 
+// Test utilities:
 var chai = require('chai');
 var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 var Promise = require('bluebird');
 
+// Test setup:
 var expect = chai.expect;
 chai.use(sinonChai);
 
+// Under test:
 var setUpSelenium = require('./set-up-selenium');
 
 describe('server/cli/init: set-up-selenium:', function () {

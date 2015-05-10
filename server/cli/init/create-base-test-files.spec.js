@@ -1,16 +1,23 @@
 /* global describe:true, it:true */
 'use strict';
 
+// Test Utilities:
 var chai = require('chai');
+var dirtyChai = require('dirty-chai');
 var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
-var Promise = require('bluebird');
 
+// Test setup:
 var expect = chai.expect;
+chai.use(dirtyChai);
 chai.use(sinonChai);
 
-var createBaseTestFiles = require('./create-base-test-files');
+// Utilities:
 var path = require('path');
+var Promise = require('bluebird');
+
+// Under test:
+var createBaseTestFiles = require('./create-base-test-files');
 
 describe('server/cli/init: create-base-test-files:', function () {
     it('should copy the "world.js" file to the "support" folder in the users specified directory', function () {

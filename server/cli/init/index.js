@@ -31,6 +31,6 @@ module.exports = function () {
     .catch(function (e) {
         log.error('Something broke, sorry :(');
         log.error(e.message);
-        throw e
+        throw e;
     });
 };

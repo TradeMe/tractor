@@ -11,7 +11,7 @@ var Promise = require('bluebird');
 // Dependencies:
 var esquery = require('esquery');
 var jsondir = Promise.promisifyAll(require('jsondir'));
-var parseJS = require('../parse-js');
+var javaScriptParser = require('../javascript-parser');
 
 module.exports = getFileStructure;
 
@@ -75,19 +75,19 @@ function findAllFiles (directory) {
     _.forEach(directory.directories, findAllFiles);
     directory.allFiles = _.reduce(directory.directories, function (all, directory) {
         return all.concat(directory.allFiles);
-    }, []).concat(directory.files || []);
+    }, []).concat(directory.files);
 }
 
 function parseJavaScriptFiles (fileStructure) {
-    // TODO 'Untested, needs DI'
     _(fileStructure.allFiles)
     .filter(function (file) {
         return COMPONENT_EXTENSION_REGEX.test(file.path) || STEP_DEFINITION_EXTENSION_REGEX.test(file.path);
     })
-    .each(parseJS);
+    .each(javaScriptParser.parse)
+    .value();
 }
 
-function getFileUsages (fileStructure)  {
+function getFileUsages (fileStructure) {
     var usages = {};
     _.each(fileStructure.allFiles, function (file) {
         var requirePaths = esquery(file.ast, 'CallExpression[callee.name="require"] Literal');

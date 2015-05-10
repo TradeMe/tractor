@@ -9,12 +9,11 @@ var Promise = require('bluebird');
 var childProcess = require('child_process');
 
 var TO_INSTALL = [
-    'bluebird@2.3.11',
-    'chai@1.10.0',
-    'chai-as-promised@4.1.1',
-    'cucumber@0.4.4',
+    'bluebird@2.9.25',
+    'chai@2.3.0',
+    'chai-as-promised@5.0.0',
     'httpbackend@1.2.0',
-    'protractor@1.4.0'
+    'protractor@2.0.0'
 ];
 
 module.exports = {
