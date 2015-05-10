@@ -186,6 +186,11 @@
                         options="expectation.component.component.actions"
                         as="name">
                     </tractor-select>
+                    <tractor-select
+                        label="condition"
+                        model="expectation"
+                        options="expectation.conditions">
+                    </tractor-select>
                     <div ng-repeat="argument in expectation.arguments">
                         <tractor-literal-input
                             form="file-editor"

@@ -25,6 +25,7 @@ var ExpectationParserService = function ExpectationParserService (
 
             expectation.component = parseComponent(expectation, expectationCallExpression);
             expectation.action = parseAction(expectation, expectationCallExpression);
+            expectation.condition = ast.callee.property.name;
             parseArguments(expectation, expectationCallExpression);
 
             return expectation;

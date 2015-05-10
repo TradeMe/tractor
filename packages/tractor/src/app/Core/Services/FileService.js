@@ -40,6 +40,9 @@ var FileService = function FileService (
     }
 
     function getPath (options) {
+        if (options.path) {
+            options.path = decodeURIComponent(options.path);
+        }
         return $http.get('/' + type + '/file/path', {
             params: options
         });

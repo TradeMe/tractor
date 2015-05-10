@@ -14,7 +14,6 @@ var ControlPanelController = (function () {
         RunnerService,
         config
     ) {
-        debugger;
         this.runnerService = RunnerService;
         this.environments = config.environments;
         this.environment = _.first(this.environments);
