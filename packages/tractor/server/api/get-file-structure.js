@@ -26,6 +26,7 @@ function lexFeatures (fileStructure) {
     .filter(function (file) {
         return FEATURE_EXTENSION_REGEX.test(file.path);
     })
-    .each(featureLexer.lex);
+    .each(featureLexer.lex)
+    .value();
     return fileStructure;
 }

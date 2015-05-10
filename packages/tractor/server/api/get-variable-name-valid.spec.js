@@ -1,14 +1,19 @@
 /* global describe:true, it:true */
 'use strict';
 
+// Test Utilities:
 var chai = require('chai');
+var dirtyChai = require('dirty-chai');
+var noop = require('node-noop').noop;
 var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 
-var noop = function () { };
+// Test setup:
 var expect = chai.expect;
+chai.use(dirtyChai);
 chai.use(sinonChai);
 
+// Under test:
 var getVariableNameValid = require('./get-variable-name-valid');
 
 describe('server/api: get-variable-name-valid:', function () {

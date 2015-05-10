@@ -6,7 +6,7 @@ var CustomWorld = (function () {
     var chai = require('chai');
     var chaiAsPromised = require('chai-as-promised');
     var CustomWorld = function CustomWorld () {
-        global.browser = global.protractor = require('protractor').getInstance();
+        //global.browser = global.protractor = require('protractor').getInstance();
         global.By = global.protractor.By;
         chai.use(chaiAsPromised);
         global.expect = chai.expect;

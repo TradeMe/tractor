@@ -43,7 +43,7 @@ function server (reportTaskDone) {
 
 function client (reportTaskDone) {
     karma.start({
-        frameworks: ['browserify', 'mocha', 'sinon-chai'],
+        frameworks: ['browserify', 'mocha', 'sinon-chai', 'dirty-chai'],
         browsers: ['Chrome'],
 
         port: 9876,

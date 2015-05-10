@@ -5,7 +5,7 @@ var chai = require('chai');
 var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 
-var noop = function () { };
+var noop = require('node-noop').noop;
 var expect = chai.expect;
 chai.use(sinonChai);
 
@@ -14,7 +14,7 @@ var errorHandler = require('./error-handler');
 describe('server/utils: error-handler:', function () {
     it('should log the error to the console', function () {
         var log = require('../utils/logging');
-        sinon.stub(log, 'error', noop);
+        sinon.stub(log, 'error');
         var response = {
             status: noop,
             send: noop
@@ -29,7 +29,7 @@ describe('server/utils: error-handler:', function () {
 
     it('should fall back to the `message` from the given `error`', function () {
         var log = require('../utils/logging');
-        sinon.stub(log, 'error', noop);
+        sinon.stub(log, 'error');
         var response = {
             status: noop,
             send: noop
@@ -44,7 +44,7 @@ describe('server/utils: error-handler:', function () {
 
     it('should update the `response` status to the `status` of the `error`', function () {
         var log = require('../utils/logging');
-        sinon.stub(log, 'error', noop);
+        sinon.stub(log, 'error');
         var response = {
             status: noop,
             send: noop
@@ -62,7 +62,7 @@ describe('server/utils: error-handler:', function () {
 
     it('should fall back to a `status` of `500`', function () {
         var log = require('../utils/logging');
-        sinon.stub(log, 'error', noop);
+        sinon.stub(log, 'error');
         var response = {
             status: noop,
             send: noop
@@ -78,7 +78,7 @@ describe('server/utils: error-handler:', function () {
 
     it('should response with the `message`', function () {
         var log = require('../utils/logging');
-        sinon.stub(log, 'error', noop);
+        sinon.stub(log, 'error');
         var response = {
             status: noop,
             send: noop
@@ -95,7 +95,7 @@ describe('server/utils: error-handler:', function () {
 
     it('should fall back to the `message` from the given `error`', function () {
         var log = require('../utils/logging');
-        sinon.stub(log, 'error', noop);
+        sinon.stub(log, 'error');
         var response = {
             status: noop,
             send: noop

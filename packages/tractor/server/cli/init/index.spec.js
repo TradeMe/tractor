@@ -1,14 +1,21 @@
 /* global describe:true, it:true */
 'use strict';
 
-var chai = require('chai');
-var sinon = require('sinon');
-var sinonChai = require('sinon-chai');
+// Utilities:
 var Promise = require('bluebird');
 
+// Test Utilities:
+var chai = require('chai');
+var dirtyChai = require('dirty-chai');
+var sinon = require('sinon');
+var sinonChai = require('sinon-chai');
+
+// Test setup:
 var expect = chai.expect;
+chai.use(dirtyChai);
 chai.use(sinonChai);
 
+// Under test:
 var cliInit = require('./index');
 
 describe('server/cli/init: index:', function () {
