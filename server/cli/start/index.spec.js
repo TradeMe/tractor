@@ -1,13 +1,18 @@
 /* global describe:true, it:true */
 'use strict';
 
+// Test utilities:
 var chai = require('chai');
+var dirtyChai = require('dirty-chai');
 var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 
+// Test setup:
 var expect = chai.expect;
+chai.use(dirtyChai);
 chai.use(sinonChai);
 
+// Under test:
 var cliStart = require('./index');
 
 describe('server/start: index:', function () {

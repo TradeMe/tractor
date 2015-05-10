@@ -10,7 +10,7 @@ var constants = require('../constants');
 module.exports = getPath;
 
 function getPath (request, response) {
-    var type = request.param('type').toUpperCase();
+    var type = request.params.type.toUpperCase();
     var extension = constants[type + '_EXTENSION'];
     var directoryName = constants[type + '_DIR'];
 

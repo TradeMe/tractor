@@ -14,7 +14,6 @@ var e2ePath = path.join(config.testDirectory, 'protractor.conf.js');
 // Dependencies:
 var childProcess = require('child_process');
 var stripcolorcodes = require('stripcolorcodes');
-var trim = require('trim');
 
 // Errors:
 var ProtractorRunError = require('../errors/ProtractorRunError');
@@ -80,7 +79,7 @@ function sendDataToClient (data) {
     this.lastMessage = data.toString();
     var messages = data.toString().split(/\r\n|\n/);
     messages.forEach(function (message) {
-        data = formatMessage(trim(stripcolorcodes(message)));
+        data = formatMessage(stripcolorcodes(message).trim());
         if (data && data.message.length) {
             this.emit('protractor-out', data);
         }

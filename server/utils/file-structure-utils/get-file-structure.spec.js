@@ -1,16 +1,21 @@
-/* global describe:true, it:true */
+/* global describe:true, beforeEach:true, afterEach:true, it:true */
 'use strict';
 
-var chai = require('chai');
-var sinon = require('sinon');
-var sinonChai = require('sinon-chai');
-
+// Utilities
 var _ = require('lodash');
 var Promise = require('bluebird');
 
+// Test Utilities:
+var chai = require('chai');
+var rewire = require('rewire');
+var sinon = require('sinon');
+var sinonChai = require('sinon-chai');
+
+// Test set-up:
 var expect = chai.expect;
 chai.use(sinonChai);
 
+// Under test:
 var getFileStructure = require('./get-file-structure');
 
 describe('server/utils: get-file-structure:', function () {
@@ -97,8 +102,7 @@ describe('server/utils: get-file-structure:', function () {
     it('should skip hidden files:', function () {
         var jsondir = require('jsondir');
         var fileStructure = {
-            '.hiddenFile': {
-            }
+            '.hiddenFile': { }
         };
         sinon.stub(jsondir, 'dir2jsonAsync').returns(Promise.resolve(fileStructure));
 
@@ -118,19 +122,43 @@ describe('server/utils: get-file-structure:', function () {
             'directory': {
                 '-type': 'd',
                 '-path': 'path',
-                'file': {}
+                'file': { }
             },
             'otherDirectory': {
                 '-type': 'd',
                 '-path': 'path'
             },
-            'otherFile': {}
+            'otherFile': { }
         };
         sinon.stub(jsondir, 'dir2jsonAsync').returns(Promise.resolve(fileStructure));
 
         return getFileStructure('directory/path')
         .then(function (fileStructure) {
             expect(fileStructure.allFiles.length).to.equal(2);
+        })
+        .finally(function () {
+            jsondir.dir2jsonAsync.restore();
+        });
+    });
+
+    it('should parse any component and step definition files into ASTs:', function () {
+        var jsondir = require('jsondir');
+        var fileStructure = {
+            'file.component.js': {
+                '-path': '/some/path/file.component.js',
+                '-content': 'function test () { }'
+            },
+            'file.step.js': {
+                '-path': '/some/path/file.component.js',
+                '-content': 'function test () { }'
+            }
+        };
+        sinon.stub(jsondir, 'dir2jsonAsync').returns(Promise.resolve(fileStructure));
+
+        return getFileStructure('directory/path')
+        .then(function (fileStructure) {
+            expect(fileStructure.allFiles[0].ast).not.to.be.undefined();
+            expect(fileStructure.allFiles[1].ast).not.to.be.undefined();
         })
         .finally(function () {
             jsondir.dir2jsonAsync.restore();
