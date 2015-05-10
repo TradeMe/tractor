@@ -1,6 +1,6 @@
 {
   "name": "tractor",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "author": "Craig Spence <craig@trademe.co.nz>",
   "repository": {
     "type": "git",
@@ -47,7 +47,6 @@
     "gulp-sourcemaps": "1.5.2",
     "httpbackend": "1.2.0",
     "istanbul": "0.3.13",
-    "jsondir": "git://github.com/phenomnomnominal/node-jsondir.git",
     "karma": "0.12.31",
     "karma-browserify": "4.1.2",
     "karma-chai": "0.1.0",
@@ -80,6 +79,7 @@
     "esquery": "0.4.0",
     "esprima": "2.2.0",
     "express": "4.12.3",
+    "jsondir": "git://github.com/phenomnomnominal/node-jsondir.git",
     "gherkin": "2.12.2",
     "lodash": "3.8.0",
     "node-noop": "0.0.1",
