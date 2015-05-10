@@ -1,14 +1,21 @@
 /* global describe:true, it:true */
 'use strict';
 
-var chai = require('chai');
-var sinon = require('sinon');
-var sinonChai = require('sinon-chai');
+// Utilities:
 var Promise = require('bluebird');
 
+// Test Utilities:
+var chai = require('chai');
+var dirtyChai = require('dirty-chai');
+var sinon = require('sinon');
+var sinonChai = require('sinon-chai');
+
+// Test setup:
 var expect = chai.expect;
+chai.use(dirtyChai);
 chai.use(sinonChai);
 
+// Under test:
 var installTractorDependenciesLocally = require('./install-tractor-dependencies-locally');
 
 describe('server/cli/init: install-tractor-dependencies-locally:', function () {
@@ -56,12 +63,11 @@ describe('server/cli/init: install-tractor-dependencies-locally:', function () {
 
         return installTractorDependenciesLocally.run()
         .then(function () {
-            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact bluebird@2.3.11');
-            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact chai@1.10.0');
-            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact chai-as-promised@4.1.1');
-            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact cucumber@0.4.4');
+            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact bluebird@2.9.25');
+            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact chai@2.3.0');
+            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact chai-as-promised@5.0.0');
             expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact httpbackend@1.2.0');
-            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact protractor@1.4.0');
+            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact protractor@2.0.0');
         })
         .finally(function () {
             childProcess.exec.restore();
@@ -77,7 +83,7 @@ describe('server/cli/init: install-tractor-dependencies-locally:', function () {
         sinon.stub(childProcess, 'exec').returns({
             stdout: {
                 on: function (event, callback) {
-                    callback('bluebird@2.3.11');
+                    callback('bluebird@2.9.25');
                 }
             }
         });
@@ -87,12 +93,11 @@ describe('server/cli/init: install-tractor-dependencies-locally:', function () {
 
         return installTractorDependenciesLocally.run()
         .then(function () {
-            expect(childProcess.execAsync).not.to.have.been.calledWith('npm install --save-dev --save-exact bluebird@2.3.11');
-            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact chai@1.10.0');
-            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact chai-as-promised@4.1.1');
-            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact cucumber@0.4.4');
+            expect(childProcess.execAsync).not.to.have.been.calledWith('npm install --save-dev --save-exact bluebird@2.9.25');
+            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact chai@2.3.0');
+            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact chai-as-promised@5.0.0');
             expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact httpbackend@1.2.0');
-            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact protractor@1.4.0');
+            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact protractor@2.0.0');
         })
         .finally(function () {
             childProcess.exec.restore();
@@ -121,8 +126,8 @@ describe('server/cli/init: install-tractor-dependencies-locally:', function () {
         .then(function () {
             expect(log.info).to.have.been.calledWith('Checking installed npm dependencies...');
             expect(log.info).to.have.been.calledWith('Installing npm dependencies for tractor...');
-            expect(log.info).to.have.been.calledWith('Installing "bluebird@2.3.11"...');
-            expect(log.success).to.have.been.calledWith('Installed "bluebird@2.3.11".');
+            expect(log.info).to.have.been.calledWith('Installing "bluebird@2.9.25"...');
+            expect(log.success).to.have.been.calledWith('Installed "bluebird@2.9.25".');
         })
         .finally(function () {
             childProcess.exec.restore();
@@ -139,7 +144,7 @@ describe('server/cli/init: install-tractor-dependencies-locally:', function () {
         sinon.stub(childProcess, 'exec').returns({
             stdout: {
                 on: function (event, callback) {
-                    callback('bluebird@2.3.11 chai@1.10.0 chai-as-promised@4.1.1 cucumber@0.4.4 httpbackend@1.2.0 protractor@1.4.0');
+                    callback('bluebird@2.9.25 chai@2.3.0 chai-as-promised@5.0.0 httpbackend@1.2.0 protractor@2.0.0');
                 }
             }
         });
@@ -176,7 +181,7 @@ describe('server/cli/init: install-tractor-dependencies-locally:', function () {
 
         return installTractorDependenciesLocally.run()
         .then(function () {
-            expect(log.error).to.have.been.calledWith('Couldn\'t install "bluebird@2.3.11". Either run `tractor init` again, or install it manually by running "npm install bluebird@2.3.11"');
+            expect(log.error).to.have.been.calledWith('Couldn\'t install "bluebird@2.9.25". Either run `tractor init` again, or install it manually by running "npm install bluebird@2.9.25"');
         })
         .finally(function () {
             childProcess.exec.restore();

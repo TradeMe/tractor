@@ -24,7 +24,8 @@ function generateJavaScriptFiles (fileStructure) {
     .filter(function (file) {
         return !!file.ast;
     })
-    .each(javascriptGenerator.generate);
+    .each(javascriptGenerator.generate)
+    .value();
 }
 
 function denormaliseFileStructure (directory) {

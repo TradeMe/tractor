@@ -1,12 +1,16 @@
 /* global describe:true, beforeEach: true, afterEach:true, it:true */
 'use strict';
 
+// Test Utilities:
 var chai = require('chai');
+var dirtyChai = require('dirty-chai');
 var rewire = require('rewire');
 var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 
+// Test setup:
 var expect = chai.expect;
+chai.use(dirtyChai);
 chai.use(sinonChai);
 
 // Under test:

@@ -6,9 +6,11 @@ var esprima = require('esprima');
 // Errors:
 var ParseJavaScriptError = require('../errors/ParseJavaScriptError');
 
-module.exports = parseJS;
+module.exports = {
+    parse: parse
+};
 
-function parseJS (file) {
+function parse (file) {
     try {
         file.ast = esprima.parse(file.content, {
             comment: true

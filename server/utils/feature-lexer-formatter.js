@@ -1,7 +1,7 @@
 'use strict';
 
 // Utilities:
-var last = require('array-last');
+var _ = require('lodash');
 var noop = require('node-noop').noop;
 var os = require('os');
 
@@ -11,12 +11,12 @@ var FeatureLexerFormatter = function FeatureLexerFormatter () {
     Object.defineProperties(this, {
         lastFeature: {
             get: function () {
-                return last(this.features);
+                return _.last(this.features);
             }
         },
         lastElement: {
             get: function () {
-                return last(this.lastFeature.elements);
+                return _.last(this.lastFeature.elements);
             }
         }
     });
