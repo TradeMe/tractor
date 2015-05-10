@@ -1,6 +1,6 @@
 {
   "name": "tractor",
-  "version": "0.4.5",
+  "version": "0.4.7",
   "author": "Craig Spence <craig@trademe.co.nz>",
   "repository": {
     "type": "git",
@@ -31,7 +31,6 @@
     "chai-as-promised": "5.0.0",
     "del": "1.1.1",
     "dirty-chai": "1.2.1",
-    "estemplate": "0.4.0",
     "gulp": "3.8.11",
     "gulp-autoprefixer": "2.2.0",
     "gulp-changed": "1.2.1",
@@ -78,6 +77,7 @@
     "escodegen": "1.6.1",
     "esquery": "0.4.0",
     "esprima": "2.2.0",
+    "estemplate": "0.4.0",
     "express": "4.12.3",
     "jsondir": "git://github.com/phenomnomnominal/node-jsondir.git",
     "gherkin": "2.12.2",
