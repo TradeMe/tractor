@@ -44,7 +44,7 @@ var SelectInputDirective = function () {
             throw new Error('The "tractor-select" directive requires an "options" attribute, or a "label" attribute that matches a set of options on the "model".');
         }
 
-        $scope.$watch('options', function () {
+        $scope.$watchCollection('options', function () {
             $scope.selectOptions = $scope.options || getOptionsFromProperty($scope);
         });
     }

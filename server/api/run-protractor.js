@@ -18,16 +18,22 @@ var stripcolorcodes = require('stripcolorcodes');
 // Errors:
 var ProtractorRunError = require('../errors/ProtractorRunError');
 
-module.exports = runProtractor;
+module.exports = connect;
 
-function runProtractor (socket) {
+function connect (socket) {
+    socket.on('run', function (runOptions) {
+        runProtractor(socket, runOptions);
+    });
+}
+
+function runProtractor (socket, runOptions) {
     if (!module.exports.running) {
         module.exports.running = true;
 
         return Promise.resolve(config.beforeProtractor())
         .then(function () {
             log.important('Starting Protractor...\n');
-            return startProtractor(socket);
+            return startProtractor(socket, runOptions);
         })
         .catch(function (error) {
             socket.lastMessage = socket.lastMessage || '';
@@ -47,7 +53,7 @@ function runProtractor (socket) {
     }
 }
 
-function startProtractor (socket) {
+function startProtractor (socket, runOptions) {
     var resolve;
     var reject;
     var deferred = new Promise(function () {
@@ -55,7 +61,7 @@ function startProtractor (socket) {
         reject = arguments[1];
     });
 
-    var protractor = childProcess.spawn('node', [protractorPath, e2ePath]);
+    var protractor = childProcess.spawn('node', [protractorPath, e2ePath, '--baseUrl', runOptions.baseUrl]);
 
     protractor.stdout.on('data', sendDataToClient.bind(socket));
     protractor.stderr.on('data', sendErrorToClient.bind(socket));
