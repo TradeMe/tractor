@@ -113,7 +113,7 @@ var FileTreeController = (function () {
 
     FileTreeController.prototype.openFile = function (item) {
         var params = {};
-        var directoryPath = this.model.fileStructure.path;
+        var directoryPath = this.model.fileStructure.path.replace(/\\/g, '/');
         var filePath = item.path.replace(/\\/g, '/');
         var relativePath = path.relative(directoryPath, filePath);
         params[camel(this.type)] = _.last(relativePath.match(/(.*?)\..*/));

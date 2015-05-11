@@ -26,7 +26,7 @@ var FileService = function FileService (
 
     function findFileByPath (fileStructure, filePath) {
         return _.find(fileStructure.allFiles, function (file) {
-            return file.path.includes(filePath);
+            return file.path.includes(filePath) || file.path.includes(filePath.replace(/\//g, '\\')); 
         });
     }
 
