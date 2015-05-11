@@ -59,7 +59,7 @@ function extractStepNames (feature) {
             .reduceRight(function (p, n) {
                 var type = n.match(GIVEN_WHEN_THEN_REGEX);
                 return p || _.last(type);
-            }, null).value();
+            }, null);
 
             return stepName.replace(AND_BUT_REGEX, previousType);
         } else {
