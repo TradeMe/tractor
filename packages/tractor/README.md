@@ -1,4 +1,4 @@
-# tractor - v0.5.0
+# tractor - v0.5.1
 
 A UI around [Gherkin](http://cukes.info/gherkin.html) & [Protractor](http://angular.github.io/protractor/) to help write E2E tests for [Angular](https://angularjs.org/) applications without needing to know JavaScript.
 
@@ -8,7 +8,7 @@ A UI around [Gherkin](http://cukes.info/gherkin.html) & [Protractor](http://angu
 
 To use it with an Angular app, run the following:
 
-    npm install -g tractor@alpha
+    npm install -g tractor
 
 That will install the global binary, which will allow you to run the `tractor` command from anywhere.
 
