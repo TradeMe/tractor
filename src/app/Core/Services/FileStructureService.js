@@ -5,9 +5,9 @@ var Core = require('../Core');
 
 var FileStructureService = function FileStructureService (
     $http,
-    localStorageService
+    persistentStateService
 ) {
-    var EXPANDED_STORAGE_KEY = 'FileTreeExpanded';
+    var OPEN_DIRECTORIES = 'OpenDirectories';
 
     return {
         getFileStructure: getFileStructure,
@@ -17,8 +17,7 @@ var FileStructureService = function FileStructureService (
         deleteFile: deleteFile,
         editDirectoryPath: editDirectoryPath,
         editFilePath: editFilePath,
-        getExpanded: getExpanded,
-        setExpanded: setExpanded
+        toggleOpenDirectory: toggleOpenDirectory
     };
 
     function getFileStructure (options) {
@@ -64,29 +63,33 @@ var FileStructureService = function FileStructureService (
         .then(updateFileStructure);
     }
 
+    function toggleOpenDirectory (directoryPath) {
+        var openDirectories = getOpenDirectories();
+        if (openDirectories[directoryPath]) {
+            delete openDirectories[directoryPath];
+        } else {
+            openDirectories[directoryPath] = true;
+        }
+        persistentStateService.set(OPEN_DIRECTORIES, openDirectories);
+    }
+
     function updateFileStructure (fileStructure) {
-        fileStructure = restoreExpanded(fileStructure);
+        fileStructure = restoreOpenDirectories(fileStructure);
         fileStructure.directories.forEach(function (topLevelDirectory) {
-            topLevelDirectory.expanded = true;
+            topLevelDirectory.open = true;
         });
         return fileStructure;
     }
 
-    function getExpanded () {
-        return localStorageService.get(EXPANDED_STORAGE_KEY) || {};
+    function getOpenDirectories () {
+        return persistentStateService.get(OPEN_DIRECTORIES);
     }
 
-    function setExpanded (expanded) {
-        localStorageService.set(EXPANDED_STORAGE_KEY, expanded);
-    }
-
-    function restoreExpanded (directory) {
-        if (directory.directories) {
-            directory.directories.forEach(function (directory) {
-                restoreExpanded(directory);
-            });
-        }
-        directory.expanded = !!getExpanded()[directory.path];
+    function restoreOpenDirectories (directory) {
+        directory.directories.forEach(function (directory) {
+            restoreOpenDirectories(directory);
+        });
+        directory.open = !!getOpenDirectories()[directory.path];
         return directory;
     }
 };

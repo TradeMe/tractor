@@ -4,9 +4,11 @@
 // Test utilities:
 var chai = require('chai');
 var dirtyChai = require('dirty-chai');
-var noop = require('node-noop').noop;
 var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
+
+// Utilities:
+var _ = require('lodash');
 
 // Test setup:
 var expect = chai.expect;
@@ -43,7 +45,7 @@ describe('server/api: get-path:', function () {
                 }
             };
             var response = {
-                send: noop
+                send: _.noop
             };
             sinon.spy(response, 'send');
 
@@ -65,7 +67,7 @@ describe('server/api: get-path:', function () {
             }
         };
         var response = {
-            send: noop
+            send: _.noop
         };
         sinon.spy(response, 'send');
 

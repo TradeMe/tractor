@@ -1,15 +1,23 @@
 /*global beforeEach:true, describe:true, it:true, expect:true */
 'use strict';
 
-// Utilities:
-var noop = require('node-noop').noop;
-
-// Mocks:
-var MockHttpResponseInterceptor = require('../../Services/HttpResponseInterceptor.mock');
-
 // Angular:
 var angular = require('angular');
 require('angular-mocks');
+
+// Test Utilities:
+var chai = require('chai');
+var dirtyChai = require('dirty-chai');
+
+// Utilities;
+var _ = require('lodash');
+
+// Test setup:
+var expect = chai.expect;
+chai.use(dirtyChai);
+
+// Mocks:
+var MockHttpResponseInterceptor = require('../../Services/HttpResponseInterceptor.mock');
 
 // Testing:
 require('./VariableInputDirective');
@@ -51,7 +59,7 @@ describe('VariableInputDirective.js:', function() {
             expect(function () {
                 var scope = $rootScope.$new();
                 scope.model = {
-                    getAllVariableNames: noop
+                    getAllVariableNames: _.noop
                 };
                 compileDirective('<tractor-variable-input model="model"></tractor-variable-input>', scope);
             }).to.throw('The "tractor-variable-input" directive requires a "label" attribute.');
@@ -61,7 +69,7 @@ describe('VariableInputDirective.js:', function() {
             expect(function () {
                 var scope = $rootScope.$new();
                 scope.model = {
-                    getAllVariableNames: noop
+                    getAllVariableNames: _.noop
                 };
                 compileDirective('<tractor-variable-input model="model" label="Some label"></tractor-variable-input>', scope);
             }).to.throw('The "tractor-variable-input" directive requires a "form" attribute.');
@@ -71,7 +79,7 @@ describe('VariableInputDirective.js:', function() {
             expect(function () {
                 var scope = $rootScope.$new();
                 scope.model = {
-                    getAllVariableNames: noop
+                    getAllVariableNames: _.noop
                 };
                 compileDirective('<tractor-variable-input model="model" label="Some label" form="parent"></tractor-variable-input>', scope);
             }).not.to.throw();
@@ -82,7 +90,7 @@ describe('VariableInputDirective.js:', function() {
             var parentForm = {};
             scope.$parent.parent = parentForm;
             scope.model = {
-                getAllVariableNames: noop
+                getAllVariableNames: _.noop
             };
             var directive = compileDirective('<tractor-variable-input model="model" label="Some Label" form="parent"></tractor-variable-input>', scope);
             expect(directive.isolateScope().form).to.equal(parentForm);
@@ -92,7 +100,7 @@ describe('VariableInputDirective.js:', function() {
             var scopeOne = $rootScope.$new();
             var scopeTwo = $rootScope.$new();
             scopeOne.model = scopeTwo.model = {
-                getAllVariableNames: noop
+                getAllVariableNames: _.noop
             };
             var directiveOne = compileDirective('<tractor-variable-input model="model" label="Some label" form="parent"></tractor-variable-input>', scopeOne);
             var directiveTwo = compileDirective('<tractor-variable-input model="model" label="Some label" form="parent"></tractor-variable-input>', scopeTwo);
@@ -115,7 +123,7 @@ describe('VariableInputDirective.js:', function() {
             tests.forEach(function (test) {
                 var scope = $rootScope.$new();
                 scope.model = {
-                    getAllVariableNames: noop
+                    getAllVariableNames: _.noop
                 };
                 var directive = compileDirective(test.template, scope);
                 expect(directive.isolateScope().isClass).to.equal(test.expected);
@@ -125,7 +133,7 @@ describe('VariableInputDirective.js:', function() {
         it('should convert the "label" attribute into a camel-cased "property":', function () {
             var scope = $rootScope.$new();
             scope.model = {
-                getAllVariableNames: noop
+                getAllVariableNames: _.noop
             };
             var directive = compileDirective('<tractor-variable-input model="model" label="Some label" form="parent"></tractor-variable-input>', scope);
             expect(directive.isolateScope().property).to.equal('someLabel');

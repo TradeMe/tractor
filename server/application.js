@@ -53,7 +53,7 @@ module.exports = (function () {
         application.get('/variable-name-valid', require('./api/get-variable-name-valid'));
 
         sockets.of('/run-protractor')
-        .on('connection', require('./api/run-protractor'));
+        .on('connection', require('./sockets/connect'));
 
         return server;
     }

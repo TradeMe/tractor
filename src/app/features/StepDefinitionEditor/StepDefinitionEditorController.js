@@ -5,12 +5,15 @@ var StepDefinitionEditor = require('./StepDefinitionEditor');
 
 // Dependencies:
 var FileEditorController = require('../FileEditor/FileEditorController');
+require('../../Core/Services/PersistentStateService');
 require('../../Core/Components/Notifier/NotifierService');
 require('./Services/StepDefinitionFileService');
 
 var StepDefinitionEditorController = function StepDefinitionEditorController (
     $scope,
     $window,
+    $state,
+    persistentStateService,
     NotifierService,
     StepDefinitionFileService,
     stepDefinitionFileStructure,
@@ -21,6 +24,8 @@ var StepDefinitionEditorController = function StepDefinitionEditorController (
     var controller = new FileEditorController(
         $scope,
         $window,
+        $state,
+        persistentStateService,
         NotifierService,
         StepDefinitionFileService,
         null,

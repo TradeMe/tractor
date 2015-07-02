@@ -6,7 +6,6 @@ var constants = require('../constants');
 
 // Utilities:
 var _ = require('lodash');
-var os = require('os');
 var path = require('path');
 var Promise = require('bluebird');
 
@@ -28,7 +27,7 @@ var STUB_REGEX_REGEX = /this\.[Given|When|Then]*\(\/\^(.*?)\$\//;
 function generateStepDefinitions (fileStructure, request) {
     var body = request.body;
 
-    var feature = body.data.replace(constants.FEATURE_NEWLINE, os.EOL);
+    var feature = body.data;
     var featurePath = body.path;
 
     var stepNames = extractStepNames(feature);

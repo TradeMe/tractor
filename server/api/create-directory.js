@@ -43,7 +43,11 @@ function createNewDirectoryName (n) {
 }
 
 function newDirectoryNameExists (directory, newDirectoryName) {
-    return !!_.find(directory.directories, function (directory) {
-        return directory.name === newDirectoryName;
-    });
+    return !!_.find(directory.directories, directoryNameEquals(newDirectoryName));
+}
+
+function directoryNameEquals (name) {
+    return function (directory) {
+        return directory.name === name;
+    };
 }

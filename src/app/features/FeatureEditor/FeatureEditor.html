@@ -1,5 +1,5 @@
 <tractor-file-tree model="featureEditor" type="feature"></tractor-file-tree>
-<tractor-resize-handle></tractor-resize-handle>
+<tractor-panel-handle panel-name="feature-file-tree"></tractor-panel-handle>
 <form class="file" name="file-editor" novalidate
     ng-submit="featureEditor.showErrors() && featureEditor.saveFile()">
     <section class="file-options">
@@ -13,9 +13,15 @@
                 example="Feature"
                 validate-file-name>
             </tractor-text-input>
+        </div>
+        <div class="file-options__file-actions">
             <tractor-submit class="file-options__save-file"
                 action="Save feature file">
             </tractor-submit>
+            <tractor-action class="file-options__save-file"
+                model="featureEditor"
+                action="New file">
+            </tractor-action>
         </div>
     </section>
 
@@ -48,7 +54,13 @@
                 <h2>Scenarios:</h2>
 
                 <ul ng-if="featureEditor.fileModel.scenarios.length">
-                    <li class="file-editor__list-item" ng-repeat="scenario in featureEditor.fileModel.scenarios">
+                    <li class="file-editor__list-item"
+                        ng-repeat="scenario in featureEditor.fileModel.scenarios"
+                        ng-class="{ 'file-editor__list-item--minimised': scenario.minimised }"
+                        ng-dblclick="featureEditor.minimise(scenario)">
+
+                        <h3 class="file-editor__list-item-name">{{ scenario.name }}</h3>
+
                         <tractor-action
                             model="featureEditor.fileModel"
                             action="Remove scenario"
@@ -73,7 +85,7 @@
                                         argument="stepDeclaration"
                                         icon="remove">
                                     </tractor-action>
-                                    <div ng-if="scenario.stepDeclarations.length > 1" class="file-editor__sort-handle" as-sortable-item-handle title="Drag to sort"></div>
+                                    <div ng-if="scenario.stepDeclarations.length > 1" class="file-editor__list-item-sort-handle" as-sortable-item-handle title="Drag to sort"></div>
 
                                     <tractor-select label="Type" model="stepDeclaration"></tractor-select>
                                     <tractor-step-input

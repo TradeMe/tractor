@@ -1,14 +1,19 @@
 /* global describe:true, it:true */
 'use strict';
 
+// Test Utilities:
 var chai = require('chai');
 var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 
-var noop = require('node-noop').noop;
+// Utilities:
+var _ = require('lodash');
+
+// Test setup:
 var expect = chai.expect;
 chai.use(sinonChai);
 
+// Under test:
 var errorHandler = require('./error-handler');
 
 describe('server/utils: error-handler:', function () {
@@ -16,8 +21,8 @@ describe('server/utils: error-handler:', function () {
         var log = require('../utils/logging');
         sinon.stub(log, 'error');
         var response = {
-            status: noop,
-            send: noop
+            status: _.noop,
+            send: _.noop
         };
 
         errorHandler(response, new Error(), 'error');
@@ -31,8 +36,8 @@ describe('server/utils: error-handler:', function () {
         var log = require('../utils/logging');
         sinon.stub(log, 'error');
         var response = {
-            status: noop,
-            send: noop
+            status: _.noop,
+            send: _.noop
         };
 
         errorHandler(response, new Error('error'));
@@ -46,8 +51,8 @@ describe('server/utils: error-handler:', function () {
         var log = require('../utils/logging');
         sinon.stub(log, 'error');
         var response = {
-            status: noop,
-            send: noop
+            status: _.noop,
+            send: _.noop
         };
         sinon.spy(response, 'status');
         var error = new Error();
@@ -64,8 +69,8 @@ describe('server/utils: error-handler:', function () {
         var log = require('../utils/logging');
         sinon.stub(log, 'error');
         var response = {
-            status: noop,
-            send: noop
+            status: _.noop,
+            send: _.noop
         };
         sinon.spy(response, 'status');
 
@@ -80,8 +85,8 @@ describe('server/utils: error-handler:', function () {
         var log = require('../utils/logging');
         sinon.stub(log, 'error');
         var response = {
-            status: noop,
-            send: noop
+            status: _.noop,
+            send: _.noop
         };
         sinon.spy(response, 'send');
 
@@ -97,8 +102,8 @@ describe('server/utils: error-handler:', function () {
         var log = require('../utils/logging');
         sinon.stub(log, 'error');
         var response = {
-            status: noop,
-            send: noop
+            status: _.noop,
+            send: _.noop
         };
         sinon.spy(response, 'send');
 

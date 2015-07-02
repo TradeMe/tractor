@@ -1,17 +1,16 @@
-/* global describe:true, beforeEach: true, afterEach:true, it:true */
+/* global describe:true, beforeEach:true, afterEach:true, it:true */
 'use strict';
+// Test Utilities:
+var chai = require('chai');
+var rewire = require('rewire');
+var sinon = require('sinon');
+var sinonChai = require('sinon-chai');
 
 // Utilities:
 var _ = require('lodash');
 var Promise = require('bluebird');
 
-// Test Utilities:
-var chai = require('chai');
-var noop = require('node-noop').noop;
-var rewire = require('rewire');
-var sinon = require('sinon');
-var sinonChai = require('sinon-chai');
-
+// Test setup:
 var expect = chai.expect;
 chai.use(sinonChai);
 
@@ -46,7 +45,7 @@ describe('server/utils: file-structure-modifier:', function () {
 
     it('should get the file structure and return it to the client:', function () {
         var response = {
-            send: noop
+            send: _.noop
         };
 
         sinon.stub(fileStructureUtilsMock, 'getFileStructure').returns(Promise.resolve({}));
@@ -64,10 +63,10 @@ describe('server/utils: file-structure-modifier:', function () {
 
     it('should run any `preSave` function:', function () {
         var options = {
-            preSave: noop
+            preSave: _.noop
         };
         var response = {
-            send: noop
+            send: _.noop
         };
 
         sinon.stub(fileStructureUtilsMock, 'getFileStructure').returns(Promise.resolve({}));
@@ -89,10 +88,10 @@ describe('server/utils: file-structure-modifier:', function () {
 
     it('should run any `postSave` function:', function () {
         var options = {
-            postSave: noop
+            postSave: _.noop
         };
         var response = {
-            send: noop
+            send: _.noop
         };
 
         sinon.stub(fileStructureUtilsMock, 'getFileStructure').returns(Promise.resolve({}));
@@ -115,10 +114,10 @@ describe('server/utils: file-structure-modifier:', function () {
 
     it('should run any `preSend` function:', function () {
         var options = {
-            preSend: noop
+            preSend: _.noop
         };
         var response = {
-            send: noop
+            send: _.noop
         };
 
         sinon.stub(fileStructureUtilsMock, 'getFileStructure').returns(Promise.resolve({}));
@@ -129,7 +128,6 @@ describe('server/utils: file-structure-modifier:', function () {
         .then(function () {
             expect(options.preSend.callCount).to.equal(1);
             expect(fileStructureUtilsMock.getFileStructure.callCount).to.equal(1);
-
         })
         .finally(function () {
             fileStructureUtilsMock.getFileStructure.restore();
@@ -139,8 +137,8 @@ describe('server/utils: file-structure-modifier:', function () {
     it('should handle any errors that occur:', function () {
         var logging = require('./logging');
         var response = {
-            send: noop,
-            status: noop
+            send: _.noop,
+            status: _.noop
         };
 
         sinon.stub(logging, 'error');
@@ -157,6 +155,40 @@ describe('server/utils: file-structure-modifier:', function () {
         .finally(function () {
             fileStructureUtilsMock.getFileStructure.restore();
             logging.error.restore();
+        });
+    });
+
+    it('should cache the result and return the `fileStructure` from cache if no modifications have occured:', function () {
+        var withModifierOptions = {
+            preSave: _.noop
+        };
+        var noModifierOptions = { };
+        var response = {
+            send: _.noop
+        };
+
+        var result = { };
+
+        sinon.stub(fileStructureUtilsMock, 'getFileStructure').returns(Promise.resolve(result));
+        sinon.stub(fileStructureUtilsMock, 'saveFileStructure').returns(Promise.resolve(result));
+        sinon.stub(withModifierOptions, 'preSave').returns(Promise.resolve(result));
+        sinon.spy(response, 'send');
+
+        var withModifier = fileStructureModifier.create(withModifierOptions);
+        var noModifier = fileStructureModifier.create(noModifierOptions);
+
+        return withModifier(null, response)
+        .then(function () {
+            return noModifier(null, response);
+        })
+        .then(function (fromCache) {
+            expect(fromCache).to.equal(result);
+            expect(fileStructureUtilsMock.getFileStructure.callCount).to.equal(2);
+            expect(fileStructureUtilsMock.saveFileStructure.callCount).to.equal(1);
+        })
+        .finally(function () {
+            fileStructureUtilsMock.getFileStructure.restore();
+            fileStructureUtilsMock.saveFileStructure.restore();
         });
     });
 });

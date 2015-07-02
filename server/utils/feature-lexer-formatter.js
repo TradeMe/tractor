@@ -2,7 +2,6 @@
 
 // Utilities:
 var _ = require('lodash');
-var noop = require('node-noop').noop;
 var os = require('os');
 
 var FeatureLexerFormatter = function FeatureLexerFormatter () {
@@ -88,10 +87,10 @@ FeatureLexerFormatter.prototype.done = function () {
     return this.features;
 };
 
-FeatureLexerFormatter.prototype.comment = noop;
-FeatureLexerFormatter.prototype.doc_string = noop;
-FeatureLexerFormatter.prototype.examples = noop;
-FeatureLexerFormatter.prototype.eof = noop;
-FeatureLexerFormatter.prototype.tag = noop;
+FeatureLexerFormatter.prototype.comment = _.noop;
+FeatureLexerFormatter.prototype.doc_string = _.noop;
+FeatureLexerFormatter.prototype.examples = _.noop;
+FeatureLexerFormatter.prototype.eof = _.noop;
+FeatureLexerFormatter.prototype.tag = _.noop;
 
 module.exports = FeatureLexerFormatter;

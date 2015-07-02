@@ -8,11 +8,13 @@ var assert = require('assert');
 var ComponentEditor = require('../ComponentEditor');
 
 // Dependencies:
+require('../../../Core/Services/PersistentStateService');
 require('../Services/ElementParserService');
 require('../Services/ActionParserService');
 require('../Models/ComponentModel');
 
 var ComponentParserService = function ComponentParserService (
+    persistentStateService,
     ElementParserService,
     ActionParserService,
     ComponentModel
@@ -31,6 +33,7 @@ var ComponentParserService = function ComponentParserService (
                 path: componentFile.path
             });
             component.name = meta.name;
+            var state = persistentStateService.get(component.name);
 
             var componentModuleExpressionStatement = _.first(ast.body);
             var moduleBlockStatement = componentModuleExpressionStatement.expression.right.callee.body;
@@ -48,6 +51,7 @@ var ComponentParserService = function ComponentParserService (
                         var domElement = ElementParserService.parse(component, statement);
                         assert(domElement);
                         domElement.name = meta.elements[component.domElements.length].name;
+                        domElement.minimised = !!state[domElement.name];
                         component.elements.push(domElement);
                         component.domElements.push(domElement);
                     });
@@ -59,6 +63,7 @@ var ComponentParserService = function ComponentParserService (
                     var action = ActionParserService.parse(component, statement, actionMeta);
                     assert(action);
                     action.name = actionMeta.name;
+                    action.minimised = !!state[action.name];
                     component.actions.push(action);
                     return;
                 } catch (e) { }

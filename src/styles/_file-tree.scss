@@ -102,8 +102,8 @@ tractor-file-tree .file-tree__file-list-item {
         background-image: url('./images/directory.png');
     }
 
-    &.file-tree__file-list-item--expanded-directory {
-        background-image: url('./images/expanded-directory.png');
+    &.file-tree__file-list-item--open-directory {
+        background-image: url('./images/open-directory.png');
     }
 }
 

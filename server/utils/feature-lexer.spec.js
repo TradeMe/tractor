@@ -1,14 +1,19 @@
 /* global describe:true, it: true */
 'use strict';
 
+// Test Utilities:
 var chai = require('chai');
 var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 
-var noop = require('node-noop').noop;
+// Utilities:
+var _ = require('lodash');
+
+// Test setup:
 var expect = chai.expect;
 chai.use(sinonChai);
 
+// Under test:
 var featureLexer = require('./feature-lexer');
 
 describe('server/utils: lex-feature:', function () {
@@ -17,7 +22,7 @@ describe('server/utils: lex-feature:', function () {
         var Formatter = require('./feature-lexer-formatter');
 
         var lexer = {
-            scan: noop
+            scan: _.noop
         };
 
         sinon.stub(gherkin, 'Lexer').returns(function () {
@@ -44,7 +49,7 @@ describe('server/utils: lex-feature:', function () {
         var gherkin = require('gherkin');
 
         var lexer = {
-            scan: noop
+            scan: _.noop
         };
 
         sinon.stub(gherkin, 'Lexer').returns(function () {

@@ -18,15 +18,11 @@ var stripcolorcodes = require('stripcolorcodes');
 // Errors:
 var ProtractorRunError = require('../errors/ProtractorRunError');
 
-module.exports = connect;
+module.exports = {
+    run: run
+};
 
-function connect (socket) {
-    socket.on('run', function (runOptions) {
-        runProtractor(socket, runOptions);
-    });
-}
-
-function runProtractor (socket, runOptions) {
+function run (socket, runOptions) {
     if (!module.exports.running) {
         module.exports.running = true;
 
@@ -60,6 +56,11 @@ function startProtractor (socket, runOptions) {
         resolve = arguments[0];
         reject = arguments[1];
     });
+
+    if (_.isUndefined(runOptions.baseUrl)) {
+        reject(new ProtractorRunError('`baseUrl` must be defined.'));
+        return deferred;
+    }
 
     var protractor = childProcess.spawn('node', [protractorPath, e2ePath, '--baseUrl', runOptions.baseUrl]);
 

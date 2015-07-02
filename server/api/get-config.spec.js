@@ -4,9 +4,11 @@
 // Test Utilities:
 var chai = require('chai');
 var dirtyChai = require('dirty-chai');
-var noop = require('node-noop').noop;
 var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
+
+// Utilities:
+var _ = require('lodash');
 
 // Test setup:
 var expect = chai.expect;
@@ -19,7 +21,7 @@ var getConfig = require('./get-config');
 describe('server/api: get-config', function () {
     it('should respond with the current config:', function () {
         var response = {
-            send: noop
+            send: _.noop
         };
         sinon.spy(response, 'send');
         sinon.stub(JSON, 'stringify').returns('JSON');

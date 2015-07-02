@@ -5,6 +5,7 @@ var ComponentEditor = require('./ComponentEditor');
 
 // Dependencies:
 var FileEditorController = require('../FileEditor/FileEditorController');
+require('../../Core/Services/PersistentStateService');
 require('../../Core/Components/Notifier/NotifierService');
 require('./Services/ComponentFileService');
 require('./Models/ComponentModel');
@@ -12,6 +13,8 @@ require('./Models/ComponentModel');
 var ComponentEditorController = function ComponentEditorController (
     $scope,
     $window,
+    $state,
+    persistentStateService,
     NotifierService,
     ComponentFileService,
     ComponentModel,
@@ -21,6 +24,8 @@ var ComponentEditorController = function ComponentEditorController (
     var controller = new FileEditorController(
         $scope,
         $window,
+        $state,
+        persistentStateService,
         NotifierService,
         ComponentFileService,
         ComponentModel,
