@@ -1,9 +1,17 @@
-/*global beforeEach:true, describe:true, it:true, expect:true */
+/*global describe:true, beforeEach:true, it:true, expect:true */
 'use strict';
 
 // Angular:
 var angular = require('angular');
 require('angular-mocks');
+
+// Test Utilities:
+var chai = require('chai');
+var dirtyChai = require('dirty-chai');
+
+// Test setup:
+var expect = chai.expect;
+chai.use(dirtyChai);
 
 // Mocks:
 var MockHttpResponseInterceptor = require('../../Services/HttpResponseInterceptor.mock');

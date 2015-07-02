@@ -1,5 +1,5 @@
 <tractor-file-tree model="componentEditor" type="component"></tractor-file-tree>
-<tractor-resize-handle></tractor-resize-handle>
+<tractor-panel-handle panel-name="component-file-tree"></tractor-panel-handle>
 <form class="file" name="file-editor" novalidate
     ng-submit="componentEditor.showErrors() && componentEditor.saveFile()">
     <section class="file-options">
@@ -13,9 +13,15 @@
                 example="Component"
                 is-class>
             </tractor-variable-input>
+        </div>
+        <div class="file-options__file-actions">
             <tractor-submit class="file-options__save-file"
                 action="Save component file">
             </tractor-submit>
+            <tractor-action class="file-options__new-file"
+                model="componentEditor"
+                action="New file">
+            </tractor-action>
         </div>
     </section>
 
@@ -26,7 +32,13 @@
 
                 <section ng-if="componentEditor.fileModel.domElements.length">
                     <ul>
-                        <li class="file-editor__list-item" ng-repeat="domElement in componentEditor.fileModel.domElements">
+                        <li class="file-editor__list-item"
+                            ng-repeat="domElement in componentEditor.fileModel.domElements"
+                            ng-class="{ 'file-editor__list-item--minimised': domElement.minimised }"
+                            ng-dblclick="componentEditor.minimise(domElement)">
+
+                            <h3 class="file-editor__list-item-name">{{ domElement.name }}</h3>
+
                             <tractor-action
                                 model="componentEditor.fileModel"
                                 action="Remove element"
@@ -62,7 +74,7 @@
                                                 argument="filter"
                                                 icon="remove">
                                         </tractor-action>
-                                        <div class="file-editor__sort-handle" title="Drag to sort"
+                                        <div class="file-editor__list-item-sort-handle" title="Drag to sort"
                                              ng-if="domElement.filters.length > 2"
                                              as-sortable-item-handle>
                                         </div>
@@ -100,7 +112,13 @@
 
                 <section ng-if="componentEditor.fileModel.actions.length">
                     <ul>
-                        <li class="file-editor__list-item" ng-repeat="action in componentEditor.fileModel.actions">
+                        <li class="file-editor__list-item"
+                            ng-repeat="action in componentEditor.fileModel.actions"
+                            ng-class="{ 'file-editor__list-item--minimised': action.minimised }"
+                            ng-dblclick="componentEditor.minimise(action)">
+
+                            <h3 class="file-editor__list-item-name">{{ action.name }}</h3>
+
                             <tractor-action
                                 model="componentEditor.fileModel"
                                 action="Remove action"
@@ -126,7 +144,7 @@
                                             argument="parameter"
                                             icon="remove">
                                         </tractor-action>
-                                        <div ng-if="action.parameters.length > 1" class="file-editor__sort-handle" as-sortable-item-handle title="Drag to sort"></div>
+                                        <div ng-if="action.parameters.length > 1" class="file-editor__list-item-sort-handle" as-sortable-item-handle title="Drag to sort"></div>
 
                                         <tractor-variable-input
                                             form="file-editor"
@@ -154,7 +172,7 @@
                                             argument="interaction"
                                             icon="remove">
                                         </tractor-action>
-                                        <div ng-if="action.interactions.length > 1" class="file-editor__sort-handle" as-sortable-item-handle title="Drag to sort"></div>
+                                        <div ng-if="action.interactions.length > 1" class="file-editor__list-item-sort-handle" as-sortable-item-handle title="Drag to sort"></div>
 
                                         <tractor-select
                                             label="Element"

@@ -1,26 +1,30 @@
 'use strict';
 
+// Constants:
+var constants = require('../constants');
+
 // Utilities:
 var _ = require('lodash');
-var constants = require('../constants');
-var noop = require('node-noop').noop;
 var path = require('path');
 
 // Dependencies:
-var changecase = require('change-case');
-var camel = changecase.camel;
+var changeCase = require('change-case');
+var camel = changeCase.camel;
 var esquery = require('esquery');
 var fileStructureModifier = require('../utils/file-structure-modifier');
 var fileStructureUtils = require('../utils/file-structure-utils/file-structure-utils');
-var pascal = changecase.pascal;
+var pascal = changeCase.pascal;
 
-module.exports = init;
+// Errors:
+var UnknownOperationError = require('../errors/UnknownOperationError');
 
-var transforms = {};
+var transforms = { };
 transforms[constants.COMPONENTS_EXTENSION] = componentTransform;
 transforms[constants.FEATURES_EXTENSION] = featureTransform;
-transforms[constants.STEP_DEFINITIONS_EXTENSION] = noop;
+transforms[constants.STEP_DEFINITIONS_EXTENSION] = _.noop;
 transforms[constants.MOCK_DATA_EXTENSION] = mockDataTransform;
+
+module.exports = init;
 
 function init () {
     return fileStructureModifier.create({
@@ -31,29 +35,31 @@ function init () {
 function editItemPath (fileStructure, request) {
     var body = request.body;
     var isDirectory = body.isDirectory;
-    if (isDirectory && body.oldName && body.newName) {
-        renameDirectory(fileStructure, request);
-    // } else if (isDirectory && body.oldDirectoryPath && body.newDirectoryPath) {
-        // Move directory (can't do this yet/ever?)
-    } else if (!isDirectory && body.oldName && body.newName) {
-        renameFile(fileStructure, request);
-    } else if (!isDirectory && body.oldDirectoryPath && body.newDirectoryPath) {
-        moveFile(fileStructure, request);
-    }
-    return fileStructure;
-}
-
-function renameDirectory (fileStructure, request) {
-    var body = request.body;
     var oldName = body.oldName;
     var newName = body.newName;
+    var oldDirectoryPath = body.oldDirectoryPath;
+    var newDirectoryPath = body.newDirectoryPath;
 
-    var oldDirectoryPath = body.directoryPath;
-    var newDirectoryPath = body.directoryPath;
-    var extension = fileStructureUtils.getExtension(oldDirectoryPath);
+    if (isDirectory && oldName && newName) {
+        return renameDirectory(fileStructure, request.body);
+    } else if (!isDirectory && oldName && newName) {
+        return renameFile(fileStructure, request.body);
+    } else if (!isDirectory && oldDirectoryPath && newDirectoryPath) {
+        return moveFile(fileStructure, request.body);
+    } else {
+        throw new UnknownOperationError('Unknown operation');
+    }
+}
 
-    var oldPath = path.join(oldDirectoryPath, oldName);
-    var newPath = path.join(newDirectoryPath, newName);
+function renameDirectory (fileStructure, body) {
+    var oldName = body.oldName;
+    var newName = body.newName;
+    var directoryPath = body.directoryPath;
+
+    var extension = fileStructureUtils.getExtension(directoryPath);
+
+    var oldPath = path.join(directoryPath, oldName);
+    var newPath = path.join(directoryPath, newName);
 
     var directory = fileStructureUtils.findDirectory(fileStructure, oldPath);
     var existingDirectory = fileStructureUtils.findDirectory(fileStructure, newPath);
@@ -63,7 +69,7 @@ function renameDirectory (fileStructure, request) {
     while (existingDirectory) {
         numberOfDirectoriesWithSameName += 1;
         newName = createUniqueName(originalNewName, numberOfDirectoriesWithSameName + 1);
-        newPath = path.join(newDirectoryPath, newName);
+        newPath = path.join(directoryPath, newName);
         existingDirectory = fileStructureUtils.findDirectory(fileStructure, newPath);
     }
 
@@ -79,21 +85,20 @@ function renameDirectory (fileStructure, request) {
             newFilePath: path.join(newPath, file.name + extension)
         });
     });
+    return fileStructure;
 }
 
-function renameFile (fileStructure, request) {
-    var body = request.body;
+function renameFile (fileStructure, body) {
     var oldName = body.oldName;
     var newName = body.newName;
+    var directoryPath = body.directoryPath;
 
-    var oldDirectoryPath = body.directoryPath;
-    var newDirectoryPath = body.directoryPath;
-    var extension = fileStructureUtils.getExtension(oldDirectoryPath);
+    var extension = fileStructureUtils.getExtension(directoryPath);
 
-    var oldFilePath = path.join(oldDirectoryPath, oldName + extension);
-    var newFilePath = path.join(newDirectoryPath, newName + extension);
+    var oldFilePath = path.join(directoryPath, oldName + extension);
+    var newFilePath = path.join(directoryPath, newName + extension);
 
-    var directory = fileStructureUtils.findDirectory(fileStructure, oldDirectoryPath);
+    var directory = fileStructureUtils.findDirectory(fileStructure, directoryPath);
     var file = fileStructureUtils.findFile(directory, oldFilePath);
     var existingFile = fileStructureUtils.findFile(directory, newFilePath);
 
@@ -102,7 +107,7 @@ function renameFile (fileStructure, request) {
     while (existingFile) {
         numberOfFilesWithSameName += 1;
         newName = createUniqueName(originalNewName, numberOfFilesWithSameName + 1);
-        newFilePath = path.join(newDirectoryPath, newName + extension);
+        newFilePath = path.join(directoryPath, newName + extension);
         existingFile = fileStructureUtils.findFile(directory, newFilePath);
     }
 
@@ -115,19 +120,18 @@ function renameFile (fileStructure, request) {
         oldFilePath: oldFilePath,
         newFilePath: newFilePath
     });
+    return fileStructure;
 }
 
-function moveFile (fileStructure, request) {
-    var body = request.body;
-    var oldName = body.name;
-    var newName = body.name;
-
+function moveFile (fileStructure, body) {
+    var name = body.name;
     var oldDirectoryPath = body.oldDirectoryPath;
     var newDirectoryPath = body.newDirectoryPath;
+
     var extension = fileStructureUtils.getExtension(oldDirectoryPath);
 
-    var oldFilePath = path.join(oldDirectoryPath, oldName + extension);
-    var newFilePath = path.join(newDirectoryPath, newName + extension);
+    var oldFilePath = path.join(oldDirectoryPath, name + extension);
+    var newFilePath = path.join(newDirectoryPath, name + extension);
 
     var oldDirectory = fileStructureUtils.findDirectory(fileStructure, oldDirectoryPath);
     var newDirectory = fileStructureUtils.findDirectory(fileStructure, newDirectoryPath);
@@ -138,11 +142,12 @@ function moveFile (fileStructure, request) {
     newDirectory.files.push(file);
 
     transforms[extension](fileStructure, file, {
-        oldName: oldName,
-        newName: newName,
+        oldName: name,
+        newName: name,
         oldFilePath: oldFilePath,
         newFilePath: newFilePath
     });
+    return fileStructure;
 }
 
 function createUniqueName (name, n) {
@@ -163,7 +168,7 @@ function componentTransform (fileStructure, file, options) {
     var oldFilePath = options.oldFilePath;
     var newFilePath = options.newFilePath;
 
-    updateFileReferences(fileStructure, oldFilePath, newFilePath, 'components', oldName, newName);
+    updateFileReferences(fileStructure, 'components', oldFilePath, newFilePath, oldName, newName);
     updateIdentifiers(fileStructure, oldFilePath, pascal(oldName), pascal(newName));
     updateIdentifiers(fileStructure, oldFilePath, camel(oldName), camel(newName));
     updateIdentifiersInFile(file, pascal(oldName), pascal(newName));
@@ -171,7 +176,7 @@ function componentTransform (fileStructure, file, options) {
     updateNameInComment(file, null, oldName, newName);
 }
 
-function updateFileReferences (fileStructure, oldFilePath, newFilePath, type, oldName, newName) {
+function updateFileReferences (fileStructure, type, oldFilePath, newFilePath, oldName, newName) {
     var usagePaths = fileStructure.usages[oldFilePath];
     _.each(usagePaths, function (usagePath) {
         var file = fileStructureUtils.findFile(fileStructure, usagePath);
@@ -208,11 +213,9 @@ function updateNameInComment (file, type, oldName, newName) {
     var metaData = JSON.parse(comment.value);
     var item = metaData;
     if (type) {
-        item = _.find(metaData[type], { name: oldName });
+        item = _.find(item[type], { name: oldName });
     }
-    if (item) {
-        item.name = newName;
-    }
+    item.name = newName;
     comment.value = JSON.stringify(metaData, null, '    ');
 }
 
@@ -230,6 +233,6 @@ function mockDataTransform (fileStructure, file, options) {
     var oldFilePath = options.oldFilePath;
     var newFilePath = options.newFilePath;
 
-    updateFileReferences(fileStructure, oldFilePath, newFilePath, 'mockData', oldName, newName);
+    updateFileReferences(fileStructure, 'mockData', oldFilePath, newFilePath, oldName, newName);
     updateIdentifiers(fileStructure, oldFilePath, camel(oldName), camel(newName));
 }

@@ -14,37 +14,23 @@ module.exports = {
     create: create
 };
 
+// Cache:
+var cache = null;
+
 function create (options) {
     var preSave = options && options.preSave;
     var postSave = options && options.postSave;
     var preSend = options && options.preSend;
 
     return function (request, response) {
+        if (cache && !preSave && !postSave) {
+            response.send(JSON.stringify(cache));
+            return Promise.resolve(cache);
+        }
+
         return fileStructureUtils.getFileStructure(config.testDirectory)
-        .then(function (fileStructure) {
-            if (preSave) {
-                return Promise.resolve(preSave(fileStructure, request))
-                .then(function (fileStructure) {
-                    return fileStructureUtils.saveFileStructure(fileStructure);
-                })
-                .then(function () {
-                    return fileStructureUtils.getFileStructure(config.testDirectory);
-                });
-            }
-            return fileStructure;
-        })
-        .then(function (fileStructure) {
-            if (postSave) {
-                return Promise.resolve(postSave(fileStructure, request))
-                .then(function (fileStructure) {
-                    return fileStructureUtils.saveFileStructure(fileStructure);
-                })
-                .then(function () {
-                    return fileStructureUtils.getFileStructure(config.testDirectory);
-                });
-            }
-            return fileStructure;
-        })
+        .then(createModifierHandler(preSave, request))
+        .then(createModifierHandler(postSave, request))
         .then(function (fileStructure) {
             if (preSend) {
                 return preSend(fileStructure);
@@ -52,11 +38,26 @@ function create (options) {
             return fileStructure;
         })
         .then(function (fileStructure) {
+            cache = fileStructure;
             response.send(JSON.stringify(fileStructure));
         })
         .catch(function (error) {
-            console.log(error);
             errorHandler(response, error, 'Operation failed.');
         });
+    };
+}
+
+function createModifierHandler (modifier, request) {
+    return function (fileStructure) {
+        if (modifier) {
+            return Promise.resolve(modifier(fileStructure, request))
+            .then(function (fileStructure) {
+                return fileStructureUtils.saveFileStructure(fileStructure);
+            })
+            .then(function () {
+                return fileStructureUtils.getFileStructure(config.testDirectory);
+            });
+        }
+        return fileStructure;
     };
 }

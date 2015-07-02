@@ -30,7 +30,6 @@ function server (reportTaskDone) {
     .on('finish', function () {
         gulp.src(['server/**/*.spec.js'])
         .pipe(mocha().on('error', function (error) {
-            console.log(error);
             this.destroy();
             reportTaskDone();
         }))

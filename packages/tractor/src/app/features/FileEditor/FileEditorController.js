@@ -8,6 +8,8 @@ var FileEditorController = (function () {
     var FileEditorController = function FileEditorController (
         $scope,
         $window,
+        $state,
+        persistentStateService,
         NotifierService,
         FileService,
         FileModel,
@@ -18,8 +20,11 @@ var FileEditorController = (function () {
     ) {
         this.$scope = $scope;
         this.$window = $window;
+        this.$state = $state;
+        this.persistentStateService = persistentStateService;
         this.notifierService = NotifierService;
         this.fileService = FileService;
+        this.FileModel = FileModel;
         this.fileStructure = fileStructure;
 
         this.components = components;
@@ -28,9 +33,16 @@ var FileEditorController = (function () {
         if (filePath) {
             this.fileModel = this.fileService.openFile(this.fileStructure, filePath.path, this.components, this.mockData);
         }
-        if (FileModel) {
-            this.fileModel = this.fileModel || new FileModel();
+        if (FileModel && !this.fileModel) {
+            this.newFile();
         }
+    };
+
+    FileEditorController.prototype.newFile = function () {
+        if (this.fileModel) {
+            this.$state.go('.', { });
+        }
+        this.fileModel = new this.FileModel();
     };
 
     FileEditorController.prototype.saveFile = function () {
@@ -76,6 +88,14 @@ var FileEditorController = (function () {
             this.notifierService.error('Can\'t save file, something is invalid.');
         }
         return !fileEditor.$invalid;
+    };
+
+    FileEditorController.prototype.minimise = function (item) {
+        item.minimised = !!!item.minimised;
+
+        var displayState = this.persistentStateService.get(this.fileModel.name);
+        displayState[item.name] = item.minimised;
+        this.persistentStateService.set(this.fileModel.name, displayState);
     };
 
     return FileEditorController;

@@ -15,7 +15,7 @@ require('./Components/FileTree/FileTreeDirective');
 require('./Components/GiveFocus/GiveFocusDirective');
 require('./Components/LiteralInput/LiteralInputDirective');
 require('./Components/Notifier/NotifierDirective');
-require('./Components/ResizeHandle/ResizeHandleDirective');
+require('./Components/PanelHandle/PanelHandleDirective');
 require('./Components/SelectInput/SelectInputDirective');
 require('./Components/StepInput/StepInputDirective');
 require('./Components/Submit/SubmitDirective');

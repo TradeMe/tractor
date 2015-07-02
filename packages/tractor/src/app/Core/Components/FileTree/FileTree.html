@@ -42,14 +42,14 @@
 
     <p class="file-tree__item-name"
         ng-if="item.name && !item.editingName"
-        ng-click="fileTree.expandDirectory(item)"
+        ng-click="fileTree.toggleOpenDirectory(item)"
         ng-dblclick="fileTree.editName(item)">
         {{ item.name }}
     </p>
     <div ng-include="'rename-input.html'"></div>
 
     <ul class="file-tree__file-list"
-        ng-if="(item || fileTree.model.fileStructure).expanded">
+        ng-if="(item || fileTree.model.fileStructure).open">
         <li class="file-tree__file-list-item file-tree__file-list-item--new-directory">
             <tractor-action
                 model="fileTree"
@@ -59,7 +59,7 @@
         </li>
 
         <li class="file-tree__file-list-item file-tree__file-list-item--directory"
-            ng-class="{ 'file-tree__file-list-item--expanded-directory': item.expanded }"
+            ng-class="{ 'file-tree__file-list-item--open-directory': item.open }"
             ng-repeat="item in (item || fileTree.model.fileStructure).directories"
             ng-include="'file-structure.html'"
             tractor-drop-file

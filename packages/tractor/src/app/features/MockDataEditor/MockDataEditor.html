@@ -1,5 +1,5 @@
 <tractor-file-tree model="mockDataEditor" type="mock-data"></tractor-file-tree>
-<tractor-resize-handle></tractor-resize-handle>
+<tractor-panel-handle panel-name="mock-data-file-tree"></tractor-panel-handle>
 <form class="file" name="file-editor" novalidate
     ng-submit="mockDataEditor.showErrors() && mockDataEditor.saveFile()">
     <section class="file-options">
@@ -13,9 +13,15 @@
                 example="Data"
                 validate-file-name>
             </tractor-text-input>
+        </div>
+        <div class="file-options__file-actions">
             <tractor-submit class="file-options__save-file"
                 action="Save mock data file">
             </tractor-submit>
+            <tractor-action class="file-options__save-file"
+                model="mockDataEditor"
+                action="New file">
+            </tractor-action>
         </div>
     </section>
 

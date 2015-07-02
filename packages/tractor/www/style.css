@@ -1,9 +1,9 @@
-/*! normalize.css v3.0.2 | MIT License | git.io/normalize */
+/*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 
 /**
  * 1. Set default font family to sans-serif.
- * 2. Prevent iOS text size adjust after orientation change, without disabling
- *    user zoom.
+ * 2. Prevent iOS and IE text size adjust after device orientation change,
+ *    without disabling user zoom.
  */
 
 html {
@@ -71,7 +71,7 @@ audio:not([controls]) {
 
 /**
  * Address `[hidden]` styling not present in IE 8/9/10.
- * Hide the `template` element in IE 8/9/11, Safari, and Firefox < 22.
+ * Hide the `template` element in IE 8/9/10/11, Safari, and Firefox < 22.
  */
 
 [hidden],
@@ -91,7 +91,8 @@ a {
 }
 
 /**
- * Improve readability when focused and also mouse hovered in all browsers.
+ * Improve readability of focused elements when they are also in an
+ * active/hover state.
  */
 
 a:active,
@@ -209,7 +210,6 @@ figure {
  */
 
 hr {
-  -moz-box-sizing: content-box;
   box-sizing: content-box;
   height: 0;
 }
@@ -350,15 +350,12 @@ input[type="number"]::-webkit-outer-spin-button {
 
 /**
  * 1. Address `appearance` set to `searchfield` in Safari and Chrome.
- * 2. Address `box-sizing` set to `border-box` in Safari and Chrome
- *    (include `-moz` to future-proof).
+ * 2. Address `box-sizing` set to `border-box` in Safari and Chrome.
  */
 
 input[type="search"] {
   -webkit-appearance: textfield; /* 1 */
-  -moz-box-sizing: content-box;
-  -webkit-box-sizing: content-box; /* 2 */
-  box-sizing: content-box;
+  box-sizing: content-box; /* 2 */
 }
 
 /**
@@ -430,6 +427,10 @@ th {
 /* Mandatory CSS required for ng-sortable */
 /* ************************************** */
 
+.as-sortable-item, .as-sortable-placeholder {
+    display: block;
+}
+
 .as-sortable-item {
     -ms-touch-action: none;
     touch-action: none;
@@ -450,6 +451,15 @@ th {
 
 .as-sortable-hidden {
     display: none !important;
+}
+
+.as-sortable-un-selectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 @font-face {
   font-family: 'LeagueGothic';
@@ -480,13 +490,15 @@ form.file {
   width: 80%;
   height: 100%; }
 
+.file-editor__container {
+  padding-left: 1rem;
+  margin-right: 1rem;
+  margin-bottom: 1rem; }
+
 .file-editor {
   height: 90%;
   overflow-x: hidden;
   overflow-y: scroll; }
-
-.file-editor h3 {
-  display: inline-block; }
 
 .file-editor ul,
 .file-editor ol {
@@ -495,6 +507,12 @@ form.file {
   display: block;
   position: relative; }
 
+.file-editor section > tractor-action:last-child {
+  height: 2.5rem;
+  padding-left: 1rem; }
+  .file-editor section > tractor-action:last-child button {
+    margin-top: 0; }
+
 .file-editor__list-item {
   position: relative;
   padding: 0.5rem;
@@ -502,57 +520,45 @@ form.file {
   margin-right: 2.5rem;
   margin-bottom: 0.5rem;
   background: whitesmoke; }
-
-.file-editor__list-item .file-editor__list-item {
-  background: #ebebeb; }
-
-.file-editor tractor-variable-input,
-.file-editor tractor-text-input,
-.file-editor tractor-literal-input,
-.file-editor tractor-select,
-.file-editor tractor-step-input,
-.file-editor tractor-checkbox {
-  font-size: 0;
-  display: inline-block;
-  vertical-align: top; }
-
-.file-editor section > tractor-action:last-child {
-  height: 2.5rem;
-  padding-left: 1rem; }
-
-.file-editor section > tractor-action:last-child button {
-  margin-top: 0; }
-
-.file-editor li > tractor-action:first-of-type {
-  position: absolute;
-  top: 0rem;
-  left: -2rem;
-  padding: 0; }
-
-.file-editor li > tractor-action:first-of-type button {
-  background-image: url("./images/remove.png"); }
-
-.file-editor li > tractor-action:first-of-type button {
-  margin-top: 0; }
-
-.file-editor__main-bar {
-  position: fixed;
-  top: 13.5%;
-  right: 20%; }
-
-.file-editor__container {
-  padding-left: 1rem;
-  margin-right: 1rem;
-  margin-bottom: 1rem; }
-
-.file-editor__sort-handle {
-  position: absolute;
-  top: 0rem;
-  right: -2rem;
-  width: 2rem;
-  height: 2rem;
-  background: #6e6e6e;
-  background-image: url("./images/sortable.png"); }
+  .file-editor__list-item h3 {
+    display: inline-block; }
+  .file-editor__list-item .file-editor__list-item {
+    background: #ebebeb; }
+  .file-editor__list-item tractor-variable-input, .file-editor__list-item tractor-text-input, .file-editor__list-item tractor-literal-input, .file-editor__list-item tractor-select, .file-editor__list-item tractor-step-input,
+  .file-editor__list-item tractor-checkbox {
+    font-size: 0;
+    display: inline-block;
+    vertical-align: top; }
+  .file-editor__list-item > tractor-action:first-of-type {
+    position: absolute;
+    top: 0rem;
+    left: -2rem;
+    padding: 0; }
+    .file-editor__list-item > tractor-action:first-of-type button {
+      background-image: url("./images/remove.png");
+      margin-top: 0; }
+  .file-editor__list-item .file-editor__list-item-name {
+    display: none; }
+  .file-editor__list-item .file-editor__list-item-sort-handle {
+    position: absolute;
+    top: 0rem;
+    right: -2rem;
+    width: 2rem;
+    height: 2rem;
+    background: #6e6e6e;
+    background-image: url("./images/sortable.png"); }
+  .file-editor__list-item.file-editor__list-item--minimised {
+    padding: 0 0.5rem; }
+    .file-editor__list-item.file-editor__list-item--minimised .file-editor__list-item-name {
+      display: inline-block; }
+    .file-editor__list-item.file-editor__list-item--minimised tractor-variable-input,
+    .file-editor__list-item.file-editor__list-item--minimised tractor-text-input,
+    .file-editor__list-item.file-editor__list-item--minimised tractor-literal-input,
+    .file-editor__list-item.file-editor__list-item--minimised tractor-select,
+    .file-editor__list-item.file-editor__list-item--minimised tractor-step-input,
+    .file-editor__list-item.file-editor__list-item--minimised tractor-checkbox,
+    .file-editor__list-item.file-editor__list-item--minimised section {
+      display: none; }
 
 .file-options {
   font-size: 0;
@@ -569,14 +575,23 @@ form.file {
 
 .file-options > div {
   display: inline-block;
-  margin-top: 0.5rem; }
+  margin-top: 0.5rem;
+  height: 4rem;
+  padding: 0 0.25rem; }
+
+.file-options__file-actions {
+  float: right; }
+  .file-options__file-actions > * {
+    padding: 0 0.25rem; }
 
 .file-options__name-input,
-.file-options__save-file {
+.file-options__save-file,
+.file-options__new-file {
   display: table-cell;
   vertical-align: top; }
 
-.file-options__save-file button {
+.file-options__save-file button,
+.file-options__new-file button {
   margin-top: 1.5rem; }
 
 tractor-file-tree {
@@ -654,8 +669,8 @@ tractor-file-tree .file-tree__file-list-item {
     background-image: url("./images/new-directory.png"); }
   tractor-file-tree .file-tree__file-list-item.file-tree__file-list-item--directory {
     background-image: url("./images/directory.png"); }
-  tractor-file-tree .file-tree__file-list-item.file-tree__file-list-item--expanded-directory {
-    background-image: url("./images/expanded-directory.png"); }
+  tractor-file-tree .file-tree__file-list-item.file-tree__file-list-item--open-directory {
+    background-image: url("./images/open-directory.png"); }
 
 tractor-file-tree .file-tree__item-options {
   position: absolute;
@@ -770,7 +785,8 @@ tractor-notifier {
   width: 2rem;
   vertical-align: bottom;
   -webkit-appearance: none;
-  appearance: none;
+  -moz-appearance: none;
+       appearance: none;
   border: none;
   outline: none;
   background-color: #6e6e6e;
@@ -895,7 +911,8 @@ tractor-action[icon] button:active {
 tractor-action button,
 tractor-submit button {
   -webkit-appearance: none;
-  appearance: none;
+  -moz-appearance: none;
+       appearance: none;
   border: none;
   outline: none;
   font-family: "CodePro";
@@ -971,7 +988,9 @@ tractor-checkbox input {
   font-size: 1rem;
   width: 100%;
   padding-left: 1rem;
-  appearance: none; }
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none; }
 
 tractor-variable-input input:active,
 tractor-text-input input:active,
@@ -1033,7 +1052,7 @@ main {
 .hidden {
   display: none !important; }
 
-tractor-resize-handle {
+tractor-panel-handle {
   float: left;
   width: 0.25%;
   height: 100%;

@@ -1,10 +1,10 @@
 <tractor-file-tree model="stepDefinitionEditor" type="step-definition"></tractor-file-tree>
-<tractor-resize-handle></tractor-resize-handle>
+<tractor-panel-handle panel-name="step-definition-file-tree"></tractor-panel-handle>
 <form class="file" name="file-editor" novalidate
     ng-submit="stepDefinitionEditor.showErrors() && stepDefinitionEditor.saveFile()">
     <section class="file-options" ng-if="stepDefinitionEditor.fileModel">
         <h1 class="file-options__name">{{ stepDefinitionEditor.fileModel.name }}</h1>
-        <div>
+        <div class="file-options__file-actions">
             <tractor-submit class="file-options__save-file"
                 action="Save step definition file">
             </tractor-submit>
@@ -131,7 +131,7 @@
                         argument="task"
                         icon="remove">
                     </tractor-action>
-                    <div ng-if="stepDefinitionEditor.fileModel.step.tasks.length > 1" class="file-editor__sort-handle" as-sortable-item-handle title="Drag to sort"></div>
+                    <div ng-if="stepDefinitionEditor.fileModel.step.tasks.length > 1" class="file-editor__list-item-sort-handle" as-sortable-item-handle title="Drag to sort"></div>
 
                     <tractor-select
                         label="Component"

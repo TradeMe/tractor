@@ -52,8 +52,8 @@ function saveJSONData (file, body) {
 }
 
 function saveFeatureData (file, body) {
-    var data = body.data.replace(constants.FEATURE_NEWLINE, os.EOL);
-    file.content = data;
+    body.data = body.data.replace(constants.FEATURE_NEWLINE, os.EOL);
+    file.content = body.data;
 }
 
 function generateStepDefinitions (fileStructure, request) {

@@ -132,15 +132,9 @@ var FileTreeController = (function () {
         }
     };
 
-    FileTreeController.prototype.expandDirectory = function (item) {
-        item.expanded = !item.expanded;
-        var expanded = this.fileStructureService.getExpanded();
-        if (item.expanded) {
-            expanded[item.path] = item.expanded;
-        } else {
-            delete expanded[item.path];
-        }
-        this.fileStructureService.setExpanded(expanded);
+    FileTreeController.prototype.toggleOpenDirectory = function (item) {
+        item.open = !item.open;
+        this.fileStructureService.toggleOpenDirectory(item.path);
     };
 
     FileTreeController.prototype.showOptions = function (item) {

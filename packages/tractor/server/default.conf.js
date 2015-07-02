@@ -1,6 +1,7 @@
 'use strict';
 
-var noop = require('node-noop').noop;
+// Utilities:
+var _ = require('lodash');
 
 module.exports = {
     testDirectory: './e2e_tests',
@@ -8,6 +9,6 @@ module.exports = {
     environments: [
         'http://localhost:8080'
     ],
-    beforeProtractor: noop,
-    afterProtractor: noop
+    beforeProtractor: _.noop,
+    afterProtractor: _.noop
 };
