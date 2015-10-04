@@ -15,6 +15,9 @@
         },
         {
             "name": "Run Protractor button"
+        },
+        {
+            "name": "Server Status badge"
         }
     ],
     "actions": [
@@ -47,6 +50,7 @@ module.exports = function () {
         this.stepDefinitionsLink = element(by.css('[href="#/step-definition-editor/"]'));
         this.mockDataLink = element(by.css('[href="#/mock-data-editor/"]'));
         this.runProtractorButton = element(by.css('tractor-action[action="Run protractor"]'));
+        this.serverStatusBadge = element(by.css('.control-panel__server-status'));
     };
     ControlPanel.prototype.goToComponents = function () {
         var self = this;

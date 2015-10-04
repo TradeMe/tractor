@@ -12,6 +12,10 @@
                 </tractor-submit>
             </form>
         </div>
+        <span class="control-panel__server-status"
+              ng-class="{ 'control-panel__server-status--running': controlPanel.isServerRunning() }"
+              ng-attr-title="{{ 'Tractor server is ' + (controlPanel.isServerRunning() ? 'running.' : 'not running.') }}">
+        </span>
     </section>
 
     <nav>

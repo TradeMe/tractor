@@ -40558,7 +40558,9 @@ function drainQueue() {
         currentQueue = queue;
         queue = [];
         while (++queueIndex < len) {
-            currentQueue[queueIndex].run();
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
         }
         queueIndex = -1;
         len = queue.length;
@@ -40610,7 +40612,6 @@ process.binding = function (name) {
     throw new Error('process.binding is not supported');
 };
 
-// TODO(shtylman)
 process.cwd = function () { return '/' };
 process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
@@ -41233,8 +41234,8 @@ exports.ucFirst = exports.upperCaseFirst = require('upper-case-first')
 exports.lcFirst = exports.lowerCaseFirst = require('lower-case-first')
 
 },{"camel-case":17,"constant-case":18,"dot-case":19,"is-lower-case":20,"is-upper-case":21,"lower-case":23,"lower-case-first":22,"param-case":24,"pascal-case":25,"path-case":26,"sentence-case":27,"snake-case":31,"swap-case":32,"title-case":33,"upper-case":35,"upper-case-first":34}],17:[function(require,module,exports){
-var upperCase    = require('upper-case');
-var sentenceCase = require('sentence-case');
+var upperCase = require('upper-case')
+var sentenceCase = require('sentence-case')
 
 /**
  * Camel case a string.
@@ -41249,13 +41250,13 @@ module.exports = function (string, locale) {
     .replace(/(\d) (?=\d)/g, '$1_')
     // Replace spaces between words with an upper cased character.
     .replace(/ (.)/g, function (m, $1) {
-      return upperCase($1, locale);
-    });
-};
+      return upperCase($1, locale)
+    })
+}
 
 },{"sentence-case":27,"upper-case":35}],18:[function(require,module,exports){
-var upperCase = require('upper-case');
-var snakeCase = require('snake-case');
+var upperCase = require('upper-case')
+var snakeCase = require('snake-case')
 
 /**
  * Constant case a string.
@@ -41265,8 +41266,8 @@ var snakeCase = require('snake-case');
  * @return {String}
  */
 module.exports = function (string, locale) {
-  return upperCase(snakeCase(string, locale), locale);
-};
+  return upperCase(snakeCase(string, locale), locale)
+}
 
 },{"snake-case":31,"upper-case":35}],19:[function(require,module,exports){
 var sentenceCase = require('sentence-case');
@@ -41400,8 +41401,8 @@ module.exports = function (string, locale) {
 };
 
 },{"sentence-case":27}],25:[function(require,module,exports){
-var camelCase      = require('camel-case');
-var upperCaseFirst = require('upper-case-first');
+var camelCase = require('camel-case')
+var upperCaseFirst = require('upper-case-first')
 
 /**
  * Pascal case a string.
@@ -41411,8 +41412,8 @@ var upperCaseFirst = require('upper-case-first');
  * @return {String}
  */
 module.exports = function (string, locale) {
-  return upperCaseFirst(camelCase(string, locale), locale);
-};
+  return upperCaseFirst(camelCase(string, locale), locale)
+}
 
 },{"camel-case":17,"upper-case-first":34}],26:[function(require,module,exports){
 var sentenceCase = require('sentence-case');
@@ -41494,8 +41495,8 @@ module.exports = function (str, locale) {
 };
 
 },{"sentence-case":27}],32:[function(require,module,exports){
-var upperCase = require('upper-case');
-var lowerCase = require('lower-case');
+var upperCase = require('upper-case')
+var lowerCase = require('lower-case')
 
 /**
  * Swap the case of a string. Manually iterate over every character and check
@@ -41507,24 +41508,24 @@ var lowerCase = require('lower-case');
  */
 module.exports = function (str, locale) {
   if (str == null) {
-    return '';
+    return ''
   }
 
-  var result = '';
+  var result = ''
 
   for (var i = 0; i < str.length; i++) {
-    var c = str[i];
-    var u = upperCase(c, locale);
+    var c = str[i]
+    var u = upperCase(c, locale)
 
-    result += u === c ? lowerCase(c, locale) : u;
+    result += u === c ? lowerCase(c, locale) : u
   }
 
-  return result;
-};
+  return result
+}
 
 },{"lower-case":23,"upper-case":35}],33:[function(require,module,exports){
-var upperCase    = require('upper-case');
-var sentenceCase = require('sentence-case');
+var upperCase = require('upper-case')
+var sentenceCase = require('sentence-case')
 
 /**
  * Title case a string.
@@ -41535,9 +41536,9 @@ var sentenceCase = require('sentence-case');
  */
 module.exports = function (str, locale) {
   return sentenceCase(str, locale).replace(/^.| ./g, function (m) {
-    return upperCase(m, locale);
-  });
-};
+    return upperCase(m, locale)
+  })
+}
 
 },{"sentence-case":27,"upper-case":35}],34:[function(require,module,exports){
 var upperCase = require('upper-case')
@@ -67052,7 +67053,7 @@ var FileTreeDirective = function () {
         },
 
         /* eslint-disable no-path-concat */
-        template: "<script type=\"text/ng-template\" id=\"file-options.html\">\n    <div class=\"file-tree__item-options\"\n         ng-class=\"{ 'file-tree__item-active-options': item.showOptions }\"\n         ng-click=\"fileTree.showOptions(item)\">\n    </div>\n    <div class=\"file-tree__item-options-panel\"\n         ng-if=\"item.showOptions\"\n         ng-mouseleave=\"fileTree.hideOptions(item)\">\n        <tractor-action\n            ng-if=\"fileTree.canModify\"\n            model=\"fileTree\"\n            action=\"Edit name\"\n            argument=\"item\">\n        </tractor-action>\n        <tractor-action\n            ng-if=\"fileTree.canModify && !item.isDirectory\"\n            model=\"fileTree\"\n            action=\"Copy\"\n            argument=\"item\">\n        </tractor-action>\n        <tractor-action\n            model=\"fileTree\"\n            action=\"Delete\"\n            argument=\"item\">\n        </tractor-action>\n    </div>\n</script>\n\n<script type=\"text/ng-template\" id=\"rename-input.html\">\n    <input class=\"file-tree__item-rename\"\n            ng-if=\"item.editingName\"\n            ng-model=\"item.name\"\n            ng-blur=\"fileTree.saveNewName(item)\"\n            ng-keypress=\"fileTree.renameOnEnter($event, item)\"\n            tractor-give-focus\n            focus-on=\"item.editingName\">\n    </input>\n</script>\n\n<script type=\"text/ng-template\" id=\"file-structure.html\">\n    <div ng-include=\"'file-options.html'\"></div>\n\n    <p class=\"file-tree__item-name\"\n        ng-if=\"item.name && !item.editingName\"\n        ng-click=\"fileTree.toggleOpenDirectory(item)\"\n        ng-dblclick=\"fileTree.editName(item)\">\n        {{ item.name }}\n    </p>\n    <div ng-include=\"'rename-input.html'\"></div>\n\n    <ul class=\"file-tree__file-list\"\n        ng-if=\"(item || fileTree.model.fileStructure).open\">\n        <li class=\"file-tree__file-list-item file-tree__file-list-item--new-directory\">\n            <tractor-action\n                model=\"fileTree\"\n                action=\"Add directory\"\n                argument=\"item || fileTree.model.fileStructure\">\n            </tractor-action>\n        </li>\n\n        <li class=\"file-tree__file-list-item file-tree__file-list-item--directory\"\n            ng-class=\"{ 'file-tree__file-list-item--open-directory': item.open }\"\n            ng-repeat=\"item in (item || fileTree.model.fileStructure).directories\"\n            ng-include=\"'file-structure.html'\"\n            tractor-drop-file\n            on-drop=\"fileTree.editFilePath\"\n            drop-directory=\"item\">\n        </li>\n\n        <li class=\"file-tree__file-list-item\"\n            ng-repeat=\"item in (item || fileTree.model.fileStructure).files\"\n            tractor-drag-file>\n            <div ng-include=\"'file-options.html'\"></div>\n\n            <p class=\"file-tree__item-name\"\n                ng-if=\"item.name && !item.editingName\"\n                ng-click=\"fileTree.openFile(item)\"\n                ng-dblclick=\"fileTree.editName(item)\">\n                {{ fileTree.getName(item) }}\n            </p>\n            <div ng-include=\"'rename-input.html'\"></div>\n        </li>\n    </ul>\n</script>\n\n<section class=\"file-tree__container\"\n    tractor-drop-file\n    on-drop=\"fileTree.editFilePath\"\n    drop-directory=\"fileTree.model.fileStructure\">\n\n    <h2 class=\"file-tree__header\">\n        {{ fileTree.headerName }} files:\n    </h2>\n    <div class=\"file-tree\"\n        ng-class=\"{\n            'file-tree--javascript': fileTree.type === 'component' || fileTree.type === 'step-definition',\n            'file-tree--feature': fileTree.type === 'feature',\n            'file-tree--json': fileTree.type === 'mock-data'\n        }\"\n        ng-include=\"'file-structure.html'\">\n    </div>\n</section>\n",
+        template: "<script type=\"text/ng-template\" id=\"file-options.html\">\r\n    <div class=\"file-tree__item-options\"\r\n         ng-class=\"{ 'file-tree__item-active-options': item.showOptions }\"\r\n         ng-click=\"fileTree.showOptions(item)\">\r\n    </div>\r\n    <div class=\"file-tree__item-options-panel\"\r\n         ng-if=\"item.showOptions\"\r\n         ng-mouseleave=\"fileTree.hideOptions(item)\">\r\n        <tractor-action\r\n            ng-if=\"fileTree.canModify\"\r\n            model=\"fileTree\"\r\n            action=\"Edit name\"\r\n            argument=\"item\">\r\n        </tractor-action>\r\n        <tractor-action\r\n            ng-if=\"fileTree.canModify && !item.isDirectory\"\r\n            model=\"fileTree\"\r\n            action=\"Copy\"\r\n            argument=\"item\">\r\n        </tractor-action>\r\n        <tractor-action\r\n            model=\"fileTree\"\r\n            action=\"Delete\"\r\n            argument=\"item\">\r\n        </tractor-action>\r\n    </div>\r\n</script>\r\n\r\n<script type=\"text/ng-template\" id=\"rename-input.html\">\r\n    <input class=\"file-tree__item-rename\"\r\n            ng-if=\"item.editingName\"\r\n            ng-model=\"item.name\"\r\n            ng-blur=\"fileTree.saveNewName(item)\"\r\n            ng-keypress=\"fileTree.renameOnEnter($event, item)\"\r\n            tractor-give-focus\r\n            focus-on=\"item.editingName\">\r\n    </input>\r\n</script>\r\n\r\n<script type=\"text/ng-template\" id=\"file-structure.html\">\r\n    <div ng-include=\"'file-options.html'\"></div>\r\n\r\n    <p class=\"file-tree__item-name\"\r\n        ng-if=\"item.name && !item.editingName\"\r\n        ng-click=\"fileTree.toggleOpenDirectory(item)\"\r\n        ng-dblclick=\"fileTree.editName(item)\">\r\n        {{ item.name }}\r\n    </p>\r\n    <div ng-include=\"'rename-input.html'\"></div>\r\n\r\n    <ul class=\"file-tree__file-list\"\r\n        ng-if=\"(item || fileTree.model.fileStructure).open\">\r\n        <li class=\"file-tree__file-list-item file-tree__file-list-item--new-directory\">\r\n            <tractor-action\r\n                model=\"fileTree\"\r\n                action=\"Add directory\"\r\n                argument=\"item || fileTree.model.fileStructure\">\r\n            </tractor-action>\r\n        </li>\r\n\r\n        <li class=\"file-tree__file-list-item file-tree__file-list-item--directory\"\r\n            ng-class=\"{ 'file-tree__file-list-item--open-directory': item.open }\"\r\n            ng-repeat=\"item in (item || fileTree.model.fileStructure).directories\"\r\n            ng-include=\"'file-structure.html'\"\r\n            tractor-drop-file\r\n            on-drop=\"fileTree.editFilePath\"\r\n            drop-directory=\"item\">\r\n        </li>\r\n\r\n        <li class=\"file-tree__file-list-item\"\r\n            ng-repeat=\"item in (item || fileTree.model.fileStructure).files\"\r\n            tractor-drag-file>\r\n            <div ng-include=\"'file-options.html'\"></div>\r\n\r\n            <p class=\"file-tree__item-name\"\r\n                ng-if=\"item.name && !item.editingName\"\r\n                ng-click=\"fileTree.openFile(item)\"\r\n                ng-dblclick=\"fileTree.editName(item)\">\r\n                {{ fileTree.getName(item) }}\r\n            </p>\r\n            <div ng-include=\"'rename-input.html'\"></div>\r\n        </li>\r\n    </ul>\r\n</script>\r\n\r\n<section class=\"file-tree__container\"\r\n    tractor-drop-file\r\n    on-drop=\"fileTree.editFilePath\"\r\n    drop-directory=\"fileTree.model.fileStructure\">\r\n\r\n    <h2 class=\"file-tree__header\">\r\n        {{ fileTree.headerName }} files:\r\n    </h2>\r\n    <div class=\"file-tree\"\r\n        ng-class=\"{\r\n            'file-tree--javascript': fileTree.type === 'component' || fileTree.type === 'step-definition',\r\n            'file-tree--feature': fileTree.type === 'feature',\r\n            'file-tree--json': fileTree.type === 'mock-data'\r\n        }\"\r\n        ng-include=\"'file-structure.html'\">\r\n    </div>\r\n</section>\r\n",
         /* eslint-enable no-path-concat */
 
         controller: 'FileTreeController',
@@ -67175,7 +67176,7 @@ var NotifierDirective = function (NotifierService) {
         restrict: 'E',
 
         /* eslint-disable no-path-concat */
-        template: "<aside>\n    <ul class=\"notifier__notifications\">\n        <li ng-repeat=\"notification in notifications\"\n            ng-class=\"'notifier__notification notifier__notification--' + notification.type\">\n            <span class=\"notifier__notification-message\">{{ notification.message }}</span>\n\n            <button ng-click=\"dismiss(notification)\"\n                    class=\"notifier__notification-dismiss\"\n                    type=\"button\"\n                    title=\"Dismiss\">\n            </button>\n        </li>\n    </ul>\n</aside>\n",
+        template: "<aside>\r\n    <ul class=\"notifier__notifications\">\r\n        <li ng-repeat=\"notification in notifications\"\r\n            ng-class=\"'notifier__notification notifier__notification--' + notification.type\">\r\n            <span class=\"notifier__notification-message\">{{ notification.message }}</span>\r\n\r\n            <button ng-click=\"dismiss(notification)\"\r\n                    class=\"notifier__notification-dismiss\"\r\n                    type=\"button\"\r\n                    title=\"Dismiss\">\r\n            </button>\r\n        </li>\r\n    </ul>\r\n</aside>\r\n",
         /* eslint-enable no-path-concat */
 
         link: function ($scope) {
@@ -68244,7 +68245,7 @@ ExampleNameValidator.$inject = ['ValidationService', 'StepDeclarationModel'];
 
 Core.directive('exampleName', ExampleNameValidator);
 
-},{"../../features/FeatureEditor/Models/StepDeclarationModel":148,"../Core":107,"../Services/ValidationService":116,"bluebird":9,"lodash":39}],118:[function(require,module,exports){
+},{"../../features/FeatureEditor/Models/StepDeclarationModel":149,"../Core":107,"../Services/ValidationService":116,"bluebird":9,"lodash":39}],118:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -68421,7 +68422,7 @@ angular.module('tractor', [
     .state('tractor', {
         url: '/',
         /* eslint-disable no-path-concat */
-        template: "<header>\r\n    <section class=\"control-panel__top-row\">\r\n        <div>\r\n            <form class=\"control-panel__run-options\" name=\"controlPanelOptions\" novalidate\r\n                ng-submit=\"controlPanel.runProtractor()\">\r\n                <tractor-select\r\n                    label=\"Environment\"\r\n                    model=\"controlPanel\">\r\n                </tractor-select>\r\n                <tractor-submit\r\n                    action=\"Run protractor\">\r\n                </tractor-submit>\r\n            </form>\r\n        </div>\r\n    </section>\r\n\r\n    <nav>\r\n        <ul>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".component-editor\">Components</a>\r\n            </li>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".feature-editor\">Features</a>\r\n            </li>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".step-definition-editor\">Step Definitions</a>\r\n            </li>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".mock-data-editor\">Mock Data</a>\r\n            </li>\r\n        </ul>\r\n    </nav>\r\n</header>\r\n\r\n<main ui-view></main>\r\n\r\n<tractor-notifier></tractor-notifier>\r\n",
+        template: "<header>\r\n    <section class=\"control-panel__top-row\">\r\n        <div>\r\n            <form class=\"control-panel__run-options\" name=\"controlPanelOptions\" novalidate\r\n                ng-submit=\"controlPanel.runProtractor()\">\r\n                <tractor-select\r\n                    label=\"Environment\"\r\n                    model=\"controlPanel\">\r\n                </tractor-select>\r\n                <tractor-submit\r\n                    action=\"Run protractor\">\r\n                </tractor-submit>\r\n            </form>\r\n        </div>\r\n        <span class=\"control-panel__server-status\"\r\n              ng-class=\"{ 'control-panel__server-status--running': controlPanel.isServerRunning() }\"\r\n              ng-attr-title=\"{{ 'Tractor server is ' + (controlPanel.isServerRunning() ? 'running.' : 'not running.') }}\">\r\n        </span>\r\n    </section>\r\n    \r\n    <nav>\r\n        <ul>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".component-editor\">Components</a>\r\n            </li>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".feature-editor\">Features</a>\r\n            </li>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".step-definition-editor\">Step Definitions</a>\r\n            </li>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".mock-data-editor\">Mock Data</a>\r\n            </li>\r\n        </ul>\r\n    </nav>\r\n</header>\r\n\r\n<main ui-view></main>\r\n\r\n<tractor-notifier></tractor-notifier>\r\n",
         /* eslint-enable no-path-concat */
         controller: 'ControlPanelController as controlPanel',
         resolve: {
@@ -68508,7 +68509,7 @@ angular.module('tractor', [
     });
 }]);
 
-},{"./Core/Core":107,"./Core/Services/ConfigService":109,"./Core/Services/FileStructureService":111,"./Core/Services/HttpResponseInterceptor":112,"./Core/Services/RealTimeService":114,"./features/ComponentEditor/ComponentEditor":121,"./features/ComponentEditor/ComponentEditorController":122,"./features/ComponentEditor/Services/ComponentFileService":134,"./features/ControlPanel/ControlPanel":140,"./features/ControlPanel/ControlPanelController":141,"./features/FeatureEditor/FeatureEditor":143,"./features/FeatureEditor/FeatureEditorController":144,"./features/FeatureEditor/Services/FeatureFileService":150,"./features/MockDataEditor/MockDataEditorController":156,"./features/MockDataEditor/Services/MockDataFileService":158,"./features/StepDefinitionEditor/Services/StepDefinitionFileService":169,"./features/StepDefinitionEditor/StepDefinitionEditorController":174,"angular":8,"angular-local-storage":1,"angular-messages":3,"angular-mocks":4,"angular-sanitize":6,"angular-sortable":40,"angular-ui-router":7,"bluebird":9}],121:[function(require,module,exports){
+},{"./Core/Core":107,"./Core/Services/ConfigService":109,"./Core/Services/FileStructureService":111,"./Core/Services/HttpResponseInterceptor":112,"./Core/Services/RealTimeService":114,"./features/ComponentEditor/ComponentEditor":121,"./features/ComponentEditor/ComponentEditorController":122,"./features/ComponentEditor/Services/ComponentFileService":134,"./features/ControlPanel/ControlPanel":140,"./features/ControlPanel/ControlPanelController":141,"./features/FeatureEditor/FeatureEditor":144,"./features/FeatureEditor/FeatureEditorController":145,"./features/FeatureEditor/Services/FeatureFileService":151,"./features/MockDataEditor/MockDataEditorController":157,"./features/MockDataEditor/Services/MockDataFileService":159,"./features/StepDefinitionEditor/Services/StepDefinitionFileService":170,"./features/StepDefinitionEditor/StepDefinitionEditorController":175,"angular":8,"angular-local-storage":1,"angular-messages":3,"angular-mocks":4,"angular-sanitize":6,"angular-sortable":40,"angular-ui-router":7,"bluebird":9}],121:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -68563,7 +68564,7 @@ ComponentEditorController.$inject = ['$scope', '$window', '$state', 'persistentS
 
 ComponentEditor.controller('ComponentEditorController', ComponentEditorController);
 
-},{"../../Core/Components/Notifier/NotifierService":100,"../../Core/Services/PersistentStateService":113,"../FileEditor/FileEditorController":154,"./ComponentEditor":121,"./Models/ComponentModel":126,"./Services/ComponentFileService":134}],123:[function(require,module,exports){
+},{"../../Core/Components/Notifier/NotifierService":100,"../../Core/Services/PersistentStateService":113,"../FileEditor/FileEditorController":155,"./ComponentEditor":121,"./Models/ComponentModel":126,"./Services/ComponentFileService":134}],123:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -70160,17 +70161,20 @@ var ControlPanel = require('./ControlPanel');
 
 // Dependencies:
 require('./Services/RunnerService');
+require('./Services/ServerStatusService');
 
 var ControlPanelController = (function () {
     var ControlPanelController = function ControlPanelController (
         RunnerService,
+        ServerStatusService,
         config
     ) {
         this.runnerService = RunnerService;
+        this.serverStatusService = ServerStatusService;
         this.environments = config.environments;
         this.environment = _.first(this.environments);
     };
-    ControlPanelController.$inject = ['RunnerService', 'config'];
+    ControlPanelController.$inject = ['RunnerService', 'ServerStatusService', 'config'];
 
     ControlPanelController.prototype.runProtractor = function () {
         this.runnerService.runProtractor({
@@ -70178,12 +70182,16 @@ var ControlPanelController = (function () {
         });
     };
 
+    ControlPanelController.prototype.isServerRunning = function () {
+        return this.serverStatusService.isServerRunning();
+    };
+
     return ControlPanelController;
 })();
 
 ControlPanel.controller('ControlPanelController', ControlPanelController);
 
-},{"./ControlPanel":140,"./Services/RunnerService":142,"lodash":39}],142:[function(require,module,exports){
+},{"./ControlPanel":140,"./Services/RunnerService":142,"./Services/ServerStatusService":143,"lodash":39}],142:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -70221,6 +70229,53 @@ ControlPanel.service('RunnerService', RunnerService);
 },{"../../../Core/Components/Notifier/NotifierService":100,"../ControlPanel":140}],143:[function(require,module,exports){
 'use strict';
 
+// Module:
+var ControlPanel = require('../ControlPanel');
+
+// Dependencies:
+require('../../../Core/Components/Notifier/NotifierService');
+
+var ServerStatusService = function ServerStatusService (
+    NotifierService,
+    RealTimeService,
+    $rootScope
+) {
+    var serverIsRunning = false;
+    monitorServerStatus();
+
+    return {
+        isServerRunning: isServerRunning
+    };
+
+    function monitorServerStatus (options) {
+        RealTimeService.connect('server-status', {
+            'connect': onConnect,
+            'disconnect': onDisconnect
+        });
+    }
+
+    function onConnect () {
+        serverIsRunning = true;
+        $rootScope.$apply();
+    }
+
+    function onDisconnect () {
+        serverIsRunning = false;
+        $rootScope.$apply();
+        NotifierService.error('Tractor server stalled...');
+    }
+
+    function isServerRunning () {
+        return serverIsRunning;
+    }
+};
+ServerStatusService.$inject = ['NotifierService', 'RealTimeService', '$rootScope'];
+
+ControlPanel.service('ServerStatusService', ServerStatusService);
+
+},{"../../../Core/Components/Notifier/NotifierService":100,"../ControlPanel":140}],144:[function(require,module,exports){
+'use strict';
+
 // Utilities:
 var angular = require('angular');
 
@@ -70234,7 +70289,7 @@ FeatureEditor.constant('FeatureNewLine', '%%NEWLINE%%');
 
 module.exports = FeatureEditor;
 
-},{"../../Core/Core":107,"angular":8}],144:[function(require,module,exports){
+},{"../../Core/Core":107,"angular":8}],145:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -70274,7 +70329,7 @@ FeatureEditorController.$inject = ['$scope', '$window', '$state', 'persistentSta
 
 FeatureEditor.controller('FeatureEditorController', FeatureEditorController);
 
-},{"../../Core/Components/Notifier/NotifierService":100,"../../Core/Services/PersistentStateService":113,"../FileEditor/FileEditorController":154,"./FeatureEditor":143,"./Models/FeatureModel":146,"./Services/FeatureFileService":150}],145:[function(require,module,exports){
+},{"../../Core/Components/Notifier/NotifierService":100,"../../Core/Services/PersistentStateService":113,"../FileEditor/FileEditorController":155,"./FeatureEditor":144,"./Models/FeatureModel":147,"./Services/FeatureFileService":151}],146:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -70336,7 +70391,7 @@ FeatureEditor.factory('ExampleModel', ['StringToLiteralService', 'FeatureIndent'
     return createExampleModelConstructor(StringToLiteralService, FeatureIndent);
 }]);
 
-},{"../../../Core/Services/StringToLiteralService":115,"../FeatureEditor":143,"lodash":39}],146:[function(require,module,exports){
+},{"../../../Core/Services/StringToLiteralService":115,"../FeatureEditor":144,"lodash":39}],147:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -70424,7 +70479,7 @@ FeatureEditor.factory('FeatureModel', ['ScenarioModel', 'FeatureIndent', 'Featur
     return createFeatureModelConstructor(ScenarioModel, FeatureIndent, FeatureNewLine);
 }]);
 
-},{"../FeatureEditor":143,"./ScenarioModel":147,"lodash":39}],147:[function(require,module,exports){
+},{"../FeatureEditor":144,"./ScenarioModel":148,"lodash":39}],148:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -70531,7 +70586,7 @@ FeatureEditor.factory('ScenarioModel', ['StepDeclarationModel', 'ExampleModel', 
     return createScenarioModelConstructor(StepDeclarationModel, ExampleModel, FeatureIndent, FeatureNewLine);
 }]);
 
-},{"../FeatureEditor":143,"./ExampleModel":145,"./StepDeclarationModel":148,"lodash":39}],148:[function(require,module,exports){
+},{"../FeatureEditor":144,"./ExampleModel":146,"./StepDeclarationModel":149,"lodash":39}],149:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -70574,7 +70629,7 @@ FeatureEditor.factory('StepDeclarationModel', function () {
     return createStepDeclarationModelConstructor();
 });
 
-},{"../FeatureEditor":143,"lodash":39}],149:[function(require,module,exports){
+},{"../FeatureEditor":144,"lodash":39}],150:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -70605,7 +70660,7 @@ ExampleParserService.$inject = ['ExampleModel'];
 
 FeatureEditor.service('ExampleParserService', ExampleParserService);
 
-},{"../FeatureEditor":143,"../Models/ExampleModel":145,"lodash":39}],150:[function(require,module,exports){
+},{"../FeatureEditor":144,"../Models/ExampleModel":146,"lodash":39}],151:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -70638,7 +70693,7 @@ FeatureFileService.$inject = ['$http', 'FeatureParserService', 'FileStructureSer
 
 FeatureEditor.service('FeatureFileService', FeatureFileService);
 
-},{"../../../Core/Services/FileService":110,"../../../Core/Services/FileStructureService":111,"../FeatureEditor":143,"./FeatureParserService":151,"lodash":39}],151:[function(require,module,exports){
+},{"../../../Core/Services/FileService":110,"../../../Core/Services/FileStructureService":111,"../FeatureEditor":144,"./FeatureParserService":152,"lodash":39}],152:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -70694,7 +70749,7 @@ FeatureParserService.$inject = ['ScenarioParserService', 'FeatureModel'];
 
 FeatureEditor.service('FeatureParserService', FeatureParserService);
 
-},{"../FeatureEditor":143,"../Models/FeatureModel":146,"./ScenarioParserService":152,"assert":10,"lodash":39}],152:[function(require,module,exports){
+},{"../FeatureEditor":144,"../Models/FeatureModel":147,"./ScenarioParserService":153,"assert":10,"lodash":39}],153:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -70763,7 +70818,7 @@ ScenarioParserService.$inject = ['StepDeclarationParserService', 'ExampleParserS
 
 FeatureEditor.service('ScenarioParserService', ScenarioParserService);
 
-},{"../FeatureEditor":143,"../Models/ScenarioModel":147,"./ExampleParserService":149,"./StepDeclarationParserService":153,"assert":10,"lodash":39}],153:[function(require,module,exports){
+},{"../FeatureEditor":144,"../Models/ScenarioModel":148,"./ExampleParserService":150,"./StepDeclarationParserService":154,"assert":10,"lodash":39}],154:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -70790,7 +70845,7 @@ StepDeclarationParserService.$inject = ['StepDeclarationModel'];
 
 FeatureEditor.service('StepDeclarationParserService', StepDeclarationParserService);
 
-},{"../FeatureEditor":143,"../Models/StepDeclarationModel":148}],154:[function(require,module,exports){
+},{"../FeatureEditor":144,"../Models/StepDeclarationModel":149}],155:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -70896,7 +70951,7 @@ var FileEditorController = (function () {
 
 module.exports = FileEditorController;
 
-},{"bluebird":9,"lodash":39}],155:[function(require,module,exports){
+},{"bluebird":9,"lodash":39}],156:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -70909,7 +70964,7 @@ var MockDataEditor = angular.module('MockDataEditor', ['Core']);
 
 module.exports = MockDataEditor;
 
-},{"../../Core/Core":107,"angular":8}],156:[function(require,module,exports){
+},{"../../Core/Core":107,"angular":8}],157:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -70949,7 +71004,7 @@ MockDataEditorController.$inject = ['$scope', '$window', '$state', 'persistentSt
 
 MockDataEditor.controller('MockDataEditorController', MockDataEditorController);
 
-},{"../../Core/Components/Notifier/NotifierService":100,"../../Core/Services/PersistentStateService":113,"../FileEditor/FileEditorController":154,"./MockDataEditor":155,"./Models/MockDataModel":157,"./Services/MockDataFileService":158}],157:[function(require,module,exports){
+},{"../../Core/Components/Notifier/NotifierService":100,"../../Core/Services/PersistentStateService":113,"../FileEditor/FileEditorController":155,"./MockDataEditor":156,"./Models/MockDataModel":158,"./Services/MockDataFileService":159}],158:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -71001,7 +71056,7 @@ MockDataEditor.factory('MockDataModel', function () {
     return createMockDataModelConstructor();
 });
 
-},{"../MockDataEditor":155}],158:[function(require,module,exports){
+},{"../MockDataEditor":156}],159:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -71035,7 +71090,7 @@ MockDataFileService.$inject = ['$http', 'MockDataParserService', 'FileStructureS
 
 MockDataEditor.service('MockDataFileService', MockDataFileService);
 
-},{"../../../Core/Services/FileService":110,"../../../Core/Services/FileStructureService":111,"../MockDataEditor":155,"./MockDataParserService":159}],159:[function(require,module,exports){
+},{"../../../Core/Services/FileService":110,"../../../Core/Services/FileStructureService":111,"../MockDataEditor":156,"./MockDataParserService":160}],160:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -71066,7 +71121,7 @@ MockDataParserService.$inject = ['MockDataModel'];
 
 MockDataEditor.service('MockDataParserService', MockDataParserService);
 
-},{"../MockDataEditor":155,"../Models/MockDataModel":157}],160:[function(require,module,exports){
+},{"../MockDataEditor":156,"../Models/MockDataModel":158}],161:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -71144,7 +71199,7 @@ StepDefinitionEditor.factory('ComponentInstanceModel', ['ASTCreatorService', fun
     return createComponentInstanceModelConstructor(ASTCreatorService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":108,"../StepDefinitionEditor":173,"change-case":16,"path":12}],161:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":108,"../StepDefinitionEditor":174,"change-case":16,"path":12}],162:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -71249,7 +71304,7 @@ StepDefinitionEditor.factory('ExpectationModel', ['ASTCreatorService', 'StringTo
     return createExpectationModelConstructor(ASTCreatorService, StringToLiteralService, ArgumentModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":108,"../../../Core/Services/StringToLiteralService":115,"../../ComponentEditor/Models/ArgumentModel":124,"../StepDefinitionEditor":173,"lodash":39}],162:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":108,"../../../Core/Services/StringToLiteralService":115,"../../ComponentEditor/Models/ArgumentModel":124,"../StepDefinitionEditor":174,"lodash":39}],163:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -71327,7 +71382,7 @@ StepDefinitionEditor.factory('MockDataInstanceModel', ['ASTCreatorService', func
     return createMockDataInstanceModelConstructor(ASTCreatorService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":108,"../StepDefinitionEditor":173,"change-case":16,"path":12}],163:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":108,"../StepDefinitionEditor":174,"change-case":16,"path":12}],164:[function(require,module,exports){
 'use strict';
 
 // Utilities;
@@ -71390,7 +71445,7 @@ StepDefinitionEditor.factory('MockModel', ['ASTCreatorService', function (
     return createMockModelConstructor(ASTCreatorService);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":108,"../StepDefinitionEditor":173,"lodash":39}],164:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":108,"../StepDefinitionEditor":174,"lodash":39}],165:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -71531,7 +71586,7 @@ StepDefinitionEditor.factory('StepDefinitionModel', ['ASTCreatorService', 'Compo
     return createStepDefinitionModelConstructor(ASTCreatorService, ComponentInstanceModel, MockDataInstanceModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":108,"../StepDefinitionEditor":173,"./ComponentInstanceModel":160,"./MockDataInstanceModel":162,"lodash":39}],165:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":108,"../StepDefinitionEditor":174,"./ComponentInstanceModel":161,"./MockDataInstanceModel":163,"lodash":39}],166:[function(require,module,exports){
 'use strict';
 
 // Utilities;
@@ -71666,7 +71721,7 @@ StepDefinitionEditor.factory('StepModel', ['ASTCreatorService', 'ExpectationMode
     return createStepModelConstructor(ASTCreatorService, ExpectationModel, TaskModel, MockModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":108,"../StepDefinitionEditor":173,"./ExpectationModel":161,"./MockModel":163,"./TaskModel":166,"lodash":39}],166:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":108,"../StepDefinitionEditor":174,"./ExpectationModel":162,"./MockModel":164,"./TaskModel":167,"lodash":39}],167:[function(require,module,exports){
 'use strict';
 
 // Utilities;
@@ -71763,7 +71818,7 @@ StepDefinitionEditor.factory('TaskModel', ['ASTCreatorService', 'ArgumentModel',
     return createTaskModelConstructor(ASTCreatorService, ArgumentModel);
 }]);
 
-},{"../../../Core/Services/ASTCreatorService":108,"../../ComponentEditor/Models/ArgumentModel":124,"../StepDefinitionEditor":173,"lodash":39}],167:[function(require,module,exports){
+},{"../../../Core/Services/ASTCreatorService":108,"../../ComponentEditor/Models/ArgumentModel":124,"../StepDefinitionEditor":174,"lodash":39}],168:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -71823,7 +71878,7 @@ ExpectationParserService.$inject = ['ExpectationModel'];
 
 StepDefinitionEditor.service('ExpectationParserService', ExpectationParserService);
 
-},{"../Models/ExpectationModel":161,"../StepDefinitionEditor":173,"lodash":39}],168:[function(require,module,exports){
+},{"../Models/ExpectationModel":162,"../StepDefinitionEditor":174,"lodash":39}],169:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -71899,7 +71954,7 @@ MockParserService.$inject = ['MockModel'];
 
 StepDefinitionEditor.service('MockParserService', MockParserService);
 
-},{"../Models/MockModel":163,"../StepDefinitionEditor":173,"assert":10,"lodash":39}],169:[function(require,module,exports){
+},{"../Models/MockModel":164,"../StepDefinitionEditor":174,"assert":10,"lodash":39}],170:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -71921,7 +71976,7 @@ StepDefinitionFileService.$inject = ['$http', 'StepDefinitionParserService', 'Fi
 
 StepDefinitionEditor.service('StepDefinitionFileService', StepDefinitionFileService);
 
-},{"../../../Core/Services/FileService":110,"../../../Core/Services/FileStructureService":111,"../StepDefinitionEditor":173,"./StepDefinitionParserService":170}],170:[function(require,module,exports){
+},{"../../../Core/Services/FileService":110,"../../../Core/Services/FileStructureService":111,"../StepDefinitionEditor":174,"./StepDefinitionParserService":171}],171:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -72010,7 +72065,7 @@ StepDefinitionParserService.$inject = ['StepParserService', 'StepDefinitionModel
 
 StepDefinitionEditor.service('StepDefinitionParserService', StepDefinitionParserService);
 
-},{"../Models/StepDefinitionModel":164,"../Services/StepParserService":171,"../StepDefinitionEditor":173,"assert":10,"lodash":39}],171:[function(require,module,exports){
+},{"../Models/StepDefinitionModel":165,"../Services/StepParserService":172,"../StepDefinitionEditor":174,"assert":10,"lodash":39}],172:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -72131,7 +72186,7 @@ StepParserService.$inject = ['MockParserService', 'TaskParserService', 'Expectat
 
 StepDefinitionEditor.service('StepParserService', StepParserService);
 
-},{"../Models/StepModel":165,"../Services/ExpectationParserService":167,"../Services/MockParserService":168,"../Services/TaskParserService":172,"../StepDefinitionEditor":173,"assert":10,"lodash":39}],172:[function(require,module,exports){
+},{"../Models/StepModel":166,"../Services/ExpectationParserService":168,"../Services/MockParserService":169,"../Services/TaskParserService":173,"../StepDefinitionEditor":174,"assert":10,"lodash":39}],173:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -72219,7 +72274,7 @@ TaskParserService.$inject = ['TaskModel'];
 
 StepDefinitionEditor.service('TaskParserService', TaskParserService);
 
-},{"../Models/TaskModel":166,"../StepDefinitionEditor":173,"assert":10,"lodash":39}],173:[function(require,module,exports){
+},{"../Models/TaskModel":167,"../StepDefinitionEditor":174,"assert":10,"lodash":39}],174:[function(require,module,exports){
 'use strict';
 
 // Utilities:
@@ -72232,7 +72287,7 @@ var StepDefinitionEditor = angular.module('StepDefinitionEditor', ['Core']);
 
 module.exports = StepDefinitionEditor;
 
-},{"../../Core/Core":107,"angular":8}],174:[function(require,module,exports){
+},{"../../Core/Core":107,"angular":8}],175:[function(require,module,exports){
 'use strict';
 
 // Module:
@@ -72324,4 +72379,4 @@ StepDefinitionEditorController.$inject = ['$scope', '$window', '$state', 'persis
 
 StepDefinitionEditor.controller('StepDefinitionEditorController', StepDefinitionEditorController);
 
-},{"../../Core/Components/Notifier/NotifierService":100,"../../Core/Services/PersistentStateService":113,"../FileEditor/FileEditorController":154,"./Services/StepDefinitionFileService":169,"./StepDefinitionEditor":173}]},{},[120]);
+},{"../../Core/Components/Notifier/NotifierService":100,"../../Core/Services/PersistentStateService":113,"../FileEditor/FileEditorController":155,"./Services/StepDefinitionFileService":170,"./StepDefinitionEditor":174}]},{},[120]);
