@@ -55,6 +55,8 @@ module.exports = (function () {
         sockets.of('/run-protractor')
         .on('connection', require('./sockets/connect'));
 
+        sockets.of('/server-status');
+
         return server;
     }
 
