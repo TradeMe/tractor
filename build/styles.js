@@ -15,7 +15,7 @@ var sourcemaps   = require('gulp-sourcemaps');
 var sass         = require('gulp-ruby-sass');
 
 // Erros:
-var error = require('./utilities/error-handler');
+var errorHandler = require('./utilities/error-handler');
 
 module.exports = styles;
 
@@ -25,7 +25,7 @@ function styles () {
     return sass(config.stylesDir, {
         sourcemap: true
     })
-    .on('error', error)
+    .on('error', errorHandler)
     .pipe(sourcemaps.write('.', {
         includeContent: false,
     }))

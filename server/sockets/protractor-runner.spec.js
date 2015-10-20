@@ -1,329 +1,291 @@
-/* global describe:true, beforeEach:true, afterEach:true, it:true */
+/* global describe:true, it:true */
 'use strict';
 
-// Test Utilities:
-var chai = require('chai');
-var dirtyChai = require('dirty-chai');
-var rewire = require('rewire');
-var sinon = require('sinon');
-var sinonChai = require('sinon-chai');
+// Constants:
+import { config } from '../config';
 
 // Utilities:
-var _ = require('lodash');
+import _ from 'lodash';
+import chai from 'chai';
+import dirtyChai from 'dirty-chai';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 
 // Test setup:
-var expect = chai.expect;
+const expect = chai.expect;
 chai.use(dirtyChai);
 chai.use(sinonChai);
 
+// Dependencies:
+import childProcess from 'child_process';
+import { EventEmitter } from 'events';
+import log from 'npmlog';
+import path from 'path';
+
 // Under test:
-var protractorRunner;
+import protractorRunner from './protractor-runner';
 
-// Mocks:
-var configMock = {};
-var revert;
-
-describe('server/sockets: protractor-runner:', function () {
-    beforeEach(function () {
-        protractorRunner = rewire('./protractor-runner');
-        /* eslint-disable no-underscore-dangle */
-        revert = protractorRunner.__set__({
-            config: configMock
-        });
-        /* eslint-enable no-underscore-dangle */
-    });
-
-    afterEach(function () {
-        revert();
-    });
-
-    it('should run "protractor"', function () {
-        var childProcess = require('child_process');
-        var EventEmitter = require('events').EventEmitter;
-        var log = require('../utils/logging');
-        var path = require('path');
-
-        var spawnEmitter = new EventEmitter();
+describe('server/sockets: protractor-runner:', () => {
+    it('should run "protractor"', () => {
+        let spawnEmitter = new EventEmitter();
         spawnEmitter.stdout = new EventEmitter();
         spawnEmitter.stdout.pipe = _.noop;
         spawnEmitter.stderr = new EventEmitter();
         spawnEmitter.stderr.pipe = _.noop;
-        var socket = {
+        let socket = {
             disconnect: _.noop
         };
-        var runOptions = {
+        let runOptions = {
             baseUrl: 'baseUrl'
         };
-        configMock.beforeProtractor = _.noop;
-        configMock.afterProtractor = _.noop;
 
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
-        sinon.stub(log, 'important');
+        sinon.stub(config, 'beforeProtractor');
+        sinon.stub(config, 'afterProtractor');
         sinon.stub(log, 'info');
-        sinon.stub(log, 'success');
+        sinon.stub(log, 'silly');
+        sinon.stub(log, 'verbose');
 
-        var run = protractorRunner.run(socket, runOptions);
-        setTimeout(function () {
+        let run = protractorRunner.run(socket, runOptions);
+        setTimeout(() => {
             spawnEmitter.emit('exit', 0);
         }, 10);
 
-        return run.finally(function () {
-            var protractorPath = path.join('node_modules', 'protractor', 'bin', 'protractor');
-            var protractorConfPath = path.join('e2e_tests', 'protractor.conf.js');
+        return run.then(() => {
+            let protractorPath = path.join('node_modules', 'protractor', 'bin', 'protractor');
+            let protractorConfPath = path.join('e2e-tests', 'protractor.conf.js');
             expect(childProcess.spawn).to.have.been.calledWith('node', [protractorPath, protractorConfPath, '--baseUrl', 'baseUrl']);
-
-            delete configMock.beforeProtractor;
-            delete configMock.afterProtractor;
-
+        })
+        .finally(() => {
             childProcess.spawn.restore();
-            log.important.restore();
+            config.beforeProtractor.restore();
+            config.afterProtractor.restore();
             log.info.restore();
-            log.success.restore();
+            log.silly.restore();
+            log.verbose.restore();
         });
     });
 
-    it('should throw an `Error` if `baseUrl` is not defined:', function () {
-        var log = require('../utils/logging');
-
-        var runOptions = { };
-        configMock.beforeProtractor = _.noop;
-        configMock.afterProtractor = _.noop;
-        var socket = {
+    it('should throw an `Error` if `baseUrl` is not defined:', () => {
+        let runOptions = {};
+        let socket = {
             disconnect: _.noop
         };
 
+        sinon.stub(config, 'beforeProtractor');
+        sinon.stub(config, 'afterProtractor');
         sinon.stub(log, 'error');
-        sinon.stub(log, 'important');
         sinon.stub(log, 'info');
+        sinon.stub(log, 'silly');
 
         return protractorRunner.run(socket, runOptions)
-        .finally(function () {
+        .then(() => {
             expect(log.error).to.have.been.calledWith('`baseUrl` must be defined.');
-
-            delete configMock.beforeProtractor;
-            delete configMock.afterProtractor;
-
+        })
+        .finally(() => {
+            config.beforeProtractor.restore();
+            config.afterProtractor.restore();
             log.error.restore();
-            log.important.restore();
             log.info.restore();
+            log.silly.restore();
         });
     });
 
-    it('shouldn\'t run "protractor" if it is already running', function () {
-        var EventEmitter = require('events').EventEmitter;
-        var childProcess = require('child_process');
-        var log = require('../utils/logging');
-
-        var spawnEmitter = new EventEmitter();
+    it('shouldn\'t run "protractor" if it is already running', () => {
+        let spawnEmitter = new EventEmitter();
         spawnEmitter.stdout = new EventEmitter();
         spawnEmitter.stdout.pipe = _.noop;
         spawnEmitter.stderr = new EventEmitter();
         spawnEmitter.stderr.pipe = _.noop;
-        var socket = {
+        let socket = {
             disconnect: _.noop
         };
-        var runOptions = {
+        let runOptions = {
             baseUrl: 'baseUrl'
         };
-        configMock.beforeProtractor = _.noop;
-        configMock.afterProtractor = _.noop;
 
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
-        sinon.stub(log, 'error');
-        sinon.stub(log, 'important');
+        sinon.stub(config, 'beforeProtractor');
+        sinon.stub(config, 'afterProtractor');
         sinon.stub(log, 'info');
-        sinon.stub(log, 'success');
+        sinon.stub(log, 'error');
+        sinon.stub(log, 'silly');
+        sinon.stub(log, 'verbose');
 
-        var run = protractorRunner.run(socket, runOptions);
-        protractorRunner.run().catch(function () {
-            setTimeout(function () {
+        let run = protractorRunner.run(socket, runOptions);
+        protractorRunner.run().catch(() => {
+            setTimeout(() => {
                 spawnEmitter.emit('exit', 0);
             }, 10);
         });
 
-        return run.finally(function () {
+        return run.then(() => {
             expect(log.error).to.have.been.calledWith('Protractor already running.');
-
-            delete configMock.beforeProtractor;
-            delete configMock.afterProtractor;
-
+        })
+        .finally(() => {
             childProcess.spawn.restore();
-            log.error.restore();
-            log.important.restore();
+            config.beforeProtractor.restore();
+            config.afterProtractor.restore();
             log.info.restore();
-            log.success.restore();
+            log.error.restore();
+            log.silly.restore();
+            log.verbose.restore();
         });
     });
 
-    it('should disconnect the socket when "protractor" finishes', function () {
-        var EventEmitter = require('events').EventEmitter;
-        var childProcess = require('child_process');
-        var log = require('../utils/logging');
-
-        var spawnEmitter = new EventEmitter();
+    it('should disconnect the socket when "protractor" finishes', () => {
+        let spawnEmitter = new EventEmitter();
         spawnEmitter.stdout = new EventEmitter();
         spawnEmitter.stdout.pipe = _.noop;
         spawnEmitter.stderr = new EventEmitter();
         spawnEmitter.stderr.pipe = _.noop;
-        var socket = {
+        let socket = {
             disconnect: _.noop
         };
-        var runOptions = {
+        let runOptions = {
             baseUrl: 'baseUrl'
         };
-        configMock.beforeProtractor = _.noop;
-        configMock.afterProtractor = _.noop;
 
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
-        sinon.stub(log, 'important');
+        sinon.stub(config, 'beforeProtractor');
+        sinon.stub(config, 'afterProtractor');
         sinon.stub(log, 'info');
-        sinon.stub(log, 'success');
+        sinon.stub(log, 'silly');
+        sinon.stub(log, 'verbose');
         sinon.spy(socket, 'disconnect');
 
-        var run = protractorRunner.run(socket, runOptions);
-        setTimeout(function () {
+        let run = protractorRunner.run(socket, runOptions);
+        setTimeout(() => {
             spawnEmitter.emit('exit', 0);
         }, 10);
 
-        return run.then(function () {
-            expect(socket.disconnect.callCount).to.equal(1);
-
-            delete configMock.beforeProtractor;
-            delete configMock.afterProtractor;
-
+        return run.then(() => {
+            expect(socket.disconnect).to.have.been.calledOnce();
+        })
+        .finally(() => {
             childProcess.spawn.restore();
-            log.important.restore();
+            config.beforeProtractor.restore();
+            config.afterProtractor.restore();
             log.info.restore();
-            log.success.restore();
+            log.silly.restore();
+            log.verbose.restore();
         });
     });
 
-    it('should log any errors that occur while running "protractor"', function () {
-        var EventEmitter = require('events').EventEmitter;
-        var childProcess = require('child_process');
-        var log = require('../utils/logging');
-
-        var spawnEmitter = new EventEmitter();
+    it('should log any errors that occur while running "protractor"', () => {
+        let spawnEmitter = new EventEmitter();
         spawnEmitter.stdout = new EventEmitter();
         spawnEmitter.stdout.pipe = _.noop;
         spawnEmitter.stderr = new EventEmitter();
         spawnEmitter.stderr.pipe = _.noop;
-        var socket = {
+        let socket = {
             disconnect: _.noop,
             lastMessage: ''
         };
-        var runOptions = {
+        let runOptions = {
             baseUrl: 'baseUrl'
         };
-        configMock.beforeProtractor = _.noop;
-        configMock.afterProtractor = _.noop;
 
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
-        sinon.stub(log, 'error');
-        sinon.stub(log, 'important');
+        sinon.stub(config, 'beforeProtractor');
+        sinon.stub(config, 'afterProtractor');
         sinon.stub(log, 'info');
-        sinon.stub(log, 'success');
+        sinon.stub(log, 'error');
+        sinon.stub(log, 'silly');
+        sinon.stub(log, 'verbose');
         sinon.stub(log, 'warn');
 
-        var run = protractorRunner.run(socket, runOptions);
-        setTimeout(function () {
+        let run = protractorRunner.run(socket, runOptions);
+        setTimeout(() => {
             spawnEmitter.emit('error', { message: 'error' });
         }, 10);
 
-        return run.then(function () {
-            expect(log.error.callCount).to.equal(1);
-
-            delete configMock.beforeProtractor;
-            delete configMock.afterProtractor;
-
+        return run.then(() => {
+            expect(log.error).to.have.been.calledOnce();
+        })
+        .finally(() => {
             childProcess.spawn.restore();
-            log.error.restore();
-            log.important.restore();
+            config.beforeProtractor.restore();
+            config.afterProtractor.restore();
             log.info.restore();
-            log.success.restore();
+            log.error.restore();
+            log.silly.restore();
+            log.verbose.restore();
             log.warn.restore();
         });
     });
 
-    it('should log any errors that cause "protractor" to exit with a bad error code', function () {
-        var EventEmitter = require('events').EventEmitter;
-        var childProcess = require('child_process');
-        var log = require('../utils/logging');
-
-        var spawnEmitter = new EventEmitter();
+    it('should log any errors that cause "protractor" to exit with a bad error code', () => {
+        let spawnEmitter = new EventEmitter();
         spawnEmitter.stdout = new EventEmitter();
         spawnEmitter.stdout.pipe = _.noop;
         spawnEmitter.stderr = new EventEmitter();
         spawnEmitter.stderr.pipe = _.noop;
-        var socket = {
+        let socket = {
             disconnect: _.noop,
             lastMessage: ''
         };
-        var runOptions = {
+        let runOptions = {
             baseUrl: 'baseUrl'
         };
-        configMock.beforeProtractor = _.noop;
-        configMock.afterProtractor = _.noop;
 
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
+        sinon.stub(config, 'beforeProtractor');
+        sinon.stub(config, 'afterProtractor');
         sinon.stub(log, 'error');
-        sinon.stub(log, 'important');
         sinon.stub(log, 'info');
-        sinon.stub(log, 'success');
+        sinon.stub(log, 'silly');
+        sinon.stub(log, 'verbose');
 
-        var run = protractorRunner.run(socket, runOptions);
-        setTimeout(function () {
+        let run = protractorRunner.run(socket, runOptions);
+        setTimeout(() => {
             spawnEmitter.emit('exit', 1);
         }, 10);
 
-        return run.then(function () {
-            expect(log.error.callCount).to.equal(1);
-
-            delete configMock.beforeProtractor;
-            delete configMock.afterProtractor;
-
+        return run.then(() => {
+            expect(log.error).to.have.been.calledOnce();
+        })
+        .finally(() => {
             childProcess.spawn.restore();
+            config.beforeProtractor.restore();
+            config.afterProtractor.restore();
             log.error.restore();
-            log.important.restore();
             log.info.restore();
-            log.success.restore();
+            log.silly.restore();
+            log.verbose.restore();
         });
     });
 
-    it('should format messages from "stdout" and send them to the client', function () {
-        var EventEmitter = require('events').EventEmitter;
-        var childProcess = require('child_process');
-        var log = require('../utils/logging');
-
-        var spawnEmitter = new EventEmitter();
+    it('should format messages from "stdout" and send them to the client', () => {
+        let spawnEmitter = new EventEmitter();
         spawnEmitter.stdout = new EventEmitter();
         spawnEmitter.stdout.pipe = _.noop;
         spawnEmitter.stderr = new EventEmitter();
         spawnEmitter.stderr.pipe = _.noop;
-        var socket = {
+        let socket = {
             emit: _.noop,
             disconnect: _.noop
         };
-        var runOptions = {
+        let runOptions = {
             baseUrl: 'baseUrl'
         };
-        configMock.beforeProtractor = _.noop;
-        configMock.afterProtractor = _.noop;
 
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
-        sinon.stub(log, 'important');
+        sinon.stub(config, 'beforeProtractor');
+        sinon.stub(config, 'afterProtractor');
         sinon.stub(log, 'info');
-        sinon.stub(log, 'success');
+        sinon.stub(log, 'silly');
+        sinon.stub(log, 'verbose');
         sinon.spy(socket, 'emit');
 
-        var run = protractorRunner.run(socket, runOptions);
-        setTimeout(function () {
+        let run = protractorRunner.run(socket, runOptions);
+        setTimeout(() => {
             spawnEmitter.stdout.emit('data', 'Scenario');
             spawnEmitter.stdout.emit('data', 'Error:');
             spawnEmitter.emit('exit', 0);
         }, 10);
 
-        return run.then(function () {
+        return run.then(() => {
             expect(socket.emit).to.have.been.calledWith('protractor-out', {
                 message: 'Scenario',
                 type: 'info'
@@ -332,108 +294,100 @@ describe('server/sockets: protractor-runner:', function () {
                 message: 'Error:',
                 type: 'error'
             });
-
-            delete configMock.beforeProtractor;
-            delete configMock.afterProtractor;
-
+        })
+        .finally(() => {
             childProcess.spawn.restore();
-            log.important.restore();
+            config.beforeProtractor.restore();
+            config.afterProtractor.restore();
             log.info.restore();
-            log.success.restore();
+            log.silly.restore();
+            log.verbose.restore();
         });
     });
 
-    it('should format messages from "stderr" and send them to the client', function () {
-        var EventEmitter = require('events').EventEmitter;
-        var childProcess = require('child_process');
-        var log = require('../utils/logging');
-
-        var spawnEmitter = new EventEmitter();
+    it('should format messages from "stderr" and send them to the client', () => {
+        let spawnEmitter = new EventEmitter();
         spawnEmitter.stdout = new EventEmitter();
         spawnEmitter.stdout.pipe = _.noop;
         spawnEmitter.stderr = new EventEmitter();
         spawnEmitter.stderr.pipe = _.noop;
-        var socket = {
+        let socket = {
             emit: _.noop,
             disconnect: _.noop
         };
-        var runOptions = {
+        let runOptions = {
             baseUrl: 'baseUrl'
         };
-        configMock.beforeProtractor = _.noop;
-        configMock.afterProtractor = _.noop;
 
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
-        sinon.stub(log, 'important');
+        sinon.stub(config, 'beforeProtractor');
+        sinon.stub(config, 'afterProtractor');
         sinon.stub(log, 'info');
-        sinon.stub(log, 'success');
+        sinon.stub(log, 'silly');
+        sinon.stub(log, 'verbose');
         sinon.spy(socket, 'emit');
 
-        var run = protractorRunner.run(socket, runOptions);
-        setTimeout(function () {
+        let run = protractorRunner.run(socket, runOptions);
+        setTimeout(() => {
             spawnEmitter.stderr.emit('data', 'error');
             spawnEmitter.emit('exit', 0);
         }, 10);
 
-        return run.then(function () {
+        return run.then(() => {
             expect(socket.emit).to.have.been.calledWith('protractor-err', {
                 message: 'Something went really wrong - check the console for details.',
                 type: 'error'
             });
-
-            delete configMock.beforeProtractor;
-            delete configMock.afterProtractor;
-
+        })
+        .finally(() => {
             childProcess.spawn.restore();
-            log.important.restore();
+            config.beforeProtractor.restore();
+            config.afterProtractor.restore();
             log.info.restore();
-            log.success.restore();
+            log.silly.restore();
+            log.verbose.restore();
         });
     });
 
-    it('should not send irrelevant messages to the client', function () {
-        var EventEmitter = require('events').EventEmitter;
-        var childProcess = require('child_process');
-        var log = require('../utils/logging');
-
-        var spawnEmitter = new EventEmitter();
+    it('should not send irrelevant messages to the client', () => {
+        let spawnEmitter = new EventEmitter();
         spawnEmitter.stdout = new EventEmitter();
         spawnEmitter.stdout.pipe = _.noop;
         spawnEmitter.stderr = new EventEmitter();
         spawnEmitter.stderr.pipe = _.noop;
-        var socket = {
+        let socket = {
             emit: _.noop,
             disconnect: _.noop
         };
-        var runOptions = {
+        let runOptions = {
             baseUrl: 'baseUrl'
         };
-        configMock.beforeProtractor = _.noop;
-        configMock.afterProtractor = _.noop;
 
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
-        sinon.stub(log, 'important');
+        sinon.stub(config, 'beforeProtractor');
+        sinon.stub(config, 'afterProtractor');
         sinon.stub(log, 'info');
-        sinon.stub(log, 'success');
+        sinon.stub(log, 'silly');
+        sinon.stub(log, 'verbose');
         sinon.spy(socket, 'emit');
 
-        var run = protractorRunner.run(socket, runOptions);
-        setTimeout(function () {
+        let run = protractorRunner.run(socket, runOptions);
+        setTimeout(() => {
             spawnEmitter.stdout.emit('data', '');
             spawnEmitter.stdout.emit('data', 'something irrelevant');
             spawnEmitter.emit('exit', 0);
         }, 10);
 
-        return run.then(function () {
-            expect(socket.emit.callCount).to.equal(0);
-
-            delete configMock.beforeProtractor;
-            delete configMock.afterProtractor;
-
+        return run.then(() => {
+            expect(socket.emit).to.not.have.been.called();
+        })
+        .finally(() => {
             childProcess.spawn.restore();
-            log.important.restore();
+            config.beforeProtractor.restore();
+            config.afterProtractor.restore();
             log.info.restore();
-            log.success.restore();
+            log.silly.restore();
+            log.verbose.restore();
         });
     });
 });

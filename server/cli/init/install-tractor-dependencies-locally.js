@@ -1,14 +1,8 @@
 'use strict';
 
-// Utilities:
-var constants = require('../../constants');
-var log = require('../../utils/logging');
-var Promise = require('bluebird');
-
-// Dependencies:
-var childProcess = require('child_process');
-
-var TO_INSTALL = [
+// Constants;
+import constants from '../../constants';
+const TO_INSTALL = [
     'bluebird@2.9.25',
     'chai@2.3.0',
     'chai-as-promised@5.0.0',
@@ -16,14 +10,21 @@ var TO_INSTALL = [
     'protractor@2.0.0'
 ];
 
-module.exports = {
+// Utilities:
+import log from 'npmlog';
+import Promise from 'bluebird';
+
+// Dependencies:
+const childProcess = Promise.promisifyAll(require('child_process'));
+
+export default {
     run: installTractorDependenciesLocally
 };
 
 function installTractorDependenciesLocally () {
     return getInstalledDependencies()
-    .then(function (installed) {
-        var toInstall = filterAreadyInstalledDependencies(installed, TO_INSTALL);
+    .then((installed) => {
+        let toInstall = filterAreadyInstalledDependencies(installed, TO_INSTALL);
         return installDependencies(toInstall);
     });
 }
@@ -31,23 +32,19 @@ function installTractorDependenciesLocally () {
 function getInstalledDependencies () {
     log.info('Checking installed npm dependencies...');
 
-    var lsResolve;
-    var lsPromise = new Promise(function (resolve) {
-        lsResolve = resolve;
+    let resolve;
+    let deferred = new Promise((...args) => {
+        resolve = args[0];
     });
 
-    var ls = childProcess.exec(constants.GET_INSTALLED_DEPENDENCIES_COMMAND);
-    ls.stdout.on('data', function (data) {
-        lsResolve(data);
-    });
+    let ls = childProcess.exec(constants.GET_INSTALLED_DEPENDENCIES_COMMAND);
+    ls.stdout.on('data', data => resolve(data));
 
-    return lsPromise;
+    return deferred;
 }
 
 function filterAreadyInstalledDependencies (installed, dependencies) {
-    return dependencies.filter(function (dependency) {
-        return !new RegExp(dependency, 'gm').test(installed);
-    });
+    return dependencies.filter((dependency) => !new RegExp(dependency, 'gm').test(installed));
 }
 
 function installDependencies (modules) {
@@ -57,14 +54,10 @@ function installDependencies (modules) {
         log.info('All npm dependencies for tractor already installed.');
     }
 
-    return Promise.all(modules.map(function (module) {
-        log.info('Installing "' + module + '"...');
-        return childProcess.execAsync(constants.INSTALL_DEPENDENCIES_COMMAND + module)
-        .then(function () {
-            log.success('Installed "' + module + '".');
-        })
-        .catch(function () {
-            log.error('Couldn\'t install "' + module + '". Either run `tractor init` again, or install it manually by running "npm install ' + module + '"');
-        });
+    return Promise.all(modules.map((module) => {
+        log.info(`Installing "${module}"...`);
+        return childProcess.execAsync(`${constants.INSTALL_DEPENDENCIES_COMMAND}${module}`)
+        .then(() => log.verbose(`Installed "${module}".`))
+        .catch(() => log.error(`Couldn't install "${module}". Either run "tractor init" again, or install it manually by running "npm install ${module}"`));
     }));
 }

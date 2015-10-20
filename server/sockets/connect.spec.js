@@ -1,50 +1,35 @@
-/* global describe:true, beforeEach:true, afterEach:true, it:true */
+/* global describe:true, it:true */
 'use strict';
 
-// Test Utilities:
-var chai = require('chai');
-var dirtyChai = require('dirty-chai');
-var rewire = require('rewire');
-var sinon = require('sinon');
-var sinonChai = require('sinon-chai');
+// Utilities:
+import chai from 'chai';
+import dirtyChai from 'dirty-chai';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 
 // Test setup:
-var expect = chai.expect;
+const expect = chai.expect;
 chai.use(dirtyChai);
 chai.use(sinonChai);
 
+// Dependencies:
+import { EventEmitter } from 'events';
+import protractorRunner from './protractor-runner';
+
 // Under test:
-var connect;
+import connect from './connect';
 
-// Mocks:
-var protractorRunnerMock = require('./protractor-runner.mock');
-var revert;
+describe('server/sockets: connect:', () => {
+    it('should run "Protractor" when a "run" event is recieved:', () => {
+        let socket = new EventEmitter();
 
-describe('server/sockets: connect:', function () {
-    beforeEach(function () {
-        connect = rewire('./connect');
-        /* eslint-disable no-underscore-dangle */
-        revert = connect.__set__({
-            protractorRunner: protractorRunnerMock
-        });
-        /* eslint-enable no-underscore-dangle */
-    });
-
-    afterEach(function () {
-        revert();
-    });
-
-    it('should run "Protractor" when a "run" event is recieved:', function () {
-        var EventEmitter = require('events').EventEmitter;
-        var socket = new EventEmitter();
-
-        sinon.stub(protractorRunnerMock, 'run');
+        sinon.stub(protractorRunner, 'run');
 
         connect(socket);
         socket.emit('run');
 
-        expect(protractorRunnerMock.run).to.have.been.called();
+        expect(protractorRunner.run).to.have.been.called();
 
-        protractorRunnerMock.run.restore();
+        protractorRunner.run.restore();
     });
 });

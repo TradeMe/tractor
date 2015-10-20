@@ -14,9 +14,9 @@ require('../../../Core/Services/FileStructureService');
 var FeatureFileService = function FeatureFileService (
     $http,
     FeatureParserService,
-    FileStructureService
+    fileStructureService
 ) {
-    var service = FileService($http, FeatureParserService, FileStructureService, 'features');
+    var service = FileService($http, FeatureParserService, fileStructureService, 'features');
     var save = service.saveFile;
     service.saveFile = _.compose(save, fixFeatureParameters);
     return service;

@@ -9,7 +9,7 @@ require('./FileStructureService');
 var FileService = function FileService (
     $http,
     ParserService,
-    FileStructureService,
+    fileStructureService,
     type
 ) {
     return {
@@ -25,32 +25,34 @@ var FileService = function FileService (
     }
 
     function findFileByPath (fileStructure, filePath) {
-        return _.find(fileStructure.allFiles, function (file) {
-            return file.path.includes(filePath) || file.path.includes(filePath.replace(/\//g, '\\')); 
+        return _.find(fileStructure.directory.allFiles, function (file) {
+            return file.path.includes(filePath) || file.path.includes(filePath.replace(/\//g, '\\'));
         });
     }
 
     function getFileStructure () {
-        return FileStructureService.getFileStructure()
-        .then(function (fileStructure) {
-            return _.find(fileStructure.directories, function (directory) {
-                return directory.name === type;
-            });
-        });
+        return fileStructureService.getFileStructure(type);
     }
 
     function getPath (options) {
-        if (options.path) {
-            options.path = decodeURIComponent(options.path);
+        if (options.name) {
+            options.name = decodeURIComponent(options.name);
         }
         return $http.get('/' + type + '/file/path', {
             params: options
         });
     }
 
-    function openFile (fileStructure, filePath, components, mockData) {
-        var file = findFileByPath(fileStructure, filePath);
-        return file ? ParserService.parse(file, components, mockData) : null;
+    function openFile (options, availableComponents, availableMockData) {
+        if (options.path) {
+            options.path = decodeURIComponent(options.path);
+        }
+        return $http.get('/' + type + '/file', {
+            params: options
+        })
+        .then(function (file) {
+            return ParserService.parse(file, availableComponents, availableMockData);
+        });
     }
 
     function saveFile (options) {

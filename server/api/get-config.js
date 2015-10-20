@@ -1,10 +1,10 @@
 'use strict';
 
-// Config:
-var config = require('../utils/create-config')();
+// Constants:
+import { config } from '../config';
 
-module.exports = getConfig;
+export default { handler };
 
-function getConfig (request, response) {
-    response.send(JSON.stringify(config));
+function handler (request, response) {
+    response.send(config);
 }

@@ -10,7 +10,7 @@ var Core = require('../Core');
 require('../Components/Notifier/NotifierService');
 
 var FileNameValidator = function FileNameValidator (
-    NotifierService
+    notifierService
 ) {
     return {
         restrict: 'A',
@@ -23,15 +23,15 @@ var FileNameValidator = function FileNameValidator (
     function link ($scope, $element, $attrs, ngModelController) {
         ngModelController.$validators.fileName = function (value) {
             if (_.contains(value, '_')) {
-                NotifierService.error('Invalid character: "_"');
+                notifierService.error('Invalid character: "_"');
                 return false;
             }
             if (_.contains(value, '/')) {
-                NotifierService.error('Invalid character: "/"');
+                notifierService.error('Invalid character: "/"');
                 return false;
             }
             if (_.contains(value, '\\')) {
-                NotifierService.error('Invalid character: "\\"');
+                notifierService.error('Invalid character: "\\"');
                 return false;
             }
             return true;

@@ -12,7 +12,7 @@ require('../Services/ValidationService');
 require('../../features/FeatureEditor/Models/StepDeclarationModel');
 
 var ExampleNameValidator = function (
-    ValidationService,
+    validationService,
     StepDeclarationModel
 ) {
     return {
@@ -24,13 +24,11 @@ var ExampleNameValidator = function (
     };
 
     function link ($scope, $element, $attrs, ngModelController) {
-        ngModelController.$asyncValidators.exampleName = function (value) {
+        ngModelController.$validators.exampleName = function (value) {
             var variableNames = StepDeclarationModel.getExampleVariableNames(value);
-            var validations = _.map(variableNames, function (variableName) {
-                return ValidationService.validateVariableName(variableName);
-            });
-
-            return Promise.all(validations);
+            return _.filter(variableNames, function (variableName) {
+                return validationService.validateVariableName(variableName);
+            }).length === variableNames.length;
         };
     }
 };

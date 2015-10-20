@@ -1,31 +1,34 @@
 /* global describe:true, it:true */
 'use strict';
 
-// Test utilities:
-var chai = require('chai');
-var dirtyChai = require('dirty-chai');
-var sinon = require('sinon');
-var sinonChai = require('sinon-chai');
+// Utilities:
+import chai from 'chai';
+import dirtyChai from 'dirty-chai';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 
 // Test setup:
-var expect = chai.expect;
+const expect = chai.expect;
 chai.use(dirtyChai);
 chai.use(sinonChai);
 
+// Dependencies:
+import application from '../../application';
+import * as fileStructure from '../../file-structure';
+
 // Under test:
-var cliStart = require('./index');
+import cliStart from './index';
 
-describe('server/start: index:', function () {
-    it('should start the application', function () {
-        var log = require('../../utils/logging');
-        var application = require('../../application');
-        sinon.stub(log, 'important');
-        sinon.stub(application, 'start');
+describe('server/start: index:', () => {
+    it('should start the application', () => {
+        sinon.stub(fileStructure, 'refresh').returns(Promise.resolve());
+        sinon.stub(application, 'start').returns(Promise.resolve());
 
-        cliStart();
+        return cliStart()
+        .then(() => {
+            expect(application.start).to.have.been.called();
 
-        expect(application.start.called).to.equal(true);
-
-        log.important.restore();
+            application.start.restore();
+        });
     });
 });

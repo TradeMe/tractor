@@ -1,8 +1,12 @@
 'use strict';
 
 // Dependencies:
-var application = require('../../application');
+import application from '../../application';
+import * as fileStructure from '../../file-structure';
 
-module.exports = function () {
-	application.start();
-};
+export default function start () {
+	return fileStructure.refresh()
+	.then(() => {
+		return application.start();
+	});
+}

@@ -30,6 +30,8 @@ var ASTCreatorService = function () {
         UnaryOperators: UnaryOperators,
         BinaryOperators: BinaryOperators,
 
+        file: file,
+        expression: expression,
         template: template,
 
         program: program,
@@ -56,8 +58,17 @@ var ASTCreatorService = function () {
         blockComment: blockComment
     };
 
+    function file (expression, meta) {
+        return program([expressionStatement(expression)], [blockComment(meta)]);
+    }
+
+    function expression (template, objects) {
+        var ast = _.first(estemplate(template, objects || {}).body);
+        return ast ? ast.expression || ast.value || ast : null;
+    }
+
     function template (template, objects) {
-        return _.first(estemplate(template, objects).body);
+        return _.first(estemplate(template, objects || {}).body);
     }
 
     function program (body, comments) {
@@ -175,7 +186,7 @@ var ASTCreatorService = function () {
     }
 
     function memberExpression (object, property, computed) {
-        return  {
+        return {
             type: 'MemberExpression',
             object: object,
             property: property,
@@ -209,4 +220,4 @@ var ASTCreatorService = function () {
     }
 };
 
-Core.service('ASTCreatorService', ASTCreatorService);
+Core.service('astCreatorService', ASTCreatorService);

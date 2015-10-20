@@ -1,34 +1,20 @@
 'use strict';
 
-// Utilities:
-var _ = require('lodash');
-var path = require('path');
-
 // Dependencies:
-var fileStructureModifier = require('../utils/file-structure-modifier');
-var fileStructureUtils = require('../utils/file-structure-utils/file-structure-utils');
+import fileStructure from '../file-structure';
+import getFileStructure from './get-file-structure';
 
-module.exports = init;
+// Errors:
+import errorHandler from '../errors/error-handler';
+import TractorError from '../errors/TractorError';
 
-function init () {
-    return fileStructureModifier.create({
-        preSave: deleteItem
-    });
-}
+export default { handler };
 
-function deleteItem (fileStructure, request) {
-    var query = request.query;
-    var name = query.name;
-    var filePath = query.path;
-    var isDirectory = !!query.isDirectory;
+function handler (request, response) {
+    let { path } = request.query;
 
-    var directory = fileStructureUtils.findDirectory(fileStructure, path.dirname(filePath));
-    _.remove(isDirectory ? directory.directories : directory.files, itemNameEquals(name));
-    return fileStructure;
-}
-
-function itemNameEquals (name) {
-    return function (item) {
-        return item.name === name;
-    };
+    return fileStructure.deleteItem(path)
+    .then(() => getFileStructure.handler(request, response))
+    .catch(TractorError, error => errorHandler.handler(response, error))
+    .catch(() => errorHandler.handler(response, new TractorError(`Could not delete "${path}"`, 500)));
 }

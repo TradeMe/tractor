@@ -27,7 +27,7 @@ var NotifierService = function (
 
     function addNotification (notification) {
         notifications.push(notification);
-        $interval(function () { }, 0, 1);
+        $interval(_.noop, 0, 1);
         $interval(function () {
             dismiss(notification);
         }, 10000, 1);
@@ -54,9 +54,11 @@ var NotifierService = function (
         });
     }
 
-    function dismiss (notification) {
-        _.remove(notifications, notification);
+    function dismiss (toRemove) {
+        _.remove(notifications, function (notification) {
+            return notification === toRemove;
+        });
     }
 };
 
-Core.service('NotifierService', NotifierService);
+Core.service('notifierService', NotifierService);

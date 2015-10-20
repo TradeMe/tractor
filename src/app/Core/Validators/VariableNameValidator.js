@@ -15,8 +15,8 @@ require('../Services/ValidationService');
 
 var VariableNameValidator = function (
     $rootScope,
-    NotifierService,
-    ValidationService
+    notifierService,
+    validationService
 ) {
     var ModelChangeEvent = 'VariableNameValidator:ModelChange';
 
@@ -54,13 +54,12 @@ var VariableNameValidator = function (
             return result;
         };
 
-        ngModelController.$asyncValidators.variableNameValid = function (value) {
+        ngModelController.$validators.variableNameValid = function (value) {
             var variableName = $scope.$parent.isClass ? pascalcase(value) : camelcase(value);
             if (variableName.length === 0) {
-                NotifierService.error('Invalid: must include some alpha-numeric characters.');
-                return Promise.reject();
+                return false;
             }
-            return ValidationService.validateVariableName(variableName);
+            return validationService.validateVariableName(variableName);
         };
     }
 };

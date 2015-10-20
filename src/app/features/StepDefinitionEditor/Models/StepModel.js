@@ -13,7 +13,7 @@ require('./TaskModel');
 require('./MockModel');
 
 var createStepModelConstructor = function (
-    ASTCreatorService,
+    astCreatorService,
     ExpectationModel,
     TaskModel,
     MockModel
@@ -58,30 +58,36 @@ var createStepModelConstructor = function (
         this.expectations.push(new ExpectationModel(this));
     };
 
-    StepModel.prototype.removeExpectation = function (expectation) {
-        _.remove(this.expectations, expectation);
+    StepModel.prototype.removeExpectation = function (toRemove) {
+        _.remove(this.expectations, function (expectation) {
+            return expectation === toRemove;
+        });
     };
 
     StepModel.prototype.addTask = function () {
         this.tasks.push(new TaskModel(this));
     };
 
-    StepModel.prototype.removeTask = function (task) {
-        _.remove(this.tasks, task);
+    StepModel.prototype.removeTask = function (toRemove) {
+        _.remove(this.tasks, function (task) {
+            return task === toRemove;
+        });
     };
 
     StepModel.prototype.addMock = function () {
         this.mocks.push(new MockModel(this));
     };
 
-    StepModel.prototype.removeMock = function (mock) {
-        _.remove(this.mocks, mock);
+    StepModel.prototype.removeMock = function (toRemove) {
+        _.remove(this.mocks, function (mock) {
+            return mock === toRemove;
+        });
     };
 
     return StepModel;
 
     function toAST () {
-        var ast = ASTCreatorService;
+        var ast = astCreatorService;
 
         var expectations = this.expectations.map(function (expectation) {
             return expectation.ast;
@@ -124,10 +130,10 @@ var createStepModelConstructor = function (
 };
 
 StepDefinitionEditor.factory('StepModel', function (
-    ASTCreatorService,
+    astCreatorService,
     ExpectationModel,
     TaskModel,
     MockModel
 ) {
-    return createStepModelConstructor(ASTCreatorService, ExpectationModel, TaskModel, MockModel);
+    return createStepModelConstructor(astCreatorService, ExpectationModel, TaskModel, MockModel);
 });

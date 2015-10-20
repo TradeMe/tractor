@@ -1,36 +1,28 @@
 'use strict';
 
 // Config:
-var config = require('../../utils/create-config.js')();
+import { config } from '../../config';
 
 // Utilities:
-var log = require('../../utils/logging');
+import log from 'npmlog';
 
 // Dependencies:
-var createTestDirectoryStructure = require('./create-test-directory-structure');
-var createBaseTestFiles = require('./create-base-test-files');
-var installTractorDependenciesLocally = require('./install-tractor-dependencies-locally');
-var setUpSelenium = require('./set-up-selenium');
+import createTestDirectoryStructure from './create-test-directory-structure';
+import createBaseTestFiles from './create-base-test-files';
+import installTractorDependenciesLocally from './install-tractor-dependencies-locally';
+import setUpSelenium from './set-up-selenium';
 
-module.exports = function () {
-    log.important('Setting up tractor...');
+export default function init () {
+    log.silly('Setting up tractor...');
 
     return createTestDirectoryStructure.run(config.testDirectory)
-    .then(function () {
-        return createBaseTestFiles.run(config.testDirectory);
-    })
-    .then(function () {
-        return installTractorDependenciesLocally.run();
-    })
-    .then(function () {
-        return setUpSelenium.run();
-    })
-    .then(function () {
-        log.important('Set up complete!');
-    })
-    .catch(function (e) {
+    .then(() => createBaseTestFiles.run(config.testDirectory))
+    .then(() => installTractorDependenciesLocally.run())
+    .then(() => setUpSelenium.run())
+    .then(() => log.silly('Set up complete!'))
+    .catch((error) => {
         log.error('Something broke, sorry :(');
-        log.error(e.message);
-        throw e;
+        log.error(error.message);
+        throw error;
     });
-};
+}

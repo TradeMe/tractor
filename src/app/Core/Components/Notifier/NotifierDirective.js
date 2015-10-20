@@ -9,7 +9,9 @@ var Core = require('../../Core');
 // Dependencies:
 require('./NotifierService');
 
-var NotifierDirective = function (NotifierService) {
+var NotifierDirective = function (
+    notifierService
+) {
     return {
         restrict: 'E',
 
@@ -18,8 +20,8 @@ var NotifierDirective = function (NotifierService) {
         /* eslint-enable no-path-concat */
 
         link: function ($scope) {
-            $scope.notifications = NotifierService.notifications;
-            $scope.dismiss = NotifierService.dismiss;
+            $scope.notifications = notifierService.notifications;
+            $scope.dismiss = notifierService.dismiss;
         }
     };
 };

@@ -15,7 +15,7 @@ var ngAnnotate = require('gulp-ng-annotate');
 var source = require('vinyl-source-stream');
 
 // Errors:
-var error = require('./utilities/error-handler');
+var errorHandler = require('./utilities/error-handler');
 
 module.exports = bundle;
 
@@ -25,7 +25,7 @@ function bundle () {
     })
     .transform('brfs')
     .bundle()
-    .on('error', error)
+    .on('error', errorHandler)
     .pipe(source(packageJSON.name + '.bundle.js'))
     .pipe(buffer())
     .pipe(ngAnnotate({

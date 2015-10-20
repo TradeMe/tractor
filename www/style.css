@@ -535,7 +535,6 @@ form.file {
     left: -2rem;
     padding: 0; }
     .file-editor__list-item > tractor-action:first-of-type button {
-      background-image: url("./images/remove.png");
       margin-top: 0; }
   .file-editor__list-item .file-editor__list-item-name {
     display: none; }
@@ -906,25 +905,6 @@ tractor-action,
 tractor-submit {
   display: inline-block; }
 
-tractor-action[icon] {
-  width: 2rem;
-  height: 2rem; }
-
-tractor-action[icon] button {
-  width: 2rem;
-  height: 2rem;
-  transition: all 0.1s;
-  -webkit-transform: scale(1);
-          transform: scale(1); }
-
-tractor-action[icon] button:hover {
-  -webkit-transform: scale(1.125);
-          transform: scale(1.125); }
-
-tractor-action[icon] button:active {
-  -webkit-transform: scale(1.25);
-          transform: scale(1.25); }
-
 tractor-action button,
 tractor-submit button {
   -webkit-appearance: none;
@@ -959,6 +939,28 @@ tractor-action button:active span,
 tractor-submit button:active span {
   -webkit-transform: scale(1);
           transform: scale(1); }
+
+tractor-action[icon] {
+  width: 2rem;
+  height: 2rem; }
+
+tractor-action[icon] button {
+  width: 2rem;
+  height: 2rem;
+  transition: all 0.1s;
+  -webkit-transform: scale(1);
+          transform: scale(1); }
+
+tractor-action[icon="remove"] button {
+  background-image: url("./images/remove.png"); }
+
+tractor-action[icon] button:hover {
+  -webkit-transform: scale(1.125);
+          transform: scale(1.125); }
+
+tractor-action[icon] button:active {
+  -webkit-transform: scale(1.25);
+          transform: scale(1.25); }
 
 tractor-variable-input,
 tractor-text-input,
@@ -1004,10 +1006,7 @@ tractor-checkbox input {
   line-height: 1.5rem;
   font-size: 1rem;
   width: 100%;
-  padding-left: 1rem;
-  -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none; }
+  padding-left: 1rem; }
 
 tractor-variable-input input:active,
 tractor-text-input input:active,
@@ -1058,6 +1057,9 @@ body div[ui-view], main {
 
 main {
   height: 86.125%; }
+
+main > div {
+  height: 100%; }
 
 .fill {
   position: absolute;

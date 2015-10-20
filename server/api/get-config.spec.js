@@ -1,35 +1,37 @@
 /* global describe:true, it:true */
 'use strict';
 
-// Test Utilities:
-var chai = require('chai');
-var dirtyChai = require('dirty-chai');
-var sinon = require('sinon');
-var sinonChai = require('sinon-chai');
-
 // Utilities:
-var _ = require('lodash');
+import _ from 'lodash';
+import chai from 'chai';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 
 // Test setup:
-var expect = chai.expect;
-chai.use(dirtyChai);
+const expect = chai.expect;
 chai.use(sinonChai);
 
-// Under test:
-var getConfig = require('./get-config');
+// Dependencies:
+import config from '../config';
 
-describe('server/api: get-config', function () {
-    it('should respond with the current config:', function () {
-        var response = {
+// Under test:
+import getConfig from './get-config';
+
+describe('server/api: get-config', () => {
+    it('should respond with the current config:', () => {
+        let request = { };
+        let response = {
             send: _.noop
         };
-        sinon.spy(response, 'send');
-        sinon.stub(JSON, 'stringify').returns('JSON');
+        let oldConfig = config.config;
+        config.config = {};
 
-        getConfig({}, response);
+        sinon.stub(response, 'send');
 
-        expect(response.send).to.have.been.calledWith('JSON');
+        getConfig.handler(request, response);
 
-        JSON.stringify.restore();
+        expect(response.send).to.have.been.calledWith({});
+
+        config.config = oldConfig;
     });
 });

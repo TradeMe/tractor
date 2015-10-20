@@ -11,10 +11,10 @@ require('../../../Core/Services/ASTCreatorService');
 require('./MethodModel');
 
 var createInteractionModelConstructor = function (
-    ASTCreatorService,
+    astCreatorService,
     MethodModel
 ) {
-    var ast = ASTCreatorService;
+    var ast = astCreatorService;
 
     var InteractionModel = function InteractionModel (action) {
         var element;
@@ -66,42 +66,44 @@ var createInteractionModelConstructor = function (
     return InteractionModel;
 
     function toAST () {
+        this.resultFunctionExpression = ast.functionExpression();
+
+        var template = '<%= interaction %>';
+        if (this.methodInstance.returns !== 'promise') {
+            template = 'new Promise(function (resolve) { resolve(' + template + '); });';
+        }
+
+        var interaction = interactionAST.call(this);
+
+        return ast.expression(template, {
+            interaction: interaction
+        });
+    }
+
+    function interactionAST () {
+        var template = '<%= element %>';
+        if (this.element.variableName !== 'browser') {
+            template = 'self.' + template;
+        }
+        template += '.<%= method %>(%= argumentValues %);';
+
+        var element = ast.identifier(this.element.variableName);
+        var method = ast.identifier(this.methodInstance.name);
         var argumentValues = _.map(this.methodInstance.arguments, function (argument) {
             return argument.ast;
         });
 
-        var interactionMemberExpression;
-        var elementNameIdentifier = ast.identifier(this.element.variableName);
-        var methodInstanceNameIdentifier = ast.identifier(this.methodInstance.name);
-        if (this.element.name === 'browser') {
-            interactionMemberExpression = ast.memberExpression(elementNameIdentifier, methodInstanceNameIdentifier);
-        } else {
-            var thisElementMemberExpression = ast.memberExpression(ast.identifier('self'), elementNameIdentifier);
-            interactionMemberExpression = ast.memberExpression(thisElementMemberExpression, methodInstanceNameIdentifier);
-        }
-        var interactionCallExpression = ast.callExpression(interactionMemberExpression, argumentValues);
-        var interactionReturnStatement = ast.returnStatement(interactionCallExpression);
-
-        if (this.methodInstance.returns !== 'promise') {
-            var resolveIdentifier = ast.identifier('resolve');
-            var resolveCallExpression = ast.callExpression(resolveIdentifier, [interactionCallExpression]);
-            var promiseResolverExpressionStatement = ast.expressionStatement(resolveCallExpression);
-            var promiseResolverBlockStatement = ast.blockStatement([promiseResolverExpressionStatement]);
-            var promiseResolverFunctionExpression = ast.functionExpression(null, [resolveIdentifier], promiseResolverBlockStatement);
-            var promiseIdentifier = ast.identifier('Promise');
-            var promiseNewExpression = ast.newExpression(promiseIdentifier, [promiseResolverFunctionExpression]);
-            interactionReturnStatement.argument = promiseNewExpression;
-        }
-
-        this.resultFunctionExpression = ast.functionExpression();
-
-        return interactionReturnStatement;
+        return ast.expression(template, {
+            element: element,
+            method: method,
+            argumentValues: argumentValues
+        });
     }
 };
 
 ComponentEditor.factory('InteractionModel', function (
-    ASTCreatorService,
+    astCreatorService,
     MethodModel
 ) {
-    return createInteractionModelConstructor(ASTCreatorService, MethodModel);
+    return createInteractionModelConstructor(astCreatorService, MethodModel);
 });

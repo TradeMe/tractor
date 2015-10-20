@@ -2,47 +2,44 @@
 'use strict';
 
 // Utilities:
-var Promise = require('bluebird');
-
-// Test Utilities:
-var chai = require('chai');
-var dirtyChai = require('dirty-chai');
-var sinon = require('sinon');
-var sinonChai = require('sinon-chai');
+import chai from 'chai';
+import Promise from 'bluebird';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 
 // Test setup:
-var expect = chai.expect;
-chai.use(dirtyChai);
+const expect = chai.expect;
 chai.use(sinonChai);
 
-// Under test:
-var createTestDirectoryStructure = require('./create-test-directory-structure');
+// Dependencies:
+import fs from 'fs';
+import log from 'npmlog';
+import path from 'path';
 
-describe('server/cli/init: create-test-directory-structure:', function () {
-    it('should create the root test directory', function () {
-        var fs = require('fs');
-        var log = require('../../utils/logging');
+// Under test:
+import createTestDirectoryStructure from './create-test-directory-structure';
+
+describe('server/cli/init: create-test-directory-structure:', () => {
+    it('should create the root test directory', () => {
         sinon.stub(fs, 'mkdirAsync').returns(Promise.resolve());
         sinon.stub(log, 'info');
+        sinon.stub(log, 'verbose');
         sinon.stub(log, 'warn');
-        sinon.stub(log, 'success');
 
         return createTestDirectoryStructure.run('directory')
-        .then(function () {
+        .then(() => {
             expect(fs.mkdirAsync).to.have.been.calledWith('directory');
         })
-        .finally(function () {
+        .finally(() => {
             fs.mkdirAsync.restore();
             log.info.restore();
+            log.verbose.restore();
             log.warn.restore();
-            log.success.restore();
         });
     });
 
-    it('should tell the user if the root test directory already exists', function () {
-        var fs = require('fs');
-        var log = require('../../utils/logging');
-        var error = new Promise.OperationalError();
+    it('should tell the user if the root test directory already exists', () => {
+        let error = new Promise.OperationalError();
         error.cause = {
             code: 'EEXIST'
         };
@@ -51,77 +48,71 @@ describe('server/cli/init: create-test-directory-structure:', function () {
         sinon.stub(log, 'warn');
 
         return createTestDirectoryStructure.run('directory')
-        .then(function () {
+        .then(() => {
             expect(log.warn).to.have.been.calledWith('"directory" directory already exists. Not creating folder structure...');
         })
-        .finally(function () {
+        .finally(() => {
             fs.mkdirAsync.restore();
             log.info.restore();
             log.warn.restore();
         });
     });
 
-    it('should rethrow any other errors', function () {
-        var fs = require('fs');
-        var log = require('../../utils/logging');
+    it('should rethrow any other errors', () => {
         sinon.stub(fs, 'mkdirAsync').returns(Promise.reject(new Promise.OperationalError()));
         sinon.stub(log, 'info');
         sinon.stub(log, 'warn');
 
         return createTestDirectoryStructure.run('directory')
-        .catch(function () {
-            expect(log.warn.callCount).to.equal(0);
+        .catch(() => { })
+        .then(() => {
+            expect(log.warn).to.not.have.been.called();
         })
-        .finally(function () {
+        .finally(() => {
             fs.mkdirAsync.restore();
             log.info.restore();
             log.warn.restore();
         });
     });
 
-    it('should create the subdirectory structure', function () {
-        var fs = require('fs');
-        var log = require('../../utils/logging');
-		var path = require('path');
+    it('should create the subdirectory structure', () => {
         sinon.stub(fs, 'mkdirAsync').returns(Promise.resolve());
         sinon.stub(log, 'info');
+        sinon.stub(log, 'verbose');
         sinon.stub(log, 'warn');
-        sinon.stub(log, 'success');
 
         return createTestDirectoryStructure.run('directory')
-        .then(function () {
+        .then(() => {
             expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'components'));
             expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'features'));
-            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'step_definitions'));
-            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'mock_data'));
+            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'step-definitions'));
+            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'mock-data'));
             expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'support'));
         })
-        .finally(function () {
+        .finally(() => {
             fs.mkdirAsync.restore();
             log.info.restore();
+            log.verbose.restore();
             log.warn.restore();
-            log.success.restore();
         });
     });
 
-    it('should tell the user  what it is doing', function () {
-        var fs = require('fs');
-        var log = require('../../utils/logging');
+    it('should tell the user  what it is doing', () => {
         sinon.stub(fs, 'mkdirAsync').returns(Promise.resolve());
         sinon.stub(log, 'info');
+        sinon.stub(log, 'verbose');
         sinon.stub(log, 'warn');
-        sinon.stub(log, 'success');
 
         return createTestDirectoryStructure.run('directory')
-        .then(function () {
+        .then(() => {
             expect(log.info).to.have.been.calledWith('Creating directory structure...');
-            expect(log.success).to.have.been.calledWith('Directory structure created.');
+            expect(log.verbose).to.have.been.calledWith('Directory structure created.');
         })
-        .finally(function () {
+        .finally(() => {
             fs.mkdirAsync.restore();
             log.info.restore();
+            log.verbose.restore();
             log.warn.restore();
-            log.success.restore();
         });
     });
 });

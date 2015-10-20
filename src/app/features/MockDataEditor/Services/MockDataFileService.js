@@ -11,21 +11,9 @@ require('../../../Core/Services/FileStructureService');
 var MockDataFileService = function MockDataFileService (
     $http,
     MockDataParserService,
-    FileStructureService
+    fileStructureService
 ) {
-    var service = FileService($http, MockDataParserService, FileStructureService, 'mock_data');
-    service.getAll = getAll;
-    return service;
-
-
-    function getAll () {
-        return this.getFileStructure()
-        .then(function (fileStructure) {
-            return fileStructure.allFiles.map(function (file) {
-                return MockDataParserService.parse(file);
-            });
-        });
-    }
+    return FileService($http, MockDataParserService, fileStructureService, 'mock-data');
 };
 
 MockDataEditor.service('MockDataFileService', MockDataFileService);

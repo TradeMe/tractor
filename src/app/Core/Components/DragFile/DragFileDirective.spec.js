@@ -1,4 +1,4 @@
-/*global describe:true, beforeEach:true, it:true, expect:true */
+/*global describe:true, beforeEach:true, it:true */
 'use strict';
 
 // Angular:

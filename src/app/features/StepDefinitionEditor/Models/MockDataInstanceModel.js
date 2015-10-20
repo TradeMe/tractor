@@ -11,7 +11,7 @@ var camel = require('change-case').camel;
 require('../../../Core/Services/ASTCreatorService');
 
 var createMockDataInstanceModelConstructor = function (
-    ASTCreatorService
+    astCreatorService
 ) {
     var MockDataInstanceModel = function MockDataInstanceModel (mockData, stepDefinition) {
         Object.defineProperties(this, {
@@ -53,7 +53,7 @@ var createMockDataInstanceModelConstructor = function (
     return MockDataInstanceModel;
 
     function toAST () {
-        var ast = ASTCreatorService;
+        var ast = astCreatorService;
 
         var template = 'var <%= name %> = require(<%= path %>); ';
 
@@ -70,7 +70,7 @@ var createMockDataInstanceModelConstructor = function (
 };
 
 StepDefinitionEditor.factory('MockDataInstanceModel', function (
-    ASTCreatorService
+    astCreatorService
 ) {
-    return createMockDataInstanceModelConstructor(ASTCreatorService);
+    return createMockDataInstanceModelConstructor(astCreatorService);
 });

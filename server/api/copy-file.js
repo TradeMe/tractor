@@ -1,62 +1,20 @@
 'use strict';
 
-// Utilities:
-var _ = require('lodash');
-var path = require('path');
-
 // Dependencies:
-var fileStructureModifier = require('../utils/file-structure-modifier');
-var fileStructureUtils = require('../utils/file-structure-utils/file-structure-utils');
+import fileStructure from '../file-structure';
+import getFileStructure from './get-file-structure';
 
-module.exports = init;
+// Errors:
+import errorHandler from '../errors/error-handler';
+import TractorError from '../errors/TractorError';
 
-function init () {
-    return fileStructureModifier.create({
-        preSave: copyFile
-    });
-}
+export default { handler };
 
-function copyFile (fileStructure, request) {
-    var filePath = request.body.path;
-    var directoryPath = path.dirname(filePath);
-    var directory = fileStructureUtils.findDirectory(fileStructure, directoryPath);
-    var file = fileStructureUtils.findFile(directory, filePath);
+function handler (request, response) {
+    let { path } = request.body;
 
-    var copy = {
-        name: getFileCopyName(directory, file.name)
-    };
-
-    if (file.ast) {
-        copy.ast = _.clone(file.ast, true);
-        var metaComment = _.first(copy.ast.comments);
-        var meta = JSON.parse(metaComment.value);
-        meta.name = getFileCopyName(directory, meta.name);
-        metaComment.value = JSON.stringify(meta);
-    } else {
-        copy.content = file.content;
-    }
-
-    directory.files.push(copy);
-    fileStructure.allFiles.push(copy);
-    return fileStructure;
-}
-
-function getFileCopyName (directory, fileName) {
-    var n = 1;
-    var fileCopyName;
-    do {
-        fileCopyName = createFileCopyName(fileName, n);
-        n += 1;
-    } while (fileCopyNameExists(directory, fileCopyName));
-    return fileCopyName;
-}
-
-function createFileCopyName (fileName, n) {
-    return fileName + ' (copy' + (n !== 1 ? ' ' + n : '') + ')';
-}
-
-function fileCopyNameExists (directory, fileCopyName) {
-    return !!_.find(directory.files, function (file) {
-        return file.name === fileCopyName;
-    });
+    return fileStructure.copyFile(path)
+    .then(() => getFileStructure.handler(request, response))
+    .catch(TractorError, error => errorHandler.handler(response, error))
+    .catch(() => errorHandler.handler(response, new TractorError(`Could not copy "${path}"`, 500)));
 }

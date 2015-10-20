@@ -1,6 +1,6 @@
 'use strict';
 
-var MockNotImplementedError = require('../Errors/MockNotImplementedError');
+var MockNotImplementedError = require('../../Errors/MockNotImplementedError');
 
 var MockPersistentStateService = function MockPersistentStateService () {
 };

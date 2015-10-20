@@ -1,11 +1,8 @@
 'use strict';
 
-var protractorRunner = require('./protractor-runner');
+// Dependencies:
+import { run } from './protractor-runner';
 
-module.exports = connect;
-
-function connect (socket) {
-    socket.on('run', function (runOptions) {
-        protractorRunner.run(socket, runOptions);
-    });
+export default function connect (socket) {
+    socket.on('run', (runOptions) => run(socket, runOptions));
 }

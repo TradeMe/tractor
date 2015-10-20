@@ -3,6 +3,9 @@
 // Module:
 var StepDefinitionEditor = require('./StepDefinitionEditor');
 
+// Utilities:
+var _ = require('lodash');
+
 // Dependencies:
 var FileEditorController = require('../FileEditor/FileEditorController');
 require('../../Core/Services/PersistentStateService');
@@ -14,28 +17,24 @@ var StepDefinitionEditorController = function StepDefinitionEditorController (
     $window,
     $state,
     persistentStateService,
-    NotifierService,
+    notifierService,
+    ComponentParserService,
+    MockDataParserService,
     StepDefinitionFileService,
     stepDefinitionFileStructure,
-    stepDefinitionPath,
-    components,
-    mockData
+    stepDefinitionPath
 ) {
     var controller = new FileEditorController(
         $scope,
         $window,
         $state,
         persistentStateService,
-        NotifierService,
+        notifierService,
         StepDefinitionFileService,
         null,
         stepDefinitionFileStructure,
-        stepDefinitionPath,
-        components,
-        mockData
+        stepDefinitionPath
     );
-    controller.availableComponents = components;
-    controller.availableMockData = mockData;
 
     Object.defineProperties(controller, {
         canAddComponents: {

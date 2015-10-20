@@ -11,9 +11,9 @@ require('../../../Core/Services/FileStructureService');
 var StepDefinitionFileService = function StepDefinitionFileService (
     $http,
     StepDefinitionParserService,
-    FileStructureService
+    fileStructureService
 ) {
-    return FileService($http, StepDefinitionParserService, FileStructureService, 'step_definitions');
+    return FileService($http, StepDefinitionParserService, fileStructureService, 'step-definitions');
 };
 
 StepDefinitionEditor.service('StepDefinitionFileService', StepDefinitionFileService);

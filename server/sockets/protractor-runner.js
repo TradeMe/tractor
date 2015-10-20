@@ -1,80 +1,77 @@
 'use strict';
 
-// Utilities:
-var _ = require('lodash');
-var log = require('../utils/logging');
-var path = require('path');
-var Promise = require('bluebird');
+// Constants:
+import { config } from '../config';
+const PROTRACTOR_PATH = join('node_modules', 'protractor', 'bin', 'protractor');
+const E2E_PATH = join(config.testDirectory, 'protractor.conf.js');
 
-// Config:
-var config = require('../utils/create-config')();
-var protractorPath = path.join('node_modules', 'protractor', 'bin', 'protractor');
-var e2ePath = path.join(config.testDirectory, 'protractor.conf.js');
+// Utilities:
+import _ from 'lodash';
+import Promise from 'bluebird';
+import { spawn } from 'child_process';
+import log from 'npmlog';
+import { join } from 'path';
 
 // Dependencies:
-var childProcess = require('child_process');
-var stripcolorcodes = require('stripcolorcodes');
+import stripcolorcodes from 'stripcolorcodes';
 
 // Errors:
-var ProtractorRunError = require('../errors/ProtractorRunError');
+import TractorError from '../errors/TractorError';
 
-module.exports = {
-    run: run
-};
+export default { run };
 
 function run (socket, runOptions) {
     if (!module.exports.running) {
         module.exports.running = true;
 
         return Promise.resolve(config.beforeProtractor())
-        .then(function () {
-            log.important('Starting Protractor...\n');
+        .then(() => {
+            log.silly('Starting Protractor...\n');
             return startProtractor(socket, runOptions);
         })
-        .catch(function (error) {
+        .catch((error) => {
             socket.lastMessage = socket.lastMessage || '';
-            log.error(error.message + _.first(socket.lastMessage.split(/\r\n|\n/)));
+            let [lastMessage] = socket.lastMessage.split(/\r\n|\n/);
+            log.error(`${error.message}${lastMessage}`);
         })
-        .finally(function () {
+        .finally(() => {
             socket.disconnect();
             return Promise.resolve(config.afterProtractor())
-            .then(function () {
+            .then(() => {
                 module.exports.running = false;
                 log.info('Protractor finished.');
             });
         });
     } else {
         log.error('Protractor already running.');
-        return Promise.reject(new ProtractorRunError('Protractor already running.'));
+        return Promise.reject(new TractorError('Protractor already running.'));
     }
 }
 
 function startProtractor (socket, runOptions) {
-    var resolve;
-    var reject;
-    var deferred = new Promise(function () {
-        resolve = arguments[0];
-        reject = arguments[1];
+    let resolve;
+    let reject;
+    let deferred = new Promise((...args) => {
+        resolve = args[0];
+        reject = args[1];
     });
 
     if (_.isUndefined(runOptions.baseUrl)) {
-        reject(new ProtractorRunError('`baseUrl` must be defined.'));
+        reject(new TractorError('`baseUrl` must be defined.'));
         return deferred;
     }
 
-    var protractor = childProcess.spawn('node', [protractorPath, e2ePath, '--baseUrl', runOptions.baseUrl]);
+    let protractor = spawn('node', [PROTRACTOR_PATH, E2E_PATH, '--baseUrl', runOptions.baseUrl]);
 
     protractor.stdout.on('data', sendDataToClient.bind(socket));
     protractor.stderr.on('data', sendErrorToClient.bind(socket));
     protractor.stdout.pipe(process.stdout);
     protractor.stderr.pipe(process.stderr);
 
-    protractor.on('error', function (error) {
-        reject(new ProtractorRunError(error.message));
-    });
-    protractor.on('exit', function (code) {
+    protractor.on('error', error => reject(new TractorError(error.message)));
+    protractor.on('exit', (code) => {
         if (code !== 0) {
-            reject(new ProtractorRunError('Protractor Exit Error - '));
+            reject(new TractorError('Protractor Exit Error - '));
         } else {
             resolve();
         }
@@ -84,20 +81,20 @@ function startProtractor (socket, runOptions) {
 
 function sendDataToClient (data) {
     this.lastMessage = data.toString();
-    var messages = data.toString().split(/\r\n|\n/);
-    messages.forEach(function (message) {
+    let messages = data.toString().split(/\r\n|\n/);
+    messages.forEach((message) => {
         data = formatMessage(stripcolorcodes(message).trim());
         if (data && data.message.length) {
             this.emit('protractor-out', data);
         }
-    }.bind(this));
+    });
 }
 
 function formatMessage (message) {
     // If it looks like an error:
     if (message.match(/Error\:/)) {
         return {
-            message: message,
+            message,
             type: 'error'
         };
     }
@@ -117,7 +114,7 @@ function formatMessage (message) {
     }
 
     return {
-        message: message,
+        message,
         type: 'info'
     };
 }

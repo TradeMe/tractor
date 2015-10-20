@@ -2,6 +2,7 @@
 
 // Utilities:
 var _ = require('lodash');
+var angular = require('angular');
 
 // Module:
 var Core = require('../../Core');
@@ -42,7 +43,7 @@ var PanelHandleDirective = function (
     }
 
     function mousedown ($handle) {
-        angular.element(document.body).data('handle', $handle)
+        angular.element(document.body).data('handle', $handle);
         document.body.classList.add('resizing');
         document.body.addEventListener('mousemove', mousemove);
         document.body.addEventListener('mouseup', mouseup);

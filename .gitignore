@@ -1,6 +1,7 @@
-node_modules/
+node_modules
 npm-debug.log
 npm-debug.log.*
-reports/
+reports
 *.scssc
 .idea/*
+.sass-cache

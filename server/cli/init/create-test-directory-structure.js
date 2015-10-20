@@ -1,37 +1,34 @@
 'use strict';
 
-// Utilities:
-var constants = require('../../constants');
-var log = require('../../utils/logging');
-var Promise = require('bluebird');
+// Constants:
+import constants from '../../constants';
 
-// Dependencies:
-var fs = Promise.promisifyAll(require('fs'));
-var path = require('path');
+// Utilities:
+import Promise from 'bluebird';
+const fs = Promise.promisifyAll(require('fs'));
+import log from 'npmlog';
+import { join } from 'path';
 
 // Errors:
-var TestDirectoryAlreadyExistsError = require('../../Errors/TestDirectoryAlreadyExistsError');
+import TractorError from '../../errors/TractorError';
 
-module.exports = {
+export default {
     run: createTestDirectoryStructure
 };
 
 function createTestDirectoryStructure (testDirectory) {
     return createRootDirectory(testDirectory)
-    .then(function () {
-        return createSubDirectories(testDirectory);
-    })
-    .catch(TestDirectoryAlreadyExistsError, function (e) {
-        log.warn(e.message + ' Not creating folder structure...');
-    });
+    .then(() => createSubDirectories(testDirectory))
+    .catch(TractorError, (error) => log.warn(`${error.message} Not creating folder structure...`));
 }
 
 function createRootDirectory (testDirectory) {
     log.info('Creating directory structure...');
+
     return fs.mkdirAsync(testDirectory)
-    .catch(Promise.OperationalError, function (error) {
+    .catch(Promise.OperationalError, (error) => {
         if (error && error.cause && error.cause.code === 'EEXIST') {
-            throw new TestDirectoryAlreadyExistsError('"' + testDirectory + '" directory already exists.');
+            throw new TractorError(`"${testDirectory}" directory already exists.`);
         } else {
             throw error;
         }
@@ -39,18 +36,14 @@ function createRootDirectory (testDirectory) {
 }
 
 function createSubDirectories (testDirectory) {
-    var createDirectories = [
-        constants.COMPONENTS_DIR,
-        constants.FEATURES_DIR,
-        constants.STEP_DEFINITIONS_DIR,
-        constants.MOCK_DATA_DIR,
+    let createDirectories = [
+        constants.COMPONENTS,
+        constants.FEATURES,
+        constants.STEP_DEFINITIONS,
+        constants.MOCK_DATA,
         constants.SUPPORT_DIR
-    ].map(function (directory) {
-        return fs.mkdirAsync(path.join(testDirectory, directory));
-    });
+    ].map((directory) => fs.mkdirAsync(join(testDirectory, directory)));
 
     return Promise.all(createDirectories)
-    .then(function () {
-        log.success('Directory structure created.');
-    });
+    .then(() => log.verbose('Directory structure created.'));
 }

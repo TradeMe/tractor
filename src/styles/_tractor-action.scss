@@ -3,26 +3,6 @@ tractor-submit {
     display: inline-block;
 }
 
-tractor-action[icon] {
-   width: 2rem;
-   height: 2rem;
-}
-
-tractor-action[icon] button {
-   width: 2rem;
-   height: 2rem;
-   transition: all 0.1s;
-   transform: scale(1);
-}
-
-tractor-action[icon] button:hover {
-   transform: scale(1.125);
-}
-
-tractor-action[icon] button:active {
-   transform: scale(1.25);
-}
-
 tractor-action button,
 tractor-submit button {
     -webkit-appearance: none;
@@ -61,4 +41,28 @@ tractor-submit button:hover span {
 tractor-action button:active span,
 tractor-submit button:active span {
     transform: scale(1);
+}
+
+tractor-action[icon] {
+   width: 2rem;
+   height: 2rem;
+}
+
+tractor-action[icon] button {
+   width: 2rem;
+   height: 2rem;
+   transition: all 0.1s;
+   transform: scale(1);
+}
+
+tractor-action[icon="remove"] button {
+    background-image: url('./images/remove.png');
+}
+
+tractor-action[icon] button:hover {
+   transform: scale(1.125);
+}
+
+tractor-action[icon] button:active {
+   transform: scale(1.25);
 }

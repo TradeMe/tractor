@@ -12,12 +12,12 @@ require('./Services/ServerStatusService');
 
 var ControlPanelController = (function () {
     var ControlPanelController = function ControlPanelController (
-        RunnerService,
-        ServerStatusService,
+        runnerService,
+        serverStatusService,
         config
     ) {
-        this.runnerService = RunnerService;
-        this.serverStatusService = ServerStatusService;
+        this.runnerService = runnerService;
+        this.serverStatusService = serverStatusService;
         this.environments = config.environments;
         this.environment = _.first(this.environments);
     };

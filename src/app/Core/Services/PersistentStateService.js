@@ -30,6 +30,6 @@ var PersistentStateService = function PersistentStateService (
         delete state[name];
         localStorageService.set(PERSISTENT_STATE_KEY, state);
     }
-}
+};
 
 Core.service('persistentStateService', PersistentStateService);

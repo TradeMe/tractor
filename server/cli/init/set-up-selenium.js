@@ -1,21 +1,19 @@
 'use strict';
 
+// Constants:
+import constants from '../../constants';
+
 // Utilities:
-var constants = require('../../constants');
-var log = require('../../utils/logging');
-var Promise = require('bluebird');
+import { promisifyAll } from 'bluebird';
+const childProcess = promisifyAll(require('child_process'));
+import log from 'npmlog';
 
-// Dependencies:
-var childProcess = Promise.promisifyAll(require('child_process'));
-
-module.exports = {
+export default {
     run: setUpSelenium
 };
 
 function setUpSelenium () {
     log.info('Setting up Selenium...');
     return childProcess.execAsync(constants.SELENIUM_UPDATE_COMMAND)
-    .then(function () {
-        log.success('Selenium setup complete.');
-    });
+    .then(() => log.verbose('Selenium setup complete.'));
 }

@@ -1,53 +1,20 @@
 'use strict';
 
-// Utilities:
-var _ = require('lodash');
-
 // Dependencies:
-var fileStructureModifier = require('../utils/file-structure-modifier');
-var fileStructureUtils = require('../utils/file-structure-utils/file-structure-utils');
+import fileStructure from '../file-structure';
+import getFileStructure from './get-file-structure';
 
-// Constants:
-var NEW_DIRECTORY = 'New Directory';
+// Errors:
+import errorHandler from '../errors/error-handler';
+import TractorError from '../errors/TractorError';
 
-module.exports = init;
+export default { handler };
 
-function init () {
-    return fileStructureModifier.create({
-        preSave: createDirectory
-    });
-}
+function handler (request, response) {
+    let { path } = request.body;
 
-function createDirectory (fileStructure, request) {
-    var body = request.body;
-    var directory = fileStructureUtils.findDirectory(fileStructure, body.path);
-    var newDirectoryName = getNewDirectoryName(directory);
-    directory.directories.push({
-        name: newDirectoryName
-    });
-    return fileStructure;
-}
-
-function getNewDirectoryName (directory) {
-    var n = 1;
-    var newDirectoryName;
-    do {
-        newDirectoryName = createNewDirectoryName(n);
-        n += 1;
-    } while (newDirectoryNameExists(directory, newDirectoryName));
-    return newDirectoryName;
-}
-
-function createNewDirectoryName (n) {
-    return NEW_DIRECTORY + (n !== 1 ? ' (' + n + ')' : '');
-}
-
-function newDirectoryNameExists (directory, newDirectoryName) {
-    return !!_.find(directory.directories, directoryNameEquals(newDirectoryName));
-}
-
-function directoryNameEquals (name) {
-    return function (directory) {
-        return directory.name === name;
-    };
+    return fileStructure.createDirectory(path)
+    .then(() => getFileStructure.handler(request, response))
+    .catch(TractorError, error => errorHandler.handler(response, error))
+    .catch(() => errorHandler.handler(response, new TractorError('Could not create directory', 500)));
 }

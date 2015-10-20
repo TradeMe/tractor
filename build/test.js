@@ -5,7 +5,9 @@ var gulp = require('gulp');
 var karma = require('karma').server;
 
 // Dependencies:
+var babel = require('babel/register');
 var istanbul = require('gulp-istanbul');
+var isparta = require('isparta');
 var mocha = require('gulp-mocha');
 
 module.exports = {
@@ -19,17 +21,18 @@ function server (reportTaskDone) {
         '!server/**/*.spec.js',
         '!server/**/*.mock.js',
         '!server/*.js',
-        '!server/**/*Error.js',
-        '!server/cli/init/base_file_sources/*',
-        '!server/utils/logging.js'
+        '!server/cli/init/base-file-sources/*',
+        '!server/utils/log.js'
     ])
     .pipe(istanbul({
+        instrumenter: isparta.Instrumenter,
         includeUntested: true
     }))
     .pipe(istanbul.hookRequire())
     .on('finish', function () {
-        gulp.src(['server/**/*.spec.js'])
+        gulp.src(['server/**/*.js'])
         .pipe(mocha().on('error', function (error) {
+            console.log(error);
             this.destroy();
             reportTaskDone();
         }))

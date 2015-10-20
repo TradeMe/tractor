@@ -11,7 +11,7 @@ require('../../../Core/Services/ASTCreatorService');
 require('../../ComponentEditor/Models/ArgumentModel');
 
 var createTaskModelConstructor = function (
-    ASTCreatorService,
+    astCreatorService,
     ArgumentModel
 ) {
     var TaskModel = function TaskModel (step) {
@@ -62,7 +62,7 @@ var createTaskModelConstructor = function (
     return TaskModel;
 
     function toAST () {
-        var ast = ASTCreatorService;
+        var ast = astCreatorService;
 
         var template = '<%= component %>.<%= action %>(%= taskArguments %)';
 
@@ -88,8 +88,8 @@ var createTaskModelConstructor = function (
 };
 
 StepDefinitionEditor.factory('TaskModel', function (
-    ASTCreatorService,
+    astCreatorService,
     ArgumentModel
 ) {
-    return createTaskModelConstructor(ASTCreatorService, ArgumentModel);
+    return createTaskModelConstructor(astCreatorService, ArgumentModel);
 });

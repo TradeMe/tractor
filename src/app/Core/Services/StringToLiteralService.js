@@ -21,6 +21,8 @@ var StringToLiteralService = function () {
             return number;
         } else if (nil === null) {
             return nil;
+        } else {
+            return value;
         }
     }
 
@@ -34,7 +36,9 @@ var StringToLiteralService = function () {
 
     function toNumber (value) {
         var number = +value;
-        if (value && _.isNumber(number) && !_.isNaN(number)) {
+        if (value === 'NaN') {
+            return NaN;
+        } else if (value && _.isNumber(number) && !_.isNaN(number)) {
             return number;
         }
     }
@@ -46,4 +50,4 @@ var StringToLiteralService = function () {
     }
 };
 
-Core.service('StringToLiteralService', StringToLiteralService);
+Core.service('stringToLiteralService', StringToLiteralService);

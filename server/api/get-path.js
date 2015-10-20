@@ -1,27 +1,21 @@
 'use strict';
 
+// Constants:
+import { config } from '../config';
+import constants from '../constants';
+
 // Utilities:
-var path = require('path');
+import { join } from 'path';
 
-// Config:
-var config = require('../utils/create-config')();
-var constants = require('../constants');
+export default { handler };
 
-module.exports = getPath;
+function handler (request, response) {
+    let { type } = request.params;
+    let extension = constants.EXTENSIONS[type];
 
-function getPath (request, response) {
-    var type = request.params.type.toUpperCase();
-    var extension = constants[type + '_EXTENSION'];
-    var directoryName = constants[type + '_DIR'];
+    let { path, name } = request.query;
+    let fileName = name + extension;
+    path = path || join(process.cwd(), config.testDirectory, type, fileName);
 
-    var filePath = request.query.path;
-
-    if (!filePath) {
-        var fileName = request.query.name + extension;
-        filePath = path.join(process.cwd(), config.testDirectory, directoryName, fileName);
-    }
-
-    response.send(JSON.stringify({
-        path: filePath
-    }));
+    response.send({ path });
 }

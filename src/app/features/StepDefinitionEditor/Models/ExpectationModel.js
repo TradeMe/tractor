@@ -12,8 +12,8 @@ require('../../../Core/Services/StringToLiteralService');
 require('../../ComponentEditor/Models/ArgumentModel');
 
 var createExpectationModelConstructor = function (
-    ASTCreatorService,
-    StringToLiteralService,
+    astCreatorService,
+    stringToLiteralService,
     ArgumentModel
 ) {
     var ExpectationModel = function ExpectationModel (step) {
@@ -67,14 +67,14 @@ var createExpectationModelConstructor = function (
     return ExpectationModel;
 
     function toAST () {
-        var ast = ASTCreatorService;
+        var ast = astCreatorService;
 
         var template = 'expect(<%= component %>.<%= action %>(%= expectationArguments %)).to.eventually.<%= condition %>(<%= expectedResult %>); ';
 
         var expectationArguments = this.arguments.map(function (argument) {
             return argument.ast;
         });
-        var expectedResult = ast.literal(StringToLiteralService.toLiteral(this.value) || this.value);
+        var expectedResult = ast.literal(stringToLiteralService.toLiteral(this.value) || this.value);
 
         return ast.template(template, {
             component: ast.identifier(this.component.variableName),
@@ -95,9 +95,9 @@ var createExpectationModelConstructor = function (
 };
 
 StepDefinitionEditor.factory('ExpectationModel', function (
-    ASTCreatorService,
-    StringToLiteralService,
+    astCreatorService,
+    stringToLiteralService,
     ArgumentModel
 ) {
-    return createExpectationModelConstructor(ASTCreatorService, StringToLiteralService, ArgumentModel);
+    return createExpectationModelConstructor(astCreatorService, stringToLiteralService, ArgumentModel);
 });

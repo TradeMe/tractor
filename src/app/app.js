@@ -1,6 +1,7 @@
 'use strict';
 
 // Utilities:
+var _ = require('lodash');
 var fs = require('fs');
 var Promise = require('bluebird');
 
@@ -31,13 +32,12 @@ require('./features/MockDataEditor/Services/MockDataFileService');
 require('./features/MockDataEditor/MockDataEditorController');
 
 require('./Core/Core');
-require('./Core/Services/ConfigService');
 require('./Core/Services/FileStructureService');
 require('./Core/Services/HttpResponseInterceptor');
 require('./Core/Services/RealTimeService');
 
 // Application Init:
-angular.module('tractor', [
+var tractor = angular.module('tractor', [
     'ngMessages',
     'ui.router',
     'ui.sortable',
@@ -48,11 +48,33 @@ angular.module('tractor', [
     'FeatureEditor',
     'StepDefinitionEditor',
     'MockDataEditor'
-])
-.config(function ($stateProvider, $urlRouterProvider, localStorageServiceProvider) {
+]);
+
+tractor.config(function (
+    $stateProvider,
+    $locationProvider,
+    $urlMatcherFactoryProvider,
+    $urlRouterProvider,
+    localStorageServiceProvider
+) {
+    $urlRouterProvider.otherwise('/');
+    $locationProvider.html5Mode(true);
     localStorageServiceProvider.setPrefix('tractor');
 
-    $urlRouterProvider.otherwise('/');
+    $urlMatcherFactoryProvider.type('TractorFile', {
+        encode: function (toEncode) {
+            return toEncode && toEncode.name ? toEncode.name.replace(/\s/g, '+') : '';
+        },
+        decode: function (toDecode) {
+            return toDecode && _.isString(toDecode) ? { name: toDecode.replace(/\+/g, ' ') } : toDecode;
+        },
+        is: function (tractorFile) {
+            return !tractorFile || tractorFile && tractorFile.name;
+        },
+        equals: function (a, b) {
+            return a && a.name && b && b.name && a.name === b.name;
+        }
+    });
 
     $stateProvider
     .state('tractor', {
@@ -60,15 +82,10 @@ angular.module('tractor', [
         /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/features/ControlPanel/ControlPanel.html', 'utf8'),
         /* eslint-enable no-path-concat */
-        controller: 'ControlPanelController as controlPanel',
-        resolve: {
-            config: function (ConfigService) {
-                return ConfigService.getConfig();
-            }
-        }
+        controller: 'ControlPanelController as controlPanel'
     })
-    .state('tractor.component-editor', {
-        url: 'component-editor/:component',
+    .state('tractor.components', {
+        url: 'components/{file:TractorFile}',
         /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/features/ComponentEditor/ComponentEditor.html', 'utf8'),
         /* eslint-enable no-path-concat */
@@ -78,13 +95,13 @@ angular.module('tractor', [
                 return ComponentFileService.getFileStructure();
             },
             componentPath: function ($stateParams, ComponentFileService) {
-                var componentName = $stateParams.component;
-                return componentName ? ComponentFileService.getPath({ path: componentName }) : null;
+                var componentName = $stateParams.file && $stateParams.file.name;
+                return componentName ? ComponentFileService.getPath({ name: componentName }) : null;
             }
         }
     })
-    .state('tractor.feature-editor', {
-        url: 'feature-editor/:feature',
+    .state('tractor.features', {
+        url: 'features/{file:TractorFile}',
         /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/features/FeatureEditor/FeatureEditor.html', 'utf8'),
         /* eslint-enable no-path-concat */
@@ -94,35 +111,13 @@ angular.module('tractor', [
                 return FeatureFileService.getFileStructure();
             },
             featurePath: function ($stateParams, FeatureFileService) {
-                var feature = $stateParams.feature;
-                return feature ? FeatureFileService.getPath({ path: feature }) : null;
+                var featureName = $stateParams.file && $stateParams.file.name;
+                return featureName ? FeatureFileService.getPath({ name: featureName }) : null;
             }
         }
     })
-    .state('tractor.step-definition-editor', {
-        url: 'step-definition-editor/:stepDefinition',
-        /* eslint-disable no-path-concat */
-        template: fs.readFileSync(__dirname + '/features/StepDefinitionEditor/StepDefinitionEditor.html', 'utf8'),
-        /* eslint-enable no-path-concat */
-        controller: 'StepDefinitionEditorController as stepDefinitionEditor',
-        resolve: {
-            stepDefinitionFileStructure: function (StepDefinitionFileService) {
-                return StepDefinitionFileService.getFileStructure();
-            },
-            stepDefinitionPath: function ($stateParams, StepDefinitionFileService) {
-                var stepDefinition = $stateParams.stepDefinition;
-                return stepDefinition ? StepDefinitionFileService.getPath({ path: stepDefinition }) : null;
-            },
-            components: function (ComponentFileService) {
-                return ComponentFileService.getAll();
-            },
-            mockData: function (MockDataFileService) {
-                return MockDataFileService.getAll();
-            }
-        }
-    })
-    .state('tractor.mock-data-editor', {
-        url: 'mock-data-editor/:mockData',
+    .state('tractor.mock-data', {
+        url: 'mock-data/{file:TractorFile}',
         /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/features/MockDataEditor/MockDataEditor.html', 'utf8'),
         /* eslint-enable no-path-concat */
@@ -132,8 +127,24 @@ angular.module('tractor', [
                 return MockDataFileService.getFileStructure();
             },
             mockDataPath: function ($stateParams, MockDataFileService) {
-                var mockDataName = $stateParams.mockData;
-                return mockDataName ? MockDataFileService.getPath({ path: mockDataName }) : null;
+                var mockDataName = $stateParams.file && $stateParams.file.name;
+                return mockDataName ? MockDataFileService.getPath({ name: mockDataName }) : null;
+            }
+        }
+    })
+    .state('tractor.step-definitions', {
+        url: 'step-definitions/{file:TractorFile}',
+        /* eslint-disable no-path-concat */
+        template: fs.readFileSync(__dirname + '/features/StepDefinitionEditor/StepDefinitionEditor.html', 'utf8'),
+        /* eslint-enable no-path-concat */
+        controller: 'StepDefinitionEditorController as stepDefinitionEditor',
+        resolve: {
+            stepDefinitionFileStructure: function (StepDefinitionFileService) {
+                return StepDefinitionFileService.getFileStructure();
+            },
+            stepDefinitionPath: function ($stateParams, StepDefinitionFileService) {
+                var stepDefinitionName = $stateParams.file && $stateParams.file.name;
+                return stepDefinitionName ? StepDefinitionFileService.getPath({ name: stepDefinitionName }) : null;
             }
         }
     });
@@ -142,5 +153,14 @@ angular.module('tractor', [
     Promise.longStackTraces();
     Promise.setScheduler(function (cb) {
         $rootScope.$evalAsync(cb);
+    });
+});
+
+var $http = angular.injector(['ng']).get('$http');
+$http.get('/config')
+.then(function (response) {
+    tractor.constant('config', response.data);
+    angular.bootstrap(document.body, ['tractor'], {
+        strictDi: true
     });
 });

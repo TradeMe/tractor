@@ -50,16 +50,20 @@ var createScenarioModelConstructor = function (
         this.stepDeclarations.push(new StepDeclarationModel());
     };
 
-    ScenarioModel.prototype.removeStepDeclaration = function (stepDeclaration) {
-        _.remove(this.stepDeclarations, stepDeclaration);
+    ScenarioModel.prototype.removeStepDeclaration = function (toRemove) {
+        _.remove(this.stepDeclarations, function (stepDeclaration) {
+            return stepDeclaration === toRemove;
+        });
     };
 
     ScenarioModel.prototype.addExample = function () {
         this.examples.push(new ExampleModel(this));
     };
 
-    ScenarioModel.prototype.removeExample = function (example) {
-        _.remove(this.examples, example);
+    ScenarioModel.prototype.removeExample = function (toRemove) {
+        _.remove(this.examples, function (example) {
+            return example === toRemove;
+        });
     };
 
     return ScenarioModel;

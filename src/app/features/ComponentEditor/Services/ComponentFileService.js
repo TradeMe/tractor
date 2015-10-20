@@ -11,20 +11,9 @@ require('../../../Core/Services/FileStructureService');
 var ComponentFileService = function ComponentFileService (
     $http,
     ComponentParserService,
-    FileStructureService
+    fileStructureService
 ) {
-    var service = FileService($http, ComponentParserService, FileStructureService, 'components');
-    service.getAll = getAll;
-    return service;
-
-    function getAll () {
-        return this.getFileStructure()
-        .then(function (fileStructure) {
-            return fileStructure.allFiles.map(function (file) {
-                return ComponentParserService.parse(file);
-            });
-        });
-    }
+    return FileService($http, ComponentParserService, fileStructureService, 'components');
 };
 
 ComponentEditor.service('ComponentFileService', ComponentFileService);
