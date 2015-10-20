@@ -1,738 +1,465 @@
-/* global describe:true, beforeEach:true, afterEach:true, it:true */
+/* global describe:true, it:true */
 'use strict';
 
-// Test Utilities:
-var chai = require('chai');
-var dirtyChai = require('dirty-chai');
-var rewire = require('rewire');
-var sinon = require('sinon');
-var sinonChai = require('sinon-chai');
-
 // Utilities:
-var _ = require('lodash');
+import _ from 'lodash';
+import chai from 'chai';
+import dirtyChai from 'dirty-chai';
+import Promise from 'bluebird';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 
 // Test setup:
-var expect = chai.expect;
+const expect = chai.expect;
 chai.use(dirtyChai);
 chai.use(sinonChai);
 
+// Dependencies:
+import Directory from '../file-structure/Directory';
+import errorHandler from '../errors/error-handler';
+import fileStructure from '../file-structure';
+import File from '../files/File';
+import transformers from './transformers';
+import TractorError from '../errors/TractorError';
+
 // Under test:
-var editItemPath;
+import editItemPath from './edit-item-path';
 
-// Mocks:
-var fileStructureModiferMock = require('../utils/file-structure-modifier.mock');
-var fileStructureUtilsMock = require('../utils/file-structure-utils/file-structure-utils.mock');
-var revert;
+describe('server/api: edit-item-path:', () => {
+    it('should edit the name of a directory', () => {
+        let oldAllDirectoriesByPath = fileStructure.allDirectoriesByPath;
 
-describe('server/api: edit-item-path:', function () {
-    beforeEach(function () {
-        editItemPath = rewire('./edit-item-path');
-        /* eslint-disable no-underscore-dangle */
-        revert = editItemPath.__set__({
-            fileStructureModifier: fileStructureModiferMock,
-            fileStructureUtils: fileStructureUtilsMock
-        });
-        /* eslint-enable no-underscore-dangle */
-    });
-
-    afterEach(function () {
-        revert();
-    });
-
-    it('should rename a directory:', function () {
-        var path = require('path');
-
-        var fileStructure = { };
-        var directory = { };
-        var request = {
+        let directory = {
+            delete: _.noop,
+            directories: [],
+            files: [],
+            path: 'some/path/to/directory/oldName'
+        };
+        let parentDirectory = {
+            addDirectory: _.noop,
+            extension: '.js',
+            path: 'some/path/to/directory'
+        };
+        let request = {
             body: {
                 isDirectory: true,
                 oldName: 'oldName',
                 newName: 'newName',
-                directoryPath: 'directory-path'
-            }
+                directoryPath: 'some/path/to/directory'
+            },
+            params: {}
+        };
+        let response = {
+            send: _.noop
+        };
+        let structure = {};
+
+        fileStructure.allDirectoriesByPath = {
+            'some/path/to/directory': parentDirectory,
+            'some/path/to/directory/oldName': directory
         };
 
-        sinon.stub(fileStructureModiferMock, 'create', function (options) {
-            return options.preSave;
+        sinon.stub(directory, 'delete').returns(Promise.resolve());
+        sinon.stub(Directory.prototype, 'save').returns(Promise.resolve());
+        sinon.stub(fileStructure, 'getStructure').returns(structure);
+
+        return editItemPath.handler(request, response)
+        .then(() => {
+            expect(directory.delete).to.have.been.called();
+            expect(Directory.prototype.save).to.have.been.called();
+
+            let newDirectory = Directory.prototype.save.getCall(0).thisValue;
+            expect(newDirectory.name).to.equal('newName');
+            expect(newDirectory.path).to.equal('some/path/to/directory/newName');
+
+        })
+        .finally(() => {
+            Directory.prototype.save.restore();
+            fileStructure.getStructure.restore();
+
+            fileStructure.allDirectoriesByPath = oldAllDirectoriesByPath;
         });
-        sinon.stub(fileStructureUtilsMock, 'getExtension');
-        var findDirectory = sinon.stub(fileStructureUtilsMock, 'findDirectory');
-        findDirectory.onCall(0).returns(directory);
-        findDirectory.returns(null);
-        var transformsMock = {
-            test: _.noop
-        };
-        /* eslint-disable no-underscore-dangle */
-        var revertTransforms = editItemPath.__set__({
-            transforms: transformsMock
-        });
-        /* eslint-enable no-underscore-dangle */
-
-        editItemPath = editItemPath();
-        editItemPath(fileStructure, request);
-
-        expect(directory.name).to.equal('newName');
-        expect(directory.path).to.equal(path.join('directory-path', 'newName'));
-
-        fileStructureModiferMock.create.restore();
-        fileStructureUtilsMock.getExtension.restore();
-        fileStructureUtilsMock.findDirectory.restore();
-        revertTransforms();
     });
 
-    it('should delete all the paths of any files within the directory:', function () {
-        var fileStructure = { };
-        var directory = {
-            files: [{
-                path: 'path'
-            }]
+    it('shouldn\'t overwrite an existing directory with the given new name', () => {
+        let oldAllDirectoriesByPath = fileStructure.allDirectoriesByPath;
+
+        let directory = {
+            delete: _.noop,
+            directories: [],
+            files: [],
+            path: 'some/path/to/directory/oldName'
         };
-        var request = {
+        let existingDirectory = {
+            path: 'some/path/to/directory/newName'
+        };
+        let parentDirectory = {
+            addDirectory: _.noop,
+            extension: '.js',
+            path: 'some/path/to/directory'
+        };
+        let request = {
             body: {
                 isDirectory: true,
                 oldName: 'oldName',
                 newName: 'newName',
-                directoryPath: 'directory-path'
-            }
+                directoryPath: 'some/path/to/directory'
+            },
+            params: {}
+        };
+        let response = {
+            send: _.noop
+        };
+        let structure = {};
+
+        fileStructure.allDirectoriesByPath = {
+            'some/path/to/directory': parentDirectory,
+            'some/path/to/directory/oldName': directory,
+            'some/path/to/directory/newName': existingDirectory
         };
 
-        sinon.stub(fileStructureModiferMock, 'create', function (options) {
-            return options.preSave;
+        sinon.stub(directory, 'delete').returns(Promise.resolve());
+        sinon.stub(Directory.prototype, 'save').returns(Promise.resolve());
+        sinon.stub(fileStructure, 'getStructure').returns(structure);
+
+        return editItemPath.handler(request, response)
+        .then(() => {
+            let newDirectory = Directory.prototype.save.getCall(0).thisValue;
+            expect(newDirectory.name).to.equal('newName (1)');
+            expect(newDirectory.path).to.equal('some/path/to/directory/newName (1)');
+        })
+        .finally(() => {
+            Directory.prototype.save.restore();
+            fileStructure.getStructure.restore();
+
+            fileStructure.allDirectoriesByPath = oldAllDirectoriesByPath;
         });
-        sinon.stub(fileStructureUtilsMock, 'getExtension');
-        var findDirectory = sinon.stub(fileStructureUtilsMock, 'findDirectory');
-        findDirectory.onCall(0).returns(directory);
-        findDirectory.returns(null);
-        var transformsMock = {
-            test: _.noop
-        };
-        /* eslint-disable no-underscore-dangle */
-        var revertTransforms = editItemPath.__set__({
-            transforms: transformsMock
-        });
-        /* eslint-enable no-underscore-dangle */
-
-        editItemPath = editItemPath();
-        editItemPath(fileStructure, request);
-
-        expect(_.first(directory.files).path).to.be.undefined();
-
-        fileStructureModiferMock.create.restore();
-        fileStructureUtilsMock.getExtension.restore();
-        fileStructureUtilsMock.findDirectory.restore();
-        revertTransforms();
     });
 
-    it('should ensure the new path of the directory is unique:', function () {
-        var path = require('path');
+    it('should edit the path of all the sub-directories in a directory', () => {
+        let oldAllDirectoriesByPath = fileStructure.allDirectoriesByPath;
 
-        var fileStructure = { };
-        var directory = { };
-        var existingDirectoryWithSameName = { };
-        var request = {
+        let subdirectory = {
+            delete: _.noop,
+            directories: [],
+            files: [],
+            path: 'some/path/to/directory/oldName/subDirectory'
+        };
+        let directory = {
+            delete: _.noop,
+            directories: [subdirectory],
+            files: [],
+            path: 'some/path/to/directory/oldName'
+        };
+        let parentDirectory = {
+            addDirectory: _.noop,
+            extension: '.js',
+            path: 'some/path/to/directory'
+        };
+        let request = {
             body: {
                 isDirectory: true,
                 oldName: 'oldName',
                 newName: 'newName',
-                directoryPath: 'directory-path'
-            }
+                directoryPath: 'some/path/to/directory'
+            },
+            params: {}
+        };
+        let response = {
+            send: _.noop
+        };
+        let structure = {};
+
+        fileStructure.allDirectoriesByPath = {
+            'some/path/to/directory': parentDirectory,
+            'some/path/to/directory/oldName': directory
         };
 
-        sinon.stub(fileStructureModiferMock, 'create', function (options) {
-            return options.preSave;
+        sinon.stub(directory, 'delete').returns(Promise.resolve());
+        sinon.stub(Directory.prototype, 'save').returns(Promise.resolve());
+        sinon.stub(fileStructure, 'getStructure').returns(structure);
+        sinon.stub(subdirectory, 'delete').returns(Promise.resolve());
+
+        return editItemPath.handler(request, response)
+        .then(() => {
+            let newSubdirectory = Directory.prototype.save.getCall(1).thisValue;
+            expect(newSubdirectory.path).to.equal('some/path/to/directory/newName/subDirectory');
+
+            expect(Directory.prototype.save).to.have.been.called();
+            expect(subdirectory.delete).to.have.been.called();
+        })
+        .finally(() => {
+            Directory.prototype.save.restore();
+            fileStructure.getStructure.restore();
+
+            fileStructure.allDirectoriesByPath = oldAllDirectoriesByPath;
         });
-        sinon.stub(fileStructureUtilsMock, 'getExtension');
-        var findDirectory = sinon.stub(fileStructureUtilsMock, 'findDirectory');
-        findDirectory.onCall(0).returns(directory);
-        findDirectory.onCall(1).returns(existingDirectoryWithSameName);
-        findDirectory.returns(null);
-        var transformsMock = {
-            test: _.noop
-        };
-        /* eslint-disable no-underscore-dangle */
-        var revertTransforms = editItemPath.__set__({
-            transforms: transformsMock
-        });
-        /* eslint-enable no-underscore-dangle */
-
-        editItemPath = editItemPath();
-        editItemPath(fileStructure, request);
-
-        expect(directory.name).to.equal('newName (2)');
-        expect(directory.path).to.equal(path.join('directory-path', 'newName (2)'));
-
-        fileStructureModiferMock.create.restore();
-        fileStructureUtilsMock.getExtension.restore();
-        fileStructureUtilsMock.findDirectory.restore();
-        revertTransforms();
     });
 
-    it('should transform all the paths of all files within the directory:', function () {
-        var fileStructure = { };
-        var directory = {
-            allFiles: [{
-                name: 'file1'
-            }, {
-                name: 'file2'
-            }]
+    it('should edit the path of all the files in a directory', () => {
+        let oldAllDirectoriesByPath = fileStructure.allDirectoriesByPath;
+
+        let directory = {
+            addFile: _.noop,
+            delete: _.noop,
+            directories: [],
+            files: [],
+            path: 'some/path/to/directory/oldName',
+            type: 'components'
         };
-        var existingDirectoryWithSameName = { };
-        var request = {
+        let file = new File('some/path/to/directory/oldName/file', directory);
+        let parentDirectory = {
+            addDirectory: _.noop,
+            extension: '.js',
+            path: 'some/path/to/directory'
+        };
+        let request = {
             body: {
                 isDirectory: true,
                 oldName: 'oldName',
                 newName: 'newName',
-                directoryPath: 'directory-path'
-            }
+                directoryPath: 'some/path/to/directory'
+            },
+            params: {}
+        };
+        let response = {
+            send: _.noop
+        };
+        let structure = {};
+
+        directory.files.push(file);
+        fileStructure.allDirectoriesByPath = {
+            'some/path/to/directory': parentDirectory,
+            'some/path/to/directory/oldName': directory
         };
 
-        sinon.stub(fileStructureModiferMock, 'create', function (options) {
-            return options.preSave;
+        sinon.stub(directory, 'delete').returns(Promise.resolve());
+        sinon.stub(Directory.prototype, 'save').returns(Promise.resolve());
+        sinon.stub(File.prototype, 'delete').returns(Promise.resolve());
+        sinon.stub(File.prototype, 'save').returns(Promise.resolve());
+        sinon.stub(fileStructure, 'getStructure').returns(structure);
+        sinon.stub(transformers, 'components').returns(Promise.resolve());
+
+        return editItemPath.handler(request, response)
+        .then(() => {
+            expect(File.prototype.delete).to.have.been.called();
+            expect(File.prototype.save).to.have.been.called();
+
+            let newFile = File.prototype.save.getCall(0).thisValue;
+            expect(newFile.path).to.equal('some/path/to/directory/newName/file');
+        })
+        .finally(() => {
+            Directory.prototype.save.restore();
+            fileStructure.getStructure.restore();
+            File.prototype.delete.restore();
+            File.prototype.save.restore();
+            transformers.components.restore();
+
+            fileStructure.allDirectoriesByPath = oldAllDirectoriesByPath;
         });
-        sinon.stub(fileStructureUtilsMock, 'getExtension').returns('test');
-        var findDirectory = sinon.stub(fileStructureUtilsMock, 'findDirectory');
-        findDirectory.onCall(0).returns(directory);
-        findDirectory.onCall(1).returns(existingDirectoryWithSameName);
-        findDirectory.returns(null);
-        var transformsMock = {
-            test: _.noop
-        };
-        /* eslint-disable no-underscore-dangle */
-        var revertTransforms = editItemPath.__set__({
-            transforms: transformsMock
-        });
-        /* eslint-enable no-underscore-dangle */
-        var transform = sinon.spy(transformsMock, 'test');
-
-        editItemPath = editItemPath();
-        editItemPath(fileStructure, request);
-
-        expect(transform.callCount).to.equal(2);
-
-        fileStructureModiferMock.create.restore();
-        fileStructureUtilsMock.getExtension.restore();
-        fileStructureUtilsMock.findDirectory.restore();
-        revertTransforms();
     });
 
-    it('should rename a file:', function () {
-        var fileStructure = { };
-        var directory = { };
-        var file = { };
-        var request = {
+    it('should edit the name of a file', () => {
+        let oldAllDirectoriesByPath = fileStructure.allDirectoriesByPath;
+        let oldAllFilesByPath = fileStructure.allFilesByPath;
+
+        let ast = {};
+        let content = {};
+        let directory = {
+            addFile: _.noop,
+            directories: [],
+            extension: '.js',
+            files: [],
+            path: 'some/path/to/directory',
+            type: 'components'
+        };
+        let file = new File('some/path/to/directory/oldName.js', directory);
+        let request = {
             body: {
                 oldName: 'oldName',
                 newName: 'newName',
-                directoryPath: 'directory-path'
-            }
+                directoryPath: 'some/path/to/directory'
+            },
+            params: {}
+        };
+        let response = {
+            send: _.noop
+        };
+        let tokens = {};
+        let structure = {};
+
+        directory.files.push(file);
+        file.ast = ast;
+        file.content = content;
+        file.tokens = tokens;
+        fileStructure.allDirectoriesByPath = {
+            'some/path/to/directory': directory
+        };
+        fileStructure.allFilesByPath = {
+            'some/path/to/directory/oldName.js': file
         };
 
-        sinon.stub(fileStructureModiferMock, 'create', function (options) {
-            return options.preSave;
+        sinon.stub(File.prototype, 'delete').returns(Promise.resolve());
+        sinon.stub(File.prototype, 'save').returns(Promise.resolve());
+        sinon.stub(fileStructure, 'getStructure').returns(structure);
+        sinon.stub(transformers, 'components').returns(Promise.resolve());
+
+        return editItemPath.handler(request, response)
+        .then(() => {
+            expect(File.prototype.delete).to.have.been.called();
+            expect(File.prototype.save).to.have.been.called();
+
+            let newFile = File.prototype.save.getCall(0).thisValue;
+            expect(newFile.name).to.equal('newName');
+            expect(newFile.path).to.equal('some/path/to/directory/newName.js');
+            expect(newFile.ast).to.equal(ast);
+            expect(newFile.content).to.equal(content);
+            expect(newFile.tokens).to.equal(tokens);
+        })
+        .finally(() => {
+            fileStructure.getStructure.restore();
+            File.prototype.delete.restore();
+            File.prototype.save.restore();
+            transformers.components.restore();
+
+            fileStructure.allFilesByPath = oldAllFilesByPath;
+            fileStructure.allDirectoriesByPath = oldAllDirectoriesByPath;
         });
-        sinon.stub(fileStructureUtilsMock, 'getExtension').returns('test');
-        sinon.stub(fileStructureUtilsMock, 'findDirectory').returns(directory);
-        var findFile = sinon.stub(fileStructureUtilsMock, 'findFile');
-        findFile.onCall(0).returns(file);
-        findFile.returns(null);
-        var transformsMock = {
-            test: _.noop
-        };
-        /* eslint-disable no-underscore-dangle */
-        var revertTransforms = editItemPath.__set__({
-            transforms: transformsMock
-        });
-        /* eslint-enable no-underscore-dangle */
-
-        editItemPath = editItemPath();
-        editItemPath(fileStructure, request);
-
-        expect(file.name).to.equal('newName');
-
-        fileStructureModiferMock.create.restore();
-        fileStructureUtilsMock.getExtension.restore();
-        fileStructureUtilsMock.findDirectory.restore();
-        fileStructureUtilsMock.findFile.restore();
-        revertTransforms();
     });
 
-    it('should ensure the new path of the directory is unique:', function () {
-        var fileStructure = { };
-        var directory = { };
-        var file = { };
-        var existingFileWithSameName = { };
-        var request = {
+    it('shouldn\'t overwrite an existing file with the given new name', () => {
+        let oldAllDirectoriesByPath = fileStructure.allDirectoriesByPath;
+        let oldAllFilesByPath = fileStructure.allFilesByPath;
+
+        let directory = {
+            addFile: _.noop,
+            directories: [],
+            extension: '.js',
+            files: [],
+            path: 'some/path/to/directory',
+            type: 'components'
+        };
+        let existingFile = new File('some/path/to/directory/newName.js', directory);
+        let file = new File('some/path/to/directory/oldName.js', directory);
+        let request = {
             body: {
                 oldName: 'oldName',
                 newName: 'newName',
-                directoryPath: 'directory-path'
-            }
+                directoryPath: 'some/path/to/directory'
+            },
+            params: {}
+        };
+        let response = {
+            send: _.noop
+        };
+        let structure = {};
+
+        directory.files.push(existingFile);
+        directory.files.push(file);
+        fileStructure.allDirectoriesByPath = {
+            'some/path/to/directory': directory
+        };
+        fileStructure.allFilesByPath = {
+            'some/path/to/directory/newName.js': existingFile,
+            'some/path/to/directory/oldName.js': file
         };
 
-        sinon.stub(fileStructureModiferMock, 'create', function (options) {
-            return options.preSave;
+        sinon.stub(File.prototype, 'delete').returns(Promise.resolve());
+        sinon.stub(File.prototype, 'save').returns(Promise.resolve());
+        sinon.stub(fileStructure, 'getStructure').returns(structure);
+        sinon.stub(transformers, 'components').returns(Promise.resolve());
+
+        return editItemPath.handler(request, response)
+        .then(() => {
+            let newFile = File.prototype.save.getCall(0).thisValue;
+            expect(newFile.name).to.equal('newName (1)');
+            expect(newFile.path).to.equal('some/path/to/directory/newName (1).js');
+        })
+        .finally(() => {
+            fileStructure.getStructure.restore();
+            File.prototype.delete.restore();
+            File.prototype.save.restore();
+            transformers.components.restore();
+
+            fileStructure.allFilesByPath = oldAllFilesByPath;
+            fileStructure.allDirectoriesByPath = oldAllDirectoriesByPath;
         });
-        sinon.stub(fileStructureUtilsMock, 'getExtension').returns('test');
-        sinon.stub(fileStructureUtilsMock, 'findDirectory').returns(directory);
-        var findFile = sinon.stub(fileStructureUtilsMock, 'findFile');
-        findFile.onCall(0).returns(file);
-        findFile.onCall(1).returns(existingFileWithSameName);
-        findFile.returns(null);
-        var transformsMock = {
-            test: _.noop
-        };
-        /* eslint-disable no-underscore-dangle */
-        var revertTransforms = editItemPath.__set__({
-            transforms: transformsMock
-        });
-        /* eslint-enable no-underscore-dangle */
-
-        editItemPath = editItemPath();
-        editItemPath(fileStructure, request);
-
-        expect(file.name).to.equal('newName (2)');
-
-        fileStructureModiferMock.create.restore();
-        fileStructureUtilsMock.getExtension.restore();
-        fileStructureUtilsMock.findDirectory.restore();
-        fileStructureUtilsMock.findFile.restore();
-        revertTransforms();
     });
 
-    it('should move a file:', function () {
-        var fileStructure = { };
-        var file = {
-            name: 'file'
+    it('should update the directory path when moving a file', () => {
+        let oldAllDirectoriesByPath = fileStructure.allDirectoriesByPath;
+        let oldAllFilesByPath = fileStructure.allFilesByPath;
+
+        let newDirectory = {
+            addFile: _.noop,
+            path: 'some/path/to/new-directory'
         };
-        var oldDirectory = {
-            files: [file]
+        let oldDirectory = {
+            addFile: _.noop,
+            extension: '.js',
+            path: 'some/path/to/old-directory',
+            type: 'components'
         };
-        var newDirectory = {
-            files: []
-        };
-        var request = {
+        let file = new File('some/path/to/old-directory/name.js', oldDirectory);
+        let request = {
             body: {
                 name: 'name',
-                oldDirectoryPath: 'old-directory-path',
-                newDirectoryPath: 'new-directory-path'
-            }
+                oldDirectoryPath: 'some/path/to/old-directory',
+                newDirectoryPath: 'some/path/to/new-directory'
+            },
+            params: {}
+        };
+        let response = {
+            send: _.noop
+        };
+        let structure = {};
+
+        fileStructure.allDirectoriesByPath = {
+            'some/path/to/new-directory': newDirectory,
+            'some/path/to/old-directory': oldDirectory
+        };
+        fileStructure.allFilesByPath = {
+            'some/path/to/old-directory/name.js': file
         };
 
-        sinon.stub(fileStructureModiferMock, 'create', function (options) {
-            return options.preSave;
+        sinon.stub(File.prototype, 'delete').returns(Promise.resolve());
+        sinon.stub(File.prototype, 'save').returns(Promise.resolve());
+        sinon.stub(fileStructure, 'getStructure').returns(structure);
+        sinon.stub(transformers, 'components').returns(Promise.resolve());
+
+        return editItemPath.handler(request, response)
+        .then(() => {
+            expect(File.prototype.delete).to.have.been.called();
+            expect(File.prototype.save).to.have.been.called();
+
+            let newFile = File.prototype.save.getCall(0).thisValue;
+            expect(newFile.path).to.equal('some/path/to/new-directory/name.js');
+        })
+        .finally(() => {
+            fileStructure.getStructure.restore();
+            File.prototype.delete.restore();
+            File.prototype.save.restore();
+            transformers.components.restore();
+
+            fileStructure.allFilesByPath = oldAllFilesByPath;
+            fileStructure.allDirectoriesByPath = oldAllDirectoriesByPath;
         });
-        sinon.stub(fileStructureUtilsMock, 'getExtension').returns('test');
-        var findDirectory = sinon.stub(fileStructureUtilsMock, 'findDirectory');
-        findDirectory.onCall(0).returns(oldDirectory);
-        findDirectory.onCall(1).returns(newDirectory);
-        sinon.stub(fileStructureUtilsMock, 'findFile').returns(file);
-        var transformsMock = {
-            test: _.noop
-        };
-        /* eslint-disable no-underscore-dangle */
-        var revertTransforms = editItemPath.__set__({
-            transforms: transformsMock
-        });
-        /* eslint-enable no-underscore-dangle */
-
-        editItemPath = editItemPath();
-        editItemPath(fileStructure, request);
-
-        expect(oldDirectory.files.length).to.equal(0);
-        expect(_.last(newDirectory.files)).to.equal(file);
-
-        fileStructureModiferMock.create.restore();
-        fileStructureUtilsMock.getExtension.restore();
-        fileStructureUtilsMock.findDirectory.restore();
-        fileStructureUtilsMock.findFile.restore();
-        revertTransforms();
     });
 
-    it('should update references to the old name for a Component file:', function () {
-        var step = {
-            name: 'step',
-            path: '/step_definitions/step.step.js',
-            ast: {
-                type: 'Program',
-                body: [{
-                    type: 'ExpressionStatement',
-                    expression: {
-                        type: 'AssignmentExpression',
-                        operator: '=',
-                        left: {
-                            type: 'MemberExpression',
-                            computed: false,
-                            object: {
-                                type: 'Identifier',
-                                name: 'module'
-                            },
-                            property: {
-                                type: 'Identifier',
-                                name: 'exports'
-                            }
-                        },
-                        right: {
-                            type: 'FunctionExpression',
-                            id: null,
-                            params: [],
-                            defaults: [],
-                            body: {
-                                type: 'BlockStatement',
-                                body: [{
-                                    type: 'VariableDeclaration',
-                                    declarations: [{
-                                        type: 'VariableDeclarator',
-                                        id: {
-                                            type: 'Identifier',
-                                            name: 'OldComponent'
-                                        },
-                                        init: {
-                                            type: 'CallExpression',
-                                            callee: {
-                                                type: 'Identifier',
-                                                name: 'require'
-                                            },
-                                            arguments: [{
-                                                type: 'Literal',
-                                                value: '../components/Old Component.component.js',
-                                                raw: '\'../components/Old Component.component.js\''
-                                            }]
-                                        }
-                                    }, {
-                                        type: 'VariableDeclarator',
-                                        id: {
-                                            type: 'Identifier',
-                                            name: 'oldComponent'
-                                        },
-                                        init: {
-                                            type: 'NewExpression',
-                                            callee: {
-                                                type: 'Identifier',
-                                                name: 'OldComponent'
-                                            },
-                                            arguments: []
-                                        }
-                                    }],
-                                    kind: 'var'
-                                }]
-                            },
-                            generator: false,
-                            expression: false
-                        }
-                    }
-                }],
-                comments: [{
-                    value: JSON.stringify({
-                        name: 'step',
-                        components: [{
-                            name: 'Old Component'
-                        }],
-                        mockData: []
-                    })
-                }]
-            }
-        };
-        var component = {
-            name: 'oldMockData',
-            path: '/components/Old Component.component.js',
-            ast: {
-                type: 'Program',
-                body: [{
-                    type: 'ExpressionStatement',
-                    expression: {
-                        type: 'AssignmentExpression',
-                        operator: '=',
-                        left: {
-                            type: 'MemberExpression',
-                            computed: false,
-                            object: {
-                                type: 'Identifier',
-                                name: 'module'
-                            },
-                            property: {
-                                type: 'Identifier',
-                                name: 'exports'
-                            }
-                        },
-                        right: {
-                            type: 'CallExpression',
-                            callee: {
-                                type: 'FunctionExpression',
-                                id: null,
-                                params: [],
-                                defaults: [],
-                                body: {
-                                    type: 'BlockStatement',
-                                    body: [{
-                                        type: 'VariableDeclaration',
-                                        declarations: [{
-                                            type: 'VariableDeclarator',
-                                            id: {
-                                                type: 'Identifier',
-                                                name: 'OldComponent'
-                                            },
-                                            init: {
-                                                type: 'FunctionExpression',
-                                                id: {
-                                                    type: 'Identifier',
-                                                    name: 'OldComponent'
-                                                },
-                                                params: [],
-                                                defaults: [],
-                                                body: {
-                                                    type: 'BlockStatement',
-                                                    body: []
-                                                },
-                                                generator: false,
-                                                expression: false
-                                            }
-                                        }],
-                                        kind: 'var'
-                                    }, {
-                                        type: 'ReturnStatement',
-                                        argument: {
-                                            type: 'Identifier',
-                                            name: 'OldComponent'
-                                        }
-                                    }]
-                                },
-                                generator: false,
-                                expression: false
-                            },
-                            arguments: []
-                        }
-                    }
-                }],
-                comments: [{
-                    value: JSON.stringify({
-                        name: 'Old Component',
-                        elements: [],
-                        actions: []
-                    })
-                }]
-            }
-        };
-        var directory = {
-            files: [step, component]
-        };
-        var fileStructure = {
-            allFiles: [step, component],
-            usages: {
-                '/components/Old Component.component.js': ['/step_definitions/step.step.js']
-            }
-        };
-        var request = {
-            body: {
-                oldName: 'Old Component',
-                newName: 'New Component',
-                directoryPath: '/components'
-            }
-        };
-
-        sinon.stub(fileStructureModiferMock, 'create', function (options) {
-            return options.preSave;
-        });
-        sinon.stub(fileStructureUtilsMock, 'getExtension').returns('.component.js');
-        sinon.stub(fileStructureUtilsMock, 'findDirectory').returns(directory);
-        var findFile = sinon.stub(fileStructureUtilsMock, 'findFile');
-        findFile.onCall(0).returns(component);
-        findFile.onCall(1).returns(null);
-        findFile.returns(step);
-
-        editItemPath = editItemPath();
-        editItemPath(fileStructure, request);
-
-        expect(component.ast.body[0].expression.right.callee.body.body[0].declarations[0].id.name).to.equal('NewComponent');
-        expect(component.ast.body[0].expression.right.callee.body.body[0].declarations[0].init.id.name).to.equal('NewComponent');
-        expect(component.ast.body[0].expression.right.callee.body.body[1].argument.name).to.equal('NewComponent');
-        expect(JSON.parse(component.ast.comments[0].value).name).to.equal('New Component');
-
-        fileStructureModiferMock.create.restore();
-        fileStructureUtilsMock.getExtension.restore();
-        fileStructureUtilsMock.findDirectory.restore();
-        fileStructureUtilsMock.findFile.restore();
-    });
-
-    it('should update references to the old name for a Feature file:', function () {
-        var os = require('os');
-
-        var fileStructure = { };
-        var feature = {
-            name: 'oldFeature',
-            content: 'Feature: oldFeature' + os.EOL
-        };
-        var directory = {
-            files: [feature]
-        };
-        var request = {
-            body: {
-                oldName: 'oldFeature',
-                newName: 'newFeature',
-                directoryPath: '/some/path'
-            }
-        };
-
-        sinon.stub(fileStructureModiferMock, 'create', function (options) {
-            return options.preSave;
-        });
-        sinon.stub(fileStructureUtilsMock, 'getExtension').returns('.feature');
-        sinon.stub(fileStructureUtilsMock, 'findDirectory').returns(directory);
-        var findFile = sinon.stub(fileStructureUtilsMock, 'findFile');
-        findFile.onCall(0).returns(feature);
-        findFile.onCall(1).returns(null);
-
-        editItemPath = editItemPath();
-        editItemPath(fileStructure, request);
-
-        expect(feature.content).to.equal('Feature: newFeature' + os.EOL);
-
-        fileStructureModiferMock.create.restore();
-        fileStructureUtilsMock.getExtension.restore();
-        fileStructureUtilsMock.findDirectory.restore();
-        fileStructureUtilsMock.findFile.restore();
-    });
-
-    it('should update references to the old name for a Mock Data file:', function () {
-        var step = {
-            name: 'step',
-            path: '/step_definitions/step.step.js',
-            ast: {
-                type: 'Program',
-                body: [{
-                    type: 'ExpressionStatement',
-                    expression: {
-                        type: 'AssignmentExpression',
-                        operator: '=',
-                        left: {
-                            type: 'MemberExpression',
-                            computed: false,
-                            object: {
-                                type: 'Identifier',
-                                name: 'module'
-                            },
-                            property: {
-                                type: 'Identifier',
-                                name: 'exports'
-                            }
-                        },
-                        right: {
-                            type: 'FunctionExpression',
-                            id: null,
-                            params: [],
-                            defaults: [],
-                            body: {
-                                type: 'BlockStatement',
-                                body: [{
-                                    type: 'VariableDeclaration',
-                                    declarations: [{
-                                        type: 'VariableDeclarator',
-                                        id: {
-                                            type: 'Identifier',
-                                            name: 'oldMockData'
-                                        },
-                                        init: {
-                                            type: 'CallExpression',
-                                            callee: {
-                                                type: 'Identifier',
-                                                name: 'require'
-                                            },
-                                            arguments: [{
-                                                type: 'Literal',
-                                                value: '../mock_data/oldMockData.mock.json'
-                                            }]
-                                        }
-                                    }],
-                                    kind: 'var'
-                                },
-                                {
-                                    type: 'ExpressionStatement',
-                                    expression: {
-                                        type: 'CallExpression',
-                                        callee: {
-                                            type: 'Identifier',
-                                            name: 'oldMockData'
-                                        },
-                                        arguments: []
-                                    }
-                                }]
-                            },
-                            generator: false,
-                            expression: false
-                        }
-                    }
-                }],
-                comments: [{
-                    value: JSON.stringify({
-                        name: 'step',
-                        components: [],
-                        mockData: [{
-                            name: 'oldMockData'
-                        }]
-                    })
-                }]
-            }
-        };
-        var mockData = {
-            name: 'oldMockData',
-            path: '/mock_data/oldMockData.mock.json',
-            content: '{}'
-        };
-        var directory = {
-            files: [step, mockData]
-        };
-        var fileStructure = {
-            allFiles: [step, mockData],
-            usages: {
-                '/mock_data/oldMockData.mock.json': ['/step_definitions/step.step.js']
-            }
-        };
-        var request = {
-            body: {
-                oldName: 'oldMockData',
-                newName: 'newMockData',
-                directoryPath: '/mock_data'
-            }
-        };
-
-        sinon.stub(fileStructureModiferMock, 'create', function (options) {
-            return options.preSave;
-        });
-        sinon.stub(fileStructureUtilsMock, 'getExtension').returns('.mock.json');
-        sinon.stub(fileStructureUtilsMock, 'findDirectory').returns(directory);
-        var findFile = sinon.stub(fileStructureUtilsMock, 'findFile');
-        findFile.onCall(0).returns(mockData);
-        findFile.onCall(1).returns(null);
-        findFile.returns(step);
-
-        editItemPath = editItemPath();
-        editItemPath(fileStructure, request);
-
-        expect(step.ast.body[0].expression.right.body.body[0].declarations[0].init.arguments[0].value).to.equal('../mock_data/newMockData.mock.json');
-        expect(step.ast.body[0].expression.right.body.body[1].expression.callee.name).to.equal('newMockData');
-        expect(JSON.parse(step.ast.comments[0].value).mockData[0].name).to.equal('newMockData');
-
-        fileStructureModiferMock.create.restore();
-        fileStructureUtilsMock.getExtension.restore();
-        fileStructureUtilsMock.findDirectory.restore();
-        fileStructureUtilsMock.findFile.restore();
-    });
-
-    it('should throw an `UnknownOperationError` if it gets an invalid request:', function () {
-        var fileStructure = {};
-        var request = {
+    it('should throw an error if it gets options that it doesn\'t understand', () => {
+        let request = {
             body: { }
         };
+        let response = { };
 
-        sinon.stub(fileStructureModiferMock, 'create', function (options) {
-            return options.preSave;
+        sinon.stub(errorHandler, 'handler');
+
+        return editItemPath.handler(request, response)
+        .then(() => {
+            expect(errorHandler.handler).to.have.been.calledWith(response, new TractorError('Unknown operation', 500));
+        })
+        .finally(() => {
+            errorHandler.handler.restore();
         });
-
-        expect(function () {
-            editItemPath = editItemPath();
-            editItemPath(fileStructure, request);
-        }).to.throw('Unknown operation');
-
-        fileStructureModiferMock.create.restore();
     });
 });

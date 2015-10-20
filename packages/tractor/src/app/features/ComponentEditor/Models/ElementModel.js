@@ -13,10 +13,12 @@ require('../../../Core/Services/StringToLiteralService');
 require('./FilterModel');
 
 var createElementModelConstructor = function (
-    ASTCreatorService,
-    StringToLiteralService,
+    astCreatorService,
+    stringToLiteralService,
     FilterModel
 ) {
+    var ast = astCreatorService;
+
     var ElementModel = function ElementModel (component) {
         Object.defineProperties(this, {
             component: {
@@ -61,9 +63,13 @@ var createElementModelConstructor = function (
         }
     };
 
-    ElementModel.prototype.removeFilter = function (filter) {
-        _.remove(this.filters, filter);
-        _.remove(this.sortableFilters, filter);
+    ElementModel.prototype.removeFilter = function (toRemove) {
+        _.remove(this.filters, function (filter) {
+            return filter === toRemove;
+        });
+        _.remove(this.sortableFilters, function (sortableFilter) {
+            return sortableFilter === toRemove;
+        });
     };
 
     ElementModel.prototype.getAllVariableNames = function () {
@@ -151,56 +157,75 @@ var createElementModelConstructor = function (
     return ElementModel;
 
     function toAST () {
-        var ast = ASTCreatorService;
+        var element = ast.identifier(this.variableName);
+        var filters = filtersAST.call(this);
 
-        var elementCallExpression;
-        var elementIdentifier = ast.identifier('element');
-        var allIdentifier = ast.identifier('all');
-        _.each(this.filters, function (filter, index) {
-            var elementCallExpressionCallee;
-            if (elementCallExpression) {
-                var previousFilter = this.filters[index - 1];
-                if (previousFilter.isAll) {
-                    var getIdentifier = ast.identifier('get');
-                    var locatorLiteral = StringToLiteralService.toLiteral(filter.locator);
-                    if (_.isNumber(locatorLiteral)) {
-                        elementCallExpressionCallee = ast.memberExpression(elementCallExpression, getIdentifier);
-                        elementCallExpression = ast.callExpression(elementCallExpressionCallee, [filter.allAst]);
-                    } else {
-                        var filterIdentifier = ast.identifier('filter');
-                        elementCallExpressionCallee = ast.memberExpression(elementCallExpression, filterIdentifier);
-                        elementCallExpression = ast.callExpression(elementCallExpressionCallee, [filter.allAst]);
-                        elementCallExpressionCallee = ast.memberExpression(elementCallExpression, getIdentifier);
-                        elementCallExpression = ast.callExpression(elementCallExpressionCallee, [ast.literal(0)]);
-                    }
-                } else {
-                    if (filter.isAll) {
-                        elementCallExpressionCallee = ast.memberExpression(elementCallExpression, allIdentifier);
-                    } else {
-                        elementCallExpressionCallee = ast.memberExpression(elementCallExpression, elementIdentifier);
-                    }
-                    elementCallExpression = ast.callExpression(elementCallExpressionCallee, [filter.ast]);
-                }
+        var template = 'this.<%= element %> = <%= filters %>;';
+
+        return ast.expression(template, {
+            element: element,
+            filters: filters
+        });
+    }
+
+    function filtersAST () {
+        var template = '';
+        var fragments = {};
+        _.reduce(this.filters, function (previousFilter, filter, index) {
+            var filterTemplate = '<%= filter' + index + ' %>';
+            if (!template.length) {
+                template += filterAST(filter, filterTemplate);
             } else {
-                if (filter.isAll) {
-                    elementCallExpressionCallee = ast.memberExpression(elementIdentifier, allIdentifier);
-                } else {
-                    elementCallExpressionCallee = elementIdentifier;
-                }
-                elementCallExpression = ast.callExpression(elementCallExpressionCallee, [filter.ast]);
+                template += filterAfterFilterAST(previousFilter, filter, filterTemplate);
             }
-        }, this);
 
-        var thisElementMemberExpression = ast.memberExpression(ast.thisExpression(), ast.identifier(this.variableName));
-        var elementAssignmentExpression = ast.assignmentExpression(thisElementMemberExpression, ast.AssignmentOperators.ASSIGNMENT, elementCallExpression);
-        return ast.expressionStatement(elementAssignmentExpression);
+            fragments['filter' + index] = filter.ast;
+
+            return filter;
+        }, {});
+
+        return ast.expression(template, fragments);
+    }
+
+    function filterAST (filter, filterTemplate) {
+        if (filter.isGroup) {
+            return 'element.all(' + filterTemplate + ')';
+        } else {
+            return 'element(' + filterTemplate + ')';
+        }
+    }
+
+    function filterAfterFilterAST (previousFilter, filter, filterTemplate) {
+        if (previousFilter.isGroup) {
+            filter.isNested = true;
+            return filterAfterGroupFilter(filter, filterTemplate);
+        } else {
+            return filterAfterSingleFilter(filter, filterTemplate);
+        }
+    }
+
+    function filterAfterGroupFilter (filter, filterTemplate) {
+        var locatorLiteral = stringToLiteralService.toLiteral(filter.locator);
+        if (_.isNumber(locatorLiteral)) {
+            return '.get(' + filterTemplate + ')';
+        } else {
+            return '.filter(' + filterTemplate + ').get(0)';
+        }
+    }
+
+    function filterAfterSingleFilter (filter, filterTemplate) {
+        if (filter.isGroup) {
+            return '.all(' + filterTemplate + ')';
+        } else {
+            return '.element(' + filterTemplate + ')';
+        }
     }
 };
 
 ComponentEditor.factory('ElementModel', function (
-    ASTCreatorService,
-    StringToLiteralService,
+    astCreatorService,
+    stringToLiteralService,
     FilterModel
 ) {
-    return createElementModelConstructor(ASTCreatorService, StringToLiteralService, FilterModel);
+    return createElementModelConstructor(astCreatorService, stringToLiteralService, FilterModel);
 });

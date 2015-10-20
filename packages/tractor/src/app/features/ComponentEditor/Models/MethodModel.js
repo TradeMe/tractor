@@ -9,7 +9,9 @@ var ComponentEditor = require('../ComponentEditor');
 // Dependencies:
 require('./ArgumentModel');
 
-var createMethodModelConstructor = function (ArgumentModel) {
+var createMethodModelConstructor = function (
+    ArgumentModel
+) {
     var MethodModel = function MethodModel (interaction, method) {
         this.arguments = getArguments.call(this, method);
 
@@ -50,6 +52,8 @@ var createMethodModelConstructor = function (ArgumentModel) {
     }
 };
 
-ComponentEditor.factory('MethodModel', function (ArgumentModel) {
+ComponentEditor.factory('MethodModel', function (
+    ArgumentModel
+) {
     return createMethodModelConstructor(ArgumentModel);
 });

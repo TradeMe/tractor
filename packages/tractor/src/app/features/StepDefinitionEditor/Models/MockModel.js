@@ -10,7 +10,7 @@ var StepDefinitionEditor = require('../StepDefinitionEditor');
 require('../../../Core/Services/ASTCreatorService');
 
 var createMockModelConstructor = function (
-    ASTCreatorService
+    astCreatorService
 ) {
     var MockModel = function MockModel (step) {
         Object.defineProperties(this, {
@@ -37,7 +37,7 @@ var createMockModelConstructor = function (
     return MockModel;
 
     function toAST () {
-        var ast = ASTCreatorService;
+        var ast = astCreatorService;
 
         var data = {
             url: ast.literal(new RegExp(this.url))
@@ -55,7 +55,7 @@ var createMockModelConstructor = function (
 };
 
 StepDefinitionEditor.factory('MockModel', function (
-    ASTCreatorService
+    astCreatorService
 ) {
-    return createMockModelConstructor(ASTCreatorService);
+    return createMockModelConstructor(astCreatorService);
 });

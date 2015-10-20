@@ -10,7 +10,9 @@ var ComponentEditor = require('../ComponentEditor');
 var camelcase = require('change-case').camel;
 require('../../../Core/Services/ASTCreatorService');
 
-var createParameterModelConstructor = function (ASTCreatorService) {
+var createParameterModelConstructor = function (
+    astCreatorService
+) {
     var ParameterModel = function ParameterModel (action) {
         Object.defineProperties(this, {
             action: {
@@ -53,11 +55,13 @@ var createParameterModelConstructor = function (ASTCreatorService) {
     return ParameterModel;
 
     function toAST () {
-        var ast = ASTCreatorService;
+        var ast = astCreatorService;
         return ast.identifier(this.variableName);
     }
 };
 
-ComponentEditor.factory('ParameterModel', function (ASTCreatorService) {
-    return createParameterModelConstructor(ASTCreatorService);
+ComponentEditor.factory('ParameterModel', function (
+    astCreatorService
+) {
+    return createParameterModelConstructor(astCreatorService);
 });

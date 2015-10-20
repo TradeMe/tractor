@@ -1,4 +1,4 @@
-<tractor-file-tree model="componentEditor" type="component"></tractor-file-tree>
+<tractor-file-tree model="componentEditor" type="components"></tractor-file-tree>
 <tractor-panel-handle panel-name="component-file-tree"></tractor-panel-handle>
 <form class="file" name="file-editor" novalidate
     ng-submit="componentEditor.showErrors() && componentEditor.saveFile()">
@@ -79,7 +79,7 @@
                                              as-sortable-item-handle>
                                         </div>
 
-                                        <tractor-select ng-if="!domElement.filters[$index].isAll"
+                                        <tractor-select ng-if="!domElement.filters[$index].isGroup"
                                                         label="Type"
                                                         model="filter">
                                         </tractor-select>

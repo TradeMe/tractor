@@ -1,149 +1,104 @@
-/* global describe:true, beforeEach:true, afterEach:true, it:true */
+/* global describe:true, it:true */
 'use strict';
 
 // Utilities:
-var _ = require('lodash');
-
-// Test Utilities:
-var chai = require('chai');
-var dirtyChai = require('dirty-chai');
-var rewire = require('rewire');
-var sinon = require('sinon');
-var sinonChai = require('sinon-chai');
+import chai from 'chai';
+import Promise from 'bluebird';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 
 // Test setup:
-var expect = chai.expect;
-chai.use(dirtyChai);
+const expect = chai.expect;
 chai.use(sinonChai);
 
+// Dependencies:
+import errorHandler from '../errors/error-handler';
+import fileStructure from '../file-structure';
+import getFileStructure from './get-file-structure';
+import TractorError from '../errors/TractorError';
+
 // Under test:
-var copyFile;
+import copyFile from './copy-file';
 
-// Mocks:
-var fileStructureModiferMock = require('../utils/file-structure-modifier.mock');
-var fileStructureUtilsMock = require('../utils/file-structure-utils/file-structure-utils.mock');
-var revert;
+describe('server/api: copy-file:', () => {
+    it('should copy a file', () => {
+        let path = 'some/path';
+        let request = {
+            body: { path }
+        };
 
-describe('server/api: copy-file:', function () {
-    beforeEach(function () {
-        copyFile = rewire('./copy-file');
-        /* eslint-disable no-underscore-dangle */
-        revert = copyFile.__set__({
-            fileStructureModifier: fileStructureModiferMock,
-            fileStructureUtils: fileStructureUtilsMock
+        sinon.stub(fileStructure, 'copyFile').returns(Promise.resolve());
+        sinon.stub(getFileStructure, 'handler').returns(Promise.resolve());
+
+        return copyFile.handler(request)
+        .then(() => {
+            expect(fileStructure.copyFile).to.have.been.calledWith(path);
+        })
+        .finally(() => {
+            fileStructure.copyFile.restore();
+            getFileStructure.handler.restore();
         });
-        /* eslint-enable no-underscore-dangle */
     });
 
-    afterEach(function () {
-        revert();
+    it('should respond to the client with the current file structure', () => {
+        let path = 'some/path';
+        let request = {
+            body: { path }
+        };
+        let response = {};
+
+        sinon.stub(fileStructure, 'copyFile').returns(Promise.resolve());
+        sinon.stub(getFileStructure, 'handler').returns(Promise.resolve());
+
+        return copyFile.handler(request, response)
+        .then(() => {
+            expect(getFileStructure.handler).to.have.been.calledWith(request, response);
+        })
+        .finally(() => {
+            fileStructure.copyFile.restore();
+            getFileStructure.handler.restore();
+        });
     });
 
-    it('should create a copy of a file:', function () {
-        var fileStructure = {
-            allFiles: []
+    it('should handle known TractorErrors', () => {
+        let error = new TractorError();
+        let path = 'some/path';
+        let request = {
+            body: { path }
         };
-        var directory = {
-            files: []
-        };
-        var file = {
-            name: 'file',
-            content: 'content'
-        };
-        var request = {
-            body: {}
-        };
+        let response = { };
 
-        sinon.stub(fileStructureModiferMock, 'create', function (options) {
-            return options.preSave;
+        sinon.stub(fileStructure, 'copyFile').returns(Promise.reject(error));
+        sinon.stub(errorHandler, 'handler');
+
+        return copyFile.handler(request, response)
+        .then(() => {
+            expect(errorHandler.handler).to.have.been.calledWith(response, error);
+        })
+        .finally(() => {
+            fileStructure.copyFile.restore();
+            errorHandler.handler.restore();
         });
-        sinon.stub(fileStructureUtilsMock, 'findDirectory').returns(directory);
-        sinon.stub(fileStructureUtilsMock, 'findFile').returns(file);
-
-        copyFile = copyFile();
-        copyFile(fileStructure, request);
-
-        expect(directory.files.length).to.equal(1);
-        expect(fileStructure.allFiles.length).to.equal(1);
-        var copy = _.last(directory.files);
-        expect(copy).to.equal(_.last(fileStructure.allFiles));
-        expect(copy.name).to.equal('file (copy)');
-        expect(copy.content).to.equal('content');
-
-        fileStructureModiferMock.create.restore();
-        fileStructureUtilsMock.findDirectory.restore();
-        fileStructureUtilsMock.findFile.restore();
     });
 
-    it('should always make a unique name for the copy:', function () {
-        var fileStructure = {
-            allFiles: []
+    it('should handle unknown errors', () => {
+        let error = new Error();
+        let path = 'some/path';
+        let request = {
+            body: { path }
         };
-        var directory = {
-            files: [{
-                name: 'file (copy)'
-            }]
-        };
-        var file = {
-            name: 'file'
-        };
-        var request = {
-            body: {}
-        };
+        let response = { };
 
-        sinon.stub(fileStructureModiferMock, 'create', function (options) {
-            return options.preSave;
+        sinon.stub(fileStructure, 'copyFile').returns(Promise.reject(error));
+        sinon.stub(errorHandler, 'handler');
+
+        return copyFile.handler(request, response)
+        .then(() => {
+            expect(errorHandler.handler).to.have.been.calledWith(response, new TractorError('Could not copy "some/path"', 500));
+        })
+        .finally(() => {
+            fileStructure.copyFile.restore();
+            errorHandler.handler.restore();
         });
-        sinon.stub(fileStructureUtilsMock, 'findDirectory').returns(directory);
-        sinon.stub(fileStructureUtilsMock, 'findFile').returns(file);
-
-        copyFile = copyFile();
-        copyFile(fileStructure, request);
-
-        var copy = _.last(directory.files);
-        expect(copy.name).to.equal('file (copy 2)');
-
-        fileStructureModiferMock.create.restore();
-        fileStructureUtilsMock.findDirectory.restore();
-        fileStructureUtilsMock.findFile.restore();
-    });
-
-    it('should copy the `ast` of any JavaScript file and update the meta information:', function () {
-        var fileStructure = {
-            allFiles: []
-        };
-        var directory = {
-            files: []
-        };
-        var ast = {
-            comments: [{
-                value: JSON.stringify({ name: 'file' })
-            }]
-        };
-        var file = {
-            name: 'file',
-            ast: ast
-        };
-        var request = {
-            body: {}
-        };
-
-        sinon.stub(fileStructureModiferMock, 'create', function (options) {
-            return options.preSave;
-        });
-        sinon.stub(fileStructureUtilsMock, 'findDirectory').returns(directory);
-        sinon.stub(fileStructureUtilsMock, 'findFile').returns(file);
-
-        copyFile = copyFile();
-        copyFile(fileStructure, request);
-
-        var copy = _.last(directory.files);
-        expect(copy.ast).not.to.be.undefined();
-        expect(copy.ast).not.to.equal(ast);
-        expect(JSON.parse(_.first(copy.ast.comments).value).name).to.equal('file (copy)');
-
-        fileStructureModiferMock.create.restore();
-        fileStructureUtilsMock.findDirectory.restore();
-        fileStructureUtilsMock.findFile.restore();
     });
 });

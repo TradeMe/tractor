@@ -2,94 +2,88 @@
 'use strict';
 
 // Utilities:
-var Promise = require('bluebird');
-
-// Test Utilities:
-var chai = require('chai');
-var dirtyChai = require('dirty-chai');
-var sinon = require('sinon');
-var sinonChai = require('sinon-chai');
+import chai from 'chai';
+import dirtyChai from 'dirty-chai';
+import Promise from 'bluebird';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 
 // Test setup:
-var expect = chai.expect;
+const expect = chai.expect;
 chai.use(dirtyChai);
 chai.use(sinonChai);
 
+// Dependencies:
+import createTestDirectoryStructure from './create-test-directory-structure';
+import createBaseTestFiles from './create-base-test-files';
+import installTractorDependenciesLocally from './install-tractor-dependencies-locally';
+import log from 'npmlog';
+import setUpSelenium from './set-up-selenium';
+
 // Under test:
-var cliInit = require('./index');
+import cliInit from './index';
 
-describe('server/cli/init: index:', function () {
-    it('should run the initialisation steps', function () {
-        var createTestDirectoryStructure = require('./create-test-directory-structure');
-        var createBaseTestFiles = require('./create-base-test-files');
-        var installTractorDependenciesLocally = require('./install-tractor-dependencies-locally');
-        var setUpSelenium = require('./set-up-selenium');
-        var log = require('../../utils/logging');
+describe('server/cli/init: index:', () => {
+    it('should run the initialisation steps', () => {
         sinon.stub(createTestDirectoryStructure, 'run').returns(Promise.resolve());
         sinon.stub(createBaseTestFiles, 'run').returns(Promise.resolve());
         sinon.stub(installTractorDependenciesLocally, 'run').returns(Promise.resolve());
         sinon.stub(setUpSelenium, 'run').returns(Promise.resolve());
-        sinon.stub(log, 'important');
+        sinon.stub(log, 'silly');
 
         return cliInit()
-        .then(function () {
-            expect(createTestDirectoryStructure.run.callCount).to.equal(1);
-            expect(createBaseTestFiles.run.callCount).to.equal(1);
-            expect(installTractorDependenciesLocally.run.callCount).to.equal(1);
-            expect(setUpSelenium.run.callCount).to.equal(1);
+        .then(() => {
+            expect(createTestDirectoryStructure.run).to.have.been.calledOnce();
+            expect(createBaseTestFiles.run).to.have.been.calledOnce();
+            expect(installTractorDependenciesLocally.run).to.have.been.calledOnce();
+            expect(setUpSelenium.run).to.have.been.calledOnce();
         })
-        .finally(function () {
+        .finally(() => {
             createTestDirectoryStructure.run.restore();
             createBaseTestFiles.run.restore();
             installTractorDependenciesLocally.run.restore();
             setUpSelenium.run.restore();
-            log.important.restore();
+            log.silly.restore();
         });
     });
 
-    it('should tell the user what it is doing', function () {
-        var createTestDirectoryStructure = require('./create-test-directory-structure');
-        var createBaseTestFiles = require('./create-base-test-files');
-        var installTractorDependenciesLocally = require('./install-tractor-dependencies-locally');
-        var setUpSelenium = require('./set-up-selenium');
-        var log = require('../../utils/logging');
+    it('should tell the user what it is doing', () => {
         sinon.stub(createTestDirectoryStructure, 'run').returns(Promise.resolve());
         sinon.stub(createBaseTestFiles, 'run').returns(Promise.resolve());
         sinon.stub(installTractorDependenciesLocally, 'run').returns(Promise.resolve());
         sinon.stub(setUpSelenium, 'run').returns(Promise.resolve());
-        sinon.stub(log, 'important');
+        sinon.stub(log, 'silly');
 
         return cliInit()
-        .then(function () {
-            expect(log.important).to.have.been.calledWith('Setting up tractor...');
-            expect(log.important).to.have.been.calledWith('Set up complete!');
+        .then(() => {
+            expect(log.silly).to.have.been.calledWith('Setting up tractor...');
+            expect(log.silly).to.have.been.calledWith('Set up complete!');
         })
-        .finally(function () {
+        .finally(() => {
             createTestDirectoryStructure.run.restore();
             createBaseTestFiles.run.restore();
             installTractorDependenciesLocally.run.restore();
             setUpSelenium.run.restore();
-            log.important.restore();
+            log.silly.restore();
         });
     });
 
-    it('should tell the user if there is an error', function () {
-        var createTestDirectoryStructure = require('./create-test-directory-structure');
-        var log = require('../../utils/logging');
-        var message = 'error';
+    it('should tell the user if there is an error', () => {
+        let message = 'error';
         sinon.stub(createTestDirectoryStructure, 'run').returns(Promise.reject(new Error(message)));
-        sinon.stub(log, 'important');
         sinon.stub(log, 'error');
+        sinon.stub(log, 'silly');
 
         return cliInit()
-        .catch(function () {
+        .catch(() => { })
+        .then(() => {
             expect(log.error).to.have.been.calledWith('Something broke, sorry :(');
             expect(log.error).to.have.been.calledWith(message);
         })
-        .finally(function () {
+        .finally(() => {
             createTestDirectoryStructure.run.restore();
-            log.important.restore();
             log.error.restore();
+            log.silly.restore();
         });
     });
 });

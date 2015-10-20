@@ -10,37 +10,37 @@ var FileEditorController = (function () {
         $window,
         $state,
         persistentStateService,
-        NotifierService,
+        notifierService,
         FileService,
         FileModel,
         fileStructure,
-        filePath,
-        components,
-        mockData
+        filePath
     ) {
         this.$scope = $scope;
         this.$window = $window;
         this.$state = $state;
         this.persistentStateService = persistentStateService;
-        this.notifierService = NotifierService;
+        this.notifierService = notifierService;
         this.fileService = FileService;
         this.FileModel = FileModel;
         this.fileStructure = fileStructure;
 
-        this.components = components;
-        this.mockData = mockData;
+        this.availableComponents = fileStructure.availableComponents;
+        this.availableMockData = fileStructure.availableMockData;
 
         if (filePath) {
-            this.fileModel = this.fileService.openFile(this.fileStructure, filePath.path, this.components, this.mockData);
-        }
-        if (FileModel && !this.fileModel) {
+            this.fileService.openFile({ path: filePath.path }, this.availableComponents, this.availableMockData)
+            .then(function (file) {
+                this.fileModel = file;
+            }.bind(this));
+        } else if (FileModel && !this.fileModel) {
             this.newFile();
         }
     };
 
     FileEditorController.prototype.newFile = function () {
         if (this.fileModel) {
-            this.$state.go('.', { });
+            this.$state.go('.', {});
         }
         this.fileModel = new this.FileModel();
     };
@@ -49,14 +49,14 @@ var FileEditorController = (function () {
         var path = null;
 
         this.fileService.getPath({
-            name: this.fileModel.name,
-            path: this.fileModel.path
+            path: this.fileModel.path,
+            name: this.fileModel.name
         })
         .then(function (filePath) {
             path = filePath.path;
             var exists = this.fileService.checkFileExists(this.fileStructure, path);
 
-            if (!exists || this.$window.confirm('This will overwrite "' + this.fileModel.name + '". Continue?')) {
+            if (!exists) { // || this.$window.confirm('This will overwrite "' + this.fileModel.name + '". Continue?')) {
                 return this.fileService.saveFile({
                     data: this.fileModel.data,
                     path: path
@@ -70,7 +70,10 @@ var FileEditorController = (function () {
         }.bind(this))
         .then(function (fileStructure) {
             this.fileStructure = fileStructure;
-            this.fileModel = this.fileService.openFile(this.fileStructure, path, this.components, this.mockData);
+            this.fileService.openFile({ path }, this.availableComponents, this.availableMockData)
+            .then(function (file) {
+                this.fileModel = file;
+            }.bind(this));
         }.bind(this))
         .catch(function () {
             this.notifierService.error('File was not saved.');
@@ -91,7 +94,7 @@ var FileEditorController = (function () {
     };
 
     FileEditorController.prototype.minimise = function (item) {
-        item.minimised = !!!item.minimised;
+        item.minimised = !item.minimised;
 
         var displayState = this.persistentStateService.get(this.fileModel.name);
         displayState[item.name] = item.minimised;

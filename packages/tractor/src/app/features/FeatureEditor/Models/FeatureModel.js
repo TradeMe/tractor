@@ -55,8 +55,10 @@ var createFeatureModelConstructor = function (
         this.scenarios.push(new ScenarioModel());
     };
 
-    FeatureModel.prototype.removeScenario = function (scenario) {
-        _.remove(this.scenarios, scenario);
+    FeatureModel.prototype.removeScenario = function (toRemove) {
+        _.remove(this.scenarios, function (scenario) {
+            return scenario === toRemove;
+        });
     };
 
     return FeatureModel;

@@ -1,4 +1,6 @@
 'use strict';
+// Register:
+var babel = require('babel/register');
 
 var gulp = require('gulp');
 
@@ -22,12 +24,13 @@ gulp.task('styles', styles);
 
 gulp.task('lint-server', lint.server);
 gulp.task('test-server', ['lint-server'], test.server);
-gulp.task('bundle', ['test-server'], bundle);
+
+gulp.task('bundle', bundle);
 gulp.task('lint-client', ['bundle'], lint.client);
 gulp.task('test-client', ['lint-client'], test.client);
-gulp.task('test', ['test-client']);
 
 gulp.task('reload', reload);
 gulp.task('watch', ['reload'], watch);
 
-gulp.task('default', ['fonts', 'images', 'markup', 'styles', 'test', 'watch']);
+gulp.task('server', ['test-server', 'watch']);
+gulp.task('client', ['fonts', 'images', 'markup', 'styles', 'watch', 'test-client']);

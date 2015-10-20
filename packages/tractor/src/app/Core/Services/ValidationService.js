@@ -3,21 +3,17 @@
 // Module:
 var Core = require('../Core');
 
-var ValidationService = function ($http) {
+// Dependencies:
+var charFunk = require('CharFunk');
+
+var ValidationService = function () {
     return {
         validateVariableName: validateVariableName
     };
 
     function validateVariableName (variableName) {
-        return $http.get('/variable-name-valid', {
-            params: {
-                variableName: variableName
-            }
-        })
-        .then(function () {
-            return variableName;
-        });
+        return charFunk.isValidName(variableName, true) ? variableName : false;
     }
 };
 
-Core.service('ValidationService', ValidationService);
+Core.service('validationService', ValidationService);

@@ -1,56 +1,56 @@
 /* global describe:true, it:true */
 'use strict';
 
-// Test utilities:
-var chai = require('chai');
-var sinon = require('sinon');
-var sinonChai = require('sinon-chai');
-var Promise = require('bluebird');
+// Utilities:
+import chai from 'chai';
+import Promise from 'bluebird';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 
 // Test setup:
-var expect = chai.expect;
+const expect = chai.expect;
 chai.use(sinonChai);
 
-// Under test:
-var setUpSelenium = require('./set-up-selenium');
+// Dependencies:
+import childProcess from 'child_process';
+import log from 'npmlog';
+import path from 'path';
 
-describe('server/cli/init: set-up-selenium:', function () {
-    it('should run the "webdriver-manager update" command', function () {
-        var childProcess = require('child_process');
-        var log = require('../../utils/logging');
-		var path = require('path');
+// Under test:
+import setUpSelenium from './set-up-selenium';
+
+describe('server/cli/init: set-up-selenium:', () => {
+    it('should run the "webdriver-manager update" command', () => {
         sinon.stub(childProcess, 'execAsync').returns(Promise.resolve());
         sinon.stub(log, 'info');
-        sinon.stub(log, 'success');
+        sinon.stub(log, 'verbose');
 
         return setUpSelenium.run()
-        .then(function () {
-			var webdriverManagerPath = path.join('node_modules', 'protractor', 'bin', 'webdriver-manager');
-            expect(childProcess.execAsync).to.have.been.calledWith('node ' + webdriverManagerPath + ' update');
+        .then(() => {
+            let webdriverManagerPath = path.join('node_modules', 'protractor', 'bin', 'webdriver-manager');
+            expect(childProcess.execAsync).to.have.been.calledWith(`node ${webdriverManagerPath} update`);
         })
-        .finally(function () {
+        .finally(() => {
             childProcess.execAsync.restore();
             log.info.restore();
-            log.success.restore();
+            log.verbose.restore();
         });
     });
 
-    it('should tell the user what it is doing', function () {
-        var childProcess = require('child_process');
-        var log = require('../../utils/logging');
+    it('should tell the user what it is doing', () => {
         sinon.stub(childProcess, 'execAsync').returns(Promise.resolve());
         sinon.stub(log, 'info');
-        sinon.stub(log, 'success');
+        sinon.stub(log, 'verbose');
 
         return setUpSelenium.run()
-        .then(function () {
+        .then(() => {
             expect(log.info).to.have.been.calledWith('Setting up Selenium...');
-            expect(log.success).to.have.been.calledWith('Selenium setup complete.');
+            expect(log.verbose).to.have.been.calledWith('Selenium setup complete.');
         })
-        .finally(function () {
+        .finally(() => {
             childProcess.execAsync.restore();
             log.info.restore();
-            log.success.restore();
+            log.verbose.restore();
         });
     });
 });

@@ -11,8 +11,8 @@ require('../../../Core/Services/ASTCreatorService');
 require('../../../Core/Services/StringToLiteralService');
 
 var createArgumentModelConstructor = function (
-    ASTCreatorService,
-    StringToLiteralService
+    astCreatorService,
+    stringToLiteralService
 ) {
     var ArgumentModel = function ArgumentModel (method, argument) {
         Object.defineProperties(this, {
@@ -54,23 +54,13 @@ var createArgumentModelConstructor = function (
     return ArgumentModel;
 
     function toAST () {
-        var ast = ASTCreatorService;
+        var ast = astCreatorService;
 
-        var literal = StringToLiteralService.toLiteral(this.value);
-        var parameter = null;
-        var result = null;
-        if (this.method) {
-            parameter = _.find(this.method.interaction.action.parameters, function (parameter) {
-                return parameter.name === this.value;
-            }, this);
+        var literal = stringToLiteralService.toLiteral(this.value);
+        var parameter = findParameter.call(this);
+        var result = findResult.call(this);
 
-            result = _.find(this.method.interaction.action.interactions, function (interaction) {
-                var returns = interaction.method[interaction.method.returns];
-                return returns ? returns.name === this.value : false;
-            }, this);
-        }
-
-        if (!_.isUndefined(literal)) {
+        if (!_.isUndefined(literal) && literal !== this.value) {
             return ast.literal(literal);
         } else if (parameter) {
             return ast.identifier(parameter.variableName);
@@ -82,11 +72,24 @@ var createArgumentModelConstructor = function (
             return ast.literal(null);
         }
     }
+
+    function findParameter () {
+        return this.method && _.find(this.method.interaction.action.parameters, function (parameter) {
+            return parameter.name === this.value;
+        }, this);
+    }
+
+    function findResult () {
+        return this.method && _.find(this.method.interaction.action.interactions, function (interaction) {
+            var returns = interaction.method[interaction.method.returns];
+            return returns ? returns.name === this.value : false;
+        }, this);
+    }
 };
 
 ComponentEditor.factory('ArgumentModel', function (
-    ASTCreatorService,
-    StringToLiteralService
+    astCreatorService,
+    stringToLiteralService
 ) {
-    return createArgumentModelConstructor(ASTCreatorService, StringToLiteralService);
+    return createArgumentModelConstructor(astCreatorService, stringToLiteralService);
 });

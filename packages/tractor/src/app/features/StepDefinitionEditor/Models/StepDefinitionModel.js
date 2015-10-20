@@ -12,7 +12,9 @@ require('./ComponentInstanceModel');
 require('./MockDataInstanceModel');
 
 var createStepDefinitionModelConstructor = function (
-    ASTCreatorService,
+    astCreatorService,
+    ComponentFileService,
+    MockDataFileService,
     ComponentInstanceModel,
     MockDataInstanceModel
 ) {
@@ -49,12 +51,12 @@ var createStepDefinitionModelConstructor = function (
                         mockData: this.mockDataInstances.map(function (mockData) {
                             return mockData.meta;
                         })
-                    }, null, '    ');
+                    });
                 }
             },
             ast: {
                 get: function () {
-                    return this.toAST();
+                    return toAST.call(this);
                 }
             },
             data: {
@@ -69,15 +71,17 @@ var createStepDefinitionModelConstructor = function (
         var component = _.find(this.availableComponents, function (component) {
             return component.name === name;
         });
-        if (!_.contains(this.components, component)) {
+        if (component && !_.contains(this.components, component)) {
             this.components.push(component);
             this.componentInstances.push(new ComponentInstanceModel(component, this));
         }
     };
 
-    StepDefinitionModel.prototype.removeComponent = function (component) {
-        var index = _.indexOf(this.componentInstances, component);
-        _.remove(this.componentInstances, component);
+    StepDefinitionModel.prototype.removeComponent = function (toRemove) {
+        var index = _.indexOf(this.componentInstances, toRemove);
+        _.remove(this.componentInstances, function (component) {
+            return component === toRemove;
+        });
         this.components.splice(index, 1);
     };
 
@@ -85,20 +89,24 @@ var createStepDefinitionModelConstructor = function (
         var mockData = _.find(this.availableMockData, function (mockData) {
             return mockData.name === name;
         });
-        if (!_.contains(this.mockData, mockData)) {
+        if (mockData && !_.contains(this.mockData, mockData)) {
             this.mockData.push(mockData);
             this.mockDataInstances.push(new MockDataInstanceModel(mockData, this));
         }
     };
 
-    StepDefinitionModel.prototype.removeMock = function (mockData) {
-        var index = _.indexOf(this.mockDataInstances, mockData);
-        _.remove(this.mockDataInstances, mockData);
+    StepDefinitionModel.prototype.removeMock = function (toRemove) {
+        var index = _.indexOf(this.mockDataInstances, toRemove);
+        _.remove(this.mockDataInstances, function (mockDataInstance) {
+            return mockDataInstance === toRemove;
+        });
         this.mockData.splice(index, 1);
     };
 
-    StepDefinitionModel.prototype.toAST = function () {
-        var ast = ASTCreatorService;
+    return StepDefinitionModel;
+
+    function toAST () {
+        var ast = astCreatorService;
 
         var components = this.componentInstances.map(function (component) {
             return component.ast;
@@ -118,22 +126,20 @@ var createStepDefinitionModelConstructor = function (
         template += '%= step %; ';
         template += '};';
 
-        var stepDefinitionAST = ast.template(template, {
+        return ast.file(ast.expression(template, {
             components: components,
             mockData: mockData,
             step: this.step.ast
-        });
-        stepDefinitionAST.comments = [ast.blockComment(this.meta)];
-        return stepDefinitionAST;
+        }), this.meta);
     };
-
-    return StepDefinitionModel;
 };
 
 StepDefinitionEditor.factory('StepDefinitionModel', function (
-    ASTCreatorService,
+    astCreatorService,
+    ComponentFileService,
+    MockDataFileService,
     ComponentInstanceModel,
     MockDataInstanceModel
 ) {
-    return createStepDefinitionModelConstructor(ASTCreatorService, ComponentInstanceModel, MockDataInstanceModel);
+    return createStepDefinitionModelConstructor(astCreatorService, ComponentFileService, MockDataFileService, ComponentInstanceModel, MockDataInstanceModel);
 });

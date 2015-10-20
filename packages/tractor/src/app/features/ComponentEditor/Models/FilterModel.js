@@ -11,9 +11,11 @@ require('../../../Core/Services/ASTCreatorService');
 require('../../../Core/Services/StringToLiteralService');
 
 var createFilterModelConstructor = function (
-    ASTCreatorService,
-    StringToLiteralService
+    astCreatorService,
+    stringToLiteralService
 ) {
+    var ast = astCreatorService;
+
     var FilterModel = function FilterModel (element) {
         Object.defineProperties(this, {
             element: {
@@ -22,18 +24,7 @@ var createFilterModelConstructor = function (
                 }
             },
 
-            ast: {
-                get: function () {
-                    return toAST.call(this, false);
-                }
-            },
-            allAst: {
-                get: function () {
-                    return toAST.call(this, true);
-                }
-            },
-
-            isAll: {
+            isGroup: {
                 get: function () {
                     return this.type === 'options' || this.type === 'repeater';
                 }
@@ -41,6 +32,12 @@ var createFilterModelConstructor = function (
             isText: {
                 get: function () {
                     return this.type === 'text';
+                }
+            },
+
+            ast: {
+                get: function () {
+                    return toAST.call(this);
                 }
             }
         });
@@ -53,44 +50,55 @@ var createFilterModelConstructor = function (
 
     return FilterModel;
 
-    function toAST (all) {
-        var ast = ASTCreatorService;
-
-        var locatorLiteral = ast.literal(this.locator);
-        if (!all) {
-            if (!this.isText) {
-               return ast.template('by.<%= type %>(<%= locator %>)', {
-                    type: ast.identifier(this.type),
-                    locator: locatorLiteral
-                }).expression;
-            } else {
-                return ast.template('by.<%= type %>(<%= all %>, <%= locator %>)', {
-                    type: ast.identifier('cssContainingText'),
-                    all: ast.literal('*'),
-                    locator: locatorLiteral
-                }).expression;
-            }
+    function toAST () {
+        if (this.isNested) {
+            return toNestedAST.call(this);
         } else {
-            var number = StringToLiteralService.toLiteral(locatorLiteral.value);
-            if (_.isNumber(number)) {
-                return ast.literal(number);
-            } else {
-                return ast.template(
-                    '(function (element) {' +
-                    '    return element.getText().then(function (text) {' +
-                    '        return text.indexOf(<%= locator %>) !== -1;' +
-                    '    });' +
-                    '});', {
-                    locator: locatorLiteral
-                }).expression;
-            }
+            return toSingleAST.call(this);
+        }
+    }
+
+    function toNestedAST () {
+        var locatorLiteral = ast.literal(this.locator);
+        var template = '';
+
+        var number = stringToLiteralService.toLiteral(locatorLiteral.value);
+        if (_.isNumber(number)) {
+            return ast.literal(number);
+        } else {
+            template += '(function (element) {';
+            template += '    return element.getText().then(function (text) {';
+            template += '        return text.indexOf(<%= locator %>) !== -1;';
+            template += '    });';
+            template += '});';
+            return ast.expression(template, {
+                locator: locatorLiteral
+            });
+        }
+    }
+
+    function toSingleAST () {
+        var locatorLiteral = ast.literal(this.locator);
+        var template = '';
+
+        if (!this.isText) {
+            template += 'by.<%= type %>(<%= locator %>)';
+            return ast.expression(template, {
+                type: ast.identifier(this.type),
+                locator: locatorLiteral
+            });
+        } else {
+            template += 'by.cssContainingText(\'*\', <%= locator %>)';
+            return ast.expression(template, {
+                locator: locatorLiteral
+            });
         }
     }
 };
 
 ComponentEditor.factory('FilterModel', function (
-    ASTCreatorService,
-    StringToLiteralService
+    astCreatorService,
+    stringToLiteralService
 ) {
-    return createFilterModelConstructor(ASTCreatorService, StringToLiteralService);
+    return createFilterModelConstructor(astCreatorService, stringToLiteralService);
 });

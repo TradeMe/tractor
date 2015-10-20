@@ -1,4 +1,4 @@
-/*global beforeEach:true, describe:true, it:true, expect:true */
+/*global beforeEach:true, describe:true, it:true */
 'use strict';
 
 // Angular:
@@ -7,35 +7,33 @@ require('angular-mocks');
 
 // Test Utilities:
 var chai = require('chai');
-var dirtyChai = require('dirty-chai');
 
 // Test setup:
 var expect = chai.expect;
-chai.use(dirtyChai);
 
 // Testing:
 require('./ASTCreatorService');
-var ASTCreatorService;
+var astCreatorService;
 
 describe('ASTCreatorService.js:', function () {
     beforeEach(function () {
         angular.mock.module('Core');
 
-        angular.mock.inject(function (_ASTCreatorService_) {
-            ASTCreatorService = _ASTCreatorService_;
+        angular.mock.inject(function (_astCreatorService_) {
+            astCreatorService = _astCreatorService_;
         });
     });
 
     describe('ASTCreatorService.program:', function () {
         it('should create a new `program` object:', function () {
             var body = [];
-            var program = ASTCreatorService.program(body);
+            var program = astCreatorService.program(body);
             expect(program.type).to.equal('Program');
             expect(program.body).to.equal(body);
         });
 
         it('should set `body` to an empty array by default:', function () {
-            var program = ASTCreatorService.program();
+            var program = astCreatorService.program();
             expect(program.body).to.be.an.instanceof(Array);
         });
     });
@@ -43,13 +41,13 @@ describe('ASTCreatorService.js:', function () {
     describe('ASTCreatorService.blockStatement:', function () {
         it('should create a new `blockStatement` object:', function () {
             var body = [];
-            var blockStatement = ASTCreatorService.blockStatement(body);
+            var blockStatement = astCreatorService.blockStatement(body);
             expect(blockStatement.type).to.equal('BlockStatement');
             expect(blockStatement.body).to.equal(body);
         });
 
         it('should set `body` to an empty array by default:', function () {
-            var blockStatement = ASTCreatorService.blockStatement();
+            var blockStatement = astCreatorService.blockStatement();
             expect(blockStatement.body).to.be.an.instanceof(Array);
         });
     });
@@ -57,7 +55,7 @@ describe('ASTCreatorService.js:', function () {
     describe('ASTCreatorService.expressionStatement:', function () {
         it('should create a new `expressionStatement` object:', function () {
             var expression = {};
-            var expressionStatement = ASTCreatorService.expressionStatement(expression);
+            var expressionStatement = astCreatorService.expressionStatement(expression);
             expect(expressionStatement.type).to.equal('ExpressionStatement');
             expect(expressionStatement.expression).to.equal(expression);
         });
@@ -66,7 +64,7 @@ describe('ASTCreatorService.js:', function () {
     describe('ASTCreatorService.returnStatement:', function () {
         it('should create a new `returnStatement` object:', function () {
             var argument = {};
-            var returnStatement = ASTCreatorService.returnStatement(argument);
+            var returnStatement = astCreatorService.returnStatement(argument);
             expect(returnStatement.type).to.equal('ReturnStatement');
             expect(returnStatement.argument).to.equal(argument);
         });
@@ -76,20 +74,20 @@ describe('ASTCreatorService.js:', function () {
         it('should create a new `variableDeclaration` object:', function () {
             var declarations = {};
             var kind = {};
-            var variableDeclaration = ASTCreatorService.variableDeclaration(declarations, kind);
+            var variableDeclaration = astCreatorService.variableDeclaration(declarations, kind);
             expect(variableDeclaration.type).to.equal('VariableDeclaration');
             expect(variableDeclaration.declarations).to.equal(declarations);
             expect(variableDeclaration.kind).to.equal(kind);
         });
 
         it('should set `declarations` to an empty array by default:', function () {
-            var variableDeclaration = ASTCreatorService.variableDeclaration();
+            var variableDeclaration = astCreatorService.variableDeclaration();
             expect(variableDeclaration.declarations).to.be.an.instanceof(Array);
         });
 
         it('should set `kind` to `ASTCreatorService.VariableDeclarationKinds.VAR` by default', function () {
-            var variableDeclaration = ASTCreatorService.variableDeclaration();
-            expect(variableDeclaration.kind).to.equal(ASTCreatorService.VariableDeclarationKinds.VAR);
+            var variableDeclaration = astCreatorService.variableDeclaration();
+            expect(variableDeclaration.kind).to.equal(astCreatorService.VariableDeclarationKinds.VAR);
         });
     });
 
@@ -97,21 +95,21 @@ describe('ASTCreatorService.js:', function () {
         it('should create a new `variableDeclarator` object:', function () {
             var id = {};
             var init = {};
-            var variableDeclarator = ASTCreatorService.variableDeclarator(id, init);
+            var variableDeclarator = astCreatorService.variableDeclarator(id, init);
             expect(variableDeclarator.type).to.equal('VariableDeclarator');
             expect(variableDeclarator.id).to.equal(id);
             expect(variableDeclarator.init).to.equal(init);
         });
 
         it('should set `init` to `null` by default:', function () {
-            var variableDeclarator = ASTCreatorService.variableDeclarator();
+            var variableDeclarator = astCreatorService.variableDeclarator();
             expect(variableDeclarator.init).to.equal(null);
         });
     });
 
     describe('ASTCreatorService.thisExpression:', function () {
         it('should create a new `thisExpression` object:', function () {
-            var thisExpression = ASTCreatorService.thisExpression();
+            var thisExpression = astCreatorService.thisExpression();
             expect(thisExpression.type).to.equal('ThisExpression');
         });
     });
@@ -119,13 +117,13 @@ describe('ASTCreatorService.js:', function () {
     describe('ASTCreatorService.arrayExpression:', function () {
         it('should create a new `arrayExpression` object:', function () {
             var elements = {};
-            var arrayExpression = ASTCreatorService.arrayExpression(elements);
+            var arrayExpression = astCreatorService.arrayExpression(elements);
             expect(arrayExpression.type).to.equal('ArrayExpression');
             expect(arrayExpression.elements).to.equal(elements);
         });
 
         it('should set `elements` to an empty array by default:', function () {
-            var arrayExpression = ASTCreatorService.arrayExpression();
+            var arrayExpression = astCreatorService.arrayExpression();
             expect(arrayExpression.elements).to.be.an.instanceof(Array);
         });
     });
@@ -139,7 +137,7 @@ describe('ASTCreatorService.js:', function () {
             var rest = {};
             var generator = {};
             var expression = {};
-            var functionExpression = ASTCreatorService.functionExpression(id, params, body, defaults, rest, generator, expression);
+            var functionExpression = astCreatorService.functionExpression(id, params, body, defaults, rest, generator, expression);
             expect(functionExpression.type).to.equal('FunctionExpression');
             expect(functionExpression.id).to.equal(id);
             expect(functionExpression.params).to.equal(params);
@@ -151,12 +149,12 @@ describe('ASTCreatorService.js:', function () {
         });
 
         it('should set `params` to an empty array by default:', function () {
-            var functionExpression = ASTCreatorService.functionExpression();
+            var functionExpression = astCreatorService.functionExpression();
             expect(functionExpression.params).to.be.an.instanceof(Array);
         });
 
         it('should set `defaults` to an empty array by default:', function () {
-            var functionExpression = ASTCreatorService.functionExpression();
+            var functionExpression = astCreatorService.functionExpression();
             expect(functionExpression.defaults).to.be.an.instanceof(Array);
         });
     });
@@ -166,7 +164,7 @@ describe('ASTCreatorService.js:', function () {
             var operator = {};
             var argument = {};
             var prefix = {};
-            var unaryExpression = ASTCreatorService.unaryExpression(operator, argument, prefix);
+            var unaryExpression = astCreatorService.unaryExpression(operator, argument, prefix);
             expect(unaryExpression.type).to.equal('UnaryExpression');
             expect(unaryExpression.operator).to.equal(operator);
             expect(unaryExpression.argument).to.equal(argument);
@@ -179,7 +177,7 @@ describe('ASTCreatorService.js:', function () {
             var operator = {};
             var left = {};
             var right = {};
-            var binaryExpression = ASTCreatorService.binaryExpression(operator, left, right);
+            var binaryExpression = astCreatorService.binaryExpression(operator, left, right);
             expect(binaryExpression.type).to.equal('BinaryExpression');
             expect(binaryExpression.operator).to.equal(operator);
             expect(binaryExpression.left).to.equal(left);
@@ -192,7 +190,7 @@ describe('ASTCreatorService.js:', function () {
             var left = {};
             var operator = {};
             var right = {};
-            var assignmentExpression = ASTCreatorService.assignmentExpression(left, operator, right);
+            var assignmentExpression = astCreatorService.assignmentExpression(left, operator, right);
             expect(assignmentExpression.type).to.equal('AssignmentExpression');
             expect(assignmentExpression.left).to.equal(left);
             expect(assignmentExpression.operator).to.equal(operator);
@@ -204,14 +202,14 @@ describe('ASTCreatorService.js:', function () {
         it('should create a new `newExpression` object:', function () {
             var callee = {};
             var args = {};
-            var newExpression = ASTCreatorService.newExpression(callee, args);
+            var newExpression = astCreatorService.newExpression(callee, args);
             expect(newExpression.type).to.equal('NewExpression');
             expect(newExpression.callee).to.equal(callee);
             expect(newExpression.arguments).to.equal(args);
         });
 
         it('should set `elements` to an empty array by default:', function () {
-            var newExpression = ASTCreatorService.newExpression();
+            var newExpression = astCreatorService.newExpression();
             expect(newExpression.arguments).to.be.an.instanceof(Array);
         });
     });
@@ -220,14 +218,14 @@ describe('ASTCreatorService.js:', function () {
         it('should create a new `callExpression` object:', function () {
             var callee = {};
             var args = {};
-            var callExpression = ASTCreatorService.callExpression(callee, args);
+            var callExpression = astCreatorService.callExpression(callee, args);
             expect(callExpression.type).to.equal('CallExpression');
             expect(callExpression.callee).to.equal(callee);
             expect(callExpression.arguments).to.equal(args);
         });
 
         it('should set `elements` to an empty array by default:', function () {
-            var callExpression = ASTCreatorService.callExpression();
+            var callExpression = astCreatorService.callExpression();
             expect(callExpression.arguments).to.be.an.instanceof(Array);
         });
     });
@@ -237,7 +235,7 @@ describe('ASTCreatorService.js:', function () {
             var object = {};
             var property = {};
             var computed = {};
-            var memberExpression = ASTCreatorService.memberExpression(object, property, computed);
+            var memberExpression = astCreatorService.memberExpression(object, property, computed);
             expect(memberExpression.type).to.equal('MemberExpression');
             expect(memberExpression.object).to.equal(object);
             expect(memberExpression.property).to.equal(property);
@@ -248,7 +246,7 @@ describe('ASTCreatorService.js:', function () {
     describe('ASTCreatorService.identifier:', function () {
         it('should create a new `identifier` object:', function () {
             var name = {};
-            var identifier = ASTCreatorService.identifier(name);
+            var identifier = astCreatorService.identifier(name);
             expect(identifier.type).to.equal('Identifier');
             expect(identifier.name).to.equal(name);
         });
@@ -257,14 +255,14 @@ describe('ASTCreatorService.js:', function () {
     describe('ASTCreatorService.literal:', function () {
         it('should create a new `literal` object:', function () {
             var value = {};
-            var literal = ASTCreatorService.literal(value);
+            var literal = astCreatorService.literal(value);
             expect(literal.type).to.equal('Literal');
             expect(literal.value).to.equal(value);
         });
 
         it('should have the `raw` value if the literal is a RegExp:', function () {
             var value = /RegExp/;
-            var literal = ASTCreatorService.literal(value);
+            var literal = astCreatorService.literal(value);
             expect(literal.raw).to.equal('/RegExp/');
         });
     });
@@ -272,7 +270,7 @@ describe('ASTCreatorService.js:', function () {
     describe('ASTCreatorService.blockComment:', function () {
         it('should create a new `blockComment` object:', function () {
             var value = '';
-            var literal = ASTCreatorService.blockComment(value);
+            var literal = astCreatorService.blockComment(value);
             expect(literal.type).to.equal('Block');
             expect(literal.value).to.equal(value);
         });

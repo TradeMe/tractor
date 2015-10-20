@@ -7,26 +7,24 @@ var ControlPanel = require('../ControlPanel');
 require('../../../Core/Components/Notifier/NotifierService');
 
 var RunnerService = function RunnerService (
-    NotifierService,
-    RealTimeService
+    notifierService,
+    realTimeService
 ) {
     return {
         runProtractor: runProtractor
     };
 
     function runProtractor (options) {
-        RealTimeService.connect('run-protractor', {
+        var connection = realTimeService.connect('run-protractor', {
             'protractor-out': notify,
             'protractor-err': notify
-        })
-        .then(function (connection) {
-            connection.emit('run', options);
         });
+        connection.emit('run', options);
     }
 
     function notify (data) {
-        NotifierService[data.type](data.message);
+        notifierService[data.type](data.message);
     }
 };
 
-ControlPanel.service('RunnerService', RunnerService);
+ControlPanel.service('runnerService', RunnerService);

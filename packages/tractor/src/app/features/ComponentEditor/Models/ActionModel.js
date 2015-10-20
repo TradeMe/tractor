@@ -13,10 +13,12 @@ require('./ParameterModel');
 require('./InteractionModel');
 
 var createActionModelConstructor = function (
-    ASTCreatorService,
+    astCreatorService,
     ParameterModel,
     InteractionModel
 ) {
+    var ast = astCreatorService;
+
     var ActionModel = function ActionModel (component) {
         var interactions = [];
         var parameters = [];
@@ -66,8 +68,10 @@ var createActionModelConstructor = function (
         this.parameters.push(new ParameterModel(this));
     };
 
-    ActionModel.prototype.removeParameter = function (parameter) {
-        _.remove(this.parameters, parameter);
+    ActionModel.prototype.removeParameter = function (toRemove) {
+        _.remove(this.parameters, function (parameter) {
+            return parameter === toRemove;
+        });
     };
 
     ActionModel.prototype.addInteraction = function () {
@@ -76,8 +80,10 @@ var createActionModelConstructor = function (
         this.interactions.push(interaction);
     };
 
-    ActionModel.prototype.removeInteraction = function (interaction) {
-        _.remove(this.interactions, interaction);
+    ActionModel.prototype.removeInteraction = function (toRemove) {
+        _.remove(this.interactions, function (interaction) {
+            return interaction === toRemove;
+        });
     };
 
     ActionModel.prototype.getAllVariableNames = function () {
@@ -87,59 +93,68 @@ var createActionModelConstructor = function (
     return ActionModel;
 
     function toAST () {
-        var ast = ASTCreatorService;
-        var prototypeIdentifier = ast.identifier('prototype');
-        var prototypeMemberExpression = ast.memberExpression(ast.identifier(this.component.variableName), prototypeIdentifier);
-        var actionMemberExpression = ast.memberExpression(prototypeMemberExpression, ast.identifier(this.variableName));
-
-        var selfIdentifier = ast.identifier('self');
-        var thisExpression = ast.thisExpression();
-        var selfVariableDeclarator = ast.variableDeclarator(selfIdentifier, thisExpression);
-        var selfVariableDeclaration = ast.variableDeclaration([selfVariableDeclarator]);
-
-        var interactionASTs = _.map(this.interactions, function (interaction) {
-            return interaction.ast;
-        });
-        var firstInteraction = _.first(interactionASTs);
-
-        _.each(_.rest(interactionASTs), function (interactionAST, index) {
-            var thenIdentifier = ast.identifier('then');
-            var promiseThenMemberExpression = ast.memberExpression(firstInteraction.argument, thenIdentifier);
-
-            var previousInteractionMethod = this.interactions[index].method;
-            var previousInteractionResultIdentifier;
-            if (previousInteractionMethod.returns) {
-                var previousInteractionMethodReturns = previousInteractionMethod[previousInteractionMethod.returns];
-                if (previousInteractionMethodReturns) {
-                    previousInteractionResultIdentifier = ast.identifier(previousInteractionMethodReturns.name);
-                }
-            }
-
-            var interactionResultFunctionExpression = this.interactions[index + 1].resultFunctionExpression;
-            var interactionParameters = previousInteractionResultIdentifier ? [previousInteractionResultIdentifier] : [];
-            var interactionBlockStatement = ast.blockStatement([interactionAST]);
-            interactionResultFunctionExpression.params = interactionParameters;
-            interactionResultFunctionExpression.body = interactionBlockStatement;
-
-            firstInteraction.argument = ast.callExpression(promiseThenMemberExpression, [interactionResultFunctionExpression]);
-        }, this);
-
+        var component = ast.identifier(this.component.variableName);
+        var action = ast.identifier(this.variableName);
         var parameters = _.map(this.parameters, function (parameter) {
             return parameter.ast;
         });
-        var actionBlockStatement = ast.blockStatement([selfVariableDeclaration, firstInteraction]);
-        var actionFunctionExpression = ast.functionExpression(null, parameters, actionBlockStatement);
+        var interactions = interactionsAST.call(this);
 
-        var actionAssignmentExpression = ast.assignmentExpression(actionMemberExpression, ast.AssignmentOperators.ASSIGNMENT, actionFunctionExpression);
+        var template = '<%= component %>.prototype.<%= action %> = function (%= parameters %) {';
+        if (interactions) {
+            template += 'var self = this;';
+            template += 'return <%= interactions %>;';
+        }
+        template += '};';
 
-        return ast.expressionStatement(actionAssignmentExpression);
+        return ast.expression(template, {
+            component: component,
+            action: action,
+            parameters: parameters,
+            interactions: interactions
+        });
+    }
+
+    function interactionsAST () {
+        var template = '';
+        var fragments = {};
+        _.reduce(this.interactions, function (previousInteraction, interaction, index) {
+            var interactionTemplate = '<%= interaction' + index + ' %>';
+
+            if (!template.length) {
+                template += interactionTemplate;
+            } else {
+                template += '.then(function (%= parameter' + index + '%) {';
+                template += '    return ' + interactionTemplate + ';';
+                template += '})';
+            }
+
+            fragments['interaction' + index] = interaction.ast;
+            fragments['parameter' + index] = [];
+
+            var previousResult = previousInteractionResult(previousInteraction);
+            if (previousResult) {
+                fragments['parameter' + index].push(ast.identifier(previousResult));
+            }
+
+            return interaction;
+        }, {});
+
+        return ast.expression(template, fragments);
+    }
+
+    function previousInteractionResult (previous) {
+        var returns = previous && previous.method && previous.method.returns;
+        if (returns && previous.method[returns]) {
+            return previous.method[returns].name;
+        }
     }
 };
 
 ComponentEditor.factory('ActionModel', function (
-    ASTCreatorService,
+    astCreatorService,
     ParameterModel,
     InteractionModel
 ) {
-    return createActionModelConstructor(ASTCreatorService, ParameterModel, InteractionModel);
+    return createActionModelConstructor(astCreatorService, ParameterModel, InteractionModel);
 });

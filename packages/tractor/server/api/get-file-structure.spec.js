@@ -1,63 +1,58 @@
-/* global describe:true, beforeEach:true, afterEach:true, it:true */
+/* global describe:true, it:true */
 'use strict';
 
-// Test Utilities:
-var chai = require('chai');
-var dirtyChai = require('dirty-chai');
-var rewire = require('rewire');
-var sinon = require('sinon');
-var sinonChai = require('sinon-chai');
+// Utilities:
+import _ from 'lodash';
+import chai from 'chai';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 
 // Test setup:
-var expect = chai.expect;
-chai.use(dirtyChai);
+const expect = chai.expect;
 chai.use(sinonChai);
 
+// Dependencies:
+import fileStructure from '../file-structure';
+
 // Under test:
-var getFileStructure;
+import getFileStructure from './get-file-structure';
 
-// Mocks:
-var featureLexerMock = require('../utils/feature-lexer.mock');
-var fileStructureModifierMock = require('../utils/file-structure-modifier.mock');
-var revert;
-
-describe('server/api: get-file-structure:', function () {
-    beforeEach(function () {
-        getFileStructure = rewire('./get-file-structure');
-        /* eslint-disable no-underscore-dangle */
-        revert = getFileStructure.__set__({
-            featureLexer: featureLexerMock,
-            fileStructureModifier: fileStructureModifierMock
-        });
-        /* eslint-enable no-underscore-dangle */
-    });
-
-    afterEach(function () {
-        revert();
-    });
-
-    it('should lex all the feature files:', function () {
-        var fileStructure = {
-            allFiles: [{
-                path: 'test1.feature'
-            }, {
-                path: 'test2.feature'
-            }, {
-                path: 'test3.notFeature'
-            }]
+describe('server/api: get-file-structure:', () => {
+    it('should get the file structure', () => {
+        let type = 'type';
+        let request = {
+            params: { type }
+        };
+        let response = {
+            send: _.noop
         };
 
-        sinon.stub(fileStructureModifierMock, 'create', function (options) {
-            return options.preSend;
-        });
-        sinon.stub(featureLexerMock, 'lex');
+        sinon.stub(fileStructure, 'getStructure');
 
-        getFileStructure = getFileStructure();
-        getFileStructure(fileStructure);
+        getFileStructure.handler(request, response);
 
-        expect(featureLexerMock.lex.callCount).to.equal(2);
+        expect(fileStructure.getStructure).to.have.been.calledWith(type);
 
-        fileStructureModifierMock.create.restore();
-        featureLexerMock.lex.restore();
+        fileStructure.getStructure.restore();
+    });
+
+    it('should respond to the client with the file structure', () => {
+        let type = 'type';
+        let request = {
+            params: { type }
+        };
+        let response = {
+            send: _.noop
+        };
+        let structure = {};
+
+        sinon.stub(fileStructure, 'getStructure').returns(structure);
+        sinon.stub(response, 'send');
+
+        getFileStructure.handler(request, response);
+
+        expect(response.send).to.have.been.calledWith(structure);
+
+        fileStructure.getStructure.restore();
     });
 });

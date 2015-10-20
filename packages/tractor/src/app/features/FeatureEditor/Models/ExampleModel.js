@@ -10,7 +10,7 @@ var FeatureEditor = require('../FeatureEditor');
 require('../../../Core/Services/StringToLiteralService');
 
 var createExampleModelConstructor = function (
-    StringToLiteralService,
+    stringToLiteralService,
     FeatureIndent
 ) {
     var ExampleModel = function ExampleModel (scenario) {
@@ -45,7 +45,7 @@ var createExampleModelConstructor = function (
     function toFeature () {
         var values = '| ' + _.map(this.scenario.exampleVariables, function (variable) {
            var value = this.values[variable].value;
-           var literal = StringToLiteralService.toLiteral(value);
+           var literal = stringToLiteralService.toLiteral(value);
            return !_.isUndefined(literal) ? literal : '"' + value + '"';
         }, this).join(' | ') + ' |';
         return FeatureIndent + FeatureIndent + FeatureIndent + values;
@@ -53,8 +53,8 @@ var createExampleModelConstructor = function (
 };
 
 FeatureEditor.factory('ExampleModel', function (
-    StringToLiteralService,
+    stringToLiteralService,
     FeatureIndent
 ) {
-    return createExampleModelConstructor(StringToLiteralService, FeatureIndent);
+    return createExampleModelConstructor(stringToLiteralService, FeatureIndent);
 });

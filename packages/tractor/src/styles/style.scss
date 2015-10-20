@@ -33,6 +33,10 @@ main {
     height: 86.125%;
 }
 
+main > div {
+    height: 100%;
+}
+
 .fill {
     position: absolute;
     top: 0;

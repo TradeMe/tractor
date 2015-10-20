@@ -17,17 +17,17 @@ var FileTreeController = (function () {
         $state,
         $interval,
         $window,
-        NotifierService,
-        FileStructureService
+        notifierService,
+        fileStructureService
     ) {
         this.$state = $state;
         this.$interval = $interval;
         this.$window = $window;
-        this.notifierService = NotifierService;
-        this.fileStructureService = FileStructureService;
+        this.notifierService = notifierService;
+        this.fileStructureService = fileStructureService;
 
         this.headerName = title(this.type);
-        this.canModify = this.type !== 'step-definition';
+        this.canModify = this.type !== 'step-definitions';
 
         this.editFilePath = this.editFilePath.bind(this);
     };
@@ -39,7 +39,7 @@ var FileTreeController = (function () {
             return meta.name;
         }
         return item.name;
-    }
+    };
 
     FileTreeController.prototype.addDirectory = function (directory) {
         this.fileStructureService.addDirectory(this.type, {
@@ -111,13 +111,16 @@ var FileTreeController = (function () {
         }
     };
 
-    FileTreeController.prototype.openFile = function (item) {
-        var params = {};
-        var directoryPath = this.model.fileStructure.path.replace(/\\/g, '/');
-        var filePath = item.path.replace(/\\/g, '/');
-        var relativePath = path.relative(directoryPath, filePath);
-        params[camel(this.type)] = _.last(relativePath.match(/(.*?)\..*/));
-        this.$state.go('tractor.' + this.type + '-editor', params);
+    FileTreeController.prototype.openFile = function (file) {
+        var filePath = file.path.replace(/\\/g, '/');
+        var name = path.relative(this.model.fileStructure.directory.path, filePath);
+        name = name.substring(0, name.indexOf('.'));
+        var params = {
+            file: {
+                name: name
+            }
+        };
+        this.$state.go('tractor.' + this.type, params);
     };
 
     FileTreeController.prototype.editFilePath = function (file, directory) {
@@ -147,9 +150,10 @@ var FileTreeController = (function () {
 
     FileTreeController.prototype.delete = function (item) {
         this.hideOptions(item);
-        if (item.files && item.files.length || item.directories && item.directories.length) {
-            this.$window.alert('Cannot delete a directory with files in it.');
-        } else {
+
+        var hasChildren = item.files && item.files.length || item.directories && item.directories.length;
+
+        if (!hasChildren) { // || this.$window.confirm('All directory contents will be deleted as well. Continue?')){
             var deleteOptions = {
                 path: item.path,
                 name: item.name
@@ -171,18 +175,8 @@ var FileTreeController = (function () {
         .then(setFileStructure.bind(this));
     };
 
-    var directoryNames = {
-        'component': 'components',
-        'feature': 'features',
-        'step-definition': 'step_definitions',
-        'mock-data': 'mock_data'
-    };
-
     function setFileStructure (fileStructure) {
-        var directory = _.find(fileStructure.directories, function (directory) {
-            return directory.name === directoryNames[this.type];
-        }.bind(this));
-        this.model.fileStructure = directory;
+        this.model.fileStructure = fileStructure;
     }
 
     function getDirname (filePath) {

@@ -1,93 +1,104 @@
-/* global describe:true, beforeEach:true, afterEach:true, it:true */
+/* global describe:true, it:true */
 'use strict';
 
-// Test Utilities:
-var chai = require('chai');
-var dirtyChai = require('dirty-chai');
-var rewire = require('rewire');
-var sinon = require('sinon');
-var sinonChai = require('sinon-chai');
+// Utilities:
+import chai from 'chai';
+import Promise from 'bluebird';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 
 // Test setup:
-var expect = chai.expect;
-chai.use(dirtyChai);
+const expect = chai.expect;
 chai.use(sinonChai);
 
+// Dependencies:
+import errorHandler from '../errors/error-handler';
+import fileStructure from '../file-structure';
+import getFileStructure from './get-file-structure';
+import TractorError from '../errors/TractorError';
+
 // Under test:
-var deleteItem;
+import deleteItem from './delete-item';
 
-// Mocks:
-var fileStructureModiferMock = require('../utils/file-structure-modifier.mock');
-var fileStructureUtilsMock = require('../utils/file-structure-utils/file-structure-utils.mock');
-var revert;
+describe('server/api: delete-item:', () => {
+    it('should delete a item', () => {
+        let path = 'some/path';
+        let request = {
+            query: { path }
+        };
 
-describe('server/api: delete-item:', function () {
-    beforeEach(function () {
-        deleteItem = rewire('./delete-item');
-        /* eslint-disable no-underscore-dangle */
-        revert = deleteItem.__set__({
-            fileStructureModifier: fileStructureModiferMock,
-            fileStructureUtils: fileStructureUtilsMock
+        sinon.stub(fileStructure, 'deleteItem').returns(Promise.resolve());
+        sinon.stub(getFileStructure, 'handler').returns(Promise.resolve());
+
+        return deleteItem.handler(request)
+        .then(() => {
+            expect(fileStructure.deleteItem).to.have.been.calledWith(path);
+        })
+        .finally(() => {
+            fileStructure.deleteItem.restore();
+            getFileStructure.handler.restore();
         });
-        /* eslint-enable no-underscore-dangle */
     });
 
-    afterEach(function () {
-        revert();
+    it('should respond to the client with the current file structure', () => {
+        let path = 'some/path';
+        let request = {
+            query: { path }
+        };
+        let response = {};
+
+        sinon.stub(fileStructure, 'deleteItem').returns(Promise.resolve());
+        sinon.stub(getFileStructure, 'handler').returns(Promise.resolve());
+
+        return deleteItem.handler(request, response)
+        .then(() => {
+            expect(getFileStructure.handler).to.have.been.calledWith(request, response);
+        })
+        .finally(() => {
+            fileStructure.deleteItem.restore();
+            getFileStructure.handler.restore();
+        });
     });
 
-    it('should delete a file:', function () {
-        var fileStructure = {};
-        var directory = {
-            files: [{
-                name: 'file'
-            }]
+    it('should handle known TractorErrors', () => {
+        let error = new TractorError();
+        let path = 'some/path';
+        let request = {
+            query: { path }
         };
-        var request = {
-            query: {
-                name: 'file'
-            }
-        };
+        let response = { };
 
-        sinon.stub(fileStructureModiferMock, 'create', function (options) {
-            return options.preSave;
+        sinon.stub(fileStructure, 'deleteItem').returns(Promise.reject(error));
+        sinon.stub(errorHandler, 'handler');
+
+        return deleteItem.handler(request, response)
+        .then(() => {
+            expect(errorHandler.handler).to.have.been.calledWith(response, error);
+        })
+        .finally(() => {
+            fileStructure.deleteItem.restore();
+            errorHandler.handler.restore();
         });
-        sinon.stub(fileStructureUtilsMock, 'findDirectory').returns(directory);
-
-        deleteItem = deleteItem();
-        deleteItem(fileStructure, request);
-
-        expect(directory.files.length).to.equal(0);
-
-        fileStructureModiferMock.create.restore();
-        fileStructureUtilsMock.findDirectory.restore();
     });
 
-    it('should delete a directory:', function () {
-        var fileStructure = {};
-        var directory = {
-            directories: [{
-                name: 'directory'
-            }]
+    it('should handle unknown errors', () => {
+        let error = new Error();
+        let path = 'some/path';
+        let request = {
+            query: { path }
         };
-        var request = {
-            query: {
-                name: 'directory',
-                isDirectory: true
-            }
-        };
+        let response = { };
 
-        sinon.stub(fileStructureModiferMock, 'create', function (options) {
-            return options.preSave;
+        sinon.stub(fileStructure, 'deleteItem').returns(Promise.reject(error));
+        sinon.stub(errorHandler, 'handler');
+
+        return deleteItem.handler(request, response)
+        .then(() => {
+            expect(errorHandler.handler).to.have.been.calledWith(response, new TractorError('Could not delete "some/path"', 500));
+        })
+        .finally(() => {
+            fileStructure.deleteItem.restore();
+            errorHandler.handler.restore();
         });
-        sinon.stub(fileStructureUtilsMock, 'findDirectory').returns(directory);
-
-        deleteItem = deleteItem();
-        deleteItem(fileStructure, request);
-
-        expect(directory.directories.length).to.equal(0);
-
-        fileStructureModiferMock.create.restore();
-        fileStructureUtilsMock.findDirectory.restore();
     });
 });

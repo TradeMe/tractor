@@ -1,11 +1,16 @@
 'use strict';
 
+// Utilities:
+var _ = require('lodash');
+
 // Module:
 var Core = require('../Core');
 
 var FileStructureService = function FileStructureService (
     $http,
-    persistentStateService
+    persistentStateService,
+    ComponentParserService,
+    MockDataParserService
 ) {
     var OPEN_DIRECTORIES = 'OpenDirectories';
 
@@ -20,10 +25,9 @@ var FileStructureService = function FileStructureService (
         toggleOpenDirectory: toggleOpenDirectory
     };
 
-    function getFileStructure (options) {
-        return $http.get('/file-structure', {
-            params: options
-        })
+    function getFileStructure (type) {
+        return $http.get('/' + type + '/file-structure')
+        .then(parseComponentsAndMockData)
         .then(updateFileStructure);
     }
 
@@ -38,7 +42,6 @@ var FileStructureService = function FileStructureService (
     }
 
     function deleteDirectory (type, options) {
-        options.isDirectory = true;
         return $http.delete('/' + type + '/directory', {
             params: options
         })
@@ -73,11 +76,20 @@ var FileStructureService = function FileStructureService (
         persistentStateService.set(OPEN_DIRECTORIES, openDirectories);
     }
 
-    function updateFileStructure (fileStructure) {
-        fileStructure = restoreOpenDirectories(fileStructure);
-        fileStructure.directories.forEach(function (topLevelDirectory) {
-            topLevelDirectory.open = true;
+    function parseComponentsAndMockData (fileStructure) {
+        fileStructure.availableComponents = _.map(fileStructure.availableComponents, function (component) {
+            return ComponentParserService.parse(component);
         });
+        fileStructure.availableMockData = _.map(fileStructure.availableMockData, function (mockData) {
+            return MockDataParserService.parse(mockData);
+        });
+        return fileStructure;
+    }
+
+    function updateFileStructure (fileStructure) {
+        fileStructure.directory = restoreOpenDirectories(fileStructure.directory);
+        fileStructure.directory.allFiles = getAllFiles(fileStructure.directory);
+        fileStructure.directory.open = true;
         return fileStructure;
     }
 
@@ -92,6 +104,17 @@ var FileStructureService = function FileStructureService (
         directory.open = !!getOpenDirectories()[directory.path];
         return directory;
     }
+
+    function getAllFiles (directory, allFiles) {
+        if (!allFiles) {
+            allFiles = [];
+        }
+        _.each(directory.directories, function (directory) {
+            allFiles = getAllFiles(directory, allFiles);
+        })
+        allFiles = allFiles.concat(directory.files);
+        return allFiles;
+    }
 };
 
-Core.service('FileStructureService', FileStructureService);
+Core.service('fileStructureService', FileStructureService);

@@ -1,6 +1,6 @@
 'use strict';
 
-var MockNotImplementedError = require('../../../Core/Errors/MockNotImplementedError');
+var MockNotImplementedError = require('../../../Errors/MockNotImplementedError');
 
 var MockNotifierService = function MockNotifierService () {
     this.notifications = [];

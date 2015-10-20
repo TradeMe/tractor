@@ -11,7 +11,7 @@ var camel = require('change-case').camel;
 require('../../../Core/Services/ASTCreatorService');
 
 var createComponentInstanceModelConstructor = function (
-    ASTCreatorService
+    astCreatorService
 ) {
     var ComponentInstanceModel = function ComponentInstanceModel (component, stepDefinition) {
         Object.defineProperties(this, {
@@ -53,7 +53,7 @@ var createComponentInstanceModelConstructor = function (
     return ComponentInstanceModel;
 
     function toAST () {
-        var ast = ASTCreatorService;
+        var ast = astCreatorService;
 
         var template = 'var <%= constructor %> = require(<%= path %>), ';
         template += '<%= name %> = new <%= constructor %>(); ';
@@ -71,6 +71,8 @@ var createComponentInstanceModelConstructor = function (
     }
 };
 
-StepDefinitionEditor.factory('ComponentInstanceModel', function (ASTCreatorService) {
-    return createComponentInstanceModelConstructor(ASTCreatorService);
+StepDefinitionEditor.factory('ComponentInstanceModel', function (
+    astCreatorService
+) {
+    return createComponentInstanceModelConstructor(astCreatorService);
 });

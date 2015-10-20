@@ -19,14 +19,14 @@ var StepDefinitionParserService = function StepDefinitionParserService (
         parse: parse
     };
 
-    function parse (stepDefinitionFile, components, mockData) {
+    function parse (stepDefinitionFile, availableComponents, availableMockData) {
         try {
             var ast = stepDefinitionFile.ast;
             var meta = JSON.parse(_.first(ast.comments).value);
 
             var stepDefinition = new StepDefinitionModel({
-                availableComponents: components,
-                availableMockData: mockData,
+                availableComponents: availableComponents,
+                availableMockData: availableMockData,
                 path: stepDefinitionFile.path
             });
             stepDefinition.name = meta.name;

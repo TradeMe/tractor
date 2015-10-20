@@ -1,71 +1,61 @@
 'use strict';
 
-// Utilities:
-var constants = require('../../constants');
-var log = require('../../utils/logging');
-var Promise = require('bluebird');
+// Constants:
+import constants from '../../constants';
 
-// Dependencies:
-var fs = Promise.promisifyAll(require('fs'));
-var path = require('path');
+// Utilities:
+import Promise from 'bluebird';
+const fs = Promise.promisifyAll(require('fs'));
+import log from 'npmlog';
+import { join } from 'path';
 
 // Errors:
-var BaseTestFileAlreadyExistsError = require('../../errors/BaseTestFileAlreadyExistsError');
+import TractorError from '../../errors/TractorError';
 
-module.exports = {
+export default {
     run: createBaseTestFiles
 };
 
 function createBaseTestFiles (testDirectoryPath) {
-    return createWorldFile(path.join(testDirectoryPath, constants.SUPPORT_DIR))
-    .catch(BaseTestFileAlreadyExistsError, function (e) {
-        log.warn(e.message + ' Not copying...');
-    })
-    .then(function () {
-        return createProtractorConf(testDirectoryPath);
-    })
-    .catch(BaseTestFileAlreadyExistsError, function (e) {
-        log.warn(e.message + ' Not copying...');
-    });
+    return createWorldFile(join(testDirectoryPath, constants.SUPPORT_DIR))
+    .catch(TractorError, error => logNotCopying(error))
+    .then(() => createProtractorConf(testDirectoryPath))
+    .catch(TractorError, error => logNotCopying(error));
 }
 
 function createWorldFile (supportDirPath) {
     var fileName = constants.WORLD_FILE_NAME;
-    var readPath = path.join(__dirname, constants.WORLD_SOURCE_FILE_PATH);
-    var writePath = path.join(process.cwd(), supportDirPath, constants.WORLD_FILE_NAME);
+    var readPath = join(__dirname, constants.WORLD_SOURCE_FILE_PATH);
+    var writePath = join(process.cwd(), supportDirPath, constants.WORLD_FILE_NAME);
     return createFile(fileName, readPath, writePath);
 }
 
 function createProtractorConf (testDirectoryPath) {
     var fileName = constants.PROTRACTOR_CONF_FILE_NAME;
-    var readPath = path.join(__dirname, constants.PROTRACTOR_CONF_SOURCE_FILE_PATH);
-    var writePath = path.join(process.cwd(), testDirectoryPath, constants.PROTRACTOR_CONF_FILE_NAME);
+    var readPath = join(__dirname, constants.PROTRACTOR_CONF_SOURCE_FILE_PATH);
+    var writePath = join(process.cwd(), testDirectoryPath, constants.PROTRACTOR_CONF_FILE_NAME);
     return createFile(fileName, readPath, writePath);
 }
 
 function createFile (fileName, readPath, writePath) {
     return fs.openAsync(writePath, 'r')
-    .then(function () {
-        throw new BaseTestFileAlreadyExistsError('"' + fileName + '" already exists.');
+    .then(() => {
+        throw new TractorError(`"${fileName}" already exists.`);
     })
-    .catch(Promise.OperationalError, function () {
-        logCreating(fileName);
-    })
-    .then(function () {
-        return fs.readFileAsync(readPath);
-    })
-    .then(function (contents) {
-        return fs.writeFileAsync(writePath, contents);
-    })
-    .then(function () {
-        logCreated(fileName);
-    });
+    .catch(Promise.OperationalError, () => logCreating(fileName))
+    .then(() => fs.readFileAsync(readPath))
+    .then((contents) => fs.writeFileAsync(writePath, contents))
+    .then(() => logCreated(fileName));
+}
+
+function logNotCopying (error) {
+    log.warn(`${error.message} Not copying...`);
 }
 
 function logCreating (file) {
-    log.info('Creating "' + file + '"...');
+    log.info(`Creating "${file}"...`);
 }
 
 function logCreated (file) {
-    log.success('"' + file + '" created.');
+    log.verbose(`"${file}" created.`);
 }

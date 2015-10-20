@@ -14,7 +14,7 @@ require('./ElementModel');
 require('./ActionModel');
 
 var createComponentModelConstructor = function (
-    ASTCreatorService,
+    astCreatorService,
     BrowserModel,
     ElementModel,
     ActionModel
@@ -71,7 +71,7 @@ var createComponentModelConstructor = function (
                         actions: this.actions.map(function (action) {
                             return action.meta;
                         })
-                    }, null, '    ');
+                    });
                 }
             },
             ast: {
@@ -96,9 +96,13 @@ var createComponentModelConstructor = function (
         this.domElements.push(element);
     };
 
-    ComponentModel.prototype.removeElement = function (element) {
-        _.remove(this.elements, element);
-        _.remove(this.domElements, element);
+    ComponentModel.prototype.removeElement = function (toRemove) {
+        _.remove(this.elements, function (element) {
+            return element === toRemove;
+        });
+        _.remove(this.domElements, function (domElement) {
+            return domElement === toRemove;
+        });
     };
 
     ComponentModel.prototype.addAction = function () {
@@ -107,8 +111,10 @@ var createComponentModelConstructor = function (
         action.addInteraction();
     };
 
-    ComponentModel.prototype.removeAction = function (action) {
-        _.remove(this.actions, action);
+    ComponentModel.prototype.removeAction = function (toRemove) {
+        _.remove(this.actions, function (action) {
+            return action === toRemove;
+        });
     };
 
     ComponentModel.prototype.getAllVariableNames = function (currentObject) {
@@ -124,43 +130,38 @@ var createComponentModelConstructor = function (
     return ComponentModel;
 
     function toAST () {
-        var ast = ASTCreatorService;
+        var ast = astCreatorService;
 
-        var nameIdentifier = ast.identifier(this.variableName);
-        var moduleReturnStatement = ast.returnStatement(nameIdentifier);
-
-        var elementASTs = _.map(this.domElements, function (element) {
-            return element.ast;
+        var component = ast.identifier(this.variableName);
+        var elements = _.map(this.domElements, function (element) {
+            return ast.expressionStatement(element.ast);
+        });
+        var actions = _.map(this.actions, function (action) {
+            return ast.expressionStatement(action.ast);
         });
 
-        var constructorBlockStatament = ast.blockStatement(elementASTs);
-        var constructorFunctionExpression = ast.functionExpression(nameIdentifier, null, constructorBlockStatament);
-        var constructorVariableDeclarator = ast.variableDeclarator(nameIdentifier, constructorFunctionExpression);
-        var constructorVariableDeclaration = ast.variableDeclaration([constructorVariableDeclarator]);
+        var template = '';
+        template += 'module.exports = (function () {';
+        template += '    var <%= component %> = function <%= component %> () {';
+        template += '        %= elements %;';
+        template += '    };';
+        template += '    %= actions %;';
+        template += '    return <%= component %>';
+        template += '})();'
 
-        var actionASTs = _.map(this.actions, function (action) {
-            return action.ast;
-        });
-
-        var moduleBody = _.chain([constructorVariableDeclaration, actionASTs, moduleReturnStatement]).flatten().compact().value();
-        var moduleBlockStatement = ast.blockStatement(moduleBody);
-        var moduleFunctionExpression = ast.functionExpression(null, null, moduleBlockStatement);
-        var moduleCallExpression = ast.callExpression(moduleFunctionExpression);
-
-        var moduleExportsMemberExpression = ast.memberExpression(ast.identifier('module'), ast.identifier('exports'));
-        var componentModuleAssignmentExpression = ast.assignmentExpression(moduleExportsMemberExpression, ast.AssignmentOperators.ASSIGNMENT, moduleCallExpression);
-        var componentModuleExpressionStatement = ast.expressionStatement(componentModuleAssignmentExpression);
-        var componentAST = ast.program([componentModuleExpressionStatement]);
-        componentAST.comments = [ast.blockComment(this.meta)];
-        return componentAST;
+        return ast.file(ast.expression(template, {
+            component: component,
+            elements: elements,
+            actions: actions
+        }), this.meta);
     }
 };
 
 ComponentEditor.factory('ComponentModel', function (
-    ASTCreatorService,
+    astCreatorService,
     BrowserModel,
     ElementModel,
     ActionModel
 ) {
-    return createComponentModelConstructor(ASTCreatorService, BrowserModel, ElementModel, ActionModel);
+    return createComponentModelConstructor(astCreatorService, BrowserModel, ElementModel, ActionModel);
 });

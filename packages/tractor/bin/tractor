@@ -2,7 +2,11 @@
 'use strict';
 
 // Dependencies:
+var babel = require('babel/register');
 var tractor = require('commander');
+var log = require('npmlog');
+
+log.level = 'silly';
 
 tractor
 .version('0.0.1')

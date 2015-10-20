@@ -6,8 +6,8 @@ var Promise = require('bluebird');
 // Module:
 var Core = require('../Core');
 
-Core.factory('HttpResponseInterceptor', function (
-    NotifierService
+Core.factory('httpResponseInterceptor', function (
+    notifierService
 ) {
     return {
         response: handleResponseData,
@@ -20,14 +20,12 @@ Core.factory('HttpResponseInterceptor', function (
 
     function handleResponseError (response) {
         var error = new Error();
-        try {
-            NotifierService.error(response.data.error);
-            error.message = response.data.error;
-            error.response = response;
-        } catch (e) { }
+        notifierService.error(response.data.error);
+        error.message = response.data.error;
+        error.response = response;
         return Promise.reject(error);
     }
 })
 .config(function ($httpProvider) {
-    $httpProvider.interceptors.push('HttpResponseInterceptor');
+    $httpProvider.interceptors.push('httpResponseInterceptor');
 });
