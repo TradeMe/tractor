@@ -153,7 +153,7 @@ var FileTreeController = (function () {
 
         var hasChildren = item.files && item.files.length || item.directories && item.directories.length;
 
-        if (!hasChildren) { // || this.$window.confirm('All directory contents will be deleted as well. Continue?')){
+        if (!hasChildren || this.$window.confirm('All directory contents will be deleted as well. Continue?')){
             var deleteOptions = {
                 path: item.path,
                 name: item.name

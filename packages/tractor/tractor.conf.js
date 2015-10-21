@@ -35,9 +35,9 @@ module.exports = {
 		delete this._testDirectory;
         return fileStructure.refresh()
         .then(function () {
-            // return del(TRACTOR_E2E_TESTS_RUNNING, {
-            //     force: true
-            // });
+            return del(TRACTOR_E2E_TESTS_RUNNING, {
+                force: true
+            });
         }.bind(this));
 	}
 };

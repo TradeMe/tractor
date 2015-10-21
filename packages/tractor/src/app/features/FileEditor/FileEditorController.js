@@ -56,7 +56,7 @@ var FileEditorController = (function () {
             path = filePath.path;
             var exists = this.fileService.checkFileExists(this.fileStructure, path);
 
-            if (!exists) { // || this.$window.confirm('This will overwrite "' + this.fileModel.name + '". Continue?')) {
+            if (!exists || this.$window.confirm('This will overwrite "' + this.fileModel.name + '". Continue?')) {
                 return this.fileService.saveFile({
                     data: this.fileModel.data,
                     path: path
@@ -81,7 +81,7 @@ var FileEditorController = (function () {
     };
 
     FileEditorController.prototype.showErrors = function () {
-        var fileEditor = this.$scope['file-editor'];
+        var fileEditor = this.fileEditor;
         if (fileEditor.$invalid) {
             _.each(Object.keys(fileEditor.$error), function (invalidType) {
                 _.each(fileEditor.$error[invalidType], function (element) {
