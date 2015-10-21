@@ -73532,7 +73532,7 @@ var FileEditorController = (function () {
 
     FileEditorController.prototype.newFile = function () {
         if (this.fileModel) {
-            this.$state.go('.', {});
+            this.$state.go('.', { file: null });
         }
         this.fileModel = new this.FileModel();
     };
