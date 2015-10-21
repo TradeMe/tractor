@@ -15,6 +15,7 @@ chai.use(sinonChai);
 import errorHandler from '../errors/error-handler';
 import fileStructure from '../file-structure';
 import getFileStructure from './get-file-structure';
+import path from 'path';
 import TractorError from '../errors/TractorError';
 
 // Under test:
@@ -22,9 +23,11 @@ import createDirectory from './create-directory';
 
 describe('server/api: create-directory:', () => {
     it('should create a directory', () => {
-        let path = 'some/path';
+        let directoryPath = path.join('some', 'path');
         let request = {
-            body: { path }
+            body: {
+                path: directoryPath
+            }
         };
 
         sinon.stub(fileStructure, 'createDirectory').returns(Promise.resolve());
@@ -32,7 +35,7 @@ describe('server/api: create-directory:', () => {
 
         return createDirectory.handler(request)
         .then(() => {
-            expect(fileStructure.createDirectory).to.have.been.calledWith(path);
+            expect(fileStructure.createDirectory).to.have.been.calledWith(path.join('some', 'path'));
         })
         .finally(() => {
             fileStructure.createDirectory.restore();
@@ -41,9 +44,11 @@ describe('server/api: create-directory:', () => {
     });
 
     it('should respond to the client with the current file structure', () => {
-        let path = 'some/path';
+        let directoryPath = path.join('some', 'path');
         let request = {
-            body: { path }
+            body: {
+                path: directoryPath
+            }
         };
         let response = {};
 
@@ -61,10 +66,12 @@ describe('server/api: create-directory:', () => {
     });
 
     it('should handle known TractorErrors', () => {
+        let directoryPath = path.join('some', 'path');
         let error = new TractorError();
-        let path = 'some/path';
         let request = {
-            body: { path }
+            body: {
+                path: directoryPath
+            }
         };
         let response = { };
 
@@ -82,10 +89,12 @@ describe('server/api: create-directory:', () => {
     });
 
     it('should handle unknown errors', () => {
+        let directoryPath = path.join('some', 'path');
         let error = new Error();
-        let path = 'some/path';
         let request = {
-            body: { path }
+            body: {
+                path: directoryPath
+            }
         };
         let response = { };
 

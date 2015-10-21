@@ -26,7 +26,7 @@ function run (socket, runOptions) {
 
         return Promise.resolve(config.beforeProtractor())
         .then(() => {
-            log.silly('Starting Protractor...\n');
+            log.info('Starting Protractor...\n');
             return startProtractor(socket, runOptions);
         })
         .catch((error) => {

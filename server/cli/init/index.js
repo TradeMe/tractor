@@ -13,13 +13,13 @@ import installTractorDependenciesLocally from './install-tractor-dependencies-lo
 import setUpSelenium from './set-up-selenium';
 
 export default function init () {
-    log.silly('Setting up tractor...');
+    log.info('Setting up tractor...');
 
     return createTestDirectoryStructure.run(config.testDirectory)
     .then(() => createBaseTestFiles.run(config.testDirectory))
     .then(() => installTractorDependenciesLocally.run())
     .then(() => setUpSelenium.run())
-    .then(() => log.silly('Set up complete!'))
+    .then(() => log.info('Set up complete!'))
     .catch((error) => {
         log.error('Something broke, sorry :(');
         log.error(error.message);

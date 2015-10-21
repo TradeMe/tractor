@@ -17,6 +17,7 @@ chai.use(sinonChai);
 import errorHandler from '../errors/error-handler';
 import fileStructure from '../file-structure';
 import getFileStructure from './get-file-structure';
+import path from 'path';
 import TractorError from '../errors/TractorError';
 
 // Under test:
@@ -25,10 +26,13 @@ import saveFile from './save-file';
 describe('server/api: save-file:', () => {
     it('should save a file', () => {
         let data = 'data';
-        let path = 'some/path';
+        let filePath = path.join('some', 'path');
         let type = 'type';
         let request = {
-            body: { data, path },
+            body: {
+                data,
+                path: filePath
+            },
             params: { type }
         };
 
@@ -37,7 +41,7 @@ describe('server/api: save-file:', () => {
 
         return saveFile.handler(request)
         .then(() => {
-            expect(fileStructure.saveFile).to.have.been.calledWith(type, data, path);
+            expect(fileStructure.saveFile).to.have.been.calledWith(type, data, path.join('some', 'path'));
         })
         .finally(() => {
             fileStructure.saveFile.restore();
@@ -47,10 +51,13 @@ describe('server/api: save-file:', () => {
 
     it('should respond to the client with the current file structure', () => {
         let data = 'data';
-        let path = 'some/path';
+        let filePath = path.join('some', 'path');
         let type = 'type';
         let request = {
-            body: { data, path },
+            body: {
+                data,
+                path: filePath
+            },
             params: { type }
         };
         let response = {};
@@ -69,12 +76,15 @@ describe('server/api: save-file:', () => {
     });
 
     it('should handle known TractorErrors', () => {
-        let error = new TractorError();
         let data = 'data';
-        let path = 'some/path';
+        let error = new TractorError();
+        let filePath = path.join('some', 'path');
         let type = 'type';
         let request = {
-            body: { data, path },
+            body: {
+                data,
+                path: filePath
+            },
             params: { type }
         };
         let response = { };
@@ -93,12 +103,15 @@ describe('server/api: save-file:', () => {
     });
 
     it('should handle unknown errors', () => {
-        let error = new Error();
         let data = 'data';
-        let path = 'some/path';
+        let error = new Error();
+        let filePath = path.join('some', 'path');
         let type = 'type';
         let request = {
-            body: { data, path },
+            body: {
+                data,
+                path: filePath
+            },
             params: { type }
         };
         let response = { };
@@ -108,7 +121,7 @@ describe('server/api: save-file:', () => {
 
         return saveFile.handler(request, response)
         .then(() => {
-            expect(errorHandler.handler).to.have.been.calledWith(response, new TractorError('Could not save "some/path"', 500));
+            expect(errorHandler.handler).to.have.been.calledWith(response, new TractorError(`Could not save "${path.join('some', 'path')}"`, 500));
         })
         .finally(() => {
             fileStructure.saveFile.restore();

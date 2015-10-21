@@ -29,7 +29,7 @@ describe('server/cli/init: index:', () => {
         sinon.stub(createBaseTestFiles, 'run').returns(Promise.resolve());
         sinon.stub(installTractorDependenciesLocally, 'run').returns(Promise.resolve());
         sinon.stub(setUpSelenium, 'run').returns(Promise.resolve());
-        sinon.stub(log, 'silly');
+        sinon.stub(log, 'info');
 
         return cliInit()
         .then(() => {
@@ -43,7 +43,7 @@ describe('server/cli/init: index:', () => {
             createBaseTestFiles.run.restore();
             installTractorDependenciesLocally.run.restore();
             setUpSelenium.run.restore();
-            log.silly.restore();
+            log.info.restore();
         });
     });
 
@@ -52,19 +52,19 @@ describe('server/cli/init: index:', () => {
         sinon.stub(createBaseTestFiles, 'run').returns(Promise.resolve());
         sinon.stub(installTractorDependenciesLocally, 'run').returns(Promise.resolve());
         sinon.stub(setUpSelenium, 'run').returns(Promise.resolve());
-        sinon.stub(log, 'silly');
+        sinon.stub(log, 'info');
 
         return cliInit()
         .then(() => {
-            expect(log.silly).to.have.been.calledWith('Setting up tractor...');
-            expect(log.silly).to.have.been.calledWith('Set up complete!');
+            expect(log.info).to.have.been.calledWith('Setting up tractor...');
+            expect(log.info).to.have.been.calledWith('Set up complete!');
         })
         .finally(() => {
             createTestDirectoryStructure.run.restore();
             createBaseTestFiles.run.restore();
             installTractorDependenciesLocally.run.restore();
             setUpSelenium.run.restore();
-            log.silly.restore();
+            log.info.restore();
         });
     });
 
@@ -72,7 +72,7 @@ describe('server/cli/init: index:', () => {
         let message = 'error';
         sinon.stub(createTestDirectoryStructure, 'run').returns(Promise.reject(new Error(message)));
         sinon.stub(log, 'error');
-        sinon.stub(log, 'silly');
+        sinon.stub(log, 'info');
 
         return cliInit()
         .catch(() => { })
@@ -83,7 +83,7 @@ describe('server/cli/init: index:', () => {
         .finally(() => {
             createTestDirectoryStructure.run.restore();
             log.error.restore();
-            log.silly.restore();
+            log.info.restore();
         });
     });
 });

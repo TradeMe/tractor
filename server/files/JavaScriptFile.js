@@ -28,7 +28,7 @@ export default class JavaScriptFile extends File {
         })
         .catch((error) => {
             console.error(error);
-            throw new TractorError(`Parsing "${this.name}" failed.`, 400);
+            throw new TractorError(`Parsing "${this.path}" failed.`, 400);
         });
     }
 
@@ -46,7 +46,7 @@ export default class JavaScriptFile extends File {
         return super.save()
         .catch((error) => {
             console.error(error);
-            throw new TractorError(`Saving "${this.name}" failed.`, 400);
+            throw new TractorError(`Saving "${this.path}" failed.`, 400);
         });
     }
 }

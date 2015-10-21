@@ -16,6 +16,7 @@ chai.use(sinonChai);
 import constants from '../constants';
 import File from '../files/File';
 import fs from 'fs';
+import path from 'path';
 
 // Under test:
 import Directory from './Directory';
@@ -23,28 +24,29 @@ import Directory from './Directory';
 describe('server/file-structure: Directory:', () => {
     describe('Directory constructor:', () => {
         it('should create a new Directory', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let fileStructure = {
                 addDirectory: _.noop
             };
-            let path = 'some/path/to/directory';
 
-            let directory = new Directory(path, null, fileStructure);
+            let directory = new Directory(directoryPath, null, fileStructure);
 
             expect(directory).to.be.an.instanceof(Directory);
         });
 
         it('should work out the directory name from the `path`', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let fileStructure = {
                 addDirectory: _.noop
             };
-            let path = 'some/path/to/directory';
 
-            let directory = new Directory(path, null, fileStructure);
+            let directory = new Directory(directoryPath, null, fileStructure);
 
             expect(directory.name).to.equal('directory');
         });
 
         it('should copy properties from it\'s parent', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let fileStructure = {
                 addDirectory: _.noop
             };
@@ -53,15 +55,15 @@ describe('server/file-structure: Directory:', () => {
                 extension: 'parentExtension',
                 type: 'parentType'
             };
-            let path = 'some/path/to/directory';
 
-            let directory = new Directory(path, parent, fileStructure);
+            let directory = new Directory(directoryPath, parent, fileStructure);
 
             expect(directory.extension).to.equal('parentExtension');
             expect(directory.type).to.equal('parentType');
         });
 
         it('should use its name as its type if its parent doesn\'t have a type', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let fileStructure = {
                 addDirectory: _.noop
             };
@@ -69,25 +71,24 @@ describe('server/file-structure: Directory:', () => {
                 addDirectory: _.noop,
                 extension: 'parentExtension'
             };
-            let path = 'some/path/to/directory';
 
-            let directory = new Directory(path, parent, fileStructure);
+            let directory = new Directory(directoryPath, parent, fileStructure);
 
             expect(directory.type).to.equal('directory');
         });
 
         it('should look up the extension for its type if its parent doesn\'t have an extension', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let fileStructure = {
                 addDirectory: _.noop
             };
             let parent = {
                 addDirectory: _.noop
             };
-            let path = 'some/path/to/directory';
 
             constants.EXTENSIONS.directory = 'directoryExtension';
 
-            let directory = new Directory(path, parent, fileStructure);
+            let directory = new Directory(directoryPath, parent, fileStructure);
 
             expect(directory.extension).to.equal('directoryExtension');
 
@@ -97,17 +98,17 @@ describe('server/file-structure: Directory:', () => {
 
     describe('Directory.read:', () => {
         it('should read the directory', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let fileStructure = {
                 addDirectory: _.noop
             };
             let parent = {
                 addDirectory: _.noop
             };
-            let path = 'some/path/to/directory';
 
             sinon.stub(fs, 'readdirAsync').returns(Promise.resolve([]));
 
-            let directory = new Directory(path, parent, fileStructure);
+            let directory = new Directory(directoryPath, parent, fileStructure);
 
             return directory.read()
             .then(() => {
@@ -119,13 +120,13 @@ describe('server/file-structure: Directory:', () => {
         });
 
         it('should read any directories contained within the Directory', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let fileStructure = {
                 addDirectory: _.noop
             };
             let parent = {
                 addDirectory: _.noop
             };
-            let path = 'some/path/to/directory';
             let stat = {
                 isDirectory: _.noop
             };
@@ -137,11 +138,11 @@ describe('server/file-structure: Directory:', () => {
             sinon.stub(fs, 'statAsync').returns(Promise.resolve(stat));
             sinon.stub(stat, 'isDirectory').returns(true);
 
-            let directory = new Directory(path, parent, fileStructure);
+            let directory = new Directory(directoryPath, parent, fileStructure);
 
             return directory.read()
             .then(() => {
-                expect(fs.statAsync).to.have.been.called.with('some/path/to/directory/subdirectory');
+                expect(fs.statAsync).to.have.been.called.with(path.join('some', 'path', 'to', 'directory', 'subdirectory'));
                 expect(Directory.prototype.read).to.have.been.calledTwice();
             })
             .finally(() => {
@@ -152,6 +153,7 @@ describe('server/file-structure: Directory:', () => {
         });
 
         it('should read any files contained within the Directory', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let fileStructure = {
                 addDirectory: _.noop,
                 addFile: _.noop
@@ -160,7 +162,6 @@ describe('server/file-structure: Directory:', () => {
                 addDirectory: _.noop,
                 addFile: _.noop
             };
-            let path = 'some/path/to/directory';
             let stat = {
                 isDirectory: _.noop
             };
@@ -170,7 +171,7 @@ describe('server/file-structure: Directory:', () => {
             sinon.stub(fs, 'statAsync').returns(Promise.resolve(stat));
             sinon.stub(stat, 'isDirectory').returns(false);
 
-            let directory = new Directory(path, parent, fileStructure);
+            let directory = new Directory(directoryPath, parent, fileStructure);
             directory.type = 'components';
 
             return directory.read()
@@ -188,21 +189,21 @@ describe('server/file-structure: Directory:', () => {
 
     describe('Directory.save:', () => {
         it('should save the directory', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let fileStructure = {
                 addDirectory: _.noop
             };
             let parent = {
                 addDirectory: _.noop
             };
-            let path = 'some/path/to/directory';
 
             sinon.stub(fs, 'mkdirAsync').returns(Promise.resolve());
 
-            let directory = new Directory(path, parent, fileStructure);
+            let directory = new Directory(directoryPath, parent, fileStructure);
 
             return directory.save()
             .then(() => {
-                expect(fs.mkdirAsync).to.have.been.calledWith('some/path/to/directory');
+                expect(fs.mkdirAsync).to.have.been.calledWith(path.join('some', 'path', 'to', 'directory'));
             })
             .finally(() => {
                 fs.mkdirAsync.restore();
@@ -210,18 +211,18 @@ describe('server/file-structure: Directory:', () => {
         });
 
         it('should add the directory to it\'s parent', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let fileStructure = {
                 addDirectory: _.noop
             };
             let parent = {
                 addDirectory: _.noop
             };
-            let path = 'some/path/to/directory';
 
             sinon.stub(fs, 'mkdirAsync').returns(Promise.resolve());
             sinon.stub(parent, 'addDirectory');
 
-            let directory = new Directory(path, parent, fileStructure);
+            let directory = new Directory(directoryPath, parent, fileStructure);
 
             return directory.save()
             .then(() => {
@@ -233,13 +234,13 @@ describe('server/file-structure: Directory:', () => {
         });
 
         it('should save all it\'s sub-directories', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let fileStructure = {
                 addDirectory: _.noop
             };
             let parent = {
                 addDirectory: _.noop
             };
-            let path = 'some/path/to/directory';
             let subdirectory = {
                 save: _.noop
             };
@@ -248,7 +249,7 @@ describe('server/file-structure: Directory:', () => {
             sinon.stub(parent, 'addDirectory');
             sinon.stub(subdirectory, 'save');
 
-            let directory = new Directory(path, parent, fileStructure);
+            let directory = new Directory(directoryPath, parent, fileStructure);
             directory.directories.push(subdirectory);
 
             return directory.save()
@@ -261,13 +262,13 @@ describe('server/file-structure: Directory:', () => {
         });
 
         it('should save all it\'s files', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let fileStructure = {
                 addDirectory: _.noop
             };
             let parent = {
                 addDirectory: _.noop
             };
-            let path = 'some/path/to/directory';
             let file = {
                 save: _.noop
             };
@@ -276,7 +277,7 @@ describe('server/file-structure: Directory:', () => {
             sinon.stub(fs, 'mkdirAsync').returns(Promise.resolve());
             sinon.stub(parent, 'addDirectory');
 
-            let directory = new Directory(path, parent, fileStructure);
+            let directory = new Directory(directoryPath, parent, fileStructure);
             directory.files.push(file);
 
             return directory.save()
@@ -291,6 +292,7 @@ describe('server/file-structure: Directory:', () => {
 
     describe('Directory.delete:', () => {
         it('should delete the directory', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let fileStructure = {
                 addDirectory: _.noop,
                 removeDirectory: _.noop
@@ -299,15 +301,14 @@ describe('server/file-structure: Directory:', () => {
                 addDirectory: _.noop,
                 removeDirectory: _.noop
             };
-            let path = 'some/path/to/directory';
 
             sinon.stub(fs, 'rmdirAsync').returns(Promise.resolve());
 
-            let directory = new Directory(path, parent, fileStructure);
+            let directory = new Directory(directoryPath, parent, fileStructure);
 
             return directory.delete()
             .then(() => {
-                expect(fs.rmdirAsync).to.have.been.calledWith('some/path/to/directory');
+                expect(fs.rmdirAsync).to.have.been.calledWith(path.join('some', 'path', 'to', 'directory'));
             })
             .finally(() => {
                 fs.rmdirAsync.restore();
@@ -315,6 +316,7 @@ describe('server/file-structure: Directory:', () => {
         });
 
         it('should remove the directory from it\'s parent', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let fileStructure = {
                 addDirectory: _.noop,
                 removeDirectory: _.noop
@@ -323,12 +325,11 @@ describe('server/file-structure: Directory:', () => {
                 addDirectory: _.noop,
                 removeDirectory: _.noop
             };
-            let path = 'some/path/to/directory';
 
             sinon.stub(fs, 'rmdirAsync').returns(Promise.resolve());
             sinon.stub(parent, 'removeDirectory');
 
-            let directory = new Directory(path, parent, fileStructure);
+            let directory = new Directory(directoryPath, parent, fileStructure);
 
             return directory.delete()
             .then(() => {
@@ -340,6 +341,7 @@ describe('server/file-structure: Directory:', () => {
         });
 
         it('should delete all it\'s sub-directories', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let fileStructure = {
                 addDirectory: _.noop,
                 removeDirectory: _.noop
@@ -348,7 +350,6 @@ describe('server/file-structure: Directory:', () => {
                 addDirectory: _.noop,
                 removeDirectory: _.noop
             };
-            let path = 'some/path/to/directory';
             let subdirectory = {
                 delete: _.noop
             };
@@ -357,7 +358,7 @@ describe('server/file-structure: Directory:', () => {
             sinon.stub(parent, 'removeDirectory');
             sinon.stub(subdirectory, 'delete');
 
-            let directory = new Directory(path, parent, fileStructure);
+            let directory = new Directory(directoryPath, parent, fileStructure);
             directory.directories.push(subdirectory);
 
             return directory.delete()
@@ -370,6 +371,7 @@ describe('server/file-structure: Directory:', () => {
         });
 
         it('should save all it\'s files', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let fileStructure = {
                 addDirectory: _.noop,
                 removeDirectory: _.noop
@@ -378,7 +380,6 @@ describe('server/file-structure: Directory:', () => {
                 addDirectory: _.noop,
                 removeDirectory: _.noop
             };
-            let path = 'some/path/to/directory';
             let file = {
                 delete: _.noop
             };
@@ -387,7 +388,7 @@ describe('server/file-structure: Directory:', () => {
             sinon.stub(fs, 'rmdirAsync').returns(Promise.resolve());
             sinon.stub(parent, 'addDirectory');
 
-            let directory = new Directory(path, parent, fileStructure);
+            let directory = new Directory(directoryPath, parent, fileStructure);
             directory.files.push(file);
 
             return directory.delete()
@@ -402,14 +403,14 @@ describe('server/file-structure: Directory:', () => {
 
     describe('Directory.addFile:', () => {
         it('should add a file to the directory', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let file = {};
             let fileStructure = {
                 addDirectory: _.noop,
                 addFile: _.noop
             };
-            let path = 'some/path/to/directory';
 
-            let directory = new Directory(path, null, fileStructure);
+            let directory = new Directory(directoryPath, null, fileStructure);
 
             directory.addFile(file);
 
@@ -419,14 +420,14 @@ describe('server/file-structure: Directory:', () => {
         });
 
         it('should not add the file if it has already been added', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let file = {};
             let fileStructure = {
                 addDirectory: _.noop,
                 addFile: _.noop
             };
-            let path = 'some/path/to/directory';
 
-            let directory = new Directory(path, null, fileStructure);
+            let directory = new Directory(directoryPath, null, fileStructure);
 
             directory.addFile(file);
             directory.addFile(file);
@@ -435,16 +436,16 @@ describe('server/file-structure: Directory:', () => {
         });
 
         it('should add the file to the fileStructure', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let file = {};
             let fileStructure = {
                 addDirectory: _.noop,
                 addFile: _.noop
             };
-            let path = 'some/path/to/directory';
 
             sinon.stub(fileStructure, 'addFile');
 
-            let directory = new Directory(path, null, fileStructure);
+            let directory = new Directory(directoryPath, null, fileStructure);
 
             directory.addFile(file);
 
@@ -454,14 +455,14 @@ describe('server/file-structure: Directory:', () => {
 
     describe('Directory.removeFile:', () => {
         it('should remove a file from the directory', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let file = {};
             let fileStructure = {
                 addDirectory: _.noop,
                 removeFile: _.noop
             };
-            let path = 'some/path/to/directory';
 
-            let directory = new Directory(path, null, fileStructure);
+            let directory = new Directory(directoryPath, null, fileStructure);
             directory.files.push(directory);
 
             directory.removeFile(file);
@@ -470,16 +471,16 @@ describe('server/file-structure: Directory:', () => {
         });
 
         it('should remove the file from the fileStructure', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let file = {};
             let fileStructure = {
                 addDirectory: _.noop,
                 removeFile: _.noop
             };
-            let path = 'some/path/to/directory';
 
             sinon.stub(fileStructure, 'removeFile');
 
-            let directory = new Directory(path, null, fileStructure);
+            let directory = new Directory(directoryPath, null, fileStructure);
             directory.files.push(directory);
 
             directory.removeFile(file);
@@ -490,13 +491,13 @@ describe('server/file-structure: Directory:', () => {
 
     describe('Directory.addDirectory:', () => {
         it('should add a directory to the directory', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let fileStructure = {
                 addDirectory: _.noop
             };
-            let path = 'some/path/to/directory';
             let subdirectory = {};
 
-            let directory = new Directory(path, null, fileStructure);
+            let directory = new Directory(directoryPath, null, fileStructure);
 
             directory.addDirectory(subdirectory);
 
@@ -506,13 +507,13 @@ describe('server/file-structure: Directory:', () => {
         });
 
         it('should not add the directory if it has already been added', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let fileStructure = {
                 addDirectory: _.noop
             };
-            let path = 'some/path/to/directory';
             let subdirectory = {};
 
-            let directory = new Directory(path, null, fileStructure);
+            let directory = new Directory(directoryPath, null, fileStructure);
 
             directory.addDirectory(subdirectory);
             directory.addDirectory(subdirectory);
@@ -521,15 +522,15 @@ describe('server/file-structure: Directory:', () => {
         });
 
         it('should add the directory to the fileStructure', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let fileStructure = {
                 addDirectory: _.noop
             };
-            let path = 'some/path/to/directory';
             let subdirectory = {};
 
             sinon.stub(fileStructure, 'addDirectory');
 
-            let directory = new Directory(path, null, fileStructure);
+            let directory = new Directory(directoryPath, null, fileStructure);
 
             directory.addDirectory(subdirectory);
 
@@ -539,14 +540,14 @@ describe('server/file-structure: Directory:', () => {
 
     describe('Directory.removeDirectory', () => {
         it('should remove a directory from the directory', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let fileStructure = {
                 addDirectory: _.noop,
                 removeDirectory: _.noop
             };
-            let path = 'some/path/to/directory';
             let subdirectory = {};
 
-            let directory = new Directory(path, null, fileStructure);
+            let directory = new Directory(directoryPath, null, fileStructure);
             directory.directories.push(subdirectory);
 
             directory.removeDirectory(subdirectory);
@@ -555,16 +556,16 @@ describe('server/file-structure: Directory:', () => {
         });
 
         it('should remove the directory from the fileStructure', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let fileStructure = {
                 addDirectory: _.noop,
                 removeDirectory: _.noop
             };
-            let path = 'some/path/to/directory';
             let subdirectory = {};
 
             sinon.stub(fileStructure, 'removeDirectory');
 
-            let directory = new Directory(path, null, fileStructure);
+            let directory = new Directory(directoryPath, null, fileStructure);
             directory.directories.push(subdirectory);
 
             directory.removeDirectory(subdirectory);
@@ -575,15 +576,15 @@ describe('server/file-structure: Directory:', () => {
 
     describe('Directory.getDirectory:', () => {
         it('should return the directory with the given name', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let fileStructure = {
                 addDirectory: _.noop
             };
-            let path = 'some/path/to/directory';
             let subdirectory = {
                 name: 'directory'
             };
 
-            let directory = new Directory(path, null, fileStructure);
+            let directory = new Directory(directoryPath, null, fileStructure);
             directory.addDirectory(subdirectory);
 
             expect(directory.getDirectory('directory')).to.equal(subdirectory);
@@ -592,15 +593,15 @@ describe('server/file-structure: Directory:', () => {
 
     describe('Directory.toJSON:', () => {
         it('should return important properties of the directory', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let file = {};
             let fileStructure = {
                 addDirectory: _.noop,
                 addFile: _.noop
             };
-            let path = 'some/path/to/directory';
             let subdirectory = {};
 
-            let directory = new Directory(path, null, fileStructure);
+            let directory = new Directory(directoryPath, null, fileStructure);
             directory.addDirectory(subdirectory);
             directory.addFile(file);
 
@@ -608,21 +609,21 @@ describe('server/file-structure: Directory:', () => {
                 directories: [{}],
                 files: [{}],
                 name: 'directory',
-                path: 'some/path/to/directory',
+                path: path.join('some', 'path', 'to', 'directory'),
                 isDirectory: true
             });
         });
 
         it('should order the directories in alphabetic order', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let fileStructure = {
                 addDirectory: _.noop,
                 addFile: _.noop
             };
-            let path = 'some/path/to/directory';
             let subdirectory1 = { name: 'z' };
             let subdirectory2 = { name: 'a' };
 
-            let directory = new Directory(path, null, fileStructure);
+            let directory = new Directory(directoryPath, null, fileStructure);
             directory.addDirectory(subdirectory1);
             directory.addDirectory(subdirectory2);
 
@@ -630,21 +631,21 @@ describe('server/file-structure: Directory:', () => {
                 directories: [{ name: 'a' }, { name: 'z' }],
                 files: [],
                 name: 'directory',
-                path: 'some/path/to/directory',
+                path: path.join('some', 'path', 'to', 'directory'),
                 isDirectory: true
             });
         });
 
         it('should order the files in alphabetic order', () => {
+            let directoryPath = path.join('some', 'path', 'to', 'directory');
             let file1 = { name: 'z' };
             let file2 = { name: 'a' };
             let fileStructure = {
                 addDirectory: _.noop,
                 addFile: _.noop
             };
-            let path = 'some/path/to/directory';
 
-            let directory = new Directory(path, null, fileStructure);
+            let directory = new Directory(directoryPath, null, fileStructure);
             directory.addFile(file1);
             directory.addFile(file2);
 
@@ -652,7 +653,7 @@ describe('server/file-structure: Directory:', () => {
                 directories: [],
                 files: [{ name: 'a' }, { name: 'z' }],
                 name: 'directory',
-                path: 'some/path/to/directory',
+                path: path.join('some', 'path', 'to', 'directory'),
                 isDirectory: true
             });
         });

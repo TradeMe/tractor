@@ -45,10 +45,10 @@
 }*/
 module.exports = function () {
     var ControlPanel = function ControlPanel() {
-        this.componentsLink = element(by.css('[href="#/component-editor/"]'));
-        this.featuresLink = element(by.css('[href="#/feature-editor/"]'));
-        this.stepDefinitionsLink = element(by.css('[href="#/step-definition-editor/"]'));
-        this.mockDataLink = element(by.css('[href="#/mock-data-editor/"]'));
+        this.componentsLink = element(by.css('[href="/components/"]'));
+        this.featuresLink = element(by.css('[href="/features/"]'));
+        this.stepDefinitionsLink = element(by.css('[href="/step-definitions/"]'));
+        this.mockDataLink = element(by.css('[href="/mock-data/"]'));
         this.runProtractorButton = element(by.css('tractor-action[action="Run protractor"]'));
         this.serverStatusBadge = element(by.css('.control-panel__server-status'));
     };

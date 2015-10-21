@@ -4,7 +4,6 @@
 // Utilities:
 import _ from 'lodash';
 import chai from 'chai';
-import dedent from 'dedent';
 import dirtyChai from 'dirty-chai';
 import Promise from 'bluebird';
 import sinon from 'sinon';
@@ -19,6 +18,8 @@ chai.use(sinonChai);
 import FeatureLexerFormatter from './utils/FeatureLexerFormatter';
 import File from './File';
 import gherkin from 'gherkin';
+import os from 'os';
+import path from 'path';
 import StepDefinitionGenerator from './utils/StepDefinitionGenerator';
 import TractorError from '../errors/TractorError';
 
@@ -31,7 +32,7 @@ describe('server/files: FeatureFile:', () => {
             let directory = {
                 addFile: _.noop
             };
-            let filePath = 'some/path';
+            let filePath = path.join('some', 'path');
 
             let file = new FeatureFile(filePath, directory);
 
@@ -42,7 +43,7 @@ describe('server/files: FeatureFile:', () => {
             let directory = {
                 addFile: _.noop
             };
-            let filePath = 'some/path';
+            let filePath = path.join('some', 'path');
 
             let file = new FeatureFile(filePath, directory);
 
@@ -55,7 +56,7 @@ describe('server/files: FeatureFile:', () => {
             let directory = {
                 addFile: _.noop
             };
-            let filePath = 'some/path';
+            let filePath = path.join('some', 'path');
             let scan = _.noop;
             let lexerConstructor = function () {
                 this.scan = scan;
@@ -83,7 +84,7 @@ describe('server/files: FeatureFile:', () => {
             let directory = {
                 addFile: _.noop
             };
-            let filePath = 'some/path';
+            let filePath = path.join('some', 'path');
 
             sinon.stub(FeatureLexerFormatter.prototype, 'done').returns(features);
             sinon.stub(File.prototype, 'read').returns(Promise.resolve());
@@ -109,7 +110,7 @@ describe('server/files: FeatureFile:', () => {
             let directory = {
                 addFile: _.noop
             };
-            let filePath = 'some/feature/file.feature';
+            let filePath = path.join('some', 'feature', 'file.feature');
 
             sinon.stub(File.prototype, 'read').returns(Promise.reject(error));
             sinon.stub(console, 'error');
@@ -121,7 +122,7 @@ describe('server/files: FeatureFile:', () => {
                 expect(console.error).to.have.been.calledWith(error);
 
                 expect(tractorError).to.be.an.instanceof(TractorError);
-                expect(tractorError.message).to.equal('Lexing "file" failed.');
+                expect(tractorError.message).to.equal(`Lexing "${path.join('some', 'feature', 'file.feature')}" failed.`);
                 expect(tractorError.status).to.equal(400);
             })
             .finally(() => {
@@ -136,7 +137,7 @@ describe('server/files: FeatureFile:', () => {
             let directory = {
                 addFile: _.noop
             };
-            let filePath = 'some/feature/file.feature';
+            let filePath = path.join('some', 'feature', 'file.feature');
 
             sinon.stub(File.prototype, 'save').returns(Promise.resolve());
             sinon.stub(StepDefinitionGenerator.prototype, 'generate').returns(Promise.resolve());
@@ -157,7 +158,7 @@ describe('server/files: FeatureFile:', () => {
             let directory = {
                 addFile: _.noop
             };
-            let filePath = 'some/feature/file.feature';
+            let filePath = path.join('some', 'feature', 'file.feature');
 
             sinon.stub(File.prototype, 'save').returns(Promise.resolve());
             sinon.stub(StepDefinitionGenerator.prototype, 'generate').returns(Promise.resolve());
@@ -175,16 +176,12 @@ describe('server/files: FeatureFile:', () => {
         });
 
         it('should replace any newline characters in the content to be saved', () => {
-            let data = 'some%%NEWLINE%%content%%NEWLINE%%with%%NEWLINE%%newlines';
-            let dataWithNewlines = dedent
-                                  `some
-                                   content
-                                   with
-                                   newlines`;
+            let data = 'some\ncontent\nwith\nnewlines';
+            let dataWithNewlines = 'some' + os.EOL + 'content' + os.EOL + 'with' + os.EOL + 'newlines';
             let directory = {
                 addFile: _.noop
             };
-            let filePath = 'some/feature/file.feature';
+            let filePath = path.join('some', 'feature', 'file.feature');
 
             sinon.stub(File.prototype, 'save').returns(Promise.resolve());
             sinon.stub(StepDefinitionGenerator.prototype, 'generate').returns(Promise.resolve());
@@ -206,7 +203,7 @@ describe('server/files: FeatureFile:', () => {
             let directory = {
                 addFile: _.noop
             };
-            let filePath = 'some/feature/file.feature';
+            let filePath = path.join('some', 'feature', 'file.feature');
 
             sinon.stub(File.prototype, 'save').returns(Promise.reject(error));
             sinon.stub(console, 'error');
@@ -218,7 +215,7 @@ describe('server/files: FeatureFile:', () => {
                 expect(console.error).to.have.been.calledWith(error);
 
                 expect(tractorError).to.be.an.instanceof(TractorError);
-                expect(tractorError.message).to.equal('Generating step definitions from "file" failed.');
+                expect(tractorError.message).to.equal(`Generating step definitions from "${path.join('some', 'feature', 'file.feature')}" failed.`);
                 expect(tractorError.status).to.equal(400);
             })
             .finally(() => {

@@ -17,20 +17,22 @@ var CustomWorld = (function () {
 })();
 
 module.exports = function () {
+    this.setDefaultTimeout(60 * 1000);
+
     this.World = function (callback) {
         var w = new CustomWorld();
         return callback(w);
     };
 
     /* eslint-disable new-cap */
-    this.Before(function (callback) {
+    this.Before(function (scenario, callback) {
     /* eslint-enable new-cap */
         global.httpBackend = new HttpBackend(global.browser);
         callback();
     });
 
     /* eslint-disable new-cap */
-    this.After(function(callback) {
+    this.After(function(scenario, callback) {
     /* eslint-enable new-cap */
         global.httpBackend.clear();
         callback();

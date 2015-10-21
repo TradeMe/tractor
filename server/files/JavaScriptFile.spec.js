@@ -18,6 +18,7 @@ chai.use(sinonChai);
 import escodegen from 'escodegen';
 import esprima from 'esprima';
 import File from './File';
+import path from 'path';
 import TractorError from '../errors/TractorError';
 
 // Under test:
@@ -29,7 +30,7 @@ describe('server/files: JavaScriptFile:', () => {
             let directory = {
                 addFile: _.noop
             };
-            let filePath = 'some/path';
+            let filePath = path.join('some', 'path');
 
             let file = new JavaScriptFile(filePath, directory);
 
@@ -40,7 +41,7 @@ describe('server/files: JavaScriptFile:', () => {
             let directory = {
                 addFile: _.noop
             };
-            let filePath = 'some/path';
+            let filePath = path.join('some', 'path');
 
             let file = new JavaScriptFile(filePath, directory);
 
@@ -53,7 +54,7 @@ describe('server/files: JavaScriptFile:', () => {
             let directory = {
                 addFile: _.noop
             };
-            let filePath = 'some/path';
+            let filePath = path.join('some', 'path');
 
             sinon.stub(File.prototype, 'read').returns(Promise.resolve());
 
@@ -73,7 +74,7 @@ describe('server/files: JavaScriptFile:', () => {
             let directory = {
                 addFile: _.noop
             };
-            let filePath = 'some/path';
+            let filePath = path.join('some', 'path');
 
             sinon.stub(esprima, 'parse').returns(ast);
             sinon.stub(File.prototype, 'read').returns(Promise.resolve());
@@ -95,7 +96,7 @@ describe('server/files: JavaScriptFile:', () => {
             let directory = {
                 addFile: _.noop
             };
-            let filePath = 'some/feature/file.js';
+            let filePath = path.join('some', 'javascript', 'file.js');
 
             sinon.stub(File.prototype, 'read').returns(Promise.reject(error));
             sinon.stub(console, 'error');
@@ -107,7 +108,7 @@ describe('server/files: JavaScriptFile:', () => {
                 expect(console.error).to.have.been.calledWith(error);
 
                 expect(tractorError).to.be.an.instanceof(TractorError);
-                expect(tractorError.message).to.equal('Parsing "file" failed.');
+                expect(tractorError.message).to.equal(`Parsing "${path.join('some', 'javascript', 'file.js')}" failed.`);
                 expect(tractorError.status).to.equal(400);
             })
             .finally(() => {
@@ -122,7 +123,7 @@ describe('server/files: JavaScriptFile:', () => {
             let directory = {
                 addFile: _.noop
             };
-            let filePath = 'some/feature/file.js';
+            let filePath = path.join('some', 'javascript', 'file.js');
 
             sinon.stub(File.prototype, 'save').returns(Promise.resolve());
 
@@ -144,7 +145,7 @@ describe('server/files: JavaScriptFile:', () => {
             let directory = {
                 addFile: _.noop
             };
-            let filePath = 'some/feature/file.feature';
+            let filePath = path.join('some', 'javascript', 'file.js');
 
             sinon.stub(escodegen, 'generate');
             sinon.stub(File.prototype, 'save').returns(Promise.resolve());
@@ -166,7 +167,7 @@ describe('server/files: JavaScriptFile:', () => {
             let directory = {
                 addFile: _.noop
             };
-            let filePath = 'some/feature/file.js';
+            let filePath = path.join('some', 'javascript', 'file.js');
 
             sinon.stub(escodegen, 'generate');
             sinon.stub(File.prototype, 'save').returns(Promise.resolve());
@@ -194,7 +195,7 @@ describe('server/files: JavaScriptFile:', () => {
             let directory = {
                 addFile: _.noop
             };
-            let filePath = 'some/feature/file.js';
+            let filePath = path.join('some', 'javascript', 'file.js');
 
             sinon.stub(escodegen, 'generate');
             sinon.stub(File.prototype, 'save').returns(Promise.resolve());
@@ -224,7 +225,7 @@ describe('server/files: JavaScriptFile:', () => {
             let directory = {
                 addFile: _.noop
             };
-            let filePath = 'some/feature/file.js';
+            let filePath = path.join('some', 'javascript', 'file.js');
 
             sinon.stub(File.prototype, 'save').returns(Promise.reject(error));
             sinon.stub(console, 'error');
@@ -236,7 +237,7 @@ describe('server/files: JavaScriptFile:', () => {
                 expect(console.error).to.have.been.calledWith(error);
 
                 expect(tractorError).to.be.an.instanceof(TractorError);
-                expect(tractorError.message).to.equal('Saving "file" failed.');
+                expect(tractorError.message).to.equal(`Saving "${path.join('some', 'javascript', 'file.js')}" failed.`);
                 expect(tractorError.status).to.equal(400);
             })
             .finally(() => {

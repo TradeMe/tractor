@@ -15,6 +15,7 @@ chai.use(sinonChai);
 import errorHandler from '../errors/error-handler';
 import fileStructure from '../file-structure';
 import getFileStructure from './get-file-structure';
+import path from 'path';
 import TractorError from '../errors/TractorError';
 
 // Under test:
@@ -22,9 +23,11 @@ import deleteItem from './delete-item';
 
 describe('server/api: delete-item:', () => {
     it('should delete a item', () => {
-        let path = 'some/path';
+        let filePath = path.join('some', 'path');
         let request = {
-            query: { path }
+            query: {
+                path: filePath
+            }
         };
 
         sinon.stub(fileStructure, 'deleteItem').returns(Promise.resolve());
@@ -32,7 +35,7 @@ describe('server/api: delete-item:', () => {
 
         return deleteItem.handler(request)
         .then(() => {
-            expect(fileStructure.deleteItem).to.have.been.calledWith(path);
+            expect(fileStructure.deleteItem).to.have.been.calledWith(path.join('some', 'path'));
         })
         .finally(() => {
             fileStructure.deleteItem.restore();
@@ -41,9 +44,11 @@ describe('server/api: delete-item:', () => {
     });
 
     it('should respond to the client with the current file structure', () => {
-        let path = 'some/path';
+        let filePath = path.join('some', 'path');
         let request = {
-            query: { path }
+            query: {
+                path: filePath
+            }
         };
         let response = {};
 
@@ -62,9 +67,11 @@ describe('server/api: delete-item:', () => {
 
     it('should handle known TractorErrors', () => {
         let error = new TractorError();
-        let path = 'some/path';
+        let filePath = path.join('some', 'path');
         let request = {
-            query: { path }
+            query: {
+                path: filePath
+            }
         };
         let response = { };
 
@@ -83,9 +90,11 @@ describe('server/api: delete-item:', () => {
 
     it('should handle unknown errors', () => {
         let error = new Error();
-        let path = 'some/path';
+        let filePath = path.join('some', 'path');
         let request = {
-            query: { path }
+            query: {
+                path: filePath
+            }
         };
         let response = { };
 
@@ -94,7 +103,7 @@ describe('server/api: delete-item:', () => {
 
         return deleteItem.handler(request, response)
         .then(() => {
-            expect(errorHandler.handler).to.have.been.calledWith(response, new TractorError('Could not delete "some/path"', 500));
+            expect(errorHandler.handler).to.have.been.calledWith(response, new TractorError(`Could not delete "${path.join('some', 'path')}"`, 500));
         })
         .finally(() => {
             fileStructure.deleteItem.restore();

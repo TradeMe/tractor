@@ -4,7 +4,7 @@
 import constants from '../../constants';
 
 // Utilities:
-import _ from 'lodash';
+import Promise from 'bluebird';
 
 // Dependencies:
 import componentTransformer from './component-transformer';
@@ -14,6 +14,6 @@ import mockDataTransformer from './mock-data-transformer';
 export default {
     [constants.COMPONENTS]: componentTransformer,
     [constants.FEATURES]: featureTransformer,
-    [constants.STEP_DEFINITIONS]: _.noop,
+    [constants.STEP_DEFINITIONS]: Promise.resolve,
     [constants.MOCK_DATA]: mockDataTransformer
 };
