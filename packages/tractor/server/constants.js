@@ -39,5 +39,5 @@ export default {
 
     CUCUMBER_COMMAND: `node ${join('node_modules', 'cucumber', 'bin', 'cucumber')} `,
 
-    FEATURE_NEWLINE: /%%NEWLINE%%/g
+    FEATURE_NEWLINE: /\n/g
 };

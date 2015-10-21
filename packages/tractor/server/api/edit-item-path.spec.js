@@ -19,6 +19,7 @@ import Directory from '../file-structure/Directory';
 import errorHandler from '../errors/error-handler';
 import fileStructure from '../file-structure';
 import File from '../files/File';
+import path from 'path';
 import transformers from './transformers';
 import TractorError from '../errors/TractorError';
 
@@ -33,19 +34,19 @@ describe('server/api: edit-item-path:', () => {
             delete: _.noop,
             directories: [],
             files: [],
-            path: 'some/path/to/directory/oldName'
+            path: path.join('some', 'path', 'to', 'directory', 'oldName')
         };
         let parentDirectory = {
             addDirectory: _.noop,
             extension: '.js',
-            path: 'some/path/to/directory'
+            path: path.join('some', 'path', 'to', 'directory')
         };
         let request = {
             body: {
                 isDirectory: true,
                 oldName: 'oldName',
                 newName: 'newName',
-                directoryPath: 'some/path/to/directory'
+                directoryPath: path.join('some', 'path', 'to', 'directory')
             },
             params: {}
         };
@@ -55,8 +56,8 @@ describe('server/api: edit-item-path:', () => {
         let structure = {};
 
         fileStructure.allDirectoriesByPath = {
-            'some/path/to/directory': parentDirectory,
-            'some/path/to/directory/oldName': directory
+            [parentDirectory.path]: parentDirectory,
+            [directory.path]: directory
         };
 
         sinon.stub(directory, 'delete').returns(Promise.resolve());
@@ -70,7 +71,7 @@ describe('server/api: edit-item-path:', () => {
 
             let newDirectory = Directory.prototype.save.getCall(0).thisValue;
             expect(newDirectory.name).to.equal('newName');
-            expect(newDirectory.path).to.equal('some/path/to/directory/newName');
+            expect(newDirectory.path).to.equal(path.join('some', 'path', 'to', 'directory', 'newName'));
 
         })
         .finally(() => {
@@ -88,22 +89,22 @@ describe('server/api: edit-item-path:', () => {
             delete: _.noop,
             directories: [],
             files: [],
-            path: 'some/path/to/directory/oldName'
+            path: path.join('some', 'path', 'to', 'directory', 'oldName')
         };
         let existingDirectory = {
-            path: 'some/path/to/directory/newName'
+            path: path.join('some', 'path', 'to', 'directory', 'newName')
         };
         let parentDirectory = {
             addDirectory: _.noop,
             extension: '.js',
-            path: 'some/path/to/directory'
+            path: path.join('some', 'path', 'to', 'directory')
         };
         let request = {
             body: {
                 isDirectory: true,
                 oldName: 'oldName',
                 newName: 'newName',
-                directoryPath: 'some/path/to/directory'
+                directoryPath: path.join('some', 'path', 'to', 'directory')
             },
             params: {}
         };
@@ -113,9 +114,9 @@ describe('server/api: edit-item-path:', () => {
         let structure = {};
 
         fileStructure.allDirectoriesByPath = {
-            'some/path/to/directory': parentDirectory,
-            'some/path/to/directory/oldName': directory,
-            'some/path/to/directory/newName': existingDirectory
+            [parentDirectory.path]: parentDirectory,
+            [directory.path]: directory,
+            [existingDirectory.path]: existingDirectory
         };
 
         sinon.stub(directory, 'delete').returns(Promise.resolve());
@@ -126,7 +127,7 @@ describe('server/api: edit-item-path:', () => {
         .then(() => {
             let newDirectory = Directory.prototype.save.getCall(0).thisValue;
             expect(newDirectory.name).to.equal('newName (1)');
-            expect(newDirectory.path).to.equal('some/path/to/directory/newName (1)');
+            expect(newDirectory.path).to.equal(path.join('some', 'path', 'to', 'directory', 'newName (1)'));
         })
         .finally(() => {
             Directory.prototype.save.restore();
@@ -143,25 +144,25 @@ describe('server/api: edit-item-path:', () => {
             delete: _.noop,
             directories: [],
             files: [],
-            path: 'some/path/to/directory/oldName/subDirectory'
+            path: path.join('some', 'path', 'to', 'directory', 'oldName', 'subDirectory')
         };
         let directory = {
             delete: _.noop,
             directories: [subdirectory],
             files: [],
-            path: 'some/path/to/directory/oldName'
+            path: path.join('some', 'path', 'to', 'directory', 'oldName')
         };
         let parentDirectory = {
             addDirectory: _.noop,
             extension: '.js',
-            path: 'some/path/to/directory'
+            path: path.join('some', 'path', 'to', 'directory')
         };
         let request = {
             body: {
                 isDirectory: true,
                 oldName: 'oldName',
                 newName: 'newName',
-                directoryPath: 'some/path/to/directory'
+                directoryPath: path.join('some', 'path', 'to', 'directory')
             },
             params: {}
         };
@@ -171,8 +172,8 @@ describe('server/api: edit-item-path:', () => {
         let structure = {};
 
         fileStructure.allDirectoriesByPath = {
-            'some/path/to/directory': parentDirectory,
-            'some/path/to/directory/oldName': directory
+            [parentDirectory.path]: parentDirectory,
+            [directory.path]: directory
         };
 
         sinon.stub(directory, 'delete').returns(Promise.resolve());
@@ -183,7 +184,7 @@ describe('server/api: edit-item-path:', () => {
         return editItemPath.handler(request, response)
         .then(() => {
             let newSubdirectory = Directory.prototype.save.getCall(1).thisValue;
-            expect(newSubdirectory.path).to.equal('some/path/to/directory/newName/subDirectory');
+            expect(newSubdirectory.path).to.equal(path.join('some', 'path', 'to', 'directory', 'newName', 'subDirectory'));
 
             expect(Directory.prototype.save).to.have.been.called();
             expect(subdirectory.delete).to.have.been.called();
@@ -204,21 +205,21 @@ describe('server/api: edit-item-path:', () => {
             delete: _.noop,
             directories: [],
             files: [],
-            path: 'some/path/to/directory/oldName',
+            path: path.join('some', 'path', 'to', 'directory', 'oldName'),
             type: 'components'
         };
-        let file = new File('some/path/to/directory/oldName/file', directory);
+        let file = new File(path.join('some', 'path', 'to', 'directory', 'oldName', 'file'), directory);
         let parentDirectory = {
             addDirectory: _.noop,
             extension: '.js',
-            path: 'some/path/to/directory'
+            path: path.join('some', 'path', 'to', 'directory')
         };
         let request = {
             body: {
                 isDirectory: true,
                 oldName: 'oldName',
                 newName: 'newName',
-                directoryPath: 'some/path/to/directory'
+                directoryPath: path.join('some', 'path', 'to', 'directory')
             },
             params: {}
         };
@@ -229,8 +230,8 @@ describe('server/api: edit-item-path:', () => {
 
         directory.files.push(file);
         fileStructure.allDirectoriesByPath = {
-            'some/path/to/directory': parentDirectory,
-            'some/path/to/directory/oldName': directory
+            [parentDirectory.path]: parentDirectory,
+            [directory.path]: directory
         };
 
         sinon.stub(directory, 'delete').returns(Promise.resolve());
@@ -246,7 +247,7 @@ describe('server/api: edit-item-path:', () => {
             expect(File.prototype.save).to.have.been.called();
 
             let newFile = File.prototype.save.getCall(0).thisValue;
-            expect(newFile.path).to.equal('some/path/to/directory/newName/file');
+            expect(newFile.path).to.equal(path.join('some', 'path', 'to', 'directory', 'newName', 'file'));
         })
         .finally(() => {
             Directory.prototype.save.restore();
@@ -270,15 +271,15 @@ describe('server/api: edit-item-path:', () => {
             directories: [],
             extension: '.js',
             files: [],
-            path: 'some/path/to/directory',
+            path: path.join('some', 'path', 'to', 'directory'),
             type: 'components'
         };
-        let file = new File('some/path/to/directory/oldName.js', directory);
+        let file = new File(path.join('some', 'path', 'to', 'directory', 'oldName.js'), directory);
         let request = {
             body: {
                 oldName: 'oldName',
                 newName: 'newName',
-                directoryPath: 'some/path/to/directory'
+                directoryPath: path.join('some', 'path', 'to', 'directory')
             },
             params: {}
         };
@@ -293,10 +294,10 @@ describe('server/api: edit-item-path:', () => {
         file.content = content;
         file.tokens = tokens;
         fileStructure.allDirectoriesByPath = {
-            'some/path/to/directory': directory
+            [directory.path]: directory
         };
         fileStructure.allFilesByPath = {
-            'some/path/to/directory/oldName.js': file
+            [file.path]: file
         };
 
         sinon.stub(File.prototype, 'delete').returns(Promise.resolve());
@@ -311,7 +312,7 @@ describe('server/api: edit-item-path:', () => {
 
             let newFile = File.prototype.save.getCall(0).thisValue;
             expect(newFile.name).to.equal('newName');
-            expect(newFile.path).to.equal('some/path/to/directory/newName.js');
+            expect(newFile.path).to.equal(path.join('some', 'path', 'to', 'directory', 'newName.js'));
             expect(newFile.ast).to.equal(ast);
             expect(newFile.content).to.equal(content);
             expect(newFile.tokens).to.equal(tokens);
@@ -336,16 +337,16 @@ describe('server/api: edit-item-path:', () => {
             directories: [],
             extension: '.js',
             files: [],
-            path: 'some/path/to/directory',
+            path: path.join('some', 'path', 'to', 'directory'),
             type: 'components'
         };
-        let existingFile = new File('some/path/to/directory/newName.js', directory);
-        let file = new File('some/path/to/directory/oldName.js', directory);
+        let existingFile = new File(path.join('some', 'path', 'to', 'directory', 'newName.js'), directory);
+        let file = new File(path.join('some', 'path', 'to', 'directory', 'oldName.js'), directory);
         let request = {
             body: {
                 oldName: 'oldName',
                 newName: 'newName',
-                directoryPath: 'some/path/to/directory'
+                directoryPath: path.join('some', 'path', 'to', 'directory')
             },
             params: {}
         };
@@ -357,11 +358,11 @@ describe('server/api: edit-item-path:', () => {
         directory.files.push(existingFile);
         directory.files.push(file);
         fileStructure.allDirectoriesByPath = {
-            'some/path/to/directory': directory
+            [directory.path]: directory
         };
         fileStructure.allFilesByPath = {
-            'some/path/to/directory/newName.js': existingFile,
-            'some/path/to/directory/oldName.js': file
+            [existingFile.path]: existingFile,
+            [file.path]: file
         };
 
         sinon.stub(File.prototype, 'delete').returns(Promise.resolve());
@@ -373,7 +374,7 @@ describe('server/api: edit-item-path:', () => {
         .then(() => {
             let newFile = File.prototype.save.getCall(0).thisValue;
             expect(newFile.name).to.equal('newName (1)');
-            expect(newFile.path).to.equal('some/path/to/directory/newName (1).js');
+            expect(newFile.path).to.equal(path.join('some', 'path', 'to', 'directory', 'newName (1).js'));
         })
         .finally(() => {
             fileStructure.getStructure.restore();
@@ -392,20 +393,20 @@ describe('server/api: edit-item-path:', () => {
 
         let newDirectory = {
             addFile: _.noop,
-            path: 'some/path/to/new-directory'
+            path: path.join('some', 'path', 'to', 'new-directory')
         };
         let oldDirectory = {
             addFile: _.noop,
             extension: '.js',
-            path: 'some/path/to/old-directory',
+            path: path.join('some', 'path', 'to', 'old-directory'),
             type: 'components'
         };
-        let file = new File('some/path/to/old-directory/name.js', oldDirectory);
+        let file = new File(path.join('some', 'path', 'to', 'old-directory', 'name.js'), oldDirectory);
         let request = {
             body: {
                 name: 'name',
-                oldDirectoryPath: 'some/path/to/old-directory',
-                newDirectoryPath: 'some/path/to/new-directory'
+                oldDirectoryPath: path.join('some', 'path', 'to', 'old-directory'),
+                newDirectoryPath: path.join('some', 'path', 'to', 'new-directory')
             },
             params: {}
         };
@@ -415,11 +416,11 @@ describe('server/api: edit-item-path:', () => {
         let structure = {};
 
         fileStructure.allDirectoriesByPath = {
-            'some/path/to/new-directory': newDirectory,
-            'some/path/to/old-directory': oldDirectory
+            [newDirectory.path]: newDirectory,
+            [oldDirectory.path]: oldDirectory
         };
         fileStructure.allFilesByPath = {
-            'some/path/to/old-directory/name.js': file
+            [file.path]: file
         };
 
         sinon.stub(File.prototype, 'delete').returns(Promise.resolve());
@@ -433,7 +434,7 @@ describe('server/api: edit-item-path:', () => {
             expect(File.prototype.save).to.have.been.called();
 
             let newFile = File.prototype.save.getCall(0).thisValue;
-            expect(newFile.path).to.equal('some/path/to/new-directory/name.js');
+            expect(newFile.path).to.equal(path.join('some', 'path', 'to', 'new-directory', 'name.js'));
         })
         .finally(() => {
             fileStructure.getStructure.restore();

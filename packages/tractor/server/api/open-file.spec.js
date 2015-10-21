@@ -15,6 +15,7 @@ chai.use(sinonChai);
 // Dependencies:
 import errorHandler from '../errors/error-handler';
 import fileStructure from '../file-structure';
+import path from 'path';
 import TractorError from '../errors/TractorError';
 
 // Under test:
@@ -22,9 +23,11 @@ import openFile from './open-file';
 
 describe('server/api: open-file:', () => {
     it('should open a file', () => {
-        let path = 'some/path';
+        let filePath = path.join('some', 'path');
         let request = {
-            query: { path }
+            query: {
+                path: filePath
+            }
         };
         let response = {
             send: _.noop
@@ -35,7 +38,7 @@ describe('server/api: open-file:', () => {
 
         return openFile.handler(request, response)
         .then(() => {
-            expect(fileStructure.openFile).to.have.been.calledWith(path);
+            expect(fileStructure.openFile).to.have.been.calledWith(path.join('some', 'path'));
         })
         .finally(() => {
             fileStructure.openFile.restore();
@@ -44,9 +47,11 @@ describe('server/api: open-file:', () => {
 
     it('should respond to the client with the file', () => {
         let file = {};
-        let path = 'some/path';
+        let filePath = path.join('some', 'path');
         let request = {
-            query: { path }
+            query: {
+                path: filePath
+            }
         };
         let response = {
             send: _.noop
@@ -66,9 +71,11 @@ describe('server/api: open-file:', () => {
 
     it('should handle known TractorErrors', () => {
         let error = new TractorError();
-        let path = 'some/path';
+        let filePath = path.join('some', 'path');
         let request = {
-            query: { path }
+            query: {
+                path: filePath
+            }
         };
         let response = {
             send: _.noop
@@ -89,9 +96,11 @@ describe('server/api: open-file:', () => {
 
     it('should handle unknown errors', () => {
         let error = new Error();
-        let path = 'some/path';
+        let filePath = path.join('some', 'path');
         let request = {
-            query: { path }
+            query: {
+                path: filePath
+            }
         };
         let response = {
             send: _.noop
@@ -102,7 +111,7 @@ describe('server/api: open-file:', () => {
 
         return openFile.handler(request, response)
         .then(() => {
-            expect(errorHandler.handler).to.have.been.calledWith(response, new TractorError('Could not open "some/path"', 500));
+            expect(errorHandler.handler).to.have.been.calledWith(response, new TractorError(`Could not open "${path.join('some', 'path')}"`, 500));
         })
         .finally(() => {
             fileStructure.openFile.restore();

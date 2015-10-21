@@ -1,6 +1,6 @@
 Feature: Component Editor
-  In order to describe the behaviour of UI Components for my app
-  As a person who wants to create Protractor tests
+  In order to describe the behaviour of UI Components for my app
+  As a person who wants to create Protractor tests
   I want to be able to edit Component files
   Scenario: Create Component
     Given GET /file-structure is a pass-through

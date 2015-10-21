@@ -4,7 +4,7 @@
 var Core = require('../Core');
 
 // Dependencies:
-var charFunk = require('CharFunk');
+var charFunk = require('charfunk');
 
 var ValidationService = function () {
     return {

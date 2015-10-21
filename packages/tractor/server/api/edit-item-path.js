@@ -116,6 +116,8 @@ function updateFile (toUpdate, directory, update) {
     }
 
     let { type } = toUpdate.directory;
+    console.log(type);
+    console.log(transformers[type]);
     return transformers[type](newFile, update)
     .then(() => toUpdate.delete())
     .then(() => newFile.save());

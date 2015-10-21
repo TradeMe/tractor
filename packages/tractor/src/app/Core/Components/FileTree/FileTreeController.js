@@ -112,8 +112,9 @@ var FileTreeController = (function () {
     };
 
     FileTreeController.prototype.openFile = function (file) {
+        var directoryPath = this.model.fileStructure.directory.path.replace(/\\/g, '/');
         var filePath = file.path.replace(/\\/g, '/');
-        var name = path.relative(this.model.fileStructure.directory.path, filePath);
+        var name = path.relative(directoryPath, filePath);
         name = name.substring(0, name.indexOf('.'));
         var params = {
             file: {

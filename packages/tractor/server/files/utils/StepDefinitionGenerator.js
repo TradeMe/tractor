@@ -13,7 +13,7 @@ const STEP_DEFINITION_REGEX = /^this\.(Given|Then|When)[\s\S]*\}\);$/m;
 import _ from 'lodash';
 import Promise from 'bluebird';
 const childProcess = Promise.promisifyAll(require('child_process'));
-import { join } from 'path';
+import path from 'path';
 
 // Dependencies:
 import esprima from 'esprima';
@@ -77,8 +77,8 @@ function generateStepDefinitionFiles (stepNames, result) {
         let fileData = generateStepDefinitionFile(existingFileNames, stub, stepName);
         if (fileData) {
             let { ast, fileName } = fileData;
-            let path = join(directory.path, fileName + constants.EXTENSIONS['step-definitions']);
-            let file = new StepDefinitionFile(path, directory);
+            let filePath = path.join(directory.path, fileName + constants.EXTENSIONS['step-definitions']);
+            let file = new StepDefinitionFile(filePath, directory);
             return file.save(ast);
         }
     });
@@ -101,6 +101,8 @@ function generateStepDefinitionFile (existingFileNames, stub, name) {
     // Replace <s and >s:
     .replace(/</g, '_')
     .replace(/>/g, '_')
+    // Replace ?, :, *, ". |:
+    .replace(/[\?\:\*\"\|"]/g, '_')
     // Replace money:
     .replace(/\$\d+/g, '\$amount')
     // Replace numbers:

@@ -1,13 +1,13 @@
 'use strict';
 
-// Utilities:
-import _ from 'lodash';
-import os from 'os';
-
 // Constants:
+import constants from '../../constants';
 const IN_ORDER_TO = /^In order to /;
 const AS_A = /^As a /;
 const I_WANT = /^I want /;
+
+// Utilities:
+import _ from 'lodash';
 
 export default class FeatureLexerFormatter {
     constructor () {
@@ -24,7 +24,7 @@ export default class FeatureLexerFormatter {
     }
 
     feature (type, name, description) {
-        let [ inOrderTo, asA, iWant ] = description.split(os.EOL);
+        let [ inOrderTo, asA, iWant ] = description.split(constants.FEATURE_NEWLINE);
         inOrderTo = inOrderTo.replace(IN_ORDER_TO, '');
         asA = asA.replace(AS_A, '');
         iWant = iWant.replace(I_WANT, '');

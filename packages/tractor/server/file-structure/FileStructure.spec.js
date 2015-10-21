@@ -19,6 +19,7 @@ import ComponentFile from '../files/ComponentFile';
 import Directory from './Directory';
 import File from '../files/File';
 import MockDataFile from '../files/MockDataFile';
+import path from 'path';
 
 // Under test:
 import FileStructure from './FileStructure';
@@ -62,10 +63,10 @@ describe('server/file-structure: FileStructure:', () => {
 
             return fileStructure.read()
             .then(() => {
-                expect(fileStructure.allDirectoriesByPath['e2e-tests/components']).not.to.be.undefined();
-                expect(fileStructure.allDirectoriesByPath['e2e-tests/features']).not.to.be.undefined();
-                expect(fileStructure.allDirectoriesByPath['e2e-tests/mock-data']).not.to.be.undefined();
-                expect(fileStructure.allDirectoriesByPath['e2e-tests/step-definitions']).not.to.be.undefined();
+                expect(fileStructure.allDirectoriesByPath[path.join('e2e-tests', 'components')]).not.to.be.undefined();
+                expect(fileStructure.allDirectoriesByPath[path.join('e2e-tests', 'features')]).not.to.be.undefined();
+                expect(fileStructure.allDirectoriesByPath[path.join('e2e-tests', 'mock-data')]).not.to.be.undefined();
+                expect(fileStructure.allDirectoriesByPath[path.join('e2e-tests', 'step-definitions')]).not.to.be.undefined();
 
                 expect(Directory.prototype.read).to.have.callCount(4);
             })
@@ -130,8 +131,8 @@ describe('server/file-structure: FileStructure:', () => {
             let directory = {
                 addFile: _.noop
             };
-            let mockData1 = new MockDataFile('some/path/to/mockData1', directory);
-            let mockData2 = new MockDataFile('some/path/to/mockData2', directory);
+            let mockData1 = new MockDataFile(path.join('some', 'path', 'to', 'mockData1'), directory);
+            let mockData2 = new MockDataFile(path.join('some', 'path', 'to', 'mockData2'), directory);
 
             sinon.stub(Directory.prototype, 'getDirectory').returns(directory);
 
@@ -160,7 +161,7 @@ describe('server/file-structure: FileStructure:', () => {
                 files: [],
                 path: 'some/path/to/directory'
             };
-            let file = new File('some/path/to/directory/file', directory);
+            let file = new File(path.join('some', 'path', 'to', 'directory', 'file'), directory);
             file.content = 'content';
             directory.files.push(file);
 
@@ -170,13 +171,13 @@ describe('server/file-structure: FileStructure:', () => {
             let fileStructure = new FileStructure();
             fileStructure.addFile(file);
 
-            return fileStructure.copyFile('some/path/to/directory/file')
+            return fileStructure.copyFile(path.join('some', 'path', 'to', 'directory', 'file'))
             .then(() => {
                 expect(directory.addFile).to.have.been.calledWith({
                     content: 'content',
                     directory: directory,
                     name: 'file (1)',
-                    path: 'some/path/to/directory/file (1)'
+                    path: path.join('some', 'path', 'to', 'directory', 'file (1)')
                 });
                 expect(File.prototype.save).to.have.been.called();
             })
@@ -192,7 +193,7 @@ describe('server/file-structure: FileStructure:', () => {
                 files: [],
                 path: 'some/path/to/directory'
             };
-            let file = new File('some/path/to/directory/file.js', directory);
+            let file = new File(path.join('some', 'path', 'to', 'directory', 'file.js'), directory);
             file.ast = {
                 comments: [{
                     value: JSON.stringify({ name: 'file' })
@@ -206,7 +207,7 @@ describe('server/file-structure: FileStructure:', () => {
             let fileStructure = new FileStructure();
             fileStructure.addFile(file);
 
-            return fileStructure.copyFile('some/path/to/directory/file.js')
+            return fileStructure.copyFile(path.join('some', 'path', 'to', 'directory', 'file.js'))
             .then(() => {
                 expect(directory.addFile).to.have.been.calledWith({
                     ast: {
@@ -216,7 +217,7 @@ describe('server/file-structure: FileStructure:', () => {
                     },
                     directory: directory,
                     name: 'file (1)',
-                    path: 'some/path/to/directory/file (1).js'
+                    path: path.join('some', 'path', 'to', 'directory', 'file (1).js')
                 });
                 expect(File.prototype.save).to.have.been.called();
             })
@@ -228,11 +229,11 @@ describe('server/file-structure: FileStructure:', () => {
         it('should throw an error if it can\'t find the file to copy', () => {
             let fileStructure = new FileStructure();
 
-            return fileStructure.copyFile('path/to/something/that/doesnt/exist')
+            return fileStructure.copyFile(path.join('path', 'to', 'something', 'that', 'doesnt', 'exist'))
             .catch((error) => {
                 expect(error).to.deep.equal({
                     name: 'TractorError',
-                    message: 'Could not find "path/to/something/that/doesnt/exist"',
+                    message: path.join(`Could not find "${path.join('path', 'to', 'something', 'that', 'doesnt', 'exist')}"`),
                     status: 404
                 });
             });
@@ -249,9 +250,9 @@ describe('server/file-structure: FileStructure:', () => {
             sinon.stub(Directory.prototype, 'save').returns(Promise.resolve());
 
             let fileStructure = new FileStructure();
-            fileStructure.allDirectoriesByPath['path/to/some/directory'] = directory;
+            fileStructure.allDirectoriesByPath[path.join('path', 'to', 'some', 'directory')] = directory;
 
-            return fileStructure.createDirectory('path/to/some/directory')
+            return fileStructure.createDirectory(path.join('path', 'to', 'some', 'directory'))
             .then(() => {
                 expect(Directory.prototype.save).to.have.been.calledOnce();
 
@@ -259,7 +260,7 @@ describe('server/file-structure: FileStructure:', () => {
                 let newDirectory = newDirectorySaveCall.thisValue;
 
                 expect(newDirectory.name).to.equal('New Directory (1)');
-                expect(newDirectory.path).to.equal('path/to/some/directory/New Directory (1)');
+                expect(newDirectory.path).to.equal(path.join('path', 'to', 'some', 'directory', 'New Directory (1)'));
             })
             .finally(() => {
                 Directory.prototype.save.restore();
@@ -276,9 +277,9 @@ describe('server/file-structure: FileStructure:', () => {
             sinon.stub(file, 'delete').returns(Promise.resolve());
 
             let fileStructure = new FileStructure();
-            fileStructure.allFilesByPath['path/to/some/file'] = file;
+            fileStructure.allFilesByPath[path.join('path', 'to', 'some', 'file')] = file;
 
-            return fileStructure.deleteItem('path/to/some/file')
+            return fileStructure.deleteItem(path.join('path', 'to', 'some', 'file'))
             .then(() => {
                 expect(file.delete).to.have.been.called();
             });
@@ -292,9 +293,9 @@ describe('server/file-structure: FileStructure:', () => {
             sinon.stub(directory, 'delete').returns(Promise.resolve());
 
             let fileStructure = new FileStructure();
-            fileStructure.allDirectoriesByPath['path/to/some/directory'] = directory;
+            fileStructure.allDirectoriesByPath[path.join('path', 'to', 'some', 'directory')] = directory;
 
-            return fileStructure.deleteItem('path/to/some/directory')
+            return fileStructure.deleteItem(path.join('path', 'to', 'some', 'directory'))
             .then(() => {
                 expect(directory.delete).to.have.been.called();
             });
@@ -303,11 +304,11 @@ describe('server/file-structure: FileStructure:', () => {
         it('should throw an error if it can\'t find the item to delete', () => {
             let fileStructure = new FileStructure();
 
-            return fileStructure.deleteItem('path/to/something/that/doesnt/exist')
+            return fileStructure.deleteItem(path.join('path', 'to', 'something', 'that', 'doesnt', 'exist'))
             .catch((error) => {
                 expect(error).to.deep.equal({
                     name: 'TractorError',
-                    message: 'Could not find "path/to/something/that/doesnt/exist"',
+                    message: `Could not find "${path.join('path', 'to', 'something', 'that', 'doesnt', 'exist')}"`,
                     status: 404
                 });
             });
@@ -323,9 +324,9 @@ describe('server/file-structure: FileStructure:', () => {
             sinon.stub(file, 'read').returns(Promise.resolve());
 
             let fileStructure = new FileStructure();
-            fileStructure.allFilesByPath['path/to/some/file'] = file;
+            fileStructure.allFilesByPath[path.join('path', 'to', 'some', 'file')] = file;
 
-            return fileStructure.openFile('path/to/some/file')
+            return fileStructure.openFile(path.join('path', 'to', 'some', 'file'))
             .then((toOpen) => {
                 expect(file.read).to.have.been.called();
                 expect(toOpen).to.equal(file);
@@ -335,11 +336,11 @@ describe('server/file-structure: FileStructure:', () => {
         it('should throw an error if it can\'t find the file to open', () => {
             let fileStructure = new FileStructure();
 
-            return fileStructure.openFile('path/to/something/that/doesnt/exist')
+            return fileStructure.openFile(path.join('path', 'to', 'something', 'that', 'doesnt', 'exist'))
             .catch((error) => {
                 expect(error).to.deep.equal({
                     name: 'TractorError',
-                    message: 'Could not find "path/to/something/that/doesnt/exist"',
+                    message: `Could not find "${path.join('path', 'to', 'something', 'that', 'doesnt', 'exist')}"`,
                     status: 404
                 });
             });
@@ -355,9 +356,9 @@ describe('server/file-structure: FileStructure:', () => {
             sinon.stub(file, 'save').returns(Promise.resolve());
 
             let fileStructure = new FileStructure();
-            fileStructure.allFilesByPath['path/to/some/file'] = file;
+            fileStructure.allFilesByPath[path.join('path', 'to', 'some', 'file')] = file;
 
-            return fileStructure.saveFile(null, 'data', 'path/to/some/file')
+            return fileStructure.saveFile(null, 'data', path.join('path', 'to', 'some', 'file'))
             .then(() => {
                 expect(file.save).to.have.been.calledWith('data');
             });
@@ -373,7 +374,7 @@ describe('server/file-structure: FileStructure:', () => {
 
             let fileStructure = new FileStructure();
 
-            return fileStructure.saveFile('components', 'data', 'path/to/some/file')
+            return fileStructure.saveFile('components', 'data', path.join('path', 'to', 'some', 'file'))
             .then(() => {
                 expect(ComponentFile.prototype.save).to.have.been.calledWith('data');
             })
@@ -387,7 +388,7 @@ describe('server/file-structure: FileStructure:', () => {
     describe('FileStructure.addFile:', () => {
         it('should add a file to the fileStructure', () => {
             let file = {
-                path: 'path/to/some/file'
+                path: path.join('path', 'to', 'some', 'file')
             };
 
             let fileStructure = new FileStructure();
@@ -396,12 +397,12 @@ describe('server/file-structure: FileStructure:', () => {
             expect(fileStructure.allFiles.length).to.equal(1);
             expect(_.last(fileStructure.allFiles)).to.equal(file);
             expect(Object.keys(fileStructure.allFilesByPath).length).to.equal(1);
-            expect(fileStructure.allFilesByPath['path/to/some/file']).to.equal(file);
+            expect(fileStructure.allFilesByPath[path.join('path', 'to', 'some', 'file')]).to.equal(file);
         });
 
         it('should not add the file it has already been added', () => {
             let file = {
-                path: 'path/to/some/file'
+                path: path.join('path', 'to', 'some', 'file')
             };
 
             let fileStructure = new FileStructure();
@@ -415,24 +416,24 @@ describe('server/file-structure: FileStructure:', () => {
     describe('FileStructure.removeFile:', () => {
         it('should remove a file from the fileStructure', () => {
             let file = {
-                path: 'path/to/some/file'
+                path: path.join('path', 'to', 'some', 'file')
             };
 
             let fileStructure = new FileStructure();
-            fileStructure.allFilesByPath['path/to/some/file'] = file;
+            fileStructure.allFilesByPath[path.join('path', 'to', 'some', 'file')] = file;
             fileStructure.allFiles.push(file);
 
             fileStructure.removeFile(file);
 
             expect(fileStructure.allFiles.length).to.equal(0);
-            expect(fileStructure.allFilesByPath['path/to/some/file']).to.be.undefined();
+            expect(fileStructure.allFilesByPath[path.join('path', 'to', 'some', 'file')]).to.be.undefined();
         });
     });
 
     describe('FileStructure.addDirectory', () => {
         it('should add a directory to the fileStructure', () => {
             let directory = {
-                path: 'path/to/some/directory'
+                path: path.join('path', 'to', 'some', 'directory')
             };
 
             let fileStructure = new FileStructure();
@@ -441,12 +442,12 @@ describe('server/file-structure: FileStructure:', () => {
             expect(fileStructure.allDirectories.length).to.equal(2);
             expect(_.last(fileStructure.allDirectories)).to.equal(directory);
             expect(Object.keys(fileStructure.allDirectoriesByPath).length).to.equal(2);
-            expect(fileStructure.allDirectoriesByPath['path/to/some/directory']).to.equal(directory);
+            expect(fileStructure.allDirectoriesByPath[path.join('path', 'to', 'some', 'directory')]).to.equal(directory);
         });
 
         it('should not add the directory it has already been added', () => {
             let directory = {
-                path: 'path/to/some/directory'
+                path: path.join('path', 'to', 'some', 'directory')
             };
 
             let fileStructure = new FileStructure();
@@ -460,16 +461,16 @@ describe('server/file-structure: FileStructure:', () => {
     describe('FileStructure.removeDirectory:', () => {
         it('should remove a directory from the fileStructure', () => {
             let directory = {
-                path: 'path/to/some/directory'
+                path: path.join('path', 'to', 'some', 'directory')
             };
 
             let fileStructure = new FileStructure();
-            fileStructure.allDirectoriesByPath['path/to/some/directory'] = directory;
+            fileStructure.allDirectoriesByPath[path.join('path', 'to', 'some', 'directory')] = directory;
             fileStructure.allDirectories.push(directory);
             fileStructure.removeDirectory(directory);
 
             expect(fileStructure.allDirectories.length).to.equal(1);
-            expect(fileStructure.allDirectoriesByPath['path/to/some/directory']).to.be.undefined();
+            expect(fileStructure.allDirectoriesByPath[path.join('path', 'to', 'some', 'directory')]).to.be.undefined();
         });
     });
 });

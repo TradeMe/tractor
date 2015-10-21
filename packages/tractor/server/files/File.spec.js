@@ -16,6 +16,7 @@ chai.use(sinonChai);
 
 // Dependencies:
 import fs from 'fs';
+import path from 'path';
 
 // Under test:
 import File from './File';
@@ -26,7 +27,7 @@ describe('server/files: File:', () => {
             let directory = {
                 addFile: _.noop
             };
-            let filePath = 'some/path';
+            let filePath = path.join('some', 'path');
 
             let file = new File(filePath, directory);
 
@@ -37,7 +38,7 @@ describe('server/files: File:', () => {
             let directory = {
                 addFile: _.noop
             };
-            let filePath = 'some/file/name.js';
+            let filePath = path.join('some', 'file', 'name.js');
 
             let file = new File(filePath, directory);
 
@@ -48,7 +49,7 @@ describe('server/files: File:', () => {
             let directory = {
                 addFile: _.noop
             };
-            let filePath = 'some/file/name.js';
+            let filePath = path.join('some', 'file', 'name.js');
 
             sinon.stub(directory, 'addFile');
 
@@ -64,7 +65,7 @@ describe('server/files: File:', () => {
             let directory = {
                 addFile: _.noop
             };
-            let filePath = 'some/file/name.js';
+            let filePath = path.join('some', 'file', 'name.js');
 
             sinon.stub(fs, 'readFileAsync').returns(Promise.resolve(content));
 
@@ -72,7 +73,7 @@ describe('server/files: File:', () => {
 
             return file.read()
             .then(() => {
-                expect(fs.readFileAsync).to.have.been.calledWith('some/file/name.js');
+                expect(fs.readFileAsync).to.have.been.calledWith(path.join('some', 'file', 'name.js'));
                 expect(file.content).to.equal('content');
             })
             .finally(() => {
@@ -86,7 +87,7 @@ describe('server/files: File:', () => {
             let directory = {
                 addFile: _.noop
             };
-            let filePath = 'some/file/name.js';
+            let filePath = path.join('some', 'file', 'name.js');
 
             sinon.stub(fs, 'writeFileAsync').returns(Promise.resolve());
 
@@ -95,7 +96,7 @@ describe('server/files: File:', () => {
 
             return file.save()
             .then(() => {
-                expect(fs.writeFileAsync).to.have.been.calledWith('some/file/name.js', 'content');
+                expect(fs.writeFileAsync).to.have.been.calledWith(path.join('some', 'file', 'name.js'), 'content');
             })
             .finally(() => {
                 fs.writeFileAsync.restore();
@@ -106,7 +107,7 @@ describe('server/files: File:', () => {
             let directory = {
                 addFile: _.noop
             };
-            let filePath = 'some/file/name.js';
+            let filePath = path.join('some', 'file', 'name.js');
 
             sinon.stub(directory, 'addFile');
             sinon.stub(fs, 'writeFileAsync').returns(Promise.resolve());
@@ -129,7 +130,7 @@ describe('server/files: File:', () => {
                 addFile: _.noop,
                 removeFile: _.noop
             };
-            let filePath = 'some/file/name.js';
+            let filePath = path.join('some', 'file', 'name.js');
 
             sinon.stub(fs, 'unlinkAsync').returns(Promise.resolve());
 
@@ -137,7 +138,7 @@ describe('server/files: File:', () => {
 
             return file.delete()
             .then(() => {
-                expect(fs.unlinkAsync).to.have.been.calledWith('some/file/name.js');
+                expect(fs.unlinkAsync).to.have.been.calledWith(path.join('some', 'file', 'name.js'));
             })
             .finally(() => {
                 fs.unlinkAsync.restore();
@@ -149,7 +150,7 @@ describe('server/files: File:', () => {
                 addFile: _.noop,
                 removeFile: _.noop
             };
-            let filePath = 'some/file/name.js';
+            let filePath = path.join('some', 'file', 'name.js');
 
             sinon.stub(directory, 'removeFile');
             sinon.stub(fs, 'unlinkAsync').returns(Promise.resolve());
@@ -171,7 +172,7 @@ describe('server/files: File:', () => {
             let directory = {
                 addFile: _.noop
             };
-            let filePath = 'some/file/name.js';
+            let filePath = path.join('some', 'file', 'name.js');
 
             let file = new File(filePath, directory);
             file.ast = 'ast';
@@ -183,7 +184,7 @@ describe('server/files: File:', () => {
             expect(json).to.deep.equal({
                 ast: 'ast',
                 content: 'content',
-                path: 'some/file/name.js',
+                path: path.join('some', 'file', 'name.js'),
                 name: 'name',
                 tokens: 'tokens'
             });

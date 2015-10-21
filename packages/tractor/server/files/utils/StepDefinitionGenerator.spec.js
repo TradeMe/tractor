@@ -249,6 +249,55 @@ describe('server/utils: StepDefinitionGenerator:', () => {
             });
         });
 
+        it('should escape special characters', () => {
+            let directory = {
+                path: 'some/file',
+                addFile: _.noop
+            };
+            let file = {
+                content: dedent(`
+                    Feature: Test
+                    In order to test
+                    As a test
+                    I want to test
+                    Scenario: Test
+                      Given ?:*"|
+                `)
+            };
+            let result = dedent(`
+                this.Given(/^\\?\\:\\*\\"\\|$/, function (callback) {
+                    // Write code here that turns the phrase above into concrete actions
+                    callback.pending();
+                });
+            `);
+
+            sinon.stub(childProcess, 'execAsync').returns(Promise.all([Promise.resolve(result)]));
+            sinon.stub(console, 'log');
+            sinon.stub(directory, 'addFile');
+            sinon.stub(fileStructure.structure, 'getDirectory').returns(directory);
+            sinon.stub(StepDefinitionFile.prototype, 'save').returns(Promise.resolve());
+
+            let stepDefinitionGenerator = new StepDefinitionGenerator(file);
+            return stepDefinitionGenerator.generate()
+                .then(() => {
+                    let addFileCall = directory.addFile.getCall(0);
+                    let [file] = addFileCall.args;
+                    let saveCall = StepDefinitionFile.prototype.save.getCall(0);
+                    let [ast] = saveCall.args;
+                    let [comment] = ast.comments;
+                    let meta = comment.value;
+
+                    expect(file.name).to.equal('Given _____');
+                    expect(JSON.parse(meta).name).to.equal('Given ?:*"|');
+                })
+                .finally(() => {
+                    childProcess.execAsync.restore();
+                    console.log.restore();
+                    fileStructure.structure.getDirectory.restore();
+                    StepDefinitionFile.prototype.save.restore();
+                });
+        });
+
         it('should escape money amounts:', () => {
             let directory = {
                 path: 'some/file',

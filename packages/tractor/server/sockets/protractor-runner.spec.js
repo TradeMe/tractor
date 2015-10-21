@@ -43,7 +43,6 @@ describe('server/sockets: protractor-runner:', () => {
         sinon.stub(config, 'beforeProtractor');
         sinon.stub(config, 'afterProtractor');
         sinon.stub(log, 'info');
-        sinon.stub(log, 'silly');
         sinon.stub(log, 'verbose');
 
         let run = protractorRunner.run(socket, runOptions);
@@ -61,7 +60,6 @@ describe('server/sockets: protractor-runner:', () => {
             config.beforeProtractor.restore();
             config.afterProtractor.restore();
             log.info.restore();
-            log.silly.restore();
             log.verbose.restore();
         });
     });
@@ -76,7 +74,6 @@ describe('server/sockets: protractor-runner:', () => {
         sinon.stub(config, 'afterProtractor');
         sinon.stub(log, 'error');
         sinon.stub(log, 'info');
-        sinon.stub(log, 'silly');
 
         return protractorRunner.run(socket, runOptions)
         .then(() => {
@@ -87,7 +84,6 @@ describe('server/sockets: protractor-runner:', () => {
             config.afterProtractor.restore();
             log.error.restore();
             log.info.restore();
-            log.silly.restore();
         });
     });
 
@@ -109,7 +105,6 @@ describe('server/sockets: protractor-runner:', () => {
         sinon.stub(config, 'afterProtractor');
         sinon.stub(log, 'info');
         sinon.stub(log, 'error');
-        sinon.stub(log, 'silly');
         sinon.stub(log, 'verbose');
 
         let run = protractorRunner.run(socket, runOptions);
@@ -128,7 +123,6 @@ describe('server/sockets: protractor-runner:', () => {
             config.afterProtractor.restore();
             log.info.restore();
             log.error.restore();
-            log.silly.restore();
             log.verbose.restore();
         });
     });
@@ -150,7 +144,6 @@ describe('server/sockets: protractor-runner:', () => {
         sinon.stub(config, 'beforeProtractor');
         sinon.stub(config, 'afterProtractor');
         sinon.stub(log, 'info');
-        sinon.stub(log, 'silly');
         sinon.stub(log, 'verbose');
         sinon.spy(socket, 'disconnect');
 
@@ -167,7 +160,6 @@ describe('server/sockets: protractor-runner:', () => {
             config.beforeProtractor.restore();
             config.afterProtractor.restore();
             log.info.restore();
-            log.silly.restore();
             log.verbose.restore();
         });
     });
@@ -191,7 +183,6 @@ describe('server/sockets: protractor-runner:', () => {
         sinon.stub(config, 'afterProtractor');
         sinon.stub(log, 'info');
         sinon.stub(log, 'error');
-        sinon.stub(log, 'silly');
         sinon.stub(log, 'verbose');
         sinon.stub(log, 'warn');
 
@@ -209,7 +200,6 @@ describe('server/sockets: protractor-runner:', () => {
             config.afterProtractor.restore();
             log.info.restore();
             log.error.restore();
-            log.silly.restore();
             log.verbose.restore();
             log.warn.restore();
         });
@@ -234,7 +224,6 @@ describe('server/sockets: protractor-runner:', () => {
         sinon.stub(config, 'afterProtractor');
         sinon.stub(log, 'error');
         sinon.stub(log, 'info');
-        sinon.stub(log, 'silly');
         sinon.stub(log, 'verbose');
 
         let run = protractorRunner.run(socket, runOptions);
@@ -251,7 +240,6 @@ describe('server/sockets: protractor-runner:', () => {
             config.afterProtractor.restore();
             log.error.restore();
             log.info.restore();
-            log.silly.restore();
             log.verbose.restore();
         });
     });
@@ -274,7 +262,6 @@ describe('server/sockets: protractor-runner:', () => {
         sinon.stub(config, 'beforeProtractor');
         sinon.stub(config, 'afterProtractor');
         sinon.stub(log, 'info');
-        sinon.stub(log, 'silly');
         sinon.stub(log, 'verbose');
         sinon.spy(socket, 'emit');
 
@@ -300,7 +287,6 @@ describe('server/sockets: protractor-runner:', () => {
             config.beforeProtractor.restore();
             config.afterProtractor.restore();
             log.info.restore();
-            log.silly.restore();
             log.verbose.restore();
         });
     });
@@ -323,7 +309,6 @@ describe('server/sockets: protractor-runner:', () => {
         sinon.stub(config, 'beforeProtractor');
         sinon.stub(config, 'afterProtractor');
         sinon.stub(log, 'info');
-        sinon.stub(log, 'silly');
         sinon.stub(log, 'verbose');
         sinon.spy(socket, 'emit');
 
@@ -344,7 +329,6 @@ describe('server/sockets: protractor-runner:', () => {
             config.beforeProtractor.restore();
             config.afterProtractor.restore();
             log.info.restore();
-            log.silly.restore();
             log.verbose.restore();
         });
     });
@@ -367,7 +351,6 @@ describe('server/sockets: protractor-runner:', () => {
         sinon.stub(config, 'beforeProtractor');
         sinon.stub(config, 'afterProtractor');
         sinon.stub(log, 'info');
-        sinon.stub(log, 'silly');
         sinon.stub(log, 'verbose');
         sinon.spy(socket, 'emit');
 
@@ -386,7 +369,6 @@ describe('server/sockets: protractor-runner:', () => {
             config.beforeProtractor.restore();
             config.afterProtractor.restore();
             log.info.restore();
-            log.silly.restore();
             log.verbose.restore();
         });
     });

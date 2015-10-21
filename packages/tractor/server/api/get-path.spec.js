@@ -12,7 +12,7 @@ const expect = chai.expect;
 chai.use(sinonChai);
 
 // Dependencies:
-import { join } from 'path';
+import path from 'path';
 
 // Under test:
 import getPath from './get-path';
@@ -21,16 +21,16 @@ describe('server/api: get-path:', () => {
     it('should respond to the client with a path for a new file', () => {
         let tests = [{
             type: 'components',
-            expected: join(process.cwd(), 'e2e-tests', 'components', 'name.component.js')
+            expected: path.join(process.cwd(), 'e2e-tests', 'components', 'name.component.js')
         }, {
             type: 'features',
-            expected: join(process.cwd(), 'e2e-tests', 'features', 'name.feature')
+            expected: path.join(process.cwd(), 'e2e-tests', 'features', 'name.feature')
         }, {
             type: 'step-definitions',
-            expected: join(process.cwd(), 'e2e-tests', 'step-definitions', 'name.step.js')
+            expected: path.join(process.cwd(), 'e2e-tests', 'step-definitions', 'name.step.js')
         }, {
             type: 'mock-data',
-            expected: join(process.cwd(), 'e2e-tests', 'mock-data', 'name.mock.json')
+            expected: path.join(process.cwd(), 'e2e-tests', 'mock-data', 'name.mock.json')
         }];
 
         tests.forEach((test) => {
@@ -51,9 +51,11 @@ describe('server/api: get-path:', () => {
     });
 
     it('should respond to the client with a path if one is already on the request', () => {
-        let path = 'some/path';
+        let itemPath = path.join('some', 'path');
         let request = {
-            query: { path },
+            query: {
+                path: itemPath
+            },
             params: {
                 type: ''
             }
@@ -66,6 +68,6 @@ describe('server/api: get-path:', () => {
 
         getPath.handler(request, response);
 
-        expect(response.send).to.have.been.calledWith({ path: 'some/path' });
+        expect(response.send).to.have.been.calledWith({ path: path.join('some', 'path') });
     });
 });

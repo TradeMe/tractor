@@ -29,7 +29,7 @@ export default class FeatureFile extends File {
         })
         .catch((error) => {
             console.error(error);
-            throw new TractorError(`Lexing "${this.name}" failed.`, 400);
+            throw new TractorError(`Lexing "${this.path}" failed.`, 400);
         });
     }
 
@@ -45,7 +45,7 @@ export default class FeatureFile extends File {
         })
         .catch((error) => {
             console.error(error);
-            throw new TractorError(`Generating step definitions from "${this.name}" failed.`, 400);
+            throw new TractorError(`Generating step definitions from "${this.path}" failed.`, 400);
         });
     }
 }
