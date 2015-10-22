@@ -14,47 +14,12 @@ chai.use(dirtyChai);
 chai.use(sinonChai);
 
 // Dependencies:
-import fileStructure from '../../file-structure';
 import transforms from './transforms';
 
 // Under test:
 import componentTransformer from './component-transformer';
 
 describe('server/api/transformers: componentTransformer:', () => {
-    it('should update the what other files reference a ComponentFile', () => {
-        let oldReferences = fileStructure.references;
-
-        let file = {};
-        let options = {
-            oldName: 'old name',
-            newName: 'new name',
-            oldPath: 'old/path',
-            newPath: 'new/path'
-        };
-        fileStructure.references = {
-            'old/path': ['/path/to/some/file']
-        };
-
-        sinon.stub(transforms, 'transformIdentifiers');
-        sinon.stub(transforms, 'transformMetadata');
-        sinon.stub(transforms, 'transformReferencePath').returns(Promise.resolve());
-        sinon.stub(transforms, 'transformReferenceIdentifiers').returns(Promise.resolve());
-
-        return componentTransformer(file, options)
-        .then(() => {
-            expect(fileStructure.references['new/path']).to.deep.equal(['/path/to/some/file']);
-            expect(fileStructure.references['old/path']).to.be.undefined();
-        })
-        .finally(() => {
-            fileStructure.references = oldReferences;
-
-            transforms.transformIdentifiers.restore();
-            transforms.transformMetadata.restore();
-            transforms.transformReferencePath.restore();
-            transforms.transformReferenceIdentifiers.restore();
-        });
-    });
-
     it('should update the path to a ComponentFile in all files that reference it', () => {
         let file = {};
         let options = {
@@ -64,19 +29,19 @@ describe('server/api/transformers: componentTransformer:', () => {
             newPath: 'new/path'
         };
 
-        sinon.stub(transforms, 'transformIdentifiers');
-        sinon.stub(transforms, 'transformMetadata');
-        sinon.stub(transforms, 'transformReferencePath').returns(Promise.resolve());
+        sinon.stub(transforms, 'transformIdentifiers').returns(Promise.resolve());
+        sinon.stub(transforms, 'transformMetadata').returns(Promise.resolve());
+        sinon.stub(transforms, 'transformReferences').returns(Promise.resolve());
         sinon.stub(transforms, 'transformReferenceIdentifiers').returns(Promise.resolve());
 
         return componentTransformer(file, options)
         .then(() => {
-            expect(transforms.transformReferencePath).to.have.been.calledWith('components', 'old/path', 'new/path', 'old name', 'new name');
+            expect(transforms.transformReferences).to.have.been.calledWith('components', 'old/path', 'new/path', 'old name', 'new name');
         })
         .finally(() => {
             transforms.transformIdentifiers.restore();
             transforms.transformMetadata.restore();
-            transforms.transformReferencePath.restore();
+            transforms.transformReferences.restore();
             transforms.transformReferenceIdentifiers.restore();
         });
     });
@@ -90,19 +55,19 @@ describe('server/api/transformers: componentTransformer:', () => {
             newPath: 'new/path'
         };
 
-        sinon.stub(transforms, 'transformIdentifiers');
-        sinon.stub(transforms, 'transformMetadata');
-        sinon.stub(transforms, 'transformReferencePath').returns(Promise.resolve());
+        sinon.stub(transforms, 'transformIdentifiers').returns(Promise.resolve());
+        sinon.stub(transforms, 'transformMetadata').returns(Promise.resolve());
+        sinon.stub(transforms, 'transformReferences').returns(Promise.resolve());
         sinon.stub(transforms, 'transformReferenceIdentifiers').returns(Promise.resolve());
 
         return componentTransformer(file, options)
         .then(() => {
-            expect(transforms.transformReferenceIdentifiers).to.have.been.calledWith('new/path', 'OldName', 'NewName');
+            expect(transforms.transformReferenceIdentifiers).to.have.been.calledWith('old/path', 'OldName', 'NewName');
         })
         .finally(() => {
             transforms.transformIdentifiers.restore();
             transforms.transformMetadata.restore();
-            transforms.transformReferencePath.restore();
+            transforms.transformReferences.restore();
             transforms.transformReferenceIdentifiers.restore();
         });
     });
@@ -116,19 +81,19 @@ describe('server/api/transformers: componentTransformer:', () => {
             newPath: 'new/path'
         };
 
-        sinon.stub(transforms, 'transformIdentifiers');
-        sinon.stub(transforms, 'transformMetadata');
-        sinon.stub(transforms, 'transformReferencePath').returns(Promise.resolve());
+        sinon.stub(transforms, 'transformIdentifiers').returns(Promise.resolve());
+        sinon.stub(transforms, 'transformMetadata').returns(Promise.resolve());
+        sinon.stub(transforms, 'transformReferences').returns(Promise.resolve());
         sinon.stub(transforms, 'transformReferenceIdentifiers').returns(Promise.resolve());
 
         return componentTransformer(file, options)
         .then(() => {
-            expect(transforms.transformReferenceIdentifiers).to.have.been.calledWith('new/path', 'oldName', 'newName');
+            expect(transforms.transformReferenceIdentifiers).to.have.been.calledWith('old/path', 'oldName', 'newName');
         })
         .finally(() => {
             transforms.transformIdentifiers.restore();
             transforms.transformMetadata.restore();
-            transforms.transformReferencePath.restore();
+            transforms.transformReferences.restore();
             transforms.transformReferenceIdentifiers.restore();
         });
     });
@@ -142,9 +107,9 @@ describe('server/api/transformers: componentTransformer:', () => {
             newPath: 'new/path'
         };
 
-        sinon.stub(transforms, 'transformIdentifiers');
-        sinon.stub(transforms, 'transformMetadata');
-        sinon.stub(transforms, 'transformReferencePath').returns(Promise.resolve());
+        sinon.stub(transforms, 'transformIdentifiers').returns(Promise.resolve());
+        sinon.stub(transforms, 'transformMetadata').returns(Promise.resolve());
+        sinon.stub(transforms, 'transformReferences').returns(Promise.resolve());
         sinon.stub(transforms, 'transformReferenceIdentifiers').returns(Promise.resolve());
 
         return componentTransformer(file, options)
@@ -154,7 +119,7 @@ describe('server/api/transformers: componentTransformer:', () => {
         .finally(() => {
             transforms.transformIdentifiers.restore();
             transforms.transformMetadata.restore();
-            transforms.transformReferencePath.restore();
+            transforms.transformReferences.restore();
             transforms.transformReferenceIdentifiers.restore();
         });
     });
@@ -168,9 +133,9 @@ describe('server/api/transformers: componentTransformer:', () => {
             newPath: 'new/path'
         };
 
-        sinon.stub(transforms, 'transformIdentifiers');
-        sinon.stub(transforms, 'transformMetadata');
-        sinon.stub(transforms, 'transformReferencePath').returns(Promise.resolve());
+        sinon.stub(transforms, 'transformIdentifiers').returns(Promise.resolve());
+        sinon.stub(transforms, 'transformMetadata').returns(Promise.resolve());
+        sinon.stub(transforms, 'transformReferences').returns(Promise.resolve());
         sinon.stub(transforms, 'transformReferenceIdentifiers').returns(Promise.resolve());
 
         return componentTransformer(file, options)
@@ -180,7 +145,7 @@ describe('server/api/transformers: componentTransformer:', () => {
         .finally(() => {
             transforms.transformIdentifiers.restore();
             transforms.transformMetadata.restore();
-            transforms.transformReferencePath.restore();
+            transforms.transformReferences.restore();
             transforms.transformReferenceIdentifiers.restore();
         });
     });
@@ -194,9 +159,9 @@ describe('server/api/transformers: componentTransformer:', () => {
             newPath: 'new/path'
         };
 
-        sinon.stub(transforms, 'transformIdentifiers');
-        sinon.stub(transforms, 'transformMetadata');
-        sinon.stub(transforms, 'transformReferencePath').returns(Promise.resolve());
+        sinon.stub(transforms, 'transformIdentifiers').returns(Promise.resolve());
+        sinon.stub(transforms, 'transformMetadata').returns(Promise.resolve());
+        sinon.stub(transforms, 'transformReferences').returns(Promise.resolve());
         sinon.stub(transforms, 'transformReferenceIdentifiers').returns(Promise.resolve());
 
         return componentTransformer(file, options)
@@ -206,7 +171,7 @@ describe('server/api/transformers: componentTransformer:', () => {
         .finally(() => {
             transforms.transformIdentifiers.restore();
             transforms.transformMetadata.restore();
-            transforms.transformReferencePath.restore();
+            transforms.transformReferences.restore();
             transforms.transformReferenceIdentifiers.restore();
         });
     });

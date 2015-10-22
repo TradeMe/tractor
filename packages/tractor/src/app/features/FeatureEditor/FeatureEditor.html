@@ -16,6 +16,9 @@
                 </tractor-text-input>
             </div>
             <div class="file-options__file-actions">
+                <tractor-confirm-dialog trigger="featureEditor.confirmOverWrite">
+                    <p>This will overwrite "{{ featureEditor.fileModel.name }}". Continue?</p>
+                </tractor-confirm-dialog>
                 <tractor-submit class="file-options__save-file"
                     action="Save feature file">
                 </tractor-submit>

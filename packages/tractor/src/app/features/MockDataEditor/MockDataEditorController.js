@@ -5,6 +5,7 @@ var MockDataEditor = require('./MockDataEditor');
 
 // Dependencies:
 var FileEditorController = require('../FileEditor/FileEditorController');
+require('../../Core/Services/ConfirmDialogService');
 require('../../Core/Services/PersistentStateService');
 require('../../Core/Components/Notifier/NotifierService');
 require('./Services/MockDataFileService');
@@ -14,6 +15,7 @@ var MockDataEditorController = function MockDataEditorController (
     $scope,
     $window,
     $state,
+    confirmDialogService,
     persistentStateService,
     notifierService,
     MockDataFileService,
@@ -25,6 +27,7 @@ var MockDataEditorController = function MockDataEditorController (
         $scope,
         $window,
         $state,
+        confirmDialogService,
         persistentStateService,
         notifierService,
         MockDataFileService,

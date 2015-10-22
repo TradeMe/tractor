@@ -1,48 +1,4 @@
-/*{
-    "name": "Control Panel",
-    "elements": [
-        {
-            "name": "Components link"
-        },
-        {
-            "name": "Features link"
-        },
-        {
-            "name": "Step Definitions link"
-        },
-        {
-            "name": "Mock Data link"
-        },
-        {
-            "name": "Run Protractor button"
-        },
-        {
-            "name": "Server Status badge"
-        }
-    ],
-    "actions": [
-        {
-            "name": "go to Components",
-            "parameters": []
-        },
-        {
-            "name": "go to Features",
-            "parameters": []
-        },
-        {
-            "name": "go to Step Definitions",
-            "parameters": []
-        },
-        {
-            "name": "go to Mock Data",
-            "parameters": []
-        },
-        {
-            "name": "run Protractor",
-            "parameters": []
-        }
-    ]
-}*/
+/*{"name":"Control Panel","elements":[{"name":"Components link"},{"name":"Features link"},{"name":"Step Definitions link"},{"name":"Mock Data link"},{"name":"Run Protractor button"},{"name":"Server Status badge"}],"actions":[{"name":"go to Components","parameters":[]},{"name":"go to Features","parameters":[]},{"name":"go to Step Definitions","parameters":[]},{"name":"go to Mock Data","parameters":[]},{"name":"run Protractor","parameters":[]}]}*/
 module.exports = function () {
     var ControlPanel = function ControlPanel() {
         this.componentsLink = element(by.css('[href="/components/"]'));

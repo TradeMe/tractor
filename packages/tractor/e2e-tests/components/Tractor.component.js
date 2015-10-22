@@ -1,17 +1,4 @@
-/*{
-    "name": "Tractor",
-    "elements": [],
-    "actions": [
-        {
-            "name": "get",
-            "parameters": []
-        },
-        {
-            "name": "refresh",
-            "parameters": []
-        }
-    ]
-}*/
+/*{"name":"Tractor","elements":[],"actions":[{"name":"get","parameters":[]},{"name":"refresh","parameters":[]}]}*/
 module.exports = function () {
     var Tractor = function Tractor() {
     };

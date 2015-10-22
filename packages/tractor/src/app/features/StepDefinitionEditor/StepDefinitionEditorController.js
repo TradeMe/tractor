@@ -8,6 +8,7 @@ var _ = require('lodash');
 
 // Dependencies:
 var FileEditorController = require('../FileEditor/FileEditorController');
+require('../../Core/Services/ConfirmDialogService');
 require('../../Core/Services/PersistentStateService');
 require('../../Core/Components/Notifier/NotifierService');
 require('./Services/StepDefinitionFileService');
@@ -16,6 +17,7 @@ var StepDefinitionEditorController = function StepDefinitionEditorController (
     $scope,
     $window,
     $state,
+    confirmDialogService,
     persistentStateService,
     notifierService,
     ComponentParserService,
@@ -28,6 +30,7 @@ var StepDefinitionEditorController = function StepDefinitionEditorController (
         $scope,
         $window,
         $state,
+        confirmDialogService,
         persistentStateService,
         notifierService,
         StepDefinitionFileService,

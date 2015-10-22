@@ -10,4 +10,15 @@ export default class MockDataFile extends File {
         }
         return super.save();
     }
+
+    delete () {
+        super.delete()
+        .then(() => deleteFileReferences.call(this));
+    }
+}
+
+function deleteFileReferences () {
+    let { references } = this.directory.fileStructure;
+
+    delete references[this.path];
 }

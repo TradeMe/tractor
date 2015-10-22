@@ -3,7 +3,15 @@
 // Dependencies:
 import JavaScriptFile from './JavaScriptFile';
 
-export default class ComponentFile extends JavaScriptFile { }
+export default class ComponentFile extends JavaScriptFile {
+    delete () {
+        return super.delete()
+        .then(() => deleteFileReferences.call(this));
+    }
+}
 
-// This class is empty, but we need it to tell the difference between
-// `ComponentFile`s and `StepDefinitionFile`s as they both extend JavaScriptFile
+function deleteFileReferences () {
+    let { references } = this.directory.fileStructure;
+
+    delete references[this.path];
+}

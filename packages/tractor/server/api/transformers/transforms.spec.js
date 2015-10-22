@@ -30,13 +30,22 @@ describe('server/api/transformers: transforms:', () => {
                             name: 'old name'
                         })
                     }]
-                }
+                },
+                save: _.noop
             };
 
-            transforms.transformMetadata(file, null, 'old name', 'new name');
+            sinon.stub(file, 'save').returns(Promise.resolve());
 
-            let [comment] = file.ast.comments;
-            expect(JSON.parse(comment.value).name).to.equal('new name');
+            return transforms.transformMetadata(file, null, 'old name', 'new name')
+            .then(() => {
+                let [comment] = file.ast.comments;
+                expect(JSON.parse(comment.value).name).to.equal('new name');
+
+                expect(file.save).to.have.been.called();
+            })
+            .finally(() => {
+                file.save.restore();
+            });
         });
 
         it('should update the name of a referenced file in another file\'s metadata', () => {
@@ -49,14 +58,23 @@ describe('server/api/transformers: transforms:', () => {
                             }]
                         })
                     }]
-                }
+                },
+                save: _.noop
             };
 
-            transforms.transformMetadata(file, 'components', 'old name', 'new name');
+            sinon.stub(file, 'save').returns(Promise.resolve());
 
-            let [comment] = file.ast.comments;
-            let [component] = JSON.parse(comment.value).components;
-            expect(component.name).to.equal('new name');
+            return transforms.transformMetadata(file, 'components', 'old name', 'new name')
+            .then(() => {
+                let [comment] = file.ast.comments;
+                let [component] = JSON.parse(comment.value).components;
+                expect(component.name).to.equal('new name');
+
+                expect(file.save).to.have.been.called();
+            })
+            .finally(() => {
+                file.save.restore();
+            });
         });
     });
 
@@ -77,14 +95,23 @@ describe('server/api/transformers: transforms:', () => {
                         }],
                         kind: 'var'
                     }]
-                }
+                },
+                save: _.noop
             };
 
-            transforms.transformIdentifiers(file, 'oldName', 'newName');
+            sinon.stub(file, 'save').returns(Promise.resolve());
 
-            let [variableDeclarations] = file.ast.body;
-            let [variableDeclaration] = variableDeclarations.declarations;
-            expect(variableDeclaration.id.name).to.equal('newName');
+            return transforms.transformIdentifiers(file, 'oldName', 'newName')
+            .then(() => {
+                let [variableDeclarations] = file.ast.body;
+                let [variableDeclaration] = variableDeclarations.declarations;
+                expect(variableDeclaration.id.name).to.equal('newName');
+
+                expect(file.save).to.have.been.called();
+            })
+            .finally(() => {
+                file.save.restore();
+            });
         });
     });
 
@@ -153,7 +180,7 @@ describe('server/api/transformers: transforms:', () => {
         });
     });
 
-    describe('transforms.transformReferencePath:', () => {
+    describe('transforms.transformReferences:', () => {
         it('should update the name of a referenced sibling file\'s path in another file\'s AST', () => {
             let oldReferences = fileStructure.references;
             let oldAllFilesByPath = fileStructure.allFilesByPath;
@@ -192,11 +219,12 @@ describe('server/api/transformers: transforms:', () => {
                         kind: 'var'
                     }]
                 },
+                path: 'some/path/to/sibling-file',
                 save: _.noop
             };
 
             fileStructure.references = {
-                'some/path/to/newName': ['some/path/to/sibling-file']
+                'some/path/to/oldName': ['some/path/to/sibling-file']
             };
             fileStructure.allFilesByPath = {
                 'some/path/to/sibling-file': file
@@ -204,7 +232,7 @@ describe('server/api/transformers: transforms:', () => {
 
             sinon.stub(file, 'save').returns(Promise.resolve());
 
-            return transforms.transformReferencePath('components', 'some/path/to/oldName', 'some/path/to/newName', 'old name', 'new name')
+            return transforms.transformReferences('components', 'some/path/to/oldName', 'some/path/to/newName', 'old name', 'new name')
             .then(() => {
                 let [variableDeclaration] = fileStructure.allFilesByPath['some/path/to/sibling-file'].ast.body;
                 let [VariableDeclarator] = variableDeclaration.declarations;
@@ -258,11 +286,12 @@ describe('server/api/transformers: transforms:', () => {
                         kind: 'var'
                     }]
                 },
+                path: 'some/path/to/descendent/file',
                 save: _.noop
             };
 
             fileStructure.references = {
-                'some/path/to/newName': ['some/path/to/descendent/file']
+                'some/path/to/oldName': ['some/path/to/descendent/file']
             };
             fileStructure.allFilesByPath = {
                 'some/path/to/descendent/file': file
@@ -270,7 +299,7 @@ describe('server/api/transformers: transforms:', () => {
 
             sinon.stub(file, 'save').returns(Promise.resolve());
 
-            return transforms.transformReferencePath('components', 'some/path/to/oldName', 'some/path/to/newName', 'old name', 'new name')
+            return transforms.transformReferences('components', 'some/path/to/oldName', 'some/path/to/newName', 'old name', 'new name')
             .then(() => {
                 let [variableDeclaration] = fileStructure.allFilesByPath['some/path/to/descendent/file'].ast.body;
                 let [VariableDeclarator] = variableDeclaration.declarations;
@@ -292,7 +321,7 @@ describe('server/api/transformers: transforms:', () => {
             fileStructure.references = {};
             sinon.spy(Promise, 'map');
 
-            return transforms.transformReferencePath('components', 'some/path/to/oldName', 'some/path/to/newName', 'oldName', 'newName')
+            return transforms.transformReferences('components', 'some/path/to/oldName', 'some/path/to/newName', 'oldName', 'newName')
             .then(() => {
                 expect(Promise.map).to.have.been.calledWith([]);
             })
