@@ -1,6 +1,7 @@
 'use strict';
 
 // Constants:
+import constants from '../constants';
 const LEADING_SLASH_REGEX = /^\//;
 const TRAILING_SLASH_REGEX = /(\/)[gimuy]*?$/;
 const REGEXP_CONTENT_REGEX = /^\/.*\/[gimuy]*?$/;
@@ -28,7 +29,7 @@ export default class JavaScriptFile extends File {
         })
         .catch((error) => {
             console.error(error);
-            throw new TractorError(`Parsing "${this.path}" failed.`, 400);
+            throw new TractorError(`Parsing "${this.path}" failed.`, constants.REQUEST_ERROR);
         });
     }
 
@@ -46,7 +47,7 @@ export default class JavaScriptFile extends File {
         return super.save()
         .catch((error) => {
             console.error(error);
-            throw new TractorError(`Saving "${this.path}" failed.`, 400);
+            throw new TractorError(`Saving "${this.path}" failed.`, constants.REQUEST_ERROR);
         });
     }
 }

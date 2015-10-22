@@ -1,5 +1,6 @@
 'use strict';
 
+/* eslint-disable no-var, prefer-arrow-callback */
 var HttpBackend = require('httpbackend');
 
 var CustomWorld = (function () {
@@ -29,7 +30,7 @@ module.exports = function () {
     });
 
     /* eslint-disable new-cap */
-    this.After(function(callback) {
+    this.After(function (callback) {
     /* eslint-enable new-cap */
         global.httpBackend.clear();
         callback();

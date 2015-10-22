@@ -1,6 +1,9 @@
 /* global describe:true, it:true */
 'use strict';
 
+// Constants:
+import constants from '../constants';
+
 // Utilities:
 import _ from 'lodash';
 import chai from 'chai';
@@ -68,7 +71,8 @@ describe('server/file-structure: FileStructure:', () => {
                 expect(fileStructure.allDirectoriesByPath[path.join('e2e-tests', 'mock-data')]).not.to.be.undefined();
                 expect(fileStructure.allDirectoriesByPath[path.join('e2e-tests', 'step-definitions')]).not.to.be.undefined();
 
-                expect(Directory.prototype.read).to.have.callCount(4);
+                const READ_COUNT = 4;
+                expect(Directory.prototype.read).to.have.callCount(READ_COUNT);
             })
             .finally(() => {
                 Directory.prototype.read.restore();
@@ -95,7 +99,7 @@ describe('server/file-structure: FileStructure:', () => {
                 availableComponents: undefined,
                 availableMockData: undefined,
                 /* eslint-enable no-undefined */
-                directory: directory,
+                directory,
                 references: { }
             });
 
@@ -120,7 +124,7 @@ describe('server/file-structure: FileStructure:', () => {
             expect(structure).to.deep.equal({
                 availableComponents: [component1, component2],
                 availableMockData: [],
-                directory: directory,
+                directory,
                 references: { }
             });
 
@@ -145,7 +149,7 @@ describe('server/file-structure: FileStructure:', () => {
             expect(structure).to.deep.equal({
                 availableComponents: [],
                 availableMockData: [mockData1, mockData2],
-                directory: directory,
+                directory,
                 references: { }
             });
 
@@ -175,7 +179,7 @@ describe('server/file-structure: FileStructure:', () => {
             .then(() => {
                 expect(directory.addFile).to.have.been.calledWith({
                     content: 'content',
-                    directory: directory,
+                    directory,
                     name: 'file (1)',
                     path: path.join('some', 'path', 'to', 'directory', 'file (1)')
                 });
@@ -215,7 +219,7 @@ describe('server/file-structure: FileStructure:', () => {
                             value: JSON.stringify({ name: 'file (1)' })
                         }]
                     },
-                    directory: directory,
+                    directory,
                     name: 'file (1)',
                     path: path.join('some', 'path', 'to', 'directory', 'file (1).js')
                 });
@@ -234,7 +238,7 @@ describe('server/file-structure: FileStructure:', () => {
                 expect(error).to.deep.equal({
                     name: 'TractorError',
                     message: path.join(`Could not find "${path.join('path', 'to', 'something', 'that', 'doesnt', 'exist')}"`),
-                    status: 404
+                    status: constants.FILE_NOT_FOUND_ERROR
                 });
             });
         });
@@ -309,7 +313,7 @@ describe('server/file-structure: FileStructure:', () => {
                 expect(error).to.deep.equal({
                     name: 'TractorError',
                     message: `Could not find "${path.join('path', 'to', 'something', 'that', 'doesnt', 'exist')}"`,
-                    status: 404
+                    status: constants.FILE_NOT_FOUND_ERROR
                 });
             });
         });
@@ -341,7 +345,7 @@ describe('server/file-structure: FileStructure:', () => {
                 expect(error).to.deep.equal({
                     name: 'TractorError',
                     message: `Could not find "${path.join('path', 'to', 'something', 'that', 'doesnt', 'exist')}"`,
-                    status: 404
+                    status: constants.FILE_NOT_FOUND_ERROR
                 });
             });
         });

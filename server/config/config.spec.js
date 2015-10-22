@@ -1,7 +1,11 @@
 /* global describe:true, it:true */
 'use strict';
 
+// Constants:
+import constants from '../constants';
+
 // Utilities:
+import _ from 'lodash';
 import chai from 'chai';
 import mockery from 'mockery';
 import sinon from 'sinon';
@@ -22,7 +26,10 @@ describe('server/config: config:', () => {
         let config = createConfig();
 
         expect(config.testDirectory).to.equal('./e2e-tests');
-        expect(config.port).to.equal(4000);
+        expect(config.port).to.equal(constants.DEFAULT_PORT);
+        expect(config.environments).to.deep.equal(['http://localhost:8080']);
+        expect(config.beforeProtractor).to.equal(_.noop);
+        expect(config.afterProtractor).to.equal(_.noop);
 
         path.join.restore();
     });
@@ -52,7 +59,7 @@ describe('server/config: config:', () => {
 
         let config = createConfig();
 
-        expect(config.port).to.equal(4000);
+        expect(config.port).to.equal(constants.DEFAULT_PORT);
 
         path.join.restore();
         mockery.deregisterMock('./mock.conf');

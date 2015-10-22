@@ -19,17 +19,17 @@ export default class FeatureFile extends File {
     read () {
         return super.read()
         .then(() => {
-            var formatter = new FeatureLexerFormatter();
+            let formatter = new FeatureLexerFormatter();
             /* eslint-disable new-cap */
-            var EnLexer = gherkin.Lexer('en');
+            let EnLexer = gherkin.Lexer('en');
             /* eslint-enable new-cap */
-            var enLexer = new EnLexer(formatter);
+            let enLexer = new EnLexer(formatter);
             enLexer.scan(this.content);
             this.tokens = formatter.done();
         })
         .catch((error) => {
             console.error(error);
-            throw new TractorError(`Lexing "${this.path}" failed.`, 400);
+            throw new TractorError(`Lexing "${this.path}" failed.`, constants.REQUEST_ERROR);
         });
     }
 
@@ -45,7 +45,7 @@ export default class FeatureFile extends File {
         })
         .catch((error) => {
             console.error(error);
-            throw new TractorError(`Generating step definitions from "${this.path}" failed.`, 400);
+            throw new TractorError(`Generating step definitions from "${this.path}" failed.`, constants.REQUEST_ERROR);
         });
     }
 }

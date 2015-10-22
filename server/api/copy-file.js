@@ -16,5 +16,5 @@ function handler (request, response) {
     return fileStructure.copyFile(path)
     .then(() => getFileStructure.handler(request, response))
     .catch(TractorError, error => errorHandler.handler(response, error))
-    .catch(() => errorHandler.handler(response, new TractorError(`Could not copy "${path}"`, 500)));
+    .catch(() => errorHandler.handler(response, new TractorError(`Could not copy "${path}"`)));
 }

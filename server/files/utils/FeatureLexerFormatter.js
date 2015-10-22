@@ -13,7 +13,9 @@ export default class FeatureLexerFormatter {
     constructor () {
         this.features = [];
 
+        /* eslint-disable camelcase */
         this.comment = this.doc_string = this.examples = this.eof = this.tag = _.noop;
+        /* eslint-enable camelcase */
     }
 
     get lastFeature () {
@@ -24,7 +26,7 @@ export default class FeatureLexerFormatter {
     }
 
     feature (type, name, description) {
-        let [ inOrderTo, asA, iWant ] = description.split(constants.FEATURE_NEWLINE);
+        let [inOrderTo, asA, iWant] = description.split(constants.FEATURE_NEWLINE);
         inOrderTo = inOrderTo.replace(IN_ORDER_TO, '');
         asA = asA.replace(AS_A, '');
         iWant = iWant.replace(I_WANT, '');
@@ -43,16 +45,18 @@ export default class FeatureLexerFormatter {
         this.lastFeature.elements.push(scenario);
     }
 
+    /* eslint-disable camelcase */
     scenario_outline (type, name, description) {
         let scenario_outline = { type, name, description, examples: [], stepDeclarations: [] };
         this.lastFeature.elements.push(scenario_outline);
     }
+    /* eslint-enable camelcase */
 
     row (row) {
-        if (!this.lastElement.variables) {
-            this.lastElement.variables = row;
-        } else {
+        if (this.lastElement.variables) {
             this.lastElement.examples.push(row);
+        } else {
+            this.lastElement.variables = row;
         }
     }
 

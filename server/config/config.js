@@ -10,7 +10,7 @@ import { join } from 'path';
 export default createConfig();
 
 export function createConfig () {
-    let configPath = join(process.cwd() + '/tractor.conf.js');
+    let configPath = join(process.cwd(), 'tractor.conf.js');
     let config;
     try {
         config = require(configPath);

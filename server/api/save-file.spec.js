@@ -1,6 +1,9 @@
 /* global describe:true, it:true */
 'use strict';
 
+// Constants:
+import constants from '../constants';
+
 // Utilities:
 import chai from 'chai';
 import dirtyChai from 'dirty-chai';
@@ -121,7 +124,7 @@ describe('server/api: save-file:', () => {
 
         return saveFile.handler(request, response)
         .then(() => {
-            expect(errorHandler.handler).to.have.been.calledWith(response, new TractorError(`Could not save "${path.join('some', 'path')}"`, 500));
+            expect(errorHandler.handler).to.have.been.calledWith(response, new TractorError(`Could not save "${path.join('some', 'path')}"`, constants.SERVER_ERROR));
         })
         .finally(() => {
             fileStructure.saveFile.restore();

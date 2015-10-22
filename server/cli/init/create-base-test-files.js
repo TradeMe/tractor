@@ -24,16 +24,16 @@ function createBaseTestFiles (testDirectoryPath) {
 }
 
 function createWorldFile (supportDirPath) {
-    var fileName = constants.WORLD_FILE_NAME;
-    var readPath = join(__dirname, constants.WORLD_SOURCE_FILE_PATH);
-    var writePath = join(process.cwd(), supportDirPath, constants.WORLD_FILE_NAME);
+    let fileName = constants.WORLD_FILE_NAME;
+    let readPath = join(__dirname, constants.WORLD_SOURCE_FILE_PATH);
+    let writePath = join(process.cwd(), supportDirPath, constants.WORLD_FILE_NAME);
     return createFile(fileName, readPath, writePath);
 }
 
 function createProtractorConf (testDirectoryPath) {
-    var fileName = constants.PROTRACTOR_CONF_FILE_NAME;
-    var readPath = join(__dirname, constants.PROTRACTOR_CONF_SOURCE_FILE_PATH);
-    var writePath = join(process.cwd(), testDirectoryPath, constants.PROTRACTOR_CONF_FILE_NAME);
+    let fileName = constants.PROTRACTOR_CONF_FILE_NAME;
+    let readPath = join(__dirname, constants.PROTRACTOR_CONF_SOURCE_FILE_PATH);
+    let writePath = join(process.cwd(), testDirectoryPath, constants.PROTRACTOR_CONF_FILE_NAME);
     return createFile(fileName, readPath, writePath);
 }
 
@@ -44,7 +44,7 @@ function createFile (fileName, readPath, writePath) {
     })
     .catch(Promise.OperationalError, () => logCreating(fileName))
     .then(() => fs.readFileAsync(readPath))
-    .then((contents) => fs.writeFileAsync(writePath, contents))
+    .then(contents => fs.writeFileAsync(writePath, contents))
     .then(() => logCreated(fileName));
 }
 

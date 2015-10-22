@@ -19,10 +19,8 @@ function server (reportTaskDone) {
     gulp.src([
         'server/**/*.js',
         '!server/**/*.spec.js',
-        '!server/**/*.mock.js',
         '!server/*.js',
-        '!server/cli/init/base-file-sources/*',
-        '!server/utils/log.js'
+        '!server/cli/init/base-file-sources/*'
     ])
     .pipe(istanbul({
         instrumenter: isparta.Instrumenter,
@@ -30,7 +28,7 @@ function server (reportTaskDone) {
     }))
     .pipe(istanbul.hookRequire())
     .on('finish', function () {
-        gulp.src(['server/**/*.js'])
+        gulp.src('server/**/*.js')
         .pipe(mocha().on('error', function (error) {
             console.log(error);
             this.destroy();

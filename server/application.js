@@ -59,7 +59,7 @@ function init () {
 
     application.get('/config', require('./api/get-config').handler);
 
-    application.get('*', function (request, response) {
+    application.get('*', (request, response) => {
         response.sendFile(join(__dirname, '../www', 'index.html'));
     });
 

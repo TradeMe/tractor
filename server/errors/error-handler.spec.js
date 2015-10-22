@@ -1,6 +1,9 @@
 /* global describe:true, it:true */
 'use strict';
 
+// Constants:
+import constants from '../constants';
+
 // Utilities:
 import _ from 'lodash';
 import chai from 'chai';
@@ -54,11 +57,11 @@ describe('server/errors: error-handler:', () => {
         };
         sinon.spy(response, 'status');
         let error = new Error();
-        error.status = 400;
+        error.status = constants.REQUEST_ERROR;
 
         errorHandler.handler(response, error);
 
-        expect(response.status).to.have.been.calledWith(400);
+        expect(response.status).to.have.been.calledWith(constants.REQUEST_ERROR);
 
         log.error.restore();
     });
@@ -73,7 +76,7 @@ describe('server/errors: error-handler:', () => {
 
         errorHandler.handler(response, new Error());
 
-        expect(response.status).to.have.been.calledWith(500);
+        expect(response.status).to.have.been.calledWith(constants.SERVER_ERROR);
 
         log.error.restore();
     });
@@ -88,8 +91,8 @@ describe('server/errors: error-handler:', () => {
 
         errorHandler.handler(response, new Error(), 'error');
 
-        let responseData = JSON.parse(response.send.firstCall.args[0]);
-        expect(responseData.error).to.equal('error');
+        let [responseData] = response.send.firstCall.args;
+        expect(JSON.parse(responseData).error).to.equal('error');
 
         log.error.restore();
     });
@@ -104,8 +107,8 @@ describe('server/errors: error-handler:', () => {
 
         errorHandler.handler(response, new Error('error'));
 
-        let responseData = JSON.parse(response.send.firstCall.args[0]);
-        expect(responseData.error).to.equal('error');
+        let [responseData] = response.send.firstCall.args;
+        expect(JSON.parse(responseData).error).to.equal('error');
 
         log.error.restore();
     });

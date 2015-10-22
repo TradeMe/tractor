@@ -1,6 +1,9 @@
 /* global describe:true, it:true */
 'use strict';
 
+// Constants:
+import constants from '../constants';
+
 // Utilities:
 import chai from 'chai';
 import sinon from 'sinon';
@@ -34,15 +37,15 @@ describe('server/errors: TractorError:', () => {
     });
 
     it('should have a status code', () => {
-        let error = new TractorError(null, 400);
+        let error = new TractorError(null, constants.REQUEST_ERROR);
 
-        expect(error.status).to.equal(400);
+        expect(error.status).to.equal(constants.REQUEST_ERROR);
     });
 
     it('should have an default status of 500', () => {
         let error = new TractorError();
 
-        expect(error.status).to.equal(500);
+        expect(error.status).to.equal(constants.SERVER_ERROR);
     });
 
     it('should capture the stack trace', () => {

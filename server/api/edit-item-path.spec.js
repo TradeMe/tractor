@@ -1,6 +1,9 @@
 /* global describe:true, it:true */
 'use strict';
 
+// Constants:
+import constants from '../constants';
+
 // Utilities:
 import _ from 'lodash';
 import chai from 'chai';
@@ -457,7 +460,7 @@ describe('server/api: edit-item-path:', () => {
 
         return editItemPath.handler(request, response)
         .then(() => {
-            expect(errorHandler.handler).to.have.been.calledWith(response, new TractorError('Unknown operation', 500));
+            expect(errorHandler.handler).to.have.been.calledWith(response, new TractorError('Unknown operation', constants.SERVER_ERROR));
         })
         .finally(() => {
             errorHandler.handler.restore();

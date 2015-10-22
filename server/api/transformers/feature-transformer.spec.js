@@ -16,7 +16,7 @@ import featureTransformer from './feature-transformer';
 describe('server/api/transformers: featureTransformer:', () => {
     it('should update the name of the feature in a FeatureFile', () => {
         let file = {
-            content: 'Feature: old name' + os.EOL
+            content: `Feature: old name${os.EOL}`
         };
         let options = {
             oldName: 'old name',
@@ -25,7 +25,7 @@ describe('server/api/transformers: featureTransformer:', () => {
 
         return featureTransformer(file, options)
         .then(() => {
-            expect(file.content).to.equal('Feature: new name' + os.EOL);
+            expect(file.content).to.equal(`Feature: new name${os.EOL}`);
         });
     });
 });
