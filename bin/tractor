@@ -2,14 +2,16 @@
 'use strict';
 
 // Dependencies:
-var babel = require('babel/register');
+var babel = require('babel/register')({
+    only: /tractor\/server\//
+});
 var tractor = require('commander');
 var log = require('npmlog');
 
 log.level = 'info';
 
 tractor
-.version('0.0.1')
+.version('0.6.6')
 
 tractor
 .command('init')
