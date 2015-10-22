@@ -9,6 +9,7 @@ var FileEditorController = (function () {
         $scope,
         $window,
         $state,
+        confirmDialogService,
         persistentStateService,
         notifierService,
         FileService,
@@ -19,6 +20,7 @@ var FileEditorController = (function () {
         this.$scope = $scope;
         this.$window = $window;
         this.$state = $state;
+        this.confirmDialogService = confirmDialogService;
         this.persistentStateService = persistentStateService;
         this.notifierService = notifierService;
         this.fileService = FileService;
@@ -56,14 +58,21 @@ var FileEditorController = (function () {
             path = filePath.path;
             var exists = this.fileService.checkFileExists(this.fileStructure, path);
 
-            if (!exists || this.$window.confirm('This will overwrite "' + this.fileModel.name + '". Continue?')) {
-                return this.fileService.saveFile({
-                    data: this.fileModel.data,
-                    path: path
-                });
+            if (exists) {
+                this.confirmOverWrite = this.confirmDialogService.show();
+                return this.confirmOverWrite.promise
+                .finally(function () {
+                    this.confirmOverWrite = null;
+                }.bind(this));
             } else {
-                return Promise.reject();
+                return Promise.resolve();
             }
+        }.bind(this))
+        .then(function () {
+            return this.fileService.saveFile({
+                data: this.fileModel.data,
+                path: path
+            });
         }.bind(this))
         .then(function () {
             return this.fileService.getFileStructure();

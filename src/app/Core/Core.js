@@ -9,6 +9,7 @@ module.exports = Core;
 
 require('./Components/Action/ActionDirective');
 require('./Components/Checkbox/CheckboxDirective');
+require('./Components/ConfirmDialog/ConfirmDialogDirective');
 require('./Components/DragFile/DragFileDirective');
 require('./Components/DropFile/DropFileDirective');
 require('./Components/FileTree/FileTreeDirective');

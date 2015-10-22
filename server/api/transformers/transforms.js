@@ -3,9 +3,10 @@
 // Utilities:
 import _ from 'lodash';
 import Promise from 'bluebird';
-import { dirname, relative } from 'path';
+import path from 'path';
 
 // Dependencies:
+import changecase from 'change-case';
 import esquery from 'esquery';
 import fileStructure from '../../file-structure';
 
@@ -13,7 +14,8 @@ export default {
     transformIdentifiers,
     transformMetadata,
     transformReferenceIdentifiers,
-    transformReferencePath
+    transformReferencePath,
+    transformReferences
 };
 
 function transformIdentifiers (file, oldName, newName) {
@@ -21,6 +23,7 @@ function transformIdentifiers (file, oldName, newName) {
     _.each(esquery(file.ast, query), (identifier) => {
         identifier.name = newName;
     });
+    return file.save();
 }
 
 function transformMetadata (file, type, oldName, newName) {
@@ -32,34 +35,41 @@ function transformMetadata (file, type, oldName, newName) {
     }
     item.name = newName;
     comment.value = JSON.stringify(metaData);
+    return file.save();
 }
 
-function transformReferenceIdentifiers (newFilePath, oldName, newName) {
-    let referencePaths = fileStructure.references[newFilePath] || [];
+function transformReferenceIdentifiers (oldFilePath, oldName, newName) {
+    let referencePaths = fileStructure.references[oldFilePath] || [];
     return Promise.map(referencePaths, (referencePath) => {
         let file = fileStructure.allFilesByPath[referencePath];
-        transformIdentifiers(file, oldName, newName);
-        return file.save();
+        return transformIdentifiers(file, oldName, newName);
     });
 }
 
-function transformReferencePath (type, oldFilePath, newFilePath, oldName, newName) {
-    let referencePaths = fileStructure.references[newFilePath] || [];
+function transformReferencePath (file, oldFromPath, oldToPath, newFromPath, newToPath) {
+    let oldRequirePath = getRelativeRequirePath(path.dirname(oldFromPath), oldToPath);
+    let newRequirePath = getRelativeRequirePath(path.dirname(newFromPath), newToPath);
+    let query = `CallExpression[callee.name="require"] Literal[value="${oldRequirePath}"]`;
+    _.each(esquery(file.ast, query), (requirePathLiteral) => {
+        requirePathLiteral.value = newRequirePath;
+        requirePathLiteral.raw = `'${newRequirePath}'`;
+    });
+    return file.save();
+}
+
+function transformReferences (type, oldFilePath, newFilePath, oldName, newName) {
+    let referencePaths = fileStructure.references[oldFilePath] || [];
     return Promise.map(referencePaths, (referencePath) => {
         let file = fileStructure.allFilesByPath[referencePath];
-        let oldRequirePath = getRelativeRequirePath(dirname(referencePath), oldFilePath);
-        let newRequirePath = getRelativeRequirePath(dirname(referencePath), newFilePath);
-        let query = `CallExpression[callee.name="require"] Literal[value="${oldRequirePath}"]`;
-        _.each(esquery(file.ast, query), (requirePathLiteral) => {
-            requirePathLiteral.value = newRequirePath;
-            requirePathLiteral.raw = `'${newRequirePath}'`;
-        });
-        transformMetadata(file, type, oldName, newName);
-        return file.save();
+
+        return transformIdentifiers(file, changecase.pascal(oldName), changecase.pascal(newName))
+        .then(() => transformIdentifiers(file, changecase.camel(oldName), changecase.camel(newName)))
+        .then(() => transformMetadata(file, type, oldName, newName))
+        .then(() => transformReferencePath(file, file.path, oldFilePath, file.path, newFilePath));
     });
 }
 
 function getRelativeRequirePath (from, to) {
-    let relativePath = relative(from, to).replace(/\\/g, '/');
+    let relativePath = path.relative(from, to).replace(/\\/g, '/');
     return /^\./.test(relativePath) ? relativePath : `./${relativePath}`;
 }

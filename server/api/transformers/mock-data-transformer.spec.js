@@ -14,43 +14,12 @@ chai.use(dirtyChai);
 chai.use(sinonChai);
 
 // Dependencies:
-import fileStructure from '../../file-structure';
 import transforms from './transforms';
 
 // Under test:
 import mockDataTransformer from './mock-data-transformer';
 
 describe('server/api/transformers: mockDataTransformer:', () => {
-    it('should update the what other files reference a MockDataFile', () => {
-        let oldReferences = fileStructure.references;
-
-        let file = {};
-        let options = {
-            oldName: 'old name',
-            newName: 'new name',
-            oldPath: 'old/path',
-            newPath: 'new/path'
-        };
-        fileStructure.references = {
-            'old/path': ['/path/to/some/file']
-        };
-
-        sinon.stub(transforms, 'transformReferencePath').returns(Promise.resolve());
-        sinon.stub(transforms, 'transformReferenceIdentifiers').returns(Promise.resolve());
-
-        return mockDataTransformer(file, options)
-        .then(() => {
-            expect(fileStructure.references['new/path']).to.deep.equal(['/path/to/some/file']);
-            expect(fileStructure.references['old/path']).to.be.undefined();
-        })
-        .finally(() => {
-            fileStructure.references = oldReferences;
-
-            transforms.transformReferencePath.restore();
-            transforms.transformReferenceIdentifiers.restore();
-        });
-    });
-
     it('should update the path to a MockDataFile in all files that reference it', () => {
         let file = {};
         let options = {
@@ -60,15 +29,15 @@ describe('server/api/transformers: mockDataTransformer:', () => {
             newPath: 'new/path'
         };
 
-        sinon.stub(transforms, 'transformReferencePath').returns(Promise.resolve());
+        sinon.stub(transforms, 'transformReferences').returns(Promise.resolve());
         sinon.stub(transforms, 'transformReferenceIdentifiers').returns(Promise.resolve());
 
         return mockDataTransformer(file, options)
         .then(() => {
-            expect(transforms.transformReferencePath).to.have.been.calledWith('mockData', 'old/path', 'new/path', 'old name', 'new name');
+            expect(transforms.transformReferences).to.have.been.calledWith('mockData', 'old/path', 'new/path', 'old name', 'new name');
         })
         .finally(() => {
-            transforms.transformReferencePath.restore();
+            transforms.transformReferences.restore();
             transforms.transformReferenceIdentifiers.restore();
         });
     });
@@ -82,7 +51,7 @@ describe('server/api/transformers: mockDataTransformer:', () => {
             newPath: 'new/path'
         };
 
-        sinon.stub(transforms, 'transformReferencePath').returns(Promise.resolve());
+        sinon.stub(transforms, 'transformReferences').returns(Promise.resolve());
         sinon.stub(transforms, 'transformReferenceIdentifiers').returns(Promise.resolve());
 
         return mockDataTransformer(file, options)
@@ -90,7 +59,7 @@ describe('server/api/transformers: mockDataTransformer:', () => {
             expect(transforms.transformReferenceIdentifiers).to.have.been.calledWith('new/path', 'oldName', 'newName');
         })
         .finally(() => {
-            transforms.transformReferencePath.restore();
+            transforms.transformReferences.restore();
             transforms.transformReferenceIdentifiers.restore();
         });
     });

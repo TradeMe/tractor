@@ -16,6 +16,9 @@
                 </tractor-text-input>
             </div>
             <div class="file-options__file-actions">
+                <tractor-confirm-dialog trigger="mockDataEditor.confirmOverWrite">
+                    <p>This will overwrite "{{ mockDataEditor.fileModel.name }}". Continue?</p>
+                </tractor-confirm-dialog>
                 <tractor-submit class="file-options__save-file"
                     action="Save mock data file">
                 </tractor-submit>

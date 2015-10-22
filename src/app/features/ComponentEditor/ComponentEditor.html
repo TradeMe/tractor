@@ -16,6 +16,9 @@
                 </tractor-variable-input>
             </div>
             <div class="file-options__file-actions">
+                <tractor-confirm-dialog trigger="componentEditor.confirmOverWrite">
+                    <p>This will overwrite "{{ componentEditor.fileModel.name }}". Continue?</p>
+                </tractor-confirm-dialog>
                 <tractor-submit class="file-options__save-file"
                     action="Save component file">
                 </tractor-submit>

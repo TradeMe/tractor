@@ -5,6 +5,9 @@
     <section class="file-options" ng-if="stepDefinitionEditor.fileModel">
         <h1 class="file-options__name">{{ stepDefinitionEditor.fileModel.name }}</h1>
         <div class="file-options__file-actions">
+            <tractor-confirm-dialog trigger="stepDefinitionEditor.confirmOverWrite">
+                <p>This will overwrite "{{ stepDefinitionEditor.fileModel.name }}". Continue?</p>
+            </tractor-confirm-dialog>
             <tractor-submit class="file-options__save-file"
                 action="Save step definition file">
             </tractor-submit>
