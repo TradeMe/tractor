@@ -1,6 +1,9 @@
 /* global describe:true, it:true */
 'use strict';
 
+// Constants:
+import constants from '../constants';
+
 // Utilities:
 import _ from 'lodash';
 import chai from 'chai';
@@ -111,7 +114,7 @@ describe('server/api: open-file:', () => {
 
         return openFile.handler(request, response)
         .then(() => {
-            expect(errorHandler.handler).to.have.been.calledWith(response, new TractorError(`Could not open "${path.join('some', 'path')}"`, 500));
+            expect(errorHandler.handler).to.have.been.calledWith(response, new TractorError(`Could not open "${path.join('some', 'path')}"`, constants.SERVER_ERROR));
         })
         .finally(() => {
             fileStructure.openFile.restore();

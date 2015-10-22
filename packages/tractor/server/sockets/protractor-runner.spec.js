@@ -3,6 +3,7 @@
 
 // Constants:
 import { config } from '../config';
+const MAGIC_TIMEOUT_NUMBER = 10;
 
 // Utilities:
 import _ from 'lodash';
@@ -48,7 +49,7 @@ describe('server/sockets: protractor-runner:', () => {
         let run = protractorRunner.run(socket, runOptions);
         setTimeout(() => {
             spawnEmitter.emit('exit', 0);
-        }, 10);
+        }, MAGIC_TIMEOUT_NUMBER);
 
         return run.then(() => {
             let protractorPath = path.join('node_modules', 'protractor', 'bin', 'protractor');
@@ -111,7 +112,7 @@ describe('server/sockets: protractor-runner:', () => {
         protractorRunner.run().catch(() => {
             setTimeout(() => {
                 spawnEmitter.emit('exit', 0);
-            }, 10);
+            }, MAGIC_TIMEOUT_NUMBER);
         });
 
         return run.then(() => {
@@ -150,7 +151,7 @@ describe('server/sockets: protractor-runner:', () => {
         let run = protractorRunner.run(socket, runOptions);
         setTimeout(() => {
             spawnEmitter.emit('exit', 0);
-        }, 10);
+        }, MAGIC_TIMEOUT_NUMBER);
 
         return run.then(() => {
             expect(socket.disconnect).to.have.been.calledOnce();
@@ -189,7 +190,7 @@ describe('server/sockets: protractor-runner:', () => {
         let run = protractorRunner.run(socket, runOptions);
         setTimeout(() => {
             spawnEmitter.emit('error', { message: 'error' });
-        }, 10);
+        }, MAGIC_TIMEOUT_NUMBER);
 
         return run.then(() => {
             expect(log.error).to.have.been.calledOnce();
@@ -229,7 +230,7 @@ describe('server/sockets: protractor-runner:', () => {
         let run = protractorRunner.run(socket, runOptions);
         setTimeout(() => {
             spawnEmitter.emit('exit', 1);
-        }, 10);
+        }, MAGIC_TIMEOUT_NUMBER);
 
         return run.then(() => {
             expect(log.error).to.have.been.calledOnce();
@@ -270,7 +271,7 @@ describe('server/sockets: protractor-runner:', () => {
             spawnEmitter.stdout.emit('data', 'Scenario');
             spawnEmitter.stdout.emit('data', 'Error:');
             spawnEmitter.emit('exit', 0);
-        }, 10);
+        }, MAGIC_TIMEOUT_NUMBER);
 
         return run.then(() => {
             expect(socket.emit).to.have.been.calledWith('protractor-out', {
@@ -316,7 +317,7 @@ describe('server/sockets: protractor-runner:', () => {
         setTimeout(() => {
             spawnEmitter.stderr.emit('data', 'error');
             spawnEmitter.emit('exit', 0);
-        }, 10);
+        }, MAGIC_TIMEOUT_NUMBER);
 
         return run.then(() => {
             expect(socket.emit).to.have.been.calledWith('protractor-err', {
@@ -359,7 +360,7 @@ describe('server/sockets: protractor-runner:', () => {
             spawnEmitter.stdout.emit('data', '');
             spawnEmitter.stdout.emit('data', 'something irrelevant');
             spawnEmitter.emit('exit', 0);
-        }, 10);
+        }, MAGIC_TIMEOUT_NUMBER);
 
         return run.then(() => {
             expect(socket.emit).to.not.have.been.called();

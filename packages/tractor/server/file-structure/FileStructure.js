@@ -78,7 +78,7 @@ export default class FileStructure {
                 return copy.save();
             }
         } else {
-            return Promise.reject(new TractorError(`Could not find "${path}"`, 404));
+            return Promise.reject(new TractorError(`Could not find "${path}"`, constants.FILE_NOT_FOUND_ERROR));
         }
     }
 
@@ -95,7 +95,7 @@ export default class FileStructure {
         if (toDelete) {
             return toDelete.delete();
         } else {
-            return Promise.reject(new TractorError(`Could not find "${path}"`, 404));
+            return Promise.reject(new TractorError(`Could not find "${path}"`, constants.FILE_NOT_FOUND_ERROR));
         }
     }
 
@@ -105,7 +105,7 @@ export default class FileStructure {
             return toOpen.read()
             .then(() => toOpen);
         } else {
-            return Promise.reject(new TractorError(`Could not find "${path}"`, 404));
+            return Promise.reject(new TractorError(`Could not find "${path}"`, constants.FILE_NOT_FOUND_ERROR));
         }
     }
 

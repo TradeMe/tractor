@@ -1,11 +1,14 @@
 'use strict';
 
+// Constants:
+import constants from '../constants';
+
 // Utilities:
 import _ from 'lodash';
 
 export default {
     testDirectory: './e2e-tests',
-    port: 4000,
+    port: constants.DEFAULT_PORT,
     environments: [
         'http://localhost:8080'
     ],

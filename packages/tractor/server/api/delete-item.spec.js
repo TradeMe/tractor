@@ -1,6 +1,9 @@
 /* global describe:true, it:true */
 'use strict';
 
+// Constants:
+import constants from '../constants';
+
 // Utilities:
 import chai from 'chai';
 import Promise from 'bluebird';
@@ -103,7 +106,7 @@ describe('server/api: delete-item:', () => {
 
         return deleteItem.handler(request, response)
         .then(() => {
-            expect(errorHandler.handler).to.have.been.calledWith(response, new TractorError(`Could not delete "${path.join('some', 'path')}"`, 500));
+            expect(errorHandler.handler).to.have.been.calledWith(response, new TractorError(`Could not delete "${path.join('some', 'path')}"`, constants.SERVER_ERROR));
         })
         .finally(() => {
             fileStructure.deleteItem.restore();

@@ -15,5 +15,5 @@ function handler (request, response) {
     return fileStructure.openFile(path)
     .then((file) => response.send(file))
     .catch(TractorError, error => errorHandler.handler(response, error))
-    .catch(() => errorHandler.handler(response, new TractorError(`Could not open "${path}"`, 500)));
+    .catch(() => errorHandler.handler(response, new TractorError(`Could not open "${path}"`)));
 }

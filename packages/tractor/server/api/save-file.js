@@ -17,5 +17,5 @@ function handler (request, response) {
     return fileStructure.saveFile(type, data, path)
     .then(() => getFileStructure.handler(request, response))
     .catch(TractorError, error => errorHandler.handler(response, error))
-    .catch(() => errorHandler.handler(response, new TractorError(`Could not save "${path}"`, 500)));
+    .catch(() => errorHandler.handler(response, new TractorError(`Could not save "${path}"`)));
 }

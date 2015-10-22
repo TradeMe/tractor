@@ -1,6 +1,9 @@
 /* global describe:true, it:true */
 'use strict';
 
+// Constants:
+import constants from '../constants';
+
 // Utilities:
 import _ from 'lodash';
 import chai from 'chai';
@@ -58,7 +61,7 @@ describe('server/files: FeatureFile:', () => {
             };
             let filePath = path.join('some', 'path');
             let scan = _.noop;
-            let lexerConstructor = function () {
+            let lexerConstructor = function Lexer () {
                 this.scan = scan;
             };
 
@@ -79,7 +82,7 @@ describe('server/files: FeatureFile:', () => {
 
         it('should lex the contents', () => {
             let features = ['feature1', 'feature2'];
-            let lexer = function () { };
+            let lexer = function Lexer () { };
             lexer.prototype.scan = _.noop;
             let directory = {
                 addFile: _.noop
@@ -123,7 +126,7 @@ describe('server/files: FeatureFile:', () => {
 
                 expect(tractorError).to.be.an.instanceof(TractorError);
                 expect(tractorError.message).to.equal(`Lexing "${path.join('some', 'feature', 'file.feature')}" failed.`);
-                expect(tractorError.status).to.equal(400);
+                expect(tractorError.status).to.equal(constants.REQUEST_ERROR);
             })
             .finally(() => {
                 File.prototype.read.restore();
@@ -177,7 +180,7 @@ describe('server/files: FeatureFile:', () => {
 
         it('should replace any newline characters in the content to be saved', () => {
             let data = 'some\ncontent\nwith\nnewlines';
-            let dataWithNewlines = 'some' + os.EOL + 'content' + os.EOL + 'with' + os.EOL + 'newlines';
+            let dataWithNewlines = `some${os.EOL}content${os.EOL}with${os.EOL}newlines`;
             let directory = {
                 addFile: _.noop
             };
@@ -216,7 +219,7 @@ describe('server/files: FeatureFile:', () => {
 
                 expect(tractorError).to.be.an.instanceof(TractorError);
                 expect(tractorError.message).to.equal(`Generating step definitions from "${path.join('some', 'feature', 'file.feature')}" failed.`);
-                expect(tractorError.status).to.equal(400);
+                expect(tractorError.status).to.equal(constants.REQUEST_ERROR);
             })
             .finally(() => {
                 File.prototype.save.restore();

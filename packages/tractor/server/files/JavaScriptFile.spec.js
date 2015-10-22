@@ -1,6 +1,9 @@
 /* global describe:true, it:true */
 'use strict';
 
+// Constants:
+import constants from '../constants';
+
 // Utilities:
 import _ from 'lodash';
 import chai from 'chai';
@@ -109,7 +112,7 @@ describe('server/files: JavaScriptFile:', () => {
 
                 expect(tractorError).to.be.an.instanceof(TractorError);
                 expect(tractorError.message).to.equal(`Parsing "${path.join('some', 'javascript', 'file.js')}" failed.`);
-                expect(tractorError.status).to.equal(400);
+                expect(tractorError.status).to.equal(constants.REQUEST_ERROR);
             })
             .finally(() => {
                 File.prototype.read.restore();
@@ -238,7 +241,7 @@ describe('server/files: JavaScriptFile:', () => {
 
                 expect(tractorError).to.be.an.instanceof(TractorError);
                 expect(tractorError.message).to.equal(`Saving "${path.join('some', 'javascript', 'file.js')}" failed.`);
-                expect(tractorError.status).to.equal(400);
+                expect(tractorError.status).to.equal(constants.REQUEST_ERROR);
             })
             .finally(() => {
                 File.prototype.save.restore();

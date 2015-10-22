@@ -21,7 +21,10 @@ import TractorError from '../errors/TractorError';
 export default { run };
 
 function run (socket, runOptions) {
-    if (!module.exports.running) {
+    if (module.exports.running) {
+        log.error('Protractor already running.');
+        return Promise.reject(new TractorError('Protractor already running.'));
+    } else {
         module.exports.running = true;
 
         return Promise.resolve(config.beforeProtractor())
@@ -42,9 +45,6 @@ function run (socket, runOptions) {
                 log.info('Protractor finished.');
             });
         });
-    } else {
-        log.error('Protractor already running.');
-        return Promise.reject(new TractorError('Protractor already running.'));
     }
 }
 
@@ -70,7 +70,7 @@ function startProtractor (socket, runOptions) {
 
     protractor.on('error', error => reject(new TractorError(error.message)));
     protractor.on('exit', (code) => {
-        if (code !== 0) {
+        if (code) {
             reject(new TractorError('Protractor Exit Error - '));
         } else {
             resolve();
