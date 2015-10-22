@@ -11,6 +11,8 @@ exports.config = {
         browserName: 'chrome'
     },
 
+    directConnect: true,
+
     framework: 'cucumber',
 
     cucumberOpts: {
