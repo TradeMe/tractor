@@ -1,67 +1,4 @@
-/*{
-    "name": "Element creator",
-    "elements": [
-        {
-            "name": "add element button"
-        },
-        {
-            "name": "element name input"
-        },
-        {
-            "name": "element name validation"
-        },
-        {
-            "name": "element type select - model"
-        },
-        {
-            "name": "element type select - binding"
-        },
-        {
-            "name": "element type select - text"
-        },
-        {
-            "name": "element type select - css"
-        },
-        {
-            "name": "element type select - options"
-        },
-        {
-            "name": "element type select - repeater"
-        },
-        {
-            "name": "element locator input"
-        },
-        {
-            "name": "element locator validation"
-        },
-        {
-            "name": "add filter button"
-        },
-        {
-            "name": "firstElement"
-        },
-        {
-            "name": "firstElementName"
-        }
-    ],
-    "actions": [
-        {
-            "name": "create element - model",
-            "parameters": [
-                {
-                    "name": "name"
-                },
-                {
-                    "name": "locator"
-                }
-            ]
-        },
-        {
-            "name": "get first Element name",
-            "parameters": []
-        }
-    ]
-}*/
+/*{"name":"Element creator","elements":[{"name":"add element button"},{"name":"element name input"},{"name":"element name validation"},{"name":"element type select - model"},{"name":"element type select - binding"},{"name":"element type select - text"},{"name":"element type select - css"},{"name":"element type select - options"},{"name":"element type select - repeater"},{"name":"element locator input"},{"name":"element locator validation"},{"name":"add filter button"},{"name":"firstElement"},{"name":"firstElementName"}],"actions":[{"name":"create element - model","parameters":[{"name":"name"},{"name":"locator"}]},{"name":"first element is visible","parameters":[]}]}*/
 module.exports = function () {
     var ElementCreator = function ElementCreator() {
         this.addElementButton = element(by.css('tractor-action[model="componentEditor.fileModel"][action="Add element"] button'));
@@ -113,9 +50,9 @@ module.exports = function () {
             return self.elementLocatorInput.sendKeys(locator);
         });
     };
-    ElementCreator.prototype.getFirstElementName = function () {
+    ElementCreator.prototype.firstElementIsVisible = function () {
         var self = this;
-        return self.firstElementName.getText();
+        return self.firstElement.isDisplayed();
     };
     return ElementCreator;
 }();
