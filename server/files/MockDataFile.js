@@ -12,7 +12,7 @@ export default class MockDataFile extends File {
     }
 
     delete () {
-        super.delete()
+        return super.delete()
         .then(() => deleteFileReferences.call(this));
     }
 }
