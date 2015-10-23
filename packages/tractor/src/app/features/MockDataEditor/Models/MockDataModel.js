@@ -24,7 +24,7 @@ var createMockDataModelConstructor = function () {
                 get: function () {
                     var formatted;
                     try {
-                        formatted = JSON.stringify(JSON.parse(json));
+                        formatted = JSON.stringify(JSON.parse(json), null, '    ');
                     } catch (e) {
                         formatted = json;
                     }
