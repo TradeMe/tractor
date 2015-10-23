@@ -70,7 +70,7 @@ describe('server/files: MockDataFile:', () => {
             let directory = {
                 addFile: _.noop
             };
-            let filePath = 'some/feature/file.mock.json';
+            let filePath = 'some/mock-data/file.mock.json';
 
             sinon.stub(File.prototype, 'save').returns(Promise.resolve());
 
@@ -82,6 +82,54 @@ describe('server/files: MockDataFile:', () => {
             })
             .finally(() => {
                 File.prototype.save.restore();
+            });
+        });
+    });
+
+    describe('MockDataFile.delete:', () => {
+        it('should delete the file from disk', () => {
+            let directory = {
+                addFile: _.noop,
+                fileStructure: {
+                    references: {}
+                }
+            };
+            let filePath = 'some/mock-data/file.mock.json';
+
+            sinon.stub(File.prototype, 'delete').returns(Promise.resolve());
+
+            let file = new MockDataFile(filePath, directory);
+
+            return file.delete()
+            .then(() => {
+                expect(File.prototype.delete).to.have.been.called();
+            })
+            .finally(() => {
+                File.prototype.delete.restore();
+            });
+        });
+
+        it('should delete the file from the references data structure:', () => {
+            let directory = {
+                addFile: _.noop,
+                fileStructure: {
+                    references: {
+                        'some/mock-data/file.mock.json': []
+                    }
+                }
+            };
+            let filePath = 'some/mock-data/file.mock.json';
+
+            sinon.stub(File.prototype, 'delete').returns(Promise.resolve());
+
+            let file = new MockDataFile(filePath, directory);
+
+            return file.delete()
+            .then(() => {
+                expect(directory.fileStructure.references['some/mock-data/file.mock.json']).to.be.undefined();
+            })
+            .finally(() => {
+                File.prototype.delete.restore();
             });
         });
     });
