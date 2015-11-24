@@ -6,6 +6,7 @@ const TO_INSTALL = [
     'bluebird@2.10.2',
     'chai@2.3.0',
     'chai-as-promised@5.1.0',
+    'cucumber@0.7.0',
     'httpbackend@1.2.1',
     'protractor@2.5.1'
 ];
