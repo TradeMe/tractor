@@ -33,9 +33,9 @@ module.exports = function () {
     this.After(function (callback) {
     /* eslint-enable new-cap */
         global.httpBackend.clear();
-		global.browser.manage.deleteAllCookies();
-		global.browser.executeScript('window.sessionStorage.clear();');
-		global.browser.executeScript('window.localStorage.clear();');
+        global.browser.manage.deleteAllCookies();
+        global.browser.executeScript('window.sessionStorage.clear();');
+        global.browser.executeScript('window.localStorage.clear();');
         callback();
     });
 
