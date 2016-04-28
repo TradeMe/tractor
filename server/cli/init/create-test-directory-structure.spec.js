@@ -88,6 +88,7 @@ describe('server/cli/init: create-test-directory-structure:', () => {
             expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'step-definitions'));
             expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'mock-data'));
             expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'support'));
+            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'report'));
         })
         .finally(() => {
             fs.mkdirAsync.restore();

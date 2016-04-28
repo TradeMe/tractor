@@ -20,6 +20,8 @@ function createBaseTestFiles (testDirectoryPath) {
     return createWorldFile(join(testDirectoryPath, constants.SUPPORT_DIR))
     .catch(TractorError, error => logNotCopying(error))
     .then(() => createProtractorConf(testDirectoryPath))
+    .catch(TractorError, error => logNotCopying(error))
+    .then(() => createHooksFile(join(testDirectoryPath, constants.SUPPORT_DIR)))
     .catch(TractorError, error => logNotCopying(error));
 }
 
@@ -27,6 +29,13 @@ function createWorldFile (supportDirPath) {
     let fileName = constants.WORLD_FILE_NAME;
     let readPath = join(__dirname, constants.WORLD_SOURCE_FILE_PATH);
     let writePath = join(process.cwd(), supportDirPath, constants.WORLD_FILE_NAME);
+    return createFile(fileName, readPath, writePath);
+}
+
+function createHooksFile (supportDirPath) {
+    let fileName = constants.HOOKS_FILE_NAME;
+    let readPath = join(__dirname, constants.HOOKS_SOURCE_FILE_PATH);
+    let writePath = join(process.cwd(), supportDirPath, constants.HOOKS_FILE_NAME);
     return createFile(fileName, readPath, writePath);
 }
 
