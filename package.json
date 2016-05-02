@@ -29,7 +29,7 @@
     "browserify-shim": "3.8.10",
     "chai": "2.3.0",
     "chai-as-promised": "5.1.0",
-    "cucumber-html-report": "^0.2.5",
+    "cucumber-html-report": "0.2.5",
     "dedent": "0.4.0",
     "del": "2.0.2",
     "dirty-chai": "1.2.2",
