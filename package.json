@@ -58,6 +58,7 @@
     "karma-sinon-chai": "1.1.0",
     "mocha": "2.3.3",
     "mockery": "1.4.0",
+    "moment": "2.13.0",
     "ng-sortable": "1.2.2",
     "normalize.css": "3.0.3",
     "protractor": "2.5.1",

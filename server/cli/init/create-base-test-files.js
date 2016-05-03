@@ -17,11 +17,12 @@ export default {
 };
 
 function createBaseTestFiles (testDirectoryPath) {
-    return createWorldFile(join(testDirectoryPath, constants.SUPPORT_DIR))
+    let supportDirPath = join(testDirectoryPath, constants.SUPPORT_DIR);
+    return createWorldFile(supportDirPath)
     .catch(TractorError, error => logNotCopying(error))
     .then(() => createProtractorConf(testDirectoryPath))
     .catch(TractorError, error => logNotCopying(error))
-    .then(() => createHooksFile(join(testDirectoryPath, constants.SUPPORT_DIR)))
+    .then(() => createHooksFile(supportDirPath))
     .catch(TractorError, error => logNotCopying(error));
 }
 

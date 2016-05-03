@@ -3,36 +3,42 @@
 /* eslint-disable no-var, prefer-arrow-callback */
 var constants = require('../../../constants')
 var cucumber = require('cucumber');
+var cucumberHtmlReport = require('cucumber-html-report');
+var log = require('npmlog');
+var moment = require('moment');
 var path = require('path');
 var Promise = require('bluebird');
 
 var fs = Promise.promisifyAll(require('fs'));
  /* eslint-disable new-cap */
-var jsonReportFormatter = cucumber.Listener.JsonFormatter();
+var jsonFormatter = cucumber.Listener.JsonFormatter();
 var outputDir = path.join(__dirname, '../', constants.REPORT_DIR)
 
-jsonReportFormatter.log = function (string) {
-    var cucumberReport = path.join(outputDir, 'cucumber_report.json');
-    fs.writeFile(cucumberReport, string, function (err) {
-        if (err) {
-            console.log('EError:Failed to save test results to json file.');
-            console.log(err);
-        } else {
-            createHtmlReport(cucumberReport);
-        }
-    });
-};
+
+function createFileName (file, extension) {
+    /* eslint-disable prefer-template */
+    return file + moment().format('YYYY-MM-DD_HH-mm-ss') + '.' + extension;
+}
 
 function createHtmlReport (sourceJson) {
-    var CucumberHtmlReport = require('cucumber-html-report');
-    var report = new CucumberHtmlReport({
-        source: sourceJson, // source json
-        dest: outputDir, // target directory (will create if not exists)
-        name: 'tractor_report.html'  // report file name (will be index.html if not exists)
+    var htmlFileName = createFileName('tractorReport_', 'html');
+    var report = new cucumberHtmlReport({
+        source: sourceJson,
+        dest: outputDir,
+        name: htmlFileName
     });
     report.createReport();
 }
 
+jsonFormatter.log = function (content) {
+    var jsonFileName = createFileName('cucumberReport_', 'json');
+    var cucumberJsonReport = path.join(outputDir, jsonFileName);
+    fs.writeFileAsync(cucumberJsonReport, content)
+    .then(() => createHtmlReport(cucumberJsonReport))
+     /* eslint-disable prefer-template */
+    .catch((error) => log.error('Error:Failed to save test results to json file. ' + error));
+};
+
 module.exports = function () {
-    this.registerListener(jsonReportFormatter);
+    this.registerListener(jsonFormatter);
 };
