@@ -49,10 +49,10 @@ var MockParserService = function MockParserService (
     }
 
     function parseUrl (mock, mockCallExpression) {
-        var url = _.last(mockCallExpression.callee.object.arguments).raw;
-        var urlRegex = new RegExp(url.replace(/^\//, '').replace(/\/$/, ''));
-        assert(urlRegex);
-        return urlRegex.source;
+        var rawUrl = _.last(mockCallExpression.callee.object.arguments).raw;
+        var url = rawUrl.replace(/^\//, '').replace(/\/$/, '').replace(/\\/g,'');
+        assert(url);
+        return url;
     }
 
     function parseData (mock, mockCallExpression) {
