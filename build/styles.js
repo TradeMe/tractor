@@ -20,9 +20,9 @@ var errorHandler = require('./utilities/error-handler');
 module.exports = styles;
 
 function styles () {
-    var cssFilter = filter('*.css');
+    var cssFilter = filter('*.css', {restore:true});
 
-    return sass(config.stylesDir, {
+    return sass(config.stylesDir + '*.scss', {
         sourcemap: true
     })
     .on('error', errorHandler)
@@ -33,7 +33,7 @@ function styles () {
     .pipe(autoprefixer({
         browsers: ['last 2 version']
     }))
-    .pipe(cssFilter.restore())
+    .pipe(cssFilter.restore)
     .pipe(cssimport())
     .pipe(gulp.dest(config.dest))
     .pipe(browserSync.reload({
