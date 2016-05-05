@@ -44,7 +44,7 @@ form.file {
     h3 {
         display: inline-block;
     }
-
+    
     & .file-editor__list-item {
         background: rgba(235, 235, 235, 1);
     }
@@ -57,20 +57,9 @@ form.file {
      tractor-checkbox {
         font-size: 0;
         display: inline-block;
-        vertical-align: top;
+        vertical-align: top;   
     }
-
-    & > tractor-action:first-of-type {
-        position: absolute;
-        top: 0rem;
-        left: -2rem;
-        padding: 0;
-
-        & button {
-            margin-top: 0;
-        }
-    }
-
+    
     & .file-editor__list-item-name {
         display: none;
     }
@@ -87,6 +76,15 @@ form.file {
 
     &.file-editor__list-item--minimised {
         padding: 0 0.5rem;
+        
+        tractor-action[icon="collapse"] button{
+            -webkit-transform: rotate(180deg);
+            -moz-transform: rotate(180deg);
+            -ms-transform: rotate(180deg);
+            -o-transform: rotate(180deg);
+            transform: rotate(180deg);
+            transition: all 0.1s;
+        }
 
         .file-editor__list-item-name {
             display: inline-block;
