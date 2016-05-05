@@ -49,10 +49,10 @@ var MockParserService = function MockParserService (
     }
 
     function parseUrl (mock, mockCallExpression) {
-        var rawUrl = _.last(mockCallExpression.callee.object.arguments).raw;
-        var url = rawUrl.replace(/^\//, '').replace(/\/$/, '').replace(/\\/g,'');
+        var rawUrl = _.last(mockCallExpression.callee.object.arguments).raw; //read raw url from json files
+        var url = rawUrl.replace(/^\//, '').replace(/\/$/, '').replace(/\\/g,''); //remove the / at the begin and the end of the raw url string, and remove all '\' from the raw url
         assert(url);
-        return url;
+        return url;  //return the url without all escaping character
     }
 
     function parseData (mock, mockCallExpression) {
