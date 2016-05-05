@@ -20,7 +20,9 @@ var errorHandler = require('./utilities/error-handler');
 module.exports = styles;
 
 function styles () {
-    var cssFilter = filter('*.css', {restore:true});
+    var cssFilter = filter('*.css', {
+        restore:true
+    });
 
     return sass(config.stylesDir + '*.scss', {
         sourcemap: true
