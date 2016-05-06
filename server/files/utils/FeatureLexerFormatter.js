@@ -26,8 +26,8 @@ export default class FeatureLexerFormatter {
     }
 
     feature (type, name, description) {
-        let [inOrderTo, asA, iWant] = description.split(constants.FEATURE_NEWLINE);                
-        inOrderTo = inOrderTo.replace(IN_ORDER_TO, '').replace(/\r/g, ''); 
+        let [inOrderTo, asA, iWant] = description.split(constants.FEATURE_NEWLINE);
+        inOrderTo = inOrderTo.replace(IN_ORDER_TO, '').replace(/\r/g, '');
         asA = asA.replace(AS_A, '').replace(/\r/g, '');
         iWant = iWant.replace(I_WANT, '');
 
