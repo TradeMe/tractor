@@ -15,7 +15,7 @@ function createReporter () {
     /* eslint-disable new-cap */
     var jsonFormatter = cucumber.Listener.JsonFormatter();
     var outputDir = path.join(__dirname, '../', constants.REPORT_DIR)
-    jsonFormatter.log = content => jsonReportWriter(content);
+    jsonFormatter.log = jsonReportWriter;
     return jsonFormatter;
 
     function jsonReportWriter (content) {
