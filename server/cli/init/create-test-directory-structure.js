@@ -41,7 +41,8 @@ function createSubDirectories (testDirectory) {
         constants.FEATURES,
         constants.STEP_DEFINITIONS,
         constants.MOCK_DATA,
-        constants.SUPPORT_DIR
+        constants.SUPPORT_DIR,
+        constants.REPORT_DIR
     ].map((directory) => fs.mkdirAsync(join(testDirectory, directory)));
 
     return Promise.all(createDirectories)
