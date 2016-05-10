@@ -40,7 +40,11 @@ var createMockModelConstructor = function (
         var ast = astCreatorService;
 
         var data = {
-            url: ast.literal(new RegExp(this.url.replace(/\?/g,'\\\?'))) //RegExp does not escaping "?", replace all "?" to "\?" in the string before RegExp escaping charactor 
+            /* The RegExp constructor does not escape special characters, 
+               so we need to double-escape "\?" to "\\\?" in the string
+               before creating the RegExp.
+            */
+            url: ast.literal(new RegExp(this.url.replace(/\?/g,'\\\?')))
         };
         var template = 'httpBackend.when' + this.action + '(%= url %)';
         if (this.passThrough) {
