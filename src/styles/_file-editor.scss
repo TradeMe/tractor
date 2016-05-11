@@ -70,7 +70,18 @@ form.file {
         display: inline-block;
         vertical-align: top;
     }
-    
+
+    & > tractor-action[icon="remove"]:first-of-type {
+        position: absolute;
+        top: 0rem;
+        left: -2rem;
+        padding: 0;
+
+        & button {
+            margin-top: 0;
+        }
+    }    
+	
     & .file-editor__list-item-name {
         display: none;
     }

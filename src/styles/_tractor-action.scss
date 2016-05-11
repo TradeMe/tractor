@@ -66,16 +66,8 @@ tractor-action[icon="collapse"]{
     }
 }
 
-tractor-action[icon="remove"]{
-    position: absolute;
-    top: 0rem;
-    left: -2rem;
-    padding: 0;
-    margin-top: 0;
-    
-    & button {
-        background-image: url('./images/remove.png');
-    }
+tractor-action[icon="remove"] button{
+	background-image: url('./images/remove.png');
 }
 
 tractor-action[icon] button:hover {
