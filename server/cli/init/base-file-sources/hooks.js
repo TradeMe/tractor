@@ -1,6 +1,6 @@
 'use strict';
 
-/* eslint-disable no-var*/
+/* eslint-disable no-var, prefer-arrow-callback */
 var constants = require('../../../constants')
 var cucumber = require('cucumber');
 var cucumberHtmlReport = require('cucumber-html-report');
