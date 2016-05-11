@@ -10,6 +10,17 @@ form.file {
     margin-bottom: 1rem;
 }
 
+.file-editor__container a:link,
+.file-editor__container a:visited {
+    text-decoration: none;
+    color: black;
+}
+
+.file-editor__container a:hover {
+    text-decoration: none;
+    color: grey;
+}
+
 .file-editor {
     height: 90%;
     overflow-x: hidden;

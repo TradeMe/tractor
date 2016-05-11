@@ -54,7 +54,9 @@
                 <ul>
                     <li ng-repeat="mockData in stepDefinitionEditor.fileModel.availableMockData"
                         ng-if="stepDefinitionEditor.fileModel.mockData.indexOf(mockData) === -1">
-                        <span> {{ mockData.name }} </spam>
+                        <a ng-href=" {{ mockData.link }}" target="_blank">
+                            <span> {{ mockData.name }} </spam>
+                        </a>
                         <tractor-action
                             model="stepDefinitionEditor.fileModel"
                             action="Add mock"
@@ -69,7 +71,9 @@
                 <h2>Active mock data:</h2>
                 <ul>
                     <li ng-repeat="mockData in stepDefinitionEditor.fileModel.mockDataInstances">
-                        <span> {{ mockData.mockData.name }} </span>
+                        <a ng-href=" {{ mockData.link }}" target="_blank">
+                            <span> {{ mockData.mockData.name }} </span>
+                        </a>
                         <tractor-action
                             model="stepDefinitionEditor.fileModel"
                             action="Remove mock"
