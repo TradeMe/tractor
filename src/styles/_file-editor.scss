@@ -21,6 +21,11 @@ form.file {
     color: grey;
 }
 
+.file-editor__container ul li > span:hover{
+    color: grey;
+    cursor: help;
+}
+
 .file-editor {
     height: 90%;
     overflow-x: hidden;
