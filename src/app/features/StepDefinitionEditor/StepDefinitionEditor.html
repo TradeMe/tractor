@@ -47,42 +47,7 @@
                 </ul>
             </section>
         </section>
-
-        <section ng-if="stepDefinitionEditor.canAddMockData">
-            <section class="file-editor__container">
-                <h2>Available mock data:</h2>
-                <ul>
-                    <li ng-repeat="mockData in stepDefinitionEditor.fileModel.availableMockData"
-                        ng-if="stepDefinitionEditor.fileModel.mockData.indexOf(mockData) === -1">
-                            <span title=" {{ mockData.json }} "> {{ mockData.name }} </spam>
-                        <tractor-action
-                            model="stepDefinitionEditor.fileModel"
-                            action="Add mock"
-                            argument="mockData.name">
-                        </tractor-action>
-                    </li>
-                </ul>
-            </section>
-
-            <section class="file-editor__container"
-                ng-if="stepDefinitionEditor.hasMockData">
-                <h2>Active mock data:</h2>
-                <ul>
-                    <li ng-repeat="mockData in stepDefinitionEditor.fileModel.mockDataInstances">
-                        <a ng-href=" {{ mockData.link }} " target="_blank" title="Go Edit This MockData">
-                            <span> {{ mockData.mockData.name }} </span>
-                        </a>
-                        <tractor-action
-                            model="stepDefinitionEditor.fileModel"
-                            action="Remove mock"
-                            argument="mockData"
-                            icon="remove">
-                        </tractor-action>
-                    </li>
-                </ul>
-            </section>
-        </section>
-
+        
         <section class="file-editor__container" ng-if="stepDefinitionEditor.showMockDataSection">
             <h2>Mock Data:</h2>
 
@@ -123,6 +88,41 @@
                 model="stepDefinitionEditor.fileModel.step"
                 action="Add mock">
             </tractor-action>
+        </section>
+
+        <section ng-if="stepDefinitionEditor.canAddMockData">           
+            <section class="file-editor__container"
+                ng-if="stepDefinitionEditor.hasMockData">
+                <h2>Active mock data:</h2>
+                <ul>
+                    <li ng-repeat="mockData in stepDefinitionEditor.fileModel.mockDataInstances">
+                        <a ng-href=" {{ mockData.link }} " target="_blank" title="Go Edit This MockData">
+                            <span> {{ mockData.mockData.name }} </span>
+                        </a>
+                        <tractor-action
+                            model="stepDefinitionEditor.fileModel"
+                            action="Remove mock"
+                            argument="mockData"
+                            icon="remove">
+                        </tractor-action>
+                    </li>
+                </ul>
+            </section>
+            
+            <section class="file-editor__container">
+                <h2>Available mock data:</h2>
+                <ul>
+                    <li ng-repeat="mockData in stepDefinitionEditor.fileModel.availableMockData"
+                        ng-if="stepDefinitionEditor.fileModel.mockData.indexOf(mockData) === -1">
+                            <span title=" {{ mockData.json }} "> {{ mockData.name }} </spam>
+                        <tractor-action
+                            model="stepDefinitionEditor.fileModel"
+                            action="Add mock"
+                            argument="mockData.name">
+                        </tractor-action>
+                    </li>
+                </ul>
+            </section>
         </section>
 
         <section class="file-editor__container" ng-if="stepDefinitionEditor.showTasksSection">
