@@ -114,7 +114,7 @@
                 <h2>Active components:</h2>
                 <ul>
                     <li ng-repeat="component in stepDefinitionEditor.fileModel.componentInstances">
-                        <a ng-href=" {{ component.link }} " target="_blank" title="Go Edit This MockData">
+                        <a ng-href=" {{ component.link }} " target="_blank" title="Go Edit This Component">
                             <span> {{ component.component.name }} </span>
                         </a>
                         <tractor-action
@@ -132,7 +132,7 @@
                 <ul>
                     <li ng-repeat="component in stepDefinitionEditor.fileModel.availableComponents"
                         ng-if="stepDefinitionEditor.fileModel.components.indexOf(component) === -1">
-                        <span> {{ component.name }} </spam>
+                        <span title=" {{ component.meta }}"> {{ component.name }} </spam>
                         <tractor-action
                             model="stepDefinitionEditor.fileModel"
                             action="Add component"
