@@ -10,6 +10,22 @@ form.file {
     margin-bottom: 1rem;
 }
 
+.file-editor__container a:link,
+.file-editor__container a:visited {
+    text-decoration: none;
+    color: black;
+}
+
+.file-editor__container a:hover {
+    text-decoration: none;
+    color: grey;
+}
+
+.file-editor__container ul li > span:hover{
+    color: grey;
+    cursor: help;
+}
+
 .file-editor {
     height: 90%;
     overflow-x: hidden;
@@ -59,7 +75,18 @@ form.file {
         display: inline-block;
         vertical-align: top;
     }
-    
+
+    & > tractor-action[icon="remove"]:first-of-type {
+        position: absolute;
+        top: 0rem;
+        left: -2rem;
+        padding: 0;
+
+        & button {
+            margin-top: 0;
+        }
+    }    
+	
     & .file-editor__list-item-name {
         display: none;
     }
