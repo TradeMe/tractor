@@ -10,8 +10,11 @@ var RunnerService = function RunnerService (
     notifierService,
     realTimeService
 ) {
+    var configEnv; 
     return {
-        runProtractor: runProtractor
+        runProtractor: runProtractor,        
+        getConfigEnv: getConfigEnv,
+        setConfigEnv: setConfigEnv
     };
 
     function runProtractor (options) {
@@ -25,6 +28,15 @@ var RunnerService = function RunnerService (
     function notify (data) {
         notifierService[data.type](data.message);
     }
+    
+    function getConfigEnv() {
+        return configEnv;        
+    }
+    
+    function setConfigEnv(envSelected) {
+        return configEnv = envSelected;  
+    }
+    
 };
 
 ControlPanel.service('runnerService', RunnerService);
