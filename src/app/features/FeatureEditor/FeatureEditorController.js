@@ -37,11 +37,11 @@ var FeatureEditorController = function FeatureEditorController (
         featureFileStructure,
         featurePath
     );
-    
+    /*runs a single feature*/
     controller.runFeature = function(toRun){
-        var url = runnerService.getConfigEnv();
+        var environment = runnerService.getSelectedUrl();
         runnerService.runProtractor({
-            baseUrl: url,
+            baseUrl: environment,
             feature: toRun
         });
     }

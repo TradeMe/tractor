@@ -13,8 +13,8 @@ var RunnerService = function RunnerService (
     var configEnv; 
     return {
         runProtractor: runProtractor,        
-        getConfigEnv: getConfigEnv,
-        setConfigEnv: setConfigEnv
+        getSelectedUrl: getSelectedUrl,
+        setSelectedUrl: setSelectedUrl
     };
 
     function runProtractor (options) {
@@ -29,12 +29,12 @@ var RunnerService = function RunnerService (
         notifierService[data.type](data.message);
     }
     
-    function getConfigEnv() {
+    function getSelectedUrl() {
         return configEnv;        
     }
     
-    function setConfigEnv(envSelected) {
-        return configEnv = envSelected;  
+    function setSelectedUrl(urlSelected) {
+        configEnv = urlSelected;  
     }
     
 };

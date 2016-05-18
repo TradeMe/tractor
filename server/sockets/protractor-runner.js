@@ -49,6 +49,7 @@ function run (socket, runOptions) {
 }
 
 function startProtractor (socket, runOptions) {
+    let featureToRun;
     let resolve;
     let reject;
     let deferred = new Promise((...args) => {
@@ -60,8 +61,16 @@ function startProtractor (socket, runOptions) {
         reject(new TractorError('`baseUrl` must be defined.'));
         return deferred;
     }
+    
+    if (runOptions.hasOwnProperty("feature")) {
+        featureToRun = join(config.testDirectory,'/features','/**/',  runOptions.name + '.feature')
+    }else {
+        featuretoRun = join(config.testDirectory,'/features/**/*.feature');
+    }
+    
+    let specs = featureToRun;
 
-    let protractor = spawn('node', [PROTRACTOR_PATH, E2E_PATH, '--baseUrl', runOptions.baseUrl]);
+    let protractor = spawn('node', [PROTRACTOR_PATH, E2E_PATH, '--baseUrl', runOptions.baseUrl,'--specs',specs]);
 
     protractor.stdout.on('data', sendDataToClient.bind(socket));
     protractor.stderr.on('data', sendErrorToClient.bind(socket));

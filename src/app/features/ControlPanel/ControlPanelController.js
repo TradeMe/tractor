@@ -14,12 +14,18 @@ var ControlPanelController = (function () {
     var ControlPanelController = function ControlPanelController (
         runnerService,
         serverStatusService,
-        config
+        config,
+        $scope
     ) {
         this.runnerService = runnerService;
         this.serverStatusService = serverStatusService;
         this.environments = config.environments;
-        this.environment = _.first(this.environments);
+        this.environment = _.first(this.environments);       
+        $scope.$watch('controlPanel.environment', function (newEnvironmentValue, oldEnvironmentValue) {
+                if (newEnvironmentValue !== oldEnvironmentValue){
+                        runnerService.setSelectedUrl(newEnvironmentValue);    
+                }
+        }) 
     };
 
     ControlPanelController.prototype.runProtractor = function () {
