@@ -61,16 +61,21 @@ function startProtractor (socket, runOptions) {
         reject(new TractorError('`baseUrl` must be defined.'));
         return deferred;
     }
-    
+
     if (runOptions.hasOwnProperty("feature")) {
-        featureToRun = join(config.testDirectory,'/features','/**/',  runOptions.feature + '.feature')
-    }else {
-        featureToRun = join(config.testDirectory,'/features/**/*.feature');
+        if (_.isUndefined(runOptions.feature)) {
+            reject(new TractorError('to run a single feature, `feature` must be defined.'));
+            return deferred;
+        } else {
+            featureToRun = join(config.testDirectory, '/features', '/**/', `${runOptions.feature}.feature`)
+        }
+    } else {
+        featureToRun = join(config.testDirectory, '/features/**/*.feature');
     }
-    
+
     let specs = featureToRun;
 
-    let protractor = spawn('node', [PROTRACTOR_PATH, E2E_PATH, '--baseUrl', runOptions.baseUrl,'--specs',specs]);
+    let protractor = spawn('node', [PROTRACTOR_PATH, E2E_PATH, '--baseUrl', runOptions.baseUrl, '--specs', specs]);
 
     protractor.stdout.on('data', sendDataToClient.bind(socket));
     protractor.stderr.on('data', sendErrorToClient.bind(socket));
