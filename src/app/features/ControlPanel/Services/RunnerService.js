@@ -10,8 +10,11 @@ var RunnerService = function RunnerService (
     notifierService,
     realTimeService
 ) {
+    var configEnv; 
     return {
-        runProtractor: runProtractor
+        runProtractor: runProtractor,        
+        getSelectedUrl: getSelectedUrl,
+        setSelectedUrl: setSelectedUrl
     };
 
     function runProtractor (options) {
@@ -25,6 +28,15 @@ var RunnerService = function RunnerService (
     function notify (data) {
         notifierService[data.type](data.message);
     }
+    
+    function getSelectedUrl() {
+        return configEnv;        
+    }
+    
+    function setSelectedUrl(urlSelected) {
+        configEnv = urlSelected;  
+    }
+    
 };
 
 ControlPanel.service('runnerService', RunnerService);
