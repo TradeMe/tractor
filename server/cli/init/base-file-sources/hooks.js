@@ -1,7 +1,6 @@
 'use strict';
 
 /* eslint-disable no-var*/
-var constants = require('../../../constants')
 var cucumber = require('cucumber');
 var cucumberHtmlReport = require('cucumber-html-report');
 var log = require('npmlog');
@@ -14,7 +13,7 @@ var fs = Promise.promisifyAll(require('fs'));
 function createReporter () {
     /* eslint-disable new-cap */
     var jsonFormatter = cucumber.Listener.JsonFormatter();
-    var outputDir = path.join(__dirname, '../', constants.REPORT_DIR)
+    var outputDir = path.join(__dirname, '../', 'report')
     jsonFormatter.log = jsonReportWriter;
     return jsonFormatter;
 

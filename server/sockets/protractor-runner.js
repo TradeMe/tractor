@@ -63,9 +63,9 @@ function startProtractor (socket, runOptions) {
     }
     
     if (runOptions.hasOwnProperty("feature")) {
-        featureToRun = join(config.testDirectory,'/features','/**/',  runOptions.name + '.feature')
+        featureToRun = join(config.testDirectory,'/features','/**/',  runOptions.feature + '.feature')
     }else {
-        featuretoRun = join(config.testDirectory,'/features/**/*.feature');
+        featureToRun = join(config.testDirectory,'/features/**/*.feature');
     }
     
     let specs = featureToRun;
