@@ -3,7 +3,7 @@
 exports.config = {
     allScriptsTimeout: 11000,
 
-    /*commented as server(protractor-runner.js) can handel this*/
+    /* commented as server(protractor-runner.js) can handel this */
     // specs: [
     //     'features/**/*.feature'
     // ],
