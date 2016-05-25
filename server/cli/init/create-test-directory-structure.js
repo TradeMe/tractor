@@ -17,9 +17,6 @@ export default {
 };
 
 function createTestDirectoryStructure (testDirectory) {
-    return createRootDirectory(testDirectory)
-    .then(() => createSubDirectories(testDirectory))
-    .catch(TractorError, (error) => log.warn(`${error.message} Not creating folder structure...`));
 }
 
 function createRootDirectory (testDirectory) {
@@ -35,7 +32,6 @@ function createRootDirectory (testDirectory) {
     });
 }
 
-function createSubDirectories (testDirectory) {
     let createDirectories = [
         constants.COMPONENTS,
         constants.FEATURES,
@@ -43,8 +39,5 @@ function createSubDirectories (testDirectory) {
         constants.MOCK_DATA,
         constants.SUPPORT_DIR,
         constants.REPORT_DIR
-    ].map((directory) => fs.mkdirAsync(join(testDirectory, directory)));
 
-    return Promise.all(createDirectories)
-    .then(() => log.verbose('Directory structure created.'));
-}
+}
