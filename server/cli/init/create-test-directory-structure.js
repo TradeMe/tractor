@@ -17,27 +17,34 @@ export default {
 };
 
 function createTestDirectoryStructure (testDirectory) {
-}
-
-function createRootDirectory (testDirectory) {
     log.info('Creating directory structure...');
-
-    return fs.mkdirAsync(testDirectory)
-    .catch(Promise.OperationalError, (error) => {
-        if (error && error.cause && error.cause.code === 'EEXIST') {
-            throw new TractorError(`"${testDirectory}" directory already exists.`);
-        } else {
-            throw error;
-        }
-    });
+    return createAllDirectories(testDirectory)
+    .catch(TractorError, (error) => log.warn(`${error.message} Not creating directory...`));
 }
 
+function createAllDirectories (testDirectory) {
     let createDirectories = [
+        '',
         constants.COMPONENTS,
         constants.FEATURES,
         constants.STEP_DEFINITIONS,
         constants.MOCK_DATA,
         constants.SUPPORT_DIR,
         constants.REPORT_DIR
+    ].map((directory) => createDir(join(testDirectory, directory)));
+    return Promise.all(createDirectories);
+}
 
-}
+function createDir (dir) {
+    fs.exists(dir, (exists) => {
+        if (exists) {
+            log.warn(`"${dir}" directory already exists.`);
+        } else {
+            log.info(`Creating "${dir}"...`)
+            return fs.mkdirAsync(dir)
+            .catch(Promise.OperationalError, (error) => {
+                throw error;
+            });
+        }
+    })
+}
