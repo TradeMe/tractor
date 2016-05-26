@@ -79,6 +79,7 @@ describe('server/cli/init: create-test-directory-structure:', () => {
             log.warn.restore();
         });
     });
+
     it('should rethrow any other errors', () => {
         sinon.stub(fs, 'mkdirAsync').returns(Promise.reject(new Promise.OperationalError()));
         sinon.stub(fs, 'exists').yields(false);
