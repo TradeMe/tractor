@@ -38,7 +38,10 @@ function createDir (dir) {
             log.warn(`"${dir}" directory already exists.`);
         } else {
             log.info(`Creating "${dir}"...`)
-            return fs.mkdirAsync(dir);
+            return fs.mkdirAsync(dir)
+            .catch(Promise.OperationalError, (error) => {
+                throw error;
+            });
         }
     })
 }

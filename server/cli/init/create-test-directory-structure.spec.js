@@ -79,4 +79,22 @@ describe('server/cli/init: create-test-directory-structure:', () => {
             log.warn.restore();
         });
     });
+    it('should rethrow any other errors', () => {
+        sinon.stub(fs, 'mkdirAsync').returns(Promise.reject(new Promise.OperationalError()));
+        sinon.stub(fs, 'exists').yields(false);
+        sinon.stub(log, 'info');
+        sinon.stub(log, 'warn');
+
+        return createTestDirectoryStructure.run('directory')
+        .catch(() => { })
+        .then(() => {
+            expect(log.warn).to.not.have.been.called();
+        })
+        .finally(() => {
+            fs.mkdirAsync.restore();
+            fs.exists.restore();
+            log.info.restore();
+            log.warn.restore();
+        });
+    });
 });
