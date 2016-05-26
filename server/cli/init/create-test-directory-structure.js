@@ -9,8 +9,6 @@ const fs = Promise.promisifyAll(require('fs'));
 import log from 'npmlog';
 import { join } from 'path';
 
-// Errors:
-import TractorError from '../../errors/TractorError';
 
 export default {
     run: createTestDirectoryStructure
@@ -18,8 +16,7 @@ export default {
 
 function createTestDirectoryStructure (testDirectory) {
     log.info('Creating directory structure...');
-    return createAllDirectories(testDirectory)
-    .catch(TractorError, (error) => log.warn(`${error.message} Not creating directory...`));
+    return createAllDirectories(testDirectory);
 }
 
 function createAllDirectories (testDirectory) {
@@ -41,10 +38,7 @@ function createDir (dir) {
             log.warn(`"${dir}" directory already exists.`);
         } else {
             log.info(`Creating "${dir}"...`)
-            return fs.mkdirAsync(dir)
-            .catch(Promise.OperationalError, (error) => {
-                throw error;
-            });
+            return fs.mkdirAsync(dir);
         }
     })
 }
