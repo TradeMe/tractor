@@ -5,3 +5,5 @@ reports
 *.scssc
 .idea/*
 .sass-cache
+test
+.vscode

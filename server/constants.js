@@ -24,9 +24,13 @@ export default {
     },
 
     SUPPORT_DIR: 'support',
+    REPORT_DIR: 'report',
 
     WORLD_SOURCE_FILE_PATH: join('base-file-sources', 'world.js'),
     WORLD_FILE_NAME: 'world.js',
+
+    HOOKS_SOURCE_FILE_PATH: join('base-file-sources', 'hooks.js'),
+    HOOKS_FILE_NAME: 'hooks.js',
 
     PROTRACTOR_CONF_SOURCE_FILE_PATH: join('base-file-sources', 'protractor.conf.js'),
     PROTRACTOR_CONF_FILE_NAME: 'protractor.conf.js',
