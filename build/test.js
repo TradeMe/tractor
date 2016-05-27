@@ -29,7 +29,12 @@ function server (reportTaskDone) {
     .pipe(istanbul.hookRequire())
     .on('finish', function () {
         gulp.src('server/**/*.js')
-        .pipe(mocha().on('error', function (error) {
+        .pipe(mocha({reporter: 'mocha-jenkins-reporter',
+                    reporterOptions:{
+                        junit_report_name: 'Tractor Server Unit Tests',
+                        junit_report_path: './reports/server/junit.xml',
+                        junit_report_stack: 1
+                    }}).on('error', function (error) {
             console.log(error);
             this.destroy();
             reportTaskDone();
@@ -48,7 +53,7 @@ function client (reportTaskDone) {
 
         port: 9876,
 
-        reporters: ['progress', 'coverage'],
+        reporters: ['progress', 'coverage', 'junit'],
         coverageReporter: {
             reporters: [{
                 type: 'lcov',
@@ -57,6 +62,11 @@ function client (reportTaskDone) {
                 type: 'text',
                 dir: 'reports/client'
             }]
+        },
+        junitReporter: {
+            outputDir: 'reports/client',
+            suite: 'Client Unit Tests',
+            useBrowserName: false
         },
 
         colors: true,
