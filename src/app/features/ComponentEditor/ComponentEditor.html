@@ -38,10 +38,16 @@
                         <ul>
                             <li class="file-editor__list-item"
                                 ng-repeat="domElement in componentEditor.fileModel.domElements"
-                                ng-class="{ 'file-editor__list-item--minimised': domElement.minimised }"
-                                ng-dblclick="componentEditor.minimise(domElement)">
+                                ng-class="{ 'file-editor__list-item--minimised': domElement.minimised }">
 
                                 <h3 class="file-editor__list-item-name">{{ domElement.name }}</h3>
+
+                                <tractor-action
+                                    model="componentEditor"
+                                    action="minimise"
+                                    argument="domElement"
+                                    icon="collapse">
+                                </tractor-action>
 
                                 <tractor-action
                                     model="componentEditor.fileModel"
@@ -118,11 +124,17 @@
                         <ul>
                             <li class="file-editor__list-item"
                                 ng-repeat="action in componentEditor.fileModel.actions"
-                                ng-class="{ 'file-editor__list-item--minimised': action.minimised }"
-                                ng-dblclick="componentEditor.minimise(action)">
+                                ng-class="{ 'file-editor__list-item--minimised': action.minimised }">
 
                                 <h3 class="file-editor__list-item-name">{{ action.name }}</h3>
 
+                                <tractor-action
+                                    model="componentEditor"
+                                    action="minimise"
+                                    argument="action"
+                                    icon="collapse">
+                                </tractor-action>
+                                    
                                 <tractor-action
                                     model="componentEditor.fileModel"
                                     action="Remove action"

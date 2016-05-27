@@ -55,8 +55,19 @@ tractor-action[icon] button {
    transform: scale(1);
 }
 
-tractor-action[icon="remove"] button {
-    background-image: url('./images/remove.png');
+tractor-action[icon="collapse"]{
+    position: absolute;
+    top: 2px;
+    right: 3px; 
+
+    & button {
+        background-image: url('./images/collapse.png');
+        border-radius: 7px;
+    }
+}
+
+tractor-action[icon="remove"] button{
+	background-image: url('./images/remove.png');
 }
 
 tractor-action[icon] button:hover {
