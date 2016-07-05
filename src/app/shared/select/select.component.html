@@ -1,0 +1,9 @@
+<label>{{ label }}</label>
+<select
+    required
+    [(ngModel)]="model">
+    <option
+        *ngFor="let option of options"
+        [value]="option">{{ option}}
+    </option>
+</select>

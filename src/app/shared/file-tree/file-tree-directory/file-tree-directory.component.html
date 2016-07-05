@@ -1,0 +1,71 @@
+<div
+    *ngIf="!isRoot(directory)">
+    <tractor-file-tree-actions
+        [item]="directory">
+    </tractor-file-tree-actions>
+
+    <p class="file-tree__item-name"
+        *ngIf="directory?.name && !directory?.editingName"
+        (click)="toggleOpenDirectory(directory)"
+        (dblclick)="editName(directory)">
+        {{ directory?.name }}
+    </p>
+
+    <tractor-file-tree-rename
+        *ngIf="canModify"
+        [item]="directory">
+    </tractor-file-tree-rename>
+</div>
+
+<ul class="file-tree__file-list"
+    *ngIf="directory?.open">
+    <li class="file-tree__file-list-item file-tree__file-list-item--new-directory">
+        <tractor-button
+            [label]="'Add directory'"
+            (click)="addDirectory(directory)">
+        </tractor-button>
+    </li>
+
+    <li class="file-tree__file-list-item file-tree__file-list-item--directory"
+        [ngClass]="{
+            'file-tree__file-list-item--open-directory': directory?.open,
+            'file-tree__file-list-item--javascript': type === 'components' || type === 'step-definitions',
+            'file-tree__file-list-item--feature': type === 'features',
+            'file-tree__file-list-item--json': type === 'mock-data'
+        }"
+        *ngFor="let directory of directory?.directories"
+        tractorDropFile
+        [directory]="directory"
+        [onDrop]="editFilePath">
+
+        <tractor-file-tree-directory
+            [directory]="directory">
+        </tractor-file-tree-directory>
+    </li>
+
+    <li class="file-tree__file-list-item"
+        [ngClass]="{
+            'file-tree__file-list-item--javascript': type === 'components' || type === 'step-definitions',
+            'file-tree__file-list-item--feature': type === 'features',
+            'file-tree__file-list-item--json': type === 'mock-data'
+        }"
+        *ngFor="let file of directory?.files"
+        tractorDragFile
+        [file]="file">
+
+        <tractor-file-tree-actions
+            [item]="file">
+        </tractor-file-tree-actions>
+
+        <p class="file-tree__item-name"
+            *ngIf="file.name && !file.editingName"
+            (click)="openFile(file)"
+            (dblclick)="editName(file)">
+            {{ getName(file) }}
+        </p>
+        <tractor-file-tree-rename
+            *ngIf="canModify"
+            [item]="file">
+        </tractor-file-tree-rename>
+    </li>
+</ul>

@@ -1,0 +1,20 @@
+<label>{{ label }}: </label>
+<input
+    [(ngModel)]="model"
+    (ngModelChange)="modelChange.emit($event)"
+    name="text-{{ id }}"
+    type="text"
+    placeholder="e.g. {{ placeholder }}"/>
+    <!-- ng-model="model[property]"
+    ng-model-options="{ allowInvalid: true }"
+    ng-blur="blur(model[property])"
+    required
+    file-name
+    variable-name
+    variable-name-model="model"/> -->
+<!-- <div ng-messages="form['variable-input-' + id].$error">
+    <ng-message when="required">Required</ng-message>
+    <ng-message when="fileName">That is not a valid name</ng-message>
+    <ng-message when="variableNameValid">That is not a valid name</ng-message>
+    <ng-message when="variableNameUnique">There is something else with the same name</ng-message>
+</div> -->
