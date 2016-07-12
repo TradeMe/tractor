@@ -2,6 +2,7 @@
 
 /* eslint-disable no-var, prefer-arrow-callback */
 var HttpBackend = require('httpbackend');
+var _ = require("lodash");
 
 var CustomWorld = (function () {
     var chai = require('chai');
@@ -30,22 +31,39 @@ module.exports = function () {
     });
 
     /* eslint-disable new-cap */
-    var failedScenario;
     this.After(function (scenario, callback) {
+        var browserlogArray = [];
+        var message;
     /* eslint-enable new-cap */
         global.httpBackend.clear();
         global.browser.manage.deleteAllCookies();
         global.browser.executeScript('window.sessionStorage.clear();');
         global.browser.executeScript('window.localStorage.clear();');
-        failedScenario = null;
-        if (scenario.isFailed() && !failedScenario) {
-            failedScenario = scenario;
-            global.browser.takeScreenshot()
-            .then(function (png) {
-                var decodedImage = new Buffer(png, 'base64').toString('binary');
-                scenario.attach(decodedImage, 'image/png');
-            });
-        } callback();
+        if (scenario.isFailed()) {
+            global.browser.takeScreenshot().then(function (base64png) {
+                var decodedImage = new Buffer(base64png, 'base64').toString('binary');
+                scenario.attach(decodedImage, 'image/png', callback);
+            }, function (err) {
+                callback(err);
+            })
+            global.browser.manage().logs().get('browser').then(function (browserlog) {
+                browserlog.forEach(function (log) {
+                    if (log.level.name === 'SEVERE') {
+                        message = log.message.substring(log.message.indexOf('Error'), log.message.indexOf('\n'));
+                        browserlogArray.push(message);
+                    }
+                })
+                if (browserlogArray.length > 0) {
+                    console.log("Browser Console log: {level: 'SEVERE'}: ");
+                    browserlogArray = _.compact(_.unique(browserlogArray));
+                    browserlogArray.forEach(function (mssg) {
+                        console.error(mssg);
+                    })
+                }
+            })
+        } else {
+            callback();
+        }
     });
 
     return this.World;
