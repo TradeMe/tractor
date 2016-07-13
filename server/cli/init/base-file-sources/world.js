@@ -24,7 +24,7 @@ module.exports = function () {
     };
 
     /* eslint-disable new-cap */
-    this.Before(function (callback) {
+    this.Before(function (scenario, callback) {
     /* eslint-enable new-cap */
         global.httpBackend = new HttpBackend(global.browser);
         callback();
@@ -36,7 +36,7 @@ module.exports = function () {
         var message;
     /* eslint-enable new-cap */
         global.httpBackend.clear();
-        global.browser.manage.deleteAllCookies();
+        global.browser.manage().deleteAllCookies();
         global.browser.executeScript('window.sessionStorage.clear();');
         global.browser.executeScript('window.localStorage.clear();');
         if (scenario.isFailed()) {
