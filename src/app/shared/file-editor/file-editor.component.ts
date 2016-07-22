@@ -10,5 +10,5 @@ import { Component } from '@angular/core';
     styleUrls: ['file-editor.component.css']
 })
 export class FileEditorComponent {
-
+    constructor () { }
 }

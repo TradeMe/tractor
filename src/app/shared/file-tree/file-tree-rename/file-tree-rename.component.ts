@@ -34,7 +34,7 @@ export class FileTreeRenameComponent implements OnInit {
     ) { }
 
     public ngOnInit () {
-        this.type = this.fileTypesService.getType();
+        this.type = this.fileTypesService.getServerType();
     }
 
     public renameOnEnter ($event: KeyboardEvent, item: FileStructureItem) {

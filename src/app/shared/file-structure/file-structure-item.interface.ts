@@ -2,10 +2,11 @@
 
 export interface FileStructureItem {
     ast?: ESCodeGen.Program;
-    editingName: boolean;
-    isDirectory: boolean;
+    data?: ESCodeGen.Program;
+    editingName?: boolean;
+    isDirectory?: boolean;
     name: string;
     path: string;
-    previousName: string;
-    showActions: boolean;
+    previousName?: string;
+    showActions?: boolean;
 }

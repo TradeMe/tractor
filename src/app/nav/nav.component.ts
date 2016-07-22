@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+'use strict';
+
+// Angular:
+import { Component } from '@angular/core';
 import { ROUTER_DIRECTIVES } from '@angular/router';
 
 @Component({
@@ -8,11 +11,4 @@ import { ROUTER_DIRECTIVES } from '@angular/router';
   styleUrls: ['nav.component.css'],
   directives: [ROUTER_DIRECTIVES]
 })
-export class NavComponent implements OnInit {
-
-  constructor() {}
-
-  ngOnInit() {
-  }
-
-}
+export class NavComponent { }

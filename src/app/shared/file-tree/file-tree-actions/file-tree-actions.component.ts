@@ -34,7 +34,7 @@ export class FileTreeActionsComponent implements OnInit {
     ) { }
 
     public ngOnInit (): void {
-        this.type = this.fileTypesService.getType();
+        this.type = this.fileTypesService.getServerType();
         this.canModify = this.type !== STEP_DEFINITIONS;
     }
 

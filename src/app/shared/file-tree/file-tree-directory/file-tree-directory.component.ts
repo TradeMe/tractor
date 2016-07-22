@@ -44,7 +44,7 @@ export class FileTreeDirectoryComponent implements OnInit {
     ) { }
 
     public ngOnInit () {
-        this.type = this.fileTypesService.getType();
+        this.type = this.fileTypesService.getServerType();
         this.canModify = this.type !== STEP_DEFINITIONS;
 
         this.editFilePath = this.editFilePath.bind(this);
@@ -92,8 +92,8 @@ export class FileTreeDirectoryComponent implements OnInit {
         let name = path.relative(directoryPath, filePath);
         name = serverToClientFilePath(name.substring(0, name.indexOf('.')));
 
-        let type = this.fileTypesService.unpluralise(this.type);
-        this.router.navigate([`/${type}/`, name]);
+        let type = this.fileTypesService.getType();
+        this.router.navigate([`/${type}`, name]);
     }
 
     public toggleOpenDirectory (item): void {

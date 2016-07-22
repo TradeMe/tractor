@@ -37,7 +37,7 @@ export class FileTreeComponent implements OnInit {
     ) { }
 
     public ngOnInit (): void {
-        this.type = this.fileTypesService.getType();
+        this.type = this.fileTypesService.getServerType();
 
         // TODO: Fix this when server renames everything to Page Objects
         if (this.type === 'components') {

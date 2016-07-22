@@ -13,6 +13,7 @@ import { ASTService, AST_PROVIDERS } from '../../shared/ast/ast.service';
 import { Browser, BrowserFactory, BROWSER_PROVIDERS } from '../browser/browser';
 import { Element, ElementFactory, ELEMENT_PROVIDERS } from '../element/element';
 import { Factory } from '../../shared/factory/factory.interface';
+import { FileStructureItem } from '../../shared/file-structure/file-structure-item.interface';
 
 @Injectable()
 export class PageObjectFactory implements Factory<PageObject> {
@@ -31,7 +32,7 @@ export class PageObjectFactory implements Factory<PageObject> {
     }
 }
 
-export class PageObject {
+export class PageObject implements FileStructureItem {
     private _actions: Array<Action> = [];
     private _browser: Browser;
     private _domElements: Array<Element> = [];

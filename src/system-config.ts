@@ -1,3 +1,7 @@
+// SystemJS configuration file, see links for more information
+// https://github.com/systemjs/systemjs
+// https://github.com/systemjs/systemjs/blob/master/docs/config-api.md
+
 /***********************************************************************************************
  * User Configuration.
  **********************************************************************************************/
@@ -25,7 +29,7 @@ const map: any = {
     'path': 'vendor/path-browserify/index.js',
     'sentence-case': 'vendor/sentence-case/sentence-case.js',
     'socket.io-client': 'vendor/socket.io-client/socket.io.js',
-    'source-map': 'vendor/source-map/source-map.js',
+    'source-map': 'vendor/source-map/lib/source-map.js',
     'title-case': 'vendor/title-case/title-case.js',
     'upper-case': 'vendor/upper-case/upper-case.js',
     'upper-case-first': 'vendor/upper-case-first/upper-case-first.js',
@@ -37,7 +41,7 @@ const packages: any = {
     'vendor/angular-2-local-storage': { defaultExtension: 'js' },
     'vendor/esutils': { defaultExtension: 'js' },
     'vendor/sentence-case': { defaultExtension: 'js' },
-    'vendor/source-map': { defaultExtension: 'js' },
+    'vendor/source-map': { defaultExtension: 'js', format: 'commonjs' },
     'vendor/util': { defaultExtension: 'js' },
     'vendor/escodegen': { modules: { '*.json': { loader: 'json' } } }
 };
@@ -51,6 +55,7 @@ const barrels: string[] = [
   '@angular/core',
   '@angular/common',
   '@angular/compiler',
+  '@angular/forms',
   '@angular/http',
   '@angular/router',
   '@angular/platform-browser',
