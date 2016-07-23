@@ -21,9 +21,14 @@ function createReporter () {
         var jsonFileName = getFileName('cucumberReport_', 'json');
         var cucumberReport = path.join(outputDir, jsonFileName);
         fs.writeFileAsync(cucumberReport, content)
-        .then(() => htmlReportWriter(cucumberReport))
+         /* eslint-disable prefer-arrow-callback */
+        .then(function () {
+            return htmlReportWriter(cucumberReport)
+        })
          /* eslint-disable prefer-template */
-        .catch((error) => log.error('Failed to save test results to json file. ' + error));
+        .catch(function (error) {
+            log.error('Failed to save test results to json file. ' + error)
+        });
     }
 
     function htmlReportWriter (cucumberReport) {

@@ -23,7 +23,7 @@ form.file {
 
 .file-editor__container ul li > span:hover{
     color: grey;
-    cursor: help;
+    cursor: default;
 }
 
 .file-editor {
@@ -104,7 +104,7 @@ form.file {
     &.file-editor__list-item--minimised {
         padding: 0 0.5rem;
         
-        tractor-action[icon="collapse"] button{
+        [icon="collapse"] button{
             -webkit-transform: rotate(180deg);
             -moz-transform: rotate(180deg);
             -ms-transform: rotate(180deg);

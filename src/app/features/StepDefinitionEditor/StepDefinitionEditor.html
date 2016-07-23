@@ -113,10 +113,8 @@
                 ng-if="stepDefinitionEditor.hasComponents">
                 <h2>Active components:</h2>
                 <ul>
-                    <li ng-repeat="component in stepDefinitionEditor.fileModel.componentInstances">
-                        <a ng-href=" {{ component.link }} " target="_blank" title="Go Edit This Component">
-                            <span> {{ component.component.name }} </span>
-                        </a>
+                    <li ng-repeat="component in stepDefinitionEditor.fileModel.componentInstances">                        
+                        <span> {{ component.component.name }} </span>                        
                         <tractor-action
                             model="stepDefinitionEditor.fileModel"
                             action="Remove component"
@@ -190,10 +188,8 @@
                 ng-if="stepDefinitionEditor.hasMockData">
                 <h2>Active mock data:</h2>
                 <ul>
-                    <li ng-repeat="mockData in stepDefinitionEditor.fileModel.mockDataInstances">
-                        <a ng-href=" {{ mockData.link }} " target="_blank" title="Go Edit This MockData">
-                            <span> {{ mockData.mockData.name }} </span>
-                        </a>
+                    <li ng-repeat="mockData in stepDefinitionEditor.fileModel.mockDataInstances">                     
+                        <span> {{ mockData.mockData.name }} </span>                        
                         <tractor-action
                             model="stepDefinitionEditor.fileModel"
                             action="Remove mock"
@@ -209,7 +205,7 @@
                 <ul>
                     <li ng-repeat="mockData in stepDefinitionEditor.fileModel.availableMockData"
                         ng-if="stepDefinitionEditor.fileModel.mockData.indexOf(mockData) === -1">
-                            <span title=" {{ mockData.json }} "> {{ mockData.name }} </spam>
+                            <span title=" {{ mockData.json }} "> {{ mockData.name }} </span>
                         <tractor-action
                             model="stepDefinitionEditor.fileModel"
                             action="Add mock"

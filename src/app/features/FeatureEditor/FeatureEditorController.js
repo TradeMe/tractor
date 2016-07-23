@@ -37,16 +37,19 @@ var FeatureEditorController = function FeatureEditorController (
         featureFileStructure,
         featurePath
     );
-    /*runs a single feature*/
-    controller.runFeature = function(toRun){
-        var environment = runnerService.getSelectedUrl();
-        runnerService.runProtractor({
-            baseUrl: environment,
+
+    this.runnerService = runnerService;
+    controller.runFeature = runFeature.bind(this);    
+    return controller;
+};
+
+//runs a single feature
+function runFeature(toRun) {  
+    if (toRun){
+        this.runnerService.runProtractor({           
             feature: toRun
         });
     }
-    
-    return controller;
-};
+}
 
 FeatureEditor.controller('FeatureEditorController', FeatureEditorController);

@@ -46,12 +46,8 @@ var createMockDataInstanceModelConstructor = function (
                 get: function () {
                     return toAST.call(this);
                 }
-            },
-            link: {
-                get: function () {
-                    return getRelativePath.call(this).replace(/\.mock\.json$/, '');
-                }
             }
+
         });
     };
 
@@ -68,13 +64,6 @@ var createMockDataInstanceModelConstructor = function (
         });
     }
     
-    function getRelativePath () {
-        // Sw33t hax()rz to get around the browserify "path" shim not working on Windows.
-        var stepDefinitionPath = this.stepDefinition.path.replace(/\\/g, '/');
-        var mockDataPath = this.mockData.path.replace(/\\/g, '/');
-        var relativePath = path.relative(path.dirname(stepDefinitionPath), mockDataPath);
-        return relativePath;
-    }
 };
 
 StepDefinitionEditor.factory('MockDataInstanceModel', function (

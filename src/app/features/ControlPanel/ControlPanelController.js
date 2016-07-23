@@ -19,19 +19,23 @@ var ControlPanelController = (function () {
     ) {
         this.runnerService = runnerService;
         this.serverStatusService = serverStatusService;
-        this.environments = config.environments;
-        this.environment = _.first(this.environments);       
-        $scope.$watch('controlPanel.environment', function (newEnvironmentValue, oldEnvironmentValue) {
-                if (newEnvironmentValue !== oldEnvironmentValue){
-                        runnerService.setSelectedUrl(newEnvironmentValue);    
-                }
-        }) 
-    };
-
-    ControlPanelController.prototype.runProtractor = function () {
-        this.runnerService.runProtractor({
-            baseUrl: this.environment
-        });
+        this.environments = config.environments;     
+        var environment = _.first(this.environments);
+        Object.defineProperty(this, "environment" , {            
+            get: function () {
+                return environment;
+            },
+            set: function (newEnv) {
+                environment = newEnv;
+                runnerService.baseUrl = environment;                        
+            } 
+         })                         
+    }    
+    
+    ControlPanelController.prototype.runProtractor = function () {                       
+         this.runnerService.runProtractor({
+             baseUrl: this.environment
+         });
     };
 
     ControlPanelController.prototype.isServerRunning = function () {

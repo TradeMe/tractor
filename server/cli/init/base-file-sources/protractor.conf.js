@@ -3,10 +3,9 @@
 exports.config = {
     allScriptsTimeout: 11000,
 
-    /* commented as server(protractor-runner.js) can handel this */
-    // specs: [
-    //     'features/**/*.feature'
-    // ],
+    specs: [
+        'features/**/*.feature'
+    ],
 
     capabilities: {
         browserName: 'chrome'
