@@ -9,6 +9,8 @@ const fs = Promise.promisifyAll(require('fs'));
 import log from 'npmlog';
 import { join } from 'path';
 
+// Errors:
+import TractorError from '../../errors/TractorError';
 
 export default {
     run: createTestDirectoryStructure
@@ -16,7 +18,7 @@ export default {
 
 function createTestDirectoryStructure (testDirectory) {
     log.info('Creating directory structure...');
-    return createAllDirectories(testDirectory);
+    return createAllDirectories(testDirectory);   
 }
 
 function createAllDirectories (testDirectory) {
@@ -26,22 +28,20 @@ function createAllDirectories (testDirectory) {
         constants.FEATURES,
         constants.STEP_DEFINITIONS,
         constants.MOCK_DATA,
-        constants.SUPPORT_DIR,
-        constants.REPORT_DIR
-    ].map((directory) => createDir(join(testDirectory, directory)));
+        constants.SUPPORT_DIR
+    ].map((directory) => createDir(join(testDirectory, directory))
+                        .catch(TractorError, (error) => log.warn(`${error.message} Not creating folder structure...`))
+    );
     return Promise.all(createDirectories);
 }
 
-function createDir (dir) {
-    fs.exists(dir, (exists) => {
-        if (exists) {
-            log.warn(`"${dir}" directory already exists.`);
+function createDir (dir) {    
+    return fs.mkdirAsync(dir)
+    .catch(Promise.OperationalError, (error) => {
+        if (error && error.cause && error.cause.code === 'EEXIST') {
+            throw new TractorError(`"${dir}" directory already exists.`);            
         } else {
-            log.info(`Creating "${dir}"...`)
-            return fs.mkdirAsync(dir)
-            .catch(Promise.OperationalError, (error) => {
-                throw error;
-            });
+            throw error;
         }
-    })
+    });            
 }
