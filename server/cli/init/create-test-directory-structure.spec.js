@@ -22,8 +22,8 @@ import createTestDirectoryStructure from './create-test-directory-structure';
 describe('server/cli/init: create-test-directory-structure:', () => {
     it('should create the tests directory structure', () => {
         sinon.stub(fs, 'mkdirAsync').returns(Promise.resolve());
-        sinon.stub(fs, 'exists').yields(false);
         sinon.stub(log, 'info');
+        sinon.stub(log, 'verbose');
         sinon.stub(log, 'warn');
 
         return createTestDirectoryStructure.run('directory')
@@ -34,29 +34,30 @@ describe('server/cli/init: create-test-directory-structure:', () => {
             expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'step-definitions'));
             expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'mock-data'));
             expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'support'));
-            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'report'));
         })
         .finally(() => {
             fs.mkdirAsync.restore();
-            fs.exists.restore();
             log.info.restore();
+            log.verbose.restore();
             log.warn.restore();
         });
     });
 
     it('should tell the user if the directory already exists', () => {
-        sinon.stub(fs, 'mkdirAsync').returns(Promise.resolve());
-        sinon.stub(fs, 'exists').yields(true);
+        let error = new Promise.OperationalError();
+        error.cause = {
+            code: 'EEXIST'
+        };
+        sinon.stub(fs, 'mkdirAsync').returns(Promise.reject(error));
         sinon.stub(log, 'info');
         sinon.stub(log, 'warn');
 
         return createTestDirectoryStructure.run('directory')
         .then(() => {
-            expect(log.warn).to.have.been.calledWith('"directory" directory already exists.');
+            expect(log.warn).to.have.been.calledWith('"directory" directory already exists. Not creating folder structure...');
         })
         .finally(() => {
             fs.mkdirAsync.restore();
-            fs.exists.restore();
             log.info.restore();
             log.warn.restore();
         });
@@ -64,25 +65,25 @@ describe('server/cli/init: create-test-directory-structure:', () => {
 
     it('should tell the user what it is doing', () => {
         sinon.stub(fs, 'mkdirAsync').returns(Promise.resolve());
-        sinon.stub(fs, 'exists').yields(false);
         sinon.stub(log, 'info');
+        sinon.stub(log, 'verbose');
         sinon.stub(log, 'warn');
 
         return createTestDirectoryStructure.run('directory')
         .then(() => {
             expect(log.info).to.have.been.calledWith('Creating directory structure...');
+            expect(log.verbose).to.have.been.calledWith('Directory structure created.');
         })
         .finally(() => {
             fs.mkdirAsync.restore();
-            fs.exists.restore();
             log.info.restore();
+            log.verbose.restore();
             log.warn.restore();
         });
     });
 
     it('should rethrow any other errors', () => {
         sinon.stub(fs, 'mkdirAsync').returns(Promise.reject(new Promise.OperationalError()));
-        sinon.stub(fs, 'exists').yields(false);
         sinon.stub(log, 'info');
         sinon.stub(log, 'warn');
 
@@ -93,7 +94,6 @@ describe('server/cli/init: create-test-directory-structure:', () => {
         })
         .finally(() => {
             fs.mkdirAsync.restore();
-            fs.exists.restore();
             log.info.restore();
             log.warn.restore();
         });
