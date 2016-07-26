@@ -17,33 +17,32 @@ export default {
 };
 
 function createTestDirectoryStructure (testDirectory) {
-    return createRootDirectory(testDirectory)
-    .then(() => createSubDirectories(testDirectory))
-    .catch(TractorError, (error) => log.warn(`${error.message} Not creating folder structure...`));
-}
-
-function createRootDirectory (testDirectory) {
     log.info('Creating directory structure...');
-
-    return fs.mkdirAsync(testDirectory)
-    .catch(Promise.OperationalError, (error) => {
-        if (error && error.cause && error.cause.code === 'EEXIST') {
-            throw new TractorError(`"${testDirectory}" directory already exists.`);
-        } else {
-            throw error;
-        }
-    });
+    return createAllDirectories(testDirectory);
 }
 
-function createSubDirectories (testDirectory) {
+function createAllDirectories (testDirectory) {
     let createDirectories = [
+        '',
         constants.COMPONENTS,
         constants.FEATURES,
         constants.STEP_DEFINITIONS,
         constants.MOCK_DATA,
         constants.SUPPORT_DIR
-    ].map((directory) => fs.mkdirAsync(join(testDirectory, directory)));
-
+    ].map((directory) => createDir(join(testDirectory, directory))
+                        .catch(TractorError, (error) => log.warn(`${error.message} Not creating folder structure...`))
+    );
     return Promise.all(createDirectories)
     .then(() => log.verbose('Directory structure created.'));
+}
+
+function createDir (dir) {
+    return fs.mkdirAsync(dir)
+    .catch(Promise.OperationalError, (error) => {
+        if (error && error.cause && error.cause.code === 'EEXIST') {
+            throw new TractorError(`"${dir}" directory already exists.`);
+        } else {
+            throw error;
+        }
+    });
 }

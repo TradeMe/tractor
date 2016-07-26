@@ -20,7 +20,7 @@ import path from 'path';
 import createTestDirectoryStructure from './create-test-directory-structure';
 
 describe('server/cli/init: create-test-directory-structure:', () => {
-    it('should create the root test directory', () => {
+    it('should create the tests directory structure', () => {
         sinon.stub(fs, 'mkdirAsync').returns(Promise.resolve());
         sinon.stub(log, 'info');
         sinon.stub(log, 'verbose');
@@ -29,6 +29,11 @@ describe('server/cli/init: create-test-directory-structure:', () => {
         return createTestDirectoryStructure.run('directory')
         .then(() => {
             expect(fs.mkdirAsync).to.have.been.calledWith('directory');
+            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'components'));
+            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'features'));
+            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'step-definitions'));
+            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'mock-data'));
+            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'support'));
         })
         .finally(() => {
             fs.mkdirAsync.restore();
@@ -38,7 +43,7 @@ describe('server/cli/init: create-test-directory-structure:', () => {
         });
     });
 
-    it('should tell the user if the root test directory already exists', () => {
+    it('should tell the user if the directory already exists', () => {
         let error = new Promise.OperationalError();
         error.cause = {
             code: 'EEXIST'
@@ -75,29 +80,7 @@ describe('server/cli/init: create-test-directory-structure:', () => {
         });
     });
 
-    it('should create the subdirectory structure', () => {
-        sinon.stub(fs, 'mkdirAsync').returns(Promise.resolve());
-        sinon.stub(log, 'info');
-        sinon.stub(log, 'verbose');
-        sinon.stub(log, 'warn');
-
-        return createTestDirectoryStructure.run('directory')
-        .then(() => {
-            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'components'));
-            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'features'));
-            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'step-definitions'));
-            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'mock-data'));
-            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'support'));
-        })
-        .finally(() => {
-            fs.mkdirAsync.restore();
-            log.info.restore();
-            log.verbose.restore();
-            log.warn.restore();
-        });
-    });
-
-    it('should tell the user  what it is doing', () => {
+    it('should tell the user what it is doing', () => {
         sinon.stub(fs, 'mkdirAsync').returns(Promise.resolve());
         sinon.stub(log, 'info');
         sinon.stub(log, 'verbose');
