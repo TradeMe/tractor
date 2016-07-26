@@ -18,7 +18,7 @@ export default {
 
 function createTestDirectoryStructure (testDirectory) {
     log.info('Creating directory structure...');
-    return createAllDirectories(testDirectory);   
+    return createAllDirectories(testDirectory);
 }
 
 function createAllDirectories (testDirectory) {
@@ -36,13 +36,13 @@ function createAllDirectories (testDirectory) {
     .then(() => log.verbose('Directory structure created.'));
 }
 
-function createDir (dir) {    
+function createDir (dir) {
     return fs.mkdirAsync(dir)
     .catch(Promise.OperationalError, (error) => {
         if (error && error.cause && error.cause.code === 'EEXIST') {
-            throw new TractorError(`"${dir}" directory already exists.`);            
+            throw new TractorError(`"${dir}" directory already exists.`);
         } else {
             throw error;
         }
-    });            
+    });
 }
