@@ -63,7 +63,24 @@ describe('server/cli/init: create-test-directory-structure:', () => {
         });
     });
 
-    it('should tell the user what it is doing', () => {
+    it('should rethrow any other errors', () => {
+        sinon.stub(fs, 'mkdirAsync').returns(Promise.reject(new Promise.OperationalError()));
+        sinon.stub(log, 'info');
+        sinon.stub(log, 'warn');
+
+        return createTestDirectoryStructure.run('directory')
+        .catch(() => { })
+        .then(() => {
+            expect(log.warn).to.not.have.been.called();
+        })
+        .finally(() => {
+            fs.mkdirAsync.restore();
+            log.info.restore();
+            log.warn.restore();
+        });
+    });
+
+        it('should tell the user what it is doing', () => {
         sinon.stub(fs, 'mkdirAsync').returns(Promise.resolve());
         sinon.stub(log, 'info');
         sinon.stub(log, 'verbose');
@@ -78,23 +95,6 @@ describe('server/cli/init: create-test-directory-structure:', () => {
             fs.mkdirAsync.restore();
             log.info.restore();
             log.verbose.restore();
-            log.warn.restore();
-        });
-    });
-
-    it('should rethrow any other errors', () => {
-        sinon.stub(fs, 'mkdirAsync').returns(Promise.reject(new Promise.OperationalError()));
-        sinon.stub(log, 'info');
-        sinon.stub(log, 'warn');
-
-        return createTestDirectoryStructure.run('directory')
-        .catch(() => { })
-        .then(() => {
-            expect(log.warn).to.not.have.been.called();
-        })
-        .finally(() => {
-            fs.mkdirAsync.restore();
-            log.info.restore();
             log.warn.restore();
         });
     });
