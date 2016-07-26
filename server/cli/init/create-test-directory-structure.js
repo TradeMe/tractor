@@ -32,7 +32,8 @@ function createAllDirectories (testDirectory) {
     ].map((directory) => createDir(join(testDirectory, directory))
                         .catch(TractorError, (error) => log.warn(`${error.message} Not creating folder structure...`))
     );
-    return Promise.all(createDirectories);
+    return Promise.all(createDirectories)
+    .then(() => log.verbose('Directory structure created.'));
 }
 
 function createDir (dir) {    
