@@ -69,6 +69,7 @@ describe('ElementModel.js:', function () {
             var isDisplayed = elementModel.methods[7];
             var getOuterHtml = elementModel.methods[8];
             var getInnerHtml = elementModel.methods[9];
+            var isPresent = elementModel.methods[10];
 
             expect(click.name).to.equal('click');
             expect(sendKeys.name).to.equal('sendKeys');
@@ -80,6 +81,7 @@ describe('ElementModel.js:', function () {
             expect(isDisplayed.name).to.equal('isDisplayed');
             expect(getOuterHtml.name).to.equal('getOuterHtml');
             expect(getInnerHtml.name).to.equal('getInnerHtml');
+            expect(isPresent.name).to.equal('isPresent');
         });
     });
 

@@ -152,6 +152,15 @@ var createElementModelConstructor = function (
             type: 'string',
             required: true
         }
+    }, {
+        name: 'isPresent',
+        description: 'Schedules a command to test whether this element is currently present on DOM.',
+        returns: 'promise',
+        promise: {
+            name: 'present',
+            type: 'boolean',
+            required: true
+        }
     }];
 
     return ElementModel;
