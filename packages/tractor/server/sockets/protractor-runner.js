@@ -49,6 +49,7 @@ function run (socket, runOptions) {
 }
 
 function startProtractor (socket, runOptions) {
+    let featureToRun;
     let resolve;
     let reject;
     let deferred = new Promise((...args) => {
@@ -61,7 +62,22 @@ function startProtractor (socket, runOptions) {
         return deferred;
     }
 
-    let protractor = spawn('node', [PROTRACTOR_PATH, E2E_PATH, '--baseUrl', runOptions.baseUrl]);
+    // TODO: This looks a bit funky still, I’m not sure what it’s doing,
+    // but it looks too complicated.
+    if (runOptions.hasOwnProperty("feature")) {
+        if (_.isUndefined(runOptions.feature)) {
+            reject(new TractorError('to run a single feature, `feature` must be defined.'));
+            return deferred;
+        } else {
+            featureToRun = join(config.testDirectory, '/features', '/**/', `${runOptions.feature}.feature`);
+        }
+    } else {
+        featureToRun = join(config.testDirectory, '/features/**/*.feature');
+    }
+
+    let specs = featureToRun;
+
+    let protractor = spawn('node', [PROTRACTOR_PATH, E2E_PATH, '--baseUrl', runOptions.baseUrl, '--specs', specs]);
 
     protractor.stdout.on('data', sendDataToClient.bind(socket));
     protractor.stderr.on('data', sendErrorToClient.bind(socket));

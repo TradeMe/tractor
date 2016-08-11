@@ -10,6 +10,22 @@ form.file {
     margin-bottom: 1rem;
 }
 
+.file-editor__container a:link,
+.file-editor__container a:visited {
+    text-decoration: none;
+    color: black;
+}
+
+.file-editor__container a:hover {
+    text-decoration: none;
+    color: grey;
+}
+
+.file-editor__container ul li > span:hover{
+    color: grey;
+    cursor: default;
+}
+
 .file-editor {
     height: 90%;
     overflow-x: hidden;
@@ -60,7 +76,7 @@ form.file {
         vertical-align: top;
     }
 
-    & > tractor-action:first-of-type {
+    & > tractor-action[icon="remove"]:first-of-type {
         position: absolute;
         top: 0rem;
         left: -2rem;
@@ -69,8 +85,8 @@ form.file {
         & button {
             margin-top: 0;
         }
-    }
-
+    }    
+	
     & .file-editor__list-item-name {
         display: none;
     }
@@ -87,6 +103,15 @@ form.file {
 
     &.file-editor__list-item--minimised {
         padding: 0 0.5rem;
+        
+        [icon="collapse"] button{
+            -webkit-transform: rotate(180deg);
+            -moz-transform: rotate(180deg);
+            -ms-transform: rotate(180deg);
+            -o-transform: rotate(180deg);
+            transform: rotate(180deg);
+            transition: all 0.1s;
+        }
 
         .file-editor__list-item-name {
             display: inline-block;

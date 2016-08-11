@@ -1,7 +1,6 @@
 'use strict';
 
 /* eslint-disable no-var, prefer-arrow-callback */
-var constants = require('../../../constants')
 var cucumber = require('cucumber');
 var cucumberHtmlReport = require('cucumber-html-report');
 var log = require('npmlog');
@@ -14,7 +13,7 @@ var fs = Promise.promisifyAll(require('fs'));
 function createReporter () {
     /* eslint-disable new-cap */
     var jsonFormatter = cucumber.Listener.JsonFormatter();
-    var outputDir = path.join(__dirname, '../', constants.REPORT_DIR)
+    var outputDir = path.join(__dirname, '../', 'report')
     jsonFormatter.log = jsonReportWriter;
     return jsonFormatter;
 
@@ -22,9 +21,14 @@ function createReporter () {
         var jsonFileName = getFileName('cucumberReport_', 'json');
         var cucumberReport = path.join(outputDir, jsonFileName);
         fs.writeFileAsync(cucumberReport, content)
-        .then(() => htmlReportWriter(cucumberReport))
+         /* eslint-disable prefer-arrow-callback */
+        .then(function () {
+            return htmlReportWriter(cucumberReport);
+        })
          /* eslint-disable prefer-template */
-        .catch((error) => log.error('Failed to save test results to json file. ' + error));
+        .catch(function (error) {
+            log.error('Failed to save test results to json file. ' + error);
+        });
     }
 
     function htmlReportWriter (cucumberReport) {
