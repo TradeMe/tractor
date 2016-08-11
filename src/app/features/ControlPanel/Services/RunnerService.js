@@ -10,11 +10,22 @@ var RunnerService = function RunnerService (
     notifierService,
     realTimeService
 ) {
+    var baseUrl;
+    Object.defineProperty(this, "baseUrl", {
+        get: function() {
+            return baseUrl; 
+        },
+        set: function(newBaseUrl) { 
+            baseUrl = newBaseUrl; 
+        }
+    })
     return {
         runProtractor: runProtractor
     };
 
-    function runProtractor (options) {
+    
+    function runProtractor (options) {        
+        options.baseUrl =  this.baseUrl;
         var connection = realTimeService.connect('run-protractor', {
             'protractor-out': notify,
             'protractor-err': notify
@@ -25,6 +36,7 @@ var RunnerService = function RunnerService (
     function notify (data) {
         notifierService[data.type](data.message);
     }
+    
 };
 
 ControlPanel.service('runnerService', RunnerService);

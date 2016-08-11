@@ -8,6 +8,7 @@ var FileEditorController = require('../FileEditor/FileEditorController');
 require('../../Core/Services/ConfirmDialogService');
 require('../../Core/Services/PersistentStateService');
 require('../../Core/Components/Notifier/NotifierService');
+require('../ControlPanel/Services/RunnerService');
 require('./Services/FeatureFileService');
 require('./Models/FeatureModel');
 
@@ -21,9 +22,10 @@ var FeatureEditorController = function FeatureEditorController (
     FeatureFileService,
     FeatureModel,
     featureFileStructure,
-    featurePath
+    featurePath,
+    runnerService
 ) {
-    return new FileEditorController(
+    var controller = new FileEditorController(
         $scope,
         $window,
         $state,
@@ -35,6 +37,19 @@ var FeatureEditorController = function FeatureEditorController (
         featureFileStructure,
         featurePath
     );
+
+    this.runnerService = runnerService;
+    controller.runFeature = runFeature.bind(this);    
+    return controller;
 };
+
+//runs a single feature
+function runFeature(toRun) {  
+    if (toRun){
+        this.runnerService.runProtractor({           
+            feature: toRun
+        });
+    }
+}
 
 FeatureEditor.controller('FeatureEditorController', FeatureEditorController);
