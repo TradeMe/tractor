@@ -14,23 +14,24 @@ var ControlPanelController = (function () {
     var ControlPanelController = function ControlPanelController (
         runnerService,
         serverStatusService,
-        config,
-        $scope
+        config
     ) {
         this.runnerService = runnerService;
         this.serverStatusService = serverStatusService;
+
         this.environments = config.environments;     
+
         var environment = _.first(this.environments);
-        Object.defineProperty(this, "environment" , {            
+        Object.defineProperty(this, 'environment' , {            
             get: function () {
                 return environment;
             },
             set: function (newEnv) {
                 environment = newEnv;
-                runnerService.baseUrl = environment;                        
-            } 
-         })                         
-    }    
+                runnerService.baseUrl = environment;
+            }
+        });
+    }
     
     ControlPanelController.prototype.runProtractor = function () {                       
          this.runnerService.runProtractor({

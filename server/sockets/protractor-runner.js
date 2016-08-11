@@ -62,12 +62,14 @@ function startProtractor (socket, runOptions) {
         return deferred;
     }
 
+    // TODO: This looks a bit funky still, I’m not sure what it’s doing,
+    // but it looks too complicated.
     if (runOptions.hasOwnProperty("feature")) {
         if (_.isUndefined(runOptions.feature)) {
             reject(new TractorError('to run a single feature, `feature` must be defined.'));
             return deferred;
         } else {
-            featureToRun = join(config.testDirectory, '/features', '/**/', `${runOptions.feature}.feature`)
+            featureToRun = join(config.testDirectory, '/features', '/**/', `${runOptions.feature}.feature`);
         }
     } else {
         featureToRun = join(config.testDirectory, '/features/**/*.feature');

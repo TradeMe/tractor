@@ -43,8 +43,7 @@ var FeatureEditorController = function FeatureEditorController (
     return controller;
 };
 
-//runs a single feature
-function runFeature(toRun) {  
+function runFeature (toRun) {  
     if (toRun){
         this.runnerService.runProtractor({           
             feature: toRun

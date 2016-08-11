@@ -10,15 +10,8 @@ var RunnerService = function RunnerService (
     notifierService,
     realTimeService
 ) {
-    var baseUrl;
-    Object.defineProperty(this, "baseUrl", {
-        get: function() {
-            return baseUrl; 
-        },
-        set: function(newBaseUrl) { 
-            baseUrl = newBaseUrl; 
-        }
-    })
+    this.baseUrl = null;
+
     return {
         runProtractor: runProtractor
     };
