@@ -135,6 +135,15 @@ var createElementModelConstructor = function (
             required: true
         }
     }, {
+        name: 'isPresent',
+        description: 'Schedules a command to test whether this element is currently present as the DOM element.',
+        returns: 'promise',
+        promise: {
+            name: 'present',
+            type: 'boolean',
+            required: true
+        }
+    }, {
         name: 'getOuterHtml',
         description: 'Schedules a command to retrieve the outer HTML of this element.',
         returns: 'promise',
@@ -150,15 +159,6 @@ var createElementModelConstructor = function (
         promise: {
             name: 'innerHtml',
             type: 'string',
-            required: true
-        }
-    }, {
-        name: 'isPresent',
-        description: 'Schedules a command to test whether this element is currently present as the DOM element.',
-        returns: 'promise',
-        promise: {
-            name: 'present',
-            type: 'boolean',
             required: true
         }
     }];
