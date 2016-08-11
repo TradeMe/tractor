@@ -67,8 +67,9 @@ describe('ElementModel.js:', function () {
             var submit = elementModel.methods[5];
             var clear = elementModel.methods[6];
             var isDisplayed = elementModel.methods[7];
-            var getOuterHtml = elementModel.methods[8];
-            var getInnerHtml = elementModel.methods[9];
+            var isPresent = elementModel.methods[8];
+            var getOuterHtml = elementModel.methods[9];
+            var getInnerHtml = elementModel.methods[10];
 
             expect(click.name).to.equal('click');
             expect(sendKeys.name).to.equal('sendKeys');
@@ -78,6 +79,7 @@ describe('ElementModel.js:', function () {
             expect(submit.name).to.equal('submit');
             expect(clear.name).to.equal('clear');
             expect(isDisplayed.name).to.equal('isDisplayed');
+            expect(isPresent.name).to.equal('isPresent');
             expect(getOuterHtml.name).to.equal('getOuterHtml');
             expect(getInnerHtml.name).to.equal('getInnerHtml');
         });
