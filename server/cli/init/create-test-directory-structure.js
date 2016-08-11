@@ -24,7 +24,7 @@ function createTestDirectoryStructure (testDirectory) {
 function createAllDirectories (testDirectory) {
     let createDirectories = [
         // TODO: This is a bit cryptic, pull this out into another promise
-        // that creates the root dir, and do that first. Otherwise there 
+        // that creates the root dir, and do that first. Otherwise there
         // may be a race condition here?
         '',
         constants.COMPONENTS,
@@ -36,7 +36,7 @@ function createAllDirectories (testDirectory) {
     ].map((directory) => {
         return createDir(join(testDirectory, directory))
             .catch(TractorError, (error) => log.warn(`${error.message} Moving on...`));
-    );
+    });
 
     return Promise.all(createDirectories)
     .then(() => log.verbose('Directory structure created.'));

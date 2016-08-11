@@ -39,6 +39,12 @@ describe('FileStructureService.js:', function () {
             $provide.factory('persistentStateService', function () {
                 return persistentStateService;
             });
+            $provide.factory('ComponentParserService', function () {
+                return {};
+            });
+            $provide.factory('MockDataParserService', function () {
+                return {};
+            });
 
             $httpProvider.interceptors.push('httpResponseInterceptor');
         });
@@ -220,11 +226,10 @@ describe('FileStructureService.js:', function () {
             sinon.stub(httpResponseInterceptor, 'response').returns(fileStructureMock);
             sinon.stub(persistentStateService, 'get').returns({});
 
-            $httpBackend.whenDELETE('/component/directory?isDirectory=true').respond({});
+            $httpBackend.whenDELETE('/component/directory').respond({});
 
             fileStructureService.deleteDirectory('component', options)
             .then(function (fileStructure) {
-                expect(options.isDirectory).to.be.true();
                 expect(fileStructure).to.equal(fileStructureMock);
                 done();
             })
@@ -251,7 +256,7 @@ describe('FileStructureService.js:', function () {
             sinon.stub(httpResponseInterceptor, 'response').returns(fileStructureMock);
             sinon.stub(persistentStateService, 'get').returns(openDirectories);
 
-            $httpBackend.whenDELETE('/component/directory?isDirectory=true').respond({});
+            $httpBackend.whenDELETE('/component/directory').respond({});
 
             fileStructureService.deleteDirectory('component', options)
             .then(function () {

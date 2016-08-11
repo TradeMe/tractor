@@ -42,19 +42,12 @@ describe('ValidationService.js:', function () {
     });
 
     describe('ValidationService.validateVariableName:', function () {
-        it('should send a varible name off to the server for validation:', function (done) {
-            sinon.stub(httpResponseInterceptor, 'response').returns('variable');
+        it('should return the variable name if it is a valid variable name:', function () {
+            expect(validationService.validateVariableName('variable')).to.equal('variable');
+        });
 
-            $httpBackend.whenGET('/variable-name-valid?variableName=variable').respond({});
-
-            validationService.validateVariableName('variable')
-            .then(function (variableName) {
-                expect(variableName).to.equal('variable');
-                done();
-            })
-            .catch(done.fail);
-
-            $httpBackend.flush();
+        it('should return false if it is not a valid varible name:', function () {
+            expect(validationService.validateVariableName('3')).to.equal(false);
         });
     });
 });
