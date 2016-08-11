@@ -34,6 +34,7 @@ describe('server/cli/init: create-test-directory-structure:', () => {
             expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'step-definitions'));
             expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'mock-data'));
             expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'support'));
+            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'report'));
         })
         .finally(() => {
             fs.mkdirAsync.restore();
@@ -54,7 +55,7 @@ describe('server/cli/init: create-test-directory-structure:', () => {
 
         return createTestDirectoryStructure.run('directory')
         .then(() => {
-            expect(log.warn).to.have.been.calledWith('"directory" directory already exists. Not creating folder structure...');
+            expect(log.warn).to.have.been.calledWith('"directory" directory already exists. Moving on...’);
         })
         .finally(() => {
             fs.mkdirAsync.restore();
