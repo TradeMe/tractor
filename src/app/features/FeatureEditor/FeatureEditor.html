@@ -19,6 +19,12 @@
                 <tractor-confirm-dialog trigger="featureEditor.confirmOverWrite">
                     <p>This will overwrite "{{ featureEditor.fileModel.name }}". Continue?</p>
                 </tractor-confirm-dialog>
+                 <tractor-action ng-show="featureEditor.fileModel.name"  
+                      class="file-options__save-file"
+                      action="Run feature"
+                      model="featureEditor"
+                      argument="featureEditor.fileModel.name">
+                </tractor-action>
                 <tractor-submit class="file-options__save-file"
                     action="Save feature file">
                 </tractor-submit>
@@ -60,16 +66,23 @@
                     <ul ng-if="featureEditor.fileModel.scenarios.length">
                         <li class="file-editor__list-item"
                             ng-repeat="scenario in featureEditor.fileModel.scenarios"
-                            ng-class="{ 'file-editor__list-item--minimised': scenario.minimised }"
-                            ng-dblclick="featureEditor.minimise(scenario)">
+                            ng-class="{ 'file-editor__list-item--minimised': scenario.minimised }">
 
                             <h3 class="file-editor__list-item-name">{{ scenario.name }}</h3>
+                            
+                            <tractor-action
+                                model="featureEditor"
+                                action="minimise"
+                                argument="scenario"
+                                icon="collapse">
+                            </tractor-action>
 
                             <tractor-action
                                 model="featureEditor.fileModel"
                                 action="Remove scenario"
                                 argument="scenario"
-                                icon="remove"></tractor-action>
+                                icon="remove">
+                            </tractor-action>
 
                             <tractor-text-input
                                 form="file-editor"
