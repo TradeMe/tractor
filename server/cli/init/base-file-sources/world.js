@@ -58,7 +58,16 @@ module.exports = function () {
         global.browser.manage.deleteAllCookies();
         global.browser.executeScript('window.sessionStorage.clear();');
         global.browser.executeScript('window.localStorage.clear();');
-        callback();
+        if (scenario.isFailed()) {
+            global.browser.takeScreenshot()
+            .then(function (png) {
+                var decodedImage = new Buffer(png, 'base64').toString('binary');
+                scenario.attach(decodedImage, 'image/png');
+                callback();
+            });
+        } else {
+            callback();
+        }
     });
 
     return this.World;

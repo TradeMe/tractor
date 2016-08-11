@@ -127,10 +127,19 @@ var createElementModelConstructor = function (
         returns: 'promise'
     }, {
         name: 'isDisplayed',
-        description: 'Schedules a command to test whether this element is currently displayed.',
+        description: 'Schedules a command to test whether this element is currently displayed. If isDisplayed equal to false, it means the element is invisible on browser page, but it still be the present DOM element',
         returns: 'promise',
         promise: {
             name: 'displayed',
+            type: 'boolean',
+            required: true
+        }
+    }, {
+        name: 'isPresent',
+        description: 'Schedules a command to test whether this element is currently present as the DOM element.',
+        returns: 'promise',
+        promise: {
+            name: 'present',
             type: 'boolean',
             required: true
         }
