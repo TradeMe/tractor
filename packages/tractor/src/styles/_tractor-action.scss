@@ -57,12 +57,11 @@ tractor-action[icon] button {
 
 tractor-action[icon="collapse"]{
     position: absolute;
-    top: 2px;
-    right: 3px; 
+    top: 0px;
+    right: -2rem;
 
     & button {
         background-image: url('./images/collapse.png');
-        border-radius: 7px;
     }
 }
 

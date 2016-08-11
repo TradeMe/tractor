@@ -495,6 +495,19 @@ form.file {
   margin-right: 1rem;
   margin-bottom: 1rem; }
 
+.file-editor__container a:link,
+.file-editor__container a:visited {
+  text-decoration: none;
+  color: black; }
+
+.file-editor__container a:hover {
+  text-decoration: none;
+  color: grey; }
+
+.file-editor__container ul li > span:hover {
+  color: grey;
+  cursor: default; }
+
 .file-editor {
   height: 90%;
   overflow-x: hidden;
@@ -529,12 +542,12 @@ form.file {
     font-size: 0;
     display: inline-block;
     vertical-align: top; }
-  .file-editor__list-item > tractor-action:first-of-type {
+  .file-editor__list-item > tractor-action[icon="remove"]:first-of-type {
     position: absolute;
     top: 0rem;
     left: -2rem;
     padding: 0; }
-    .file-editor__list-item > tractor-action:first-of-type button {
+    .file-editor__list-item > tractor-action[icon="remove"]:first-of-type button {
       margin-top: 0; }
   .file-editor__list-item .file-editor__list-item-name {
     display: none; }
@@ -548,6 +561,9 @@ form.file {
     background-image: url("./images/sortable.png"); }
   .file-editor__list-item.file-editor__list-item--minimised {
     padding: 0 0.5rem; }
+    .file-editor__list-item.file-editor__list-item--minimised [icon="collapse"] button {
+      transform: rotate(180deg);
+      transition: all 0.1s; }
     .file-editor__list-item.file-editor__list-item--minimised .file-editor__list-item-name {
       display: inline-block; }
     .file-editor__list-item.file-editor__list-item--minimised tractor-variable-input,
@@ -977,6 +993,13 @@ tractor-action[icon] button {
   height: 2rem;
   transition: all 0.1s;
   transform: scale(1); }
+
+tractor-action[icon="collapse"] {
+  position: absolute;
+  top: 0px;
+  right: -2rem; }
+  tractor-action[icon="collapse"] button {
+    background-image: url("./images/collapse.png"); }
 
 tractor-action[icon="remove"] button {
   background-image: url("./images/remove.png"); }
