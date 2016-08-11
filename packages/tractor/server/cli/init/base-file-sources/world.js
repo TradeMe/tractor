@@ -30,13 +30,22 @@ module.exports = function () {
     });
 
     /* eslint-disable new-cap */
-    this.After(function (callback) {
+    var failedScenario;
+    this.After(function (scenario, callback) {
     /* eslint-enable new-cap */
         global.httpBackend.clear();
         global.browser.manage.deleteAllCookies();
         global.browser.executeScript('window.sessionStorage.clear();');
         global.browser.executeScript('window.localStorage.clear();');
-        callback();
+        failedScenario = null;
+        if (scenario.isFailed() && !failedScenario) {
+            failedScenario = scenario;
+            global.browser.takeScreenshot()
+            .then(function (png) {
+                var decodedImage = new Buffer(png, 'base64').toString('binary');
+                scenario.attach(decodedImage, 'image/png');
+            });
+        } callback();
     });
 
     return this.World;
