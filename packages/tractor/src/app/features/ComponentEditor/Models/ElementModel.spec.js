@@ -57,7 +57,7 @@ describe('ElementModel.js:', function () {
         it('should have data about all the element methods from Protractor:', function () {
             var elementModel = new ElementModel();
 
-            expect(elementModel.methods.length).to.equal(10);
+            expect(elementModel.methods.length).to.equal(11);
 
             var click = elementModel.methods[0];
             var sendKeys = elementModel.methods[1];

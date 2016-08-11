@@ -29,7 +29,9 @@ describe('StepInputDirective.js:', function() {
 
         angular.mock.module(function ($provide) {
             $provide.factory('StepDeclarationModel', function () {
-                return {};
+                return {
+                    getExampleVariableNames: function () { return []; }
+                };
             });
             $provide.factory('HttpResponseInterceptor', function () {
                 return new MockHttpResponseInterceptor();
@@ -105,7 +107,7 @@ describe('StepInputDirective.js:', function() {
         it('should convert the "label" attribute into a camel-cased "property":', function () {
             var scope = $rootScope.$new();
             scope.model = {};
-            var directive = compileDirective('<tractor-step-input model="model" label="Some label" form="parent"></tractor-step>', scope);
+            var directive = compileDirective('<tractor-step-input model="model" label="Some label" form="parent"></tractor-step-input>', scope);
             expect(directive.isolateScope().property).to.equal('someLabel');
         });
     });

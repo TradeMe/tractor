@@ -55,7 +55,7 @@ describe('server/cli/init: create-test-directory-structure:', () => {
 
         return createTestDirectoryStructure.run('directory')
         .then(() => {
-            expect(log.warn).to.have.been.calledWith('"directory" directory already exists. Moving on...’);
+            expect(log.warn).to.have.been.calledWith('"directory" directory already exists. Moving on...');
         })
         .finally(() => {
             fs.mkdirAsync.restore();
