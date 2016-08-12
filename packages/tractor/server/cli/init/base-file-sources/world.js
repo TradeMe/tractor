@@ -84,11 +84,11 @@ module.exports = function () {
             .then(function (browserLog) {
                 var severeErrors = browserLog.filter(function (log) {
                     return log.level.name === 'SEVERE';
-                });
+                })
                 .map(function (log) {
                     return log.message.substring(log.message.indexOf('Error'), log.message.indexOf('\n'));
                 });
-                
+
                 var uniqueErrors = {};
                 if (severeErrors) {
                     severeErrors.forEach(function (message) {
