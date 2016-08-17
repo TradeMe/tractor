@@ -72114,11 +72114,12 @@ var createElementModelConstructor = function (
         name: 'getAttribute',
         description: 'Schedules a command to get attribute of this element.',
         returns: 'promise',
-        promise: {
+        arguments: [{
             name: 'attribute',
+            description: 'key of element attribute',
             type: 'string',
             required: true
-        }
+        }],
     }];
 
     return ElementModel;
