@@ -57,7 +57,7 @@ describe('ElementModel.js:', function () {
         it('should have data about all the element methods from Protractor:', function () {
             var elementModel = new ElementModel();
 
-            expect(elementModel.methods.length).to.equal(11);
+            expect(elementModel.methods.length).to.equal(12);
 
             var click = elementModel.methods[0];
             var sendKeys = elementModel.methods[1];
@@ -70,6 +70,7 @@ describe('ElementModel.js:', function () {
             var isPresent = elementModel.methods[8];
             var getOuterHtml = elementModel.methods[9];
             var getInnerHtml = elementModel.methods[10];
+            var getAttribute = elementModel.methods[11];
 
             expect(click.name).to.equal('click');
             expect(sendKeys.name).to.equal('sendKeys');
@@ -82,6 +83,7 @@ describe('ElementModel.js:', function () {
             expect(isPresent.name).to.equal('isPresent');
             expect(getOuterHtml.name).to.equal('getOuterHtml');
             expect(getInnerHtml.name).to.equal('getInnerHtml');
+            expect(getAttribute.name).to.equal('getAttribute');
         });
     });
 

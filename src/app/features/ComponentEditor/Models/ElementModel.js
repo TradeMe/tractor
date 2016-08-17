@@ -161,6 +161,15 @@ var createElementModelConstructor = function (
             type: 'string',
             required: true
         }
+    }, {
+        name: 'getAttribute',
+        description: 'Schedules a command to get attribute of this element.',
+        returns: 'promise',
+        promise: {
+            name: 'attribute',
+            type: 'string',
+            required: true
+        }
     }];
 
     return ElementModel;
