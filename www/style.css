@@ -562,6 +562,7 @@ form.file {
   .file-editor__list-item.file-editor__list-item--minimised {
     padding: 0 0.5rem; }
     .file-editor__list-item.file-editor__list-item--minimised [icon="collapse"] button {
+      -webkit-transform: rotate(180deg);
       transform: rotate(180deg);
       transition: all 0.1s; }
     .file-editor__list-item.file-editor__list-item--minimised .file-editor__list-item-name {
@@ -678,7 +679,8 @@ tractor-file-tree .file-tree__file-list-item {
     background-image: url("./images/active-options.png"); }
   tractor-file-tree .file-tree__file-list-item.active {
     display: block;
-    transform: translateX(1rem); }
+    -webkit-transform: translateX(1rem);
+            transform: translateX(1rem); }
   tractor-file-tree .file-tree__file-list-item.file-tree__file-list-item--new-directory {
     background-image: url("./images/new-directory.png"); }
   tractor-file-tree .file-tree__file-list-item.file-tree__file-list-item--directory {
@@ -969,7 +971,8 @@ tractor-submit button {
 tractor-action button span,
 tractor-submit button span {
   transition: all 0.1s;
-  transform: scale(0.8);
+  -webkit-transform: scale(0.8);
+          transform: scale(0.8);
   display: block; }
 
 tractor-action button:hover,
@@ -978,11 +981,13 @@ tractor-submit button:hover {
 
 tractor-action button:hover span,
 tractor-submit button:hover span {
-  transform: scale(0.9); }
+  -webkit-transform: scale(0.9);
+          transform: scale(0.9); }
 
 tractor-action button:active span,
 tractor-submit button:active span {
-  transform: scale(1); }
+  -webkit-transform: scale(1);
+          transform: scale(1); }
 
 tractor-action[icon] {
   width: 2rem;
@@ -992,7 +997,8 @@ tractor-action[icon] button {
   width: 2rem;
   height: 2rem;
   transition: all 0.1s;
-  transform: scale(1); }
+  -webkit-transform: scale(1);
+          transform: scale(1); }
 
 tractor-action[icon="collapse"] {
   position: absolute;
@@ -1005,10 +1011,12 @@ tractor-action[icon="remove"] button {
   background-image: url("./images/remove.png"); }
 
 tractor-action[icon] button:hover {
-  transform: scale(1.125); }
+  -webkit-transform: scale(1.125);
+          transform: scale(1.125); }
 
 tractor-action[icon] button:active {
-  transform: scale(1.25); }
+  -webkit-transform: scale(1.25);
+          transform: scale(1.25); }
 
 tractor-variable-input,
 tractor-text-input,

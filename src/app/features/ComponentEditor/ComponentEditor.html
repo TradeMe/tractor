@@ -41,7 +41,7 @@
                                 ng-class="{ 'file-editor__list-item--minimised': domElement.minimised }">
 
                                 <h3 class="file-editor__list-item-name">{{ domElement.name }}</h3>
-                              
+
                                 <tractor-action
                                     model="componentEditor.fileModel"
                                     action="Remove element"
@@ -129,17 +129,17 @@
                                 <h3 class="file-editor__list-item-name">{{ action.name }}</h3>
 
                                 <tractor-action
-                                    model="componentEditor"
-                                    action="minimise"
-                                    argument="action"
-                                    icon="collapse">
-                                </tractor-action>
-
-                                <tractor-action
                                     model="componentEditor.fileModel"
                                     action="Remove action"
                                     argument="action"
                                     icon="remove">
+                                </tractor-action>
+
+                                <tractor-action
+                                    model="componentEditor"
+                                    action="minimise"
+                                    argument="action"
+                                    icon="collapse">
                                 </tractor-action>
 
                                 <tractor-variable-input
