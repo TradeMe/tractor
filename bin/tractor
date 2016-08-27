@@ -2,25 +2,22 @@
 'use strict';
 
 // Dependencies:
-var babel = require('babel/register')({
-    only: /tractor\/server\//
-});
 var tractor = require('commander');
 var log = require('npmlog');
 
 log.level = 'info';
 
 tractor
-.version('0.8.1');
+.version('0.9.0');
 
 tractor
 .command('init')
 .description('initialise tractor in a project')
-.action(require('../server/cli/init/'));
+.action(require('../dist/init/').default);
 
 tractor
 .command('start')
 .description('Start the tractor server')
-.action(require('../server/cli/start/'));
+.action(require('../dist/start/').default);
 
 tractor.parse(process.argv);
