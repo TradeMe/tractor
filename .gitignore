@@ -1,8 +1,10 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # compiled output
+/src/**/*.js
+/src/**/*.ngfactory.ts
+/src/**/*.shim.ts
 /dist
-/tmp
 
 # dependencies
 /node_modules

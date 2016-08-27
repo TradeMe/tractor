@@ -8,20 +8,15 @@ import * as path from 'path';
 import * as titlecase from 'title-case';
 
 // Dependencies:
-import { DropFileDirective } from './drop-file/drop-file.directive';
 import { Directory } from '../file-structure/directory.interface';
 import { FileStructureItem } from '../file-structure/file-structure-item.interface';
 import { FileStructureService } from '../file-structure/file-structure.service';
-import { FileTreeDirectoryComponent } from './file-tree-directory/file-tree-directory.component';
-import { FileTypesService, FILE_TYPES_PROVIDERS } from '../file-types/file-types.service';
+import { FileTypesService } from '../file-types/file-types.service';
 
 @Component({
-    moduleId: module.id,
     selector: 'tractor-file-tree',
     templateUrl: 'file-tree.component.html',
-    styleUrls: ['file-tree.component.css'],
-    directives: [DropFileDirective, FileTreeDirectoryComponent],
-    providers: [FILE_TYPES_PROVIDERS]
+    styleUrls: ['file-tree.component.scss']
 })
 export class FileTreeComponent implements OnInit {
     @Input() public directory: Directory;
@@ -52,7 +47,7 @@ export class FileTreeComponent implements OnInit {
     // Currently duplicated in file-tree-directory.component.ts, should probably
     // move to file.service.ts:
     public editFilePath (file: FileStructureItem, directory: Directory): void {
-        let { name } = file
+        let { name } = file;
         let oldDirectoryPath = this.getDirname(file.path);
         let newDirectoryPath = directory.path;
         if (oldDirectoryPath !== newDirectoryPath) {

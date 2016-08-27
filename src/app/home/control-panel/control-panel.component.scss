@@ -1,0 +1,50 @@
+@import '../../../styles/_constants.scss';
+@import '../../../styles/_fonts.scss';
+
+.control-panel__top-row > div {
+    padding: $standard-spacing 0 $small-spacing;
+}
+
+.control-panel__run-options {
+    display: inline-block;
+    background: $primary-light;
+    padding: 0 $standard-spacing;
+
+    & > * {
+        display: inline-block;
+        width: auto;
+    }
+
+    tractor-select {
+        margin-top: 0.375rem;
+        margin-bottom: -0.375rem;
+    }
+
+    tractor-action span {
+        line-height: 1.75rem;
+        margin: 0.5rem 0;
+    }
+}
+
+.control-panel__top-row tractor-action {
+    vertical-align: top;
+    margin: 0.625rem 0;
+}
+
+.control-panel__server-status {
+    position: absolute;
+    top: 0.25rem;
+    left: 0.25rem;
+    width: 1rem;
+    height: 1rem;
+    overflow: hidden;
+    color: red;
+    background-color: red;
+    border: 1px solid darkred;
+    border-radius: 50%;
+}
+.control-panel__server-status--running {
+    color: green;
+    background-color: green;
+    border: 1px solid darkgreen;
+}

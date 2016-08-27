@@ -1,6 +1,6 @@
-@import '../../../styles/constants';
+@import '../../../styles/_constants.scss';
 
-form {
+:host {
     float: left;
     width: 80%;
     height: 100%;
@@ -26,48 +26,76 @@ form {
     position: relative;
 }
 
-/deep/ .file-options {
-    font-size: 0;
-    height: 10%;
-    background: rgba(225, 225, 225, 1);
-}
+/deep/ .file-editor section > tractor-button:last-child {
+    height: 2.5rem;
+    padding-left: $large-spacing;
 
-/deep/ .file-options__name {
-    display: inline-block;
-    vertical-align: top;
-
-    padding: $standard-spacing;
-    margin: $standard-spacing 0;
-
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-/deep/ .file-options > div {
-    display: inline-block;
-    margin-top: 0.5rem;
-    height: 4rem;
-    padding: 0 0.25rem;
-}
-
-/deep/ .file-options__file-actions {
-    float: right;
-
-    & > * {
-        padding: 0 0.25rem;
+    & button {
+        margin-top: 0;
     }
 }
 
-/deep/ tractor-input.file-options__name-input,
-/deep/ .file-options__save-file,
-/deep/ .file-options__new-file {
-    display: table-cell;
-    vertical-align: top;
-}
+/deep/ .file-editor__list-item {
+    position: relative;
+    padding: $standard-spacing;
+    padding-bottom: 0;
+    margin-right: $standard-spacing + 2;
+    margin-bottom: $standard-spacing;
+    background: rgba(245, 245, 245, 1);
 
-/deep/ .file-options__save-file,
-/deep/ .file-options__new-file {
-    button {
-        margin-top: 1.5rem;
+    h3 {
+        display: inline-block;
+    }
+
+    & .file-editor__list-item {
+        background: rgba(235, 235, 235, 1);
+    }
+
+    & tractor-input,
+    & tractor-select,
+    & tractor-step-input,
+    tractor-checkbox {
+        font-size: 0;
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    & > tractor-button:first-of-type {
+        position: absolute;
+        top: 0rem;
+        left: -2rem;
+        padding: 0;
+
+        & button {
+            margin-top: 0;
+        }
+    }
+
+    & .file-editor__list-item-sort-handle {
+        position: absolute;
+        top: 0rem;
+        right: -2rem;
+        width: 2rem;
+        height: 2rem;
+        background: rgba(110, 110, 110, 1);
+        background-image: url('./images/sortable.png')
+    }
+
+    &.file-editor__list-item--minimised {
+        padding: 0 0.5rem;
+
+        .file-editor__list-item-name {
+            display: inline-block;
+        }
+
+        tractor-variable-input,
+        tractor-text-input,
+        tractor-literal-input,
+        tractor-select,
+        tractor-step-input,
+        tractor-checkbox,
+        section {
+            display: none;
+        }
     }
 }

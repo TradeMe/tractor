@@ -2,6 +2,8 @@
 
 // Angular:
 import { OnDestroy, OnInit } from '@angular/core';
+import { Response } from '@angular/http';
+import { Router } from '@angular/router';
 import { Observable, Subject, Subscription } from 'rxjs/rx';
 
 // Dependencies:
@@ -12,17 +14,21 @@ import { FileService } from '../file/file.service';
 import { FileStructure } from '../file-structure/file-structure.interface';
 import { FileStructureItem } from '../file-structure/file-structure-item.interface';
 import { FileStructureService } from '../file-structure/file-structure.service';
+import { NotifierService } from '../../home/notifier/notifier.service';
 
 export class FileEditorController<T extends FileStructureItem> implements OnDestroy, OnInit {
+    public directory: Directory;
+
     private confirmOverwrite: Subject<boolean>;
-    private directory: Directory;
     private onFileStructureChange: Subscription;
 
     constructor (
         protected confirmService: ConfirmService,
-        protected fileStructureService: FileStructureService,
         protected fileFactory: Factory<T>,
-        protected fileService: FileService<T>
+        protected fileService: FileService<T>,
+        protected fileStructureService: FileStructureService,
+        protected notifierService: NotifierService,
+        protected router: Router
     ) { }
 
     public ngOnInit (): void {
@@ -36,11 +42,11 @@ export class FileEditorController<T extends FileStructureItem> implements OnDest
         this.onFileStructureChange.unsubscribe();
     }
 
-    public saveFile (file: T) {
-        let path = null;
+    public saveFile (file: T): Observable<Response> {
         let { data, name } = file;
+        let path = null;
 
-        this.fileService.getPath(name, file.path)
+        return this.fileService.getPath(name, file.path)
         .flatMap((filePath: string) => {
             path = filePath;
             let exists = this.fileStructureService.checkFileExists(path);
@@ -56,17 +62,6 @@ export class FileEditorController<T extends FileStructureItem> implements OnDest
             }
         })
         .filter((value: boolean) => value)
-        .flatMap(() => this.fileService.saveFile({ data, path }))
-        .subscribe();
-        //
-        // .then(() => this.fileService.getFileStructure())
-        // .then(fileStructure => {
-        //     this.fileStructure = fileStructure;
-        //     return this.fileService.openFile({ path }, this.availableComponents, this.availableMockData)
-        // })
-        // .then(file => this.fileModel = file)
-        // .catch(() => {
-        //     // this.notifierService.error('File was not saved.');
-        // });
+        .flatMap(() => this.fileService.saveFile({ data, path }));
     }
 }

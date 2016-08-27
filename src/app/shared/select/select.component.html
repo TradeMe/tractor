@@ -1,9 +1,10 @@
 <label>{{ label }}</label>
 <select
-    required
-    [(ngModel)]="model">
+    [(ngModel)]="model"
+    (ngModelChange)="modelChange.emit($event)"
+    required>
     <option
         *ngFor="let option of options"
-        [value]="option">{{ option}}
+        [ngValue]="option">{{ display ? option[display] : option }}
     </option>
 </select>

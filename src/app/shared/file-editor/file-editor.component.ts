@@ -4,10 +4,9 @@
 import { Component } from '@angular/core';
 
 @Component({
-    moduleId: module.id,
     selector: 'tractor-file-editor',
     templateUrl: 'file-editor.component.html',
-    styleUrls: ['file-editor.component.css']
+    styleUrls: ['file-editor.component.scss']
 })
 export class FileEditorComponent {
     constructor () { }

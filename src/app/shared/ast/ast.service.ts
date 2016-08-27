@@ -70,7 +70,3 @@ export class ASTService {
         };
     }
 }
-
-export const AST_PROVIDERS = [
-    ASTService
-];

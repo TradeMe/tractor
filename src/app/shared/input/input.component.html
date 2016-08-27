@@ -1,10 +1,22 @@
-<label>{{ label }}: </label>
+<label
+    [attr.for]="'text-' + id"
+    title="{{ description }}"
+    *ngIf="description">
+    {{ label }}:
+</label>
+<label
+    [attr.for]="'text-' + id"
+    *ngIf="!description">
+    {{ label }}:
+</label>
+
 <input
-    [(ngModel)]="model"
-    (ngModelChange)="modelChange.emit($event)"
     name="text-{{ id }}"
     type="text"
-    placeholder="e.g. {{ placeholder }}"/>
+    placeholder="e.g. {{ placeholder }}"
+    [(ngModel)]="model"
+    (ngModelChange)="modelChange.emit($event)"
+    #name="ngModel"/>
     <!-- ng-model="model[property]"
     ng-model-options="{ allowInvalid: true }"
     ng-blur="blur(model[property])"
@@ -17,4 +29,9 @@
     <ng-message when="fileName">That is not a valid name</ng-message>
     <ng-message when="variableNameValid">That is not a valid name</ng-message>
     <ng-message when="variableNameUnique">There is something else with the same name</ng-message>
+</div> -->
+<!-- {{ name | debugger }}
+<div
+    [hidden]="name.valid || name.pristine">
+    BLARGH
 </div> -->

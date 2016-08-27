@@ -10,7 +10,3 @@ export class ConfirmService {
         return new Subject<boolean>();
     }
 }
-
-export const CONFIRM_PROVIDERS = [
-    ConfirmService
-];

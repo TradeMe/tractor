@@ -4,7 +4,7 @@
 import { Injectable, provide } from '@angular/core';
 
 // Dependencies:
-import { LocalStorageService, LOCAL_STORAGE_SERVICE_CONFIG } from 'angular-2-local-storage/angular-2-local-storage';
+import { LocalStorageService, LOCAL_STORAGE_SERVICE_CONFIG } from 'angular-2-local-storage';
 
 // Constants:
 const LOCAL_STORAGE_PREFIX = 'tractor';
@@ -38,9 +38,3 @@ export class PersistentStateService {
         this.localStorageService.set(PERSISTENT_STATE_KEY, state);
     }
 }
-
-export const PERSISTENT_STATE_PROVIDERS = [
-    PersistentStateService,
-    LocalStorageService,
-    LOCAL_STORAGE_CONFIG_PROVIDER
-];

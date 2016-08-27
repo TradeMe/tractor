@@ -1,7 +1,7 @@
 'use strict';
 
 // Angular:
-import { Directive, ElementRef, Input, OnInit, Renderer } from '@angular/core';
+import { Directive, ElementRef, HostListener, Input, OnInit, Renderer } from '@angular/core';
 
 // Dependencies:
 import { FileStructureItem } from '../../file-structure/file-structure-item.interface';
@@ -10,11 +10,7 @@ import { FileStructureItem } from '../../file-structure/file-structure-item.inte
 const DRAG_CLASS = 'drag';
 
 @Directive({
-    selector: '[tractorDragFile]',
-    host: {
-      '(dragstart)': 'dragStart($event)',
-      '(dragend)': 'dragEnd($event)'
-    }
+    selector: '[tractorDragFile]'
 })
 export class DragFileDirective implements OnInit {
     @Input() public file: FileStructureItem;
@@ -28,13 +24,13 @@ export class DragFileDirective implements OnInit {
         this.renderer.setElementProperty(this.element.nativeElement, 'draggable', true);
     }
 
-    public dragStart ($event: DragEvent): void {
+    @HostListener('dragstart') public dragStart ($event?: DragEvent): void {
         $event.dataTransfer.effectAllowed = 'move';
         $event.dataTransfer.setData('file', JSON.stringify(this.file));
         this.renderer.setElementClass($event.target, DRAG_CLASS, true);
     }
 
-    public dragEnd ($event: DragEvent): void {
+    @HostListener('dragend') public dragEnd ($event?: DragEvent): void {
         this.renderer.setElementClass($event.target, DRAG_CLASS, false);
     }
 }

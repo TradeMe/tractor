@@ -2,7 +2,7 @@
 
 export interface FileStructureItem {
     ast?: ESCodeGen.Program;
-    data?: ESCodeGen.Program;
+    data?: ESCodeGen.Program | string;
     editingName?: boolean;
     isDirectory?: boolean;
     name: string;

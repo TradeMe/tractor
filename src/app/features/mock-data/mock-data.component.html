@@ -1,0 +1,61 @@
+<tractor-file-tree
+    [directory]="directory">
+</tractor-file-tree>
+
+<tractor-file-editor
+    *ngIf="mockData">
+    <form
+        #form="ngForm"
+        (ngSubmit)="trySave(mockData)">
+        <tractor-file-options>
+            <h1
+                 class="file-options__name">
+                 {{ mockData.name }}
+             </h1>
+
+            <div
+                *ngIf="!mockData.isSaved">
+                <tractor-input
+                    class="file-options__name-input"
+                    [label]="'Name'"
+                    [placeholder]="'Data'"
+                    [(model)]="mockData.name">
+                    <!-- validate-file-name -->
+                </tractor-input>
+            </div>
+            <div
+                class="file-options__file-actions">
+                <tractor-confirm
+                    [trigger]="confirmOverwrite">
+                    <p>This will overwrite "{{ mockData.name }}". Continue?</p>
+                </tractor-confirm>
+                <tractor-submit
+                    class="file-options__save-file"
+                    [label]="'Save file'">
+                </tractor-submit>
+                <tractor-button
+                    class="file-options__new-file"
+                    [label]="'New file'"
+                    (click)="newFile()">
+                </tractor-button>
+            </div>
+        </tractor-file-options>
+
+        <section
+            class="file-editor"
+            *ngIf="mockData.name">
+
+            <section
+                class="file-editor__container">
+                <h2>
+                    JSON data:
+                </h2>
+
+                <textarea
+                    name="json"
+                    [(ngModel)]="mockData.json">
+                </textarea>
+            </section>
+        </section>
+    </form>
+</tractor-file-editor>

@@ -4,12 +4,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-    moduleId: module.id,
     selector: 'tractor-input',
     templateUrl: 'input.component.html',
-    styleUrls: ['input.component.css']
+    styleUrls: ['input.component.scss']
 })
 export class InputComponent {
+    @Input() public description: string;
     @Input() public label: string;
     @Input() public model: string;
     @Input() public placeholder: string;

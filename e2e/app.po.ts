@@ -4,6 +4,6 @@ export class TractorPage {
   }
 
   getParagraphText() {
-    return element(by.css('tractor-app h1')).getText();
+    return element(by.css('tractor-app')).getText();
   }
 }

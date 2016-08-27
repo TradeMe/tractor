@@ -37,26 +37,25 @@ button:active span {
     transform: scale(1);
 }
 
-:host[icon] {
-   width: 2rem;
-   height: 2rem;
+.tractor-button__icon {
+    width: 2rem;
+    height: 2rem;
+    transition: all 0.1s;
+    transform: scale(1);
 }
 
-:host[icon] button {
-   width: 2rem;
-   height: 2rem;
-   transition: all 0.1s;
-   transform: scale(1);
+.tractor-button__icon span {
+    display: none;
 }
 
-:host[icon="remove"] button {
+.tractor-button__icon.tractor-button__icon--remove {
     background-image: url('./images/remove.png');
 }
 
-:host[icon] button:hover {
+.tractor-button__icon:hover {
    transform: scale(1.125);
 }
 
-:host[icon] button:active {
+.tractor-button__icon:active {
    transform: scale(1.25);
 }

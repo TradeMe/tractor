@@ -1,0 +1,281 @@
+<tractor-file-tree
+    [directory]="directory">
+</tractor-file-tree>
+
+<tractor-file-editor
+    *ngIf="pageObject">
+    <form
+        #form="ngForm"
+        (ngSubmit)="trySave(pageObject)">
+        <tractor-file-options>
+            <h1
+                 class="file-options__name">
+                 {{ pageObject.name }}
+             </h1>
+
+            <div
+                *ngIf="!pageObject.isSaved">
+                <tractor-input
+                    class="file-options__name-input"
+                    [label]="'Name'"
+                    [placeholder]="'Page Object'"
+                    [(model)]="pageObject.name">
+                    <!-- is-class> -->
+                </tractor-input>
+            </div>
+            <div
+                class="file-options__file-actions">
+                <tractor-confirm
+                    [trigger]="confirmOverwrite">
+                    <p>This will overwrite "{{ pageObject.name }}". Continue?</p>
+                </tractor-confirm>
+                <tractor-submit
+                    class="file-options__save-file"
+                    [label]="'Save file'">
+                </tractor-submit>
+                <tractor-button
+                    class="file-options__new-file"
+                    [label]="'New file'"
+                    (click)="newFile()">
+                </tractor-button>
+            </div>
+        </tractor-file-options>
+
+        <section
+            class="file-editor"
+            *ngIf="pageObject.name">
+
+            <section
+                class="file-editor__container">
+                <h2>
+                    Elements:
+                </h2>
+
+                <section
+                    *ngIf="pageObject.domElements.length">
+                    <ul>
+                        <li
+                            class="file-editor__list-item"
+                            *ngFor="let domElement of pageObject.domElements">
+                            <!-- ng-class="{ 'file-editor__list-item--minimised': domElement.minimised }"
+                            ng-dblclick="componentEditor.minimise(domElement)"> -->
+
+                            <tractor-button
+                                [icon]="'remove'"
+                                [label]="'Remove element'"
+                                (click)="pageObject.removeElement(domElement)">
+                            </tractor-button>
+
+                            <!-- <tractor-variable-input -->
+                            <tractor-input
+                                [label]="'Name'"
+                                [placeholder]="'element'"
+                                [(model)]="domElement.name">
+                            </tractor-input>
+                            <!-- </tractor-variable-input -->
+
+                            <tractor-select
+                                [label]="'Type'"
+                                [options]="domElement.selector.types"
+                                [(model)]="domElement.selector.type">
+                            </tractor-select>
+
+                            <tractor-input
+                                [label]="'Locator'"
+                                [placeholder]="'someController.someModel'"
+                                [(model)]="domElement.selector.locator">
+                            </tractor-input>
+
+                            <section>
+                                <h3>
+                                    Filters:
+                                </h3>
+
+                                <ol
+                                    *ngIf="domElement.filters.length > 1">
+                                    <!-- as-sortable
+                                    ng-model="domElement.sortableFilters"
+                                    is-disabled="domElement.filters.length < 3" -->
+                                    <li
+                                        class="file-editor__list-item"
+                                        *ngFor="let filter of domElement.sortableFilters; let i = index">
+                                        <!-- as-sortable-item> -->
+                                        <tractor-button
+                                            [icon]="'remove'"
+                                            [label]="'Remove filter'"
+                                            (click)="domElement.removeFilter(filter)">
+                                        </tractor-button>
+                                        <div
+                                            class="file-editor__list-item-sort-handle"
+                                            title="Drag to sort"
+                                            *ngIf="domElement.filters.length > 2">
+                                             <!-- as-sortable-item-handle> -->
+                                        </div>
+
+                                        <tractor-select
+                                            *ngIf="!domElement.filters[i].isGroup"
+                                            [label]="'Type'"
+                                            [options]="filter.types"
+                                            [(model)]="filter.type">
+                                        </tractor-select>
+                                        <tractor-input
+                                            [label]="'Locator'"
+                                            [placeholder]="'someController.someModel'"
+                                            ([model])="filter.locator">
+                                        </tractor-input>
+                                    </li>
+                                </ol>
+
+                                <tractor-button
+                                    [label]="'Add filter'"
+                                    (click)="domElement.addFilter()">
+                                </tractor-button>
+                            </section>
+                        </li>
+                    </ul>
+                </section>
+
+                <tractor-button
+                    [label]="'Add element'"
+                    (click)="pageObject.addElement()">
+                </tractor-button>
+            </section>
+
+            <section
+                class="file-editor__container">
+                <h2>
+                    Actions:
+                </h2>
+
+                <section
+                    *ngIf="pageObject.actions.length">
+                    <ul>
+                        <li
+                            class="file-editor__list-item"
+                            *ngFor="let action of pageObject.actions">
+                            <!-- ng-class="{ 'file-editor__list-item--minimised': action.minimised }"
+                            ng-dblclick="componentEditor.minimise(action)"> -->
+
+                            <tractor-button
+                                [icon]="'remove'"
+                                [label]="'Remove action'"
+                                (click)="pageObject.removeAction(action)">
+                            </tractor-button>
+
+                            <!-- <tractor-variable-input> -->
+                            <tractor-input
+                                [label]="'Name'"
+                                [(model)]="action.name"
+                                [placeholder]="'action'">
+                            </tractor-input>
+                            <!-- </tractor-variable-input> -->
+
+                            <section>
+                                <h3>
+                                    Parameters:
+                                </h3>
+
+                                <ol
+                                    *ngIf="action.parameters.length">
+                                    <!-- as-sortable ng-model="action.parameters" is-disabled="action.parameters.length < 2"> -->
+                                    <li
+                                        class="file-editor__list-item"
+                                        *ngFor="let parameter of action.parameters" as-sortable-item>
+                                        <tractor-button
+                                            [icon]="'remove'"
+                                            [label]="'Remove parameter'"
+                                            (click)="action.removeParameter(parameter)">
+                                        </tractor-button>
+                                        <div
+                                            class="file-editor__list-item-sort-handle"
+                                            title="Drag to sort"
+                                            *ngIf="action.parameters.length > 1">
+                                            <!-- as-sortable-item-handle -->
+                                        </div>
+
+                                        <!-- <tractor-variable-input> -->
+                                        <tractor-input
+                                            [label]="'Name'"
+                                            [(model)]="parameter.name"
+                                            [placeholder]="'parameter'">
+                                        </tractor-input>
+                                        <!-- </tractor-variable-input> -->
+                                    </li>
+                                </ol>
+
+                                <tractor-button
+                                    [label]="'Add parameter'"
+                                    (click)="action.addParameter()">
+                                </tractor-button>
+                            </section>
+
+                            <section>
+                                <h3>
+                                    Interactions:
+                                </h3>
+
+                                <ol
+                                    *ngIf="action.interactions.length">
+                                    <!-- as-sortable ng-model="action.interactions" -->
+                                    <!-- is-disabled="action.interactions.length < 2"> -->
+                                    <li
+                                        class="file-editor__list-item"
+                                        *ngFor="let interaction of action.interactions">
+                                         <!-- as-sortable-item> -->
+                                        <tractor-button
+                                            [icon]="'remove'"
+                                            [label]="'Remove interaction'"
+                                            (click)="action.removeInteraction(interaction)">
+                                        </tractor-button>
+                                        <div
+                                            class="file-editor__list-item-sort-handle"
+                                            title="Drag to sort"
+                                            *ngIf="action.interactions.length > 1">
+                                            <!-- as-sortable-item-handle> -->
+                                        </div>
+
+                                        <tractor-select
+                                            [display]="'name'"
+                                            [label]="'Element'"
+                                            [options]="pageObject.elements"
+                                            [(model)]="interaction.element">
+                                        </tractor-select>
+                                        <tractor-select
+                                            [display]="'name'"
+                                            [label]="'Method'"
+                                            [options]="interaction.element.methods"
+                                            [(model)]="interaction.method">
+                                        </tractor-select>
+
+                                        <div
+                                            *ngFor="let argument of interaction.arguments">
+                                            <!-- <tractor-literal-input> -->
+                                            <tractor-input
+                                                [description]="argument.description"
+                                                [label]="argument.name"
+                                                [(model)]="argument.argument"
+                                                [placeholder]="argument.type + argument.required ? ' - required' : ' - optional'">
+                                                <!-- required="argument.required" -->
+                                            </tractor-input>
+                                            <!-- </tractor-literal-input> -->
+                                        </div>
+                                    </li>
+                                </ol>
+
+                                <tractor-button
+                                    [label]="'Add interaction'"
+                                    (click)="action.addInteraction()">
+                                </tractor-button>
+                            </section>
+                        </li>
+                    </ul>
+                </section>
+
+                <tractor-button
+                    [label]="'Add action'"
+                    (click)="pageObject.addAction()">
+                </tractor-button>
+            </section>
+        </section>
+    </form>
+</tractor-file-editor>

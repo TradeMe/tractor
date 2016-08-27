@@ -9,26 +9,18 @@ import { serverToClientFilePath } from '../../utilities/url-utilities';
 import * as path from 'path';
 
 // Dependencies:
-import { ButtonComponent } from '../../button/button.component';
 import { Directory } from '../../file-structure/directory.interface';
-import { DragFileDirective } from '../drag-file/drag-file.directive';
-import { DropFileDirective } from '../drop-file/drop-file.directive';
 import { FileStructureItem } from '../../file-structure/file-structure-item.interface';
 import { FileStructureService } from '../../file-structure/file-structure.service';
-import { FileTreeActionsComponent } from '../file-tree-actions/file-tree-actions.component';
-import { FileTreeRenameComponent } from '../file-tree-rename/file-tree-rename.component';
-import { FileTypesService, FILE_TYPES_PROVIDERS } from '../../file-types/file-types.service';
+import { FileTypesService } from '../../file-types/file-types.service';
 
 // Constants:
 const STEP_DEFINITIONS = 'step-definitions';
 
 @Component({
-    moduleId: module.id,
     selector: 'tractor-file-tree-directory',
     templateUrl: 'file-tree-directory.component.html',
-    styleUrls: ['file-tree-directory.component.css'],
-    directives: [ButtonComponent, DragFileDirective, DropFileDirective, FileTreeActionsComponent, FileTreeDirectoryComponent, FileTreeRenameComponent],
-    providers: [FILE_TYPES_PROVIDERS]
+    styleUrls: ['file-tree-directory.component.scss']
 })
 export class FileTreeDirectoryComponent implements OnInit {
     @Input() public directory: Directory;
@@ -67,7 +59,7 @@ export class FileTreeDirectoryComponent implements OnInit {
     // Currently duplicated in file-tree.component.ts, should probably
     // move to file.service.ts:
     public editFilePath (file: FileStructureItem, directory: Directory): void {
-        let { name } = file
+        let { name } = file;
         let oldDirectoryPath = this.getDirname(file.path);
         let newDirectoryPath = directory.path;
         if (oldDirectoryPath !== newDirectoryPath) {

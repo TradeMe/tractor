@@ -4,22 +4,18 @@
 import { Component, Input, OnInit } from '@angular/core';
 
 // Dependencies:
-import { ButtonComponent } from '../../button/button.component';
 import { Directory } from '../../file-structure/directory.interface';
 import { FileStructureItem } from '../../file-structure/file-structure-item.interface';
 import { FileStructureService } from '../../file-structure/file-structure.service';
-import { FileTypesService, FILE_TYPES_PROVIDERS } from '../../file-types/file-types.service';
+import { FileTypesService } from '../../file-types/file-types.service';
 
 // Constants:
 const STEP_DEFINITIONS = 'step-definitions';
 
 @Component({
-    moduleId: module.id,
     selector: 'tractor-file-tree-actions',
     templateUrl: 'file-tree-actions.component.html',
-    styleUrls: ['file-tree-actions.component.css'],
-    directives: [ButtonComponent],
-    providers: [FILE_TYPES_PROVIDERS]
+    styleUrls: ['file-tree-actions.component.scss'],
 })
 export class FileTreeActionsComponent implements OnInit {
     @Input() public item: FileStructureItem;

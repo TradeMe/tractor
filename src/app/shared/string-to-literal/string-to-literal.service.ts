@@ -4,10 +4,10 @@
 import { Injectable } from '@angular/core';
 
 // Constants:
-const FALSE: string = 'false';
-const NAN: string = 'NaN';
-const NULL: string = 'null';
-const TRUE: string = 'true';
+const FALSE = 'false';
+const NAN = 'NaN';
+const NULL = 'null';
+const TRUE = 'true';
 
 @Injectable()
 export class StringToLiteralService {
@@ -50,11 +50,7 @@ export class StringToLiteralService {
     }
 }
 
-export const STRING_TO_LITERAL_PROVIDERS = [
-    StringToLiteralService
-];
-
 // TODO: Use angular utilities:
 function isNumber(obj: any): boolean {
-    return typeof obj === "number";
+    return typeof obj === 'number';
 }

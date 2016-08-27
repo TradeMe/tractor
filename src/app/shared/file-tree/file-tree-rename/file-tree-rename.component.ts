@@ -9,19 +9,15 @@ import * as path from 'path';
 // Dependencies:
 import { FileStructureItem } from '../../file-structure/file-structure-item.interface';
 import { FileStructureService } from '../../file-structure/file-structure.service';
-import { FileTypesService, FILE_TYPES_PROVIDERS } from '../../file-types/file-types.service';
-import { FocusOnDirective } from '../../focus-on/focus-on.directive';
+import { FileTypesService } from '../../file-types/file-types.service';
 
 // Constants:
 const ENTER_KEY_CODE = 13;
 
 @Component({
-    moduleId: module.id,
     selector: 'tractor-file-tree-rename',
     templateUrl: 'file-tree-rename.component.html',
-    styleUrls: ['file-tree-rename.component.css'],
-    directives: [FocusOnDirective],
-    providers: [FILE_TYPES_PROVIDERS]
+    styleUrls: ['file-tree-rename.component.scss']
 })
 export class FileTreeRenameComponent implements OnInit {
     @Input() public item: FileStructureItem;
@@ -72,7 +68,7 @@ export class FileTreeRenameComponent implements OnInit {
             let oldName = item.previousName;
             let newName = item.name;
 
-            let options = { directoryPath, oldName, newName }
+            let options = { directoryPath, oldName, newName };
 
             let isDirectory = !!item.isDirectory;
             if (isDirectory) {

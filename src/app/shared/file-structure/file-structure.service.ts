@@ -12,10 +12,9 @@ import { createJSONHeaders, createSearchParams, handleResponse } from '../utilit
 import { Directory } from './directory.interface';
 import { FileStructure } from './file-structure.interface';
 import { FileStructureItem } from './file-structure-item.interface';
-// import MockDataParserService from '../../features/MockDataEditor/Services/MockDataParserService';
-import { PersistentStateService, PERSISTENT_STATE_PROVIDERS } from '../persistent-state/persistent-state.service';
-import { PageObjectParserService, PAGE_OBJECT_PARSER_PROVIDERS } from '../../+page-objects/page-object/parser.service';
-import { Parser } from '../parser/parser.interface';
+import { MockDataParserService } from '../../features/mock-data/mock-data/parser.service';
+import { PersistentStateService } from '../persistent-state/persistent-state.service';
+import { PageObjectParserService } from '../../features/page-objects/page-object/parser.service';
 
 // Constants:
 const OPEN_DIRECTORIES = 'OpenDirectories';
@@ -28,11 +27,9 @@ export class FileStructureService {
     constructor (
         private http: Http,
         private pageObjectParserService: PageObjectParserService,
-        // mockDataParserService,
+        private mockDataParserService: MockDataParserService,
         private persistentStateService: PersistentStateService
-    ) {
-        // this.mockDataParserService = mockDataParserService;
-    }
+    ) { }
 
     public getFileStructure (type: string): void {
         this.updateFileStructure(this.http.get(`http://localhost:4000/${type}/file-structure`));
@@ -152,9 +149,3 @@ export class FileStructureService {
         .subscribe(() => { debugger; }, () => { debugger; });
     }
 }
-
-export const FILE_STRUCTURE_PROVIDERS = [
-    FileStructureService,
-    PERSISTENT_STATE_PROVIDERS,
-    PAGE_OBJECT_PARSER_PROVIDERS
-];

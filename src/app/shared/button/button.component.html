@@ -1,5 +1,7 @@
 <button
+    title="{{ label }}"
     type="button"
+    [ngClass]="classes"
     (click)="click">
     <span>{{ label }}</span>
 </button>

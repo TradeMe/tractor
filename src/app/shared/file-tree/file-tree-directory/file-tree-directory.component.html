@@ -36,7 +36,7 @@
         *ngFor="let directory of directory?.directories"
         tractorDropFile
         [directory]="directory"
-        [onDrop]="editFilePath">
+        [onDrop]="editFilePath()">
 
         <tractor-file-tree-directory
             [directory]="directory">

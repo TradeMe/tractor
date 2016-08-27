@@ -1,13 +1,18 @@
-import { Component, Input, Output } from '@angular/core';
+'use strict';
+
+// Angular:
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-  moduleId: module.id,
-  selector: 'tractor-select',
-  templateUrl: 'select.component.html',
-  styleUrls: ['select.component.css']
+    selector: 'tractor-select',
+    templateUrl: 'select.component.html',
+    styleUrls: ['select.component.scss']
 })
 export class SelectComponent {
+    @Input() public display: string;
     @Input() public label: string;
-    @Input() @Output() public model: string;
+    @Input() public model: string;
     @Input() public options: Array<string>;
+
+    @Output() modelChange: EventEmitter<string> = new EventEmitter<string>();
 }

@@ -8,10 +8,9 @@ import { Observer } from 'rxjs/rx';
 import { ButtonComponent } from '../button/button.component';
 
 @Component({
-    moduleId: module.id,
     selector: 'tractor-confirm',
     templateUrl: 'confirm.component.html',
-    styleUrls: ['confirm.component.css'],
+    styleUrls: ['confirm.component.scss'],
     directives: [ButtonComponent]
 })
 export class ConfirmComponent {
