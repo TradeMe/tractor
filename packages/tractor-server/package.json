@@ -1,6 +1,6 @@
 {
   "name": "tractor-server",
-  "version": "0.9.0-beta.0",
+  "version": "0.9.0-beta.4",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -10,6 +10,7 @@
     "url": "https://github.com/phenomnomnominal/tractor-server/issues",
     "email": "craigspence0@gmail.com"
   },
+  "main": "dist/index.js",
   "watch": {
     "lint": "src/**/*.js",
     "test": "src/**/*.js"
@@ -28,15 +29,15 @@
   },
   "devDependencies": {
     "babel-cli": "6.14.0",
-    "babel-core": "^6.14.0",
+    "babel-core": "6.14.0",
     "babel-eslint": "6.1.2",
-    "babel-preset-es2015": "^6.14.0",
+    "babel-preset-es2015": "6.14.0",
     "babel-preset-stage-0": "6.5.0",
     "babel-register": "6.14.0",
     "chai": "3.5.0",
     "dedent": "0.6.0",
     "dirty-chai": "1.2.2",
-    "eslint": "^3.4.0",
+    "eslint": "3.4.0",
     "isparta": "4.0.0",
     "istanbul": "1.0.0-alpha.2",
     "mocha": "3.0.2",
@@ -50,6 +51,7 @@
     "body-parser": "1.15.2",
     "change-case": "3.0.0",
     "cors": "2.8.0",
+    "escodegen": "1.8.1",
     "esprima": "2.7.3",
     "esquery": "0.4.0",
     "estemplate": "0.5.1",

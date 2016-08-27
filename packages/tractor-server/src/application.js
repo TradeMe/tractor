@@ -5,7 +5,7 @@ import { config } from './config';
 
 // Utilities:
 import log from 'npmlog';
-import { join, resolve } from 'path';
+import { dirname } from 'path';
 
 // Dependencies:
 import bodyParser from 'body-parser';
@@ -13,6 +13,9 @@ import cors from 'cors';
 import express from 'express';
 import http from 'http';
 import io from 'socket.io';
+
+// Errors:
+import TractorError from './errors/TractorError';
 
 // Endpoints:
 import copyFile from './api/copy-file';
@@ -47,7 +50,16 @@ function init () {
     /* eslint-enable new-cap */
     let sockets = io(server);
 
-    application.use(express.static(resolve(__dirname, '../www')));
+    let indexHtml;
+    let dir;
+    try {
+        indexHtml = require.resolve('tractor-client');
+        dir = dirname(indexHtml);
+    } catch (e) {
+        throw new TractorError('"tractor-client" is not installed.');
+    }
+
+    application.use(express.static(dir));
 
     application.use(bodyParser.json());
     application.use(bodyParser.urlencoded({
@@ -72,7 +84,7 @@ function init () {
     application.get('/config', getConfig.handler);
 
     application.get('*', (request, response) => {
-        response.sendFile(join(__dirname, '../www', 'index.html'));
+        response.sendFile(indexHtml);
     });
 
     sockets.of('/run-protractor')
