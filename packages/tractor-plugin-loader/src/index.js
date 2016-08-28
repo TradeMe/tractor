@@ -16,7 +16,7 @@ export function getPluginDescriptions () {
 }
 
 export function getPlugins () {
-    return plugins.map(plugin => plugin.plugin);
+    return plugins;
 }
 
 function loadPlugins () {
@@ -29,6 +29,7 @@ function loadPlugins () {
             pluginExport = require(pluginName);
             pluginExport = pluginExport.default ? pluginExport.default : pluginExport;
             pluginExport.name = pluginName;
+            return pluginExport;
         } catch (e) {
             throw new Error(`could not require ${pluginName}`);
         }
@@ -47,10 +48,16 @@ function loadPlugins () {
 
 function getInstalledPluginNames () {
     let ls = childProcess.spawnSync('npm', ['ls', '--depth=0', '--parseable']);
-    let errorText = ls.stderr.toString().trim();
+    let errors = ls.stderr.toString().trim().split(os.EOL);
 
-    if (errorText && !errorText.startsWith('npm ERR! extraneous')) {
-        throw new Error(errorText);
+    errors = errors
+    .filter((error) => {
+        return !(error.startsWith('npm ERR! extraneous') || error.startsWith('npm ERR! peer dep missing'));
+    });
+
+    if (errors.length) {
+        let [firstError] = errors;
+        throw new Error(firstError);
     }
 
     let allModulePaths = ls.stdout.toString().trim().split(os.EOL);
