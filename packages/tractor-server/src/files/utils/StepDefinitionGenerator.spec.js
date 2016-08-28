@@ -70,7 +70,7 @@ describe('server/utils: StepDefinitionGenerator:', () => {
                 });
             `);
 
-            sinon.stub(childProcess, 'execAsync').returns(Promise.all([Promise.resolve(result)]));
+            sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(result));
             sinon.stub(directory, 'addFile');
             sinon.stub(fileStructure.structure, 'getDirectory').returns(directory);
             sinon.stub(StepDefinitionFile.prototype, 'save').returns(Promise.resolve());
@@ -122,7 +122,7 @@ describe('server/utils: StepDefinitionGenerator:', () => {
                 });
             `);
 
-            sinon.stub(childProcess, 'execAsync').returns(Promise.all([Promise.resolve(result)]));
+            sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(result));
             sinon.stub(directory, 'addFile');
             sinon.stub(fileStructure.structure, 'getDirectory').returns(directory);
             sinon.stub(StepDefinitionFile.prototype, 'save').returns(Promise.resolve());
@@ -169,7 +169,7 @@ describe('server/utils: StepDefinitionGenerator:', () => {
                 });
             `);
 
-            sinon.stub(childProcess, 'execAsync').returns(Promise.all([Promise.resolve(result)]));
+            sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(result));
             sinon.stub(directory, 'addFile');
             sinon.stub(fileStructure.structure, 'getDirectory').returns(directory);
             sinon.stub(StepDefinitionFile.prototype, 'save').returns(Promise.resolve());
@@ -216,7 +216,7 @@ describe('server/utils: StepDefinitionGenerator:', () => {
                 });
             `);
 
-            sinon.stub(childProcess, 'execAsync').returns(Promise.all([Promise.resolve(result)]));
+            sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(result));
             sinon.stub(directory, 'addFile');
             sinon.stub(fileStructure.structure, 'getDirectory').returns(directory);
             sinon.stub(StepDefinitionFile.prototype, 'save').returns(Promise.resolve());
@@ -263,7 +263,7 @@ describe('server/utils: StepDefinitionGenerator:', () => {
                 });
             `);
 
-            sinon.stub(childProcess, 'execAsync').returns(Promise.all([Promise.resolve(result)]));
+            sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(result));
             sinon.stub(directory, 'addFile');
             sinon.stub(fileStructure.structure, 'getDirectory').returns(directory);
             sinon.stub(StepDefinitionFile.prototype, 'save').returns(Promise.resolve());
@@ -310,7 +310,7 @@ describe('server/utils: StepDefinitionGenerator:', () => {
                 });
             `);
 
-            sinon.stub(childProcess, 'execAsync').returns(Promise.all([Promise.resolve(result)]));
+            sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(result));
             sinon.stub(directory, 'addFile');
             sinon.stub(fileStructure.structure, 'getDirectory').returns(directory);
             sinon.stub(StepDefinitionFile.prototype, 'save').returns(Promise.resolve());
@@ -357,7 +357,7 @@ describe('server/utils: StepDefinitionGenerator:', () => {
                 });
             `);
 
-            sinon.stub(childProcess, 'execAsync').returns(Promise.all([Promise.resolve(result)]));
+            sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(result));
             sinon.stub(directory, 'addFile');
             sinon.stub(fileStructure.structure, 'getDirectory').returns(directory);
             sinon.stub(StepDefinitionFile.prototype, 'save').returns(Promise.resolve());
@@ -409,7 +409,7 @@ describe('server/utils: StepDefinitionGenerator:', () => {
 
             let oldAllFiles = fileStructure.allFiles;
             fileStructure.allFiles = [existingFile];
-            sinon.stub(childProcess, 'execAsync').returns(Promise.all([Promise.resolve(result)]));
+            sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(result));
             sinon.stub(fileStructure.structure, 'getDirectory').returns(directory);
             sinon.stub(StepDefinitionFile.prototype, 'save').returns(Promise.resolve());
 

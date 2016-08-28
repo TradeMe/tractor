@@ -25,6 +25,7 @@ import editItemPath from './api/edit-item-path';
 import getConfig from './api/get-config';
 import getFileStructure from './api/get-file-structure';
 import getPath from './api/get-path';
+import getPlugins from './api/get-plugins';
 import openFile from './api/open-file';
 import saveFile from './api/save-file';
 import socketConnect from './sockets/connect';
@@ -82,6 +83,7 @@ function init () {
     application.delete('/:type/file', deleteItem.handler);
 
     application.get('/config', getConfig.handler);
+    application.get('/plugins', getPlugins.handler);
 
     application.get('*', (request, response) => {
         response.sendFile(indexHtml);

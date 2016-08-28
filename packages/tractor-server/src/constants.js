@@ -23,7 +23,7 @@ export default {
         [STEP_DEFINITIONS]: '.step.js'
     },
 
-    CUCUMBER_COMMAND: `node ${join('node_modules', 'cucumber', 'bin', 'cucumber')} `,
+    CUCUMBER_COMMAND: `node ${join('node_modules', 'cucumber', 'bin', 'cucumber')}`,
 
     FEATURE_NEWLINE: /\n/g,
 

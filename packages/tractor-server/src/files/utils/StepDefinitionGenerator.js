@@ -32,7 +32,7 @@ export default class StepDefinitionGenerator {
         let stepNames = extractStepNames(content);
 
         return childProcess.execAsync(`${constants.CUCUMBER_COMMAND} "${path}"`)
-        .spread((result) => {
+        .then((result) => {
             return generateStepDefinitionFiles(stepNames, result);
         });
     }
