@@ -9,7 +9,9 @@ const TO_INSTALL = [
     'cucumber@0.7.0',
     'cucumber-html-report@0.2.5',
     'httpbackend@1.2.1',
-    'protractor@2.5.1'
+    'protractor@2.5.1',
+    'tractor-plugin-browser@0.1.0-beta.0',
+    'tractor-plugin-loader@0.1.0-beta.0'
 ];
 
 // Utilities:
