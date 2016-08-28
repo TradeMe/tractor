@@ -21,7 +21,7 @@ var ControlPanelController = (function () {
 
         this.environments = config.environments;
 
-        var enviroment;
+        var environment;
         Object.defineProperty(this, 'environment', {
             get: function () {
                 return environment;
