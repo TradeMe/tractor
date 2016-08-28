@@ -12,6 +12,11 @@ var CustomWorld = (function () {
         chai.use(chaiAsPromised);
         global.expect = chai.expect;
         global.Promise = require('bluebird');
+
+        tractorPluginLoader.getPlugins()
+        .map(function (plugin) {
+            global[plugin.description.variableName] = plugin.plugin(global.browser);
+        });
     };
 
     return CustomWorld;
