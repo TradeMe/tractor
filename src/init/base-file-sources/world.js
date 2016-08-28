@@ -2,6 +2,7 @@
 
 /* eslint-disable no-var, prefer-arrow-callback */
 var HttpBackend = require('httpbackend');
+var tractorPluginLoader = require('tractor-plugin-loader');
 
 var CustomWorld = (function () {
     var chai = require('chai');
