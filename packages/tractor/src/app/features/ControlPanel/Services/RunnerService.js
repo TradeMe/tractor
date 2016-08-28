@@ -16,9 +16,10 @@ var RunnerService = function RunnerService (
         runProtractor: runProtractor
     };
 
-    
-    function runProtractor (options) {        
-        options.baseUrl =  this.baseUrl;
+
+    function runProtractor (options) {
+        options = options || {};
+        options.baseUrl = this.baseUrl;
         var connection = realTimeService.connect('run-protractor', {
             'protractor-out': notify,
             'protractor-err': notify
@@ -29,7 +30,7 @@ var RunnerService = function RunnerService (
     function notify (data) {
         notifierService[data.type](data.message);
     }
-    
+
 };
 
 ControlPanel.service('runnerService', RunnerService);
