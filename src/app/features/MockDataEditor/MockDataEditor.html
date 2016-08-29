@@ -1,0 +1,42 @@
+<div ng-if="mockDataEditor.fileModel">
+    <tractor-file-tree model="mockDataEditor" type="mock-data"></tractor-file-tree>
+    <tractor-panel-handle panel-name="mock-data-file-tree"></tractor-panel-handle>
+    <form class="file" name="mockDataEditor.fileEditor" novalidate
+        ng-submit="mockDataEditor.showErrors() && mockDataEditor.saveFile()">
+        <section class="file-options">
+            <h1 class="file-options__name">{{ mockDataEditor.fileModel.name }}</h1>
+            <div>
+                <tractor-text-input class="file-options__name-input"
+                    ng-if="!mockDataEditor.fileModel.isSaved"
+                    form="file-editor"
+                    label="Name"
+                    model="mockDataEditor.fileModel"
+                    example="Data"
+                    validate-file-name>
+                </tractor-text-input>
+            </div>
+            <div class="file-options__file-actions">
+                <tractor-confirm-dialog trigger="mockDataEditor.confirmOverWrite">
+                    <p>This will overwrite "{{ mockDataEditor.fileModel.name }}". Continue?</p>
+                </tractor-confirm-dialog>
+                <tractor-submit class="file-options__save-file"
+                    action="Save mock data file">
+                </tractor-submit>
+                <tractor-action class="file-options__save-file"
+                    model="mockDataEditor"
+                    action="New file">
+                </tractor-action>
+            </div>
+        </section>
+
+        <section class="file-editor">
+            <section class="file-editor__container">
+                <h2>JSON data:</h2>
+                <textarea
+                    ng-model="mockDataEditor.fileModel.json"
+                    required>
+                </textarea>
+            </section>
+        </section>
+    </form>
+</div>

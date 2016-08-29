@@ -1,0 +1,64 @@
+@import '../../node_modules/normalize.css/normalize.css';
+@import '../../node_modules/ng-sortable/dist/ng-sortable.css';
+
+@import 'fonts';
+@import 'constants';
+
+@import 'file-editor';
+@import 'file-options';
+@import 'file-tree';
+@import 'header';
+@import 'dialogs';
+@import 'notifier';
+@import 'sortable';
+@import 'typography';
+@import 'tractor-action';
+@import 'tractor-input';
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    min-height: 800px;
+    min-width: 1200px;
+    height: 100%;
+    width: 100%;
+}
+
+body div[ui-view], main {
+    width: 100%;
+}
+
+main {
+    height: 86.125%;
+}
+
+main > div {
+    height: 100%;
+}
+
+.fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.hidden {
+    display: none !important;
+}
+
+tractor-panel-handle {
+    float: left;
+    width: 0.25%;
+    height: 100%;
+    background: rgba(205, 205, 205, 1);
+    cursor: col-resize;
+}
+
+.resizing {
+    user-select: none;
+    cursor: col-resize;
+}

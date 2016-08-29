@@ -1,0 +1,45 @@
+.file-options {
+    font-size: 0;
+    height: 10%;
+    background: rgba(225, 225, 225, 1);
+}
+
+.file-options__name {
+    display: inline-block;
+    vertical-align: top;
+
+    padding: $standard-spacing;
+    margin: $standard-spacing 0;
+
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.file-options > div {
+    display: inline-block;
+    margin-top: 0.5rem;
+    height: 4rem;
+    padding: 0 0.25rem;
+}
+
+.file-options__file-actions {
+    float: right;
+
+    & > * {
+        padding: 0 0.25rem;
+    }
+}
+
+.file-options__name-input,
+.file-options__save-file,
+.file-options__new-file {
+    display: table-cell;
+    vertical-align: top;
+}
+
+.file-options__save-file,
+.file-options__new-file {
+    button {
+        margin-top: 1.5rem;
+    }
+}
