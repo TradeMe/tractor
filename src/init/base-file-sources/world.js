@@ -15,7 +15,7 @@ var CustomWorld = (function () {
 
         tractorPluginLoader.getPlugins()
         .map(function (plugin) {
-            global[plugin.description.variableName] = plugin.plugin(global.browser);
+            global[plugin.description.variableName] = plugin.create(global.browser);
         });
     };
 
