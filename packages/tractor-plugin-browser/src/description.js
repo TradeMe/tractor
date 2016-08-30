@@ -1,5 +1,3 @@
-'use strict';
-
 const description = {
     name: 'browser',
     variableName: 'browser',

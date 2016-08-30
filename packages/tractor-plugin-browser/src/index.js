@@ -1,12 +1,2 @@
-'use strict';
-
-import description from './description';
-
-export default {
-    description,
-    plugin
-};
-
-function plugin (browser) {
-    return browser;
-}
+export create from './create';
+export description from './description';
