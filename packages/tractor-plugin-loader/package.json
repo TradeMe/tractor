@@ -1,6 +1,6 @@
 {
   "name": "tractor-plugin-loader",
-  "version": "0.1.0-beta.1",
+  "version": "0.1.0-beta.2",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -42,6 +42,7 @@
     "mocha": "3.0.2",
     "npm-watch": "0.1.6",
     "sinon": "1.17.5",
-    "sinon-chai": "2.8.0"
+    "sinon-chai": "2.8.0",
+    "tractor-config-loader": "0.1.0-beta.0"
   }
 }

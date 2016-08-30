@@ -4,10 +4,12 @@ import path from 'path';
 
 // Dependencies:
 import childProcess from 'child_process';
+import * as tractorConfigLoader from 'tractor-config-loader';
 
 // Constants:
 const TRACTOR_PLUGIN_REGEX = new RegExp(`(tractor-plugin[^${path.sep}]*$)`);
 const TRACTOR_PLUGIN_LOADER = 'tractor-plugin-loader';
+const config = tractorConfigLoader.loadConfig();
 
 let plugins = loadPlugins();
 
@@ -16,7 +18,10 @@ export function getPluginDescriptions () {
 }
 
 export function getPlugins () {
-    return plugins;
+    return plugins.map(plugin => {
+        let create = plugin.create;
+        plugin.create = (browser) => create(browser, config);
+    });
 }
 
 function loadPlugins () {
