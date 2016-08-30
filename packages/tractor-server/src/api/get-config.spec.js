@@ -12,7 +12,7 @@ const expect = chai.expect;
 chai.use(sinonChai);
 
 // Dependencies:
-import * as config from '../config';
+import config from '../config/config';
 
 // Under test:
 import getConfig from './get-config';
@@ -23,15 +23,11 @@ describe('server/api: get-config', () => {
         let response = {
             send: _.noop
         };
-        let oldConfig = config.config;
-        config.config = {};
 
         sinon.stub(response, 'send');
 
         getConfig.handler(request, response);
 
-        expect(response.send).to.have.been.calledWith({});
-
-        config.config = oldConfig;
+        expect(response.send).to.have.been.calledWith(config);
     });
 });

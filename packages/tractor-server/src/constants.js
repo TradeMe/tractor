@@ -29,7 +29,5 @@ export default {
 
     REQUEST_ERROR: 400,
     FILE_NOT_FOUND_ERROR: 404,
-    SERVER_ERROR: 500,
-
-    DEFAULT_PORT: 4000
+    SERVER_ERROR: 500
 };

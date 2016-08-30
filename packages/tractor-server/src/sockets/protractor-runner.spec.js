@@ -2,7 +2,7 @@
 'use strict';
 
 // Constants:
-import { config } from '../config';
+import config from '../config/config';
 const MAGIC_TIMEOUT_NUMBER = 10;
 
 // Utilities:

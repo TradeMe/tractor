@@ -1,6 +1,6 @@
 {
   "name": "tractor-server",
-  "version": "0.9.0-beta.5",
+  "version": "0.9.0-beta.6",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -39,10 +39,8 @@
     "dedent": "0.6.0",
     "dirty-chai": "1.2.2",
     "eslint": "3.4.0",
-    "isparta": "4.0.0",
     "istanbul": "1.0.0-alpha.2",
     "mocha": "3.0.2",
-    "mockery": "1.7.0",
     "npm-watch": "0.1.6",
     "sinon": "1.17.5",
     "sinon-chai": "2.8.0"
@@ -62,6 +60,7 @@
     "npmlog": "4.0.0",
     "socket.io": "1.4.8",
     "stripcolorcodes": "0.1.0",
-    "tractor-plugin-loader": "0.1.0-beta.1"
+    "tractor-config-loader": "0.1.0-beta.0",
+    "tractor-plugin-loader": "0.1.0-beta.2"
   }
 }

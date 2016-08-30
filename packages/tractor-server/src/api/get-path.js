@@ -1,7 +1,7 @@
 'use strict';
 
 // Constants:
-import { config } from '../config';
+import config from '../config/config';
 import constants from '../constants';
 
 // Utilities:

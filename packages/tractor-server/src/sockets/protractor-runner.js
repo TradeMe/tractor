@@ -1,7 +1,7 @@
 'use strict';
 
 // Constants:
-import { config } from '../config';
+import config from '../config/config';
 const PROTRACTOR_PATH = join('node_modules', 'protractor', 'bin', 'protractor');
 const E2E_PATH = join(config.testDirectory, 'protractor.conf.js');
 
