@@ -34,7 +34,7 @@ function loadPlugins () {
     .map(pluginName => {
         let pluginExport;
         try {
-            let modulePath = path.resolve(process.cwd(), 'node_modulues', pluginName);
+            let modulePath = path.resolve(process.cwd(), 'node_modules', pluginName);
             pluginExport = module._load(modulePath);
             pluginExport = pluginExport.default ? pluginExport.default : pluginExport;
             pluginExport.name = pluginName;
