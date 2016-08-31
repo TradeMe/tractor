@@ -1,4 +1,5 @@
 // Utilities:
+import module from 'module';
 import os from 'os';
 import path from 'path';
 
@@ -33,7 +34,8 @@ function loadPlugins () {
     .map(pluginName => {
         let pluginExport;
         try {
-            pluginExport = require(pluginName);
+            let modulePath = path.resolve(process.cwd(), 'node_modulues', pluginName);
+            pluginExport = module._load(modulePath);
             pluginExport = pluginExport.default ? pluginExport.default : pluginExport;
             pluginExport.name = pluginName;
             return pluginExport;
