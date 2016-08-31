@@ -7,6 +7,8 @@ import childProcess from 'child_process';
 import * as tractorConfigLoader from 'tractor-config-loader';
 
 // Constants:
+const NPM_EXTRANEOUS_ERROR = 'npm ERR! extraneous';
+const NPM_PEER_DEP_ERROR = 'npm ERR! peer dep missing';
 const TRACTOR_PLUGIN_REGEX = new RegExp(`(tractor-plugin[^${path.sep}]*$)`);
 const TRACTOR_PLUGIN_LOADER = 'tractor-plugin-loader';
 const config = tractorConfigLoader.loadConfig();
@@ -57,7 +59,7 @@ function getInstalledPluginNames () {
 
     errors = errors
     .filter((error) => {
-        return !(error.startsWith('npm ERR! extraneous') || error.startsWith('npm ERR! peer dep missing'));
+        return error && !(error.startsWith(NPM_EXTRANEOUS_ERROR) || error.startsWith(NPM_PEER_DEP_ERROR));
     });
 
     if (errors.length) {
