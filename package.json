@@ -1,6 +1,6 @@
 {
   "name": "tractor-client",
-  "version": "0.9.0-beta.5",
+  "version": "0.9.0-beta.6",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -64,7 +64,7 @@
     "socket.io": "1.3.7",
     "socket.io-client": "1.3.7",
     "tractor-plugin-browser": "0.1.0-beta.1",
-    "tractor-plugin-loader": "0.1.0-beta.2",
+    "tractor-plugin-loader": "0.1.0-beta.3",
     "vinyl-buffer": "1.0.0",
     "vinyl-source-stream": "1.1.0"
   },
