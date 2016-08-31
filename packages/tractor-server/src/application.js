@@ -1,7 +1,7 @@
 'use strict';
 
 // Constants:
-import config from '../config/config';
+import config from './config/config';
 
 // Utilities:
 import log from 'npmlog';
