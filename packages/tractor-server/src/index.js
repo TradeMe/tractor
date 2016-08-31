@@ -9,4 +9,4 @@ export function start () {
     .then(() => application.start());
 }
 
-export config from '../config/config';
+export config from './config/config';
