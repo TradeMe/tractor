@@ -30,3 +30,4 @@ gulp.task('reload', reload);
 gulp.task('watch', ['reload'], watch);
 
 gulp.task('default', ['fonts', 'images', 'markup', 'styles', 'watch', 'test']);
+gulp.task('build', ['fonts', 'images', 'markup', 'styles', 'test']);

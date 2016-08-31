@@ -1,6 +1,6 @@
 {
   "name": "tractor-client",
-  "version": "0.9.0-beta.6",
+  "version": "0.9.0-beta.7",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -13,6 +13,9 @@
   "license": "MIT",
   "engines": {
     "node": ">=0.10"
+  },
+  "scripts": {
+      "prepublish": "gulp build"
   },
   "main": "dist/index.html",
   "devDependencies": {
