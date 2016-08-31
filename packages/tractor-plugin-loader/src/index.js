@@ -32,26 +32,26 @@ function loadPlugins () {
 
     return pluginNames
     .map(pluginName => {
-        let pluginExport;
+        let plugin;
         try {
             let modulePath = path.resolve(process.cwd(), 'node_modules', pluginName);
-            pluginExport = module._load(modulePath);
-            pluginExport = pluginExport.default ? pluginExport.default : pluginExport;
-            pluginExport.name = pluginName;
-            return pluginExport;
+            plugin = module._load(modulePath);
+            plugin = plugin.default ? plugin.default : plugin;
+            plugin.name = plugin;
+            return plugin;
         } catch (e) {
             throw new Error(`could not require ${pluginName}`);
         }
     })
-    .filter(pluginExport => {
-        let { description, name, plugin } = pluginExport;
+    .filter(plugin => {
+        let { description, name, create } = plugin;
         if (!description) {
             console.error(`'${name}' has no description.`)
         }
-        if (!plugin) {
-            console.error(`'${name}' has no plugin function.`)
+        if (!create) {
+            console.error(`'${name}' has no create function.`)
         }
-        return plugin && description;
+        return create && description;
     });
 }
 
