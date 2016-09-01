@@ -21,10 +21,11 @@ export function getPluginDescriptions () {
 }
 
 export function getPlugins () {
-    return plugins.map(plugin => {
+    plugins.forEach(plugin => {
         let create = plugin.create;
         plugin.create = (browser) => create(browser, config);
     });
+    return plugins;
 }
 
 function loadPlugins () {
@@ -37,7 +38,7 @@ function loadPlugins () {
             let modulePath = path.resolve(process.cwd(), 'node_modules', pluginName);
             plugin = module._load(modulePath);
             plugin = plugin.default ? plugin.default : plugin;
-            plugin.name = plugin;
+            plugin.name = pluginName;
             return plugin;
         } catch (e) {
             throw new Error(`could not require ${pluginName}`);
