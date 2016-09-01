@@ -11,7 +11,7 @@ const TO_INSTALL = [
     'httpbackend@1.2.1',
     'protractor@2.5.1',
     'tractor-plugin-browser@0.1.0-beta.1',
-    'tractor-plugin-loader@0.1.0-beta.8'
+    'tractor-plugin-loader@0.1.0-beta.9'
 ];
 
 // Utilities:
