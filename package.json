@@ -1,6 +1,6 @@
 {
   "name": "tractor",
-  "version": "0.9.0-beta.16",
+  "version": "0.9.0-beta.19",
   "author": "Craig Spence <craig@trademe.co.nz>",
   "repository": {
     "type": "git",
@@ -48,7 +48,7 @@
     "commander": "2.9.0",
     "npmlog": "4.0.0",
     "tractor-client": "0.9.0-beta.9",
-    "tractor-server": "0.9.0-beta.12"
+    "tractor-server": "0.9.0-beta.14"
   },
   "bin": {
     "tractor": "./bin/tractor"
