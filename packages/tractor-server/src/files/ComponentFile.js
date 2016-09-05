@@ -1,5 +1,3 @@
-'use strict';
-
 // Dependencies:
 import JavaScriptFile from './JavaScriptFile';
 

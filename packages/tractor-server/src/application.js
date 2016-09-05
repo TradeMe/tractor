@@ -1,11 +1,11 @@
-'use strict';
-
 // Constants:
 import config from './config/config';
 
 // Utilities:
+import _ from 'lodash';
+import fs from 'fs';
 import log from 'npmlog';
-import { dirname } from 'path';
+import { basename, dirname } from 'path';
 
 // Dependencies:
 import bodyParser from 'body-parser';
@@ -13,9 +13,13 @@ import cors from 'cors';
 import express from 'express';
 import http from 'http';
 import io from 'socket.io';
+import * as tractorPluginLoader from 'tractor-plugin-loader';
+
+// Constants:
+const OVERRIDE_METHODS = ['delete', 'get', 'post', 'push'];
 
 // Errors:
-import TractorError from './errors/TractorError';
+import { TractorError } from 'tractor-error-handler';
 
 // Endpoints:
 import copyFile from './api/copy-file';
@@ -45,22 +49,13 @@ function start () {
 }
 
 function init () {
+    initPlugins();
+
     let application = express();
     /* eslint-disable new-cap */
     let server = http.Server(application);
     /* eslint-enable new-cap */
     let sockets = io(server);
-
-    let indexHtml;
-    let dir;
-    try {
-        indexHtml = require.resolve('tractor-client');
-        dir = dirname(indexHtml);
-    } catch (e) {
-        throw new TractorError('"tractor-client" is not installed.');
-    }
-
-    application.use(express.static(dir));
 
     application.use(bodyParser.json());
     application.use(bodyParser.urlencoded({
@@ -68,6 +63,20 @@ function init () {
     }));
 
     application.use(cors());
+
+    let templatePath;
+    let dir;
+    try {
+        templatePath = require.resolve('tractor-client');
+        dir = dirname(templatePath);
+    } catch (e) {
+        throw new TractorError('"tractor-client" is not installed.');
+    }
+
+    let renderIndex = injectPlugins(application, templatePath);
+
+    application.get('/', renderIndex);
+    application.use(express.static(dir));
 
     application.get('/:type/file-structure', getFileStructure.handler);
 
@@ -85,9 +94,9 @@ function init () {
     application.get('/config', getConfig.handler);
     application.get('/plugins', getPlugins.handler);
 
-    application.get('*', (request, response) => {
-        response.sendFile(indexHtml);
-    });
+    addPluginEndpoints(application);
+
+    application.get('*', renderIndex);
 
     sockets.of('/run-protractor')
     .on('connection', socketConnect);
@@ -95,4 +104,47 @@ function init () {
     sockets.of('/server-status');
 
     return server;
+}
+
+function initPlugins () {
+    let inits = tractorPluginLoader.getPluginInits();
+    inits.forEach(init => init());
+}
+
+function injectPlugins (application, templatePath) {
+    let plugins = tractorPluginLoader.getPlugins().filter(plugin => plugin.hasUI);
+
+    plugins.forEach(plugin => application.use(express.static(dirname(plugin.script))));
+
+    return (request, response) => {
+        let template = _.template(fs.readFileSync(templatePath, 'utf8'));
+        let scripts = plugins.map(plugin => basename(plugin.script));
+        let rendered = template({ scripts });
+        response.header('Content-Type', 'text/html');
+        response.send(rendered);
+    }
+}
+
+function addPluginEndpoints (application) {
+    let plugins = tractorPluginLoader.getPlugins();
+
+    plugins.forEach(plugin => {
+        let { url } = plugin.description;
+
+        let originals = OVERRIDE_METHODS.map(method => {
+            let original = application[method];
+            application[method] = ([...args]) => {
+                let [path, ...callbacks] = args;
+                path = `/${url}${path}`;
+                return original.call(application, path, ...callbacks);
+            }
+            return original;
+        });
+
+        plugin.listen(application);
+
+        OVERRIDE_METHODS.map((method, index) => {
+            application.method = originals[index];
+        });
+    });
 }

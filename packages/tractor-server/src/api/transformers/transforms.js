@@ -1,5 +1,3 @@
-'use strict';
-
 // Utilities:
 import _ from 'lodash';
 import Promise from 'bluebird';

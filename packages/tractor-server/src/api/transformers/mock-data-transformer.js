@@ -1,5 +1,3 @@
-'use strict';
-
 // Dependencies:
 import { camel } from 'change-case';
 import transforms from './transforms';

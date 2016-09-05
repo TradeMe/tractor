@@ -1,5 +1,4 @@
 /* global describe:true, it:true */
-'use strict';
 
 // Constants:
 import constants from '../constants';
@@ -17,11 +16,10 @@ chai.use(dirtyChai);
 chai.use(sinonChai);
 
 // Dependencies:
-import errorHandler from '../errors/error-handler';
 import fileStructure from '../file-structure';
 import getFileStructure from './get-file-structure';
 import path from 'path';
-import TractorError from '../errors/TractorError';
+import { errorHandler, TractorError } from 'tractor-error-handler';
 
 // Under test:
 import saveFile from './save-file';

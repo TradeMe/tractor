@@ -1,5 +1,3 @@
-'use strict';
-
 // Dependencies:
 import application from './application';
 import * as fileStructure from './file-structure';

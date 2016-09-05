@@ -1,5 +1,3 @@
-'use strict';
-
 // Dependencies:
 import File from './File';
 

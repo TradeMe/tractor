@@ -1,5 +1,3 @@
-'use strict';
-
 // Constants:
 const FILE_NUMBER_REGEX = /\((\d*)\)$/;
 
@@ -16,8 +14,7 @@ import getFileStructure from './get-file-structure';
 import transformers from './transformers';
 
 // Errors:
-import errorHandler from '../errors/error-handler';
-import TractorError from '../errors/TractorError';
+import { errorHandler, TractorError } from 'tractor-error-handler';
 
 export default { handler };
 

@@ -1,5 +1,3 @@
-'use strict';
-
 // Constants:
 import config from '../config/config';
 import constants from '../constants';
@@ -17,7 +15,7 @@ import files from '../files';
 import MockDataFile from '../files/MockDataFile';
 
 // Errors:
-import TractorError from '../errors/TractorError';
+import { TractorError } from 'tractor-error-handler';
 
 export default class FileStructure {
     constructor () {

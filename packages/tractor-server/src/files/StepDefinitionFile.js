@@ -1,5 +1,3 @@
-'use strict';
-
 // Constants:
 const REQUIRE_QUERY = 'CallExpression[callee.name="require"] Literal';
 

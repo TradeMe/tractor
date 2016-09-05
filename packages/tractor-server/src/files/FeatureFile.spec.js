@@ -1,5 +1,4 @@
 /* global describe:true, it:true */
-'use strict';
 
 // Constants:
 import constants from '../constants';
@@ -24,7 +23,7 @@ import gherkin from 'gherkin';
 import os from 'os';
 import path from 'path';
 import StepDefinitionGenerator from './utils/StepDefinitionGenerator';
-import TractorError from '../errors/TractorError';
+import { TractorError } from 'tractor-error-handler';
 
 // Under test:
 import FeatureFile from './FeatureFile';

@@ -1,5 +1,4 @@
 /* global describe:true, it:true */
-'use strict';
 
 // Constants:
 import constants from '../constants';
@@ -22,7 +21,7 @@ import escodegen from 'escodegen';
 import esprima from 'esprima';
 import File from './File';
 import path from 'path';
-import TractorError from '../errors/TractorError';
+import { TractorError } from 'tractor-error-handler';
 
 // Under test:
 import JavaScriptFile from './JavaScriptFile';

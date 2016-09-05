@@ -1,5 +1,3 @@
-'use strict';
-
 // Constants:
 import * as tractorPluginLoader from 'tractor-plugin-loader';
 

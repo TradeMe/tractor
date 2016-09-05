@@ -1,5 +1,3 @@
-'use strict';
-
 // Constants:
 import constants from '../constants';
 

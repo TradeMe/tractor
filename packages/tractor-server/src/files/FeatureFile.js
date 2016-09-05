@@ -1,5 +1,3 @@
-'use strict';
-
 // Constants:
 import constants from '../constants';
 
@@ -13,7 +11,7 @@ import gherkin from 'gherkin';
 import StepDefinitionGenerator from './utils/StepDefinitionGenerator';
 
 // Errors:
-import TractorError from '../errors/TractorError';
+import { TractorError } from 'tractor-error-handler';
 
 export default class FeatureFile extends File {
     read () {

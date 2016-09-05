@@ -1,5 +1,3 @@
-'use strict';
-
 // Dependencies:
 import fileStructure from '../file-structure';
 

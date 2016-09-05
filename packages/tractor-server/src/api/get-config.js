@@ -1,5 +1,3 @@
-'use strict';
-
 // Constants:
 import config from '../config/config';
 

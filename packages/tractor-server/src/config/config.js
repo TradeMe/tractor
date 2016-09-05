@@ -1,5 +1,3 @@
-'use strict';
-
 // Dependencies:
 import * as tractorConfigLoader from 'tractor-config-loader';
 

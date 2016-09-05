@@ -1,5 +1,3 @@
-'use strict';
-
 // Constants:
 import constants from '../../constants';
 const IN_ORDER_TO = /^In order to /;

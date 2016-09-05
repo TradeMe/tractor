@@ -1,5 +1,4 @@
 /* global describe:true, it:true */
-'use strict';
 
 // Constants:
 import constants from '../constants';

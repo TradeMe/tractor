@@ -1,5 +1,4 @@
 /* global describe:true, it:true */
-'use strict';
 
 // Utilities:
 import chai from 'chai';

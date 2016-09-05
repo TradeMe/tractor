@@ -1,5 +1,3 @@
-'use strict';
-
 // Constants:
 import constants from '../../constants';
 const GIVEN_WHEN_THEN_REGEX = /^(Given|When|Then)/;

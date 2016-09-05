@@ -1,5 +1,3 @@
-'use strict';
-
 // Constants:
 const COMPONENTS = 'components';
 const FEATURES = 'features';
@@ -9,7 +7,7 @@ const STEP_DEFINITIONS = 'step-definitions';
 // Utilities:
 import { join } from 'path';
 
-export default {
+const CONSTANTS = {
     COMPONENTS,
     FEATURES,
     MOCK_DATA,
@@ -31,3 +29,5 @@ export default {
     FILE_NOT_FOUND_ERROR: 404,
     SERVER_ERROR: 500
 };
+
+export default CONSTANTS;

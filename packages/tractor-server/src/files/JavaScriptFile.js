@@ -1,5 +1,3 @@
-'use strict';
-
 // Constants:
 import constants from '../constants';
 const LEADING_SLASH_REGEX = /^\//;
@@ -17,7 +15,7 @@ import esprima from 'esprima';
 import File from './File';
 
 // Errors:
-import TractorError from '../errors/TractorError';
+import { TractorError } from 'tractor-error-handler';
 
 export default class JavaScriptFile extends File {
     read () {

@@ -1,5 +1,3 @@
-'use strict';
-
 // Utilities:
 import Promise from 'bluebird';
 const fs = Promise.promisifyAll(require('fs'));

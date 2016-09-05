@@ -1,5 +1,3 @@
-'use strict';
-
 // Dependencies:
 import * as protractorRunner from './protractor-runner';
 

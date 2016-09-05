@@ -1,5 +1,4 @@
 /* global describe:true, it:true */
-'use strict';
 
 // Constants:
 import constants from '../constants';
@@ -19,12 +18,11 @@ chai.use(sinonChai);
 
 // Dependencies:
 import Directory from '../file-structure/Directory';
-import errorHandler from '../errors/error-handler';
 import fileStructure from '../file-structure';
 import File from '../files/File';
 import path from 'path';
 import transformers from './transformers';
-import TractorError from '../errors/TractorError';
+import { errorHandler, TractorError } from 'tractor-error-handler';
 
 // Under test:
 import editItemPath from './edit-item-path';

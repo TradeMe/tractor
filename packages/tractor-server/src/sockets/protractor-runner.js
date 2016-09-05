@@ -1,5 +1,3 @@
-'use strict';
-
 // Constants:
 import config from '../config/config';
 const PROTRACTOR_PATH = join('node_modules', 'protractor', 'bin', 'protractor');
@@ -16,7 +14,7 @@ import { join } from 'path';
 import stripcolorcodes from 'stripcolorcodes';
 
 // Errors:
-import TractorError from '../errors/TractorError';
+import { TractorError } from 'tractor-error-handler';
 
 export function run (socket, runOptions) {
     if (module.exports.running) {
