@@ -189,7 +189,7 @@
                 <h2>Active mock data:</h2>
                 <ul>
                     <li ng-repeat="mockData in stepDefinitionEditor.fileModel.mockDataInstances">                     
-                        <span> {{ mockData.mockData.name }} </span>                        
+                        <span ui-sref="tractor.mock-data({file: mockData.relativeLink})"> {{ mockData.mockData.name }} </span>
                         <tractor-action
                             model="stepDefinitionEditor.fileModel"
                             action="Remove mock"
