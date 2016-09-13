@@ -188,8 +188,10 @@
                 ng-if="stepDefinitionEditor.hasMockData">
                 <h2>Active mock data:</h2>
                 <ul>
-                    <li ng-repeat="mockData in stepDefinitionEditor.fileModel.mockDataInstances">                     
-                        <span> {{ mockData.mockData.name }} </span>                        
+                    <li ng-repeat="mockData in stepDefinitionEditor.fileModel.mockDataInstances">
+                        <a ng-href=" {{ mockData.relativeLink }} " target="_blank" title="Go Edit This MockData">
+                            <span> {{ mockData.mockData.name }} </span>
+                        </a>
                         <tractor-action
                             model="stepDefinitionEditor.fileModel"
                             action="Remove mock"

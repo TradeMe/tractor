@@ -46,8 +46,12 @@ var createMockDataInstanceModelConstructor = function (
                 get: function () {
                     return toAST.call(this);
                 }
+            },
+            relativeLink: {
+                get: function () {
+                    return getRelativePath.call(this).replace(/\.mock\.json$/, '');
+                }
             }
-
         });
     };
 
