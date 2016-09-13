@@ -1,4 +1,4 @@
-# tractor - v0.8.1
+# tractor - v0.8.4
 
 A UI around [Gherkin](http://cukes.info/gherkin.html) & [Protractor](http://angular.github.io/protractor/) to help write E2E tests for [Angular](https://angularjs.org/) applications without needing to know JavaScript.
 

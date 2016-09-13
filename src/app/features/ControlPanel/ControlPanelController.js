@@ -19,10 +19,10 @@ var ControlPanelController = (function () {
         this.runnerService = runnerService;
         this.serverStatusService = serverStatusService;
 
-        this.environments = config.environments;     
+        this.environments = config.environments;
 
-        var environment = _.first(this.environments);
-        Object.defineProperty(this, 'environment' , {            
+        var environment;
+        Object.defineProperty(this, 'environment', {
             get: function () {
                 return environment;
             },
@@ -31,12 +31,11 @@ var ControlPanelController = (function () {
                 runnerService.baseUrl = environment;
             }
         });
+        this.environment = _.first(this.environments);
     }
-    
-    ControlPanelController.prototype.runProtractor = function () {                       
-         this.runnerService.runProtractor({
-             baseUrl: this.environment
-         });
+
+    ControlPanelController.prototype.runProtractor = function () {
+        this.runnerService.runProtractor();
     };
 
     ControlPanelController.prototype.isServerRunning = function () {
