@@ -34,7 +34,6 @@ var FileEditorController = (function () {
             this.fileService.openFile({ path: filePath.path }, this.availableComponents, this.availableMockData)
             .then(function (file) {
                 this.fileModel = file;
-                this.fileModel.fileStructure = fileStructure;
             }.bind(this));
         } else if (FileModel && !this.fileModel) {
             this.newFile();
@@ -80,7 +79,7 @@ var FileEditorController = (function () {
         }.bind(this))
         .then(function (fileStructure) {
             this.fileStructure = fileStructure;
-            this.fileService.openFile({ path }, this.availableComponents, this.availableMockData)
+            this.fileService.openFile({ path: path }, this.availableComponents, this.availableMockData)
             .then(function (file) {
                 this.fileModel = file;
             }.bind(this));
