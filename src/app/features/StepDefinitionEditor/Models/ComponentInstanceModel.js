@@ -46,7 +46,13 @@ var createComponentInstanceModelConstructor = function (
                 get: function () {
                     return toAST.call(this);
                 }
-            }         
+            },
+            path: {
+                get: function () {
+                    var relativePath = getRelativePath.call(this);
+                    return relativePath.replace(/\.\.\//g,'').replace(/components\//, '').replace(/\.component\.js$/, '');  //replace all ../ and components/ from the relativePath to get directory path for mockData
+                }
+            }
         });
     };
 

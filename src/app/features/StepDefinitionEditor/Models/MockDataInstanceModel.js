@@ -46,8 +46,13 @@ var createMockDataInstanceModelConstructor = function (
                 get: function () {
                     return toAST.call(this);
                 }
+            },
+            path: {
+                get: function () {
+                    var relativePath = getRelativePath.call(this);
+                    return relativePath.replace(/\.\.\//g,'').replace(/mock\-data\//, '').replace(/\.mock\.json$/, '');  //replace all ../ and mock-data from the relativePath to get directory path for mockData
+                }
             }
-
         });
     };
 
