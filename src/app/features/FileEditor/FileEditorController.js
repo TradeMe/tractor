@@ -3,6 +3,7 @@
 // Utilities:
 var _ = require('lodash');
 var Promise = require('bluebird');
+var path = require('path');
 
 var FileEditorController = (function () {
     var FileEditorController = function FileEditorController (
@@ -34,6 +35,7 @@ var FileEditorController = (function () {
             this.fileService.openFile({ path: filePath.path }, this.availableComponents, this.availableMockData)
             .then(function (file) {
                 this.fileModel = file;
+                this.fileModel.references = getReferencesFiles(filePath.path, this.fileStructure.references);
             }.bind(this));
         } else if (FileModel && !this.fileModel) {
             this.newFile();
@@ -82,6 +84,7 @@ var FileEditorController = (function () {
             this.fileService.openFile({ path: path }, this.availableComponents, this.availableMockData)
             .then(function (file) {
                 this.fileModel = file;
+                this.fileModel.references = getReferencesFiles(path, this.fileStructure.references);
             }.bind(this));
         }.bind(this))
         .catch(function () {
@@ -109,6 +112,26 @@ var FileEditorController = (function () {
         displayState[item.name] = item.minimised;
         this.persistentStateService.set(this.fileModel.name, displayState);
     };
+
+    //included relative stepDefinitions in references to components and mockData file model
+    function getReferencesFiles(filePath,references){
+        var referencesInstances = [];
+        for (var referencePath in references ) {
+            if (referencePath === filePath) {
+                references[referencePath].forEach(function(element){
+                    var elementPath = element.replace(/\\/g, '/');
+                    var currentPath = referencePath.replace(/\\/g, '/');
+                    var referenceFilePath = path.relative(currentPath, elementPath).replace(/\.\.\//g, '');
+                    var referenceModel = {
+                        name : referenceFilePath.substring(referenceFilePath.indexOf('/') + 1,referenceFilePath.indexOf('.')),
+                        display : referenceFilePath.substring(referenceFilePath.lastIndexOf('/') + 1,referenceFilePath.indexOf('.'))
+                    };
+                    referencesInstances.push(referenceModel);
+                })
+            }
+        }
+        return referencesInstances;
+    }
 
     return FileEditorController;
 })();
