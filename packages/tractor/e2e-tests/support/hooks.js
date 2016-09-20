@@ -7,7 +7,7 @@ var log = require('npmlog');
 var moment = require('moment');
 var path = require('path');
 var Promise = require('bluebird');
-var fs = Promise.promisifyAll(require('fs'));
+var fs = Promise.promisifyAll(require('graceful-fs'));
 
 
 function createReporter () {

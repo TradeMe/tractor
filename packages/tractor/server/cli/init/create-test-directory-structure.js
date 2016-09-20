@@ -5,7 +5,7 @@ import constants from '../../constants';
 
 // Utilities:
 import Promise from 'bluebird';
-const fs = Promise.promisifyAll(require('fs'));
+const fs = Promise.promisifyAll(require('graceful-fs'));
 import log from 'npmlog';
 import { join } from 'path';
 

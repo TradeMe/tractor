@@ -15,7 +15,7 @@ chai.use(dirtyChai);
 chai.use(sinonChai);
 
 // Dependencies:
-import fs from 'fs';
+import fs from 'graceful-fs';
 import path from 'path';
 
 // Under test:

@@ -2,7 +2,7 @@
 
 // Utilities:
 import Promise from 'bluebird';
-const fs = Promise.promisifyAll(require('fs'));
+const fs = Promise.promisifyAll(require('graceful-fs'));
 import { sep } from 'path';
 
 export default class File {
