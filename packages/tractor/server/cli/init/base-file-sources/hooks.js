@@ -6,7 +6,7 @@ var cucumberHtmlReport = require('cucumber-html-report');
 var log = require('npmlog');
 var path = require('path');
 var Promise = require('bluebird');
-var fs = Promise.promisifyAll(require('graceful-fs'));
+var fs = Promise.promisifyAll(require('fs'));
 
 
 function createReporter () {
@@ -40,7 +40,7 @@ function createReporter () {
         report.createReport();
     }
 
-    function getFileName (file, extension) {       
+    function getFileName (file, extension) {
         /* eslint-disable prefer-template */
         return file + new Date().toLocaleString().replace(/[\/\\:]/g,"-") + '.' + extension;
     }

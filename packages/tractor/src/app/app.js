@@ -2,7 +2,7 @@
 
 // Utilities:
 var _ = require('lodash');
-var fs = require('graceful-fs');
+var fs = require('fs');
 var Promise = require('bluebird');
 
 // Dependencies:
