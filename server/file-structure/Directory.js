@@ -6,7 +6,7 @@ import constants from '../constants';
 // Utilities:
 import _ from 'lodash';
 import Promise from 'bluebird';
-const fs = Promise.promisifyAll(require('fs'));
+const fs = Promise.promisifyAll(require('graceful-fs'));
 import { join, sep } from 'path';
 
 // Dependencies:

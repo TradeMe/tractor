@@ -12,7 +12,7 @@ const expect = chai.expect;
 chai.use(sinonChai);
 
 // Dependencies:
-import fs from 'fs';
+import fs from 'graceful-fs';
 import log from 'npmlog';
 import path from 'path';
 
