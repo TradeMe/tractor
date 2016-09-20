@@ -1,5 +1,4 @@
 /* global describe:true, it:true */
-'use strict';
 
 // Utilities:
 import chai from 'chai';
@@ -15,7 +14,6 @@ chai.use(sinonChai);
 
 // Dependencies:
 import childProcess from 'child_process';
-import log from 'npmlog';
 
 // Under test:
 import installTractorDependenciesLocally from './install-tractor-dependencies-locally';
@@ -30,8 +28,8 @@ describe('cli/init: install-tractor-dependencies-locally:', () => {
             }
         });
         sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(''));
-        sinon.stub(log, 'info');
-        sinon.stub(log, 'verbose');
+        sinon.stub(console, 'info');
+        sinon.stub(console, 'log');
 
         return installTractorDependenciesLocally.run()
         .then(() => {
@@ -40,8 +38,8 @@ describe('cli/init: install-tractor-dependencies-locally:', () => {
         .finally(() => {
             childProcess.exec.restore();
             childProcess.execAsync.restore();
-            log.info.restore();
-            log.verbose.restore();
+            console.info.restore();
+            console.log.restore();
         });
     });
 
@@ -54,8 +52,8 @@ describe('cli/init: install-tractor-dependencies-locally:', () => {
             }
         });
         sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(''));
-        sinon.stub(log, 'info');
-        sinon.stub(log, 'verbose');
+        sinon.stub(console, 'info');
+        sinon.stub(console, 'log');
 
         return installTractorDependenciesLocally.run()
         .then(() => {
@@ -72,8 +70,8 @@ describe('cli/init: install-tractor-dependencies-locally:', () => {
         .finally(() => {
             childProcess.exec.restore();
             childProcess.execAsync.restore();
-            log.info.restore();
-            log.verbose.restore();
+            console.info.restore();
+            console.log.restore();
         });
     });
 
@@ -86,8 +84,8 @@ describe('cli/init: install-tractor-dependencies-locally:', () => {
             }
         });
         sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(''));
-        sinon.stub(log, 'info');
-        sinon.stub(log, 'verbose');
+        sinon.stub(console, 'info');
+        sinon.stub(console, 'log');
 
         return installTractorDependenciesLocally.run()
         .then(() => {
@@ -104,8 +102,8 @@ describe('cli/init: install-tractor-dependencies-locally:', () => {
         .finally(() => {
             childProcess.exec.restore();
             childProcess.execAsync.restore();
-            log.info.restore();
-            log.verbose.restore();
+            console.info.restore();
+            console.log.restore();
         });
     });
 
@@ -118,21 +116,21 @@ describe('cli/init: install-tractor-dependencies-locally:', () => {
             }
         });
         sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(''));
-        sinon.stub(log, 'info');
-        sinon.stub(log, 'verbose');
+        sinon.stub(console, 'info');
+        sinon.stub(console, 'log');
 
         return installTractorDependenciesLocally.run()
         .then(() => {
-            expect(log.info).to.have.been.calledWith('Checking installed npm dependencies...');
-            expect(log.info).to.have.been.calledWith('Installing npm dependencies for tractor...');
-            expect(log.info).to.have.been.calledWith('Installing "bluebird@2.10.2"...');
-            expect(log.verbose).to.have.been.calledWith('Installed "bluebird@2.10.2".');
+            expect(console.info).to.have.been.calledWith('Checking installed npm dependencies...');
+            expect(console.info).to.have.been.calledWith('Installing npm dependencies for tractor...');
+            expect(console.info).to.have.been.calledWith('Installing "bluebird@2.10.2"...');
+            expect(console.log).to.have.been.calledWith('Installed "bluebird@2.10.2".');
         })
         .finally(() => {
             childProcess.exec.restore();
             childProcess.execAsync.restore();
-            log.info.restore();
-            log.verbose.restore();
+            console.info.restore();
+            console.log.restore();
         });
     });
 
@@ -145,18 +143,18 @@ describe('cli/init: install-tractor-dependencies-locally:', () => {
             }
         });
         sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(''));
-        sinon.stub(log, 'info');
-        sinon.stub(log, 'verbose');
+        sinon.stub(console, 'info');
+        sinon.stub(console, 'log');
 
         return installTractorDependenciesLocally.run()
         .then(() => {
-            expect(log.info).to.have.been.calledWith('All npm dependencies for tractor already installed.');
+            expect(console.info).to.have.been.calledWith('All npm dependencies for tractor already installed.');
         })
         .finally(() => {
             childProcess.exec.restore();
             childProcess.execAsync.restore();
-            log.info.restore();
-            log.verbose.restore();
+            console.info.restore();
+            console.log.restore();
         });
     });
 
@@ -170,18 +168,18 @@ describe('cli/init: install-tractor-dependencies-locally:', () => {
         });
         let exec = sinon.stub(childProcess, 'execAsync');
         exec.returns(Promise.reject(new Error()));
-        sinon.stub(log, 'error');
-        sinon.stub(log, 'info');
+        sinon.stub(console, 'error');
+        sinon.stub(console, 'info');
 
         return installTractorDependenciesLocally.run()
         .then(() => {
-            expect(log.error).to.have.been.calledWith('Couldn\'t install "bluebird@2.10.2". Either run "tractor init" again, or install it manually by running "npm install bluebird@2.10.2"');
+            expect(console.error).to.have.been.calledWith('Couldn\'t install "bluebird@2.10.2". Either run "tractor init" again, or install it manually by running "npm install bluebird@2.10.2"');
         })
         .finally(() => {
             childProcess.exec.restore();
             childProcess.execAsync.restore();
-            log.error.restore();
-            log.info.restore();
+            console.error.restore();
+            console.info.restore();
         });
     });
 });

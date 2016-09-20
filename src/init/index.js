@@ -1,10 +1,8 @@
-'use strict';
+// Dependencies:
+import tractorConfigLoader from 'tractor-config-loader';
 
 // Config:
-import { config } from 'tractor-server';
-
-// Utilities:
-import log from 'npmlog';
+const CONFIG = tractorConfigLoader.loadConfig();
 
 // Dependencies:
 import createTestDirectoryStructure from './create-test-directory-structure';
@@ -13,16 +11,16 @@ import installTractorDependenciesLocally from './install-tractor-dependencies-lo
 import setUpSelenium from './set-up-selenium';
 
 export default function init () {
-    log.info('Setting up tractor...');
+    console.info('Setting up tractor...');
 
-    return createTestDirectoryStructure.run(config.testDirectory)
-    .then(() => createBaseTestFiles.run(config.testDirectory))
+    return createTestDirectoryStructure.run(CONFIG.testDirectory)
+    .then(() => createBaseTestFiles.run(CONFIG.testDirectory))
     .then(() => installTractorDependenciesLocally.run())
     .then(() => setUpSelenium.run())
-    .then(() => log.info('Set up complete!'))
-    .catch((error) => {
-        log.error('Something broke, sorry :(');
-        log.error(error.message);
+    .then(() => console.info('Set up complete!'))
+    .catch(error => {
+        console.error('Something broke, sorry :(');
+        console.error(error.message);
         throw error;
     });
 }

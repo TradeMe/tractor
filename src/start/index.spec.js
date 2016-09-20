@@ -1,5 +1,4 @@
 /* global describe:true, it:true */
-'use strict';
 
 // Utilities:
 import chai from 'chai';
@@ -14,7 +13,7 @@ chai.use(dirtyChai);
 chai.use(sinonChai);
 
 // Dependencies:
-import * as tractorServer from 'tractor-server';
+import tractorServer from 'tractor-server';
 
 // Under test:
 import cliStart from './index';

@@ -1,5 +1,4 @@
 /* global describe:true, it:true */
-'use strict';
 
 // Utilities:
 import chai from 'chai';
@@ -13,7 +12,6 @@ chai.use(sinonChai);
 
 // Dependencies:
 import fs from 'fs';
-import log from 'npmlog';
 import path from 'path';
 
 // Under test:
@@ -22,9 +20,9 @@ import createTestDirectoryStructure from './create-test-directory-structure';
 describe('cli/init: create-test-directory-structure:', () => {
     it('should create the tests directory structure', () => {
         sinon.stub(fs, 'mkdirAsync').returns(Promise.resolve());
-        sinon.stub(log, 'info');
-        sinon.stub(log, 'verbose');
-        sinon.stub(log, 'warn');
+        sinon.stub(console, 'info');
+        sinon.stub(console, 'log');
+        sinon.stub(console, 'warn');
 
         return createTestDirectoryStructure.run('directory')
         .then(() => {
@@ -38,9 +36,9 @@ describe('cli/init: create-test-directory-structure:', () => {
         })
         .finally(() => {
             fs.mkdirAsync.restore();
-            log.info.restore();
-            log.verbose.restore();
-            log.warn.restore();
+            console.info.restore();
+            console.log.restore();
+            console.warn.restore();
         });
     });
 
@@ -50,53 +48,53 @@ describe('cli/init: create-test-directory-structure:', () => {
             code: 'EEXIST'
         };
         sinon.stub(fs, 'mkdirAsync').returns(Promise.reject(error));
-        sinon.stub(log, 'info');
-        sinon.stub(log, 'warn');
+        sinon.stub(console, 'info');
+        sinon.stub(console, 'warn');
 
         return createTestDirectoryStructure.run('directory')
         .then(() => {
-            expect(log.warn).to.have.been.calledWith('"directory" directory already exists. Moving on...');
+            expect(console.warn).to.have.been.calledWith('"directory" directory already exists. Moving on...');
         })
         .finally(() => {
             fs.mkdirAsync.restore();
-            log.info.restore();
-            log.warn.restore();
+            console.info.restore();
+            console.warn.restore();
         });
     });
 
     it('should rethrow any other errors', () => {
         sinon.stub(fs, 'mkdirAsync').returns(Promise.reject(new Promise.OperationalError()));
-        sinon.stub(log, 'info');
-        sinon.stub(log, 'warn');
+        sinon.stub(console, 'info');
+        sinon.stub(console, 'warn');
 
         return createTestDirectoryStructure.run('directory')
         .catch(() => { })
         .then(() => {
-            expect(log.warn).to.not.have.been.called();
+            expect(console.warn).to.not.have.been.called();
         })
         .finally(() => {
             fs.mkdirAsync.restore();
-            log.info.restore();
-            log.warn.restore();
+            console.info.restore();
+            console.warn.restore();
         });
     });
 
     it('should tell the user what it is doing', () => {
         sinon.stub(fs, 'mkdirAsync').returns(Promise.resolve());
-        sinon.stub(log, 'info');
-        sinon.stub(log, 'verbose');
-        sinon.stub(log, 'warn');
+        sinon.stub(console, 'info');
+        sinon.stub(console, 'log');
+        sinon.stub(console, 'warn');
 
         return createTestDirectoryStructure.run('directory')
         .then(() => {
-            expect(log.info).to.have.been.calledWith('Creating directory structure...');
-            expect(log.verbose).to.have.been.calledWith('Directory structure created.');
+            expect(console.info).to.have.been.calledWith('Creating directory structure...');
+            expect(console.log).to.have.been.calledWith('Directory structure created.');
         })
         .finally(() => {
             fs.mkdirAsync.restore();
-            log.info.restore();
-            log.verbose.restore();
-            log.warn.restore();
+            console.info.restore();
+            console.log.restore();
+            console.warn.restore();
         });
     });
 });

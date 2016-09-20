@@ -1,7 +1,5 @@
-'use strict';
-
 // Constants;
-import constants from '../constants';
+import CONSTANTS from '../constants';
 const TO_INSTALL = [
     'bluebird@2.10.2',
     'chai@2.3.0',
@@ -15,7 +13,6 @@ const TO_INSTALL = [
 ];
 
 // Utilities:
-import log from 'npmlog';
 import Promise from 'bluebird';
 
 // Dependencies:
@@ -27,41 +24,41 @@ export default {
 
 function installTractorDependenciesLocally () {
     return getInstalledDependencies()
-    .then((installed) => {
+    .then(installed => {
         let toInstall = filterAreadyInstalledDependencies(installed, TO_INSTALL);
         return installDependencies(toInstall);
     });
 }
 
 function getInstalledDependencies () {
-    log.info('Checking installed npm dependencies...');
+    console.info('Checking installed npm dependencies...');
 
     let resolve;
     let deferred = new Promise((...args) => {
-        resolve = args[0];
+        [resolve] = args;
     });
 
-    let ls = childProcess.exec(constants.GET_INSTALLED_DEPENDENCIES_COMMAND);
+    let ls = childProcess.exec(CONSTANTS.GET_INSTALLED_DEPENDENCIES_COMMAND);
     ls.stdout.on('data', data => resolve(data));
 
     return deferred;
 }
 
 function filterAreadyInstalledDependencies (installed, dependencies) {
-    return dependencies.filter((dependency) => !new RegExp(dependency, 'gm').test(installed));
+    return dependencies.filter(dependency => !new RegExp(dependency, 'gm').test(installed));
 }
 
 function installDependencies (modules) {
     if (modules.length) {
-        log.info('Installing npm dependencies for tractor...');
+        console.info('Installing npm dependencies for tractor...');
     } else {
-        log.info('All npm dependencies for tractor already installed.');
+        console.info('All npm dependencies for tractor already installed.');
     }
 
-    return Promise.all(modules.map((module) => {
-        log.info(`Installing "${module}"...`);
-        return childProcess.execAsync(`${constants.INSTALL_DEPENDENCIES_COMMAND}${module}`)
-        .then(() => log.verbose(`Installed "${module}".`))
-        .catch(() => log.error(`Couldn't install "${module}". Either run "tractor init" again, or install it manually by running "npm install ${module}"`));
+    return Promise.all(modules.map(module => {
+        console.info(`Installing "${module}"...`);
+        return childProcess.execAsync(`${CONSTANTS.INSTALL_DEPENDENCIES_COMMAND}${module}`)
+        .then(() => console.log(`Installed "${module}".`))
+        .catch(() => console.error(`Couldn't install "${module}". Either run "tractor init" again, or install it manually by running "npm install ${module}"`));
     }));
 }

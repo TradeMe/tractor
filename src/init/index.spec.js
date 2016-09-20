@@ -1,5 +1,4 @@
 /* global describe:true, it:true */
-'use strict';
 
 // Utilities:
 import chai from 'chai';
@@ -17,7 +16,6 @@ chai.use(sinonChai);
 import createTestDirectoryStructure from './create-test-directory-structure';
 import createBaseTestFiles from './create-base-test-files';
 import installTractorDependenciesLocally from './install-tractor-dependencies-locally';
-import log from 'npmlog';
 import setUpSelenium from './set-up-selenium';
 
 // Under test:
@@ -29,7 +27,7 @@ describe('cli/init: index:', () => {
         sinon.stub(createBaseTestFiles, 'run').returns(Promise.resolve());
         sinon.stub(installTractorDependenciesLocally, 'run').returns(Promise.resolve());
         sinon.stub(setUpSelenium, 'run').returns(Promise.resolve());
-        sinon.stub(log, 'info');
+        sinon.stub(console, 'info');
 
         return cliInit()
         .then(() => {
@@ -43,7 +41,7 @@ describe('cli/init: index:', () => {
             createBaseTestFiles.run.restore();
             installTractorDependenciesLocally.run.restore();
             setUpSelenium.run.restore();
-            log.info.restore();
+            console.info.restore();
         });
     });
 
@@ -52,38 +50,38 @@ describe('cli/init: index:', () => {
         sinon.stub(createBaseTestFiles, 'run').returns(Promise.resolve());
         sinon.stub(installTractorDependenciesLocally, 'run').returns(Promise.resolve());
         sinon.stub(setUpSelenium, 'run').returns(Promise.resolve());
-        sinon.stub(log, 'info');
+        sinon.stub(console, 'info');
 
         return cliInit()
         .then(() => {
-            expect(log.info).to.have.been.calledWith('Setting up tractor...');
-            expect(log.info).to.have.been.calledWith('Set up complete!');
+            expect(console.info).to.have.been.calledWith('Setting up tractor...');
+            expect(console.info).to.have.been.calledWith('Set up complete!');
         })
         .finally(() => {
             createTestDirectoryStructure.run.restore();
             createBaseTestFiles.run.restore();
             installTractorDependenciesLocally.run.restore();
             setUpSelenium.run.restore();
-            log.info.restore();
+            console.info.restore();
         });
     });
 
     it('should tell the user if there is an error', () => {
         let message = 'error';
         sinon.stub(createTestDirectoryStructure, 'run').returns(Promise.reject(new Error(message)));
-        sinon.stub(log, 'error');
-        sinon.stub(log, 'info');
+        sinon.stub(console, 'error');
+        sinon.stub(console, 'info');
 
         return cliInit()
         .catch(() => { })
         .then(() => {
-            expect(log.error).to.have.been.calledWith('Something broke, sorry :(');
-            expect(log.error).to.have.been.calledWith(message);
+            expect(console.error).to.have.been.calledWith('Something broke, sorry :(');
+            expect(console.error).to.have.been.calledWith(message);
         })
         .finally(() => {
             createTestDirectoryStructure.run.restore();
-            log.error.restore();
-            log.info.restore();
+            console.error.restore();
+            console.info.restore();
         });
     });
 });

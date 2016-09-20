@@ -1,5 +1,4 @@
 /* global describe:true, it:true */
-'use strict';
 
 // Utilities:
 import chai from 'chai';
@@ -13,7 +12,6 @@ chai.use(sinonChai);
 
 // Dependencies:
 import fs from 'fs';
-import log from 'npmlog';
 import path from 'path';
 
 // Under test:
@@ -24,8 +22,8 @@ describe('cli/init: create-base-test-files:', () => {
         sinon.stub(fs, 'openAsync').returns(Promise.reject(new Promise.OperationalError()));
         sinon.stub(fs, 'readFileAsync').returns(Promise.resolve('world'));
         sinon.stub(fs, 'writeFileAsync').returns(Promise.resolve());
-        sinon.stub(log, 'info');
-        sinon.stub(log, 'verbose');
+        sinon.stub(console, 'info');
+        sinon.stub(console, 'log');
 
         return createBaseTestFiles.run('')
         .then(() => {
@@ -36,22 +34,22 @@ describe('cli/init: create-base-test-files:', () => {
             fs.openAsync.restore();
             fs.readFileAsync.restore();
             fs.writeFileAsync.restore();
-            log.info.restore();
-            log.verbose.restore();
+            console.info.restore();
+            console.log.restore();
         });
     });
 
     it('should tell the user if "world.js" already exists', () => {
         sinon.stub(fs, 'openAsync').returns(Promise.resolve(''));
-        sinon.stub(log, 'warn');
+        sinon.stub(console, 'warn');
 
         return createBaseTestFiles.run('')
         .then(() => {
-            expect(log.warn).to.have.been.calledWith('"world.js" already exists. Not copying...');
+            expect(console.warn).to.have.been.calledWith('"world.js" already exists. Not copying...');
         })
         .finally(() => {
             fs.openAsync.restore();
-            log.warn.restore();
+            console.warn.restore();
         });
     });
 
@@ -59,8 +57,8 @@ describe('cli/init: create-base-test-files:', () => {
         sinon.stub(fs, 'openAsync').returns(Promise.reject(new Promise.OperationalError()));
         sinon.stub(fs, 'readFileAsync').returns(Promise.resolve('config'));
         sinon.stub(fs, 'writeFileAsync').returns(Promise.resolve());
-        sinon.stub(log, 'info');
-        sinon.stub(log, 'verbose');
+        sinon.stub(console, 'info');
+        sinon.stub(console, 'log');
 
         return createBaseTestFiles.run('')
         .then(() => {
@@ -71,22 +69,22 @@ describe('cli/init: create-base-test-files:', () => {
             fs.openAsync.restore();
             fs.readFileAsync.restore();
             fs.writeFileAsync.restore();
-            log.info.restore();
-            log.verbose.restore();
+            console.info.restore();
+            console.log.restore();
         });
     });
 
     it('should tell the user if "protractor.conf.js" already exists', () => {
         sinon.stub(fs, 'openAsync').returns(Promise.resolve(''));
-        sinon.stub(log, 'warn');
+        sinon.stub(console, 'warn');
 
         return createBaseTestFiles.run('')
         .then(() => {
-            expect(log.warn).to.have.been.calledWith('"protractor.conf.js" already exists. Not copying...');
+            expect(console.warn).to.have.been.calledWith('"protractor.conf.js" already exists. Not copying...');
         })
         .finally(() => {
             fs.openAsync.restore();
-            log.warn.restore();
+            console.warn.restore();
         });
     });
 
@@ -94,8 +92,8 @@ describe('cli/init: create-base-test-files:', () => {
         sinon.stub(fs, 'openAsync').returns(Promise.reject(new Promise.OperationalError()));
         sinon.stub(fs, 'readFileAsync').returns(Promise.resolve('hooks'));
         sinon.stub(fs, 'writeFileAsync').returns(Promise.resolve());
-        sinon.stub(log, 'info');
-        sinon.stub(log, 'verbose');
+        sinon.stub(console, 'info');
+        sinon.stub(console, 'log');
 
         return createBaseTestFiles.run('')
         .then(() => {
@@ -106,22 +104,22 @@ describe('cli/init: create-base-test-files:', () => {
             fs.openAsync.restore();
             fs.readFileAsync.restore();
             fs.writeFileAsync.restore();
-            log.info.restore();
-            log.verbose.restore();
+            console.info.restore();
+            console.log.restore();
         });
     });
 
     it('should tell the user if "hooks.js" already exists', () => {
         sinon.stub(fs, 'openAsync').returns(Promise.resolve(''));
-        sinon.stub(log, 'warn');
+        sinon.stub(console, 'warn');
 
         return createBaseTestFiles.run('')
         .then(() => {
-            expect(log.warn).to.have.been.calledWith('"hooks.js" already exists. Not copying...');
+            expect(console.warn).to.have.been.calledWith('"hooks.js" already exists. Not copying...');
         })
         .finally(() => {
             fs.openAsync.restore();
-            log.warn.restore();
+            console.warn.restore();
         });
     });
 
@@ -129,24 +127,24 @@ describe('cli/init: create-base-test-files:', () => {
         sinon.stub(fs, 'openAsync').returns(Promise.reject(new Promise.OperationalError()));
         sinon.stub(fs, 'readFileAsync').returns(Promise.resolve(''));
         sinon.stub(fs, 'writeFileAsync').returns(Promise.resolve());
-        sinon.stub(log, 'info');
-        sinon.stub(log, 'verbose');
+        sinon.stub(console, 'info');
+        sinon.stub(console, 'log');
 
         return createBaseTestFiles.run('')
         .then(() => {
-            expect(log.info).to.have.been.calledWith('Creating "world.js"...');
-            expect(log.info).to.have.been.calledWith('Creating "protractor.conf.js"...');
-            expect(log.info).to.have.been.calledWith('Creating "hooks.js"...');
-            expect(log.verbose).to.have.been.calledWith('"world.js" created.');
-            expect(log.verbose).to.have.been.calledWith('"protractor.conf.js" created.');
-            expect(log.verbose).to.have.been.calledWith('"hooks.js" created.');
+            expect(console.info).to.have.been.calledWith('Creating "world.js"...');
+            expect(console.info).to.have.been.calledWith('Creating "protractor.conf.js"...');
+            expect(console.info).to.have.been.calledWith('Creating "hooks.js"...');
+            expect(console.log).to.have.been.calledWith('"world.js" created.');
+            expect(console.log).to.have.been.calledWith('"protractor.conf.js" created.');
+            expect(console.log).to.have.been.calledWith('"hooks.js" created.');
         })
         .finally(() => {
             fs.openAsync.restore();
             fs.readFileAsync.restore();
             fs.writeFileAsync.restore();
-            log.info.restore();
-            log.verbose.restore();
+            console.info.restore();
+            console.log.restore();
         });
     });
 });

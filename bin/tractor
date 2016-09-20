@@ -3,9 +3,6 @@
 
 // Dependencies:
 var tractor = require('commander');
-var log = require('npmlog');
-
-log.level = 'info';
 
 tractor
 .version('0.9.0');
