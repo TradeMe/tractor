@@ -34,6 +34,7 @@ var FileEditorController = (function () {
             this.fileService.openFile({ path: filePath.path }, this.availableComponents, this.availableMockData)
             .then(function (file) {
                 this.fileModel = file;
+                this.fileModel.references = getReferencesFiles(filePath.path, this.fileStructure.references);
             }.bind(this));
         } else if (FileModel && !this.fileModel) {
             this.newFile();
@@ -79,9 +80,10 @@ var FileEditorController = (function () {
         }.bind(this))
         .then(function (fileStructure) {
             this.fileStructure = fileStructure;
-            this.fileService.openFile({ path }, this.availableComponents, this.availableMockData)
+            this.fileService.openFile({ path: path }, this.availableComponents, this.availableMockData)
             .then(function (file) {
                 this.fileModel = file;
+                this.fileModel.references = getReferencesFiles(path, this.fileStructure.references);
             }.bind(this));
         }.bind(this))
         .catch(function () {
@@ -109,6 +111,21 @@ var FileEditorController = (function () {
         displayState[item.name] = item.minimised;
         this.persistentStateService.set(this.fileModel.name, displayState);
     };
+
+    //included relative stepDefinitions in references to components and mockData file model
+    function getReferencesFiles(filePath,references){
+        var referencesInstances = [];
+        if (references && references[filePath]) {
+            references[filePath].map(function(element){
+                var referenceModel = {
+                    name : element.substring(element.lastIndexOf('\\') + 1,element.indexOf('.')),
+                    path : element
+                };
+                referencesInstances.push(referenceModel);
+            });
+        }
+        return referencesInstances;
+    }
 
     return FileEditorController;
 })();

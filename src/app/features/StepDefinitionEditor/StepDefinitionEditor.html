@@ -114,7 +114,7 @@
                 <h2>Active components:</h2>
                 <ul>
                     <li ng-repeat="component in stepDefinitionEditor.fileModel.componentInstances">                        
-                        <span> {{ component.component.name }} </span>                        
+                        <span ui-sref="tractor.components({file: {name: component.component.name, path: component.component.path}})" title="Edit the Component"> {{ component.component.name }} </span>
                         <tractor-action
                             model="stepDefinitionEditor.fileModel"
                             action="Remove component"
@@ -130,7 +130,7 @@
                 <ul>
                     <li ng-repeat="component in stepDefinitionEditor.fileModel.availableComponents"
                         ng-if="stepDefinitionEditor.fileModel.components.indexOf(component) === -1">
-                        <span title=" {{ component.meta }}"> {{ component.name }} </spam>
+                        <span title=" {{ component.meta }}"> {{ component.name }} </span>
                         <tractor-action
                             model="stepDefinitionEditor.fileModel"
                             action="Add component"
@@ -189,7 +189,7 @@
                 <h2>Active mock data:</h2>
                 <ul>
                     <li ng-repeat="mockData in stepDefinitionEditor.fileModel.mockDataInstances">                     
-                        <span> {{ mockData.mockData.name }} </span>                        
+                        <span ui-sref="tractor.mock-data({file: {name: mockData.mockData.name, path: mockData.mockData.path}})" title="Edit the Mock Data"> {{ mockData.mockData.name }} </span>
                         <tractor-action
                             model="stepDefinitionEditor.fileModel"
                             action="Remove mock"
