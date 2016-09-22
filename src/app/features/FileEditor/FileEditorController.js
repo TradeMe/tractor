@@ -115,11 +115,11 @@ var FileEditorController = (function () {
     //included relative stepDefinitions in references to components and mockData file model
     function getReferencesFiles(filePath,references){
         var referencesInstances = [];
-        if (references && references[filePath]) {
-            references[filePath].map(function(element){
+        if (references[filePath]) {
+            _.each(references[filePath], function(referencePath){
                 var referenceModel = {
-                    name : element.substring(element.lastIndexOf('\\') + 1,element.indexOf('.')),
-                    path : element
+                    name : referencePath.substring(referencePath.lastIndexOf('\\') + 1,referencePath.indexOf('.')),
+                    path : referencePath
                 };
                 referencesInstances.push(referenceModel);
             });
