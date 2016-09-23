@@ -94,7 +94,7 @@ describe('server/file-structure: FileStructure:', () => {
 
             expect(structure).to.deep.equal({
                 /* eslint-disable no-undefined */
-                // `availableComponents` and `availableMockData` are both expected
+                // `availableComponents`, `availableMockData` and `availableStepDefinitions` are expected
                 // to be `undefined` rather than empty arrays, because they will
                 // be omitted from the JSON response if they are not needed.
                 availableComponents: undefined,
@@ -126,7 +126,11 @@ describe('server/file-structure: FileStructure:', () => {
             expect(structure).to.deep.equal({
                 availableComponents: [component1, component2],
                 availableMockData: [],
-                availableStepDefinitions: [],
+                /* eslint-disable no-undefined */
+                // to be `undefined` rather than empty arrays, because they will
+                // be omitted from the JSON response if they are not needed.
+                availableStepDefinitions: undefined,
+                /* eslint-enable no-undefined */
                 directory,
                 references: { }
             });
@@ -152,7 +156,11 @@ describe('server/file-structure: FileStructure:', () => {
             expect(structure).to.deep.equal({
                 availableComponents: [],
                 availableMockData: [mockData1, mockData2],
-                availableStepDefinitions: [],
+                /* eslint-disable no-undefined */
+                // to be `undefined` rather than empty arrays, because they will
+                // be omitted from the JSON response if they are not needed.
+                availableStepDefinitions: undefined,
+                /* eslint-enable no-undefined */
                 directory,
                 references: { }
             });
@@ -176,8 +184,12 @@ describe('server/file-structure: FileStructure:', () => {
             let structure = fileStructure.getStructure('features');
 
             expect(structure).to.deep.equal({
-                availableComponents: [],
-                availableMockData: [],
+                /* eslint-disable no-undefined */
+                // to be `undefined` rather than empty arrays, because they will
+                // be omitted from the JSON response if they are not needed.
+                availableComponents: undefined,
+                availableMockData: undefined,
+                /* eslint-enable no-undefined */
                 availableStepDefinitions: [StepDefinition1, StepDefinition2],
                 directory,
                 references: { }
