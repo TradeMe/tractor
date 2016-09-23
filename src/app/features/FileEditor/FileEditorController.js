@@ -29,9 +29,10 @@ var FileEditorController = (function () {
 
         this.availableComponents = fileStructure.availableComponents;
         this.availableMockData = fileStructure.availableMockData;
+        this.availableStepDefinitions = fileStructure.availableStepDefinitions;
 
         if (filePath) {
-            this.fileService.openFile({ path: filePath.path }, this.availableComponents, this.availableMockData)
+            this.fileService.openFile({ path: filePath.path }, this.availableComponents, this.availableMockData, this.availableStepDefinitions)
             .then(function (file) {
                 this.fileModel = file;
                 this.fileModel.references = getReferencesFiles(filePath.path, this.fileStructure.references);
@@ -80,7 +81,7 @@ var FileEditorController = (function () {
         }.bind(this))
         .then(function (fileStructure) {
             this.fileStructure = fileStructure;
-            this.fileService.openFile({ path: path }, this.availableComponents, this.availableMockData)
+            this.fileService.openFile({ path: path }, this.availableComponents, this.availableMockData, this.availableStepDefinitions)
             .then(function (file) {
                 this.fileModel = file;
                 this.fileModel.references = getReferencesFiles(path, this.fileStructure.references);

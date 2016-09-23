@@ -22,6 +22,7 @@ import ComponentFile from '../files/ComponentFile';
 import Directory from './Directory';
 import File from '../files/File';
 import MockDataFile from '../files/MockDataFile';
+import StepDefinitionFile from '../files/StepDefinitionFile';
 import path from 'path';
 
 // Under test:
@@ -98,6 +99,7 @@ describe('server/file-structure: FileStructure:', () => {
                 // be omitted from the JSON response if they are not needed.
                 availableComponents: undefined,
                 availableMockData: undefined,
+                availableStepDefinitions: undefined,
                 /* eslint-enable no-undefined */
                 directory,
                 references: { }
@@ -124,6 +126,7 @@ describe('server/file-structure: FileStructure:', () => {
             expect(structure).to.deep.equal({
                 availableComponents: [component1, component2],
                 availableMockData: [],
+                availableStepDefinitions: [],
                 directory,
                 references: { }
             });
@@ -149,12 +152,40 @@ describe('server/file-structure: FileStructure:', () => {
             expect(structure).to.deep.equal({
                 availableComponents: [],
                 availableMockData: [mockData1, mockData2],
+                availableStepDefinitions: [],
                 directory,
                 references: { }
             });
 
             Directory.prototype.getDirectory.restore();
         });
+
+        it('should return all the available StepDefinitions if type is "features"', () => {
+            let directory = {
+                addFile: _.noop
+            };
+            let StepDefinition1 = new StepDefinitionFile('some/path/to/StepDefinition1', directory);
+            let StepDefinition2 = new StepDefinitionFile('some/path/to/StepDefinition2', directory);
+
+            sinon.stub(Directory.prototype, 'getDirectory').returns(directory);
+
+            let fileStructure = new FileStructure();
+            fileStructure.addFile(StepDefinition1);
+            fileStructure.addFile(StepDefinition2);
+
+            let structure = fileStructure.getStructure('features');
+
+            expect(structure).to.deep.equal({
+                availableComponents: [],
+                availableMockData: [],
+                availableStepDefinitions: [StepDefinition1, StepDefinition2],
+                directory,
+                references: { }
+            });
+
+            Directory.prototype.getDirectory.restore();
+        });
+
     });
 
     describe('FileStructure.copyFile:', () => {

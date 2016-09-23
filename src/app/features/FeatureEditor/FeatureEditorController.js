@@ -39,7 +39,7 @@ var FeatureEditorController = function FeatureEditorController (
     );
 
     this.runnerService = runnerService;
-    controller.runFeature = runFeature.bind(this);    
+    controller.runFeature = runFeature.bind(this);
     return controller;
 };
 

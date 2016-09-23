@@ -18,6 +18,11 @@ var createFeatureModelConstructor = function (
         var scenarios = [];
 
         Object.defineProperties(this, {
+            availableStepDefinitions: {
+                get: function () {
+                    return options.availableStepDefinitions;
+                }
+            },
             isSaved: {
                 get: function () {
                     return !!(options && options.isSaved);
@@ -59,6 +64,14 @@ var createFeatureModelConstructor = function (
         _.remove(this.scenarios, function (scenario) {
             return scenario === toRemove;
         });
+    };
+
+    FeatureModel.prototype.findStep = function (step) {
+        var stepDefinition = _.find(this.availableStepDefinitions, function(stepDefinition){
+            var stepDefinitionName = stepDefinition.name.substring(stepDefinition.name.indexOf(' ') + 1);
+            return stepDefinitionName === step;
+        });
+        return stepDefinition.path;
     };
 
     return FeatureModel;
