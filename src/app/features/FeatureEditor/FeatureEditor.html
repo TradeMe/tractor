@@ -111,7 +111,7 @@
                                             model="stepDeclaration"
                                             example="something happens">
                                         </tractor-step-input>
-                                        <span ui-sref="tractor.step-definitions({file: {name: stepDeclaration.step, path: featureEditor.fileModel.findStep(stepDeclaration.step)}})" title="See step detail"> -> </span>
+                                        <span ui-sref="tractor.step-definitions({file: featureEditor.fileModel.findStep(stepDeclaration.step)})" title="See step detail"> -> </span>
                                     </li>
                                 </ol>
 

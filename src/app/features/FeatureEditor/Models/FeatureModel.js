@@ -20,7 +20,14 @@ var createFeatureModelConstructor = function (
         Object.defineProperties(this, {
             availableStepDefinitions: {
                 get: function () {
-                    return options.availableStepDefinitions;
+                    //return options.availableStepDefinitions;
+                    return _.map(options.availableStepDefinitions, function(stepDefinition) {
+                        return {
+                            type: stepDefinition.name.substring(0, stepDefinition.name.indexOf(' ')),
+                            name: stepDefinition.name.substring(stepDefinition.name.indexOf(' ') + 1),
+                            path: stepDefinition.path
+                        }
+                    });
                 }
             },
             isSaved: {
@@ -68,10 +75,9 @@ var createFeatureModelConstructor = function (
 
     FeatureModel.prototype.findStep = function (step) {
         var stepDefinition = _.find(this.availableStepDefinitions, function(stepDefinition){
-            var stepDefinitionName = stepDefinition.name.substring(stepDefinition.name.indexOf(' ') + 1);
-            return stepDefinitionName === step;
+            return stepDefinition.name.replace(/[_]/g,'') === step.replace(/[*_\/|"<>?]/g, '');
         });
-        return stepDefinition.path;
+        return stepDefinition;
     };
 
     return FeatureModel;
