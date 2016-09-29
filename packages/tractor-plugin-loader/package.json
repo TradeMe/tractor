@@ -1,6 +1,6 @@
 {
   "name": "tractor-plugin-loader",
-  "version": "0.1.0-beta.9",
+  "version": "0.1.0",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -12,16 +12,15 @@
   },
   "main": "dist/index.js",
   "watch": {
-    "lint": "src/**/*.js",
-    "test": "src/**/*.js"
+    "build": "src/**/*.js"
   },
   "scripts": {
     "prepublish": "npm run build",
-    "build": "npm run lint && npm run compile",
+    "build": "npm run lint && npm run cover && npm run compile",
     "compile": "babel src/ --out-dir dist --ignore *.spec.js",
-    "cover": "istanbul cover --config .istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ./.mocharc src/*/*.spec.js src/*/*/*.spec.js",
+    "cover": "istanbul cover --config .istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ./.mocharc src/*.spec.js",
     "lint": "eslint src/**/*.js; true",
-    "test": "mocha --opts ./.mocharc src/*/*.spec.js src/*/*/*.spec.js",
+    "test": "mocha --opts ./.mocharc src/*.spec.js",
     "watch": "npm-watch"
   },
   "license": "MIT",
@@ -29,7 +28,11 @@
     "node": ">=0.10"
   },
   "dependencies": {
-    "tractor-config-loader": "0.1.0-beta.2"
+    "camel-case": "3.0.0",
+    "param-case": "2.1.0",
+    "sentence-case": "2.1.0",
+    "tractor-config-loader": "0.1.0",
+    "tractor-error-handler": "0.1.0"
   },
   "devDependencies": {
     "babel-cli": "6.14.0",

@@ -1,31 +1,41 @@
+// Constants:
+const NPM_EXTRANEOUS_ERROR = 'npm ERR! extraneous';
+const NPM_PEER_DEP_ERROR = 'npm ERR! peer dep missing';
+const TRACTOR_PLUGIN_LOADER = 'tractor-plugin-loader';
+const TRACTOR_PLUGIN_MODULE_NAME_REGEX = new RegExp(`(tractor-plugin[^${path.sep}]*$)`);
+const TRACTOR_PLUGIN_NAME_REGEX = /tractor-plugin-(.*)/;
+
 // Utilities:
+import childProcess from 'child_process';
+import fs from 'fs';
 import module from 'module';
 import os from 'os';
 import path from 'path';
 
 // Dependencies:
-import childProcess from 'child_process';
-import * as tractorConfigLoader from 'tractor-config-loader';
+import camelCase from 'camel-case';
+import paramCase from 'param-case';
+import sentenceCase from 'sentence-case';
+import tractorConfigLoader from 'tractor-config-loader';
 
-// Constants:
-const NPM_EXTRANEOUS_ERROR = 'npm ERR! extraneous';
-const NPM_PEER_DEP_ERROR = 'npm ERR! peer dep missing';
-const TRACTOR_PLUGIN_REGEX = new RegExp(`(tractor-plugin[^${path.sep}]*$)`);
-const TRACTOR_PLUGIN_LOADER = 'tractor-plugin-loader';
-const config = tractorConfigLoader.loadConfig();
+// Errors:
+import { TractorError } from 'tractor-error-handler';
 
-let plugins = loadPlugins();
+class TractorPluginLoader {
+    get plugins () {
+        if (!this._plugins) {
+            this._plugins = decoratePlugins(loadPlugins(), tractorConfigLoader.loadConfig());
+        }
+        return this._plugins;
+    }
 
-export function getPluginDescriptions () {
-    return plugins.map(plugin => plugin.description);
-}
+    getPlugins () {
+        return this.plugins;
+    }
 
-export function getPlugins () {
-    plugins.forEach(plugin => {
-        let create = plugin.create;
-        plugin.create = (browser) => create(browser, config);
-    });
-    return plugins;
+    getPluginDescriptions () {
+        return this.plugins.map(plugin => plugin.description);
+    }
 }
 
 function loadPlugins () {
@@ -35,50 +45,86 @@ function loadPlugins () {
     .map(pluginName => {
         let plugin;
         try {
-            let modulePath = path.resolve(process.cwd(), 'node_modules', pluginName);
+            let modulePath = path.resolve(process.cwd(), path.join('node_modules', pluginName));
             plugin = module._load(modulePath);
             plugin = plugin.default ? plugin.default : plugin;
-            plugin.name = pluginName;
+            plugin.fullName = pluginName;
+            let [, name] = plugin.fullName.match(TRACTOR_PLUGIN_NAME_REGEX);
+            plugin.name = name;
             return plugin;
         } catch (e) {
-            throw new Error(`could not require ${pluginName}`);
+            throw new TractorError(`could not require '${pluginName}'`);
         }
     })
     .filter(plugin => {
-        let { description, name, create } = plugin;
+        let { description, fullName, create } = plugin;
         if (!description) {
-            console.error(`'${name}' has no description.`)
+            throw new TractorError(`'${fullName}' has no \`description\``);
         }
         if (!create) {
-            console.error(`'${name}' has no create function.`)
+            throw new TractorError(`'${fullName}' has no \`create\` function`);
         }
         return create && description;
     });
 }
 
+function decoratePlugins (plugins, config) {
+    plugins.forEach(plugin => {
+        let { description, name } = plugin;
+        description.name = sentenceCase(name);
+        description.variableName = camelCase(name);
+        description.url = paramCase(name);
+
+        let { fullName } = plugin;
+        let script = path.resolve(process.cwd(), path.join('node_modules', fullName, 'dist', 'client', 'bundle.js'));
+        try {
+            fs.accessSync(script);
+            plugin.script = script;
+            plugin.description.hasUI = true;
+        } catch (e) {
+            plugin.description.hasUI = false;
+        }
+
+        let { create } = plugin;
+        plugin.create = (browser) => create(browser, config);
+
+        let init = plugin.init || (() => {});
+        plugin.init = () => init(config);
+
+        let serve = plugin.serve || (() => {});
+        plugin.serve = (express, application) => {
+            serve(express, application, config);
+        };
+    });
+    return plugins;
+}
+
 function getInstalledPluginNames () {
     let ls = childProcess.spawnSync('npm', ['ls', '--depth=0', '--parseable']);
-    let errors = ls.stderr.toString().trim().split(os.EOL);
 
+    let errors = ls.stderr.toString().trim().split(os.EOL);
     errors = errors
-    .filter((error) => {
+    .filter(error => {
         return error && !(error.startsWith(NPM_EXTRANEOUS_ERROR) || error.startsWith(NPM_PEER_DEP_ERROR));
     });
 
     if (errors.length) {
         let [firstError] = errors;
-        throw new Error(firstError);
+        throw new TractorError(firstError);
     }
 
     let allModulePaths = ls.stdout.toString().trim().split(os.EOL);
 
     let moduleNames = allModulePaths
-    .filter(modulePath => modulePath.match(TRACTOR_PLUGIN_REGEX))
+    .filter(modulePath => modulePath.match(TRACTOR_PLUGIN_MODULE_NAME_REGEX))
     .map(modulePath => {
-        let [, moduleName] = modulePath.match(TRACTOR_PLUGIN_REGEX);
+        let [, moduleName] = modulePath.match(TRACTOR_PLUGIN_MODULE_NAME_REGEX);
         return moduleName;
     })
     .filter(modulePath => modulePath !== TRACTOR_PLUGIN_LOADER);
 
     return moduleNames
 }
+
+let tractorPluginLoader = new TractorPluginLoader();
+export default tractorPluginLoader;
