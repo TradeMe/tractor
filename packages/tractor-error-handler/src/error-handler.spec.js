@@ -14,9 +14,9 @@ const expect = chai.expect;
 chai.use(sinonChai);
 
 // Under test:
-import errorHandler from './error-handler';
+import { handle } from './error-handler';
 
-describe('cli/errors: error-handler:', () => {
+describe('tractor-error-handler: error-handler:', () => {
     it('should log the error to the console', () => {
         sinon.stub(console, 'error');
         let response = {
@@ -24,7 +24,7 @@ describe('cli/errors: error-handler:', () => {
             send: _.noop
         };
 
-        errorHandler.handler(response, new Error(), 'error');
+        handle(response, new Error(), 'error');
 
         expect(console.error).to.have.been.calledWith('error');
 
@@ -38,7 +38,7 @@ describe('cli/errors: error-handler:', () => {
             send: _.noop
         };
 
-        errorHandler.handler(response, new Error('error'));
+        handle(response, new Error('error'));
 
         expect(console.error).to.have.been.calledWith('error');
 
@@ -53,7 +53,7 @@ describe('cli/errors: error-handler:', () => {
         };
         sinon.spy(response, 'status');
 
-        errorHandler.handler(response, new Error());
+        handle(response, new Error());
 
         expect(response.status).to.have.been.calledWith(constants.SERVER_ERROR);
 
@@ -68,7 +68,7 @@ describe('cli/errors: error-handler:', () => {
         };
         sinon.spy(response, 'send');
 
-        errorHandler.handler(response, new Error(), 'error');
+        handle(response, new Error(), 'error');
 
         let [responseData] = response.send.firstCall.args;
         expect(JSON.parse(responseData).error).to.equal('error');
@@ -84,7 +84,7 @@ describe('cli/errors: error-handler:', () => {
         };
         sinon.spy(response, 'send');
 
-        errorHandler.handler(response, new Error('error'));
+        handle(response, new Error('error'));
 
         let [responseData] = response.send.firstCall.args;
         expect(JSON.parse(responseData).error).to.equal('error');

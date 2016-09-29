@@ -5,10 +5,10 @@ import CONSTANTS from './constants';
 // This could be written as `class TractorError extends Error`
 // but that doesn't play nicely with Bluebird typed catches.
 // Instead we do it the ES5 way:
-function TractorError (message) {
+function TractorError (message, status) {
     this.message = message;
     this.name = 'TractorError';
-    this.status = CONSTANTS.SERVER_ERROR;
+    this.status = status || CONSTANTS.SERVER_ERROR;
     Error.captureStackTrace(this, TractorError);
 }
 

@@ -17,7 +17,7 @@ chai.use(sinonChai);
 // Under test:
 import TractorError from './TractorError';
 
-describe('cli/errors: TractorError:', () => {
+describe('tractor-error-handler: TractorError:', () => {
     it('should create a new TractorError', () => {
         let error = new TractorError();
 

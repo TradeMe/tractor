@@ -1,6 +1,6 @@
 {
   "name": "tractor-error-handler",
-  "version": "0.1.0-beta.0",
+  "version": "0.1.0",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -12,12 +12,11 @@
   },
   "main": "dist/index.js",
   "watch": {
-    "lint": "src/**/*.js",
-    "test": "src/**/*.js"
+    "build": "src/**/*.js"
   },
   "scripts": {
     "prepublish": "npm run build",
-    "build": "npm run test && npm run lint && npm run compile",
+    "build": "npm run lint && npm run cover && npm run compile",
     "compile": "babel src/ --out-dir dist --ignore *.spec.js",
     "cover": "istanbul cover --config .istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ./.mocharc src/*.spec.js",
     "lint": "eslint src/**/*.js; true",
