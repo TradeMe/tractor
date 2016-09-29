@@ -10,6 +10,7 @@ var Core = require('../../Core');
 // Dependencies:
 var camelcase = require('change-case').camel;
 require('../../Validators/ExampleNameValidator');
+require('./StepInputController');
 
 var StepInputDirective = function () {
     return {
@@ -25,15 +26,20 @@ var StepInputDirective = function () {
         template: fs.readFileSync(__dirname + '/StepInput.html', 'utf8'),
         /* eslint-enable no-path-concat */
 
-        link: link
+        link: link,
+
+        controller: "StepInputController",
+        controllerAs: 'stepInput',
+        bindToController: true,
+
     };
 
     function link ($scope, $element, $attrs) {
-        if (_.isUndefined($scope.model)) {
+        if (_.isUndefined($scope.stepInput.model)) {
             throw new Error('The "tractor-step-input" directive requires a "model" attribute.');
         }
 
-        if (_.isUndefined($scope.label)) {
+        if (_.isUndefined($scope.stepInput.label)) {
             throw new Error('The "tractor-step-input" directive requires a "label" attribute.');
         }
 
@@ -41,10 +47,27 @@ var StepInputDirective = function () {
             throw new Error('The "tractor-step-input" directive requires a "form" attribute.');
         }
 
-        $scope.form = $scope.$parent[$attrs.form];
-        $scope.id = Math.floor(Math.random() * Date.now());
+        $scope.stepInput.form = $scope.$parent[$attrs.form];       
+        $scope.stepInput.id = Math.floor(Math.random() * Date.now());
+        $scope.stepInput.property = camelcase($scope.stepInput.label);
 
-        $scope.property = camelcase($scope.label);
+        $scope.handleKeyDown = function (event) {
+            if (event.keyCode === 40) {
+                event.preventDefault();
+                if ($scope.selectedIndex + 1 !== $scope.stepInput.items.length) {
+                    $scope.selectedIndex++;
+                }
+            }
+            else if (event.keyCode === 38) {
+                event.preventDefault();
+                if ($scope.selectedIndex - 1 !== -1) {
+                    $scope.selectedIndex--;
+                }
+            } 
+            else if (event.keyCode === 27) {
+                $scope.stepInput.isOpen = false;
+            }
+        }
     }
 };
 
