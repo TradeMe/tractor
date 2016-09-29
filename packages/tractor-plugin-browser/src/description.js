@@ -1,6 +1,4 @@
 const description = {
-    name: 'browser',
-    variableName: 'browser',
     methods: [{
         name: 'get',
         description: 'Navigate to the given destination and loads mock modules before Angular.',
@@ -45,6 +43,14 @@ const description = {
         name: 'waitForAngular',
         description: 'Instruct webdriver to wait until Angular has finished rendering and has no outstanding $http calls before continuing.',
         returns: 'promise'
+    }, {
+        name: 'pause',
+        description: 'Beta (unstable) pause function for debugging webdriver tests.',
+        arguments: [{
+            name: 'debugPort',
+            description: 'Optional port to use for the debugging process',
+            type: 'number'
+        }]
     }]
 };
 
