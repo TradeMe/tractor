@@ -1,4 +1,4 @@
-# tractor-plugin-loader - v0.1.0
+# tractor-plugin-loader - v0.1.1
 
 A plugin loader for [**tractor**](https://github.com/TradeMe/tractor) to provide additional UI testing capabilities.
 
@@ -59,4 +59,4 @@ The `serve` function is where you define any new endpoints that you may want to 
 
 ### **script** (optional):
 
-A plugin can also contain UI code. The loader looks for a file at *node_modules/tractor-plugin-\*/dist/client/bundle.js* and injects that into the **tractor-client** when it is served. It is run before the bootstrapping of the Angular application, so it can set-up routes etc. To see an example of how this works, check out [**tractor-plugin-visual-regression**](https://github.com/phenomnomnominal/tractor-plugin-visual-regression).
+A plugin can also contain UI code. The loader looks for a file at *node_modules/tractor-plugin-my-plugin/dist/client/bundle.js* and injects that into the **tractor-client** when it is served. It is run before the bootstrapping of the Angular application, so it can set-up routes etc. To see an example of how this works, check out [**tractor-plugin-visual-regression**](https://github.com/phenomnomnominal/tractor-plugin-visual-regression).
