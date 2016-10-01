@@ -89,3 +89,29 @@ textarea {
     height: 30rem;
     outline: none;
 }
+
+ul.suggestions-list {
+    font-family: "Corbert";    
+    padding-left: 0rem; 
+    z-index: 1000;
+}
+tractor-step-input ul.suggestions-list li {
+	color: #000000;
+	padding: 10px 10px;	
+	cursor: pointer;
+	background: #f9f9f9;
+	border-bottom: 1px solid #eeeeee;
+    font-size: 1rem;
+    line-height: 1.5rem;	
+}
+.suggestions-list li:hover {
+	background: #eeeeee;
+}
+.suggestions-list li:active,
+.suggestions-list li.active {
+	color: #FFFFFF;
+	background:#42d253;
+}
+.suggestions-list:focus{
+	outline:none;
+}
