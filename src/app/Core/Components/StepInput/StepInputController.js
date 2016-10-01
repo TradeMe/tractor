@@ -15,8 +15,7 @@ var StepInputController = (function () {
         fileStructureService
     ) {
         this.fileStructureService = fileStructureService;  
-        this.items = []
-        this.selectedIndex = -1;
+        this.items = [];
         this.isOpen = false;        
     };
 
@@ -40,8 +39,7 @@ var StepInputController = (function () {
         .then(function (results) {
             return results;                
         }).then(getFilteredList.bind(that));
-     }
- 
+    }; 
 
     function getFilteredList (fileStructure) {
             var type = this.model.type;            
@@ -53,8 +51,7 @@ var StepInputController = (function () {
                //.filter(function (declaration){ return declaration.type === type } )
                  .map(function (declaration) {return declaration.step})           
                  ));
-        }; 
-  
+   };   
 
    function getSuggestions (searchData) {       
         this.items=[];
