@@ -46,7 +46,7 @@ var createFilterModelConstructor = function (
         this.locator = '';
     };
 
-    FilterModel.prototype.types = ['model', 'binding', 'text', 'css', 'options', 'repeater'];
+    FilterModel.prototype.types = ['model', 'binding', 'text', 'css', 'options', 'repeater', 'buttonText'];
 
     return FilterModel;
 
