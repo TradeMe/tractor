@@ -19,7 +19,10 @@ var ExpectationParserService = function ExpectationParserService (
     function parse (step, ast) {
         try {
             var expectation = new ExpectationModel(step);
-            expectation.value = _.first(ast.arguments).value;
+            
+            var expectationArgument = _.first(ast.arguments);
+
+            expectation.value = ((typeof (expectationArgument.value) === "string") ? expectationArgument.raw : expectationArgument.value  )
 
             var expectationCallExpression = _.first(ast.callee.object.object.object.arguments);
 
@@ -27,7 +30,7 @@ var ExpectationParserService = function ExpectationParserService (
             expectation.action = parseAction(expectation, expectationCallExpression);
             expectation.condition = ast.callee.property.name;
             parseArguments(expectation, expectationCallExpression);
-
+            
             return expectation;
         } catch (e) {
             console.warn('Invalid expectation:', ast);
