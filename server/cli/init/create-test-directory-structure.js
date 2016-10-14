@@ -23,6 +23,7 @@ function createTestDirectoryStructure (testDirectory) {
 
 function createAllDirectories (testDirectory) {
     let createDirectories = [
+        /* eslint-disable no-warning-comments */
         // TODO: This is a bit cryptic, pull this out into another promise
         // that creates the root dir, and do that first. Otherwise there
         // may be a race condition here?

@@ -22,31 +22,18 @@ module.exports = function () {
         return callback(w);
     };
 
-    // TODO: Get rid of `singleFeature` here. It works ok,
-    // but I’d rather see if there’s a way to get the number of
-    // specs from within the `StepResult` hook…
-    var singleFeature = false;
     /* eslint-disable new-cap */
-    this.Before(function (scenario, callback) {
+    this.Before(function (scenario, callback) {       
     /* eslint-enable new-cap */
         global.httpBackend = new HttpBackend(global.browser);
-        global.browser.getProcessedConfig()
-        .then(function (value) {
-            if (value.specs.length === 1) {
-                singleFeature = true;
-            }
-            callback();
-        });
+        callback();
     });
 
     /* eslint-disable new-cap */
     this.StepResult(function (event, callback) {
-        var stepResult;
-        if (singleFeature) {
-            stepResult = event.getPayloadItem('stepResult');
-            if (stepResult.isFailed()) {
-                global.browser.pause();
-            }
+        var stepResult = event.getPayloadItem('stepResult');
+        if (stepResult.isFailed() && global.browser.params.debug === 'true') {
+            global.browser.pause();
         }
         callback();
     });
