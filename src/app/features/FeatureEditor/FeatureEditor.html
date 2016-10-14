@@ -14,11 +14,16 @@
                     example="Feature"
                     validate-file-name>
                 </tractor-text-input>
-            </div>
+            </div>             
             <div class="file-options__file-actions">
                 <tractor-confirm-dialog trigger="featureEditor.confirmOverWrite">
                     <p>This will overwrite "{{ featureEditor.fileModel.name }}". Continue?</p>
                 </tractor-confirm-dialog>
+                <tractor-checkbox ng-show="featureEditor.fileModel.name"
+                     class="file-options__save-file"
+                     label="debug"
+                     model="featureEditor">
+                </tractor-checkbox>
                  <tractor-action ng-show="featureEditor.fileModel.name"
                       class="file-options__save-file"
                       action="Run feature"

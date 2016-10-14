@@ -39,14 +39,17 @@ var FeatureEditorController = function FeatureEditorController (
     );
 
     this.runnerService = runnerService;
+    controller.debug = false;
+    this.controller = controller;
     controller.runFeature = runFeature.bind(this);    
     return controller;
 };
 
-function runFeature (toRun) {  
+function runFeature (toRun) {      
     if (toRun){
-        this.runnerService.runProtractor({           
-            feature: toRun
+        this.runnerService.runProtractor({
+            feature: toRun,
+            debug: this.controller.debug
         });
     }
 }
