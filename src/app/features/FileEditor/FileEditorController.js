@@ -2,6 +2,7 @@
 
 // Utilities:
 var _ = require('lodash');
+var path = require('path');
 var Promise = require('bluebird');
 
 var FileEditorController = (function () {
@@ -10,31 +11,27 @@ var FileEditorController = (function () {
         $window,
         $state,
         confirmDialogService,
+        fileStructureService,
         persistentStateService,
         notifierService,
-        FileService,
         FileModel,
-        fileStructure,
-        filePath
+        file,
+        type,
+        extension
     ) {
         this.$scope = $scope;
         this.$window = $window;
         this.$state = $state;
         this.confirmDialogService = confirmDialogService;
+        this.fileStructureService = fileStructureService,
         this.persistentStateService = persistentStateService;
         this.notifierService = notifierService;
-        this.fileService = FileService;
         this.FileModel = FileModel;
-        this.fileStructure = fileStructure;
+        this.type = type;
+        this.extension = extension;
 
-        this.availableComponents = fileStructure.availableComponents;
-        this.availableMockData = fileStructure.availableMockData;
-
-        if (filePath) {
-            this.fileService.openFile({ path: filePath.path }, this.availableComponents, this.availableMockData)
-            .then(function (file) {
-                this.fileModel = file;
-            }.bind(this));
+        if (file) {
+            this.fileModel = file;
         } else if (FileModel && !this.fileModel) {
             this.newFile();
         }
@@ -48,41 +45,25 @@ var FileEditorController = (function () {
     };
 
     FileEditorController.prototype.saveFile = function () {
-        var path = null;
+        var fileStructure = this.fileStructureService.fileStructure;
+        var fileUrl = this.fileModel.url || path.join(fileStructure.url, this.type, this.fileModel.name + this.extension);
 
-        this.fileService.getPath({
-            path: this.fileModel.path,
-            name: this.fileModel.name
-        })
-        .then(function (filePath) {
-            path = filePath.path;
-            var exists = this.fileService.checkFileExists(this.fileStructure, path);
+        var exists = this.fileStructureService.checkFileExists(fileStructure, fileUrl);
 
-            if (exists) {
-                this.confirmOverWrite = this.confirmDialogService.show();
-                return this.confirmOverWrite.promise
-                .finally(function () {
-                    this.confirmOverWrite = null;
-                }.bind(this));
-            } else {
-                return Promise.resolve();
-            }
-        }.bind(this))
-        .then(function () {
-            return this.fileService.saveFile({
-                data: this.fileModel.data,
-                path: path
-            });
-        }.bind(this))
-        .then(function () {
-            return this.fileService.getFileStructure();
-        }.bind(this))
-        .then(function (fileStructure) {
-            this.fileStructure = fileStructure;
-            this.fileService.openFile({ path: path }, this.availableComponents, this.availableMockData)
-            .then(function (file) {
-                this.fileModel = file;
+        var confirm = Promise.resolve();
+        if (exists) {
+            this.confirmOverWrite = this.confirmDialogService.show();
+            confirm = this.confirmOverWrite.promise
+            .finally(function () {
+                this.confirmOverWrite = null;
             }.bind(this));
+        }
+
+        confirm.then(function () {
+            return this.fileStructureService.saveItem(fileUrl, {
+                data: this.fileModel.data,
+                overwrite: exists
+            });
         }.bind(this))
         .catch(function () {
             this.notifierService.error('File was not saved.');

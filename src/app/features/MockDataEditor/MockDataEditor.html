@@ -1,5 +1,5 @@
 <div ng-if="mockDataEditor.fileModel">
-    <tractor-file-tree model="mockDataEditor" type="mock-data"></tractor-file-tree>
+    <tractor-file-tree extension="{{ mockDataEditor.extension }}" model="mockDataEditor" type="{{ mockDataEditor.type }}"></tractor-file-tree>
     <tractor-panel-handle panel-name="mock-data-file-tree"></tractor-panel-handle>
     <form class="file" name="mockDataEditor.fileEditor" novalidate
         ng-submit="mockDataEditor.showErrors() && mockDataEditor.saveFile()">

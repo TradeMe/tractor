@@ -1,4 +1,4 @@
-<tractor-file-tree model="stepDefinitionEditor" type="step-definitions"></tractor-file-tree>
+<tractor-file-tree extension="{{ stepDefinitionEditor.extension }}" model="stepDefinitionEditor" type="{{ stepDefinitionEditor.type }}"></tractor-file-tree>
 <tractor-panel-handle panel-name="step-definition-file-tree"></tractor-panel-handle>
 <form class="file" name="stepDefinitionEditor.fileEditor" novalidate
     ng-submit="stepDefinitionEditor.showErrors() && stepDefinitionEditor.saveFile()">
@@ -107,14 +107,14 @@
                 action="Add expectation">
             </tractor-action>
         </section>
-        
+
         <section ng-if="stepDefinitionEditor.canAddComponents">
             <section class="file-editor__container"
                 ng-if="stepDefinitionEditor.hasComponents">
                 <h2>Active components:</h2>
                 <ul>
-                    <li ng-repeat="component in stepDefinitionEditor.fileModel.componentInstances">                        
-                        <span> {{ component.component.name }} </span>                        
+                    <li ng-repeat="component in stepDefinitionEditor.fileModel.componentInstances">
+                        <span> {{ component.component.name }} </span>
                         <tractor-action
                             model="stepDefinitionEditor.fileModel"
                             action="Remove component"
@@ -124,7 +124,7 @@
                     </li>
                 </ul>
             </section>
-            
+
             <section class="file-editor__container">
                 <h2>Available components:</h2>
                 <ul>
@@ -140,7 +140,7 @@
                 </ul>
             </section>
         </section>
-        
+
         <section class="file-editor__container" ng-if="stepDefinitionEditor.showMockDataSection">
             <h2>Mock Data:</h2>
 
@@ -183,13 +183,13 @@
             </tractor-action>
         </section>
 
-        <section ng-if="stepDefinitionEditor.canAddMockData">           
+        <section ng-if="stepDefinitionEditor.canAddMockData">
             <section class="file-editor__container"
                 ng-if="stepDefinitionEditor.hasMockData">
                 <h2>Active mock data:</h2>
                 <ul>
-                    <li ng-repeat="mockData in stepDefinitionEditor.fileModel.mockDataInstances">                     
-                        <span> {{ mockData.mockData.name }} </span>                        
+                    <li ng-repeat="mockData in stepDefinitionEditor.fileModel.mockDataInstances">
+                        <span> {{ mockData.mockData.name }} </span>
                         <tractor-action
                             model="stepDefinitionEditor.fileModel"
                             action="Remove mock"
@@ -199,7 +199,7 @@
                     </li>
                 </ul>
             </section>
-            
+
             <section class="file-editor__container">
                 <h2>Available mock data:</h2>
                 <ul>
@@ -215,6 +215,6 @@
                 </ul>
             </section>
         </section>
-        
+
     </section>
 </form>

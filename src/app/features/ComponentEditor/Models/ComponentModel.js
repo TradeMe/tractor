@@ -19,10 +19,7 @@ var createComponentModelConstructor = function (
     ActionModel
 ) {
     var ComponentModel = function ComponentModel (options) {
-        var elements = plugins;
-        var browser = _.find(elements, function (element) {
-            return element.name === 'browser';
-        });
+        var elements = plugins.slice(0);
         var domElements = [];
         var actions = [];
 
@@ -32,14 +29,14 @@ var createComponentModelConstructor = function (
                     return !!(options && options.isSaved);
                 }
             },
-            path: {
+            url: {
                 get: function () {
-                    return options && options.path;
+                    return options && options.url;
                 }
             },
-            browser: {
+            plugins: {
                 get: function () {
-                    return browser;
+                    return plugins;
                 }
             },
             domElements: {

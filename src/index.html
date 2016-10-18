@@ -13,5 +13,13 @@
   <body class="fill">
     <div ui-view class="fill"></div>
     <script src="/tractor.bundle.js"></script>
+
+    <!-- START PLUGIN SCRIPTS: -->
+    <% _.forEach(scripts, function (script) { %>
+    <script src="<%- script %>"></script>
+    <% }); %>
+    <!-- END PLUGIN SCRIPTS -->
+
+    <script src="/init.js"></script>
   </body>
 </html>

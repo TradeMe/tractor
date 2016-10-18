@@ -13,8 +13,6 @@ require('./MockDataInstanceModel');
 
 var createStepDefinitionModelConstructor = function (
     astCreatorService,
-    ComponentFileService,
-    MockDataFileService,
     ComponentInstanceModel,
     MockDataInstanceModel
 ) {
@@ -36,9 +34,9 @@ var createStepDefinitionModelConstructor = function (
                     return options.availableMockData;
                 }
             },
-            path: {
+            url: {
                 get: function () {
-                    return options.path;
+                    return options.url;
                 }
             },
             meta: {
@@ -136,10 +134,8 @@ var createStepDefinitionModelConstructor = function (
 
 StepDefinitionEditor.factory('StepDefinitionModel', function (
     astCreatorService,
-    ComponentFileService,
-    MockDataFileService,
     ComponentInstanceModel,
     MockDataInstanceModel
 ) {
-    return createStepDefinitionModelConstructor(astCreatorService, ComponentFileService, MockDataFileService, ComponentInstanceModel, MockDataInstanceModel);
+    return createStepDefinitionModelConstructor(astCreatorService, ComponentInstanceModel, MockDataInstanceModel);
 });

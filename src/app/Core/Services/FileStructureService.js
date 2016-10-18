@@ -7,113 +7,94 @@ var _ = require('lodash');
 var Core = require('../Core');
 
 var FileStructureService = function FileStructureService (
-    $http,
-    persistentStateService,
-    ComponentParserService,
-    MockDataParserService
+    $http
 ) {
-    var OPEN_DIRECTORIES = 'OpenDirectories';
+    var _fileStructure = null;
 
-    return {
-        getFileStructure: getFileStructure,
-        addDirectory: addDirectory,
-        copyFile: copyFile,
-        deleteDirectory: deleteDirectory,
-        deleteFile: deleteFile,
+    var service = {
+        checkFileExists: checkFileExists,
+        copyItem: copyItem,
+        deleteItem: deleteItem,
         editDirectoryPath: editDirectoryPath,
         editFilePath: editFilePath,
-        toggleOpenDirectory: toggleOpenDirectory
+        getFileStructure: getFileStructure,
+        openItem: openItem,
+        saveItem: saveItem
     };
 
-    function getFileStructure (type) {
-        return $http.get('/' + type + '/file-structure')
-        .then(parseComponentsAndMockData)
-        .then(updateFileStructure);
+    Object.defineProperty(service, 'fileStructure', {
+        get: function () {
+            return _fileStructure;
+        }
+    });
+
+    return service;
+
+    function checkFileExists (fileStructure, fileUrl) {
+        return !!fileStructure.allFilesByUrl[fileUrl];
     }
 
-    function addDirectory (type, options) {
-        return $http.post('/' + type + '/directory', options)
-        .then(updateFileStructure);
+    function copyItem (itemUrl) {
+        return $http.post('/fs' + itemUrl + '/copy')
+        .then(updateFileStructure.bind(this));
     }
 
-    function copyFile (type, options) {
-        return $http.post('/' + type + '/file/copy', options)
-        .then(updateFileStructure);
-    }
-
-    function deleteDirectory (type, options) {
-        return $http.delete('/' + type + '/directory', {
+    function deleteItem (itemUrl, options) {
+        return $http.delete('/fs' + itemUrl, {
             params: options
         })
-        .then(updateFileStructure);
-    }
-
-    function deleteFile (type, options) {
-        return $http.delete('/' + type + '/file', {
-            params: options
-        })
-        .then(updateFileStructure);
+        .then(updateFileStructure.bind(this));
     }
 
     function editDirectoryPath (type, options) {
         options.isDirectory = true;
-        return $http.patch('/' + type + '/directory/path', options)
-        .then(updateFileStructure);
+        return $http.patch('/' + type + '/directory/path', options);
     }
 
     function editFilePath (type, options) {
-        return $http.patch('/' + type + '/file/path', options)
-        .then(updateFileStructure);
+        return $http.patch('/' + type + '/file/path', options);
     }
 
-    function toggleOpenDirectory (directoryPath) {
-        var openDirectories = getOpenDirectories();
-        if (openDirectories[directoryPath]) {
-            delete openDirectories[directoryPath];
+    function getFileStructure (extension) {
+        return $http.get('/fs/')
+        .then(updateFileStructure.bind(this));
+    }
+
+    function openItem (itemUrl) {
+        itemUrl = decodeURIComponent(itemUrl);
+        return $http.get('/fs' + itemUrl);
+    }
+
+    function saveItem (itemUrl, options) {
+        return $http.put('/fs' + itemUrl, options)
+        .then(updateFileStructure.bind(this));
+    }
+
+    function getAllFiles (directory) {
+        if (directory.directories.length) {
+            directory.directories.forEach(function (directory) {
+                getAllFiles(directory);
+            });
+            directory.allFiles = Array.prototype.concat.apply([], directory.directories.map(function (directory) {
+                return directory.allFiles;
+            }));
+            directory.allFiles = directory.allFiles.concat(directory.files);
         } else {
-            openDirectories[directoryPath] = true;
+            directory.allFiles = directory.files;
         }
-        persistentStateService.set(OPEN_DIRECTORIES, openDirectories);
     }
 
-    function parseComponentsAndMockData (fileStructure) {
-        fileStructure.availableComponents = _.map(fileStructure.availableComponents, function (component) {
-            return ComponentParserService.parse(component);
+    function getAllFilesByUrl (fileStructure) {
+        fileStructure.allFilesByUrl = {};
+        fileStructure.allFiles.forEach(function (file) {
+            fileStructure.allFilesByUrl[file.url] = file;
         });
-        fileStructure.availableMockData = _.map(fileStructure.availableMockData, function (mockData) {
-            return MockDataParserService.parse(mockData);
-        });
-        return fileStructure;
     }
 
     function updateFileStructure (fileStructure) {
-        fileStructure.directory = restoreOpenDirectories(fileStructure.directory);
-        fileStructure.directory.allFiles = getAllFiles(fileStructure.directory);
-        fileStructure.directory.open = true;
-        return fileStructure;
-    }
-
-    function getOpenDirectories () {
-        return persistentStateService.get(OPEN_DIRECTORIES);
-    }
-
-    function restoreOpenDirectories (directory) {
-        directory.directories.forEach(function (directory) {
-            restoreOpenDirectories(directory);
-        });
-        directory.open = !!getOpenDirectories()[directory.path];
-        return directory;
-    }
-
-    function getAllFiles (directory, allFiles) {
-        if (!allFiles) {
-            allFiles = [];
-        }
-        _.each(directory.directories, function (directory) {
-            allFiles = getAllFiles(directory, allFiles);
-        })
-        allFiles = allFiles.concat(directory.files);
-        return allFiles;
+        getAllFiles(fileStructure);
+        getAllFilesByUrl(fileStructure);
+        _fileStructure = fileStructure;
     }
 };
 

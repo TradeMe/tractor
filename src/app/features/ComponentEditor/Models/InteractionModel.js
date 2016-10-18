@@ -82,7 +82,7 @@ var createInteractionModelConstructor = function (
 
     function interactionAST () {
         var template = '<%= element %>';
-        if (this.element.variableName !== 'browser') {
+        if (!isPlugin(this.element)) {
             template = 'self.' + template;
         }
         template += '.<%= method %>(%= argumentValues %);';
@@ -98,6 +98,10 @@ var createInteractionModelConstructor = function (
             method: method,
             argumentValues: argumentValues
         });
+    }
+
+    function isPlugin (element) {
+        return !element.component;
     }
 };
 

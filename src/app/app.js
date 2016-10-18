@@ -19,17 +19,19 @@ require('./features/ControlPanel/ControlPanelController');
 
 require('./features/ComponentEditor/ComponentEditor');
 require('./features/ComponentEditor/ComponentEditorController');
-require('./features/ComponentEditor/Services/ComponentFileService');
+require('./features/ComponentEditor/Services/ComponentParserService');
 
 require('./features/FeatureEditor/FeatureEditor');
 require('./features/FeatureEditor/FeatureEditorController');
-require('./features/FeatureEditor/Services/FeatureFileService');
+require('./features/FeatureEditor/Services/FeatureParserService');
 
-require('./features/StepDefinitionEditor/Services/StepDefinitionFileService');
+require('./features/StepDefinitionEditor/StepDefinitionEditor');
 require('./features/StepDefinitionEditor/StepDefinitionEditorController');
+require('./features/StepDefinitionEditor/Services/StepDefinitionParserService');
 
-require('./features/MockDataEditor/Services/MockDataFileService');
+require('./features/MockDataEditor/MockDataEditor');
 require('./features/MockDataEditor/MockDataEditorController');
+require('./features/MockDataEditor/Services/MockDataParserService');
 
 require('./Core/Core');
 require('./Core/Services/FileStructureService');
@@ -63,16 +65,16 @@ tractor.config(function (
 
     $urlMatcherFactoryProvider.type('TractorFile', {
         encode: function (toEncode) {
-            return toEncode && toEncode.name ? toEncode.name.replace(/\s/g, '+') : '';
+            return toEncode && toEncode.url ? toEncode.url.replace(/\s/g, '+').replace(/^\//, '') : '';
         },
         decode: function (toDecode) {
-            return toDecode && _.isString(toDecode) ? { name: toDecode.replace(/\+/g, ' ') } : toDecode;
+            return toDecode && _.isString(toDecode) ? { url: toDecode.replace(/\+/g, ' ') } : toDecode;
         },
         is: function (tractorFile) {
-            return !tractorFile || tractorFile && tractorFile.name;
+            return !tractorFile || tractorFile && tractorFile.url;
         },
         equals: function (a, b) {
-            return a && a.name && b && b.name && a.name === b.name;
+            return a && a.url && b && b.url && a.url === b.url;
         }
     });
 
@@ -91,12 +93,15 @@ tractor.config(function (
         /* eslint-enable no-path-concat */
         controller: 'ComponentEditorController as componentEditor',
         resolve: {
-            componentFileStructure: function (ComponentFileService) {
-                return ComponentFileService.getFileStructure();
-            },
-            componentPath: function ($stateParams, ComponentFileService) {
-                var componentName = $stateParams.file && $stateParams.file.name;
-                return componentName ? ComponentFileService.getPath({ name: componentName }) : null;
+            component: function ($stateParams, fileStructureService, ComponentParserService) {
+                var componentUrl = $stateParams.file && $stateParams.file.url;
+                if (!componentUrl) {
+                    return null;
+                }
+                return fileStructureService.openItem(componentUrl)
+                .then(function (file) {
+                    return ComponentParserService.parse(file);
+                });
             }
         }
     })
@@ -107,12 +112,15 @@ tractor.config(function (
         /* eslint-enable no-path-concat */
         controller: 'FeatureEditorController as featureEditor',
         resolve: {
-            featureFileStructure: function (FeatureFileService) {
-                return FeatureFileService.getFileStructure();
-            },
-            featurePath: function ($stateParams, FeatureFileService) {
-                var featureName = $stateParams.file && $stateParams.file.name;
-                return featureName ? FeatureFileService.getPath({ name: featureName }) : null;
+            feature: function ($stateParams, fileStructureService, FeatureParserService) {
+                var featureUrl = $stateParams.file && $stateParams.file.url;
+                if (!featureUrl) {
+                    return null;
+                }
+                return fileStructureService.openItem(featureUrl)
+                .then(function (file) {
+                    return FeatureParserService.parse(file);
+                });
             }
         }
     })
@@ -123,12 +131,15 @@ tractor.config(function (
         /* eslint-enable no-path-concat */
         controller: 'MockDataEditorController as mockDataEditor',
         resolve: {
-            mockDataFileStructure: function (MockDataFileService) {
-                return MockDataFileService.getFileStructure();
-            },
-            mockDataPath: function ($stateParams, MockDataFileService) {
-                var mockDataName = $stateParams.file && $stateParams.file.name;
-                return mockDataName ? MockDataFileService.getPath({ name: mockDataName }) : null;
+            mockData: function ($stateParams, fileStructureService, MockDataParserService) {
+                var mockDataUrl = $stateParams.file && $stateParams.file.url;
+                if (!mockDataUrl) {
+                    return null;
+                }
+                return fileStructureService.openItem(mockDataUrl)
+                .then(function (file) {
+                    return MockDataParserService.parse(file);
+                });
             }
         }
     })
@@ -139,12 +150,39 @@ tractor.config(function (
         /* eslint-enable no-path-concat */
         controller: 'StepDefinitionEditorController as stepDefinitionEditor',
         resolve: {
-            stepDefinitionFileStructure: function (StepDefinitionFileService) {
-                return StepDefinitionFileService.getFileStructure();
+            availableComponents: function (fileStructureService) {
+                return fileStructureService.getFileStructure()
+                .then(function () {
+                    return fileStructureService.fileStructure.allFiles
+                    .filter(function (file) {
+                        return file.url.endsWith('.component.js');
+                    })
+                    .map(function (component) {
+                        return component.meta;
+                    });
+                });
             },
-            stepDefinitionPath: function ($stateParams, StepDefinitionFileService) {
-                var stepDefinitionName = $stateParams.file && $stateParams.file.name;
-                return stepDefinitionName ? StepDefinitionFileService.getPath({ name: stepDefinitionName }) : null;
+            availableMockData: function (fileStructureService) {
+                return fileStructureService.getFileStructure()
+                .then(function () {
+                    return fileStructureService.fileStructure.allFiles
+                    .filter(function (file) {
+                        return file.url.endsWith('.mock.json');
+                    })
+                    .map(function (component) {
+                        return component.meta;
+                    });
+                });
+            },
+            stepDefinition: function ($stateParams, availableComponents, availableMockData, fileStructureService, StepDefinitionParserService) {
+                var stepDefinitionUrl = $stateParams.file && $stateParams.file.url;
+                if (!stepDefinitionUrl) {
+                    return null;
+                }
+                return fileStructureService.openItem(stepDefinitionUrl)
+                .then(function (file) {
+                    return StepDefinitionParserService.parse(file, availableComponents, availableMockData);
+                });
             }
         }
     });
@@ -153,15 +191,5 @@ tractor.config(function (
     Promise.longStackTraces();
     Promise.setScheduler(function (cb) {
         $rootScope.$evalAsync(cb);
-    });
-});
-
-var $http = angular.injector(['ng']).get('$http');
-Promise.all([$http.get('/config'), $http.get('/plugins')])
-.spread(function (config, plugins) {
-    tractor.constant('config', config.data);
-    tractor.constant('plugins', plugins.data);
-    angular.bootstrap(document.body, ['tractor'], {
-        strictDi: true
     });
 });

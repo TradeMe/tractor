@@ -6,6 +6,8 @@ module.exports = function () {
         var self = this;
         return new Promise(function (resolve) {
             resolve(browser.get('/', null));
+        }).then(function () {
+            return visualRegression.takeScreenshot('home page');
         });
     };
     Tractor.prototype.refresh = function () {

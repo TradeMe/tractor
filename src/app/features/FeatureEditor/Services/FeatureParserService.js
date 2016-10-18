@@ -23,7 +23,7 @@ var FeatureParserService = function FeatureParserService (
         try {
             var feature = new FeatureModel({
                 isSaved: true,
-                path: featureFile.path
+                url: featureFile.url
             });
 
             var featureTokens = _.first(featureFile.tokens);

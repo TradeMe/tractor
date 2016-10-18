@@ -32,6 +32,9 @@
             <li ui-sref-active="active">
                 <a ui-sref=".mock-data({ file: null })">Mock Data</a>
             </li>
+            <li ng-repeat="plugin in controlPanel.plugins">
+                <a ui-sref=".{{ plugin.url }}()">{{ plugin.name }}</a>
+            </li>
         </ul>
     </nav>
 </header>

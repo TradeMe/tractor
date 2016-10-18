@@ -8,7 +8,6 @@ var FileEditorController = require('../FileEditor/FileEditorController');
 require('../../Core/Services/ConfirmDialogService');
 require('../../Core/Services/PersistentStateService');
 require('../../Core/Components/Notifier/NotifierService');
-require('./Services/ComponentFileService');
 require('./Models/ComponentModel');
 
 var ComponentEditorController = function ComponentEditorController (
@@ -16,24 +15,24 @@ var ComponentEditorController = function ComponentEditorController (
     $window,
     $state,
     confirmDialogService,
+    fileStructureService,
     persistentStateService,
     notifierService,
-    ComponentFileService,
     ComponentModel,
-    componentFileStructure,
-    componentPath
+    component
 ) {
     var controller = new FileEditorController(
         $scope,
         $window,
         $state,
         confirmDialogService,
+        fileStructureService,
         persistentStateService,
         notifierService,
-        ComponentFileService,
         ComponentModel,
-        componentFileStructure,
-        componentPath
+        component,
+        'components',
+        '.component.js'
     );
     controller.component = controller.fileModel;
     return controller;

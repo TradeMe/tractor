@@ -65,13 +65,9 @@ var createMockDataInstanceModelConstructor = function (
     }
 
     function getRelativePath () {
-        // Sw33t hax()rz to get around the browserify "path" shim not working on Windows.
-        var stepDefinitionPath = this.stepDefinition.path.replace(/\\/g, '/');
-        var mockDataPath = this.mockData.path.replace(/\\/g, '/');
-        var relativePath = path.relative(path.dirname(stepDefinitionPath), mockDataPath);
+        var relativePath = path.relative(path.dirname(this.mockData.url), this.stepDefinition.url);
         return relativePath;
     }
-    
 };
 
 StepDefinitionEditor.factory('MockDataInstanceModel', function (

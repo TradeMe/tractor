@@ -76,7 +76,7 @@ var createActionModelConstructor = function (
 
     ActionModel.prototype.addInteraction = function () {
         var interaction = new InteractionModel(this);
-        interaction.element = this.component.browser;
+        interaction.element = this.component.plugins[0];
         this.interactions.push(interaction);
     };
 

@@ -117,10 +117,12 @@ describe('InteractionModel.js:', function () {
             var escodegen = require('escodegen');
             var os = require('os');
 
+            var component = {};
             var method = {
                 name: 'method'
             };
             var element = {
+                component: component,
                 variableName: 'element',
                 methods: [method]
             };
@@ -136,25 +138,25 @@ describe('InteractionModel.js:', function () {
             );
         });
 
-        it('should handle method on the global `browser` Element:', function () {
+        it('should handle a method on a plugin:', function () {
             var escodegen = require('escodegen');
             var os = require('os');
 
             var method = {
                 name: 'method'
             };
-            var element = {
-                variableName: 'browser',
+            var plugin = {
+                variableName: 'plugin',
                 methods: [method]
             };
 
             var interactionModel = new InteractionModel();
-            interactionModel.element = element;
+            interactionModel.element = plugin;
             var ast = interactionModel.ast;
 
             expect(escodegen.generate(ast)).to.equal(
                 'new Promise(function (resolve) {' + os.EOL +
-                '    resolve(browser.method());' + os.EOL +
+                '    resolve(plugin.method());' + os.EOL +
                 '})'
             );
         });
@@ -162,11 +164,13 @@ describe('InteractionModel.js:', function () {
         it('should handle methods that return a promise:', function () {
             var escodegen = require('escodegen');
 
+            var component = {};
             var method = {
                 name: 'method',
                 returns: 'promise'
             };
             var element = {
+                component: component,
                 variableName: 'element',
                 methods: [method]
             };
@@ -188,12 +192,14 @@ describe('InteractionModel.js:', function () {
                 parameters: [],
                 interactions: []
             };
+            var component = {};
             var method = {
                 name: 'method',
                 returns: 'promise',
                 arguments: [argument]
             };
             var element = {
+                component: component,
                 variableName: 'element',
                 methods: [method]
             };

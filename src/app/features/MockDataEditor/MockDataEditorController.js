@@ -8,7 +8,6 @@ var FileEditorController = require('../FileEditor/FileEditorController');
 require('../../Core/Services/ConfirmDialogService');
 require('../../Core/Services/PersistentStateService');
 require('../../Core/Components/Notifier/NotifierService');
-require('./Services/MockDataFileService');
 require('./Models/MockDataModel');
 
 var MockDataEditorController = function MockDataEditorController (
@@ -16,24 +15,24 @@ var MockDataEditorController = function MockDataEditorController (
     $window,
     $state,
     confirmDialogService,
+    fileStructureService,
     persistentStateService,
     notifierService,
-    MockDataFileService,
     MockDataModel,
-    mockDataFileStructure,
-    mockDataPath
+    mockData
 ) {
     return new FileEditorController(
         $scope,
         $window,
         $state,
         confirmDialogService,
+        fileStructureService,
         persistentStateService,
         notifierService,
-        MockDataFileService,
         MockDataModel,
-        mockDataFileStructure,
-        mockDataPath
+        mockData,
+        'mock-data',
+        '.mock.json'
     );
 };
 

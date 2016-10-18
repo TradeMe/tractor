@@ -49,18 +49,18 @@
     <div ng-include="'rename-input.html'"></div>
 
     <ul class="file-tree__file-list"
-        ng-if="(item || fileTree.model.fileStructure.directory).open">
+        ng-if="(item || fileTree.fileStructure).open">
         <li class="file-tree__file-list-item file-tree__file-list-item--new-directory">
             <tractor-action
                 model="fileTree"
                 action="Add directory"
-                argument="item || fileTree.model.fileStructure.directory">
+                argument="item || fileTree.fileStructure">
             </tractor-action>
         </li>
 
         <li class="file-tree__file-list-item file-tree__file-list-item--directory"
             ng-class="{ 'file-tree__file-list-item--open-directory': item.open }"
-            ng-repeat="item in (item || fileTree.model.fileStructure.directory).directories"
+            ng-repeat="item in (item || fileTree.fileStructure).directories"
             ng-include="'file-structure.html'"
             tractor-drop-file
             on-drop="fileTree.editFilePath"
@@ -68,15 +68,15 @@
         </li>
 
         <li class="file-tree__file-list-item"
-            ng-repeat="item in (item || fileTree.model.fileStructure.directory).files"
+            ng-repeat="item in (item || fileTree.fileStructure).files"
             tractor-drag-file>
             <div ng-include="'file-options.html'"></div>
 
             <p class="file-tree__item-name"
                 ng-if="item.name && !item.editingName"
-                ng-click="fileTree.openFile(item)"
+                ng-click="fileTree.openItem(item)"
                 ng-dblclick="fileTree.editName(item)">
-                {{ fileTree.getName(item) }}
+                {{ item.name }}
             </p>
             <div ng-include="'rename-input.html'"></div>
         </li>
@@ -84,9 +84,10 @@
 </script>
 
 <section class="file-tree__container"
+    ng-if="fileTree.fileStructure"
     tractor-drop-file
     on-drop="fileTree.editFilePath"
-    drop-directory="fileTree.model.fileStructure.directory">
+    drop-directory="fileTree.fileStructure">
 
     <h2 class="file-tree__header">
         {{ fileTree.headerName }} files:

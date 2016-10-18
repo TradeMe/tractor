@@ -134,13 +134,13 @@ describe('ActionModel.js:', function () {
                 name: 'method',
                 returns: 'promise'
             };
-            var browser = {
+            var plugin = {
                 methods: [method],
-                name: 'browser',
-                variableName: 'browser'
+                name: 'plugin',
+                variableName: 'plugin'
             };
             var component = {
-                browser: browser,
+                plugins: [plugin],
                 variableName: 'Component'
             };
             var actionModel = new ActionModel(component);
@@ -151,7 +151,7 @@ describe('ActionModel.js:', function () {
             expect(escodegen.generate(ast)).to.equal(
                 'Component.prototype.action = function () {' + os.EOL +
                 '    var self = this;' + os.EOL +
-                '    return browser.method();' + os.EOL +
+                '    return plugin.method();' + os.EOL +
                 '}'
             );
         });
@@ -160,15 +160,6 @@ describe('ActionModel.js:', function () {
             var escodegen = require('escodegen');
             var os = require('os');
 
-            var browserMethod = {
-                name: 'method',
-                returns: 'promise'
-            };
-            var browser = {
-                methods: [browserMethod],
-                name: 'browser',
-                variableName: 'browser'
-            };
             var elementMethod = {
                 name: 'method',
                 returns: 'promise'
@@ -178,12 +169,23 @@ describe('ActionModel.js:', function () {
                 name: 'element',
                 variableName: 'element'
             };
+            var pluginMethod = {
+                name: 'method',
+                returns: 'promise'
+            };
+            var plugin = {
+                methods: [pluginMethod],
+                name: 'plugin',
+                variableName: 'plugin'
+            };
             var component = {
-                browser: browser,
                 domElements: [element],
-                elements: [browser, element],
+                elements: [plugin, element],
+                plugins: [plugin],
                 variableName: 'Component'
             };
+            element.component = component;
+            
             var actionModel = new ActionModel(component);
             actionModel.name = 'Action';
             actionModel.addInteraction();
@@ -203,15 +205,6 @@ describe('ActionModel.js:', function () {
             var escodegen = require('escodegen');
             var os = require('os');
 
-            var browserMethod = {
-                name: 'method',
-                returns: 'promise'
-            };
-            var browser = {
-                methods: [browserMethod],
-                name: 'browser',
-                variableName: 'browser'
-            };
             var elementMethod = {
                 name: 'method',
                 returns: 'promise'
@@ -221,12 +214,23 @@ describe('ActionModel.js:', function () {
                 name: 'element',
                 variableName: 'element'
             };
+            var pluginMethod = {
+                name: 'method',
+                returns: 'promise'
+            };
+            var plugin = {
+                methods: [pluginMethod],
+                name: 'plugin',
+                variableName: 'plugin'
+            };
             var component = {
-                browser: browser,
                 domElements: [element],
-                elements: [browser, element],
+                elements: [plugin, element],
+                plugins: [plugin],
                 variableName: 'Component'
             };
+            element.component = component;
+
             var actionModel = new ActionModel(component);
             actionModel.name = 'Action';
             actionModel.addInteraction();
@@ -251,15 +255,6 @@ describe('ActionModel.js:', function () {
             var escodegen = require('escodegen');
             var os = require('os');
 
-            var browserMethod = {
-                name: 'method',
-                returns: 'promise'
-            };
-            var browser = {
-                methods: [browserMethod],
-                name: 'browser',
-                variableName: 'browser'
-            };
             var elementMethod = {
                 name: 'method',
                 returns: 'string'
@@ -269,12 +264,23 @@ describe('ActionModel.js:', function () {
                 name: 'element',
                 variableName: 'element'
             };
+            var pluginMethod = {
+                name: 'method',
+                returns: 'promise'
+            };
+            var plugin = {
+                methods: [pluginMethod],
+                name: 'plugin',
+                variableName: 'plugin'
+            };
             var component = {
-                browser: browser,
                 domElements: [element],
-                elements: [browser, element],
+                elements: [plugin, element],
+                plugins: [plugin],
                 variableName: 'Component'
             };
+            element.component = component;
+
             var actionModel = new ActionModel(component);
             actionModel.name = 'Action';
             actionModel.addInteraction();
@@ -303,15 +309,6 @@ describe('ActionModel.js:', function () {
             var escodegen = require('escodegen');
             var os = require('os');
 
-            var browserMethod = {
-                name: 'method',
-                returns: 'promise'
-            };
-            var browser = {
-                methods: [browserMethod],
-                name: 'browser',
-                variableName: 'browser'
-            };
             var elementMethod = {
                 name: 'method',
                 returns: 'promise',
@@ -324,12 +321,23 @@ describe('ActionModel.js:', function () {
                 name: 'element',
                 variableName: 'element'
             };
+            var pluginMethod = {
+                name: 'method',
+                returns: 'promise'
+            };
+            var plugin = {
+                methods: [pluginMethod],
+                name: 'plugin',
+                variableName: 'plugin'
+            };
             var component = {
-                browser: browser,
                 domElements: [element],
-                elements: [browser, element],
+                elements: [plugin, element],
+                plugins: [plugin],
                 variableName: 'Component'
             };
+            element.component = component;
+
             var actionModel = new ActionModel(component);
             actionModel.name = 'Action';
             actionModel.addInteraction();
@@ -375,11 +383,11 @@ describe('ActionModel.js:', function () {
 
     describe('ActionModel.addInteraction:', function () {
         it('should add a new Interaction to the Action:', function () {
-            var browser = {
+            var plugin = {
                 methods: [{}]
             };
             var component = {
-                browser: browser
+                plugins: [plugin]
             };
             var actionModel = new ActionModel(component);
             actionModel.addInteraction();
@@ -389,29 +397,29 @@ describe('ActionModel.js:', function () {
             expect(interaction).to.be.an.instanceof(InteractionModel);
         });
 
-        it('should set the default element of the Interaction to be the browser:', function () {
-            var browser = {
+        it('should set the default element of the Interaction to be the first plugin:', function () {
+            var plugin = {
                 methods: [{}]
             };
             var component = {
-                browser: browser
+                plugins: [plugin]
             };
             var actionModel = new ActionModel(component);
             actionModel.addInteraction();
 
             expect(actionModel.interactions.length).to.equal(1);
             var interaction = _.first(actionModel.interactions);
-            expect(interaction.element).to.equal(browser);
+            expect(interaction.element).to.equal(plugin);
         });
     });
 
     describe('ActionModel.removeInteraction:', function () {
         it('should remove a Interaction from the Action:', function () {
-            var browser = {
+            var plugin = {
                 methods: [{}]
             };
             var component = {
-                browser: browser
+                plugins: [plugin]
             };
             var actionModel = new ActionModel(component);
             actionModel.addInteraction();

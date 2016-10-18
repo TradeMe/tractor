@@ -23,9 +23,9 @@ var createFeatureModelConstructor = function (
                     return !!(options && options.isSaved);
                 }
             },
-            path: {
+            url: {
                 get: function () {
-                    return options && options.path;
+                    return options && options.url;
                 }
             },
             scenarios: {

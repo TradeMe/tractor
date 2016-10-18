@@ -13,7 +13,10 @@ var source = require('vinyl-source-stream');
 // Errors:
 var errorHandler = require('./utilities/error-handler');
 
-module.exports = bundle;
+module.exports = {
+    bundle: bundle,
+    init: init
+};
 
 function bundle () {
     return browserify({
@@ -32,4 +35,9 @@ function bundle () {
     .pipe(browserSync.reload({
         stream: true
     }));
+}
+
+function init () {
+    return gulp.src('./src/app/init.js')
+    .pipe(gulp.dest('./dist/'));
 }

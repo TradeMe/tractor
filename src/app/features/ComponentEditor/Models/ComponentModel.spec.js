@@ -32,19 +32,19 @@ describe('ComponentModel.js:', function () {
         angular.mock.module(function ($provide) {
             $provide.factory('plugins', function () {
                 return [{
-                    name: 'browser',
-                    variableName: 'browser',
+                    name: 'plugin',
+                    variableName: 'plugin',
                     methods: [{
-                        name: 'get',
-                        description: 'Navigate to the given destination and loads mock modules before Angular.',
+                        name: 'method',
+                        description: 'does a thing',
                         arguments: [{
-                            name: 'destination',
-                            description: 'Destination URL',
+                            name: 'argumentOne',
+                            description: 'some argument',
                             type: 'string',
                             required: true
                         }, {
-                            name: 'timeout',
-                            description: 'Number of milliseconds to wait for Angular to start.',
+                            name: 'argumentTwo',
+                            description: 'another argument',
                             type: 'number'
                         }]
                     }]
@@ -99,24 +99,14 @@ describe('ComponentModel.js:', function () {
         });
     });
 
-    describe('ComponentModel.isSaved:', function () {
+    describe('ComponentModel.url:', function () {
         it('should get the value from the given `options`:', function () {
             var options = {
-                path: 'path'
+                url: 'url'
             };
             var componentModel = new ComponentModel(options);
 
-            expect(componentModel.path).to.equal('path');
-        });
-    });
-
-    describe('ComponentModel.browser:', function () {
-        it('should return the "browser" plugin:', function () {
-            var componentModel = new ComponentModel();
-
-            var browser = _.first(componentModel.elements);
-            expect(componentModel.browser).to.equal(browser);
-            expect(componentModel.browser.name).to.equal('browser');
+            expect(componentModel.url).to.equal('url');
         });
     });
 
@@ -218,7 +208,7 @@ describe('ComponentModel.js:', function () {
                 '    Component.prototype.action = function () {' + os.EOL +
                 '        var self = this;' + os.EOL +
                 '        return new Promise(function (resolve) {' + os.EOL +
-                '            resolve(browser.get(null, null));' + os.EOL +
+                '            resolve(plugin.method(null, null));' + os.EOL +
                 '        });' + os.EOL +
                 '    };' + os.EOL +
                 '    return Component;' + os.EOL +
@@ -316,7 +306,7 @@ describe('ComponentModel.js:', function () {
             var action = _.first(componentModel.actions);
             action.name = 'action';
 
-            expect(componentModel.getAllVariableNames()).to.deep.equal(['browser', 'element', 'action']);
+            expect(componentModel.getAllVariableNames()).to.deep.equal(['plugin', 'element', 'action']);
         });
 
         it('should exclude the variable name of the given from the list:', function () {
@@ -329,7 +319,7 @@ describe('ComponentModel.js:', function () {
             var action = _.first(componentModel.actions);
             action.name = 'action';
 
-            expect(componentModel.getAllVariableNames(action)).to.deep.equal(['component', 'browser', 'element']);
+            expect(componentModel.getAllVariableNames(action)).to.deep.equal(['component', 'plugin', 'element']);
         });
     });
 });

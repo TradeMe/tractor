@@ -14,12 +14,16 @@ var ControlPanelController = (function () {
     var ControlPanelController = function ControlPanelController (
         runnerService,
         serverStatusService,
-        config
+        config,
+        plugins
     ) {
         this.runnerService = runnerService;
         this.serverStatusService = serverStatusService;
 
         this.environments = config.environments;
+        this.plugins = plugins.filter(function (plugin) {
+            return plugin.hasUI;
+        });
 
         var environment;
         Object.defineProperty(this, 'environment', {

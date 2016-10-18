@@ -11,44 +11,45 @@ var FileEditorController = require('../FileEditor/FileEditorController');
 require('../../Core/Services/ConfirmDialogService');
 require('../../Core/Services/PersistentStateService');
 require('../../Core/Components/Notifier/NotifierService');
-require('./Services/StepDefinitionFileService');
 
 var StepDefinitionEditorController = function StepDefinitionEditorController (
     $scope,
     $window,
     $state,
     confirmDialogService,
+    fileStructureService,
     persistentStateService,
     notifierService,
     ComponentParserService,
     MockDataParserService,
-    StepDefinitionFileService,
-    stepDefinitionFileStructure,
-    stepDefinitionPath
+    availableComponents,
+    availableMockData,
+    stepDefinition
 ) {
     var controller = new FileEditorController(
         $scope,
         $window,
         $state,
         confirmDialogService,
+        fileStructureService,
         persistentStateService,
         notifierService,
-        StepDefinitionFileService,
         null,
-        stepDefinitionFileStructure,
-        stepDefinitionPath
+        stepDefinition,
+        'step-definitions',
+        '.step.js'
     );
 
     Object.defineProperties(controller, {
         canAddComponents: {
             get: function () {
-                return this.availableComponents.length > 0
+                return availableComponents.length > 0
                     && this.fileModel.step.type !== 'Given';
             }
         },
         canAddMockData: {
             get: function () {
-                return this.availableMockData.length > 0
+                return availableMockData.length > 0
                     && this.fileModel.step.type === 'Given';
             }
         },

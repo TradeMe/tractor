@@ -4,7 +4,7 @@
 var Core = require('../Core');
 
 // Dependencies:
-var charFunk = require('charfunk');
+// var charFunk = require('charfunk');
 
 var ValidationService = function () {
     return {
@@ -12,7 +12,8 @@ var ValidationService = function () {
     };
 
     function validateVariableName (variableName) {
-        return charFunk.isValidName(variableName, true) ? variableName : false;
+        return true;
+        // return charFunk.isValidName(variableName, true) ? variableName : false;
     }
 };
 

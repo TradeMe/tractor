@@ -2,7 +2,7 @@
 module.exports = function () {
     var ComponentFileTree = function ComponentFileTree() {
         this.header = element(by.binding('fileTree.headerName'));
-        this.firstComponent = element.all(by.repeater('item in (item || fileTree.model.fileStructure.directory).files')).get(0).element(by.css('p'));
+        this.firstComponent = element.all(by.repeater('item in (item || fileTree.model.fileStructure).files')).get(0).element(by.css('p'));
     };
     ComponentFileTree.prototype.getFirstComponentName = function () {
         var self = this;

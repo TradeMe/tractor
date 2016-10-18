@@ -16,7 +16,8 @@ var FileTreeDirective = function () {
 
         scope: {
             model: '=',
-            type: '@'
+            type: '@',
+            extension: '@'
         },
 
         /* eslint-disable no-path-concat */

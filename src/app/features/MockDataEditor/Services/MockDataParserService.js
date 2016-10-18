@@ -15,7 +15,7 @@ var MockDataParserService = function MockDataParserService (MockDataModel) {
         try {
             var mockDataModel = new MockDataModel(mockDataFile.content, {
                 isSaved: true,
-                path: mockDataFile.path
+                url: mockDataFile.url
             });
             mockDataModel.name = mockDataFile.name;
             return mockDataModel;

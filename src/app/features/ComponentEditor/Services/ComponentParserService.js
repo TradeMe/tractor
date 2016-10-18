@@ -30,7 +30,7 @@ var ComponentParserService = function ComponentParserService (
 
             var component = new ComponentModel({
                 isSaved: true,
-                path: componentFile.path
+                url: componentFile.url
             });
             component.name = meta.name;
             var state = persistentStateService.get(component.name);

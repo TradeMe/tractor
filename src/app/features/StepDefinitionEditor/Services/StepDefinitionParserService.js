@@ -27,7 +27,7 @@ var StepDefinitionParserService = function StepDefinitionParserService (
             var stepDefinition = new StepDefinitionModel({
                 availableComponents: availableComponents,
                 availableMockData: availableMockData,
-                path: stepDefinitionFile.path
+                url: stepDefinitionFile.url
             });
             stepDefinition.name = meta.name;
 

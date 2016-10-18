@@ -46,7 +46,7 @@ var createComponentInstanceModelConstructor = function (
                 get: function () {
                     return toAST.call(this);
                 }
-            }         
+            }
         });
     };
 
@@ -68,10 +68,7 @@ var createComponentInstanceModelConstructor = function (
     }
 
     function getRelativePath () {
-        // Sw33t hax()rz to get around the browserify "path" shim not working on Windows.
-        var stepDefinitionPath = this.stepDefinition.path.replace(/\\/g, '/');
-        var componentPath = this.component.path.replace(/\\/g, '/');
-        var relativePath = path.relative(path.dirname(stepDefinitionPath), componentPath);
+        var relativePath = path.relative(path.dirname(this.stepDefinition.url), this.component.url);
         return relativePath;
     }
 };
