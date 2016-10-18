@@ -1,10 +1,9 @@
 /* global describe:true, it:true */
 
 // Constants:
-import constants from '../constants';
+import CONSTANTS from '../constants';
 
 // Utilities:
-import _ from 'lodash';
 import chai from 'chai';
 import dirtyChai from 'dirty-chai';
 import Promise from 'bluebird';
@@ -19,9 +18,9 @@ chai.use(sinonChai);
 // Dependencies:
 import escodegen from 'escodegen';
 import esprima from 'esprima';
-import File from './File';
 import path from 'path';
 import { TractorError } from 'tractor-error-handler';
+import { File, FileStructure } from 'tractor-file-structure';
 
 // Under test:
 import JavaScriptFile from './JavaScriptFile';
@@ -29,23 +28,19 @@ import JavaScriptFile from './JavaScriptFile';
 describe('server/files: JavaScriptFile:', () => {
     describe('JavaScriptFile constructor:', () => {
         it('should create a new JavaScriptFile', () => {
-            let directory = {
-                addFile: _.noop
-            };
-            let filePath = path.join('some', 'path');
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file');
 
-            let file = new JavaScriptFile(filePath, directory);
+            let file = new JavaScriptFile(filePath, fileStructure);
 
             expect(file).to.be.an.instanceof(JavaScriptFile);
         });
 
         it('should inherit from File', () => {
-            let directory = {
-                addFile: _.noop
-            };
-            let filePath = path.join('some', 'path');
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file');
 
-            let file = new JavaScriptFile(filePath, directory);
+            let file = new JavaScriptFile(filePath, fileStructure);
 
             expect(file).to.be.an.instanceof(File);
         });
@@ -53,14 +48,12 @@ describe('server/files: JavaScriptFile:', () => {
 
     describe('JavaScriptFile.read:', () => {
         it('should read the file from disk', () => {
-            let directory = {
-                addFile: _.noop
-            };
-            let filePath = path.join('some', 'path');
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file');
 
             sinon.stub(File.prototype, 'read').returns(Promise.resolve());
 
-            let file = new JavaScriptFile(filePath, directory);
+            let file = new JavaScriptFile(filePath, fileStructure);
 
             return file.read()
             .then(() => {
@@ -72,16 +65,14 @@ describe('server/files: JavaScriptFile:', () => {
         });
 
         it('should parse the contents', () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file');
             let ast = {};
-            let directory = {
-                addFile: _.noop
-            };
-            let filePath = path.join('some', 'path');
 
             sinon.stub(esprima, 'parse').returns(ast);
             sinon.stub(File.prototype, 'read').returns(Promise.resolve());
 
-            let file = new JavaScriptFile(filePath, directory);
+            let file = new JavaScriptFile(filePath, fileStructure);
 
             return file.read()
             .then(() => {
@@ -95,23 +86,21 @@ describe('server/files: JavaScriptFile:', () => {
 
         it('should turn log any errors and create a TractorError', () => {
             let error = new Error();
-            let directory = {
-                addFile: _.noop
-            };
-            let filePath = path.join('some', 'javascript', 'file.js');
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
 
             sinon.stub(File.prototype, 'read').returns(Promise.reject(error));
             sinon.stub(console, 'error');
 
-            let file = new JavaScriptFile(filePath, directory);
+            let file = new JavaScriptFile(filePath, fileStructure);
 
             return file.read()
             .catch((tractorError) => {
                 expect(console.error).to.have.been.calledWith(error);
 
                 expect(tractorError).to.be.an.instanceof(TractorError);
-                expect(tractorError.message).to.equal(`Parsing "${path.join('some', 'javascript', 'file.js')}" failed.`);
-                expect(tractorError.status).to.equal(constants.REQUEST_ERROR);
+                expect(tractorError.message).to.equal(`Parsing "${path.join(path.sep, 'file-structure', 'directory', 'file.js')}" failed.`);
+                expect(tractorError.status).to.equal(CONSTANTS.REQUEST_ERROR);
             })
             .finally(() => {
                 File.prototype.read.restore();
@@ -122,41 +111,40 @@ describe('server/files: JavaScriptFile:', () => {
 
     describe('JavaScriptFile.save:', () => {
         it('should save the file to disk', () => {
-            let directory = {
-                addFile: _.noop
-            };
-            let filePath = path.join('some', 'javascript', 'file.js');
+            let ast = {};
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
 
+            sinon.stub(escodegen, 'generate');
             sinon.stub(File.prototype, 'save').returns(Promise.resolve());
 
-            let file = new JavaScriptFile(filePath, directory);
+            let file = new JavaScriptFile(filePath, fileStructure);
 
-            return file.save()
+            return file.save(ast)
             .then(() => {
                 expect(File.prototype.save).to.have.been.called();
             })
             .finally(() => {
+                escodegen.generate.restore();
                 File.prototype.save.restore();
             });
         });
 
         it('should assign the `comments` to `leadingComments`', () => {
-            let data = {
+            let ast = {
                 comments: ['comment']
             };
-            let directory = {
-                addFile: _.noop
-            };
-            let filePath = path.join('some', 'javascript', 'file.js');
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
 
             sinon.stub(escodegen, 'generate');
             sinon.stub(File.prototype, 'save').returns(Promise.resolve());
 
-            let file = new JavaScriptFile(filePath, directory);
+            let file = new JavaScriptFile(filePath, fileStructure);
 
-            return file.save(data)
+            return file.save(ast)
             .then(() => {
-                expect(file.ast.leadingComments).to.deep.equal(['comment']);
+                expect(ast.leadingComments).to.deep.equal(['comment']);
             })
             .finally(() => {
                 escodegen.generate.restore();
@@ -165,20 +153,18 @@ describe('server/files: JavaScriptFile:', () => {
         });
 
         it('should generate JavaScript from the AST', () => {
-            let data = { };
-            let directory = {
-                addFile: _.noop
-            };
-            let filePath = path.join('some', 'javascript', 'file.js');
+            let ast = { };
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
 
             sinon.stub(escodegen, 'generate');
             sinon.stub(File.prototype, 'save').returns(Promise.resolve());
 
-            let file = new JavaScriptFile(filePath, directory);
+            let file = new JavaScriptFile(filePath, fileStructure);
 
-            return file.save(data)
+            return file.save(ast)
             .then(() => {
-                expect(escodegen.generate).to.have.been.calledWith(data, { comment: true });
+                expect(escodegen.generate).to.have.been.calledWith(ast, { comment: true });
             })
             .finally(() => {
                 escodegen.generate.restore();
@@ -187,26 +173,24 @@ describe('server/files: JavaScriptFile:', () => {
         });
 
         it('should rebuild any regular expressions in the AST', () => {
-            let data = {
+            let ast = {
                 comments: [],
                 regex: {
                     type: 'Literal',
                     raw: '/regex/'
                 }
             };
-            let directory = {
-                addFile: _.noop
-            };
-            let filePath = path.join('some', 'javascript', 'file.js');
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
 
             sinon.stub(escodegen, 'generate');
             sinon.stub(File.prototype, 'save').returns(Promise.resolve());
 
-            let file = new JavaScriptFile(filePath, directory);
+            let file = new JavaScriptFile(filePath, fileStructure);
 
-            return file.save(data)
+            return file.save(ast)
             .then(() => {
-                expect(file.ast).to.deep.equal({
+                expect(ast).to.deep.equal({
                     comments: [],
                     leadingComments: [],
                     regex: {
@@ -223,26 +207,27 @@ describe('server/files: JavaScriptFile:', () => {
         });
 
         it('should turn log any errors and create a TractorError', () => {
+            let ast = {};
             let error = new Error();
-            let directory = {
-                addFile: _.noop
-            };
-            let filePath = path.join('some', 'javascript', 'file.js');
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
 
+            sinon.stub(escodegen, 'generate');
             sinon.stub(File.prototype, 'save').returns(Promise.reject(error));
             sinon.stub(console, 'error');
 
-            let file = new JavaScriptFile(filePath, directory);
+            let file = new JavaScriptFile(filePath, fileStructure);
 
-            return file.save()
+            return file.save(ast)
             .catch((tractorError) => {
                 expect(console.error).to.have.been.calledWith(error);
 
                 expect(tractorError).to.be.an.instanceof(TractorError);
-                expect(tractorError.message).to.equal(`Saving "${path.join('some', 'javascript', 'file.js')}" failed.`);
-                expect(tractorError.status).to.equal(constants.REQUEST_ERROR);
+                expect(tractorError.message).to.equal(`Saving "${path.join(path.sep, 'file-structure', 'directory', 'file.js')}" failed.`);
+                expect(tractorError.status).to.equal(CONSTANTS.REQUEST_ERROR);
             })
             .finally(() => {
+                escodegen.generate.restore();
                 File.prototype.save.restore();
                 console.error.restore();
             });

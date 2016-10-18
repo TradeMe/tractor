@@ -1,5 +1,5 @@
 // Constants:
-import constants from '../../constants';
+import CONSTANTS from '../../constants';
 
 // Dependencies:
 import componentTransformer from './component-transformer';
@@ -8,8 +8,8 @@ import mockDataTransformer from './mock-data-transformer';
 import stepDefinitionTransformer from './step-definition-transformer';
 
 export default {
-    [constants.COMPONENTS]: componentTransformer,
-    [constants.FEATURES]: featureTransformer,
-    [constants.STEP_DEFINITIONS]: stepDefinitionTransformer,
-    [constants.MOCK_DATA]: mockDataTransformer
+    [CONSTANTS.COMPONENTS]: componentTransformer,
+    [CONSTANTS.FEATURES]: featureTransformer,
+    [CONSTANTS.STEP_DEFINITIONS]: stepDefinitionTransformer,
+    [CONSTANTS.MOCK_DATA]: mockDataTransformer
 };

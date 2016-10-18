@@ -1,10 +1,11 @@
 // Dependencies:
 import application from './application';
-import * as fileStructure from './file-structure';
+import fileStructure from './file-structure';
 
-export function start () {
+function start () {
+    application.init();
     return fileStructure.refresh()
     .then(() => application.start());
 }
 
-export config from './config/config';
+export default { start };

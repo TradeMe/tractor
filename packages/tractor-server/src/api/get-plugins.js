@@ -1,5 +1,5 @@
 // Constants:
-import * as tractorPluginLoader from 'tractor-plugin-loader';
+import tractorPluginLoader from 'tractor-plugin-loader';
 
 export default { handler };
 

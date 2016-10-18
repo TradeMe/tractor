@@ -1,14 +1,14 @@
-// Constants:
-import config from '../config/config';
-const PROTRACTOR_PATH = join('node_modules', 'protractor', 'bin', 'protractor');
-const E2E_PATH = join(config.testDirectory, 'protractor.conf.js');
-
 // Utilities:
 import _ from 'lodash';
 import Promise from 'bluebird';
-import { spawn } from 'child_process';
+import childProcess from 'child_process';
 import log from 'npmlog';
-import { join } from 'path';
+import path from 'path';
+
+// Constants:
+import config from '../config/config';
+const PROTRACTOR_PATH = path.join('node_modules', 'protractor', 'bin', 'protractor');
+const E2E_PATH = path.join(config.testDirectory, 'protractor.conf.js');
 
 // Dependencies:
 import stripcolorcodes from 'stripcolorcodes';
@@ -16,31 +16,33 @@ import stripcolorcodes from 'stripcolorcodes';
 // Errors:
 import { TractorError } from 'tractor-error-handler';
 
-export function run (socket, runOptions) {
-    if (module.exports.running) {
-        log.error('Protractor already running.');
-        return Promise.reject(new TractorError('Protractor already running.'));
-    } else {
-        module.exports.running = true;
+class ProtractorRunner {
+    run (socket, runOptions) {
+        if (module.exports.running) {
+            log.error('Protractor already running.');
+            return Promise.reject(new TractorError('Protractor already running.'));
+        } else {
+            module.exports.running = true;
 
-        return Promise.resolve(config.beforeProtractor())
-        .then(() => {
-            log.info('Starting Protractor...\n');
-            return startProtractor(socket, runOptions);
-        })
-        .catch((error) => {
-            socket.lastMessage = socket.lastMessage || '';
-            let [lastMessage] = socket.lastMessage.split(/\r\n|\n/);
-            log.error(`${error.message}${lastMessage}`);
-        })
-        .finally(() => {
-            socket.disconnect();
-            return Promise.resolve(config.afterProtractor())
+            return Promise.resolve(config.beforeProtractor())
             .then(() => {
-                module.exports.running = false;
-                log.info('Protractor finished.');
+                log.info('Starting Protractor...\n');
+                return startProtractor(socket, runOptions);
+            })
+            .catch((error) => {
+                socket.lastMessage = socket.lastMessage || '';
+                let [lastMessage] = socket.lastMessage.split(/\r\n|\n/);
+                log.error(`${error.message}${lastMessage}`);
+            })
+            .finally(() => {
+                socket.disconnect();
+                return Promise.resolve(config.afterProtractor())
+                .then(() => {
+                    module.exports.running = false;
+                    log.info('Protractor finished.');
+                });
             });
-        });
+        }
     }
 }
 
@@ -65,15 +67,15 @@ function startProtractor (socket, runOptions) {
             reject(new TractorError('to run a single feature, `feature` must be defined.'));
             return deferred;
         } else {
-            featureToRun = join(config.testDirectory, '/features', '/**/', `${runOptions.feature}.feature`);
+            featureToRun = path.join(config.testDirectory, '/features', '/**/', `${runOptions.feature}.feature`);
         }
     } else {
-        featureToRun = join(config.testDirectory, '/features/**/*.feature');
+        featureToRun = path.join(config.testDirectory, '/features/**/*.feature');
     }
 
     let specs = featureToRun;
 
-    let protractor = spawn('node', [PROTRACTOR_PATH, E2E_PATH, '--baseUrl', runOptions.baseUrl, '--specs', specs]);
+    let protractor = childProcess.spawn('node', [PROTRACTOR_PATH, E2E_PATH, '--baseUrl', runOptions.baseUrl, '--specs', specs]);
 
     protractor.stdout.on('data', sendDataToClient.bind(socket));
     protractor.stderr.on('data', sendErrorToClient.bind(socket));
@@ -137,3 +139,6 @@ function sendErrorToClient () {
         type: 'error'
     });
 }
+
+let protractorRunner = new ProtractorRunner();
+export default protractorRunner;

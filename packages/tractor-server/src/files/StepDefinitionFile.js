@@ -8,6 +8,7 @@ import path from 'path';
 // Dependencies:
 import esquery from 'esquery';
 import JavaScriptFile from './JavaScriptFile';
+import tractorFileStructure from 'tractor-file-structure';
 
 export default class StepDefinitionFile extends JavaScriptFile {
     read () {
@@ -21,11 +22,14 @@ export default class StepDefinitionFile extends JavaScriptFile {
     }
 }
 
-function getFileReferences () {
-    let { references } = this.directory.fileStructure;
+StepDefinitionFile.extension = '.step.js';
+StepDefinitionFile.type = 'step-definitions';
 
-    _.each(references, (referencePaths) => {
-        _.remove(referencePaths, (referencePath) => referencePath === this.path);
+function getFileReferences () {
+    let { references } = this.fileStructure;
+
+    _.each(references, referencePaths => {
+        _.remove(referencePaths, referencePath => referencePath === this.path);
     });
 
     let requirePaths = esquery(this.ast, REQUIRE_QUERY);
@@ -36,3 +40,5 @@ function getFileReferences () {
         references[referencePath].push(this.path);
     });
 }
+
+tractorFileStructure.registerFileType(StepDefinitionFile);

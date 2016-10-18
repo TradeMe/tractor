@@ -5,7 +5,7 @@ const MOCK_DATA = 'mock-data';
 const STEP_DEFINITIONS = 'step-definitions';
 
 // Utilities:
-import { join } from 'path';
+import path from 'path';
 
 const CONSTANTS = {
     COMPONENTS,
@@ -13,15 +13,7 @@ const CONSTANTS = {
     MOCK_DATA,
     STEP_DEFINITIONS,
 
-    DIRECTORIES: [COMPONENTS, FEATURES, MOCK_DATA, STEP_DEFINITIONS],
-    EXTENSIONS: {
-        [COMPONENTS]: '.component.js',
-        [FEATURES]: '.feature',
-        [MOCK_DATA]: '.mock.json',
-        [STEP_DEFINITIONS]: '.step.js'
-    },
-
-    CUCUMBER_COMMAND: `node ${join('node_modules', 'cucumber', 'bin', 'cucumber')}`,
+    CUCUMBER_COMMAND: `node ${path.join('node_modules', 'cucumber', 'bin', 'cucumber')}`,
 
     FEATURE_NEWLINE: /\n/g,
 

@@ -1,5 +1,5 @@
 // Constants:
-import constants from '../../constants';
+import CONSTANTS from '../../constants';
 const GIVEN_WHEN_THEN_REGEX = /^(Given|When|Then)/;
 const AND_BUT_REGEX = /^(And|But)/;
 const STUB_REGEX_REGEX = /this\.[Given|When|Then]*\(\/\^(.*?)\$\//;
@@ -29,7 +29,7 @@ export default class StepDefinitionGenerator {
         let { content, path } = this.file;
         let stepNames = extractStepNames(content);
 
-        return childProcess.execAsync(`${constants.CUCUMBER_COMMAND} "${path}"`)
+        return childProcess.execAsync(`${CONSTANTS.CUCUMBER_COMMAND} "${path}"`)
         .then((result) => {
             return generateStepDefinitionFiles(stepNames, result);
         });
@@ -61,11 +61,11 @@ function extractStepNames (feature) {
 
 function generateStepDefinitionFiles (stepNames, result) {
     let existingFileNames = _(fileStructure.allFiles)
-    .filter(file => file.path.match(new RegExp(constants.EXTENSIONS['step-definitions'])))
+    .filter(file => file.path.match(new RegExp(StepDefinitionFile.extension)))
     .map(file => file.name)
     .value();
 
-    let directory = fileStructure.structure.getDirectory(constants.STEP_DEFINITIONS);
+    let directory = fileStructure.structure.getDirectory(CONSTANTS.STEP_DEFINITIONS);
     let stubs = splitResultToStubs(result);
 
     return Promise.map(stubs, (stub) => {
@@ -74,8 +74,8 @@ function generateStepDefinitionFiles (stepNames, result) {
         let fileData = generateStepDefinitionFile(existingFileNames, stub, stepName);
         if (fileData) {
             let { ast, fileName } = fileData;
-            let filePath = path.join(directory.path, fileName + constants.EXTENSIONS['step-definitions']);
-            let file = new StepDefinitionFile(filePath, directory);
+            let filePath = path.join(directory.path, fileName + StepDefinitionFile.extension);
+            let file = new StepDefinitionFile(filePath, fileStructure);
             return file.save(ast);
         }
     });

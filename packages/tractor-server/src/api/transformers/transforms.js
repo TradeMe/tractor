@@ -21,7 +21,7 @@ function transformIdentifiers (file, oldName, newName) {
     _.each(esquery(file.ast, query), (identifier) => {
         identifier.name = newName;
     });
-    return file.save();
+    return file.save(file.ast);
 }
 
 function transformMetadata (file, type, oldName, newName) {
@@ -33,7 +33,7 @@ function transformMetadata (file, type, oldName, newName) {
     }
     item.name = newName;
     comment.value = JSON.stringify(metaData);
-    return file.save();
+    return file.save(file.ast);
 }
 
 function transformReferenceIdentifiers (oldFilePath, oldName, newName) {
@@ -52,7 +52,7 @@ function transformReferencePath (file, oldFromPath, oldToPath, newFromPath, newT
         requirePathLiteral.value = newRequirePath;
         requirePathLiteral.raw = `'${newRequirePath}'`;
     });
-    return file.save();
+    return file.save(file.ast);
 }
 
 function transformReferences (type, oldFilePath, newFilePath, oldName, newName) {

@@ -1,5 +1,6 @@
 // Dependencies:
 import JavaScriptFile from './JavaScriptFile';
+import tractorFileStructure from 'tractor-file-structure';
 
 export default class ComponentFile extends JavaScriptFile {
     delete () {
@@ -8,8 +9,13 @@ export default class ComponentFile extends JavaScriptFile {
     }
 }
 
+ComponentFile.extension = '.component.js';
+ComponentFile.type = 'components';
+
 function deleteFileReferences () {
-    let { references } = this.directory.fileStructure;
+    let { references } = this.fileStructure;
 
     delete references[this.path];
 }
+
+tractorFileStructure.registerFileType(ComponentFile);

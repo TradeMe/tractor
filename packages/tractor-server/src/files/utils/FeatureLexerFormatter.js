@@ -1,5 +1,5 @@
 // Constants:
-import constants from '../../constants';
+import CONSTANTS from '../../constants';
 const IN_ORDER_TO = /^In order to /;
 const AS_A = /^As a /;
 const I_WANT = /^I want /;
@@ -24,7 +24,7 @@ export default class FeatureLexerFormatter {
     }
 
     feature (type, name, description) {
-        let [inOrderTo, asA, iWant] = description.split(constants.FEATURE_NEWLINE);
+        let [inOrderTo, asA, iWant] = description.split(CONSTANTS.FEATURE_NEWLINE);
         inOrderTo = inOrderTo.replace(IN_ORDER_TO, '').replace(/\r/g, '');
         asA = asA.replace(AS_A, '').replace(/\r/g, '');
         iWant = iWant.replace(I_WANT, '');

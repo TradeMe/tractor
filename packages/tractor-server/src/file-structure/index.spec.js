@@ -2,27 +2,25 @@
 
 // Utilities:
 import chai from 'chai';
-import dirtyChai from 'dirty-chai';
-import Promise from 'bluebird';
-import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
 
 // Test setup:
 const expect = chai.expect;
-chai.use(dirtyChai);
-chai.use(sinonChai);
 
 // Dependencies:
-import FileStructure from './FileStructure';
+import ComponentFile from '../files/ComponentFile';
+import FeatureFile from '../files/FeatureFile';
+import MockDataFile from '../files/MockDataFile';
+import { FileStructure } from 'tractor-file-structure';
+import StepDefinitionFile from '../files/StepDefinitionFile';
 
 // Under test:
-import { refresh } from './index';
+import './index';
 
 describe('fileStructure:', () => {
     it('should return an instance of `FileStructure`', () => {
-        let fileStructure1 = require('./index').default;
+        let fileStructure = require('./index').default;
 
-        expect(fileStructure1).to.be.an.instanceof(FileStructure);
+        expect(fileStructure).to.be.an.instanceof(FileStructure);
     });
 
     it('should always return the same instance of `FileStructure`', () => {
@@ -32,20 +30,31 @@ describe('fileStructure:', () => {
         expect(fileStructure1).to.equal(fileStructure2);
     });
 
-    describe('fileStructure.refresh:', () => {
-        it('should reload the File System', () => {
-            sinon.stub(FileStructure.prototype, 'init');
-            sinon.stub(FileStructure.prototype, 'read').returns(Promise.resolve());
+    it('should have `ComponentFile` as a registered file type:', () => {
+        let fileStructure = require('./index').default;
 
-            return refresh()
-            .then(() => {
-                expect(FileStructure.prototype.init).to.have.been.called();
-                expect(FileStructure.prototype.read).to.have.been.called();
-            })
-            .finally(() => {
-                FileStructure.prototype.init.restore();
-                FileStructure.prototype.read.restore();
-            });
-        });
+        expect(fileStructure.fileExtensions['components']).to.equal('.component.js');
+        expect(fileStructure.fileTypes['.component.js']).to.equal(ComponentFile);
+    });
+
+    it('should have `FeatureFile` as a registered file type:', () => {
+        let fileStructure = require('./index').default;
+
+        expect(fileStructure.fileExtensions['features']).to.equal('.feature');
+        expect(fileStructure.fileTypes['.feature']).to.equal(FeatureFile);
+    });
+
+    it('should have `MockDataFile` as a registered file type:', () => {
+        let fileStructure = require('./index').default;
+
+        expect(fileStructure.fileExtensions['mock-data']).to.equal('.mock.json');
+        expect(fileStructure.fileTypes['.mock.json']).to.equal(MockDataFile);
+    });
+
+    it('should have `StepDefinitionFile` as a registered file type:', () => {
+        let fileStructure = require('./index').default;
+
+        expect(fileStructure.fileExtensions['step-definitions']).to.equal('.step.js');
+        expect(fileStructure.fileTypes['.step.js']).to.equal(StepDefinitionFile);
     });
 });

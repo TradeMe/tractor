@@ -13,7 +13,7 @@ chai.use(sinonChai);
 
 // Dependencies:
 import { EventEmitter } from 'events';
-import * as protractorRunner from './protractor-runner';
+import protractorRunner from './protractor-runner';
 
 // Under test:
 import connect from './connect';

@@ -1,8 +1,8 @@
 /* global describe:true, it:true */
 
 // Utilities:
-import _ from 'lodash';
 import chai from 'chai';
+import path from 'path';
 import Promise from 'bluebird';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
@@ -12,8 +12,8 @@ const expect = chai.expect;
 chai.use(sinonChai);
 
 // Dependencies:
-import File from './File';
 import JavaScriptFile from './JavaScriptFile';
+import { File, FileStructure } from 'tractor-file-structure';
 
 // Under test:
 import ComponentFile from './ComponentFile';
@@ -21,23 +21,19 @@ import ComponentFile from './ComponentFile';
 describe('server/files: ComponentFile:', () => {
     describe('ComponentFile constructor:', () => {
         it('should create a new ComponentFile', () => {
-            let directory = {
-                addFile: _.noop
-            };
-            let filePath = 'some/path';
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file');
 
-            let file = new ComponentFile(filePath, directory);
+            let file = new ComponentFile(filePath, fileStructure);
 
             expect(file).to.be.an.instanceof(ComponentFile);
         });
 
         it('should inherit from JavaScriptFile', () => {
-            let directory = {
-                addFile: _.noop
-            };
-            let filePath = 'some/path';
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file');
 
-            let file = new ComponentFile(filePath, directory);
+            let file = new ComponentFile(filePath, fileStructure);
 
             expect(file).to.be.an.instanceof(JavaScriptFile);
         });
@@ -45,17 +41,12 @@ describe('server/files: ComponentFile:', () => {
 
     describe('ComponentFile.delete:', () => {
         it('should delete the file from disk', () => {
-            let directory = {
-                addFile: _.noop,
-                fileStructure: {
-                    references: {}
-                }
-            };
-            let filePath = 'some/component/file.component.js';
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.component.js');
 
             sinon.stub(File.prototype, 'delete').returns(Promise.resolve());
 
-            let file = new ComponentFile(filePath, directory);
+            let file = new ComponentFile(filePath, fileStructure);
 
             return file.delete()
             .then(() => {
@@ -67,23 +58,17 @@ describe('server/files: ComponentFile:', () => {
         });
 
         it('should delete the file from the references data structure:', () => {
-            let directory = {
-                addFile: _.noop,
-                fileStructure: {
-                    references: {
-                        'some/component/file.component.js': []
-                    }
-                }
-            };
-            let filePath = 'some/component/file.component.js';
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.component.js');
+            fileStructure.references[filePath] = [];
 
             sinon.stub(File.prototype, 'delete').returns(Promise.resolve());
 
-            let file = new ComponentFile(filePath, directory);
+            let file = new ComponentFile(filePath, fileStructure);
 
             return file.delete()
             .then(() => {
-                expect(directory.fileStructure.references['some/mock-data/file.mock.json']).to.be.undefined();
+                expect(fileStructure.references[filePath]).to.be.undefined();
             })
             .finally(() => {
                 File.prototype.delete.restore();

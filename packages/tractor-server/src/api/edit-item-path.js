@@ -3,18 +3,18 @@ const FILE_NUMBER_REGEX = /\((\d*)\)$/;
 
 // Utilities:
 import _ from 'lodash';
-import { join } from 'path';
+import path from 'path';
 import Promise from 'bluebird';
 
 // Dependencies:
-import Directory from '../file-structure/Directory';
-import File from '../files/File';
+import { Directory, File } from 'tractor-file-structure';
 import fileStructure from '../file-structure';
 import getFileStructure from './get-file-structure';
 import transformers from './transformers';
 
 // Errors:
-import { errorHandler, TractorError } from 'tractor-error-handler';
+import tractorErrorHandler from 'tractor-error-handler';
+import { TractorError } from 'tractor-error-handler';
 
 export default { handler };
 
@@ -55,29 +55,28 @@ function handler (request, response) {
         }
     })
     .then(() => getFileStructure.handler(request, response))
-    .catch(TractorError, error => errorHandler.handler(response, error));
+    .catch(TractorError, error => tractorErrorHandler.handle(response, error));
 }
 
 function createUpdateOptions (collection, options) {
     let { oldName, newName, oldDirectoryPath, newDirectoryPath } = options;
     let extension = options.extension || '';
-    let oldPath = join(oldDirectoryPath, `${oldName}${extension}`);
-    let newPath = join(newDirectoryPath, `${newName}${extension}`);
+    let oldPath = path.join(oldDirectoryPath, `${oldName}${extension}`);
+    let newPath = path.join(newDirectoryPath, `${newName}${extension}`);
     let item = collection[oldPath];
     let existingItem = collection[newPath];
-    let directory = fileStructure.allDirectoriesByPath[newDirectoryPath];
 
     while (existingItem) {
         newName = incrementName(newName);
         if (item instanceof File) {
-            newPath = join(newDirectoryPath, newName + extension);
+            newPath = path.join(newDirectoryPath, newName + extension);
         } else {
-            newPath = join(newDirectoryPath, newName);
+            newPath = path.join(newDirectoryPath, newName);
         }
         existingItem = collection[newPath];
     }
 
-    return updateItem(item, directory, {
+    return updateItem(item, {
         oldName,
         newName,
         oldPath,
@@ -91,16 +90,16 @@ function incrementName (name) {
     return `${name} (${n})`;
 }
 
-function updateItem (item, directory, update) {
+function updateItem (item, update) {
     if (item instanceof File) {
-        return updateFile(item, directory, update);
+        return updateFile(item, update);
     } else {
-        return updateDirectory(item, directory, update);
+        return updateDirectory(item, update);
     }
 }
 
-function updateFile (toUpdate, directory, update) {
-    let newFile = new toUpdate.constructor(update.newPath, directory);
+function updateFile (toUpdate, update) {
+    let newFile = new toUpdate.constructor(update.newPath, fileStructure);
 
     if (toUpdate.ast) {
         newFile.ast = toUpdate.ast;
@@ -112,14 +111,14 @@ function updateFile (toUpdate, directory, update) {
         newFile.tokens = toUpdate.tokens;
     }
 
-    let { type } = toUpdate.directory;
-    return newFile.save()
+    let { type } = toUpdate.constructor.type;
+    return newFile.save(newFile.ast || newFile.tokens || newFile.content)
     .then(() => transformers[type](newFile, update))
     .then(() => toUpdate.delete());
 }
 
-function updateDirectory (toUpdate, directory, update) {
-    let newDirectory = new Directory(update.newPath, directory, fileStructure);
+function updateDirectory (toUpdate, update) {
+    let newDirectory = new Directory(update.newPath, fileStructure);
 
     return newDirectory.save()
     .then(() => {
@@ -129,7 +128,7 @@ function updateDirectory (toUpdate, directory, update) {
             let newPath = item.path.replace(update.oldPath, update.newPath);
             let oldName = item.name;
             let newName = item.name;
-            return updateItem(item, newDirectory, { oldName, newName, oldPath, newPath });
+            return updateItem(item, { oldName, newName, oldPath, newPath });
         });
     })
     .then(() => toUpdate.delete());

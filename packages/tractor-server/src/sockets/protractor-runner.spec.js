@@ -23,7 +23,7 @@ import log from 'npmlog';
 import path from 'path';
 
 // Under test:
-import * as protractorRunner from './protractor-runner';
+import protractorRunner from './protractor-runner';
 
 describe('server/sockets: protractor-runner:', () => {
     it('should run "protractor"', () => {
