@@ -1,0 +1,44 @@
+.tractor-visual-regression {
+    height: 100%;
+}
+
+.tractor-visual-regression__column-header {
+    font-size: 0;
+    height: 6%;
+    background: #e1e1e1;
+}
+
+.tractor-visual-regression__column-header h2 {
+    display: inline-block;
+    width: 30%;
+    margin-right: 0.5rem;
+    padding-left: 1rem;
+}
+
+.tractor-visual-regression__sets {
+    height: 94%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding-left: 1rem;
+}
+
+.tractor-visual-regression__sets h4 {
+    display: inline-block;
+    width: 30%;
+    margin-right: 0.5rem;
+}
+
+.tractor-visual-regression__set {
+    padding-left: 0;
+}
+
+.tractor-visual-regression__image {
+    display: inline-block;
+    width: 30%;
+    border: 1px solid #DDD;
+    margin-right: 0.5rem;
+}
+
+.tractor-visual-regression__image img {
+    width: 100%;
+}
