@@ -17,11 +17,10 @@ import path from 'path';
 // Under test:
 import createTestDirectoryStructure from './create-test-directory-structure';
 
-describe('cli/init: create-test-directory-structure:', () => {
+describe('tractor - init/create-test-directory-structure:', () => {
     it('should create the tests directory structure', () => {
         sinon.stub(fs, 'mkdirAsync').returns(Promise.resolve());
         sinon.stub(console, 'info');
-        sinon.stub(console, 'log');
         sinon.stub(console, 'warn');
 
         return createTestDirectoryStructure.run('directory')
@@ -37,7 +36,6 @@ describe('cli/init: create-test-directory-structure:', () => {
         .finally(() => {
             fs.mkdirAsync.restore();
             console.info.restore();
-            console.log.restore();
             console.warn.restore();
         });
     });
@@ -82,18 +80,16 @@ describe('cli/init: create-test-directory-structure:', () => {
     it('should tell the user what it is doing', () => {
         sinon.stub(fs, 'mkdirAsync').returns(Promise.resolve());
         sinon.stub(console, 'info');
-        sinon.stub(console, 'log');
         sinon.stub(console, 'warn');
 
         return createTestDirectoryStructure.run('directory')
         .then(() => {
             expect(console.info).to.have.been.calledWith('Creating directory structure...');
-            expect(console.log).to.have.been.calledWith('Directory structure created.');
+            expect(console.info).to.have.been.calledWith('Directory structure created.');
         })
         .finally(() => {
             fs.mkdirAsync.restore();
             console.info.restore();
-            console.log.restore();
             console.warn.restore();
         });
     });

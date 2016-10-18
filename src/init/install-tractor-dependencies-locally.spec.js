@@ -18,7 +18,7 @@ import childProcess from 'child_process';
 // Under test:
 import installTractorDependenciesLocally from './install-tractor-dependencies-locally';
 
-describe('cli/init: install-tractor-dependencies-locally:', () => {
+describe('tractor - init/install-tractor-dependencies-locally:', () => {
     it('should get the list of currently installed npm dependencies', () => {
         sinon.stub(childProcess, 'exec').returns({
             stdout: {

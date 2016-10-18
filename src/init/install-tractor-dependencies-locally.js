@@ -1,5 +1,6 @@
 // Constants;
-import CONSTANTS from '../constants';
+const GET_INSTALLED_DEPENDENCIES_COMMAND = 'npm ls --depth 0';
+const INSTALL_DEPENDENCIES_COMMAND = 'npm install --save-dev --save-exact ';
 const TO_INSTALL = [
     'bluebird@2.10.2',
     'chai@2.3.0',
@@ -38,7 +39,7 @@ function getInstalledDependencies () {
         [resolve] = args;
     });
 
-    let ls = childProcess.exec(CONSTANTS.GET_INSTALLED_DEPENDENCIES_COMMAND);
+    let ls = childProcess.exec(GET_INSTALLED_DEPENDENCIES_COMMAND);
     ls.stdout.on('data', data => resolve(data));
 
     return deferred;
@@ -57,7 +58,7 @@ function installDependencies (modules) {
 
     return Promise.all(modules.map(module => {
         console.info(`Installing "${module}"...`);
-        return childProcess.execAsync(`${CONSTANTS.INSTALL_DEPENDENCIES_COMMAND}${module}`)
+        return childProcess.execAsync(`${INSTALL_DEPENDENCIES_COMMAND}${module}`)
         .then(() => console.log(`Installed "${module}".`))
         .catch(() => console.error(`Couldn't install "${module}". Either run "tractor init" again, or install it manually by running "npm install ${module}"`));
     }));

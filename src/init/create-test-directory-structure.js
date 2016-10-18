@@ -1,6 +1,11 @@
 // Constants:
-import CONSTANTS from '../constants';
+const COMPONENTS_DIRECTORY = 'components';
 const DIRECTORY_ALREADY_EXISTS = 'EEXIST';
+const FEATURES_DIRECTORY = 'features';
+const MOCK_DATA_DIRECTORY = 'mock-data';
+const REPORT_DIRECTORY = 'report';
+const STEP_DEFINITIONS_DIRECTORY = 'step-definitions';
+const SUPPORT_DIRECTORY = 'support';
 
 // Utilities:
 import Promise from 'bluebird';
@@ -25,19 +30,19 @@ function createAllDirectories (testDirectory) {
         // that creates the root dir, and do that first. Otherwise there
         // may be a race condition here?
         '',
-        CONSTANTS.COMPONENTS,
-        CONSTANTS.FEATURES,
-        CONSTANTS.STEP_DEFINITIONS,
-        CONSTANTS.MOCK_DATA,
-        CONSTANTS.SUPPORT_DIR,
-        CONSTANTS.REPORT_DIR
+        COMPONENTS_DIRECTORY,
+        FEATURES_DIRECTORY,
+        MOCK_DATA_DIRECTORY,
+        REPORT_DIRECTORY,
+        STEP_DEFINITIONS_DIRECTORY,
+        SUPPORT_DIRECTORY
     ].map(directory => {
         return createDir(path.join(testDirectory, directory))
         .catch(TractorError, error => console.warn(`${error.message} Moving on...`));
     });
 
     return Promise.all(createDirectories)
-    .then(() => console.log('Directory structure created.'));
+    .then(() => console.info('Directory structure created.'));
 }
 
 function createDir (dir) {

@@ -1,5 +1,9 @@
 // Constants:
-import CONSTANTS from '../constants';
+const BASE_FILE_SOURCES = 'base-file-sources';
+const HOOKS_FILE_NAME = 'hooks.js';
+const PROTRACTOR_CONF_FILE_NAME = 'protractor.conf.js';
+const SUPPORT_DIR = 'support';
+const WORLD_FILE_NAME = 'world.js';
 
 // Utilities:
 import Promise from 'bluebird';
@@ -14,55 +18,28 @@ export default {
 };
 
 function createBaseTestFiles (testDirectoryPath) {
-    let supportDirPath = path.join(testDirectoryPath, CONSTANTS.SUPPORT_DIR);
-    return createWorldFile(supportDirPath)
+    let supportDirPath = path.join(testDirectoryPath, SUPPORT_DIR);
+    return createFile(WORLD_FILE_NAME, supportDirPath)
     .catch(TractorError, error => logNotCopying(error))
-    .then(() => createProtractorConf(testDirectoryPath))
+    .then(() => createFile(PROTRACTOR_CONF_FILE_NAME, testDirectoryPath))
     .catch(TractorError, error => logNotCopying(error))
-    .then(() => createHooksFile(supportDirPath))
+    .then(() => createFile(HOOKS_FILE_NAME, supportDirPath))
     .catch(TractorError, error => logNotCopying(error));
 }
 
-function createWorldFile (supportDirPath) {
-    let fileName = CONSTANTS.WORLD_FILE_NAME;
-    let readPath = path.join(__dirname, CONSTANTS.WORLD_SOURCE_FILE_PATH);
-    let writePath = path.join(process.cwd(), supportDirPath, CONSTANTS.WORLD_FILE_NAME);
-    return createFile(fileName, readPath, writePath);
-}
-
-function createHooksFile (supportDirPath) {
-    let fileName = CONSTANTS.HOOKS_FILE_NAME;
-    let readPath = path.join(__dirname, CONSTANTS.HOOKS_SOURCE_FILE_PATH);
-    let writePath = path.join(process.cwd(), supportDirPath, CONSTANTS.HOOKS_FILE_NAME);
-    return createFile(fileName, readPath, writePath);
-}
-
-function createProtractorConf (testDirectoryPath) {
-    let fileName = CONSTANTS.PROTRACTOR_CONF_FILE_NAME;
-    let readPath = path.join(__dirname, CONSTANTS.PROTRACTOR_CONF_SOURCE_FILE_PATH);
-    let writePath = path.join(process.cwd(), testDirectoryPath, CONSTANTS.PROTRACTOR_CONF_FILE_NAME);
-    return createFile(fileName, readPath, writePath);
-}
-
-function createFile (fileName, readPath, writePath) {
+function createFile (fileName, directoryPath) {
+    let readPath = path.join(__dirname, BASE_FILE_SOURCES, fileName);
+    let writePath = path.join(process.cwd(), directoryPath, fileName);
     return fs.openAsync(writePath, 'r')
     .then(() => {
         throw new TractorError(`"${fileName}" already exists.`);
     })
-    .catch(Promise.OperationalError, () => logCreating(fileName))
+    .catch(Promise.OperationalError, () => console.info(`Creating "${fileName}"...`))
     .then(() => fs.readFileAsync(readPath))
     .then(contents => fs.writeFileAsync(writePath, contents))
-    .then(() => logCreated(fileName));
+    .then(() => console.log(`"${fileName}" created.`));
 }
 
 function logNotCopying (error) {
     console.warn(`${error.message} Not copying...`);
-}
-
-function logCreating (file) {
-    console.info(`Creating "${file}"...`);
-}
-
-function logCreated (file) {
-    console.log(`"${file}" created.`);
 }

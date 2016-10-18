@@ -17,7 +17,7 @@ import path from 'path';
 // Under test:
 import createBaseTestFiles from './create-base-test-files';
 
-describe('cli/init: create-base-test-files:', () => {
+describe('tractor - init/create-base-test-files:', () => {
     it('should copy the "world.js" file to the "support" folder in the users specified directory', () => {
         sinon.stub(fs, 'openAsync').returns(Promise.reject(new Promise.OperationalError()));
         sinon.stub(fs, 'readFileAsync').returns(Promise.resolve('world'));

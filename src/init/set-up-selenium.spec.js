@@ -17,7 +17,7 @@ import path from 'path';
 // Under test:
 import setUpSelenium from './set-up-selenium';
 
-describe('cli/init: set-up-selenium:', () => {
+describe('tractor - init/set-up-selenium:', () => {
     it('should run the "webdriver-manager update" command', () => {
         sinon.stub(childProcess, 'execAsync').returns(Promise.resolve());
         sinon.stub(console, 'info');

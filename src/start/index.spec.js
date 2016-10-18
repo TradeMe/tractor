@@ -18,7 +18,7 @@ import tractorServer from 'tractor-server';
 // Under test:
 import cliStart from './index';
 
-describe('cli/start: index:', () => {
+describe('tractor - start/index:', () => {
     it('should start the application', () => {
         sinon.stub(tractorServer, 'start').returns(Promise.resolve());
 

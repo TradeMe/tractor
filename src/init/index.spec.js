@@ -21,7 +21,7 @@ import setUpSelenium from './set-up-selenium';
 // Under test:
 import cliInit from './index';
 
-describe('cli/init: index:', () => {
+describe('tractor - init/index:', () => {
     it('should run the initialisation steps', () => {
         sinon.stub(createTestDirectoryStructure, 'run').returns(Promise.resolve());
         sinon.stub(createBaseTestFiles, 'run').returns(Promise.resolve());
