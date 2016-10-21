@@ -43,6 +43,8 @@ describe('server/sockets: protractor-runner:', () => {
             baseUrl: "baseUrl"
         };
 
+        runOptions.debug = false;
+
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
         sinon.stub(config, 'beforeProtractor');
         sinon.stub(config, 'afterProtractor');
@@ -57,7 +59,7 @@ describe('server/sockets: protractor-runner:', () => {
         return run.then(() => {
             let protractorPath = path.join('node_modules', 'protractor', 'bin', 'protractor');
             let protractorConfPath = path.join('e2e-tests', 'protractor.conf.js');
-            expect(childProcess.spawn).to.have.been.calledWith('node', [protractorPath, protractorConfPath, '--baseUrl', 'baseUrl', '--specs', specs]);
+            expect(childProcess.spawn).to.have.been.calledWith('node', [protractorPath, protractorConfPath, '--baseUrl', 'baseUrl', '--specs', specs, '--params.debug', runOptions.debug]);
         })
         .finally(() => {
             childProcess.spawn.restore();
@@ -80,7 +82,8 @@ describe('server/sockets: protractor-runner:', () => {
 
         let runOptions = {
             baseUrl: "baseUrl",
-            feature: "feature"
+            feature: "feature",
+            debug: true
         };
 
         let specs = path.join(config.testDirectory, '/features/**/feature.feature');
@@ -99,7 +102,7 @@ describe('server/sockets: protractor-runner:', () => {
         return run.then(() => {
             let protractorPath = path.join('node_modules', 'protractor', 'bin', 'protractor');
             let protractorConfPath = path.join('e2e-tests', 'protractor.conf.js');
-            expect(childProcess.spawn).to.have.been.calledWith('node', [protractorPath, protractorConfPath, '--baseUrl', 'baseUrl', '--specs', specs]);
+            expect(childProcess.spawn).to.have.been.calledWith('node', [protractorPath, protractorConfPath, '--baseUrl', 'baseUrl', '--specs', specs, '--params.debug', runOptions.debug]);
         })
         .finally(() => {
             childProcess.spawn.restore();
@@ -124,33 +127,6 @@ describe('server/sockets: protractor-runner:', () => {
         return protractorRunner.run(socket, runOptions)
         .then(() => {
             expect(log.error).to.have.been.calledWith('`baseUrl` must be defined.');
-        })
-        .finally(() => {
-            config.beforeProtractor.restore();
-            config.afterProtractor.restore();
-            log.error.restore();
-            log.info.restore();
-        });
-    });
-
-    it('should throw an `Error` on single feature run, if `feature` is not defined:', () => {
-        let feature;
-        let runOptions = {
-            baseUrl: "baseUrl",
-            feature
-        };
-        let socket = {
-            disconnect: _.noop
-        };
-
-        sinon.stub(config, 'beforeProtractor');
-        sinon.stub(config, 'afterProtractor');
-        sinon.stub(log, 'error');
-        sinon.stub(log, 'info');
-
-        return protractorRunner.run(socket, runOptions)
-        .then(() => {
-            expect(log.error).to.have.been.calledWith('to run a single feature, `feature` must be defined.');
         })
         .finally(() => {
             config.beforeProtractor.restore();
