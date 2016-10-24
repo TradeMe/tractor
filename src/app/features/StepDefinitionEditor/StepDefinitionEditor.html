@@ -114,7 +114,7 @@
                 <h2>Active components:</h2>
                 <ul>
                     <li ng-repeat="component in stepDefinitionEditor.fileModel.componentInstances">                        
-                        <span ui-sref="tractor.components({file: {name: component.component.name, path: component.component.path}})" 
+                        <span id="references" ui-sref="tractor.components({file: {name: component.component.name, path: component.component.path}})" 
                               title="{{ component.component.meta }}"> {{ component.component.name }} 
                         </span>
                         <tractor-action
@@ -132,7 +132,7 @@
                 <ul>
                     <li ng-repeat="component in stepDefinitionEditor.fileModel.availableComponents"
                         ng-if="stepDefinitionEditor.fileModel.components.indexOf(component) === -1">
-                        <span title=" {{ component.meta }}"> {{ component.name }} </span>
+                        <span id="references" title=" {{ component.meta }}"> {{ component.name }} </span>
                         <tractor-action
                             model="stepDefinitionEditor.fileModel"
                             action="Add component"
@@ -191,8 +191,8 @@
                 <h2>Active mock data:</h2>
                 <ul>
                     <li ng-repeat="mockData in stepDefinitionEditor.fileModel.mockDataInstances">                     
-                        <span ui-sref="tractor.mock-data({file: {name: mockData.mockData.name, path: mockData.mockData.path}})" 
-                              title="Edit the Mock Data"> {{ mockData.mockData.name }} 
+                        <span id="references" ui-sref="tractor.mock-data({file: {name: mockData.mockData.name, path: mockData.mockData.path}})" 
+                              title="{{ mockData.mockData.json }}"> {{ mockData.mockData.name }} 
                         </span>
                         <tractor-action
                             model="stepDefinitionEditor.fileModel"
@@ -209,7 +209,7 @@
                 <ul>
                     <li ng-repeat="mockData in stepDefinitionEditor.fileModel.availableMockData"
                         ng-if="stepDefinitionEditor.fileModel.mockData.indexOf(mockData) === -1">
-                            <span title=" {{ mockData.json }} "> {{ mockData.name }} </span>
+                            <span id="references" title=" {{ mockData.json }} "> {{ mockData.name }} </span>
                         <tractor-action
                             model="stepDefinitionEditor.fileModel"
                             action="Add mock"
