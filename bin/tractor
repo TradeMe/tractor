@@ -11,7 +11,7 @@ var log = require('npmlog');
 log.level = 'info';
 
 tractor
-.version('0.8.7');
+.version('0.8.6');
 
 tractor
 .command('init')
