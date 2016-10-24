@@ -74126,7 +74126,7 @@ var FileEditorController = (function () {
         if (references[filePath]) {
             _.each(references[filePath], function(referencePath){
                 var referenceModel = {
-                    name : referencePath.substring(referencePath.lastIndexOf('\\') + 1,referencePath.indexOf('.')),
+                    name : _.first( referencePath.substring(referencePath.lastIndexOf('\\') + 1,referencePath.lastIndexOf('.')).split(".") ),
                     path : referencePath
                 };
                 referencesInstances.push(referenceModel);
