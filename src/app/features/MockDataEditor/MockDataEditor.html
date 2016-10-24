@@ -38,11 +38,13 @@
                 </textarea>
             </section>
 
-            <section class="file-editor__container">
+            <section class="file-editor__container" ng-if="mockDataEditor.fileModel.references.length">
                 <h2>Used by Step Definitions:</h2>
                 <ul>
                     <li ng-repeat="reference in mockDataEditor.fileModel.references">
-                        <span ui-sref="tractor.step-definitions({file: reference})" title="Edit the Step Definition"> {{ reference.name }} </span>
+                        <span id="references" ui-sref="tractor.step-definitions({file: reference})" 
+                              title="Edit the StepDefinition"> {{ reference.name }} 
+                        </span>
                     </li>
                 </ul>
             </section>

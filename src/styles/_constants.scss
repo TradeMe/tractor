@@ -11,3 +11,17 @@ $huge-spacing: $standard-spacing * 3;
 $ridiculous-spacing: $standard-spacing * 4;
 
 $font-dark: rgba(0, 0, 0, 1);
+
+#link { 
+    background-image: url('./images/link.png'); 
+    width:16px; 
+    height:16px;
+    display: block;
+    float: right;
+    cursor:pointer;
+}
+
+#references:hover {
+    cursor:pointer;
+    color: dodgerblue;
+}

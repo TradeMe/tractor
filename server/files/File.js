@@ -33,7 +33,7 @@ export default class File {
     }
 
     toJSON () {
-        let { ast, content, path, name, tokens } = this;
-        return { ast, content, path, name, tokens };
+        let { ast, content, path, name, isPending, tokens } = this;
+        return { ast, content, path, name, isPending, tokens };
     }
 }

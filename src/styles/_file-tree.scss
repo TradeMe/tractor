@@ -18,6 +18,13 @@ tractor-file-tree .file-tree__header {
     padding-left: $large-spacing;
 }
 
+@keyframes pending {
+  from {
+    background-color: limegreen; }
+  to {
+    background-color: green; } 
+}
+
 tractor-file-tree .file-tree__item-name {
     padding: 0;
     margin: 0;
@@ -25,6 +32,12 @@ tractor-file-tree .file-tree__item-name {
     text-decoration: none;
     color: $font-dark;
     white-space: nowrap;
+
+    &.file-tree__item-isPending {
+        background-color: limegreen;
+        animation-name: pending;
+        animation-duration: 1s;
+    }
 }
 
 tractor-file-tree .file-tree__item-rename {

@@ -231,12 +231,12 @@
                     </tractor-action>
                 </section>
 
-                <section class="file-editor__container">
+                <section class="file-editor__container" ng-if="componentEditor.fileModel.references.length">
                     <h2>Used by Step Definitions:</h2>
                     
                     <ul class="file-editor__list-item">
                         <li ng-repeat="reference in componentEditor.fileModel.references">
-                            <span ui-sref="tractor.step-definitions({file: reference})" 
+                            <span id="references" ui-sref="tractor.step-definitions({file: reference})" 
                                   title="Edit the Step Definition"> {{ reference.name }} 
                             </span>
                         </li>
