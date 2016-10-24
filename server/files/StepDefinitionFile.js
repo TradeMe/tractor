@@ -42,7 +42,7 @@ function getFileReferences () {
     });
 }
 
-function checkIfPending () {   
+function checkIfPending () {
     this.isPending = false;
     let pendingIdentifiers = esquery(this.ast, PENDING_QUERY);
     _.each(pendingIdentifiers, (pendingIdentifier) => {

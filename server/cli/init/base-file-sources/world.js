@@ -23,7 +23,7 @@ module.exports = function () {
     };
 
     /* eslint-disable new-cap */
-    this.Before(function (scenario, callback) {       
+    this.Before(function (scenario, callback) {
     /* eslint-enable new-cap */
         global.httpBackend = new HttpBackend(global.browser);
         callback();

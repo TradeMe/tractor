@@ -177,6 +177,7 @@ describe('server/files: File:', () => {
             let file = new File(filePath, directory);
             file.ast = 'ast';
             file.content = 'content';
+            file.isPending = true;
             file.tokens = 'tokens';
 
             let json = file.toJSON();
@@ -186,6 +187,7 @@ describe('server/files: File:', () => {
                 content: 'content',
                 path: path.join('some', 'file', 'name.js'),
                 name: 'name',
+                isPending: true,
                 tokens: 'tokens'
             });
         });
