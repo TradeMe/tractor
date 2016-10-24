@@ -1,6 +1,6 @@
 {
   "name": "tractor",
-  "version": "tractor@v0.8.9-beta.0",
+  "version": "tractor@v0.8.7-beta.0",
   "author": "Craig Spence <craig@trademe.co.nz>",
   "repository": {
     "type": "git",
