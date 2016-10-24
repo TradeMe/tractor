@@ -40,8 +40,8 @@ var FeatureEditorController = function FeatureEditorController (
 
     this.runnerService = runnerService;
     controller.debug = false;
-    this.controller = controller;
-    controller.runFeature = runFeature.bind(this);    
+    this.controller = controller;   
+    controller.runFeature = runFeature.bind(this);
     return controller;
 };
 

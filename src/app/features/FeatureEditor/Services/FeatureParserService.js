@@ -19,9 +19,10 @@ var FeatureParserService = function FeatureParserService (
         parse: parse
     };
 
-    function parse (featureFile) {
+    function parse (featureFile, availableStepDefinitions) {
         try {
             var feature = new FeatureModel({
+                availableStepDefinitions: availableStepDefinitions,
                 isSaved: true,
                 path: featureFile.path
             });

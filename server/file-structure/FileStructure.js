@@ -15,6 +15,7 @@ import ComponentFile from '../files/ComponentFile';
 import Directory from './Directory';
 import files from '../files';
 import MockDataFile from '../files/MockDataFile';
+import StepDefinitionFile from '../files/StepDefinitionFile';
 
 // Errors:
 import TractorError from '../errors/TractorError';
@@ -49,12 +50,17 @@ export default class FileStructure {
 
         let availableComponents;
         let availableMockData;
+        let availableStepDefinitions;
+
+        if (type === constants.FEATURES) {
+            availableStepDefinitions = getFilesOfType.call(this, StepDefinitionFile);
+        }
         if (type === constants.STEP_DEFINITIONS) {
             availableComponents = getFilesOfType.call(this, ComponentFile);
             availableMockData = getFilesOfType.call(this, MockDataFile);
         }
 
-        return { availableComponents, availableMockData, directory, references };
+        return { availableComponents, availableMockData, availableStepDefinitions, directory, references };
     }
 
     copyFile (path) {

@@ -29,11 +29,13 @@ var FileEditorController = (function () {
 
         this.availableComponents = fileStructure.availableComponents;
         this.availableMockData = fileStructure.availableMockData;
+        this.availableStepDefinitions = fileStructure.availableStepDefinitions;
 
         if (filePath) {
-            this.fileService.openFile({ path: filePath.path }, this.availableComponents, this.availableMockData)
+            this.fileService.openFile({ path: filePath.path }, this.availableComponents, this.availableMockData, this.availableStepDefinitions)
             .then(function (file) {
                 this.fileModel = file;
+                this.fileModel.references = getReferencesFiles(filePath.path, this.fileStructure.references);
             }.bind(this));
         } else if (FileModel && !this.fileModel) {
             this.newFile();
@@ -79,9 +81,10 @@ var FileEditorController = (function () {
         }.bind(this))
         .then(function (fileStructure) {
             this.fileStructure = fileStructure;
-            this.fileService.openFile({ path }, this.availableComponents, this.availableMockData)
+            this.fileService.openFile({ path: path }, this.availableComponents, this.availableMockData, this.availableStepDefinitions)
             .then(function (file) {
                 this.fileModel = file;
+                this.fileModel.references = getReferencesFiles(path, this.fileStructure.references);
             }.bind(this));
         }.bind(this))
         .catch(function () {
@@ -109,6 +112,21 @@ var FileEditorController = (function () {
         displayState[item.name] = item.minimised;
         this.persistentStateService.set(this.fileModel.name, displayState);
     };
+
+    //included relative stepDefinitions in references to components and mockData file model
+    function getReferencesFiles(filePath,references){
+        var referencesInstances = [];
+        if (references[filePath]) {
+            _.each(references[filePath], function(referencePath){
+                var referenceModel = {
+                    name : referencePath.substring(referencePath.lastIndexOf('\\') + 1,referencePath.indexOf('.')),
+                    path : referencePath
+                };
+                referencesInstances.push(referenceModel);
+            });
+        }
+        return referencesInstances;
+    }
 
     return FileEditorController;
 })();
