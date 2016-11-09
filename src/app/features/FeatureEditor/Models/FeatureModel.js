@@ -26,10 +26,8 @@ var createFeatureModelConstructor = function (
                     return _.map(options.availableStepDefinitions, function(stepDefinition) {
                         return {                           
                             type: stepDefinition.name.substring(0, stepDefinition.name.indexOf(' ')),
-                            step: stepDefinition.name.substring(stepDefinition.name.indexOf(' ') + 1),
-                            name: ((stepDefinition.path).split('step-definitions\\')[1]).split('.')[0],
-                            path: stepDefinition.path,
-                            pending: stepDefinition.isPending
+                            name: stepDefinition.name.substring(stepDefinition.name.indexOf(' ') + 1),
+                            path: stepDefinition.path
                         }
                     });
                 }
@@ -79,12 +77,9 @@ var createFeatureModelConstructor = function (
     };
 
     FeatureModel.prototype.findStep = function (step) {
-        var stepDefinition = _.find(this.availableStepDefinitions, function(stepDefinition){
-            console.log(step)
-            console.log(stepDefinition)
-            return stepDefinition.step.replace(/[_]/g,'') === step.replace(/[*_\/|"<>?]/g, '');
-        });
-        //console.log(((stepDefinition.path).split('step-definitions\\')[1]).split('.')[0])
+        var stepDefinition = _.find(this.availableStepDefinitions, function(stepDefinition){        
+            return stepDefinition.name.replace(/[_]/g,'') === step.replace(/[*_\/|"<>?]/g, '');
+        });      
         return stepDefinition;
     };
 

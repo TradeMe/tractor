@@ -52,16 +52,25 @@ function startProtractor (socket, runOptions) {
     let featureToRun;
     let resolve;
     let reject;
+    let protractorArgs = [];
     let deferred = new Promise((...args) => {
         resolve = args[0];
         reject = args[1];
     });
 
+    protractorArgs.push(PROTRACTOR_PATH);
+    protractorArgs.push(E2E_PATH);
+
+    // baseUrl
     if (_.isUndefined(runOptions.baseUrl)) {
         reject(new TractorError('`baseUrl` must be defined.'));
         return deferred;
+    } else {
+        protractorArgs.push('--baseUrl');
+        protractorArgs.push(runOptions.baseUrl);
     }
 
+    // specs && params
     if (runOptions.hasOwnProperty("feature")) {
         featureToRun = join('/features', '/**/', `${runOptions.feature}.feature`);
     } else {
@@ -71,7 +80,19 @@ function startProtractor (socket, runOptions) {
 
     let specs = join(config.testDirectory, featureToRun);
 
-    let protractor = spawn('node', [PROTRACTOR_PATH, E2E_PATH, '--baseUrl', runOptions.baseUrl, '--specs', specs, '--params.debug', runOptions.debug]);
+    protractorArgs.push('--specs');
+    protractorArgs.push(specs);
+    protractorArgs.push('--params.debug');
+    protractorArgs.push(runOptions.debug);
+
+    // cucumber tag
+    if (runOptions.tag) {
+        protractorArgs.push('--cucumberOpts.tags');
+        protractorArgs.push(runOptions.tag);
+        console.log(`Running cucumber with tag : ${runOptions.tag}`);
+    }
+
+    let protractor = spawn('node', protractorArgs);
 
     protractor.stdout.on('data', sendDataToClient.bind(socket));
     protractor.stderr.on('data', sendErrorToClient.bind(socket));
