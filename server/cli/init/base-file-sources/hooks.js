@@ -32,7 +32,7 @@ function createReporter () {
     function htmlReportWriter (outputDir, jsonFileName) {
         var htmlFileName = getFileName('tractorReport_', 'html');
         var cucumberhtmlReport = path.join(outputDir, htmlFileName);
-        var cucumberJsonReport = path.join(outputDir, jsonFileName)     
+        var cucumberJsonReport = path.join(outputDir, jsonFileName);
         var options = {
             theme: 'bootstrap',
             jsonFile: cucumberJsonReport,
@@ -41,7 +41,7 @@ function createReporter () {
             launchReport: true
         };
 
-        cucumberHtmlReporter.generate(options); 
+        cucumberHtmlReporter.generate(options);
     }
 
     function getFileName (file, extension) {

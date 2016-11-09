@@ -11,6 +11,6 @@ exports.config = {
             'step-definitions/**/*.js'          
         ],        
         format: 'pretty',
-        tags: [],
+        tags: []
     }
 };

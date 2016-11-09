@@ -34,6 +34,6 @@ exports.config = {
     cucumberOpts: {
         require: ['support/**/*.js', 'step-definitions/**/*.js'],
         format: 'pretty',
-        tags: [],
+        tags: []
     }
 };
