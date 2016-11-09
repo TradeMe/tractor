@@ -14,11 +14,15 @@ var createScenarioModelConstructor = function (
     StepDeclarationModel,
     ExampleModel,
     FeatureIndent,
-    FeatureNewLine
+    FeatureNewLine,
+    config
 ) {
     var ScenarioModel = function ScenarioModel () {
         var stepDeclarations = [];
         var examples = [];
+        var scenarioTag;
+        
+        this.scenarioTags = config.tags.filter(function(item) { return item.indexOf('breakpoint') === -1 });
 
         Object.defineProperties(this, {
             stepDeclarations: {
@@ -44,6 +48,7 @@ var createScenarioModelConstructor = function (
         });
 
         this.name = '';
+        this.scenarioTag = _.first(this.scenarioTags);
     };
 
     ScenarioModel.prototype.addStepDeclaration = function () {
@@ -76,14 +81,18 @@ var createScenarioModelConstructor = function (
         .unique().value();
     }
 
-    function toFeatureString () {
+    function toFeatureString () {        
+
         var scenario = 'Scenario' + (this.examples.length ? ' Outline' : '') + ': ' + this.name;
 
         var stepDeclarations = _.map(this.stepDeclarations, function (stepDeclaration) {
             return FeatureIndent + FeatureIndent + stepDeclaration.feature;
         });
 
-        var lines = [scenario, stepDeclarations];
+        var scenarioTag = this.scenarioTag;
+
+        var lines = ((this.scenarioTag) ? [scenarioTag, FeatureIndent + scenario, stepDeclarations] : [scenario, stepDeclarations])
+        //var lines = [scenario, stepDeclarations];
 
         if (this.examples.length) {
             lines.push(FeatureIndent + FeatureIndent + 'Examples:');
@@ -94,7 +103,7 @@ var createScenarioModelConstructor = function (
             }, this);
         }
 
-        lines = _.flatten(lines);
+        lines = _.flatten(lines);        
         return lines.join(FeatureNewLine);
     }
 };
@@ -103,7 +112,8 @@ FeatureEditor.factory('ScenarioModel', function (
     StepDeclarationModel,
     ExampleModel,
     FeatureIndent,
-    FeatureNewLine
+    FeatureNewLine,
+    config
 ) {
-    return createScenarioModelConstructor(StepDeclarationModel, ExampleModel, FeatureIndent, FeatureNewLine);
+  return createScenarioModelConstructor(StepDeclarationModel, ExampleModel, FeatureIndent, FeatureNewLine, config);
 });

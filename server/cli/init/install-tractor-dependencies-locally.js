@@ -7,7 +7,7 @@ const TO_INSTALL = [
     'chai@2.3.0',
     'chai-as-promised@5.1.0',
     'cucumber@0.7.0',
-    'cucumber-html-report@0.2.5',
+    'cucumber-html-reporter@0.2.16',
     'httpbackend@1.2.1',
     'protractor@2.5.1'
 ];

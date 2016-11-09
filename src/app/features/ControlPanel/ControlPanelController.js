@@ -20,22 +20,39 @@ var ControlPanelController = (function () {
         this.serverStatusService = serverStatusService;
 
         this.environments = config.environments;
+        var filterTags = (config.tags).filter(function(item)  { return (item.indexOf('breakpoint') === -1)});
+        this.tags = _.each(filterTags, function (item) {if(item != '') return filterTags.push('~'+item)});
 
         var environment;
-        Object.defineProperty(this, 'environment', {
-            get: function () {
-                return environment;
+        var tag;        
+        Object.defineProperties(this, {
+            environment: {
+                get: function () {
+                    return environment;
+                },
+                set: function (newEnv) {
+                    environment = newEnv;
+                    runnerService.baseUrl = environment;
+                }
             },
-            set: function (newEnv) {
-                environment = newEnv;
-                runnerService.baseUrl = environment;
-            }
-        });
+            tag: {
+                get: function () {
+                    return tag;
+                },
+                set: function (newTag) {
+                    tag = newTag;                    
+                }
+            },
+         });
+     
         this.environment = _.first(this.environments);
+        this.tag = _.first(this.tags);        
     }
 
     ControlPanelController.prototype.runProtractor = function () {
-        this.runnerService.runProtractor();
+        this.runnerService.runProtractor({
+            tag: this.tag            
+        });
     };
 
     ControlPanelController.prototype.isServerRunning = function () {

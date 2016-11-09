@@ -59,7 +59,8 @@ describe('server/sockets: protractor-runner:', () => {
         return run.then(() => {
             let protractorPath = path.join('node_modules', 'protractor', 'bin', 'protractor');
             let protractorConfPath = path.join('e2e-tests', 'protractor.conf.js');
-            expect(childProcess.spawn).to.have.been.calledWith('node', [protractorPath, protractorConfPath, '--baseUrl', 'baseUrl', '--specs', specs, '--params.debug', runOptions.debug]);
+            let protractorArgs = [protractorPath, protractorConfPath, '--baseUrl', 'baseUrl', '--specs', specs, '--params.debug', runOptions.debug];
+            expect(childProcess.spawn).to.have.been.calledWith('node', protractorArgs);
         })
         .finally(() => {
             childProcess.spawn.restore();
@@ -102,7 +103,53 @@ describe('server/sockets: protractor-runner:', () => {
         return run.then(() => {
             let protractorPath = path.join('node_modules', 'protractor', 'bin', 'protractor');
             let protractorConfPath = path.join('e2e-tests', 'protractor.conf.js');
-            expect(childProcess.spawn).to.have.been.calledWith('node', [protractorPath, protractorConfPath, '--baseUrl', 'baseUrl', '--specs', specs, '--params.debug', runOptions.debug]);
+            let protractorArgs = [protractorPath, protractorConfPath, '--baseUrl', 'baseUrl', '--specs', specs, '--params.debug', runOptions.debug];
+            expect(childProcess.spawn).to.have.been.calledWith('node', protractorArgs);
+        })
+        .finally(() => {
+            childProcess.spawn.restore();
+            config.beforeProtractor.restore();
+            config.afterProtractor.restore();
+            log.info.restore();
+            log.verbose.restore();
+        });
+    });
+
+    it('should run "protractor" if tags are provided', () => {
+        let spawnEmitter = new EventEmitter();
+        spawnEmitter.stdout = new EventEmitter();
+        spawnEmitter.stdout.pipe = _.noop;
+        spawnEmitter.stderr = new EventEmitter();
+        spawnEmitter.stderr.pipe = _.noop;
+        let socket = {
+            disconnect: _.noop
+        };
+
+        let specs = path.join(config.testDirectory, '/features/**/*.feature');
+
+        let runOptions = {
+            baseUrl: "baseUrl",
+            tag: "@tag"
+        };
+
+        runOptions.debug = false;
+
+        sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
+        sinon.stub(config, 'beforeProtractor');
+        sinon.stub(config, 'afterProtractor');
+        sinon.stub(log, 'info');
+        sinon.stub(log, 'verbose');
+
+        let run = protractorRunner.run(socket, runOptions);
+        setTimeout(() => {
+            spawnEmitter.emit('exit', 0);
+        }, MAGIC_TIMEOUT_NUMBER);
+
+        return run.then(() => {
+            let protractorPath = path.join('node_modules', 'protractor', 'bin', 'protractor');
+            let protractorConfPath = path.join('e2e-tests', 'protractor.conf.js');
+            let protractorArgs = [protractorPath, protractorConfPath, '--baseUrl', 'baseUrl', '--specs', specs, '--params.debug', runOptions.debug, '--cucumberOpts.tags', runOptions.tag]
+            expect(childProcess.spawn).to.have.been.calledWith('node', protractorArgs);
         })
         .finally(() => {
             childProcess.spawn.restore();

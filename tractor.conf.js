@@ -18,7 +18,15 @@ module.exports = {
         'http://localhost:3000',
         'http://localhost:4000'
     ],
-	beforeProtractor: function () {
+	tags: [
+        '',
+        '@smoke',        
+        '@ignore',
+        '@breakpointSM(320)',
+        '@breakpointMD(768)',
+        '@breakpointLG(1024)'
+    ],
+    beforeProtractor: function () {
         var fileStructure = require('./server/file-structure');
 
 		this._testDirectory = this.testDirectory;

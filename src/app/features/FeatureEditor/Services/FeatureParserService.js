@@ -32,6 +32,7 @@ var FeatureParserService = function FeatureParserService (
             feature.inOrderTo = featureTokens.inOrderTo;
             feature.asA = featureTokens.asA;
             feature.iWant = featureTokens.iWant;
+            feature.featureTag = featureTokens.tag[0];
 
             _.each(featureTokens.elements, function (element, index) {
                 try {
