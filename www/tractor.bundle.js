@@ -73566,14 +73566,16 @@ var createFeatureModelConstructor = function (
 
         Object.defineProperties(this, {
             availableStepDefinitions: {
-                get: function () {                   
-                    return _.map(options.availableStepDefinitions, function(stepDefinition) {
-                        return {                           
-                            type: stepDefinition.name.substring(0, stepDefinition.name.indexOf(' ')),
-                            name: stepDefinition.name.substring(stepDefinition.name.indexOf(' ') + 1),
-                            path: stepDefinition.path
-                        }
-                    });
+                get: function () {
+                    if (options) {
+                        return _.map(options.availableStepDefinitions, function(stepDefinition) {
+                            return {                           
+                                type: stepDefinition.name.substring(0, stepDefinition.name.indexOf(' ')),
+                                name: stepDefinition.name.substring(stepDefinition.name.indexOf(' ') + 1),
+                                path: stepDefinition.path
+                            }
+                        });
+                    }
                 }
             },
             isSaved: {
