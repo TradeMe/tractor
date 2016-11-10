@@ -17,9 +17,9 @@ var createFeatureModelConstructor = function (
 ) {
     var FeatureModel = function FeatureModel (options) {
         var scenarios = [];
-        var featureTag;        
-        this.featureTags = config.tags;
-
+        var featureTag;       
+        this.featureTags = (config.tags ? config.tags : []);
+        
         Object.defineProperties(this, {
             availableStepDefinitions: {
                 get: function () {

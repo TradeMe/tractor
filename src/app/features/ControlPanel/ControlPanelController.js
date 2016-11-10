@@ -18,10 +18,8 @@ var ControlPanelController = (function () {
     ) {
         this.runnerService = runnerService;
         this.serverStatusService = serverStatusService;
-
         this.environments = config.environments;
-        var filterTags = (config.tags).filter(function(item)  { return (item.indexOf('breakpoint') === -1)});
-        this.tags = _.each(filterTags, function (item) {if(item != '') return filterTags.push('~'+item)});
+        this.tags = (config.tags ? getFilteredTags(config.tags) : [] );
 
         var environment;
         var tag;        
@@ -61,5 +59,14 @@ var ControlPanelController = (function () {
 
     return ControlPanelController;
 })();
+
+function getFilteredTags (tags) {
+    var filterTags = tags.filter(function(item)  { 
+        return (item.indexOf('breakpoint') === -1)
+    });
+    return  _.each(filterTags, function (item) {
+        if(item != '') return filterTags.push('~'+item)
+    });
+}
 
 ControlPanel.controller('ControlPanelController', ControlPanelController);

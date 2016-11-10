@@ -20,9 +20,8 @@ var createScenarioModelConstructor = function (
     var ScenarioModel = function ScenarioModel () {
         var stepDeclarations = [];
         var examples = [];
-        var scenarioTag;
-        
-        this.scenarioTags = config.tags.filter(function(item) { return item.indexOf('breakpoint') === -1 });
+        var scenarioTag;        
+        this.scenarioTags = (config.tags ? config.tags.filter(function(item) { return item.indexOf('breakpoint') === -1 }) : []);
 
         Object.defineProperties(this, {
             stepDeclarations: {

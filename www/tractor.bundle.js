@@ -73269,10 +73269,8 @@ var ControlPanelController = (function () {
     ) {
         this.runnerService = runnerService;
         this.serverStatusService = serverStatusService;
-
         this.environments = config.environments;
-        var filterTags = (config.tags).filter(function(item)  { return (item.indexOf('breakpoint') === -1)});
-        this.tags = _.each(filterTags, function (item) {if(item != '') return filterTags.push('~'+item)});
+        this.tags = (config.tags ? getFilteredTags(config.tags) : [] );
 
         var environment;
         var tag;        
@@ -73313,6 +73311,15 @@ var ControlPanelController = (function () {
 
     return ControlPanelController;
 })();
+
+function getFilteredTags (tags) {
+    var filterTags = tags.filter(function(item)  { 
+        return (item.indexOf('breakpoint') === -1)
+    });
+    return  _.each(filterTags, function (item) {
+        if(item != '') return filterTags.push('~'+item)
+    });
+}
 
 ControlPanel.controller('ControlPanelController', ControlPanelController);
 
@@ -73561,9 +73568,9 @@ var createFeatureModelConstructor = function (
 ) {
     var FeatureModel = function FeatureModel (options) {
         var scenarios = [];
-        var featureTag;        
-        this.featureTags = config.tags;
-
+        var featureTag;       
+        this.featureTags = (config.tags ? config.tags : []);
+        
         Object.defineProperties(this, {
             availableStepDefinitions: {
                 get: function () {
@@ -73682,9 +73689,8 @@ var createScenarioModelConstructor = function (
     var ScenarioModel = function ScenarioModel () {
         var stepDeclarations = [];
         var examples = [];
-        var scenarioTag;
-        
-        this.scenarioTags = config.tags.filter(function(item) { return item.indexOf('breakpoint') === -1 });
+        var scenarioTag;        
+        this.scenarioTags = (config.tags ? config.tags.filter(function(item) { return item.indexOf('breakpoint') === -1 }) : []);
 
         Object.defineProperties(this, {
             stepDeclarations: {
