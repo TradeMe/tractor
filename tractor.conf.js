@@ -21,10 +21,7 @@ module.exports = {
 	tags: [
         '',
         '@smoke',        
-        '@ignore',
-        '@breakpointSM(320)',
-        '@breakpointMD(768)',
-        '@breakpointLG(1024)'
+        '@ignore'
     ],
     beforeProtractor: function () {
         var fileStructure = require('./server/file-structure');

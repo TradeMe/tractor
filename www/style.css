@@ -587,6 +587,9 @@ form.file {
     .file-editor__list-item.file-editor__list-item--minimised section {
       display: none; }
 
+.file-editor__container section > tractor-select {
+  width: 20%; }
+
 .file-options {
   font-size: 0;
   height: 11%;

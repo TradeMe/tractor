@@ -71450,7 +71450,7 @@ tractor.config(['$stateProvider', '$locationProvider', '$urlMatcherFactoryProvid
     .state('tractor', {
         url: '/',
         /* eslint-disable no-path-concat */
-        template: "<header>\r\n    <section class=\"control-panel__top-row\">\r\n        <div>\r\n            <form class=\"control-panel__run-options\" name=\"controlPanelOptions\" novalidate\r\n                ng-submit=\"controlPanel.runProtractor()\">\r\n                <tractor-select\r\n                    label=\"Environment\"\r\n                    model=\"controlPanel\">\r\n                </tractor-select>\r\n                <tractor-submit\r\n                    action=\"Run protractor\">\r\n                </tractor-submit>\r\n            </form>\r\n        </div>\r\n        <span class=\"control-panel__server-status\"\r\n              ng-class=\"{ 'control-panel__server-status--running': controlPanel.isServerRunning() }\"\r\n              ng-attr-title=\"{{ 'Tractor server is ' + (controlPanel.isServerRunning() ? 'running.' : 'not running.') }}\">\r\n        </span>\r\n    </section>\r\n\r\n    <nav>\r\n        <ul>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".components({ file: null })\">Components</a>\r\n            </li>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".features({ file: null })\">Features</a>\r\n            </li>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".step-definitions({ file: null })\">Step Definitions</a>\r\n            </li>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".mock-data({ file: null })\">Mock Data</a>\r\n            </li>\r\n        </ul>\r\n    </nav>\r\n</header>\r\n\r\n<main ui-view></main>\r\n\r\n<tractor-notifier></tractor-notifier>\r\n",
+        template: "<header>\r\n    <section class=\"control-panel__top-row\">\r\n        <div>\r\n            <form class=\"control-panel__run-options\" name=\"controlPanelOptions\" novalidate\r\n                ng-submit=\"controlPanel.runProtractor()\">\r\n                <tractor-select\r\n                    label=\"Environment\"\r\n                    model=\"controlPanel\">\r\n                </tractor-select>\r\n                <tractor-select\r\n                    label=\"tag\"\r\n                    model=\"controlPanel\">\r\n                </tractor-select>\r\n                <tractor-submit\r\n                    action=\"Run protractor\">\r\n                </tractor-submit>\r\n            </form>\r\n        </div>\r\n        <span class=\"control-panel__server-status\"\r\n              ng-class=\"{ 'control-panel__server-status--running': controlPanel.isServerRunning() }\"\r\n              ng-attr-title=\"{{ 'Tractor server is ' + (controlPanel.isServerRunning() ? 'running.' : 'not running.') }}\">\r\n        </span>\r\n    </section>\r\n\r\n    <nav>\r\n        <ul>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".components({ file: null })\">Components</a>\r\n            </li>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".features({ file: null })\">Features</a>\r\n            </li>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".step-definitions({ file: null })\">Step Definitions</a>\r\n            </li>\r\n            <li ui-sref-active=\"active\">\r\n                <a ui-sref=\".mock-data({ file: null })\">Mock Data</a>\r\n            </li>\r\n        </ul>\r\n    </nav>\r\n</header>\r\n\r\n<main ui-view></main>\r\n\r\n<tractor-notifier></tractor-notifier>\r\n",
         /* eslint-enable no-path-concat */
         controller: 'ControlPanelController as controlPanel'
     })
@@ -71472,7 +71472,7 @@ tractor.config(['$stateProvider', '$locationProvider', '$urlMatcherFactoryProvid
     .state('tractor.features', {
         url: 'features/{file:TractorFile}',
         /* eslint-disable no-path-concat */
-        template: "<div ng-if=\"featureEditor.fileModel\">\r\n    <tractor-file-tree model=\"featureEditor\" type=\"features\"></tractor-file-tree>\r\n    <tractor-panel-handle panel-name=\"feature-file-tree\"></tractor-panel-handle>\r\n    <form class=\"file\" name=\"featureEditor.fileEditor\" novalidate\r\n        ng-submit=\"featureEditor.showErrors() && featureEditor.saveFile()\">\r\n        <section class=\"file-options\">\r\n            <h1 class=\"file-options__name\">{{ featureEditor.fileModel.name }}</h1>\r\n            <div>\r\n                <tractor-text-input class=\"file-options__name-input\"\r\n                    ng-if=\"!featureEditor.fileModel.isSaved\"\r\n                    form=\"file-editor\"\r\n                    label=\"Name\"\r\n                    model=\"featureEditor.fileModel\"\r\n                    example=\"Feature\"\r\n                    validate-file-name>\r\n                </tractor-text-input>\r\n            </div>             \r\n            <div class=\"file-options__file-actions\">\r\n                <tractor-confirm-dialog trigger=\"featureEditor.confirmOverWrite\">\r\n                    <p>This will overwrite \"{{ featureEditor.fileModel.name }}\". Continue?</p>\r\n                </tractor-confirm-dialog>\r\n                <tractor-checkbox ng-show=\"featureEditor.fileModel.name\"\r\n                     class=\"file-options__save-file\"\r\n                     label=\"debug\"\r\n                     model=\"featureEditor\">\r\n                </tractor-checkbox>\r\n                 <tractor-action ng-show=\"featureEditor.fileModel.name\"\r\n                      class=\"file-options__save-file\"\r\n                      action=\"Run feature\"\r\n                      model=\"featureEditor\"\r\n                      argument=\"featureEditor.fileModel.name\">\r\n                </tractor-action>\r\n                <tractor-submit class=\"file-options__save-file\"\r\n                    action=\"Save feature file\">\r\n                </tractor-submit>\r\n                <tractor-action class=\"file-options__save-file\"\r\n                    model=\"featureEditor\"\r\n                    action=\"New file\">\r\n                </tractor-action>\r\n            </div>\r\n        </section>\r\n\r\n        <section class=\"file-editor\">\r\n            <section ng-show=\"featureEditor.fileModel.name\">\r\n                <section class=\"file-editor__container\">\r\n                    <h2>Feature:</h2>\r\n\r\n                    <tractor-text-input\r\n                        form=\"file-editor\"\r\n                        label=\"In order to\"\r\n                        model=\"featureEditor.fileModel\"\r\n                        example=\"achieve some goal\">\r\n                    </tractor-text-input>\r\n                    <tractor-text-input\r\n                        form=\"file-editor\"\r\n                        label=\"As a\"\r\n                        model=\"featureEditor.fileModel\"\r\n                        example=\"certain type of user\">\r\n                    </tractor-text-input>\r\n                    <tractor-text-input\r\n                        form=\"file-editor\"\r\n                        label=\"I want\"\r\n                        model=\"featureEditor.fileModel\"\r\n                        example=\"to be able to do something\">\r\n                    </tractor-text-input>\r\n                </section>\r\n\r\n                <section class=\"file-editor__container\">\r\n                    <h2>Scenarios:</h2>\r\n\r\n                    <ul ng-if=\"featureEditor.fileModel.scenarios.length\">\r\n                        <li class=\"file-editor__list-item\"\r\n                            ng-repeat=\"scenario in featureEditor.fileModel.scenarios\"\r\n                            ng-class=\"{ 'file-editor__list-item--minimised': scenario.minimised }\">\r\n\r\n                            <h3 class=\"file-editor__list-item-name\">{{ scenario.name }}</h3>\r\n\r\n                            <tractor-action\r\n                                model=\"featureEditor.fileModel\"\r\n                                action=\"Remove scenario\"\r\n                                argument=\"scenario\"\r\n                                icon=\"remove\">\r\n                            </tractor-action>\r\n\r\n                            <tractor-action\r\n                                model=\"featureEditor\"\r\n                                action=\"minimise\"\r\n                                argument=\"scenario\"\r\n                                icon=\"collapse\">\r\n                            </tractor-action>\r\n\r\n                            <tractor-text-input\r\n                                form=\"file-editor\"\r\n                                label=\"Name\"\r\n                                model=\"scenario\"\r\n                                example=\"Scenario\">\r\n                            </tractor-text-input>\r\n\r\n                            <section>\r\n                                <h3>Step Declarations:</h3>\r\n\r\n                                <ol ng-if=\"scenario.stepDeclarations.length\" as-sortable ng-model=\"scenario.stepDeclarations\" is-disabled=\"scenario.stepDeclarations.length < 2\">\r\n                                    <li class=\"file-editor__list-item\" ng-repeat=\"stepDeclaration in scenario.stepDeclarations\" as-sortable-item>\r\n                                        <tractor-action\r\n                                            model=\"scenario\"\r\n                                            action=\"Remove step declaration\"\r\n                                            argument=\"stepDeclaration\"\r\n                                            icon=\"remove\">\r\n                                        </tractor-action>\r\n                                        <div ng-if=\"scenario.stepDeclarations.length > 1\" class=\"file-editor__list-item-sort-handle\" as-sortable-item-handle title=\"Drag to sort\"></div>\r\n\r\n                                        <tractor-select label=\"Type\" model=\"stepDeclaration\"></tractor-select>\r\n                                        <tractor-step-input\r\n                                            form=\"file-editor\"\r\n                                            label=\"Step\"\r\n                                            model=\"stepDeclaration\"\r\n                                            example=\"something happens\">\r\n                                        </tractor-step-input>\r\n                                        <span ui-sref=\"tractor.step-definitions({file: featureEditor.fileModel.findStep(stepDeclaration.step)})\" \r\n                                              title=\"See step details\" id=\"link\">  \r\n                                        </span>\r\n                                    </li>\r\n                                </ol>\r\n\r\n                                <tractor-action\r\n                                    model=\"scenario\"\r\n                                    action=\"Add step declaration\">\r\n                                </tractor-action>\r\n                            </section>\r\n\r\n                            <section ng-show=\"scenario.exampleVariables.length\">\r\n                                <h3>Examples:</h3>\r\n                                <ul>\r\n                                    <li class=\"file-editor__list-item\" ng-repeat=\"example in scenario.examples\">\r\n                                        <tractor-action\r\n                                            model=\"scenario\"\r\n                                            action=\"Remove example\"\r\n                                            argument=\"example\"\r\n                                            icon=\"remove\">\r\n                                        </tractor-action>\r\n\r\n                                        <tractor-literal-input ng-repeat=\"exampleVariable in scenario.exampleVariables\"\r\n                                            form=\"file-editor\"\r\n                                            name=\"exampleVariable\"\r\n                                            model=\"example.values[exampleVariable]\"\r\n                                            type=\"argument.type\">\r\n                                        </tractor-literal-input>\r\n                                    </li>\r\n                                </ul>\r\n\r\n                                <tractor-action\r\n                                    model=\"scenario\"\r\n                                    action=\"Add example\">\r\n                                </tractor-action>\r\n                            </section>\r\n                        </li>\r\n                    </ul>\r\n\r\n                    <tractor-action\r\n                        model=\"featureEditor.fileModel\"\r\n                        action=\"Add scenario\">\r\n                    </tractor-action>\r\n                </section>\r\n            </section>\r\n        </section>\r\n    </form>\r\n</div>\r\n",
+        template: "<div ng-if=\"featureEditor.fileModel\">\r\n    <tractor-file-tree model=\"featureEditor\" type=\"features\"></tractor-file-tree>\r\n    <tractor-panel-handle panel-name=\"feature-file-tree\"></tractor-panel-handle>\r\n    <form class=\"file\" name=\"featureEditor.fileEditor\" novalidate\r\n        ng-submit=\"featureEditor.showErrors() && featureEditor.saveFile()\">\r\n        <section class=\"file-options\">\r\n            <h1 class=\"file-options__name\">{{ featureEditor.fileModel.name }}</h1>\r\n            <div>\r\n                <tractor-text-input class=\"file-options__name-input\"\r\n                    ng-if=\"!featureEditor.fileModel.isSaved\"\r\n                    form=\"file-editor\"\r\n                    label=\"Name\"\r\n                    model=\"featureEditor.fileModel\"\r\n                    example=\"Feature\"\r\n                    validate-file-name>\r\n                </tractor-text-input>\r\n            </div>             \r\n            <div class=\"file-options__file-actions\">\r\n                <tractor-confirm-dialog trigger=\"featureEditor.confirmOverWrite\">\r\n                    <p>This will overwrite \"{{ featureEditor.fileModel.name }}\". Continue?</p>\r\n                </tractor-confirm-dialog>\r\n                <tractor-checkbox ng-show=\"featureEditor.fileModel.name\"\r\n                     class=\"file-options__save-file\"\r\n                     label=\"debug\"\r\n                     model=\"featureEditor\">\r\n                </tractor-checkbox>\r\n                 <tractor-action ng-show=\"featureEditor.fileModel.name\"\r\n                      class=\"file-options__save-file\"\r\n                      action=\"Run feature\"\r\n                      model=\"featureEditor\"\r\n                      argument=\"featureEditor.fileModel.name\">\r\n                </tractor-action>\r\n                <tractor-submit class=\"file-options__save-file\"\r\n                    action=\"Save feature file\">\r\n                </tractor-submit>\r\n                <tractor-action class=\"file-options__save-file\"\r\n                    model=\"featureEditor\"\r\n                    action=\"New file\">\r\n                </tractor-action>\r\n            </div>\r\n        </section>\r\n\r\n        <section class=\"file-editor\">\r\n            <section ng-show=\"featureEditor.fileModel.name\">                \r\n                <section class=\"file-editor__container\">\r\n                    <section>\r\n                        <tractor-select\r\n                            label=\"FeatureTag\"\r\n                            model=\"featureEditor.fileModel\">\r\n                        </tractor-select>\r\n                    </section>\r\n                    <h2>Feature:</h2>\r\n\r\n                    <tractor-text-input\r\n                        form=\"file-editor\"\r\n                        label=\"In order to\"\r\n                        model=\"featureEditor.fileModel\"\r\n                        example=\"achieve some goal\">\r\n                    </tractor-text-input>\r\n                    <tractor-text-input\r\n                        form=\"file-editor\"\r\n                        label=\"As a\"\r\n                        model=\"featureEditor.fileModel\"\r\n                        example=\"certain type of user\">\r\n                    </tractor-text-input>\r\n                    <tractor-text-input\r\n                        form=\"file-editor\"\r\n                        label=\"I want\"\r\n                        model=\"featureEditor.fileModel\"\r\n                        example=\"to be able to do something\">\r\n                    </tractor-text-input>\r\n                </section>\r\n                \r\n                <section class=\"file-editor__container\">\r\n                    <h2>Scenarios:</h2>\r\n\r\n                    <ul ng-if=\"featureEditor.fileModel.scenarios.length\">\r\n                        <li class=\"file-editor__list-item\"\r\n                            ng-repeat=\"scenario in featureEditor.fileModel.scenarios\"\r\n                            ng-class=\"{ 'file-editor__list-item--minimised': scenario.minimised }\">\r\n\r\n                            <section>\r\n                                 <tractor-select\r\n                                    label=\"ScenarioTag\"\r\n                                    model=\"scenario\">\r\n                                 </tractor-select>\r\n                            </section>\r\n\r\n                            <h3 class=\"file-editor__list-item-name\">{{ scenario.name }} {{ scenario.scenarioTag }}</h3>\r\n\r\n                            <tractor-action\r\n                                model=\"featureEditor.fileModel\"\r\n                                action=\"Remove scenario\"\r\n                                argument=\"scenario\"\r\n                                icon=\"remove\">\r\n                            </tractor-action>\r\n\r\n                            <tractor-action\r\n                                model=\"featureEditor\"\r\n                                action=\"minimise\"\r\n                                argument=\"scenario\"\r\n                                icon=\"collapse\">\r\n                            </tractor-action>\r\n\r\n                            <tractor-text-input\r\n                                form=\"file-editor\"\r\n                                label=\"Name\"\r\n                                model=\"scenario\"\r\n                                example=\"Scenario\">\r\n                            </tractor-text-input>\r\n\r\n                            <section>\r\n                                <h3>Step Declarations:</h3>\r\n\r\n                                <ol ng-if=\"scenario.stepDeclarations.length\" as-sortable ng-model=\"scenario.stepDeclarations\" is-disabled=\"scenario.stepDeclarations.length < 2\">\r\n                                    <li class=\"file-editor__list-item\" ng-repeat=\"stepDeclaration in scenario.stepDeclarations\" as-sortable-item>\r\n                                        <tractor-action\r\n                                            model=\"scenario\"\r\n                                            action=\"Remove step declaration\"\r\n                                            argument=\"stepDeclaration\"\r\n                                            icon=\"remove\">\r\n                                        </tractor-action>\r\n                                        <div ng-if=\"scenario.stepDeclarations.length > 1\" class=\"file-editor__list-item-sort-handle\" as-sortable-item-handle title=\"Drag to sort\"></div>\r\n\r\n                                        <tractor-select label=\"Type\" model=\"stepDeclaration\"></tractor-select>\r\n                                        <tractor-step-input\r\n                                            form=\"file-editor\"\r\n                                            label=\"Step\"\r\n                                            model=\"stepDeclaration\"\r\n                                            example=\"something happens\">\r\n                                        </tractor-step-input>\r\n                                        <span ui-sref=\"tractor.step-definitions({file: featureEditor.fileModel.findStep(stepDeclaration.step)})\" \r\n                                              title=\"See step details\" id=\"link\">  \r\n                                        </span>\r\n                                    </li>\r\n                                </ol>\r\n\r\n                                <tractor-action\r\n                                    model=\"scenario\"\r\n                                    action=\"Add step declaration\">\r\n                                </tractor-action>\r\n                            </section>\r\n\r\n                            <section ng-show=\"scenario.exampleVariables.length\">\r\n                                <h3>Examples:</h3>\r\n                                <ul>\r\n                                    <li class=\"file-editor__list-item\" ng-repeat=\"example in scenario.examples\">\r\n                                        <tractor-action\r\n                                            model=\"scenario\"\r\n                                            action=\"Remove example\"\r\n                                            argument=\"example\"\r\n                                            icon=\"remove\">\r\n                                        </tractor-action>\r\n\r\n                                        <tractor-literal-input ng-repeat=\"exampleVariable in scenario.exampleVariables\"\r\n                                            form=\"file-editor\"\r\n                                            name=\"exampleVariable\"\r\n                                            model=\"example.values[exampleVariable]\"\r\n                                            type=\"argument.type\">\r\n                                        </tractor-literal-input>\r\n                                    </li>\r\n                                </ul>\r\n\r\n                                <tractor-action\r\n                                    model=\"scenario\"\r\n                                    action=\"Add example\">\r\n                                </tractor-action>\r\n                            </section>\r\n                        </li>\r\n                    </ul>\r\n\r\n                    <tractor-action\r\n                        model=\"featureEditor.fileModel\"\r\n                        action=\"Add scenario\">\r\n                    </tractor-action>\r\n                </section>\r\n            </section>\r\n        </section>\r\n    </form>\r\n</div>\r\n",
         /* eslint-enable no-path-concat */
         controller: 'FeatureEditorController as featureEditor',
         resolve: {
@@ -72384,7 +72384,7 @@ var createFilterModelConstructor = function (
         this.locator = '';
     };
 
-    FilterModel.prototype.types = ['model', 'binding', 'text', 'css', 'options', 'repeater', 'buttonText'];
+    FilterModel.prototype.types = ['model', 'binding', 'text', 'css', 'options', 'repeater', 'buttonText', 'linkText'];
 
     return FilterModel;
 
@@ -73271,23 +73271,40 @@ var ControlPanelController = (function () {
         this.serverStatusService = serverStatusService;
 
         this.environments = config.environments;
+        var filterTags = (config.tags).filter(function(item)  { return (item.indexOf('breakpoint') === -1)});
+        this.tags = _.each(filterTags, function (item) {if(item != '') return filterTags.push('~'+item)});
 
         var environment;
-        Object.defineProperty(this, 'environment', {
-            get: function () {
-                return environment;
+        var tag;        
+        Object.defineProperties(this, {
+            environment: {
+                get: function () {
+                    return environment;
+                },
+                set: function (newEnv) {
+                    environment = newEnv;
+                    runnerService.baseUrl = environment;
+                }
             },
-            set: function (newEnv) {
-                environment = newEnv;
-                runnerService.baseUrl = environment;
-            }
-        });
+            tag: {
+                get: function () {
+                    return tag;
+                },
+                set: function (newTag) {
+                    tag = newTag;                    
+                }
+            },
+         });
+     
         this.environment = _.first(this.environments);
+        this.tag = _.first(this.tags);        
     }
     ControlPanelController.$inject = ['runnerService', 'serverStatusService', 'config'];
 
     ControlPanelController.prototype.runProtractor = function () {
-        this.runnerService.runProtractor();
+        this.runnerService.runProtractor({
+            tag: this.tag            
+        });
     };
 
     ControlPanelController.prototype.isServerRunning = function () {
@@ -73539,20 +73556,22 @@ require('./ScenarioModel');
 var createFeatureModelConstructor = function (
     ScenarioModel,
     FeatureIndent,
-    FeatureNewLine
+    FeatureNewLine,
+    config
 ) {
     var FeatureModel = function FeatureModel (options) {
         var scenarios = [];
+        var featureTag;        
+        this.featureTags = config.tags;
 
         Object.defineProperties(this, {
             availableStepDefinitions: {
                 get: function () {                   
                     return _.map(options.availableStepDefinitions, function(stepDefinition) {
-                        return {
+                        return {                           
                             type: stepDefinition.name.substring(0, stepDefinition.name.indexOf(' ')),
                             name: stepDefinition.name.substring(stepDefinition.name.indexOf(' ') + 1),
-                            path: stepDefinition.path,
-                            pending: stepDefinition.isPending
+                            path: stepDefinition.path
                         }
                     });
                 }
@@ -73587,7 +73606,8 @@ var createFeatureModelConstructor = function (
         this.name = '';
         this.inOrderTo = '';
         this.asA = '';
-        this.iWant = '';
+        this.iWant = '';        
+        this.featureTag = _.first(this.featureTags);
     };
 
     FeatureModel.prototype.addScenario = function () {
@@ -73601,36 +73621,40 @@ var createFeatureModelConstructor = function (
     };
 
     FeatureModel.prototype.findStep = function (step) {
-        var stepDefinition = _.find(this.availableStepDefinitions, function(stepDefinition){
+        var stepDefinition = _.find(this.availableStepDefinitions, function(stepDefinition){        
             return stepDefinition.name.replace(/[_]/g,'') === step.replace(/[*_\/|"<>?]/g, '');
-        });
+        });      
         return stepDefinition;
     };
 
     return FeatureModel;
 
     function toFeatureString () {
+        var featureTag = this.featureTag;
+
         var feature = 'Feature: ' + this.name;
 
         var inOrderTo = FeatureIndent + 'In order to ' + this.inOrderTo;
         var asA = FeatureIndent + 'As a ' + this.asA;
-        var iWant = FeatureIndent + 'I want ' + this.iWant;
+        var iWant = FeatureIndent + 'I want ' + this.iWant;        
 
         var scenarios = _.map(this.scenarios, function (scenario) {
             return FeatureIndent + scenario.featureString;
         });
 
-        var lines = _.flatten([feature, inOrderTo, asA, iWant, scenarios]);
+        var lines = ((this.featureTag) ? [featureTag, feature, inOrderTo, asA, iWant, scenarios] : [feature, inOrderTo, asA, iWant, scenarios]);
+        lines = _.flatten(lines);
         return lines.join(FeatureNewLine);
     }
 };
 
-FeatureEditor.factory('FeatureModel', ['ScenarioModel', 'FeatureIndent', 'FeatureNewLine', function (
+FeatureEditor.factory('FeatureModel', ['ScenarioModel', 'FeatureIndent', 'FeatureNewLine', 'config', function (
     ScenarioModel,
     FeatureIndent,
-    FeatureNewLine
+    FeatureNewLine,
+    config
 ) {
-    return createFeatureModelConstructor(ScenarioModel, FeatureIndent, FeatureNewLine);
+    return createFeatureModelConstructor(ScenarioModel, FeatureIndent, FeatureNewLine, config);
 }]);
 
 },{"../FeatureEditor":148,"./ScenarioModel":152,"lodash":51}],152:[function(require,module,exports){
@@ -73650,11 +73674,15 @@ var createScenarioModelConstructor = function (
     StepDeclarationModel,
     ExampleModel,
     FeatureIndent,
-    FeatureNewLine
+    FeatureNewLine,
+    config
 ) {
     var ScenarioModel = function ScenarioModel () {
         var stepDeclarations = [];
         var examples = [];
+        var scenarioTag;
+        
+        this.scenarioTags = config.tags.filter(function(item) { return item.indexOf('breakpoint') === -1 });
 
         Object.defineProperties(this, {
             stepDeclarations: {
@@ -73680,6 +73708,7 @@ var createScenarioModelConstructor = function (
         });
 
         this.name = '';
+        this.scenarioTag = _.first(this.scenarioTags);
     };
 
     ScenarioModel.prototype.addStepDeclaration = function () {
@@ -73712,14 +73741,18 @@ var createScenarioModelConstructor = function (
         .unique().value();
     }
 
-    function toFeatureString () {
+    function toFeatureString () {        
+
         var scenario = 'Scenario' + (this.examples.length ? ' Outline' : '') + ': ' + this.name;
 
         var stepDeclarations = _.map(this.stepDeclarations, function (stepDeclaration) {
             return FeatureIndent + FeatureIndent + stepDeclaration.feature;
         });
 
-        var lines = [scenario, stepDeclarations];
+        var scenarioTag = this.scenarioTag;
+
+        var lines = ((this.scenarioTag) ? [scenarioTag, FeatureIndent + scenario, stepDeclarations] : [scenario, stepDeclarations])
+        //var lines = [scenario, stepDeclarations];
 
         if (this.examples.length) {
             lines.push(FeatureIndent + FeatureIndent + 'Examples:');
@@ -73730,18 +73763,19 @@ var createScenarioModelConstructor = function (
             }, this);
         }
 
-        lines = _.flatten(lines);
+        lines = _.flatten(lines);        
         return lines.join(FeatureNewLine);
     }
 };
 
-FeatureEditor.factory('ScenarioModel', ['StepDeclarationModel', 'ExampleModel', 'FeatureIndent', 'FeatureNewLine', function (
+FeatureEditor.factory('ScenarioModel', ['StepDeclarationModel', 'ExampleModel', 'FeatureIndent', 'FeatureNewLine', 'config', function (
     StepDeclarationModel,
     ExampleModel,
     FeatureIndent,
-    FeatureNewLine
+    FeatureNewLine,
+    config
 ) {
-    return createScenarioModelConstructor(StepDeclarationModel, ExampleModel, FeatureIndent, FeatureNewLine);
+  return createScenarioModelConstructor(StepDeclarationModel, ExampleModel, FeatureIndent, FeatureNewLine, config);
 }]);
 
 },{"../FeatureEditor":148,"./ExampleModel":150,"./StepDeclarationModel":153,"lodash":51}],153:[function(require,module,exports){
@@ -73886,6 +73920,7 @@ var FeatureParserService = function FeatureParserService (
             feature.inOrderTo = featureTokens.inOrderTo;
             feature.asA = featureTokens.asA;
             feature.iWant = featureTokens.iWant;
+            feature.featureTag = featureTokens.tag[0];
 
             _.each(featureTokens.elements, function (element, index) {
                 try {
@@ -73933,10 +73968,10 @@ var ScenarioParserService = function ScenarioParserService (
     };
 
     function parse (feature, tokens) {
-        var scenario = new ScenarioModel();
-
+        var scenario = new ScenarioModel();       
         scenario.name = tokens.name;
-
+        scenario.scenarioTag = tokens.tag[0];
+       
         _.each(tokens.stepDeclarations, function (stepDeclaration, index) {
             var notStep = false;
 
@@ -73968,8 +74003,7 @@ var ScenarioParserService = function ScenarioParserService (
             if (notExample) {
                 console.log(example, index);
             }
-        });
-
+        });        
         return scenario;
     }
 };
