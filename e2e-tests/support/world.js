@@ -17,9 +17,9 @@ var CustomWorld = (function () {
 })();
 
 module.exports = function () {
-    this.World = function (callback) {
+    this.World = function () {
         var w = new CustomWorld();
-        return callback(w);
+        return w;
     };
 
     /* eslint-disable new-cap */
@@ -30,9 +30,9 @@ module.exports = function () {
     });
 
     /* eslint-disable new-cap */
-    this.StepResult(function (event, callback) {
-        var stepResult = event.getPayloadItem('stepResult');
-        if (stepResult.isFailed() && global.browser.params.debug === 'true') {
+    this.StepResult(function (step, callback) {
+        //var stepResult = event.getPayloadItem('stepResult');
+        if (step.isFailed() && global.browser.params.debug === 'true') {
             global.browser.pause();
         }
         callback();
