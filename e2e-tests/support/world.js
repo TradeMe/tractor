@@ -30,9 +30,8 @@ module.exports = function () {
     });
 
     /* eslint-disable new-cap */
-    this.StepResult(function (step, callback) {
-        //var stepResult = event.getPayloadItem('stepResult');
-        if (step.isFailed() && global.browser.params.debug === 'true') {
+    this.StepResult(function (stepResult, callback) {
+        if (stepResult.getStatus() === 'failed' && global.browser.params.debug === 'true') {
             global.browser.pause();
         }
         callback();
