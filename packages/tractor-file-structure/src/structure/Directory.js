@@ -30,9 +30,9 @@ export default class Directory {
         this.allFiles = [];
 
         let relativePath = path.relative(this.fileStructure.path, this.path);
+        this.name = path.basename(this.path);
+        this.basename = this.name;
         this.url = path.normalize(`/${relativePath}/`).replace(/\\/, '/');
-        let [directoryName] = this.path.split(path.sep).reverse();
-        this.name = directoryName;
 
         if (isRoot) {
             this.parent = this.fileStructure;
@@ -80,18 +80,6 @@ export default class Directory {
         });
     }
 
-    copy (toCopy) {
-        return this.save()
-        .then(() => Promise.map(toCopy.directories, directory => {
-            let directoryCopy = new Directory(path.join(this.path, directory.name), this.fileStructure);
-            return directoryCopy.copy(directory);
-        }))
-        .then(() => Promise.map(toCopy.files, file => {
-            let fileCopy = new file.constructor(path.join(this.path, file.name), this.fileStructure);
-            return fileCopy.copy(file);
-        }));
-    }
-
     delete () {
         if (!this.directories.length && !this.files.length) {
             return fs.rmdirAsync(this.path)
@@ -107,6 +95,23 @@ export default class Directory {
        type = type || File;
        return this.allFiles
        .filter(file => file instanceof type);
+    }
+
+    move (update, options = { }) {
+        let { isCopy } = options;
+        update.oldPath = this.path;
+
+        let newDirectory = new this.constructor(update.newPath, this.fileStructure);
+        return newDirectory.save()
+        .then(() => {
+            let items = this.directories.concat(this.files);
+            return Promise.map(items, item => {
+                let newPath = item.path.replace(update.oldPath, update.newPath);
+                return item.move({ newPath }, options);
+            });
+        })
+        .then(() => isCopy ? Promise.resolve() : this.delete())
+        .then(() => newDirectory);
     }
 
     read () {
@@ -151,10 +156,10 @@ export default class Directory {
     }
 
     toJSON () {
-        let { directories, files, name, path, url } = this;
+        let { basename, directories, files, path, url } = this;
         directories = directories.sort(sortNames);
         files = files.sort(sortNames);
-        return { directories, files, isDirectory: true, name, path, url };
+        return { basename, directories, files, isDirectory: true, path, url };
     }
 }
 
@@ -165,11 +170,11 @@ function getItemInfo (itemPath) {
 
 function handleItem (itemPath, stat) {
     if (stat.isDirectory()) {
-        let directory = new Directory(itemPath, this.fileStructure);
+        let directory = new this.constructor(itemPath, this.fileStructure);
         return directory.read();
     } else {
-        let [fileName] = itemPath.split(path.sep).reverse();
-        let [, , fullExtension] = fileName.match(CONSTANTS.EXTENSION_MATCH_REGEX);
+        let fileName = path.basename(itemPath);
+        let [, fullExtension] = fileName.match(CONSTANTS.EXTENSION_MATCH_REGEX);
         let extension = path.extname(fileName);
         let { fileTypes } = this.fileStructure;
         let fileConstructor = fileTypes[fullExtension] || fileTypes[extension] || File;

@@ -30,22 +30,24 @@ describe('tractor-file-structure - actions/open-item:', () => {
         fileStructure.init();
         config.testDirectory = '/';
 
-        let file = new File(path.join(path.sep, 'file-structure', 'file.extension'), fileStructure);
-        let serialised = {};
+        let file = new File(path.join(path.sep, 'file-structure', 'file.ext'), fileStructure);
+        let serialised = { };
         let request = {
-            url: '/fs/file.extension'
+            url: `/fs${file.url}`
         };
         let response = {
-            send: () => {}
+            send: () => { }
         };
 
-        sinon.stub(file, 'serialise').returns(serialised)
+        sinon.stub(File.prototype, 'serialise').returns(serialised)
         sinon.stub(response, 'send');
 
         openItem(request, response);
 
-        expect(file.serialise).to.have.been.called();
+        expect(File.prototype.serialise).to.have.been.called();
         expect(response.send).to.have.been.calledWith(serialised);
+
+        File.prototype.serialise.restore();
     });
 
     it('should open a directory', () => {
@@ -55,10 +57,10 @@ describe('tractor-file-structure - actions/open-item:', () => {
 
         let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
         let request = {
-            url: '/fs/directory'
+            url: `/fs${directory.url}`
         };
         let response = {
-            send: () => {}
+            send: () => { }
         };
 
         sinon.stub(response, 'send');
@@ -77,7 +79,7 @@ describe('tractor-file-structure - actions/open-item:', () => {
             url: '/fs/directory/missing-item'
         };
         let response = {
-            send: () => {}
+            send: () => { }
         };
 
         sinon.stub(tractorErrorHandler, 'handle');

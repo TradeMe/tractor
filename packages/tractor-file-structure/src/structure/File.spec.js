@@ -32,27 +32,55 @@ describe('tractor-file-structure - File:', () => {
             expect(file).to.be.an.instanceof(File);
         });
 
-        it('should work out the name from the file path', () => {
+        it('should work out the name', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
-            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.js'), fileStructure);
+            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
-            expect(file.name).to.equal('file');
+            expect(file.name).to.equal('file.ext');
+        });
+
+        it('should get the extension from the file', () => {
+            class TestFile extends File { }
+            TestFile.prototype.extension = '.test.ext';
+
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let file = new TestFile(path.join(path.sep, 'file-structure', 'directory', 'file.test.ext'), fileStructure);
+
+            expect(file.extension).to.equal('.test.ext');
+        });
+
+        it('should fall back to getting the extension from the path', () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+
+            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
+
+            expect(file.extension).to.equal('.ext');
+        });
+
+        it('should work out the basename from the path and the extension', () => {
+            class TestFile extends File { }
+            TestFile.prototype.extension = '.test.ext';
+
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let file = new TestFile(path.join(path.sep, 'file-structure', 'directory', 'file.test.ext'), fileStructure);
+
+            expect(file.basename).to.equal('file');
         });
 
         it('should work out the URL to the file from the fileStructure', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
-            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.extension'), fileStructure);
+            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
-            expect(file.url).to.equal('/directory/file.extension');
+            expect(file.url).to.equal('/directory/file.ext');
         });
 
         it('should work out the parent directory', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
 
-            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.extension'), fileStructure);
+            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
             expect(file.directory).to.equal(directory);
         });
@@ -60,7 +88,7 @@ describe('tractor-file-structure - File:', () => {
         it(`should create the parent directory if it doesn't exist`, () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
-            let file = new File(path.join(path.sep, 'file-structure', 'parent-directory', 'directory', 'file.extension'), fileStructure);
+            let file = new File(path.join(path.sep, 'file-structure', 'parent-directory', 'directory', 'file.ext'), fileStructure);
 
             expect(file.directory).to.not.be.undefined();
             expect(fileStructure.allDirectoriesByPath[path.join(path.sep, 'file-structure', 'parent-directory')]).to.not.be.undefined();
@@ -71,17 +99,17 @@ describe('tractor-file-structure - File:', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
             expect(() => {
-                new File(path.join(path.sep, 'outside', 'file.extension'), fileStructure);
-            }).to.throw(TractorError, `Cannot create "${path.join(path.sep, 'outside', 'file.extension')}" because it is outside of the root of the FileStructure`);
+                new File(path.join(path.sep, 'outside', 'file.ext'), fileStructure);
+            }).to.throw(TractorError, `Cannot create "${path.join(path.sep, 'outside', 'file.ext')}" because it is outside of the root of the FileStructure`);
         });
 
-        it(`should be added to it's directory`, () => {
+        it('should be added to its directory', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
 
             sinon.stub(directory, 'addItem');
 
-            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'name.js'), fileStructure);
+            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
             expect(directory.addItem).to.have.been.calledWith(file);
         });
@@ -103,7 +131,7 @@ describe('tractor-file-structure - File:', () => {
 
       it('should cleanup the parent directory', () => {
           let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-          let file = new File(path.join(path.sep, 'file-structure', 'file.extension'), fileStructure);
+          let file = new File(path.join(path.sep, 'file-structure', 'file.ext'), fileStructure);
 
           sinon.stub(file, 'delete').returns(Promise.resolve());
           sinon.stub(file.directory, 'cleanup').returns(Promise.resolve());
@@ -117,8 +145,8 @@ describe('tractor-file-structure - File:', () => {
       it('should stop once it gets to a directory that is not empty', () => {
           let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
           let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
-          let file1 = new File(path.join(path.sep, 'file-structure', 'directory', 'file-1.extension'), fileStructure);
-          let file2 = new File(path.join(path.sep, 'file-structure', 'directory', 'file-2.extension'), fileStructure);
+          let file1 = new File(path.join(path.sep, 'file-structure', 'directory', 'file-1.ext'), fileStructure);
+          let file2 = new File(path.join(path.sep, 'file-structure', 'directory', 'file-2.ext'), fileStructure);
 
           sinon.stub(fs, 'unlinkAsync').returns(Promise.resolve());
           sinon.spy(directory, 'delete');
@@ -139,7 +167,7 @@ describe('tractor-file-structure - File:', () => {
 
       it('should rethrow if something unexpected goes wrong', () => {
           let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-          let file = new File(path.join(path.sep, 'file-structure', 'file.extension'), fileStructure);
+          let file = new File(path.join(path.sep, 'file-structure', 'file.ext'), fileStructure);
 
           sinon.stub(fs, 'unlinkAsync').returns(Promise.reject(new Error('Unexpected error')));
 
@@ -153,41 +181,17 @@ describe('tractor-file-structure - File:', () => {
       });
     });
 
-    describe('File.copy:', () => {
-        it('should copy the buffer of a file and save it:', () => {
-            let toCopy = {
-                buffer: new Buffer('buffer')
-            };
-            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-
-            sinon.stub(fs, 'mkdirAsync').returns(Promise.resolve());
-            sinon.stub(fs, 'writeFileAsync').returns(Promise.resolve());
-
-            let copy = new File(path.join(path.sep, 'file-structure', 'directory', 'name.js'), fileStructure);
-
-            return copy.copy(toCopy)
-            .then(() => {
-                expect(copy.buffer.equals(new Buffer('buffer'))).to.be.true();
-                expect(fs.writeFileAsync).to.have.been.called();
-            })
-            .finally(() => {
-                fs.mkdirAsync.restore();
-                fs.writeFileAsync.restore();
-            });
-        });
-    });
-
     describe('File.delete:', () => {
         it('should delete the file', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
             sinon.stub(fs, 'unlinkAsync').returns(Promise.resolve());
 
-            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'name.js'), fileStructure);
+            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
             return file.delete()
             .then(() => {
-                expect(fs.unlinkAsync).to.have.been.calledWith(path.join(path.sep, 'file-structure', 'directory', 'name.js'));
+                expect(fs.unlinkAsync).to.have.been.calledWith(path.join(path.sep, 'file-structure', 'directory', 'file.ext'));
             })
             .finally(() => {
                 fs.unlinkAsync.restore();
@@ -201,7 +205,7 @@ describe('tractor-file-structure - File:', () => {
             sinon.stub(directory, 'removeItem');
             sinon.stub(fs, 'unlinkAsync').returns(Promise.resolve());
 
-            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'name.js'), fileStructure);
+            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
             return file.delete()
             .then(() => {
@@ -213,22 +217,92 @@ describe('tractor-file-structure - File:', () => {
         });
     });
 
+    describe('File.move:', () => {
+        it('should move a file', () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+
+            sinon.spy(File.prototype, 'constructor');
+            sinon.stub(File.prototype, 'delete').returns(Promise.resolve());
+            sinon.stub(File.prototype, 'save').returns(Promise.resolve());
+
+            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
+
+            return file.move({
+                newPath: path.join(path.sep, 'file-structure', 'other-directory', 'file.ext')
+            })
+            .then(() => {
+                expect(File.prototype.constructor).to.have.been.calledWith(path.join(path.sep, 'file-structure', 'other-directory', 'file.ext'), fileStructure);
+                expect(File.prototype.save).to.have.been.called();
+                expect(File.prototype.delete).to.have.been.called();
+            })
+            .finally(() => {
+                File.prototype.constructor.restore();
+                File.prototype.delete.restore();
+                File.prototype.save.restore();
+            });
+        });
+
+        it('should copy a file', () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+
+            sinon.spy(File.prototype, 'constructor');
+            sinon.stub(File.prototype, 'save').returns(Promise.resolve());
+            sinon.stub(File.prototype, 'delete').returns(Promise.resolve());
+
+            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
+
+            return file.move({
+                newPath: path.join(path.sep, 'file-structure', 'other-directory', 'file.ext')
+            }, {
+                isCopy: true
+            })
+            .then(() => {
+                expect(File.prototype.constructor).to.have.been.calledWith(path.join(path.sep, 'file-structure', 'other-directory', 'file.ext'), fileStructure);
+                expect(File.prototype.save).to.have.been.called();
+                expect(File.prototype.delete).to.not.have.been.called();
+            })
+            .finally(() => {
+                File.prototype.constructor.restore();
+                File.prototype.delete.restore();
+                File.prototype.save.restore();
+            });
+        });
+    });
+
     describe('File.read:', () => {
         it('should read the file', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
             sinon.stub(fs, 'readFileAsync').returns(Promise.resolve(new Buffer('content')));
 
-            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'name.js'), fileStructure);
+            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
             return file.read()
             .then(() => {
-                expect(fs.readFileAsync).to.have.been.calledWith(path.join(path.sep, 'file-structure', 'directory', 'name.js'));
+                expect(fs.readFileAsync).to.have.been.calledWith(path.join(path.sep, 'file-structure', 'directory', 'file.ext'));
                 expect(file.content).to.equal('content');
                 expect(file.buffer.equals(new Buffer('content'))).to.equal(true);
             })
             .finally(() => {
                 fs.readFileAsync.restore();
+            });
+        });
+    });
+
+    describe('File.refactor:', () => {
+        it('should do nothing by default', () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+
+            sinon.spy(Promise, 'resolve');
+
+            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
+
+            return file.refactor()
+            .then(() => {
+                expect(Promise.resolve).to.have.been.called();
+            })
+            .finally(() => {
+                Promise.resolve.restore();
             });
         });
     });
@@ -240,11 +314,11 @@ describe('tractor-file-structure - File:', () => {
             sinon.stub(fs, 'mkdirAsync').returns(Promise.resolve());
             sinon.stub(fs, 'writeFileAsync').returns(Promise.resolve());
 
-            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'name.js'), fileStructure);
+            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
             return file.save('content')
             .then(() => {
-                expect(fs.writeFileAsync).to.have.been.calledWith(path.join(path.sep, 'file-structure', 'directory', 'name.js'), 'content');
+                expect(fs.writeFileAsync).to.have.been.calledWith(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), 'content');
                 expect(file.content).to.equal('content');
                 expect(file.buffer.equals(new Buffer('content'))).to.equal(true);
             })
@@ -260,7 +334,7 @@ describe('tractor-file-structure - File:', () => {
             sinon.stub(Directory.prototype, 'save').returns(Promise.resolve());
             sinon.stub(fs, 'writeFileAsync').returns(Promise.resolve());
 
-            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'name.js'), fileStructure);
+            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
             return file.save('content')
             .then(() => {
@@ -276,14 +350,15 @@ describe('tractor-file-structure - File:', () => {
     describe('File.serialise:', () => {
         it('should call `File.prototype.toJSON`', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'name.js'), fileStructure);
+            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
             let serialised = file.serialise();
 
             expect(serialised).to.deep.equal({
-                path: path.join(path.sep, 'file-structure', 'directory', 'name.js'),
-                name: 'name',
-                url: '/directory/name.js'
+                basename: 'file',
+                extension: '.ext',
+                path: path.join(path.sep, 'file-structure', 'directory', 'file.ext'),
+                url: '/directory/file.ext'
             });
         });
     });
@@ -291,14 +366,15 @@ describe('tractor-file-structure - File:', () => {
     describe('File.toJSON:', () => {
         it('should return specific properties of the object', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'name.js'), fileStructure);
+            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
             let json = file.toJSON();
 
             expect(json).to.deep.equal({
-                path: path.join(path.sep, 'file-structure', 'directory', 'name.js'),
-                name: 'name',
-                url: '/directory/name.js'
+                basename: 'file',
+                extension: '.ext',
+                path: path.join(path.sep, 'file-structure', 'directory', 'file.ext'),
+                url: '/directory/file.ext'
             });
         });
     });

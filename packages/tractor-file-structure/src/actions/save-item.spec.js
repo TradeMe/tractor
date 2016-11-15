@@ -29,27 +29,27 @@ import { saveItem } from './save-item';
 
 describe('tractor-file-structure - actions/save-item:', () => {
     it('should save a file', () => {
-        class TestFile extends File {
-            save () {}
-        }
-        TestFile.extension = '.extension';
-        TestFile.type = 'test-file';
-        registerFileType(TestFile);
-
         fileStructure.path = path.join(path.sep, 'file-structure');
         fileStructure.init();
+
+        class TestFile extends File {
+            save () { }
+        }
+        TestFile.prototype.extension = '.ext';
+        TestFile.prototype.type = 'test-file';
+        registerFileType(TestFile);
 
         let request = {
             body: {
                 data: 'data'
             },
-            query: { },
-            url: 'fs/directory/file.extension'
+            url: 'fs/directory/file.ext'
         };
         let response = {
             send: () => { }
         };
 
+        sinon.stub(Directory.prototype, 'save').returns(Promise.resolve());
         sinon.stub(TestFile.prototype, 'save').returns(Promise.resolve());
 
         return saveItem(request, response)
@@ -58,27 +58,28 @@ describe('tractor-file-structure - actions/save-item:', () => {
         })
         .finally(() => {
             delete extensions['test-file'];
-            delete types['.extension'];
+            delete types['.ext'];
+
+            Directory.prototype.save.restore();
         });
     });
 
     it('should save a new file with multiple extensions', () => {
-        class SpecialTestFile extends File {
-            save () {}
-        }
-        SpecialTestFile.extension = '.special.extension';
-        SpecialTestFile.type = 'special-test-file';
-        registerFileType(SpecialTestFile);
-
         fileStructure.path = path.join(path.sep, 'file-structure');
         fileStructure.init();
+
+        class SpecialTestFile extends File {
+            save () { }
+        }
+        SpecialTestFile.prototype.extension = '.special.ext';
+        SpecialTestFile.prototype.type = 'special-test-file';
+        registerFileType(SpecialTestFile);
 
         let request = {
             body: {
                 data: 'data'
             },
-            query: { },
-            url: '/fs/directory/file.special.extension'
+            url: '/fs/directory/file.special.ext'
         };
         let response = {
             send: () => { }
@@ -92,7 +93,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
         })
         .finally(() => {
             delete extensions['special-test-file'];
-            delete types['.special.extension'];
+            delete types['.special.ext'];
         });
     });
 
@@ -104,8 +105,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
             body: {
                 data: 'data'
             },
-            query: { },
-            url: '/fs/directory/file.extension'
+            url: '/fs/directory/file.ext'
         };
         let response = {
             send: () => { }
@@ -122,38 +122,74 @@ describe('tractor-file-structure - actions/save-item:', () => {
         });
     });
 
-    it('should overwrite an existing file', () => {
+    it('should save a copy of a file if it already exists', () => {
         class TestFile extends File {
-            save () {}
+            save () { }
         }
-        TestFile.extension = '.extension';
-        TestFile.type = 'test-file';
+        TestFile.prototype.extension = '.ext';
+        TestFile.prototype.type = 'test-file';
         registerFileType(TestFile);
 
         fileStructure.path = path.join(path.sep, 'file-structure');
         fileStructure.init();
 
-        let file = new TestFile(path.join(path.sep, 'file-structure', 'directory', 'file.extension'), fileStructure);
+        let file = new TestFile(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
         let request = {
             body: {
-                data: 'data',
-                overwrite: true
+                data: 'data'
             },
-            url: '/fs/directory/file.extension'
+            url: `/fs${file.url}`
         };
         let response = {
             send: () => { }
         };
 
-        sinon.stub(file, 'save').returns(Promise.resolve());
+        sinon.spy(file, 'save');
+        sinon.stub(TestFile.prototype, 'save').returns(Promise.resolve());
 
         return saveItem(request, response)
         .then(() => {
-            expect(file.save).to.have.been.calledWith('data');
+            expect(file.save).to.not.have.been.called();
+            expect(TestFile.prototype.save).to.have.been.calledWith('data');
         })
         .finally(() => {
             delete extensions['test-file'];
-            delete types['.extension'];
+            delete types['.ext'];
+        });
+    });
+
+    it('should overwrite an existing file', () => {
+        class TestFile extends File {
+            save () { }
+        }
+        TestFile.prototype.extension = '.ext';
+        TestFile.prototype.type = 'test-file';
+        registerFileType(TestFile);
+
+        fileStructure.path = path.join(path.sep, 'file-structure');
+        fileStructure.init();
+
+        let file = new TestFile(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
+        let request = {
+            body: {
+                data: 'data',
+                overwrite: true
+            },
+            url: `/fs${file.url}`
+        };
+        let response = {
+            send: () => { }
+        };
+
+        sinon.stub(TestFile.prototype, 'save').returns(Promise.resolve());
+
+        return saveItem(request, response)
+        .then(() => {
+            expect(TestFile.prototype.save).to.have.been.calledWith('data');
+        })
+        .finally(() => {
+            delete extensions['test-file'];
+            delete types['.ext'];
         });
     });
 
@@ -163,7 +199,6 @@ describe('tractor-file-structure - actions/save-item:', () => {
 
         let request = {
             body: { },
-            query: { },
             url: '/fs/directory'
         };
         let response = {
@@ -181,6 +216,32 @@ describe('tractor-file-structure - actions/save-item:', () => {
         });
     });
 
+    it('should save a copy of a directory if it already exists', () => {
+        fileStructure.path = path.join(path.sep, 'file-structure');
+        fileStructure.init();
+
+        let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
+        let request = {
+            body: { },
+            url: `/fs${directory.url}`
+        };
+        let response = {
+            send: () => { }
+        };
+
+        sinon.spy(directory, 'save');
+        sinon.stub(Directory.prototype, 'save').returns(Promise.resolve());
+
+        return saveItem(request, response)
+        .then(() => {
+            expect(directory.save).to.not.have.been.called();
+            expect(Directory.prototype.save).to.have.been.called();
+        })
+        .finally(() => {
+            Directory.prototype.save.restore();
+        });
+    });
+
     it('should overwrite an existing directory', () => {
         fileStructure.path = path.join(path.sep, 'file-structure');
         fileStructure.init();
@@ -190,17 +251,20 @@ describe('tractor-file-structure - actions/save-item:', () => {
             body: {
               overwrite: true
             },
-            url: '/fs/directory'
+            url: `/fs${directory.url}`
         };
         let response = {
             send: () => { }
         };
 
-        sinon.stub(directory, 'save').returns(Promise.resolve());
+        sinon.stub(Directory.prototype, 'save').returns(Promise.resolve());
 
         return saveItem(request, response)
         .then(() => {
-            expect(directory.save).to.have.been.called();
+            expect(Directory.prototype.save).to.have.been.called();
+        })
+        .finally(() => {
+            Directory.prototype.save.restore();
         });
     });
 
@@ -213,8 +277,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
             body: {
                 data: 'data'
             },
-            query: { },
-            url: '/fs/directory/file.extension'
+            url: '/fs/directory/file.ext'
         };
         let response = {
             send: () => { }
@@ -241,8 +304,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
             body: {
                 data: 'data'
             },
-            query: { },
-            url: '/fs/directory/file.extension'
+            url: '/fs/directory/file.ext'
         };
         let response = {
             send: () => { }
@@ -253,7 +315,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
 
         return saveItem(request, response)
         .then(() => {
-            expect(tractorErrorHandler.handle).to.have.been.calledWith(response, new TractorError(`Could not save "${path.join(path.sep, 'file-structure', 'directory', 'file.extension')}"`, CONSTANTS.SERVER_ERROR));
+            expect(tractorErrorHandler.handle).to.have.been.calledWith(response, new TractorError(`Could not save "${path.join(path.sep, 'file-structure', 'directory', 'file.ext')}"`, CONSTANTS.SERVER_ERROR));
         })
         .finally(() => {
           File.prototype.save.restore();

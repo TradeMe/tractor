@@ -21,9 +21,9 @@ export default class File {
         }
 
         this.url = `/${path.relative(this.fileStructure.path, this.path)}`.replace(/\\/, '/');
-        let [fileName] = this.path.split(path.sep).reverse();
-        let [name] = fileName.split('.');
-        this.name = name;
+        this.name = path.basename(this.path);
+        this.extension = this.extension || path.extname(this.path);
+        this.basename = path.basename(this.path, this.extension);
 
         let parentPath = path.dirname(this.path);
         let parent = fileStructure.allDirectoriesByPath[parentPath];
@@ -40,24 +40,36 @@ export default class File {
         .then(() => this.directory.cleanup());
     }
 
-    copy (toCopy) {
-        return this.save(toCopy.buffer);
-    }
-
     delete () {
         return fs.unlinkAsync(this.path)
         .then(() => this.directory.removeItem(this));
     }
 
+    move (update, options = { }) {
+        let { isCopy } = options;
+        update.oldPath = this.path;
+
+        let newFile = new this.constructor(update.newPath, this.fileStructure);
+        return newFile.save(this.data)
+        .then(() => isCopy ? Promise.resolve() : this.delete())
+        .then(() => newFile);
+    }
+
     read () {
         return fs.readFileAsync(this.path)
-        .then(buffer => setData.call(this, buffer));
+        .then(buffer => setData.call(this, buffer))
+        .then(() => this.content);
+    }
+
+    refactor () {
+        return Promise.resolve();
     }
 
     save (data) {
         return this.directory.save()
         .then(() => fs.writeFileAsync(this.path, data))
-        .then(() => setData.call(this, new Buffer(data)));
+        .then(() => setData.call(this, new Buffer(data)))
+        .then(() => this.content);
     }
 
     serialise () {
@@ -65,16 +77,14 @@ export default class File {
     }
 
     toJSON () {
-        let { path, name, url } = this;
-        return { path, name, url };
+        let { basename, extension, path, url } = this;
+        return { basename, extension, path, url };
     }
 }
+File.prototype.type = '';
 
 function setData (data) {
     this.buffer = data;
     this.content = this.buffer.toString();
-    return this.content;
+    this.data = this.content;
 }
-
-File.type = '';
-File.extension = '';

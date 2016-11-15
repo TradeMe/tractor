@@ -3,7 +3,7 @@ import CONSTANTS from '../constants';
 
 // Utilities:
 import path from 'path';
-import { getItemPath, getUniqueName, respondFileStructure } from '../utilities/utilities';
+import { getItemPath, getCopyPath, respondFileStructure } from '../utilities/utilities';
 
 // Dependencies:
 import Directory from '../structure/Directory';
@@ -18,18 +18,13 @@ export function saveItem (request, response) {
     let { data, overwrite } = request.body;
     let itemPath = getItemPath(request);
 
-    let toSave = fileStructure.allFilesByPath[itemPath] || fileStructure.allDirectoriesByPath[itemPath];
-    let isDirectory = data == null;
+    let file = fileStructure.allFilesByPath[itemPath];
+    let directory = fileStructure.allDirectoriesByPath[itemPath];
+    let toSave = file || directory;
+    let isDirectory = directory || data == null;
 
     if (toSave && !overwrite) {
-        let directory = fileStructure.allDirectoriesByPath[path.dirname(itemPath)];
-        let [itemName] = itemPath.split(path.sep).reverse();
-        let [, baseName, fullExtension] = itemName.match(CONSTANTS.EXTENSION_MATCH_REGEX);
-
-        let collection = isDirectory ? directory.directories : directory.files;
-        baseName = getUniqueName(collection, baseName);
-        fullExtension = fullExtension || '';
-        itemPath = path.join(directory.path, `${baseName}${fullExtension}`);
+        itemPath = getCopyPath(toSave);
         toSave = null;
     }
 
@@ -37,15 +32,14 @@ export function saveItem (request, response) {
         if (isDirectory) {
             toSave = new Directory(itemPath, fileStructure);
         } else {
-            let [fileName] = itemPath.split(path.sep).reverse();
-            let [, , fullExtension] = fileName.match(CONSTANTS.EXTENSION_MATCH_REGEX);
+            let fileName = path.basename(itemPath);
+            let [, fullExtension] = fileName.match(CONSTANTS.EXTENSION_MATCH_REGEX);
             let extension = path.extname(fileName);
             let fileConstructor = fileStructure.fileTypes[fullExtension] || fileStructure.fileTypes[extension] || File;
 
             toSave = new fileConstructor(itemPath, fileStructure);
         }
     }
-
     return toSave.save(data)
     .then(() => respondFileStructure(response))
     .catch(TractorError, error => tractorErrorHandler.handle(response, error))

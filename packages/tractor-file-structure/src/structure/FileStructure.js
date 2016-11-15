@@ -16,10 +16,10 @@ export default class FileStructure {
     }
 
     init () {
-        this.allFilesByPath = {};
-        this.allDirectoriesByPath = {};
+        this.allFilesByPath = { };
+        this.allDirectoriesByPath = { };
         this.structure = new Directory(this.path, this);
-        this.references = {};
+        this.references = { };
     }
 
     read () {
