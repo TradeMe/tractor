@@ -43,7 +43,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
             body: {
                 data: 'data'
             },
-            url: 'fs/directory/file.ext'
+            params: ['/directory/file.ext']
         };
         let response = {
             send: () => { }
@@ -79,7 +79,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
             body: {
                 data: 'data'
             },
-            url: '/fs/directory/file.special.ext'
+            params: ['/directory/file.special.ext']
         };
         let response = {
             send: () => { }
@@ -105,7 +105,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
             body: {
                 data: 'data'
             },
-            url: '/fs/directory/file.ext'
+            params: ['/directory/file.ext']
         };
         let response = {
             send: () => { }
@@ -138,7 +138,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
             body: {
                 data: 'data'
             },
-            url: `/fs${file.url}`
+            params: [file.url]
         };
         let response = {
             send: () => { }
@@ -175,7 +175,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
                 data: 'data',
                 overwrite: true
             },
-            url: `/fs${file.url}`
+            params: [file.url]
         };
         let response = {
             send: () => { }
@@ -199,7 +199,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
 
         let request = {
             body: { },
-            url: '/fs/directory'
+            params: ['/directory']
         };
         let response = {
             send: () => { }
@@ -223,7 +223,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
         let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
         let request = {
             body: { },
-            url: `/fs${directory.url}`
+            params: [directory.url]
         };
         let response = {
             send: () => { }
@@ -251,7 +251,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
             body: {
               overwrite: true
             },
-            url: `/fs${directory.url}`
+            params: [directory.url]
         };
         let response = {
             send: () => { }
@@ -277,7 +277,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
             body: {
                 data: 'data'
             },
-            url: '/fs/directory/file.ext'
+            params: ['/directory/file.ext']
         };
         let response = {
             send: () => { }
@@ -304,7 +304,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
             body: {
                 data: 'data'
             },
-            url: '/fs/directory/file.ext'
+            params: ['/directory/file.ext']
         };
         let response = {
             send: () => { }
@@ -318,8 +318,8 @@ describe('tractor-file-structure - actions/save-item:', () => {
             expect(tractorErrorHandler.handle).to.have.been.calledWith(response, new TractorError(`Could not save "${path.join(path.sep, 'file-structure', 'directory', 'file.ext')}"`, CONSTANTS.SERVER_ERROR));
         })
         .finally(() => {
-          File.prototype.save.restore();
-          tractorErrorHandler.handle.restore();
+            File.prototype.save.restore();
+            tractorErrorHandler.handle.restore();
         });
     });
 });

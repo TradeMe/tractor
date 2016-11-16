@@ -32,8 +32,8 @@ describe('tractor-file-structure - actions/delete-item:', () => {
         let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
         let request = {
-            query: { },
-            url: `/fs${file.url}`
+            params: [file.url],
+            query: { }
         };
         let response = {
             send: () => { }
@@ -57,8 +57,8 @@ describe('tractor-file-structure - actions/delete-item:', () => {
         let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
 
         let request = {
-            query: { },
-            url: `/fs${directory.url}`
+            params: [directory.url],
+            query: { }
         };
         let response = {
             send: () => { }
@@ -80,8 +80,8 @@ describe('tractor-file-structure - actions/delete-item:', () => {
         fileStructure.init();
 
         let request = {
-            query: { },
-            url: '/fs/directory/missing-item'
+            params: ['/directory/missing-item'],
+            query: { }
         };
         let response = {
             send: () => { }
@@ -103,10 +103,10 @@ describe('tractor-file-structure - actions/delete-item:', () => {
         let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
 
         let request = {
+            params: [directory.url],
             query: {
                 rimraf: true
-            },
-            url: `/fs${directory.url}`
+            }
         };
         let response = {
             send: () => { }
@@ -130,8 +130,8 @@ describe('tractor-file-structure - actions/delete-item:', () => {
         let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
         let request = {
-            query: { },
-            url: `/fs${file.url}`
+            params: [file.url],
+            query: { }
         };
         let response = {
             send: () => { }
@@ -156,10 +156,10 @@ describe('tractor-file-structure - actions/delete-item:', () => {
         let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
         let request = {
+            params: [file.url],
             query: {
                 rimraf: true
-            },
-            url: `/fs${file.url}`
+            }
         };
         let response = {
             send: () => { }
@@ -183,10 +183,10 @@ describe('tractor-file-structure - actions/delete-item:', () => {
         let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
         let request = {
+            params: [file.url],
             query: {
                 cleanup: true
-            },
-            url: `/fs${file.url}`
+            }
         };
         let response = {
             send: () => { }
@@ -210,10 +210,10 @@ describe('tractor-file-structure - actions/delete-item:', () => {
         let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
 
         let request = {
+            params: [directory.url],
             query: {
                 cleanup: true
-            },
-            url: `/fs${directory.url}`
+            }
         };
         let response = {
             send: () => { }
@@ -236,8 +236,8 @@ describe('tractor-file-structure - actions/delete-item:', () => {
 
         let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
         let request = {
-            query: { },
-            url: `/fs${file.url}`
+            params: [file.url],
+            query: { }
         };
         let response = {
             send: () => { }
@@ -264,8 +264,8 @@ describe('tractor-file-structure - actions/delete-item:', () => {
 
         let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
         let request = {
-            query: { },
-            url: `/fs${file.url}`
+            params: [file.url],
+            query: { }
         };
         let response = {
             send: () => { }

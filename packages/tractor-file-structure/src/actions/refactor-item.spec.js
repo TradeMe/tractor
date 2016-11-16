@@ -34,7 +34,7 @@ describe('tractor-file-structure - actions/refactor-item:', () => {
 
         let request = {
             body: { },
-            url: `/fs${file.url}`
+            params: [file.url]
         };
         let response = {
             send: () => { }
@@ -57,7 +57,7 @@ describe('tractor-file-structure - actions/refactor-item:', () => {
 
         let request = {
             body: { },
-            url: '/fs/directory/missing-item'
+            params: ['/directory/missing-item']
         };
         let response = {
             send: () => { }
@@ -80,7 +80,7 @@ describe('tractor-file-structure - actions/refactor-item:', () => {
 
         let request = {
             body: { },
-            url: `/fs${file.url}`
+            params: [file.url]
         };
         let response = {
             send: () => { }
@@ -105,7 +105,7 @@ describe('tractor-file-structure - actions/refactor-item:', () => {
         let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
         let request = {
             body: { },
-            url: `/fs${file.url}`
+            params: [file.url]
         };
         let response = {
             send: () => { }
@@ -133,7 +133,7 @@ describe('tractor-file-structure - actions/refactor-item:', () => {
         let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
         let request = {
             body: { },
-            url: `/fs${file.url}`
+            params: [file.url]
         };
         let response = {
             send: () => { }

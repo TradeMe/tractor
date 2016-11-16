@@ -19,10 +19,7 @@ export function getCopyPath (item) {
 }
 
 export function getItemPath (request) {
-    let url = request.url
-    .replace(/^\/fs/, '')
-    .replace(/\?.*$/, '')
-    .replace(/copy$/, '')
+    let url = request.params[0]
     .replace(/\/$/, '')
     .replace(/\//g, path.sep);
 

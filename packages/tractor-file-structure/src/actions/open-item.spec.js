@@ -33,7 +33,7 @@ describe('tractor-file-structure - actions/open-item:', () => {
         let file = new File(path.join(path.sep, 'file-structure', 'file.ext'), fileStructure);
         let serialised = { };
         let request = {
-            url: `/fs${file.url}`
+            params: [file.url]
         };
         let response = {
             send: () => { }
@@ -57,7 +57,7 @@ describe('tractor-file-structure - actions/open-item:', () => {
 
         let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
         let request = {
-            url: `/fs${directory.url}`
+            params: [directory.url]
         };
         let response = {
             send: () => { }
@@ -76,7 +76,7 @@ describe('tractor-file-structure - actions/open-item:', () => {
         config.testDirectory = '/';
 
         let request = {
-            url: '/fs/directory/missing-item'
+            params: ['/directory/missing-item']
         };
         let response = {
             send: () => { }

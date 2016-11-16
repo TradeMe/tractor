@@ -6,6 +6,7 @@ import { fileStructure } from '../file-structure';
 
 export function openItem (request, response) {
     let itemPath = getItemPath(request);
+
     let file = fileStructure.allFilesByPath[itemPath];
     let directory = fileStructure.allDirectoriesByPath[itemPath];
 
