@@ -17,22 +17,21 @@ var CustomWorld = (function () {
 })();
 
 module.exports = function () {
-    this.World = function (callback) {
+    this.World = function () {
         var w = new CustomWorld();
-        return callback(w);
+        return w;
     };
 
     /* eslint-disable new-cap */
-    this.Before(function (scenario, callback) {
+    this.Before(function (scenario, callback) {       
     /* eslint-enable new-cap */
         global.httpBackend = new HttpBackend(global.browser);
         callback();
     });
 
     /* eslint-disable new-cap */
-    this.StepResult(function (event, callback) {
-        var stepResult = event.getPayloadItem('stepResult');
-        if (stepResult.isFailed() && global.browser.params.debug === 'true') {
+    this.StepResult(function (stepResult, callback) {
+        if (stepResult.getStatus() === 'failed' && global.browser.params.debug === 'true') {
             global.browser.pause();
         }
         callback();
