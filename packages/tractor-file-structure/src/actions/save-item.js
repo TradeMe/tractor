@@ -16,7 +16,8 @@ import { TractorError } from 'tractor-error-handler';
 
 export function saveItem (request, response) {
     let { data, overwrite } = request.body;
-    let itemPath = getItemPath(request);
+    let itemUrl = request.params[0];
+    let itemPath = getItemPath(itemUrl);
 
     let file = fileStructure.allFilesByPath[itemPath];
     let directory = fileStructure.allDirectoriesByPath[itemPath];

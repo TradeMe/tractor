@@ -32,7 +32,7 @@ export default class Directory {
         let relativePath = path.relative(this.fileStructure.path, this.path);
         this.name = path.basename(this.path);
         this.basename = this.name;
-        this.url = path.normalize(`/${relativePath}/`).replace(/\\/, '/');
+        this.url = path.normalize(`/${relativePath}`).replace(/\\/, '/');
 
         if (isRoot) {
             this.parent = this.fileStructure;

@@ -5,7 +5,8 @@ import { getItemPath, respondItemNotFound } from '../utilities/utilities';
 import { fileStructure } from '../file-structure';
 
 export function openItem (request, response) {
-    let itemPath = getItemPath(request);
+    let itemUrl = request.params[0];
+    let itemPath = getItemPath(itemUrl);
 
     let file = fileStructure.allFilesByPath[itemPath];
     let directory = fileStructure.allDirectoriesByPath[itemPath];

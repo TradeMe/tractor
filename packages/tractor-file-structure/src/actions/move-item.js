@@ -12,8 +12,9 @@ import tractorErrorHandler from 'tractor-error-handler';
 import { TractorError } from 'tractor-error-handler';
 
 export function moveItem (request, response) {
-    let { copy, newPath } = request.body;
-    let itemPath = getItemPath(request);
+    let { copy, newUrl } = request.body;
+    let itemUrl = request.params[0];
+    let itemPath = getItemPath(itemUrl);
 
     let file = fileStructure.allFilesByPath[itemPath];
     let directory = fileStructure.allDirectoriesByPath[itemPath];
@@ -25,8 +26,11 @@ export function moveItem (request, response) {
     let toMove = file || directory;
 
     copy = copy || false;
+    let newPath;
     if (copy) {
         newPath = getCopyPath(toMove);
+    } else {
+        newPath = getItemPath(newUrl);
     }
 
     return toMove.move({ newPath }, { isCopy: copy })

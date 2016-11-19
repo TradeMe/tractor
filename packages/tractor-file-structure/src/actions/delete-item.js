@@ -10,8 +10,9 @@ import tractorErrorHandler from 'tractor-error-handler';
 import { TractorError } from 'tractor-error-handler';
 
 export function deleteItem (request, response) {
-    let itemPath = getItemPath(request);
     let { cleanup, rimraf } = request.query;
+    let itemUrl = request.params[0];
+    let itemPath = getItemPath(itemUrl);
 
     let toDelete = fileStructure.allFilesByPath[itemPath] || fileStructure.allDirectoriesByPath[itemPath];
     if (!toDelete) {

@@ -32,7 +32,7 @@ describe('tractor-file-structure - actions/move-item:', () => {
         let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
         let request = {
             body: {
-                newPath: path.join(path.sep, 'file-structure', 'other-directory', 'file.ext')
+                newUrl: path.join(path.sep, 'other-directory', 'file.ext')
             },
             params: [file.url]
         };
@@ -89,7 +89,7 @@ describe('tractor-file-structure - actions/move-item:', () => {
 
         let request = {
             body: {
-                newPath: path.join(path.sep, 'file-structure', 'other-directory')
+                newUrl: path.join(path.sep, 'other-directory')
             },
             params: [directory.url]
         };
@@ -145,7 +145,9 @@ describe('tractor-file-structure - actions/move-item:', () => {
 
         let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
         let request = {
-            body: { },
+            body: {
+                newUrl: path.join(path.sep, 'other-directory', 'file.ext')
+            },
             params: [file.url]
         };
         let response = {
@@ -169,7 +171,9 @@ describe('tractor-file-structure - actions/move-item:', () => {
         fileStructure.init();
 
         let request = {
-            body: { },
+            body: {
+                newUrl: path.join(path.sep, 'other-directory', 'missing-item')
+            },
             params: ['/directory/missing-item']
         };
         let response = {
@@ -191,7 +195,9 @@ describe('tractor-file-structure - actions/move-item:', () => {
 
         let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
         let request = {
-            body: { },
+            body: {
+                newUrl: path.join(path.sep, 'other-directory', 'file.ext')
+            },
             params: [file.url]
         };
         let response = {
@@ -218,7 +224,9 @@ describe('tractor-file-structure - actions/move-item:', () => {
 
         let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
         let request = {
-            body: { },
+            body: {
+                newUrl: path.join(path.sep, 'other-directory', 'file.ext')
+            },
             params: [file.url]
         };
         let response = {

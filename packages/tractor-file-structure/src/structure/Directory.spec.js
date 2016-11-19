@@ -52,7 +52,7 @@ describe('tractor-file-structure - Directory:', () => {
 
             let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
 
-            expect(directory.url).to.equal('/directory/');
+            expect(directory.url).to.equal('/directory');
             expect(fileStructure.structure.url).to.equal('/');
         });
 
@@ -750,7 +750,7 @@ describe('tractor-file-structure - Directory:', () => {
                 files: [file],
                 isDirectory: true,
                 path: path.join(path.sep, 'file-structure', 'directory'),
-                url: '/directory/'
+                url: '/directory'
             });
         });
 
@@ -768,7 +768,7 @@ describe('tractor-file-structure - Directory:', () => {
                 files: [],
                 isDirectory: true,
                 path: path.join(path.sep, 'file-structure', 'directory'),
-                url: '/directory/'
+                url: '/directory'
             });
         });
 
@@ -786,7 +786,7 @@ describe('tractor-file-structure - Directory:', () => {
                 files: [file2, file4, file3, file1],
                 isDirectory: true,
                 path: path.join(path.sep, 'file-structure', 'directory'),
-                url: '/directory/'
+                url: '/directory'
             });
         });
     });

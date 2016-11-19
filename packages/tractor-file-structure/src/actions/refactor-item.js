@@ -13,7 +13,8 @@ import { TractorError } from 'tractor-error-handler';
 
 export function refactorItem (request, response) {
     let { update } = request.body;
-    let itemPath = getItemPath(request);
+    let itemUrl = request.params[0];
+    let itemPath = getItemPath(itemUrl);
 
     let toRefactor = fileStructure.allFilesByPath[itemPath];
 

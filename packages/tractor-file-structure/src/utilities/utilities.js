@@ -18,12 +18,12 @@ export function getCopyPath (item) {
     return path.join(item.directory.path, getUniqueName(collection, item));
 }
 
-export function getItemPath (request) {
-    let url = request.params[0]
+export function getItemPath (itemUrl) {
+    itemUrl = itemUrl
     .replace(/\/$/, '')
     .replace(/\//g, path.sep);
 
-    let cleanUrl = decodeURIComponent(url);
+    let cleanUrl = decodeURIComponent(itemUrl);
 
     return path.resolve(process.cwd(), path.join(fileStructure.path, cleanUrl));
 }
