@@ -70,6 +70,15 @@ var FileEditorController = (function () {
                 return Promise.resolve();
             }
         }.bind(this))
+        .then(function () {           
+            if (this.fileModel.hasOwnProperty('asA')) {              
+               return getStepNameForFeature(this)
+               .then(getExistingStepDefinitions.bind(this))
+               .then(checkIfStepExists.bind(this))            
+            } else {
+                Promise.resolve();
+            }          
+        }.bind(this))
         .then(function () {
             return this.fileService.saveFile({
                 data: this.fileModel.data,
@@ -127,6 +136,81 @@ var FileEditorController = (function () {
         }
         return referencesInstances;
     }
+
+    function getStepNameForFeature(self) { 
+        self.stepNameArray = [];
+        return new Promise(function (resolve, reject) {
+            var stepNames = extractSteps(self.fileModel.data);
+            _.each (stepNames, function (stepName) {
+                var stepNameStruct = {
+                    name : stepName.substr(stepName.indexOf(" ") + 1),
+                    type : _.first( stepName.split(" ") )
+                }
+                resolve(self.stepNameArray.push(stepNameStruct));
+             });
+        });
+    }
+    
+    function extractSteps(featureFileContent) {
+        var GIVEN_WHEN_THEN_REGEX = /^(Given|When|Then)/;
+        var AND_BUT_REGEX = /^(And|But)/;
+        var NEW_LINE_REGEX = /\r\n|\n/;
+                 
+        return stripcolorcodes(featureFileContent)
+        // Split on new-lines:
+        .split(NEW_LINE_REGEX)
+        // Remove whitespace:
+        .map(line => line.trim())
+        // Get out each step name:
+        .filter((line) => GIVEN_WHEN_THEN_REGEX.test(line) || AND_BUT_REGEX.test(line))
+        .map((stepName, index, stepNames) => {
+            if (AND_BUT_REGEX.test(stepName)) {
+                let previousType = _(stepNames)
+                .take(index + 1)
+                .reduceRight((p, n) => {
+                    let type = n.match(GIVEN_WHEN_THEN_REGEX);
+                    return p || _.last(type);
+                }, null);
+                return stepName.replace(AND_BUT_REGEX, previousType);
+            } else {
+                return stepName;
+            }
+        });
+    }
+
+    function getExistingStepDefinitions() {      
+       var self = this;
+       self.stepDefinitionsArray = [];
+       return new Promise(function (resolve, reject) {
+           _.each(self.availableStepDefinitions, function(stepDefs) {
+               var StepDefinitionStruct = {
+                   name : stepDefs.name.substr(stepDefs.name.indexOf(" ") + 1),
+                   type : _.first( stepDefs.name.split(" ") )
+               };
+               resolve (self.stepDefinitionsArray.push(StepDefinitionStruct));
+             });
+       });
+    }
+
+    function checkIfStepExists() {
+        var self = this;
+        var promiseStatus = false;
+        return new Promise(function (resolve, reject) {
+            _.each(self.stepNameArray, function(steps) {
+                _.find(self.stepDefinitionsArray, function (stepDefs) {
+                    if (stepDefs.name === steps.name && stepDefs.type !== steps.type) {                       
+                        promiseStatus = true;
+                        self.notifierService.error("'"+stepDefs.type + ' ' + stepDefs.name+"'" + ' already exists.Can\'t save it as '+ steps.type);
+                     }
+                });
+            });
+            if (promiseStatus) {
+                return reject(Error("Not Saving File"));
+            } else {
+                return resolve();
+            }            
+        });
+     }
 
     return FileEditorController;
 })();
