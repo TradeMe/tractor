@@ -3,6 +3,7 @@
 // Utilities:
 var _ = require('lodash');
 var Promise = require('bluebird');
+var stripcolorcodes = require('stripcolorcodes');
 
 var FileEditorController = (function () {
     var FileEditorController = function FileEditorController (
@@ -40,6 +41,9 @@ var FileEditorController = (function () {
         } else if (FileModel && !this.fileModel) {
             this.newFile();
         }
+
+        this.stepDefinitionsArray = [];
+        this.stepNameArray = [];
     };
 
     FileEditorController.prototype.newFile = function () {
