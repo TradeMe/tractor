@@ -2,7 +2,7 @@
 
 // Constants:
 const REQUIRE_QUERY = 'CallExpression[callee.name="require"] Literal';
-const PENDING_QUERY = 'CallExpression[callee.object.name="callback"] Identifier';
+const PENDING_QUERY = 'CallExpression[callee.name="callback"] .arguments[value]';
 
 // Utilities:
 import _ from 'lodash';
@@ -46,7 +46,7 @@ function checkIfPending () {
     this.isPending = false;
     let pendingIdentifiers = esquery(this.ast, PENDING_QUERY);
     _.each(pendingIdentifiers, (pendingIdentifier) => {
-        if (pendingIdentifier.name === 'pending') {
+        if (pendingIdentifier.value === 'pending') {
             this.isPending = true;
         }
     });
