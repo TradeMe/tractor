@@ -74,7 +74,8 @@ var FileEditorController = (function () {
                 return Promise.resolve();
             }
         }.bind(this))
-        .then(function () {           
+        .then(function () {
+            //this is not good. need to find another way   
             if (this.fileModel.hasOwnProperty('asA')) {              
                return getStepNameForFeature(this)
                .then(getExistingStepDefinitions.bind(this))
