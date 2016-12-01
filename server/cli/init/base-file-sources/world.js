@@ -60,7 +60,7 @@ module.exports = function () {
         function takeScreenshot (scenario) {
             return global.browser.takeScreenshot()
             .then(function (base64png) {
-                var decodedImage = new Buffer(base64png, 'base64').toString('binary');
+                var decodedImage = new Buffer(base64png, 'base64');
                 scenario.attach(decodedImage, 'image/png');
             });
         }
