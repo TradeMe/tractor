@@ -95,8 +95,7 @@ tractor.config(function (
                 return ComponentFileService.getFileStructure();
             },
             componentPath: function ($stateParams, ComponentFileService) {
-                var componentName = $stateParams.file && $stateParams.file.name;
-                return componentName ? ComponentFileService.getPath({ name: componentName }) : null;
+                return $stateParams.file ? ComponentFileService.getPath($stateParams.file) : null;
             }
         }
     })
@@ -127,8 +126,7 @@ tractor.config(function (
                 return MockDataFileService.getFileStructure();
             },
             mockDataPath: function ($stateParams, MockDataFileService) {
-                var mockDataName = $stateParams.file && $stateParams.file.name;
-                return mockDataName ? MockDataFileService.getPath({ name: mockDataName }) : null;
+                return $stateParams.file ? MockDataFileService.getPath($stateParams.file) : null;
             }
         }
     })
@@ -143,8 +141,7 @@ tractor.config(function (
                 return StepDefinitionFileService.getFileStructure();
             },
             stepDefinitionPath: function ($stateParams, StepDefinitionFileService) {
-                var stepDefinitionName = $stateParams.file && $stateParams.file.name;
-                return stepDefinitionName ? StepDefinitionFileService.getPath({ name: stepDefinitionName }) : null;
+                return $stateParams.file ? StepDefinitionFileService.getPath($stateParams.file) : null;
             }
         }
     });

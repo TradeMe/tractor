@@ -34,11 +34,9 @@ var FilterParserService = function FilterParserService (FilterModel) {
 
         try {
             if (notModelBindingCSSOptionsRepeater) {
-                assert(astObject.callee.property.name === 'cssContainingText');
-                var allSelectorLiteral = _.first(astObject.arguments);
-                assert(allSelectorLiteral.value === '*');
-                var locatorLiteral = astObject.arguments[1];
-                filter.locator = locatorLiteral.value;
+                assert(astObject.callee.property.name === 'cssContainingText');              
+                var locatorLiteral= astObject.arguments[0].value + ',' +  astObject.arguments[1].value ;
+                filter.locator = locatorLiteral;
                 filter.type = 'text';
             }
         } catch (e) {

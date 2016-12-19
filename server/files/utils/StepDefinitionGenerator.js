@@ -89,7 +89,7 @@ function splitResultToStubs (result) {
     // Split on new-lines:
     .split(NEW_LINES_REGEX);
     // Filter out everything that isn't a step definition:
-    return pieces.filter(piece => !!STEP_DEFINITION_REGEX.exec(piece));
+    return pieces.filter(piece => !!STEP_DEFINITION_REGEX.exec(piece.replace(/^\s+/, "")));
 }
 
 function generateStepDefinitionFile (existingFileNames, stub, name) {

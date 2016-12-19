@@ -98,9 +98,9 @@ var StepParserService = function StepParserService (
     }
 
     function parsePending (step, statement) {
-        var callee = statement.expression.callee;
-        assert(callee.object.name === 'callback' || callee.object.name === 'done');
-        assert(callee.property.name === 'pending');
+        var callee = statement.expression.callee;    
+        assert(callee.name === 'callback' || callee.name === 'done');        
+        assert(statement.expression.arguments[1].value === 'pending');
         return true;
     }
 

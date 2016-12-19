@@ -17,36 +17,22 @@ var CustomWorld = (function () {
 })();
 
 module.exports = function () {
-    this.World = function (callback) {
+    this.World = function () {
         var w = new CustomWorld();
-        return callback(w);
+        return w;
     };
 
-    // TODO: Get rid of `singleFeature` here. It works ok,
-    // but I’d rather see if there’s a way to get the number of
-    // specs from within the `StepResult` hook…
-    var singleFeature = false;
     /* eslint-disable new-cap */
     this.Before(function (scenario, callback) {
     /* eslint-enable new-cap */
         global.httpBackend = new HttpBackend(global.browser);
-        global.browser.getProcessedConfig()
-        .then(function (value) {
-            if (value.specs.length === 1) {
-                singleFeature = true;
-            }
-            callback();
-        });
+        callback();
     });
 
     /* eslint-disable new-cap */
-    this.StepResult(function (event, callback) {
-        var stepResult;
-        if (singleFeature) {
-            stepResult = event.getPayloadItem('stepResult');
-            if (stepResult.isFailed()) {
-                global.browser.pause();
-            }
+    this.StepResult(function (stepResult, callback) {
+        if (stepResult.getStatus() === 'failed' && global.browser.params.debug === 'true') {
+            global.browser.pause();
         }
         callback();
     });
@@ -74,7 +60,7 @@ module.exports = function () {
         function takeScreenshot (scenario) {
             return global.browser.takeScreenshot()
             .then(function (base64png) {
-                var decodedImage = new Buffer(base64png, 'base64').toString('binary');
+                var decodedImage = new Buffer(base64png, 'base64');
                 scenario.attach(decodedImage, 'image/png');
             });
         }

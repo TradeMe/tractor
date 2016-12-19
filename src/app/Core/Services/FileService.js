@@ -43,7 +43,7 @@ var FileService = function FileService (
         });
     }
 
-    function openFile (options, availableComponents, availableMockData) {
+    function openFile (options, availableComponents, availableMockData, availableStepDefinitions) {
         if (options.path) {
             options.path = decodeURIComponent(options.path);
         }
@@ -51,7 +51,7 @@ var FileService = function FileService (
             params: options
         })
         .then(function (file) {
-            return ParserService.parse(file, availableComponents, availableMockData);
+            return type === 'features' ? ParserService.parse(file, availableStepDefinitions) : ParserService.parse(file, availableComponents, availableMockData);
         });
     }
 

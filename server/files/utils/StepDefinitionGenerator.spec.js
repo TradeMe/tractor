@@ -46,27 +46,27 @@ describe('server/utils: StepDefinitionGenerator:', () => {
             let result = dedent(`
                 this.Given(/^something$/, function (callback) {
                     // Write code here that turns the phrase above into concrete actions
-                    callback.pending();
+                     callback(null, 'pending');
                 });
 
                 this.Given(/^something else$/, function (callback) {
                     // Write code here that turns the phrase above into concrete actions
-                    callback.pending();
+                     callback(null, 'pending');
                 });
 
                 this.When(/^something happens$/, function (callback) {
                     // Write code here that turns the phrase above into concrete actions
-                    callback.pending();
+                    callback(null, 'pending');
                 });
 
                 this.Then(/^something else happens$/, function (callback) {
                     // Write code here that turns the phrase above into concrete actions'
-                    callback.pending();
+                     callback(null, 'pending');
                 });
 
                 this.Then(/^something else does not happen$/, function (callback) {
                     // Write code here that turns the phrase above into concrete actions
-                    callback.pending();
+                     callback(null, 'pending');
                 });
             `);
 
@@ -120,7 +120,7 @@ describe('server/utils: StepDefinitionGenerator:', () => {
             let result = dedent(`
                 this.Given(/^_$/, function (callback) {
                     // Write code here that turns the phrase above into concrete actions
-                    callback.pending();
+                     callback(null, 'pending');
                 });
             `);
 
@@ -169,7 +169,7 @@ describe('server/utils: StepDefinitionGenerator:', () => {
             let result = dedent(`
                 this.Given(/^\\\/\\\\$/, function (callback) {
                     // Write code here that turns the phrase above into concrete actions
-                    callback.pending();
+                     callback(null, 'pending');
                 });
             `);
 
@@ -218,7 +218,7 @@ describe('server/utils: StepDefinitionGenerator:', () => {
             let result = dedent(`
                 this.Given(/^<>$/, function (callback) {
                     // Write code here that turns the phrase above into concrete actions
-                    callback.pending();
+                     callback(null, 'pending');
                 });
             `);
 
@@ -267,7 +267,7 @@ describe('server/utils: StepDefinitionGenerator:', () => {
             let result = dedent(`
                 this.Given(/^\\?\\:\\*\\"\\|$/, function (callback) {
                     // Write code here that turns the phrase above into concrete actions
-                    callback.pending();
+                     callback(null, 'pending');
                 });
             `);
 
@@ -316,7 +316,7 @@ describe('server/utils: StepDefinitionGenerator:', () => {
             let result = dedent(`
                 this.When(/^\\$\\d+$/, function (callback) {
                     // Write code here that turns the phrase above into concrete actions
-                    callback.pending();
+                     callback(null, 'pending');
                 });
             `);
 
@@ -365,7 +365,7 @@ describe('server/utils: StepDefinitionGenerator:', () => {
             let result = dedent(`
                 this.When(/^\\d+$/, function (callback) {
                     // Write code here that turns the phrase above into concrete actions
-                    callback.pending();
+                     callback(null, 'pending');
                 });
             `);
 
@@ -417,7 +417,7 @@ describe('server/utils: StepDefinitionGenerator:', () => {
             let result = dedent(`
                 this.Given(/^something$/, function (callback) {
                     // Write code here that turns the phrase above into concrete actions
-                    callback.pending();
+                     callback(null, 'pending');
                 });
             `);
 
