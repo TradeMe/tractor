@@ -1,10 +1,10 @@
 // Dependencies:
 import application from './application';
-import fileStructure from './file-structure';
+import tractorFileStructure from 'tractor-file-structure';
 
 function start () {
     application.init();
-    return fileStructure.refresh()
+    return tractorFileStructure.fileStructure.refresh()
     .then(() => application.start());
 }
 

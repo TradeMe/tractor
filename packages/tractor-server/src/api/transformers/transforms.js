@@ -6,7 +6,7 @@ import path from 'path';
 // Dependencies:
 import changecase from 'change-case';
 import esquery from 'esquery';
-import fileStructure from '../../file-structure';
+import tractorFileStructure from 'tractor-file-structure';
 
 export default {
     transformIdentifiers,
@@ -37,9 +37,9 @@ function transformMetadata (file, type, oldName, newName) {
 }
 
 function transformReferenceIdentifiers (oldFilePath, oldName, newName) {
-    let referencePaths = fileStructure.references[oldFilePath] || [];
+    let referencePaths = tractorFileStructure.fileStructure.references[oldFilePath] || [];
     return Promise.map(referencePaths, (referencePath) => {
-        let file = fileStructure.allFilesByPath[referencePath];
+        let file = tractorFileStructure.fileStructure.allFilesByPath[referencePath];
         return transformIdentifiers(file, oldName, newName);
     });
 }
@@ -56,9 +56,9 @@ function transformReferencePath (file, oldFromPath, oldToPath, newFromPath, newT
 }
 
 function transformReferences (type, oldFilePath, newFilePath, oldName, newName) {
-    let referencePaths = fileStructure.references[oldFilePath] || [];
+    let referencePaths = tractorFileStructure.fileStructure.references[oldFilePath] || [];
     return Promise.map(referencePaths, (referencePath) => {
-        let file = fileStructure.allFilesByPath[referencePath];
+        let file = tractorFileStructure.fileStructure.allFilesByPath[referencePath];
 
         return transformIdentifiers(file, changecase.pascal(oldName), changecase.pascal(newName))
         .then(() => transformIdentifiers(file, changecase.camel(oldName), changecase.camel(newName)))

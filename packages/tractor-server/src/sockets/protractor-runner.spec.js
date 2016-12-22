@@ -5,7 +5,6 @@ import config from '../config/config';
 const MAGIC_TIMEOUT_NUMBER = 10;
 
 // Utilities:
-import _ from 'lodash';
 import chai from 'chai';
 import dirtyChai from 'dirty-chai';
 import sinon from 'sinon';
@@ -29,11 +28,11 @@ describe('server/sockets: protractor-runner:', () => {
     it('should run "protractor"', () => {
         let spawnEmitter = new EventEmitter();
         spawnEmitter.stdout = new EventEmitter();
-        spawnEmitter.stdout.pipe = _.noop;
+        spawnEmitter.stdout.pipe = () => {};
         spawnEmitter.stderr = new EventEmitter();
-        spawnEmitter.stderr.pipe = _.noop;
+        spawnEmitter.stderr.pipe = () => {};
         let socket = {
-            disconnect: _.noop
+            disconnect: () => {}
         };
 
         let specs = path.join(config.testDirectory, '/features/**/*.feature');
@@ -70,11 +69,11 @@ describe('server/sockets: protractor-runner:', () => {
     it('should run "protractor" for single feature', () => {
         let spawnEmitter = new EventEmitter();
         spawnEmitter.stdout = new EventEmitter();
-        spawnEmitter.stdout.pipe = _.noop;
+        spawnEmitter.stdout.pipe = () => {};
         spawnEmitter.stderr = new EventEmitter();
-        spawnEmitter.stderr.pipe = _.noop;
+        spawnEmitter.stderr.pipe = () => {};
         let socket = {
-            disconnect: _.noop
+            disconnect: () => {}
         };
 
         let runOptions = {
@@ -112,7 +111,7 @@ describe('server/sockets: protractor-runner:', () => {
     it('should throw an `Error` if `baseUrl` is not defined:', () => {
         let runOptions = {};
         let socket = {
-            disconnect: _.noop
+            disconnect: () => {}
         };
 
         sinon.stub(config, 'beforeProtractor');
@@ -139,7 +138,7 @@ describe('server/sockets: protractor-runner:', () => {
             feature
         };
         let socket = {
-            disconnect: _.noop
+            disconnect: () => {}
         };
 
         sinon.stub(config, 'beforeProtractor');
@@ -162,11 +161,11 @@ describe('server/sockets: protractor-runner:', () => {
     it('shouldn\'t run "protractor" if it is already running', () => {
         let spawnEmitter = new EventEmitter();
         spawnEmitter.stdout = new EventEmitter();
-        spawnEmitter.stdout.pipe = _.noop;
+        spawnEmitter.stdout.pipe = () => {};
         spawnEmitter.stderr = new EventEmitter();
-        spawnEmitter.stderr.pipe = _.noop;
+        spawnEmitter.stderr.pipe = () => {};
         let socket = {
-            disconnect: _.noop
+            disconnect: () => {}
         };
         let runOptions = {
             baseUrl: 'baseUrl'
@@ -202,11 +201,11 @@ describe('server/sockets: protractor-runner:', () => {
     it('should disconnect the socket when "protractor" finishes', () => {
         let spawnEmitter = new EventEmitter();
         spawnEmitter.stdout = new EventEmitter();
-        spawnEmitter.stdout.pipe = _.noop;
+        spawnEmitter.stdout.pipe = () => {};
         spawnEmitter.stderr = new EventEmitter();
-        spawnEmitter.stderr.pipe = _.noop;
+        spawnEmitter.stderr.pipe = () => {};
         let socket = {
-            disconnect: _.noop
+            disconnect: () => {}
         };
         let runOptions = {
             baseUrl: 'baseUrl'
@@ -239,11 +238,11 @@ describe('server/sockets: protractor-runner:', () => {
     it('should log any errors that occur while running "protractor"', () => {
         let spawnEmitter = new EventEmitter();
         spawnEmitter.stdout = new EventEmitter();
-        spawnEmitter.stdout.pipe = _.noop;
+        spawnEmitter.stdout.pipe = () => {};
         spawnEmitter.stderr = new EventEmitter();
-        spawnEmitter.stderr.pipe = _.noop;
+        spawnEmitter.stderr.pipe = () => {};
         let socket = {
-            disconnect: _.noop,
+            disconnect: () => {},
             lastMessage: ''
         };
         let runOptions = {
@@ -280,11 +279,11 @@ describe('server/sockets: protractor-runner:', () => {
     it('should log any errors that cause "protractor" to exit with a bad error code', () => {
         let spawnEmitter = new EventEmitter();
         spawnEmitter.stdout = new EventEmitter();
-        spawnEmitter.stdout.pipe = _.noop;
+        spawnEmitter.stdout.pipe = () => {};
         spawnEmitter.stderr = new EventEmitter();
-        spawnEmitter.stderr.pipe = _.noop;
+        spawnEmitter.stderr.pipe = () => {};
         let socket = {
-            disconnect: _.noop,
+            disconnect: () => {},
             lastMessage: ''
         };
         let runOptions = {
@@ -319,12 +318,12 @@ describe('server/sockets: protractor-runner:', () => {
     it('should format messages from "stdout" and send them to the client', () => {
         let spawnEmitter = new EventEmitter();
         spawnEmitter.stdout = new EventEmitter();
-        spawnEmitter.stdout.pipe = _.noop;
+        spawnEmitter.stdout.pipe = () => {};
         spawnEmitter.stderr = new EventEmitter();
-        spawnEmitter.stderr.pipe = _.noop;
+        spawnEmitter.stderr.pipe = () => {};
         let socket = {
-            emit: _.noop,
-            disconnect: _.noop
+            emit: () => {},
+            disconnect: () => {}
         };
         let runOptions = {
             baseUrl: 'baseUrl'
@@ -366,12 +365,12 @@ describe('server/sockets: protractor-runner:', () => {
     it('should format messages from "stderr" and send them to the client', () => {
         let spawnEmitter = new EventEmitter();
         spawnEmitter.stdout = new EventEmitter();
-        spawnEmitter.stdout.pipe = _.noop;
+        spawnEmitter.stdout.pipe = () => {};
         spawnEmitter.stderr = new EventEmitter();
-        spawnEmitter.stderr.pipe = _.noop;
+        spawnEmitter.stderr.pipe = () => {};
         let socket = {
-            emit: _.noop,
-            disconnect: _.noop
+            emit: () => {},
+            disconnect: () => {}
         };
         let runOptions = {
             baseUrl: 'baseUrl'
@@ -408,12 +407,12 @@ describe('server/sockets: protractor-runner:', () => {
     it('should not send irrelevant messages to the client', () => {
         let spawnEmitter = new EventEmitter();
         spawnEmitter.stdout = new EventEmitter();
-        spawnEmitter.stdout.pipe = _.noop;
+        spawnEmitter.stdout.pipe = () => {};
         spawnEmitter.stderr = new EventEmitter();
-        spawnEmitter.stderr.pipe = _.noop;
+        spawnEmitter.stderr.pipe = () => {};
         let socket = {
-            emit: _.noop,
-            disconnect: _.noop
+            emit: () => {},
+            disconnect: () => {}
         };
         let runOptions = {
             baseUrl: 'baseUrl'

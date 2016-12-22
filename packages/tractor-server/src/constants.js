@@ -15,8 +15,6 @@ const CONSTANTS = {
 
     CUCUMBER_COMMAND: `node ${path.join('node_modules', 'cucumber', 'bin', 'cucumber')}`,
 
-    FEATURE_NEWLINE: /\n/g,
-
     REQUEST_ERROR: 400,
     FILE_NOT_FOUND_ERROR: 404,
     SERVER_ERROR: 500

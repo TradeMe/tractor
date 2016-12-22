@@ -18,7 +18,6 @@ chai.use(sinonChai);
 // Dependencies:
 import FeatureLexerFormatter from './utils/FeatureLexerFormatter';
 import gherkin from 'gherkin';
-import os from 'os';
 import path from 'path';
 import StepDefinitionGenerator from './utils/StepDefinitionGenerator';
 import { TractorError } from 'tractor-error-handler';
@@ -172,34 +171,6 @@ describe('server/files: FeatureFile:', () => {
             return file.save(content)
             .then(() => {
                 expect(StepDefinitionGenerator.prototype.generate).to.have.been.called();
-            })
-            .finally(() => {
-                File.prototype.save.restore();
-                gherkin.Lexer.restore();
-                StepDefinitionGenerator.prototype.generate.restore();
-            });
-        });
-
-        it('should replace any newline characters in the content to be saved', () => {
-            class Lexer {
-                scan () {}
-            }
-
-            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.feature');
-            let feature = 'some\ncontent\nwith\nnewlines';
-            let featureWithNewlines = `some${os.EOL}content${os.EOL}with${os.EOL}newlines`;
-
-            sinon.stub(File.prototype, 'save').returns(Promise.resolve());
-            sinon.stub(gherkin, 'Lexer').returns(Lexer);
-            sinon.stub(Lexer.prototype, 'scan');
-            sinon.stub(StepDefinitionGenerator.prototype, 'generate').returns(Promise.resolve());
-
-            let file = new FeatureFile(filePath, fileStructure);
-
-            return file.save(feature)
-            .then(() => {
-                expect(File.prototype.save).to.have.been.calledWith(featureWithNewlines);
             })
             .finally(() => {
                 File.prototype.save.restore();

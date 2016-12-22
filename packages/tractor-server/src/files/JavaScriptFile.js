@@ -18,15 +18,6 @@ import { File } from 'tractor-file-structure';
 import { TractorError } from 'tractor-error-handler';
 
 export default class JavaScriptFile extends File {
-    copy (toCopy) {
-        let copyAst = _.cloneDeep(toCopy.ast, true);
-        let [metaComment] = copyAst.comments;
-        let meta = JSON.parse(metaComment.value);
-        meta.name = this.name;
-        metaComment.value = JSON.stringify(meta);
-        return this.save(copyAst);
-    }
-
     read () {
         return super.read()
         .then(content => {
@@ -101,4 +92,5 @@ function setAST (content) {
     this.ast = esprima.parse(content, {
         comment: true
     });
+    this.data = this.ast;
 }

@@ -19,16 +19,6 @@ describe('server/files/utils: FeatureLexerFormatter:', () => {
             expect(lexer).to.be.an.instanceof(FeatureLexerFormatter);
             expect(lexer.features).to.deep.equal([]);
         });
-
-        it('should set a bunch of `noops`', () => {
-            let lexer = new FeatureLexerFormatter();
-
-            expect(lexer.comment).to.equal(_.noop);
-            expect(lexer.doc_string).to.equal(_.noop);
-            expect(lexer.examples).to.equal(_.noop);
-            expect(lexer.eof).to.equal(_.noop);
-            expect(lexer.tag).to.equal(_.noop);
-        });
     });
 
     describe('FeatureLexerFormatter.lastFeature:', () => {

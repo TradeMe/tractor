@@ -12,7 +12,7 @@ export default class FeatureLexerFormatter {
         this.features = [];
 
         /* eslint-disable camelcase */
-        this.comment = this.doc_string = this.examples = this.eof = this.tag = _.noop;
+        this.comment = this.doc_string = this.examples = this.eof = this.tag = () => {};
         /* eslint-enable camelcase */
     }
 
@@ -24,7 +24,7 @@ export default class FeatureLexerFormatter {
     }
 
     feature (type, name, description) {
-        let [inOrderTo, asA, iWant] = description.split(CONSTANTS.FEATURE_NEWLINE);
+        let [inOrderTo, asA, iWant] = description.split(/\n/);
         inOrderTo = inOrderTo.replace(IN_ORDER_TO, '').replace(/\r/g, '');
         asA = asA.replace(AS_A, '').replace(/\r/g, '');
         iWant = iWant.replace(I_WANT, '');

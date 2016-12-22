@@ -1,7 +1,6 @@
 /* global describe:true, it:true */
 
 // Utilities:
-import _ from 'lodash';
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
@@ -20,7 +19,7 @@ describe('server/api: get-config', () => {
     it('should respond with the current config:', () => {
         let request = { };
         let response = {
-            send: _.noop
+            send: () => {}
         };
 
         sinon.stub(response, 'send');

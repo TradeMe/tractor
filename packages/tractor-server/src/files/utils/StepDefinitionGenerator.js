@@ -16,9 +16,9 @@ import path from 'path';
 // Dependencies:
 import esprima from 'esprima';
 import estemplate from 'estemplate';
-import fileStructure from '../../file-structure';
 import StepDefinitionFile from '../StepDefinitionFile';
 import stripcolorcodes from 'stripcolorcodes';
+import tractorFileStructure from 'tractor-file-structure';
 
 export default class StepDefinitionGenerator {
     constructor (file) {
@@ -60,12 +60,13 @@ function extractStepNames (feature) {
 }
 
 function generateStepDefinitionFiles (stepNames, result) {
-    let existingFileNames = _(fileStructure.allFiles)
-    .filter(file => file.path.match(new RegExp(StepDefinitionFile.extension)))
-    .map(file => file.name)
-    .value();
+    let existingFileNames = tractorFileStructure.fileStructure.structure.allFiles
+    .filter(file => file.path.endsWith(StepDefinitionFile.extension))
+    .map(file => file.name);
 
-    let directory = fileStructure.structure.getDirectory(CONSTANTS.STEP_DEFINITIONS);
+    let directory = tractorFileStructure.fileStructure.structure.directories.find(directory => {
+        return directory.name === CONSTANTS.STEP_DEFINITIONS;
+    });
     let stubs = splitResultToStubs(result);
 
     return Promise.map(stubs, (stub) => {
@@ -75,7 +76,7 @@ function generateStepDefinitionFiles (stepNames, result) {
         if (fileData) {
             let { ast, fileName } = fileData;
             let filePath = path.join(directory.path, fileName + StepDefinitionFile.extension);
-            let file = new StepDefinitionFile(filePath, fileStructure);
+            let file = new StepDefinitionFile(filePath, tractorFileStructure.fileStructure);
             return file.save(ast);
         }
     });

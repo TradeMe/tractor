@@ -20,10 +20,15 @@ import tractorPluginLoader from 'tractor-plugin-loader';
 import { TractorError } from 'tractor-error-handler';
 
 // Endpoints:
-import editItemPath from './api/edit-item-path';
 import getConfig from './api/get-config';
 import getPlugins from './api/get-plugins';
 import socketConnect from './sockets/connect';
+
+// Files:
+import './files/ComponentFile';
+import './files/FeatureFile';
+import './files/MockDataFile';
+import './files/StepDefinitionFile';
 
 let server;
 
@@ -69,9 +74,6 @@ function init () {
     application.use(express.static(dir));
 
     servePlugins(application);
-
-    application.patch('/:type/directory/path', editItemPath.handler);
-    application.patch('/:type/file/path', editItemPath.handler);
 
     tractorFileStructure.serve(express, application, config);
 

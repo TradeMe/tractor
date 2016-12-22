@@ -2,7 +2,8 @@
 import CONSTANTS from '../constants';
 
 // Utilities:
-import os from 'os';
+import _ from 'lodash';
+import path from 'path';
 
 // Dependencies:
 import FeatureLexerFormatter from './utils/FeatureLexerFormatter';
@@ -27,9 +28,21 @@ export default class FeatureFile extends File {
         });
     }
 
-    save (feature) {
-        feature = feature.replace(CONSTANTS.FEATURE_NEWLINE, os.EOL);
-        return super.save(feature)
+    move (update, options) {
+        return super.move(update, options)
+        .then(newFile => {
+            let { oldPath, newPath } = update;
+            if (oldPath && newPath) {
+                let oldName = path.basename(oldPath, this.extension);
+                let newName = path.basename(newPath, this.extension);
+                console.log(oldName, newName, oldPath, newPath);
+                return refactorName.call(newFile, oldName, newName);
+            }
+        });
+    }
+
+    save (data) {
+        return super.save(data)
         .then(content => {
             setTokens.call(this, content);
             let generator = new StepDefinitionGenerator(this);
@@ -49,6 +62,13 @@ export default class FeatureFile extends File {
     }
 }
 
+function refactorName (oldName, newName) {
+    let escapedOldName = _.escapeRegExp(oldName);
+    let oldNameRegExp = new RegExp(`(Feature:\\s)${escapedOldName}(\\r\\n|\\n)`);
+
+    return this.save(this.content.replace(oldNameRegExp, `$1${newName}$2`));
+}
+
 function setTokens (content) {
     let formatter = new FeatureLexerFormatter();
     let EnLexer = gherkin.Lexer('en');
@@ -57,7 +77,7 @@ function setTokens (content) {
     this.tokens = formatter.done();
 }
 
-FeatureFile.extension = '.feature';
-FeatureFile.type = 'features';
+FeatureFile.prototype.extension = '.feature';
+FeatureFile.prototype.type = 'features';
 
 tractorFileStructure.registerFileType(FeatureFile);
