@@ -8,7 +8,7 @@ It looks for a **tractor** configuration (described [here](https://github.com/Tr
 
 ## Usage:
 
-```
+```javascript
 import tractorConfigLoader from 'tractor-config-loader';
 
 const config = tractorConfigLoader.loadConfig();
