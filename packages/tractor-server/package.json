@@ -63,7 +63,7 @@
     "tractor-client": "0.9.0-beta.9",
     "tractor-config-loader": "0.1.0",
     "tractor-error-handler": "0.1.0",
-    "tractor-file-structure": "0.1.0-beta.0",
+    "tractor-file-structure": "0.1.0-beta.1",
     "tractor-plugin-loader": "0.1.1"
   }
 }

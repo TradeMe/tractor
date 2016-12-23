@@ -35,7 +35,7 @@ export default class FeatureFile extends File {
             if (oldPath && newPath) {
                 let oldName = path.basename(oldPath, this.extension);
                 let newName = path.basename(newPath, this.extension);
-                console.log(oldName, newName, oldPath, newPath);
+
                 return refactorName.call(newFile, oldName, newName);
             }
         });

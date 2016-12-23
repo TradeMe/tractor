@@ -10,22 +10,22 @@ import Promise from 'bluebird';
 import esquery from 'esquery';
 import JavaScriptFile from './JavaScriptFile';
 import tractorFileStructure from 'tractor-file-structure';
-import transforms from '../api/transformers/transforms';
+import transformer from 'tractor-js-file-transformer';
 
 export default class StepDefinitionFile extends JavaScriptFile {
     move (update, options) {
+        let { oldPath } = update;
+        let referencePaths = Object.keys(this.fileStructure.references)
+        .filter(reference => this.fileStructure.references[reference].includes(oldPath));
+
         return super.move(update, options)
         .then(newFile => {
-            let { oldPath, newPath } = update;
-            if (oldPath && newPath) {
-                console.log(oldPath, newPath);
-                let references = Object.keys(this.fileStructure.references)
-                .filter(reference => this.fileStructure.references[reference].includes(oldPath));
+            transformer.transformReferencesRequirePaths(referencePaths, this.path, newFile.path);
 
-                return Promise.map(references, (reference) => {
-                    return transforms.transformReferencePath(newFile, oldPath, reference, newPath, reference);
-                });
-            }
+            return Promise.map(referencePaths, referencePath => {
+                let reference = tractorFileStructure.fileStructure.allFilesByPath[referencePath];
+                return reference.save(reference.ast);
+            });
         });
     }
 
@@ -46,7 +46,6 @@ StepDefinitionFile.prototype.extension = '.step.js';
 StepDefinitionFile.prototype.type = 'step-definitions';
 
 function getFileReferences () {
-    debugger;
     let { references } = this.fileStructure;
 
     _.each(references, referencePaths => {

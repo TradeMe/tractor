@@ -1,11 +1,12 @@
 // Utilities:
+import Promise from 'bluebird';
 import changeCase from 'change-case';
 import path from 'path';
 
 // Dependencies:
 import { File } from 'tractor-file-structure';
 import tractorFileStructure from 'tractor-file-structure';
-import transforms from '../api/transformers/transforms';
+import transformer from 'tractor-js-file-transformer';
 
 export default class MockDataFile extends File {
     delete () {
@@ -14,19 +15,28 @@ export default class MockDataFile extends File {
     }
 
     move (update, options) {
+        let { oldPath, newPath } = update;
+        let referencePaths = this.fileStructure.references[oldPath] || [];
+
         return super.move(update, options)
-        .then(() => {
-            let { oldPath, newPath } = update;
-            if (oldPath && newPath) {
-                let oldName = path.basename(oldPath, this.extension);
-                let newName = path.basename(newPath, this.extension);
+        .then(newFile => {
+            let oldName = path.basename(oldPath, this.extension);
+            let newName = path.basename(newPath, this.extension);
+            let oldClassName = changeCase.pascal(oldName);
+            let newClassName = changeCase.pascal(newName);
+            let oldInstanceName = changeCase.camel(oldName);
+            let newInstanceName = changeCase.camel(newName);
 
-                console.log(oldName, newName, oldPath, newPath);
+            transformer.transformReferencesIdentifiers(referencePaths, oldClassName, newClassName);
+            transformer.transformReferencesIdentifiers(referencePaths, oldInstanceName, newInstanceName);
+            transformer.transformReferencesMetadata(referencePaths, oldName, newName, newFile.type);
+            transformer.transformReferencesRequirePaths(referencePaths, this.path, newFile.path);
 
-                return transforms.transformReferences('mockData', oldPath, newPath, oldName, newName)
-                .then(() => transforms.transformReferenceIdentifiers(newPath, changeCase.camel(oldName), changeCase.camel(newName)));
-            }
-        })
+            return Promise.map(referencePaths, referencePath => {
+                let reference = tractorFileStructure.fileStructure.allFilesByPath[referencePath];
+                return reference.save(reference.ast);
+            });
+        });
     }
 
     save (data) {
@@ -44,7 +54,6 @@ MockDataFile.prototype.extension = '.mock.json';
 MockDataFile.prototype.type = 'mock-data';
 
 function deleteFileReferences () {
-    debugger;
     let { references } = this.fileStructure;
 
     delete references[this.path];
