@@ -3420,9 +3420,9 @@ tough-cookie@~2.3.0:
   dependencies:
     punycode "^1.4.1"
 
-tractor-client@0.9.0-beta.9:
-  version "0.9.0-beta.9"
-  resolved "https://registry.yarnpkg.com/tractor-client/-/tractor-client-0.9.0-beta.9.tgz#005c6aa0d6d3536a1609283860fab606051f5716"
+tractor-client@0.10.0-beta.0:
+  version "0.10.0-beta.0"
+  resolved "https://registry.yarnpkg.com/tractor-client/-/tractor-client-0.10.0-beta.0.tgz#60da9d99c5b0123bb14ea653ba9ea89a87358804"
 
 tractor-config-loader@0.1.0:
   version "0.1.0"
@@ -3435,13 +3435,20 @@ tractor-error-handler@0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/tractor-error-handler/-/tractor-error-handler-0.1.0.tgz#4513ef79274adda28ceb629c61be22281699e875"
 
-tractor-file-structure@0.1.0-beta.1:
-  version "0.1.0-beta.1"
-  resolved "https://registry.yarnpkg.com/tractor-file-structure/-/tractor-file-structure-0.1.0-beta.1.tgz#5ab0df6be19cf5ce7d81f71e0b574fb95cc35839"
+tractor-file-structure@0.1.0-beta.2:
+  version "0.1.0-beta.2"
+  resolved "https://registry.yarnpkg.com/tractor-file-structure/-/tractor-file-structure-0.1.0-beta.2.tgz#712298d79a2901178528c3852721622a3d8c0ea6"
   dependencies:
     bluebird "3.4.6"
     tractor-config-loader "0.1.0"
     tractor-error-handler "0.1.0"
+
+tractor-js-file-transformer@0.1.0-beta.4:
+  version "0.1.0-beta.4"
+  resolved "https://registry.yarnpkg.com/tractor-js-file-transformer/-/tractor-js-file-transformer-0.1.0-beta.4.tgz#92164b19e48e73345900c8ad2caa1b96c2cd4259"
+  dependencies:
+    esquery "0.4.0"
+    tractor-file-structure "0.1.0-beta.2"
 
 tractor-plugin-loader@0.1.1:
   version "0.1.1"
