@@ -65,6 +65,13 @@ var FileEditorController = (function () {
                 overwrite: exists
             });
         }.bind(this))
+        .then(function () {
+            this.$state.go('.', {
+                file: {
+                    url: fileUrl
+                }
+            });
+        }.bind(this))
         .catch(function () {
             this.notifierService.error('File was not saved.');
         }.bind(this));

@@ -13,12 +13,11 @@ var FileStructureService = function FileStructureService (
 
     var service = {
         checkFileExists: checkFileExists,
-        copyItem: copyItem,
         deleteItem: deleteItem,
-        editDirectoryPath: editDirectoryPath,
-        editFilePath: editFilePath,
         getFileStructure: getFileStructure,
+        moveItem: moveItem,
         openItem: openItem,
+        refactorItem: refactorItem,
         saveItem: saveItem
     };
 
@@ -34,11 +33,6 @@ var FileStructureService = function FileStructureService (
         return !!fileStructure.allFilesByUrl[fileUrl];
     }
 
-    function copyItem (itemUrl) {
-        return $http.post('/fs' + itemUrl + '/copy')
-        .then(updateFileStructure.bind(this));
-    }
-
     function deleteItem (itemUrl, options) {
         return $http.delete('/fs' + itemUrl, {
             params: options
@@ -46,23 +40,26 @@ var FileStructureService = function FileStructureService (
         .then(updateFileStructure.bind(this));
     }
 
-    function editDirectoryPath (type, options) {
-        options.isDirectory = true;
-        return $http.patch('/' + type + '/directory/path', options);
-    }
-
-    function editFilePath (type, options) {
-        return $http.patch('/' + type + '/file/path', options);
-    }
-
-    function getFileStructure (extension) {
+    function getFileStructure () {
         return $http.get('/fs/')
+        .then(updateFileStructure.bind(this));
+    }
+
+    function moveItem (itemUrl, options) {
+        return $http.post('/fs/move' + itemUrl, options)
         .then(updateFileStructure.bind(this));
     }
 
     function openItem (itemUrl) {
         itemUrl = decodeURIComponent(itemUrl);
         return $http.get('/fs' + itemUrl);
+    }
+
+    function refactorItem (itemUrl, options) {
+        debugger;
+        return $http.post('/fs/refactor' + itemUrl, {
+            update: options
+        });
     }
 
     function saveItem (itemUrl, options) {

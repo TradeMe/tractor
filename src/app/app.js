@@ -65,7 +65,7 @@ tractor.config(function (
 
     $urlMatcherFactoryProvider.type('TractorFile', {
         encode: function (toEncode) {
-            return toEncode && toEncode.url ? toEncode.url.replace(/\s/g, '+').replace(/^\//, '') : '';
+            return toEncode && toEncode.url ? toEncode.url.replace(/\s/g, '+') : '';
         },
         decode: function (toDecode) {
             return toDecode && _.isString(toDecode) ? { url: toDecode.replace(/\+/g, ' ') } : toDecode;
@@ -87,7 +87,7 @@ tractor.config(function (
         controller: 'ControlPanelController as controlPanel'
     })
     .state('tractor.components', {
-        url: 'components/{file:TractorFile}',
+        url: 'components{file:TractorFile}',
         /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/features/ComponentEditor/ComponentEditor.html', 'utf8'),
         /* eslint-enable no-path-concat */
@@ -106,7 +106,7 @@ tractor.config(function (
         }
     })
     .state('tractor.features', {
-        url: 'features/{file:TractorFile}',
+        url: 'features{file:TractorFile}',
         /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/features/FeatureEditor/FeatureEditor.html', 'utf8'),
         /* eslint-enable no-path-concat */
@@ -125,7 +125,7 @@ tractor.config(function (
         }
     })
     .state('tractor.mock-data', {
-        url: 'mock-data/{file:TractorFile}',
+        url: 'mock-data{file:TractorFile}',
         /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/features/MockDataEditor/MockDataEditor.html', 'utf8'),
         /* eslint-enable no-path-concat */
@@ -144,7 +144,7 @@ tractor.config(function (
         }
     })
     .state('tractor.step-definitions', {
-        url: 'step-definitions/{file:TractorFile}',
+        url: 'step-definitions{file:TractorFile}',
         /* eslint-disable no-path-concat */
         template: fs.readFileSync(__dirname + '/features/StepDefinitionEditor/StepDefinitionEditor.html', 'utf8'),
         /* eslint-enable no-path-concat */
@@ -156,9 +156,6 @@ tractor.config(function (
                     return fileStructureService.fileStructure.allFiles
                     .filter(function (file) {
                         return file.url.endsWith('.component.js');
-                    })
-                    .map(function (component) {
-                        return component.meta;
                     });
                 });
             },
@@ -168,9 +165,6 @@ tractor.config(function (
                     return fileStructureService.fileStructure.allFiles
                     .filter(function (file) {
                         return file.url.endsWith('.mock.json');
-                    })
-                    .map(function (component) {
-                        return component.meta;
                     });
                 });
             },

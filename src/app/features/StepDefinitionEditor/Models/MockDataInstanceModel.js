@@ -32,7 +32,7 @@ var createMockDataInstanceModelConstructor = function (
             },
             variableName: {
                 get: function () {
-                    return camel(this.mockData.name);
+                    return camel(this.name);
                 }
             },
             meta: {

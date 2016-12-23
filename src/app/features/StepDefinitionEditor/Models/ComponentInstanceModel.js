@@ -6,8 +6,9 @@ var path = require('path');
 // Module:
 var StepDefinitionEditor = require('../StepDefinitionEditor');
 
-// Depenedencies:
+// Dependencies:
 var camel = require('change-case').camel;
+var pascal = require('change-case').pascal;
 require('../../../Core/Services/ASTCreatorService');
 
 var createComponentInstanceModelConstructor = function (
@@ -30,9 +31,19 @@ var createComponentInstanceModelConstructor = function (
                     return this.component.name;
                 }
             },
+            constructorName: {
+                get: function () {
+                    return pascal(this.name);
+                }
+            },
             variableName: {
                 get: function () {
-                    return camel(this.component.name);
+                    return camel(this.name);
+                }
+            },
+            actions: {
+                get: function () {
+                    return actions;
                 }
             },
             meta: {
@@ -61,7 +72,7 @@ var createComponentInstanceModelConstructor = function (
         var relativePath = getRelativePath.call(this);
 
         return ast.template(template, {
-            constructor: ast.identifier(this.component.variableName),
+            constructor: ast.identifier(this.constructorName),
             path: ast.literal(relativePath),
             name: ast.identifier(this.variableName)
         });

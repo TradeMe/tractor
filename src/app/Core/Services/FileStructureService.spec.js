@@ -321,114 +321,114 @@ describe('FileStructureService.js:', function () {
         });
     });
 
-    describe('FileStructureService.editDirectoryPath:', function () {
-        it('should make a request to edit the path of a directory:', function (done) {
-            var fileStructureMock = {
-                directory: {
-                    directories: []
-                }
-            };
-            var options = {};
-
-            sinon.stub(httpResponseInterceptor, 'response').returns(fileStructureMock);
-            sinon.stub(persistentStateService, 'get').returns({});
-
-            $httpBackend.whenPATCH('/component/directory/path').respond({});
-
-            fileStructureService.editDirectoryPath('component', options)
-            .then(function (fileStructure) {
-                expect(options.isDirectory).to.be.true();
-                expect(fileStructure).to.equal(fileStructureMock);
-                done();
-            })
-            .catch(done.fail);
-
-            $httpBackend.flush();
-        });
-
-        it('should update the "open" state of the directories:', function (done) {
-            var directory = {
-                path: '/path/to/open/directory',
-                directories: []
-            };
-            var fileStructureMock = {
-                directory: {
-                    directories: [directory]
-                }
-            };
-            var openDirectories = {
-                '/path/to/open/directory': true
-            };
-            var options = {};
-
-            sinon.stub(httpResponseInterceptor, 'response').returns(fileStructureMock);
-            sinon.stub(persistentStateService, 'get').returns(openDirectories);
-
-            $httpBackend.whenPATCH('/component/directory/path').respond({});
-
-            fileStructureService.editDirectoryPath('component', options)
-            .then(function () {
-                expect(directory.open).to.be.true();
-                done();
-            })
-            .catch(done.fail);
-
-            $httpBackend.flush();
-        });
-    });
-
-    describe('FileStructureService.editFilePath:', function () {
-        it('should make a request to edit the path of a file:', function (done) {
-            var fileStructureMock = {
-                directory: {
-                    directories: []
-                }
-            };
-
-            sinon.stub(httpResponseInterceptor, 'response').returns(fileStructureMock);
-            sinon.stub(persistentStateService, 'get').returns({});
-
-            $httpBackend.whenPATCH('/component/file/path').respond({});
-
-            fileStructureService.editFilePath('component')
-            .then(function (fileStructure) {
-                expect(fileStructure).to.equal(fileStructureMock);
-                done();
-            })
-            .catch(done.fail);
-
-            $httpBackend.flush();
-        });
-
-        it('should update the "open" state of the directories:', function (done) {
-            var directory = {
-                path: '/path/to/open/directory',
-                directories: []
-            };
-            var fileStructureMock = {
-                directory: {
-                    directories: [directory]
-                }
-            };
-            var openDirectories = {
-                '/path/to/open/directory': true
-            };
-
-            sinon.stub(httpResponseInterceptor, 'response').returns(fileStructureMock);
-            sinon.stub(persistentStateService, 'get').returns(openDirectories);
-
-            $httpBackend.whenPATCH('/component/file/path').respond({});
-
-            fileStructureService.editFilePath('component')
-            .then(function () {
-                expect(directory.open).to.be.true();
-                done();
-            })
-            .catch(done.fail);
-
-            $httpBackend.flush();
-        });
-    });
+    // describe('FileStructureService.editDirectoryPath:', function () {
+    //     it('should make a request to edit the path of a directory:', function (done) {
+    //         var fileStructureMock = {
+    //             directory: {
+    //                 directories: []
+    //             }
+    //         };
+    //         var options = {};
+    //
+    //         sinon.stub(httpResponseInterceptor, 'response').returns(fileStructureMock);
+    //         sinon.stub(persistentStateService, 'get').returns({});
+    //
+    //         $httpBackend.whenPATCH('/component/directory/path').respond({});
+    //
+    //         fileStructureService.editDirectoryPath('component', options)
+    //         .then(function (fileStructure) {
+    //             expect(options.isDirectory).to.be.true();
+    //             expect(fileStructure).to.equal(fileStructureMock);
+    //             done();
+    //         })
+    //         .catch(done.fail);
+    //
+    //         $httpBackend.flush();
+    //     });
+    //
+    //     it('should update the "open" state of the directories:', function (done) {
+    //         var directory = {
+    //             path: '/path/to/open/directory',
+    //             directories: []
+    //         };
+    //         var fileStructureMock = {
+    //             directory: {
+    //                 directories: [directory]
+    //             }
+    //         };
+    //         var openDirectories = {
+    //             '/path/to/open/directory': true
+    //         };
+    //         var options = {};
+    //
+    //         sinon.stub(httpResponseInterceptor, 'response').returns(fileStructureMock);
+    //         sinon.stub(persistentStateService, 'get').returns(openDirectories);
+    //
+    //         $httpBackend.whenPATCH('/component/directory/path').respond({});
+    //
+    //         fileStructureService.editDirectoryPath('component', options)
+    //         .then(function () {
+    //             expect(directory.open).to.be.true();
+    //             done();
+    //         })
+    //         .catch(done.fail);
+    //
+    //         $httpBackend.flush();
+    //     });
+    // });
+    //
+    // describe('FileStructureService.editFilePath:', function () {
+    //     it('should make a request to edit the path of a file:', function (done) {
+    //         var fileStructureMock = {
+    //             directory: {
+    //                 directories: []
+    //             }
+    //         };
+    //
+    //         sinon.stub(httpResponseInterceptor, 'response').returns(fileStructureMock);
+    //         sinon.stub(persistentStateService, 'get').returns({});
+    //
+    //         $httpBackend.whenPATCH('/component/file/path').respond({});
+    //
+    //         fileStructureService.editFilePath('component')
+    //         .then(function (fileStructure) {
+    //             expect(fileStructure).to.equal(fileStructureMock);
+    //             done();
+    //         })
+    //         .catch(done.fail);
+    //
+    //         $httpBackend.flush();
+    //     });
+    //
+    //     it('should update the "open" state of the directories:', function (done) {
+    //         var directory = {
+    //             path: '/path/to/open/directory',
+    //             directories: []
+    //         };
+    //         var fileStructureMock = {
+    //             directory: {
+    //                 directories: [directory]
+    //             }
+    //         };
+    //         var openDirectories = {
+    //             '/path/to/open/directory': true
+    //         };
+    //
+    //         sinon.stub(httpResponseInterceptor, 'response').returns(fileStructureMock);
+    //         sinon.stub(persistentStateService, 'get').returns(openDirectories);
+    //
+    //         $httpBackend.whenPATCH('/component/file/path').respond({});
+    //
+    //         fileStructureService.editFilePath('component')
+    //         .then(function () {
+    //             expect(directory.open).to.be.true();
+    //             done();
+    //         })
+    //         .catch(done.fail);
+    //
+    //         $httpBackend.flush();
+    //     });
+    // });
 
     describe('FileStructureService.toggleOpenDirectory:', function () {
         it('should toggle the "open" state of a given directory path:', function () {

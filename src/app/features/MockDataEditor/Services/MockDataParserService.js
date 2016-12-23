@@ -17,7 +17,7 @@ var MockDataParserService = function MockDataParserService (MockDataModel) {
                 isSaved: true,
                 url: mockDataFile.url
             });
-            mockDataModel.name = mockDataFile.name;
+            mockDataModel.name = mockDataFile.basename;
             return mockDataModel;
         } catch (e) {
             return new MockDataModel();

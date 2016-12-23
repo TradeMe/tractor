@@ -35,7 +35,7 @@ var FileTreeController = (function () {
         this.headerName = title(this.type);
         this.canModify = this.type !== 'step-definitions';
 
-        this.editFilePath = this.editFilePath.bind(this);
+        this.moveItem = this.moveItem.bind(this);
 
         this.fileStructureService.getFileStructure(this.extension);
 
@@ -57,7 +57,9 @@ var FileTreeController = (function () {
     };
 
     FileTreeController.prototype.copy = function (item) {
-        this.fileStructureService.copyItem(item.url)
+        this.fileStructureService.moveItem(item.url, {
+            copy: true
+        })
         .then(updateFileStructure.bind(this));
     };
 
@@ -74,13 +76,11 @@ var FileTreeController = (function () {
         }
     };
 
-    FileTreeController.prototype.editFilePath = function (file, directory) {
-        var oldDirectoryPath = getDirname(file.path);
-        if (oldDirectoryPath !== directory.path) {
-            this.fileStructureService.editFilePath(this.type, {
-                oldDirectoryPath: oldDirectoryPath,
-                newDirectoryPath: directory.path,
-                name: file.name
+    FileTreeController.prototype.moveItem = function (file, directory) {
+        var oldDirectoryUrl = getDirname(file.url);
+        if (oldDirectoryUrl !== directory.url) {
+            this.fileStructureService.moveItem(file.url, {
+                newUrl: file.url.replace(oldDirectoryUrl, directory.url)
             })
             .then(updateFileStructure.bind(this));
         }
@@ -89,7 +89,7 @@ var FileTreeController = (function () {
     FileTreeController.prototype.editName = function (item) {
         if (this.canModify || item.isDirectory) {
             item.editingName = true;
-            item.previousName = item.name;
+            item.previousName = item.basename;
             this.hideOptions(item);
         }
     };
@@ -108,48 +108,34 @@ var FileTreeController = (function () {
         item.editingName = false;
 
         var valid = true;
-        if (_.contains(item.name, '_')) {
+        if (_.contains(item.basename, '_')) {
             this.notifierService.error('Invalid character: "_"');
             valid = false;
         }
-        if (_.contains(item.name, '/')) {
+        if (_.contains(item.basename, '/')) {
             this.notifierService.error('Invalid character: "/"');
             valid = false;
         }
-        if (_.contains(item.name, '\\')) {
+        if (_.contains(item.basename, '\\')) {
             this.notifierService.error('Invalid character: "\\"');
             valid = false;
         }
-        if (!item.name.trim().length) {
+        if (!item.basename.trim().length) {
             valid = false;
         }
 
         if (!valid) {
-            item.name = item.previousName;
+            item.basename = item.previousName;
         }
 
-        if (item.name !== item.previousName) {
+        if (item.basename !== item.previousName) {
             var oldName = item.previousName;
-            var newName = item.name;
+            var newName = item.basename;
 
-            var oldDirectoryPath = getDirname(item.path);
-
-            var isDirectory = !!item.isDirectory;
-            if (isDirectory) {
-                this.fileStructureService.editDirectoryPath(this.type, {
-                    directoryPath: oldDirectoryPath,
-                    oldName: oldName,
-                    newName: newName
-                })
-                .then(updateFileStructure.bind(this));
-            } else {
-                this.fileStructureService.editFilePath(this.type, {
-                    directoryPath: oldDirectoryPath,
-                    oldName: oldName,
-                    newName: newName
-                })
-                .then(updateFileStructure.bind(this));
-            }
+            this.fileStructureService.moveItem(item.url, {
+                newUrl: item.url.replace(oldName, newName)
+            })
+            .then(updateFileStructure.bind(this));
         }
     };
 
@@ -215,7 +201,7 @@ var FileTreeController = (function () {
         }
 
         fileStructure = fileStructure.directories.find(function (directory) {
-            return directory.name === this.type;
+            return directory.basename === this.type;
         }.bind(this));
 
         var openDirectories = getOpenDirectories.call(this);

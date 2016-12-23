@@ -8,10 +8,14 @@ var assert = require('assert');
 var StepDefinitionEditor = require('../StepDefinitionEditor');
 
 // Dependencies:
+require('../Models/ComponentMetaModel');
+require('../Models/MockDataMetaModel');
 require('../Services/StepParserService');
 require('../Models/StepDefinitionModel');
 
 var StepDefinitionParserService = function StepDefinitionParserService (
+    ComponentMetaModel,
+    MockDataMetaModel,
     StepParserService,
     StepDefinitionModel
 ) {
@@ -20,6 +24,12 @@ var StepDefinitionParserService = function StepDefinitionParserService (
     };
 
     function parse (stepDefinitionFile, availableComponents, availableMockData) {
+        availableComponents = availableComponents.map(function (component) {
+            return new ComponentMetaModel(component);
+        });
+        availableMockData = availableMockData.map(function (mockData) {
+            return new MockDataMetaModel(mockData);
+        });
         try {
             var ast = stepDefinitionFile.ast;
             var meta = JSON.parse(_.first(ast.comments).value);
@@ -58,6 +68,7 @@ var StepDefinitionParserService = function StepDefinitionParserService (
     }
 
     function parseComponent (stepDefinition, statement, meta) {
+        debugger;
         var declarator = _.last(statement.declarations);
         var name = declarator.init.callee.name;
         assert(name !== 'require');
