@@ -1,6 +1,6 @@
 {
   "name": "tractor-plugin-visual-regression",
-  "version": "0.1.0-beta.2",
+  "version": "0.1.0-beta.3",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -49,6 +49,6 @@
   "dependencies": {
     "pixelmatch": "4.0.2",
     "tractor-error-handler": "0.1.0",
-    "tractor-file-structure": "0.1.0-beta.0"
+    "tractor-file-structure": "0.1.0-beta.2"
   }
 }
