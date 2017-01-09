@@ -39,7 +39,7 @@
     "istanbul": "1.0.0-alpha.2",
     "mocha": "3.0.2",
     "npm-watch": "0.1.6",
-    "sinon": "1.17.5",
+    "sinon": "1.17.7",
     "sinon-chai": "2.8.0"
   },
   "dependencies": {
