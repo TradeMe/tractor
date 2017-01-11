@@ -58,15 +58,9 @@ describe('tractor-error-handler: TractorError:', () => {
     });
 
     describe('TractorError.isTractorError:', () => {
-        let OtherTractorError = (function () {
-            const CONSTANTS = {};
-            return function TractorError (message, status) {
-                this.message = message;
-                this.name = 'TractorError';
-                this.status = status || CONSTANTS.SERVER_ERROR;
-                Error.captureStackTrace(this, TractorError);
-            };
-        })();
+        function OtherTractorError () {
+            this._isTractorError = true;
+        }
 
         let error = new OtherTractorError();
         expect(TractorError.isTractorError(error)).to.equal(true);

@@ -12,18 +12,14 @@ function TractorError (message, status) {
     Error.captureStackTrace(this, TractorError);
 }
 
+TractorError.prototype._isTractorError = true;
 TractorError.prototype = Object.create(Error.prototype);
 TractorError.prototype.constructor = TractorError;
 
 // NOTE -
 // When error instances are shared between modules that use
 // 'tractor-error-handler', they may not actually be instances
-// of the same TractorError constructor. This is a pretty
-// fragile way to test this, so I've asked a question on SO,
-// hopefully that leads to a better solution:
-//
-//    http://stackoverflow.com/questions/41587865
-//
-TractorError.isTractorError = e => e.name === TractorError.name && e.constructor.name === CONSTANTS.TRACTOR_ERROR;
+// of the same TractorError constructor.
+TractorError.isTractorError = e => e instanceof TractorError || !!e._isTractorError;
 
 export default TractorError;
