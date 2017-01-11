@@ -2832,9 +2832,9 @@ tractor-config-loader@0.1.0:
     commander "2.9.0"
     lodash.defaults "4.2.0"
 
-tractor-error-handler@0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/tractor-error-handler/-/tractor-error-handler-0.1.1.tgz#6fe73d95d3050fddb17fa5e4e243d723bb01585d"
+tractor-error-handler@0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/tractor-error-handler/-/tractor-error-handler-0.1.2.tgz#134c6f058740c8c6c3fed87af018422f3a934db3"
 
 tryit@^1.0.1:
   version "1.0.3"
