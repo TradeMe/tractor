@@ -1,3 +1,6 @@
+// Constants:
+import CONSTANTS from '../constants';
+
 // Utilities:
 import { getItemPath, respondFileStructure, respondItemNotFound } from '../utilities/utilities';
 
@@ -30,6 +33,6 @@ export function deleteItem (request, response) {
 
     return operation
     .then(() => respondFileStructure(response))
-    .catch(TractorError, error => tractorErrorHandler.handle(response, error))
-    .catch(() => tractorErrorHandler.handle(response, new TractorError(`Could not delete "${itemPath}"`)));
+    .catch(TractorError.isTractorError, error => tractorErrorHandler.handle(response, error))
+    .catch(() => tractorErrorHandler.handle(response, new TractorError(`Could not delete "${itemPath}"`, CONSTANTS.SERVER_ERROR)));
 }

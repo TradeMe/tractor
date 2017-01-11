@@ -35,6 +35,6 @@ export function moveItem (request, response) {
 
     return toMove.move({ newPath }, { isCopy: copy })
     .then(() => respondFileStructure(response))
-    .catch(TractorError, error => tractorErrorHandler.handle(response, error))
+    .catch(TractorError.isTractorError, error => tractorErrorHandler.handle(response, error))
     .catch(() => tractorErrorHandler.handle(response, new TractorError(`Could not move "${itemPath}"`, CONSTANTS.SERVER_ERROR)));
 }

@@ -43,6 +43,6 @@ export function saveItem (request, response) {
     }
     return toSave.save(data)
     .then(() => respondFileStructure(response))
-    .catch(TractorError, error => tractorErrorHandler.handle(response, error))
-    .catch(() => tractorErrorHandler.handle(response, new TractorError(`Could not save "${itemPath}"`)));
+    .catch(TractorError.isTractorError, error => tractorErrorHandler.handle(response, error))
+    .catch(() => tractorErrorHandler.handle(response, new TractorError(`Could not save "${itemPath}"`, CONSTANTS.SERVER_ERROR)));
 }

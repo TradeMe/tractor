@@ -49,9 +49,10 @@ export default class File {
         let { isCopy } = options;
         update.oldPath = this.path;
 
+        options.isMove = true;
         let newFile = new this.constructor(update.newPath, this.fileStructure);
-        return newFile.save(this.data)
-        .then(() => isCopy ? Promise.resolve() : this.delete())
+        return newFile.save(this.data, options)
+        .then(() => isCopy ? Promise.resolve() : this.delete(options))
         .then(() => newFile);
     }
 

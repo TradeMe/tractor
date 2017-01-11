@@ -242,6 +242,31 @@ describe('tractor-file-structure - File:', () => {
             });
         });
 
+        it('should pass the options through to the `save` and `delete` calls', () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+
+            sinon.spy(File.prototype, 'constructor');
+            sinon.stub(File.prototype, 'delete').returns(Promise.resolve());
+            sinon.stub(File.prototype, 'save').returns(Promise.resolve());
+
+            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
+            file.data = 'data';
+
+            return file.move({
+                newPath: path.join(path.sep, 'file-structure', 'other-directory', 'file.ext')
+            })
+            .then(() => {
+                expect(File.prototype.constructor).to.have.been.calledWith(path.join(path.sep, 'file-structure', 'other-directory', 'file.ext'), fileStructure);
+                expect(File.prototype.save).to.have.been.calledWith('data', { isMove: true });
+                expect(File.prototype.delete).to.have.been.calledWith({ isMove: true });
+            })
+            .finally(() => {
+                File.prototype.constructor.restore();
+                File.prototype.delete.restore();
+                File.prototype.save.restore();
+            });
+        });
+
         it('should copy a file', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
