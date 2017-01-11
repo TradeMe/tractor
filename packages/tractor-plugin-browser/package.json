@@ -36,7 +36,7 @@
     "babel-register": "6.18.0",
     "chai": "3.5.0",
     "dirty-chai": "1.2.2",
-    "eslint": "3.13.0",
+    "eslint": "3.13.1",
     "istanbul": "1.0.0-alpha.2",
     "mocha": "3.2.0",
     "npm-watch": "0.1.7",
