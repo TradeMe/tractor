@@ -1,4 +1,5 @@
-# tractor-error-handler - v0.1.0
+# tractor-error-handler
+[![npm version](https://badge.fury.io/js/tractor-error-handler.svg)](https://badge.fury.io/js/tractor-error-handler)
 
 A general HTTP request error handler for [**tractor**](https://github.com/TradeMe/tractor).
 
