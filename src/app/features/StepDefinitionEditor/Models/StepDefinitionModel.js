@@ -10,13 +10,15 @@ var StepDefinitionEditor = require('../StepDefinitionEditor');
 require('../../../Core/Services/ASTCreatorService');
 require('./ComponentInstanceModel');
 require('./MockDataInstanceModel');
+require('../../../Core/Components/Notifier/NotifierService.js')
 
 var createStepDefinitionModelConstructor = function (
     astCreatorService,
     ComponentFileService,
     MockDataFileService,
     ComponentInstanceModel,
-    MockDataInstanceModel
+    MockDataInstanceModel,
+    notifierService
 ) {
     var StepDefinitionModel = function StepDefinitionModel (options) {
         this.components = [];
@@ -24,6 +26,7 @@ var createStepDefinitionModelConstructor = function (
 
         this.mockData = [];
         this.mockDataInstances = [];
+        this.notifierService = notifierService;
 
         Object.defineProperties(this, {
             availableComponents: {
@@ -65,16 +68,22 @@ var createStepDefinitionModelConstructor = function (
                 }
             }
         });
+
+        this.mockDataName = '';
+        this.componentName = '';
     };
 
-    StepDefinitionModel.prototype.addComponent = function (name) {
+    StepDefinitionModel.prototype.addComponent = function (name) {      
         var component = _.find(this.availableComponents, function (component) {
             return component.name === name;
         });
         if (component && !_.contains(this.components, component)) {
             this.components.push(component);
             this.componentInstances.push(new ComponentInstanceModel(component, this));
+        } else {
+            this.notifierService.error("Component " + name + " doesnot exists");
         }
+        this.componentName = '';
     };
 
     StepDefinitionModel.prototype.removeComponent = function (toRemove) {
@@ -92,7 +101,10 @@ var createStepDefinitionModelConstructor = function (
         if (mockData && !_.contains(this.mockData, mockData)) {
             this.mockData.push(mockData);
             this.mockDataInstances.push(new MockDataInstanceModel(mockData, this));
+        } else {
+            this.notifierService.error("MockData " + name + " doesnot exists");
         }
+        this.mockDataName = '';
     };
 
     StepDefinitionModel.prototype.removeMock = function (toRemove) {
@@ -139,7 +151,8 @@ StepDefinitionEditor.factory('StepDefinitionModel', function (
     ComponentFileService,
     MockDataFileService,
     ComponentInstanceModel,
-    MockDataInstanceModel
+    MockDataInstanceModel,
+    notifierService
 ) {
-    return createStepDefinitionModelConstructor(astCreatorService, ComponentFileService, MockDataFileService, ComponentInstanceModel, MockDataInstanceModel);
+    return createStepDefinitionModelConstructor(astCreatorService, ComponentFileService, MockDataFileService, ComponentInstanceModel, MockDataInstanceModel, notifierService);
 });

@@ -124,17 +124,19 @@
 
                                         <tractor-select label="Type" model="stepDeclaration"></tractor-select>
                                         <tractor-step-input
-                                            form="file-editor"
+                                            form="file-editor"                                                                                   
                                             label="Step"
                                             model="stepDeclaration"
-                                            example="something happens">
+                                            data="featureEditor"                                           
+                                            example="something happens"
+                                            required="true">
                                         </tractor-step-input>
                                         <span ui-sref="tractor.step-definitions({file: featureEditor.fileModel.findStep(stepDeclaration.step)})" 
                                               title="See step details" id="link">  
-                                        </span>
+                                        </span>                                        
                                     </li>
                                 </ol>
-
+                                
                                 <tractor-action
                                     model="scenario"
                                     action="Add step declaration">

@@ -128,18 +128,21 @@
             </section>
             
             <section class="file-editor__container">
-                <h2>Available components:</h2>
-                <ul>
-                    <li ng-repeat="component in stepDefinitionEditor.fileModel.availableComponents | orderBy: 'name'"
-                        ng-if="stepDefinitionEditor.fileModel.components.indexOf(component) === -1">
-                        <span id="references" title=" {{ component.meta }}"> {{ component.name }} </span>
-                        <tractor-action
-                            model="stepDefinitionEditor.fileModel"
-                            action="Add component"
-                            argument="component.name">
-                        </tractor-action>
-                    </li>
-                </ul>
+                <h2>Available components:</h2>                
+                <tractor-step-input
+                    form="file-editor"
+                    type="components"
+                    label="Component Name"
+                    data="stepDefinitionEditor"
+                    model="stepDefinitionEditor.fileModel"
+                    example="start typing component name"
+                    required="false">
+                </tractor-step-input>                           
+                <tractor-action                   
+                    model="stepDefinitionEditor.fileModel"
+                    action="Add component"
+                    argument="stepDefinitionEditor.fileModel.componentName">
+                </tractor-action>           
             </section>
         </section>
         
@@ -205,18 +208,20 @@
             </section>
             
             <section class="file-editor__container">
-                <h2>Available mock data:</h2>
-                <ul>
-                    <li ng-repeat="mockData in stepDefinitionEditor.fileModel.availableMockData | orderBy:'name'"
-                        ng-if="stepDefinitionEditor.fileModel.mockData.indexOf(mockData) === -1">
-                            <span id="references" title=" {{ mockData.json }} "> {{ mockData.name }} </span>
-                        <tractor-action
-                            model="stepDefinitionEditor.fileModel"
-                            action="Add mock"
-                            argument="mockData.name">
-                        </tractor-action>
-                    </li>
-                </ul>
+                <h2>Available mock data:</h2>                
+                <tractor-step-input
+                    form="file-editor"
+                    label="MockData Name"
+                    model="stepDefinitionEditor.fileModel"                     
+                    data="stepDefinitionEditor"
+                    example="start typing mock data name"
+                    required="false">
+                </tractor-step-input>                                
+                <tractor-action
+                    model="stepDefinitionEditor.fileModel"
+                    action="Add mock"
+                    argument="stepDefinitionEditor.fileModel.mockDataName">
+                </tractor-action>                
             </section>
         </section>
         

@@ -3,6 +3,7 @@
 // Utilities:
 var _ = require('lodash');
 var path = require('path');
+var camelcase = require('change-case').camel;
 
 // Module:
 var Core = require('../../Core');
@@ -19,47 +20,71 @@ var StepInputController = (function () {
         this.isOpen = false;        
     };
 
+    StepInputController.prototype.getSearchDataOnLoad = function (prop) {        
+        this.lableItem = camelcase(prop);
+        this.searchData = getFilteredList(this);        
+    };
+
     StepInputController.prototype.handleSearch = function (searchKey) {
         if (searchKey) {            
-            this.searchKey = searchKey;           
-            return getSearchData(this)
-               .then(getSuggestions.bind(this));
+           this.searchKey = searchKey;        
+            return getSuggestions(this);
         } else {
             this.isOpen = false;
         }
      };
     
-    StepInputController.prototype.itemSelected = function (index) {       
-        this.model.step = this.items[index];        
+    StepInputController.prototype.itemSelected = function (index) { 
+        var property = this.property;    
+        this.model[property] = this.items[index];       
         this.isOpen = false;
     };
-
-    function getSearchData (that){ 
-        return that.fileStructureService.getFileStructure('features')
-        .then(function (results) {
-            return results;                
-        }).then(getFilteredList.bind(that));
-    }; 
-
-    function getFilteredList (fileStructure) {
-            var type = this.model.type;            
-            return Array.from ( new Set (
+   
+    function getFilteredList (that) {              
+        var fileStructure = that.data.fileStructure;        
+        switch(that.lableItem) {
+            case 'step' :
+                return  Array.from ( new Set (
                  fileStructure.directory.allFiles
-                 .reduce(function (p,feature ){return p.concat(feature.tokens) },[])
-                 .reduce(function (p,token ){return p.concat(token.elements) },[])
-                 .reduce(function (p, element){return p.concat(element.stepDeclarations) },[])
-               //.filter(function (declaration){ return declaration.type === type } )
-                 .map(function (declaration) {return declaration.step})           
-                 ));
-   };   
+                .reduce(function (p,feature ){return p.concat(feature.tokens) },[])
+                .reduce(function (p,token ){return p.concat(token.elements) },[])
+                .reduce(function (p, element){return p.concat(element.stepDeclarations) },[])
+                //.filter(function (declaration){ return declaration.type === type } )
+                .map(function (declaration) {return declaration.step})           
+                ));
+                break;
+            case 'componentName':                
+                var availableComponents = Array.from ( new Set (
+                    fileStructure.availableComponents
+                    .map(function (component) {return component.name})    
+                ));
+                var activeComponents = [];
+                _.forEach(that.model.componentInstances, function(component){
+                            activeComponents.push(component.component.name);
+                });
+                return _.difference(availableComponents, activeComponents);
+                break;
+            case 'mockDataName':
+                var availableMockData = Array.from ( new Set (
+                    fileStructure.availableMockData
+                    .map(function (mockData) {return mockData.name})           
+                ));
+                var activeMockData = [];
+                _.forEach(that.model.mockDataInstances, function(mockData){
+                            activeMockData.push(mockData.mockData.name);
+                });
+                return _.difference(availableMockData, activeMockData);
+                break;
+        }    
+    }
 
-   function getSuggestions (searchData) {       
-        this.items=[];
-        if (searchData.length > 0) {
-            var searchTextSmallLetters = angular.lowercase(this.searchKey);
+   function getSuggestions (self) {       
+        self.items=[];
+        if (self.searchData.length > 0) {
+            var searchTextSmallLetters = angular.lowercase(self.searchKey);
             var searchTerms = searchTextSmallLetters.split(' ');
-            for(var i=0; i< searchData.length; i++) {                
-                var searchItemsSmallLetters = angular.lowercase(searchData[i]);
+            for(var i=0; i< self.searchData.length; i++) {                
+                var searchItemsSmallLetters = angular.lowercase(self.searchData[i]);
                 var isMissingTerm = false;
                 for(var j=0; j < searchTerms.length; j++){
                     if ( searchItemsSmallLetters.indexOf(searchTerms[j]) === -1) {
@@ -68,15 +93,15 @@ var StepInputController = (function () {
                     }
                 }
                 if (!isMissingTerm) {
-                    if (this.items.indexOf(searchData[i])==-1){
-                        this.items.push(searchData[i]);
+                    if (self.items.indexOf(self.searchData[i])==-1){
+                        self.items.push(self.searchData[i]);
                     }
                 }
             }            
 
-            this.isOpen = true;
+            self.isOpen = true;
         } else {
-            this.model.step = this.searchKey;
+            self.model[property] = self.searchKey;
         }
     };     
 
