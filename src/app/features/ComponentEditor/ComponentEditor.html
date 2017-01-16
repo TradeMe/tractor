@@ -203,7 +203,16 @@
                                                 as="name">
                                             </tractor-select>
 
-                                            <div ng-repeat="argument in interaction.arguments">
+                                            <div ng-if="interaction.element.name === 'browser' && interaction.method.name === 'sendKeys'"                                                      
+                                                ng-repeat="argument in interaction.arguments">                                                
+                                                <tractor-select
+                                                    label="staticKey"
+                                                    model="interaction">                                                               
+                                                </tractor-select>                                                                        
+                                            </div>
+
+                                            <div ng-repeat="argument in interaction.arguments"
+                                                 ng-if="argument.name != 'staticKey'">   
                                                 <tractor-literal-input
                                                     form="file-editor"
                                                     name="argument.name"

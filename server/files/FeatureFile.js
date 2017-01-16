@@ -25,14 +25,14 @@ export default class FeatureFile extends File {
         });
     }
 
-    save (data) {       
+    save (data) {
         if (data) {
             data = data.replace(constants.FEATURE_NEWLINE, os.EOL);
             this.content = data;
         }
         return super.save()
-        //this is workaround for filestructure to hold tokens for new steps in a feature.        
-        .then (() => generateTokens.call(this))
+        // this is workaround for filestructure to hold tokens for new steps in a feature.
+        .then(() => generateTokens.call(this))
         .then(() => {
             let generator = new StepDefinitionGenerator(this);
             return generator.generate();
@@ -44,7 +44,7 @@ export default class FeatureFile extends File {
     }
 }
 
-function generateTokens() {
+function generateTokens () {
     let formatter = new FeatureLexerFormatter();
     /* eslint-disable new-cap */
     let EnLexer = gherkin.Lexer('en');

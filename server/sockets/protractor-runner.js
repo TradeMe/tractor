@@ -92,6 +92,13 @@ function startProtractor (socket, runOptions) {
         console.log(`Running cucumber with tag : ${runOptions.tag}`);
     }
 
+    // run at mobile size
+    if (runOptions.tag === '@Mobile') {
+        protractorArgs.push('--params.runAtMobileSize');
+        protractorArgs.push(true);
+        console.log(`Running at mobile size.`);
+    }
+
     let protractor = spawn('node', protractorArgs);
 
     protractor.stdout.on('data', sendDataToClient.bind(socket));

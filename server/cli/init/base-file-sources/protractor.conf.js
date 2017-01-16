@@ -10,8 +10,10 @@ exports.config = {
     capabilities: {
         browserName: 'chrome'
     },
+    
     params: {
-        debug: false
+        debug: false,
+        runAtMobileSize: false
     },
 
     directConnect: true,
@@ -19,17 +21,31 @@ exports.config = {
     framework: 'custom',
     frameworkPath: require.resolve('protractor-cucumber-framework'),
 
-    // onPrepare: function() {
-    //     browser.driver.manage().window().maximize();
+    onPrepare: function () {
 
-    //     var disableNgAnimate = function() {
-    //         angular.module('disableNgAnimate', []).run(['$animate', function($animate) {
-    //             $animate.enabled(false);
-    //         }]);
-    //     };
+        if (browser.params.runAtMobileSize) {
+			browser.driver.manage().window().setSize(340, 1050);
+			var origFn = browser.driver.controlFlow().execute;
+			browser.driver.controlFlow().execute = function() {
+				var args = arguments;
+				// queue 100ms wait leave this line commented out
+				origFn.call(browser.driver.controlFlow(), function() {
+					return protractor.promise.delayed(100);
+				});
+				return origFn.apply(browser.driver.controlFlow(), args);
+			};
+		} else {
+			browser.driver.manage().window().maximize();
+		}
 
-    //     browser.addMockModule('disableNgAnimate', disableNgAnimate);
-    // },
+        var disableNgAnimate = function() {
+            angular.module('disableNgAnimate', []).run(['$animate', function($animate) {
+                $animate.enabled(false);
+            }]);
+        };
+
+        browser.addMockModule('disableNgAnimate', disableNgAnimate);
+    },
 
     cucumberOpts: {
         require: ['support/**/*.js', 'step-definitions/**/*.js'],

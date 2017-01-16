@@ -27,6 +27,7 @@ var InteractionParserService = function InteractionParserService (
         var notWrappedPromiseInteraction = false;
         var notOwnPromiseInteraction = false;
         var notValidInteraction = false;
+        var notBrowserActionInteraction = false;
 
         try {
             assert(astObject.argument.callee.object.callee);
@@ -108,7 +109,27 @@ var InteractionParserService = function InteractionParserService (
             notValidInteraction = true;
         }
 
-        if (notFirstWrappedPromiseInteraction && notFirstOwnPromiseInteraction && notWrappedPromiseInteraction && notOwnPromiseInteraction && notValidInteraction) {
+        try {
+            if (interactionCallExpression.callee.object.callee.object.callee.object.name === 'browser') {
+                 interaction.element = action.component.browser;
+                 var staticKey = _.first(interactionCallExpression.callee.object.arguments);
+                 interaction.staticKey = staticKey.property.name;
+                 assert(interaction.element);                 
+                 assert(interaction.staticKey);
+
+                 interaction.method = _.find(interaction.element.methods, function (elementAction) {
+                    return elementAction.name === interactionCallExpression.callee.object.callee.property.name;
+                 });
+                 assert(interaction.method);
+
+                 action.interactions.push(interaction);
+            }
+
+        } catch (e) {
+            notBrowserActionInteraction = true;
+        }
+
+        if (notFirstWrappedPromiseInteraction && notFirstOwnPromiseInteraction && notWrappedPromiseInteraction && notOwnPromiseInteraction && notValidInteraction && notBrowserActionInteraction) {
             console.log(astObject);
         }
     }

@@ -22,7 +22,8 @@ var ControlPanelController = (function () {
         this.tags = (config.tags ? getFilteredTags(config.tags) : [] );
 
         var environment;
-        var tag;        
+        var tag;
+        var runAtMobileSize = false;
         Object.defineProperties(this, {
             environment: {
                 get: function () {
@@ -44,7 +45,11 @@ var ControlPanelController = (function () {
          });
      
         this.environment = _.first(this.environments);
-        this.tag = _.first(this.tags);        
+        this.tag = _.first(this.tags);
+
+        if (this.tag === '@Mobile') {
+            this.runAtMobileSize = true;            
+        }
     }
 
     ControlPanelController.prototype.runProtractor = function () {

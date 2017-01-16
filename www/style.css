@@ -590,6 +590,12 @@ form.file {
 .file-editor__container section > tractor-select {
   width: 20%; }
 
+.file-editor__container > tractor-step-input {
+  display: inline-block; }
+.file-editor__container > tractor-action {
+  vertical-align: top;
+  padding-top: 23px; }
+
 .file-options {
   font-size: 0;
   height: 11%;
