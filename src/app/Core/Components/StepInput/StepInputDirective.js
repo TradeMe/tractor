@@ -60,23 +60,28 @@ var StepInputDirective = function () {
         
         $scope.stepInput.form = $scope.$parent[$attrs.form];       
         $scope.stepInput.id = Math.floor(Math.random() * Date.now());
-        $scope.stepInput.property = camelcase($scope.stepInput.label);        
+        $scope.stepInput.property = camelcase($scope.stepInput.label);
+        $scope.selectedIndex = -1;       
        
         $scope.handleKeyDown = function (event) {
             if (event.keyCode === 40) {
-                event.preventDefault();
-                if ($scope.selectedIndex + 1 !== $scope.stepInput.items.length) {
-                    $scope.selectedIndex++;
+                event.preventDefault();               
+                if ($scope.selectedIndex + 1 !== $scope.stepInput.items.length) {                
+                    $scope.selectedIndex++;                   
                 }
-            }
-            else if (event.keyCode === 38) {
+            } else if (event.keyCode === 38) {
                 event.preventDefault();
                 if ($scope.selectedIndex - 1 !== -1) {
                     $scope.selectedIndex--;
                 }
-            } 
-            else if (event.keyCode === 27) {
+            } else if (event.keyCode === 27) {
                 $scope.stepInput.isOpen = false;
+            } else if (event.keyCode === 8) {
+                $scope.selectedIndex = -1;
+            } else if (event.keyCode === 13) {
+                 event.preventDefault();                 
+                 $scope.stepInput.model[$scope.stepInput.property] = $scope.stepInput.items[$scope.selectedIndex];
+                 $scope.stepInput.isOpen = false;
             }
         }
 

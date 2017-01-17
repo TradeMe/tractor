@@ -591,7 +591,9 @@ form.file {
   width: 20%; }
 
 .file-editor__container > tractor-step-input {
-  display: inline-block; }
+  display: inline-block;
+  word-wrap: break-word;
+  white-space: normal; }
 .file-editor__container > tractor-action {
   vertical-align: top;
   padding-top: 23px; }

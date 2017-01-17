@@ -46,7 +46,7 @@ describe('FilterModel.js:', function () {
         it('should contain all the possible types of Filter:', function () {
             var filterModel = new FilterModel();
             expect(filterModel.types).to.deep.equal(
-                ['model', 'binding', 'text', 'css', 'options', 'repeater', 'buttonText', 'linkText']
+                ['model', 'binding', 'text', 'css', 'options', 'repeater', 'buttonText', 'linkText', 'partialButtonText']
             );
         });
     });

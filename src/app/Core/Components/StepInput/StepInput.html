@@ -4,7 +4,7 @@
     ng-model="stepInput.model[stepInput.property]"
     ng-model-options="{ allowInvalid: true }"
     ng-change="stepInput.handleSearch(stepInput.model[stepInput.property])"
-    ng-model-options="{debounce: {'default': 250, 'blur': 0}}"
+    ng-model-options="{debounce: {'default': 100, 'blur': 0}}"
     ng-required="{{ stepInput.required }}"   
     ng-init="stepInput.getSearchDataOnLoad(stepInput.label)"/>
 <div ng-messages="form['step-' + id].$error">
@@ -15,6 +15,6 @@
    <li ng-repeat="suggestion in stepInput.items track by $index"
        ng-click="stepInput.itemSelected($index)"
        ng-attr-title="{{ stepInput.title }}"
-       ng-mouseover="hoverOver($index, suggestion)"      
+       ng-mouseover="hoverOver($index, suggestion); $parent.selectedIndex=$index"      
        ng-class="{active : selectedIndex===$index}">{{suggestion}}</li>
 </ul>

@@ -70399,7 +70399,7 @@ var StepInputDirective = function () {
         },
 
         /* eslint-disable no-path-concat */
-        template: "<label>{{ stepInput.label }}: </label>\r\n<input name=\"step-{{ stepInput.id }}\" type=\"text\" placeholder=\"e.g. {{ stepInput.example }}\"\r\n    ng-keydown=\"handleKeyDown($event)\"\r\n    ng-model=\"stepInput.model[stepInput.property]\"\r\n    ng-model-options=\"{ allowInvalid: true }\"\r\n    ng-change=\"stepInput.handleSearch(stepInput.model[stepInput.property])\"\r\n    ng-model-options=\"{debounce: {'default': 250, 'blur': 0}}\"\r\n    ng-required=\"{{ stepInput.required }}\"   \r\n    ng-init=\"stepInput.getSearchDataOnLoad(stepInput.label)\"/>\r\n<div ng-messages=\"form['step-' + id].$error\">\r\n    <ng-message when=\"required\">Required</ng-message> \r\n    <ng-message when=\"exampleName\">That is not a valid example name</ng-message>   \r\n</div>\r\n<ul class=\"suggestions-list\" ng-if=\"stepInput.isOpen\">        \r\n   <li ng-repeat=\"suggestion in stepInput.items track by $index\"\r\n       ng-click=\"stepInput.itemSelected($index)\"\r\n       ng-attr-title=\"{{ stepInput.title }}\"\r\n       ng-mouseover=\"hoverOver($index, suggestion)\"      \r\n       ng-class=\"{active : selectedIndex===$index}\">{{suggestion}}</li>\r\n</ul>",
+        template: "<label>{{ stepInput.label }}: </label>\r\n<input name=\"step-{{ stepInput.id }}\" type=\"text\" placeholder=\"e.g. {{ stepInput.example }}\"\r\n    ng-keydown=\"handleKeyDown($event)\"\r\n    ng-model=\"stepInput.model[stepInput.property]\"\r\n    ng-model-options=\"{ allowInvalid: true }\"\r\n    ng-change=\"stepInput.handleSearch(stepInput.model[stepInput.property])\"\r\n    ng-model-options=\"{debounce: {'default': 100, 'blur': 0}}\"\r\n    ng-required=\"{{ stepInput.required }}\"   \r\n    ng-init=\"stepInput.getSearchDataOnLoad(stepInput.label)\"/>\r\n<div ng-messages=\"form['step-' + id].$error\">\r\n    <ng-message when=\"required\">Required</ng-message> \r\n    <ng-message when=\"exampleName\">That is not a valid example name</ng-message>   \r\n</div>\r\n<ul class=\"suggestions-list\" ng-if=\"stepInput.isOpen\">        \r\n   <li ng-repeat=\"suggestion in stepInput.items track by $index\"\r\n       ng-click=\"stepInput.itemSelected($index)\"\r\n       ng-attr-title=\"{{ stepInput.title }}\"\r\n       ng-mouseover=\"hoverOver($index, suggestion); $parent.selectedIndex=$index\"      \r\n       ng-class=\"{active : selectedIndex===$index}\">{{suggestion}}</li>\r\n</ul>",
         /* eslint-enable no-path-concat */
 
         link: link,
@@ -70433,23 +70433,28 @@ var StepInputDirective = function () {
         
         $scope.stepInput.form = $scope.$parent[$attrs.form];       
         $scope.stepInput.id = Math.floor(Math.random() * Date.now());
-        $scope.stepInput.property = camelcase($scope.stepInput.label);        
+        $scope.stepInput.property = camelcase($scope.stepInput.label);
+        $scope.selectedIndex = -1;       
        
         $scope.handleKeyDown = function (event) {
             if (event.keyCode === 40) {
-                event.preventDefault();
-                if ($scope.selectedIndex + 1 !== $scope.stepInput.items.length) {
-                    $scope.selectedIndex++;
+                event.preventDefault();               
+                if ($scope.selectedIndex + 1 !== $scope.stepInput.items.length) {                
+                    $scope.selectedIndex++;                   
                 }
-            }
-            else if (event.keyCode === 38) {
+            } else if (event.keyCode === 38) {
                 event.preventDefault();
                 if ($scope.selectedIndex - 1 !== -1) {
                     $scope.selectedIndex--;
                 }
-            } 
-            else if (event.keyCode === 27) {
+            } else if (event.keyCode === 27) {
                 $scope.stepInput.isOpen = false;
+            } else if (event.keyCode === 8) {
+                $scope.selectedIndex = -1;
+            } else if (event.keyCode === 13) {
+                 event.preventDefault();                 
+                 $scope.stepInput.model[$scope.stepInput.property] = $scope.stepInput.items[$scope.selectedIndex];
+                 $scope.stepInput.isOpen = false;
             }
         }
 
@@ -72457,7 +72462,7 @@ var createFilterModelConstructor = function (
         this.locator = '';
     };
 
-    FilterModel.prototype.types = ['model', 'binding', 'text', 'css', 'options', 'repeater', 'buttonText', 'linkText'];
+    FilterModel.prototype.types = ['model', 'binding', 'text', 'css', 'options', 'repeater', 'buttonText', 'linkText', 'partialButtonText'];
 
     return FilterModel;
 

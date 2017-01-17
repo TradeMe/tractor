@@ -93,7 +93,7 @@ function startProtractor (socket, runOptions) {
     }
 
     // run at mobile size
-    if (runOptions.tag === '@Mobile') {
+    if (runOptions.tag === '@mobile') { 
         protractorArgs.push('--params.runAtMobileSize');
         protractorArgs.push(true);
         console.log(`Running at mobile size.`);

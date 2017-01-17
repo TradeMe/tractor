@@ -137,7 +137,8 @@ form.file {
 
     & > tractor-step-input {
         display: inline-block;
-        
+        word-wrap: break-word;
+        white-space: normal        
     }
 
     & > tractor-action {
