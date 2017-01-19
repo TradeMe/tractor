@@ -88,21 +88,6 @@ var createInteractionModelConstructor = function (
     function interactionAST () {
         var argValue = this.staticKey;
         var template = '<%= element %>';
-        // if (this.element.variableName !== 'browser') {
-        //     template = 'self.' + template;
-        //     template += '.<%= method %>(%= argumentValues %);';
-        // } else {
-        //     if (this.methodInstance.name === 'sendKeys') {
-        //         //argument value
-        //         _.map(this.methodInstance.arguments, function (argument) {
-        //             argument.value = "protractor.Key." + argValue;
-        //         });                          
-        //         template += '.actions().<%= method %>(%= argumentValues %).perform();';
-        //     } else {
-
-        //         template += '<%= method %>(%= argumentValues %);';
-        //     }
-        // } 
 
         if (this.element.variableName === 'browser') {
             if (this.methodInstance.name === 'sendKeys') {
