@@ -11,7 +11,7 @@ A configuration loader utility for [**tractor**](https://github.com/TradeMe/trac
 > Loads a **tractor** configuration file, first from a passed in `--config` flag, then in a *tractor.conf.js* file in the current working directory, before falling back to the default configuration
 
 > #### Returns:
-> * `config: `[TractorConfig](https://github.com/TradeMe/tractor#config),
+> * `config:` [TractorConfig](https://github.com/TradeMe/tractor#config),
 
 > #### Usage:
 > ```javascript
