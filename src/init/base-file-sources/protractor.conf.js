@@ -13,10 +13,13 @@ exports.config = {
 
     directConnect: true,
 
-    framework: 'cucumber',
-
+    framework: 'custom',
+    frameworkPath: require.resolve('protractor-cucumber-framework'),
     cucumberOpts: {
         require: ['support/**/*.js', 'step-definitions/**/*.js'],
-        format: 'pretty'
-    }
+        format: 'pretty',
+        tags: []
+    },
+
+    params: { debug: false },
 };

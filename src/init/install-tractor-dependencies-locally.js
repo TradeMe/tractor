@@ -5,10 +5,11 @@ const TO_INSTALL = [
     'bluebird@2.10.2',
     'chai@2.3.0',
     'chai-as-promised@5.1.0',
-    'cucumber@0.7.0',
-    'cucumber-html-report@0.2.5',
+    'cucumber@1.3.1',
+    'cucumber-html-reporter@0.3.5',
     'httpbackend@1.2.1',
-    'protractor@2.5.1',
+    'protractor@4.0.11',
+    'protractor-cucumber-framework@0.6.0',
     'tractor-plugin-browser@0.1.0',
     'tractor-plugin-loader@0.1.1'
 ];
@@ -40,7 +41,9 @@ function getInstalledDependencies () {
     });
 
     let ls = childProcess.exec(GET_INSTALLED_DEPENDENCIES_COMMAND);
-    ls.stdout.on('data', data => resolve(data));
+    ls.stdout.on('data', data => {
+        return resolve(data);
+    });
 
     return deferred;
 }

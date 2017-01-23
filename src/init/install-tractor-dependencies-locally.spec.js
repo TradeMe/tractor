@@ -60,10 +60,11 @@ describe('tractor - init/install-tractor-dependencies-locally:', () => {
             expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact bluebird@2.10.2');
             expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact chai@2.3.0');
             expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact chai-as-promised@5.1.0');
-            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact cucumber@0.7.0');
-            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact cucumber-html-report@0.2.5');
+            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact cucumber@1.3.1');
+            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact cucumber-html-reporter@0.3.5');
             expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact httpbackend@1.2.1');
-            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact protractor@2.5.1');
+            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact protractor@4.0.11');
+            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact protractor-cucumber-framework@0.6.0');
             expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact tractor-plugin-browser@0.1.0');
             expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact tractor-plugin-loader@0.1.1');
         })
@@ -92,10 +93,11 @@ describe('tractor - init/install-tractor-dependencies-locally:', () => {
             expect(childProcess.execAsync).not.to.have.been.calledWith('npm install --save-dev --save-exact bluebird@2.10.2');
             expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact chai@2.3.0');
             expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact chai-as-promised@5.1.0');
-            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact cucumber@0.7.0');
-            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact cucumber-html-report@0.2.5');
+            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact cucumber@1.3.1');
+            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact cucumber-html-reporter@0.3.5');
             expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact httpbackend@1.2.1');
-            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact protractor@2.5.1');
+            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact protractor@4.0.11');
+            expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact protractor-cucumber-framework@0.6.0');
             expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact tractor-plugin-browser@0.1.0');
             expect(childProcess.execAsync).to.have.been.calledWith('npm install --save-dev --save-exact tractor-plugin-loader@0.1.1');
         })
@@ -138,7 +140,7 @@ describe('tractor - init/install-tractor-dependencies-locally:', () => {
         sinon.stub(childProcess, 'exec').returns({
             stdout: {
                 on: (event, callback) => {
-                    callback('bluebird@2.10.2 chai@2.3.0 chai-as-promised@5.1.0 cucumber@0.7.0 cucumber-html-report@0.2.5 httpbackend@1.2.1 protractor@2.5.1 tractor-plugin-browser@0.1.0 tractor-plugin-loader@0.1.1');
+                    callback('bluebird@2.10.2 chai@2.3.0 chai-as-promised@5.1.0 cucumber@1.3.1 cucumber-html-reporter@0.3.5 httpbackend@1.2.1 protractor@4.0.11 protractor-cucumber-framework@0.6.0 tractor-plugin-browser@0.1.0 tractor-plugin-loader@0.1.1');
                 }
             }
         });
@@ -166,14 +168,13 @@ describe('tractor - init/install-tractor-dependencies-locally:', () => {
                 }
             }
         });
-        let exec = sinon.stub(childProcess, 'execAsync');
-        exec.returns(Promise.reject(new Error()));
+        sinon.stub(childProcess, 'execAsync').returns(Promise.reject(new Error()));
         sinon.stub(console, 'error');
         sinon.stub(console, 'info');
 
         return installTractorDependenciesLocally.run()
         .then(() => {
-            expect(console.error).to.have.been.calledWith('Couldn\'t install "bluebird@2.10.2". Either run "tractor init" again, or install it manually by running "npm install bluebird@2.10.2"');
+            expect(console.error).to.have.been.calledWith(`Couldn't install "bluebird@2.10.2". Either run "tractor init" again, or install it manually by running "npm install bluebird@2.10.2"`);
         })
         .finally(() => {
             childProcess.exec.restore();
