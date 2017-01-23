@@ -9,7 +9,7 @@ const SUPPORT_DIRECTORY = 'support';
 
 // Utilities:
 import Promise from 'bluebird';
-const fs = Promise.promisifyAll(require('fs'));
+const fs = Promise.promisifyAll(require('graceful-fs'));
 import path from 'path';
 
 // Errors:
