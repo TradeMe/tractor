@@ -1,4 +1,6 @@
-# tractor-plugin-browser - 0.1.0
+# tractor-plugin-browser
+[![npm version](https://img.shields.io/npm/v/tractor-plugin-browser.svg)](https://img.shields.io/npm/v/tractor-plugin-browser.svg)
+
 
 Plugin for [tractor](http://github.com/TradeMe/tractor) that contains a subset of [Protractor](http://www.protractortest.org/#/api)
 browser methods.
