@@ -17,5 +17,5 @@ A configuration loader utility for [**tractor**](https://github.com/TradeMe/trac
 > ```javascript
 import tractorConfigLoader from 'tractor-config-loader';
 
-const config = tractorConfigLoader.loadConfig();
+> const config = tractorConfigLoader.loadConfig();
 ```
