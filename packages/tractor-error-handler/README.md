@@ -36,7 +36,7 @@ TractorError.isTractorError(new Error('something bad happened')); // false;
 > Sends an error back to the client
 
 > #### Arguments:
-> * `response: `[Response](http://expressjs.com/es/api.html#res) - the Express HTTP response object
+> * `response:` [Response](http://expressjs.com/es/api.html#res) - the Express HTTP response object
 > * `error: TractorError` - the TractorError that was thrown
 
 > #### Usage:
