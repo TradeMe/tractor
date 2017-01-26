@@ -1,5 +1,6 @@
 // Constants:
 const NPM_EXTRANEOUS_ERROR = 'npm ERR! extraneous';
+const NPM_INVALID_ERROR = 'npm ERR! invalid';
 const NPM_PEER_DEP_ERROR = 'npm ERR! peer dep missing';
 const TRACTOR_PLUGIN_LOADER = 'tractor-plugin-loader';
 const TRACTOR_PLUGIN_MODULE_NAME_REGEX = new RegExp(`(tractor-plugin[^${path.sep}]*$)`);
@@ -105,7 +106,10 @@ function getInstalledPluginNames () {
     let errors = ls.stderr.toString().trim().split(os.EOL);
     errors = errors
     .filter(error => {
-        return error && !(error.startsWith(NPM_EXTRANEOUS_ERROR) || error.startsWith(NPM_PEER_DEP_ERROR));
+        let isExtraneous = error.startsWith(NPM_EXTRANEOUS_ERROR);
+        let isInvalid = error.startsWith(NPM_INVALID_ERROR);
+        let isPeerDep =  error.startsWith(NPM_PEER_DEP_ERROR);
+        return error && !(isExtraneous || isInvalid || isPeerDep);
     });
 
     if (errors.length) {

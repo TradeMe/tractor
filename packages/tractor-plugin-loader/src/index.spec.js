@@ -77,6 +77,24 @@ describe('tractor-plugin-loader:', () => {
             tractorPluginLoader._plugins = null;
         });
 
+        it('should ignore any errors thrown by invalid dependencies', () => {
+            let npmLsResult = {
+                stderr: 'npm ERR! invalid',
+                stdout: ''
+            };
+
+            sinon.stub(tractorConfigLoader, 'loadConfig').returns({});
+            sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
+
+            let plugins = tractorPluginLoader.getPlugins();
+
+            expect(plugins.length).to.equal(0);
+
+            tractorConfigLoader.loadConfig.restore();
+            childProcess.spawnSync.restore();
+            tractorPluginLoader._plugins = null;
+        });
+
         it('should ignore any errors thrown by missing peer dependencies', () => {
             let npmLsResult = {
                 stderr: 'npm ERR! peer dep missing',
