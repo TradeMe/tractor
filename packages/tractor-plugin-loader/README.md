@@ -40,7 +40,7 @@ A **tractor** plugin is just a plain old node module, with a few specially named
 > #### Arguments:
 * `express: `[`Express`](https://expressjs.com/en/4x/api.html#express)
 * `application: `[`Application`](https://expressjs.com/en/4x/api.html#app)
-* `config `[`TractorConfig`](https://github.com/TradeMe/tractor#config)
+* `config: `[`TractorConfig`](https://github.com/TradeMe/tractor#config)
 
 ### UI Script (optional):
 
