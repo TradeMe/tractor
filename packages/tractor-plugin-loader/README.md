@@ -13,7 +13,7 @@ A **tractor** plugin is just a plain old node module, with a few specially named
 
 ### `create` (required):
 
-> Defines how an instance of the plugin will be instantiated when Protractor runs. It should return a concrete implementation of each of the [`description`](https://github.com/phenomnomnominal/tractor-plugin-loader#description).
+> Defines how an instance of the plugin will be instantiated when Protractor runs. It should return a concrete implementation of each of the [`description`](https://github.com/phenomnomnominal/tractor-plugin-loader#description-required).
 
 > #### Arguments:
 > * `browser: `[`Browser`](http://www.protractortest.org/#/api?view=ProtractorBrowser)
@@ -24,7 +24,7 @@ A **tractor** plugin is just a plain old node module, with a few specially named
 
 ### `description` (required):
 
-> The `description` of any actions that the plugin provides to **tractor**. It should be an object with a single property, `methods: Array`[`<Method>`]('https://github.com/phenomnomnominal/tractor-plugin-loader#method'). 
+> The `description` of any actions that the plugin provides to **tractor**. It should be an object with a single property, `methods: Array`[`<Method>`](https://github.com/phenomnomnominal/tractor-plugin-loader#method). 
 
 ### `init` (optional):
 
