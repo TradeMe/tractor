@@ -92,9 +92,9 @@ export default class Directory {
     }
 
     getFiles (type) {
-       type = type || File;
-       return this.allFiles
-       .filter(file => file instanceof type);
+        type = type || File;
+        return this.allFiles
+        .filter(file => file instanceof type || file.type && file.type === type.prototype.type);
     }
 
     move (update, options = { }) {

@@ -14,9 +14,9 @@ export default class File {
         this.path = path.resolve(process.cwd(), filePath);
         this.fileStructure = fileStructure;
 
-        let isWithinRoot = filePath.indexOf(`${fileStructure.path}${path.sep}`) === 0;
+        let isWithinRoot = this.path.indexOf(`${fileStructure.path}${path.sep}`) === 0;
 
-        if (!isWithinRoot)  {
+        if (!isWithinRoot) {
             throw new TractorError(`Cannot create "${this.path}" because it is outside of the root of the FileStructure`);
         }
 
@@ -51,7 +51,7 @@ export default class File {
 
         options.isMove = true;
         let newFile = new this.constructor(update.newPath, this.fileStructure);
-        return newFile.save(this.data, options)
+        return newFile.save(this.buffer, options)
         .then(() => isCopy ? Promise.resolve() : this.delete(options))
         .then(() => newFile);
     }

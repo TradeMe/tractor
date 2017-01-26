@@ -103,6 +103,14 @@ describe('tractor-file-structure - File:', () => {
             }).to.throw(TractorError, `Cannot create "${path.join(path.sep, 'outside', 'file.ext')}" because it is outside of the root of the FileStructure`);
         });
 
+        it('should throw an error if the File path is outside the root of the FileStructure', () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+
+            expect(() => {
+                new File(path.join(path.sep, 'outside', 'file.ext'), fileStructure);
+            }).to.throw(TractorError, `Cannot create "${path.join(path.sep, 'outside', 'file.ext')}" because it is outside of the root of the FileStructure`);
+        });
+
         it('should be added to its directory', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
@@ -250,14 +258,15 @@ describe('tractor-file-structure - File:', () => {
             sinon.stub(File.prototype, 'save').returns(Promise.resolve());
 
             let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
-            file.data = 'data';
+            let buffer = new Buffer('data');
+            file.buffer = buffer;
 
             return file.move({
                 newPath: path.join(path.sep, 'file-structure', 'other-directory', 'file.ext')
             })
             .then(() => {
                 expect(File.prototype.constructor).to.have.been.calledWith(path.join(path.sep, 'file-structure', 'other-directory', 'file.ext'), fileStructure);
-                expect(File.prototype.save).to.have.been.calledWith('data', { isMove: true });
+                expect(File.prototype.save).to.have.been.calledWith(buffer, { isMove: true });
                 expect(File.prototype.delete).to.have.been.calledWith({ isMove: true });
             })
             .finally(() => {
