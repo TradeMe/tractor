@@ -22,10 +22,10 @@ var ScenarioParserService = function ScenarioParserService (
     };
 
     function parse (feature, tokens) {
-        var scenario = new ScenarioModel();
-
+        var scenario = new ScenarioModel();       
         scenario.name = tokens.name;
-
+        scenario.scenarioTag = tokens.tag[0];
+       
         _.each(tokens.stepDeclarations, function (stepDeclaration, index) {
             var notStep = false;
 
@@ -57,8 +57,7 @@ var ScenarioParserService = function ScenarioParserService (
             if (notExample) {
                 console.log(example, index);
             }
-        });
-
+        });        
         return scenario;
     }
 };

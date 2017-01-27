@@ -46,7 +46,7 @@ var createComponentInstanceModelConstructor = function (
                 get: function () {
                     return toAST.call(this);
                 }
-            }         
+            }
         });
     };
 

@@ -47,7 +47,7 @@
                                     action="Remove element"
                                     argument="domElement"
                                     icon="remove">
-                                </tractor-action>
+                                </tractor-action>                                
 
                                 <tractor-action
                                     model="componentEditor"
@@ -55,7 +55,7 @@
                                     argument="domElement"
                                     icon="collapse">
                                 </tractor-action>
-
+                                
                                 <tractor-variable-input
                                     form="file-editor"
                                     label="Name"
@@ -72,7 +72,7 @@
                                     model="domElement.selector"
                                     example="someController.someModel">
                                 </tractor-text-input>
-
+                                                                
                                 <section>
                                     <h3>Filters:</h3>
 
@@ -203,7 +203,16 @@
                                                 as="name">
                                             </tractor-select>
 
-                                            <div ng-repeat="argument in interaction.arguments">
+                                            <div ng-if="interaction.element.name === 'browser' && interaction.method.name === 'sendKeys'"                                                      
+                                                ng-repeat="argument in interaction.arguments">                                                
+                                                <tractor-select
+                                                    label="staticKey"
+                                                    model="interaction">                                                               
+                                                </tractor-select>                                                                        
+                                            </div>
+
+                                            <div ng-repeat="argument in interaction.arguments"
+                                                 ng-if="argument.name != 'staticKey'">   
                                                 <tractor-literal-input
                                                     form="file-editor"
                                                     name="argument.name"
@@ -229,6 +238,18 @@
                         model="componentEditor.fileModel"
                         action="Add action">
                     </tractor-action>
+                </section>
+
+                <section class="file-editor__container" ng-if="componentEditor.fileModel.references.length">
+                    <h2>Used by Step Definitions:</h2>
+                    
+                    <ul class="file-editor__list-item">
+                        <li ng-repeat="reference in componentEditor.fileModel.references">
+                            <span id="references" ui-sref="tractor.step-definitions({file: reference})" 
+                                  title="Edit the Step Definition"> {{ reference.name }} 
+                            </span>
+                        </li>
+                    </ul>
                 </section>
             </section>
         </section>

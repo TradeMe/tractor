@@ -141,7 +141,7 @@ describe('InteractionModel.js:', function () {
             var os = require('os');
 
             var method = {
-                name: 'method'
+                name: 'get'
             };
             var element = {
                 variableName: 'browser',
@@ -154,7 +154,38 @@ describe('InteractionModel.js:', function () {
 
             expect(escodegen.generate(ast)).to.equal(
                 'new Promise(function (resolve) {' + os.EOL +
-                '    resolve(browser.method());' + os.EOL +
+                '    resolve(browser.get());' + os.EOL +
+                '})'
+            );
+        });
+
+        it('should handle `sendKeys` method on the global `browser` Element:', function () {
+            var escodegen = require('escodegen');
+            var os = require('os');
+
+            var argument = {};
+            var action = {
+                parameters: [],
+                interactions: []
+            };
+            var method = {
+                name: 'sendKeys',
+                arguments: [argument]
+            };
+            var element = {
+                variableName: 'browser',
+                methods: [method]
+            };
+
+            var interactionModel = new InteractionModel(action);
+            interactionModel.element = element;
+            var argumentOne = _.first(interactionModel.arguments);
+            argumentOne.value = 'protractor.Key.ENTER';
+            var ast = interactionModel.ast;
+
+            expect(escodegen.generate(ast)).to.equal(
+                'new Promise(function (resolve) {' + os.EOL +
+                '    resolve(browser.actions().sendKeys(protractor.Key.ENTER).perform());' + os.EOL +
                 '})'
             );
         });

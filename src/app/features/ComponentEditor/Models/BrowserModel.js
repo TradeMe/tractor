@@ -53,7 +53,16 @@ var createBrowserModelConstructor = function () {
         name: 'waitForAngular',
         description: 'Instruct webdriver to wait until Angular has finished rendering and has no outstanding $http calls before continuing.',
         returns: 'promise'
-    }];
+    }, { 
+     name: 'sendKeys',
+     description: 'Custom browser actions.',
+     arguments: [{
+         name: 'staticKey',
+         description: 'Static keys that user wants to send to the browser',
+         type: 'Identifier',
+         required: true
+     }]    
+  }];
 
     return BrowserModel;
 };

@@ -1,10 +1,20 @@
-<label>{{ label }}: </label>
-<input name="step-{{ id }}" type="text" placeholder="e.g. {{ example }}"
-    ng-model="model[property]"
+<label>{{ stepInput.label }}: </label>
+<input name="step-{{ stepInput.id }}" type="text" placeholder="e.g. {{ stepInput.example }}"
+    ng-keydown="handleKeyDown($event)"
+    ng-model="stepInput.model[stepInput.property]"
     ng-model-options="{ allowInvalid: true }"
-    example-name
-    required />
+    ng-change="stepInput.handleSearch(stepInput.model[stepInput.property])"
+    ng-model-options="{debounce: {'default': 100, 'blur': 0}}"
+    ng-required="{{ stepInput.required }}"   
+    ng-init="stepInput.getSearchDataOnLoad(stepInput.label)"/>
 <div ng-messages="form['step-' + id].$error">
-    <ng-message when="required">Required</ng-message>
-    <ng-message when="exampleName">That is not a valid example name</ng-message>
+    <ng-message when="required">Required</ng-message> 
+    <ng-message when="exampleName">That is not a valid example name</ng-message>   
 </div>
+<ul class="suggestions-list" ng-if="stepInput.isOpen">        
+   <li ng-repeat="suggestion in stepInput.items track by $index"
+       ng-click="stepInput.itemSelected($index)"
+       ng-attr-title="{{ stepInput.title }}"
+       ng-mouseover="hoverOver($index, suggestion); $parent.selectedIndex=$index"      
+       ng-class="{active : selectedIndex===$index}">{{suggestion}}</li>
+</ul>

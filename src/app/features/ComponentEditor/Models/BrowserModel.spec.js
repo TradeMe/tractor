@@ -42,19 +42,21 @@ describe('BrowserModel.js:', function () {
         it('should have data about all the browser methods from Protractor:', function () {
             var browserModel = new BrowserModel();
 
-            expect(browserModel.methods.length).to.equal(5);
+            expect(browserModel.methods.length).to.equal(6);
 
             var get = browserModel.methods[0];
             var refresh = browserModel.methods[1];
             var setLocation = browserModel.methods[2];
             var getLocationAbsUrl = browserModel.methods[3];
             var waitForAngular = browserModel.methods[4];
+            var sendKeys = browserModel.methods[5];
 
             expect(get.name).to.equal('get');
             expect(refresh.name).to.equal('refresh');
             expect(setLocation.name).to.equal('setLocation');
             expect(getLocationAbsUrl.name).to.equal('getLocationAbsUrl');
             expect(waitForAngular.name).to.equal('waitForAngular');
+            expect(sendKeys.name).to.equal('sendKeys');
         });
     });
 });

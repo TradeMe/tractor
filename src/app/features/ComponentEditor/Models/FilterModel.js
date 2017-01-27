@@ -46,7 +46,7 @@ var createFilterModelConstructor = function (
         this.locator = '';
     };
 
-    FilterModel.prototype.types = ['model', 'binding', 'text', 'css', 'options', 'repeater'];
+    FilterModel.prototype.types = ['model', 'binding', 'text', 'css', 'options', 'repeater', 'buttonText', 'linkText', 'partialButtonText'];
 
     return FilterModel;
 
@@ -77,20 +77,24 @@ var createFilterModelConstructor = function (
         }
     }
 
-    function toSingleAST () {
-        var locatorLiteral = ast.literal(this.locator);
+    function toSingleAST () {       
         var template = '';
 
         if (!this.isText) {
+            var locatorLiteral = ast.literal(this.locator);
             template += 'by.<%= type %>(<%= locator %>)';
             return ast.expression(template, {
                 type: ast.identifier(this.type),
                 locator: locatorLiteral
             });
         } else {
-            template += 'by.cssContainingText(\'*\', <%= locator %>)';
+            var locator = this.locator.split(",");
+            var cssLiteral = ast.literal(locator[0].replace(/^[ ]+|[ ]+$/g,''));
+            var stringLiteral = ast.literal(locator[1].replace(/^[ ]+|[ ]+$/g,''));
+            template += 'by.cssContainingText(<%= cssSelector %>,<%= searchString %>)';
             return ast.expression(template, {
-                locator: locatorLiteral
+                cssSelector: cssLiteral,
+                searchString: stringLiteral
             });
         }
     }

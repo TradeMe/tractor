@@ -113,8 +113,10 @@
                 ng-if="stepDefinitionEditor.hasComponents">
                 <h2>Active components:</h2>
                 <ul>
-                    <li ng-repeat="component in stepDefinitionEditor.fileModel.componentInstances">                        
-                        <span> {{ component.component.name }} </span>                        
+                    <li ng-repeat="component in stepDefinitionEditor.fileModel.componentInstances | orderBy: 'component.name'">                        
+                        <span id="references" ui-sref="tractor.components({file: {name: component.component.name, path: component.component.path}})" 
+                              title="{{ component.component.meta }}"> {{ component.component.name }} 
+                        </span>
                         <tractor-action
                             model="stepDefinitionEditor.fileModel"
                             action="Remove component"
@@ -126,18 +128,21 @@
             </section>
             
             <section class="file-editor__container">
-                <h2>Available components:</h2>
-                <ul>
-                    <li ng-repeat="component in stepDefinitionEditor.fileModel.availableComponents"
-                        ng-if="stepDefinitionEditor.fileModel.components.indexOf(component) === -1">
-                        <span title=" {{ component.meta }}"> {{ component.name }} </spam>
-                        <tractor-action
-                            model="stepDefinitionEditor.fileModel"
-                            action="Add component"
-                            argument="component.name">
-                        </tractor-action>
-                    </li>
-                </ul>
+                <h2>Available components:</h2>                
+                <tractor-step-input
+                    form="file-editor"
+                    type="components"
+                    label="Component Name"
+                    data="stepDefinitionEditor"
+                    model="stepDefinitionEditor.fileModel"
+                    example="start typing component name"
+                    required="false">
+                </tractor-step-input>                           
+                <tractor-action                   
+                    model="stepDefinitionEditor.fileModel"
+                    action="Add component"
+                    argument="stepDefinitionEditor.fileModel.componentName">
+                </tractor-action>           
             </section>
         </section>
         
@@ -188,8 +193,10 @@
                 ng-if="stepDefinitionEditor.hasMockData">
                 <h2>Active mock data:</h2>
                 <ul>
-                    <li ng-repeat="mockData in stepDefinitionEditor.fileModel.mockDataInstances">                     
-                        <span> {{ mockData.mockData.name }} </span>                        
+                    <li ng-repeat="mockData in stepDefinitionEditor.fileModel.mockDataInstances | orderBy: 'mockData.name'">                     
+                        <span id="references" ui-sref="tractor.mock-data({file: {name: mockData.mockData.name, path: mockData.mockData.path}})" 
+                              title="{{ mockData.mockData.json }}"> {{ mockData.mockData.name }} 
+                        </span>
                         <tractor-action
                             model="stepDefinitionEditor.fileModel"
                             action="Remove mock"
@@ -201,18 +208,20 @@
             </section>
             
             <section class="file-editor__container">
-                <h2>Available mock data:</h2>
-                <ul>
-                    <li ng-repeat="mockData in stepDefinitionEditor.fileModel.availableMockData"
-                        ng-if="stepDefinitionEditor.fileModel.mockData.indexOf(mockData) === -1">
-                            <span title=" {{ mockData.json }} "> {{ mockData.name }} </span>
-                        <tractor-action
-                            model="stepDefinitionEditor.fileModel"
-                            action="Add mock"
-                            argument="mockData.name">
-                        </tractor-action>
-                    </li>
-                </ul>
+                <h2>Available mock data:</h2>                
+                <tractor-step-input
+                    form="file-editor"
+                    label="MockData Name"
+                    model="stepDefinitionEditor.fileModel"                     
+                    data="stepDefinitionEditor"
+                    example="start typing mock data name"
+                    required="false">
+                </tractor-step-input>                                
+                <tractor-action
+                    model="stepDefinitionEditor.fileModel"
+                    action="Add mock"
+                    argument="stepDefinitionEditor.fileModel.mockDataName">
+                </tractor-action>                
             </section>
         </section>
         

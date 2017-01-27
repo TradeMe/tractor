@@ -14,11 +14,16 @@
                     example="Feature"
                     validate-file-name>
                 </tractor-text-input>
-            </div>
+            </div>             
             <div class="file-options__file-actions">
                 <tractor-confirm-dialog trigger="featureEditor.confirmOverWrite">
                     <p>This will overwrite "{{ featureEditor.fileModel.name }}". Continue?</p>
                 </tractor-confirm-dialog>
+                <tractor-checkbox ng-show="featureEditor.fileModel.name"
+                     class="file-options__save-file"
+                     label="debug"
+                     model="featureEditor">
+                </tractor-checkbox>
                  <tractor-action ng-show="featureEditor.fileModel.name"
                       class="file-options__save-file"
                       action="Run feature"
@@ -36,8 +41,14 @@
         </section>
 
         <section class="file-editor">
-            <section ng-show="featureEditor.fileModel.name">
+            <section ng-show="featureEditor.fileModel.name">                
                 <section class="file-editor__container">
+                    <section>
+                        <tractor-select
+                            label="FeatureTag"
+                            model="featureEditor.fileModel">
+                        </tractor-select>
+                    </section>
                     <h2>Feature:</h2>
 
                     <tractor-text-input
@@ -59,7 +70,7 @@
                         example="to be able to do something">
                     </tractor-text-input>
                 </section>
-
+                
                 <section class="file-editor__container">
                     <h2>Scenarios:</h2>
 
@@ -68,7 +79,14 @@
                             ng-repeat="scenario in featureEditor.fileModel.scenarios"
                             ng-class="{ 'file-editor__list-item--minimised': scenario.minimised }">
 
-                            <h3 class="file-editor__list-item-name">{{ scenario.name }}</h3>
+                            <section>
+                                 <tractor-select
+                                    label="ScenarioTag"
+                                    model="scenario">
+                                 </tractor-select>
+                            </section>
+
+                            <h3 class="file-editor__list-item-name">{{ scenario.name }} {{ scenario.scenarioTag }}</h3>
 
                             <tractor-action
                                 model="featureEditor.fileModel"
@@ -106,14 +124,19 @@
 
                                         <tractor-select label="Type" model="stepDeclaration"></tractor-select>
                                         <tractor-step-input
-                                            form="file-editor"
+                                            form="file-editor"                                                                                   
                                             label="Step"
                                             model="stepDeclaration"
-                                            example="something happens">
+                                            data="featureEditor"                                           
+                                            example="something happens"
+                                            required="true">
                                         </tractor-step-input>
+                                        <span ui-sref="tractor.step-definitions({file: featureEditor.fileModel.findStep(stepDeclaration.step)})" 
+                                              title="See step details" id="link">  
+                                        </span>                                        
                                     </li>
                                 </ol>
-
+                                
                                 <tractor-action
                                     model="scenario"
                                     action="Add step declaration">

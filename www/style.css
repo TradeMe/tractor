@@ -485,6 +485,18 @@ th {
   src: url("./fonts/ubuntumono-r-webfont.eot?#iefix") format("embedded-opentype"), url("./fonts/ubuntumono-r-webfont.woff2") format("woff2"), url("./fonts/ubuntumono-r-webfont.woff") format("woff"), url("./fonts/ubuntumono-r-webfont.ttf") format("truetype"), url("./fonts/ubuntumono-r-webfont.svg#ubuntu_monoregular") format("svg");
   font-weight: normal;
   font-style: normal; }
+#link {
+  background-image: url("./images/link.png");
+  width: 16px;
+  height: 16px;
+  display: block;
+  float: right;
+  cursor: pointer; }
+
+#references:hover {
+  cursor: pointer;
+  color: dodgerblue; }
+
 form.file {
   float: left;
   width: 80%;
@@ -575,9 +587,20 @@ form.file {
     .file-editor__list-item.file-editor__list-item--minimised section {
       display: none; }
 
+.file-editor__container section > tractor-select {
+  width: 20%; }
+
+.file-editor__container > tractor-step-input {
+  display: inline-block;
+  word-wrap: break-word;
+  white-space: normal; }
+.file-editor__container > tractor-action {
+  vertical-align: top;
+  padding-top: 23px; }
+
 .file-options {
   font-size: 0;
-  height: 10%;
+  height: 11%;
   background: #e1e1e1; }
 
 .file-options__name {
@@ -624,6 +647,11 @@ tractor-file-tree .file-tree__container {
 tractor-file-tree .file-tree__header {
   padding-left: 1rem; }
 
+@keyframes pending {
+  from {
+    background-color: limegreen; }
+  to {
+    background-color: green; } }
 tractor-file-tree .file-tree__item-name {
   padding: 0;
   margin: 0;
@@ -631,6 +659,10 @@ tractor-file-tree .file-tree__item-name {
   text-decoration: none;
   color: black;
   white-space: nowrap; }
+  tractor-file-tree .file-tree__item-name.file-tree__item-isPending {
+    background-color: limegreen;
+    animation-name: pending;
+    animation-duration: 1s; }
 
 tractor-file-tree .file-tree__item-rename {
   line-height: 1.5rem;
@@ -1089,6 +1121,31 @@ textarea {
   font-family: "ubuntu";
   width: 100%;
   height: 30rem;
+  outline: none; }
+
+ul.suggestions-list {
+  font-family: "Corbert";
+  padding-left: 0rem;
+  z-index: 1000; }
+
+tractor-step-input ul.suggestions-list li {
+  color: #000000;
+  padding: 10px 10px;
+  cursor: pointer;
+  background: #f9f9f9;
+  border-bottom: 1px solid #eeeeee;
+  font-size: 1rem;
+  line-height: 1.5rem; }
+
+.suggestions-list li:hover {
+  background: #eeeeee; }
+
+.suggestions-list li:active,
+.suggestions-list li.active {
+  color: #FFFFFF;
+  background: #42d253; }
+
+.suggestions-list:focus {
   outline: none; }
 
 * {

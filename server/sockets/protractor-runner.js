@@ -52,32 +52,54 @@ function startProtractor (socket, runOptions) {
     let featureToRun;
     let resolve;
     let reject;
+    let protractorArgs = [];
     let deferred = new Promise((...args) => {
         resolve = args[0];
         reject = args[1];
     });
 
+    protractorArgs.push(PROTRACTOR_PATH);
+    protractorArgs.push(E2E_PATH);
+
+    // baseUrl
     if (_.isUndefined(runOptions.baseUrl)) {
         reject(new TractorError('`baseUrl` must be defined.'));
         return deferred;
-    }
-
-    // TODO: This looks a bit funky still, I’m not sure what it’s doing,
-    // but it looks too complicated.
-    if (runOptions.hasOwnProperty("feature")) {
-        if (_.isUndefined(runOptions.feature)) {
-            reject(new TractorError('to run a single feature, `feature` must be defined.'));
-            return deferred;
-        } else {
-            featureToRun = join(config.testDirectory, '/features', '/**/', `${runOptions.feature}.feature`);
-        }
     } else {
-        featureToRun = join(config.testDirectory, '/features/**/*.feature');
+        protractorArgs.push('--baseUrl');
+        protractorArgs.push(runOptions.baseUrl);
     }
 
-    let specs = featureToRun;
+    // specs && params
+    if (runOptions.hasOwnProperty("feature")) {
+        featureToRun = join('/features', '/**/', `${runOptions.feature}.feature`);
+    } else {
+        featureToRun = '/features/**/*.feature';
+        runOptions.debug = false;
+    }
 
-    let protractor = spawn('node', [PROTRACTOR_PATH, E2E_PATH, '--baseUrl', runOptions.baseUrl, '--specs', specs]);
+    let specs = join(config.testDirectory, featureToRun);
+
+    protractorArgs.push('--specs');
+    protractorArgs.push(specs);
+    protractorArgs.push('--params.debug');
+    protractorArgs.push(runOptions.debug);
+
+    // cucumber tag
+    if (runOptions.tag) {
+        protractorArgs.push('--cucumberOpts.tags');
+        protractorArgs.push(runOptions.tag);
+        console.log(`Running cucumber with tag : ${runOptions.tag}`);
+    }
+
+    // run at mobile size
+    if (runOptions.tag === '@mobile') { 
+        protractorArgs.push('--params.runAtMobileSize');
+        protractorArgs.push(true);
+        console.log(`Running at mobile size.`);
+    }
+
+    let protractor = spawn('node', protractorArgs);
 
     protractor.stdout.on('data', sendDataToClient.bind(socket));
     protractor.stderr.on('data', sendErrorToClient.bind(socket));

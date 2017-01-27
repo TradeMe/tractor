@@ -141,7 +141,12 @@ describe('server/files: FeatureFile:', () => {
                 addFile: _.noop
             };
             let filePath = path.join('some', 'feature', 'file.feature');
-
+            let scan = _.noop;
+            let lexerConstructor = function Lexer () {
+                this.scan = scan;
+            };
+            
+            sinon.stub(gherkin, 'Lexer').returns(lexerConstructor);
             sinon.stub(File.prototype, 'save').returns(Promise.resolve());
             sinon.stub(StepDefinitionGenerator.prototype, 'generate').returns(Promise.resolve());
 
@@ -154,6 +159,7 @@ describe('server/files: FeatureFile:', () => {
             .finally(() => {
                 File.prototype.save.restore();
                 StepDefinitionGenerator.prototype.generate.restore();
+                gherkin.Lexer.restore();
             });
         });
 
@@ -161,8 +167,14 @@ describe('server/files: FeatureFile:', () => {
             let directory = {
                 addFile: _.noop
             };
+            
             let filePath = path.join('some', 'feature', 'file.feature');
-
+            let scan = _.noop;
+            let lexerConstructor = function Lexer () {
+                this.scan = scan;
+            };
+            
+            sinon.stub(gherkin, 'Lexer').returns(lexerConstructor);
             sinon.stub(File.prototype, 'save').returns(Promise.resolve());
             sinon.stub(StepDefinitionGenerator.prototype, 'generate').returns(Promise.resolve());
 
@@ -175,6 +187,7 @@ describe('server/files: FeatureFile:', () => {
             .finally(() => {
                 File.prototype.save.restore();
                 StepDefinitionGenerator.prototype.generate.restore();
+                gherkin.Lexer.restore();
             });
         });
 
@@ -183,9 +196,14 @@ describe('server/files: FeatureFile:', () => {
             let dataWithNewlines = `some${os.EOL}content${os.EOL}with${os.EOL}newlines`;
             let directory = {
                 addFile: _.noop
-            };
+            };            
             let filePath = path.join('some', 'feature', 'file.feature');
+            let scan = _.noop;
+            let lexerConstructor = function Lexer () {
+                this.scan = scan;
+            };
 
+            sinon.stub(gherkin, 'Lexer').returns(lexerConstructor);
             sinon.stub(File.prototype, 'save').returns(Promise.resolve());
             sinon.stub(StepDefinitionGenerator.prototype, 'generate').returns(Promise.resolve());
 
@@ -198,6 +216,7 @@ describe('server/files: FeatureFile:', () => {
             .finally(() => {
                 File.prototype.save.restore();
                 StepDefinitionGenerator.prototype.generate.restore();
+                gherkin.Lexer.restore();
             });
         });
 

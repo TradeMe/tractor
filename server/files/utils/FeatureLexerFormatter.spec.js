@@ -28,7 +28,6 @@ describe('server/files/utils: FeatureLexerFormatter:', () => {
             expect(lexer.doc_string).to.equal(_.noop);
             expect(lexer.examples).to.equal(_.noop);
             expect(lexer.eof).to.equal(_.noop);
-            expect(lexer.tag).to.equal(_.noop);
         });
     });
 
@@ -81,7 +80,8 @@ describe('server/files/utils: FeatureLexerFormatter:', () => {
                 inOrderTo: 'get something done',
                 asA: 'user',
                 iWant: 'to do something',
-                elements: []
+                elements: [],
+                tag: []
             });
         });
     });
@@ -123,7 +123,8 @@ describe('server/files/utils: FeatureLexerFormatter:', () => {
                 name: 'name',
                 description: 'scenario',
                 examples: [],
-                stepDeclarations: []
+                stepDeclarations: [],
+                tag: []
             });
         });
     });
@@ -144,7 +145,9 @@ describe('server/files/utils: FeatureLexerFormatter:', () => {
                 name: 'name',
                 description: 'scenario_outline',
                 examples: [],
-                stepDeclarations: []
+                stepDeclarations: [],
+                tag: []
+
             });
         });
     });
