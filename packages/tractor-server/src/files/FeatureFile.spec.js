@@ -1,7 +1,7 @@
 /* global describe:true, it:true */
 
 // Constants:
-import CONSTANTS from '../constants';
+const REQUEST_ERROR = 400;
 
 // Utilities:
 import chai from 'chai';
@@ -100,26 +100,73 @@ describe('server/files: FeatureFile:', () => {
         });
 
         it('should turn log any errors and create a TractorError', () => {
-            let error = new Error();
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.feature');
 
-            sinon.stub(File.prototype, 'read').returns(Promise.reject(error));
-            sinon.stub(console, 'error');
+            sinon.stub(File.prototype, 'read').returns(Promise.reject());
 
             let file = new FeatureFile(filePath, fileStructure);
 
             return file.read()
             .catch((tractorError) => {
-                expect(console.error).to.have.been.calledWith(error);
-
                 expect(tractorError).to.be.an.instanceof(TractorError);
                 expect(tractorError.message).to.equal(`Lexing "${path.join(path.sep, 'file-structure', 'directory', 'file.feature')}" failed.`);
-                expect(tractorError.status).to.equal(CONSTANTS.REQUEST_ERROR);
+                expect(tractorError.status).to.equal(REQUEST_ERROR);
             })
             .finally(() => {
                 File.prototype.read.restore();
-                console.error.restore();
+            });
+        });
+    });
+
+    describe('FeatureFile.move:', () => {
+        it('should move the file', () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.feature');
+            let file = new FeatureFile(filePath, fileStructure);
+            let newFilePath = path.join(path.sep, 'file-structure', 'directory', 'new file.feature');
+            let newFile = new FeatureFile(newFilePath, fileStructure);
+
+            sinon.stub(File.prototype, 'move').returns(Promise.resolve(newFile));
+            sinon.stub(FeatureFile.prototype, 'save').returns(Promise.resolve());
+
+            let update = {};
+            let options = {};
+
+            return file.move(update, options)
+            .then(() => {
+                expect(File.prototype.move).to.have.been.calledWith(update, options);
+            })
+            .finally(() => {
+                File.prototype.move.restore();
+                FeatureFile.prototype.save.restore();
+            });
+        });
+
+        it('should update the name of the feature', () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.feature');
+            let file = new FeatureFile(filePath, fileStructure);
+            let newFilePath = path.join(path.sep, 'file-structure', 'directory', 'new file.feature');
+            let newFile = new FeatureFile(newFilePath, fileStructure);
+            newFile.content = 'Feature: file\n';
+
+            sinon.stub(File.prototype, 'move').returns(Promise.resolve(newFile));
+            sinon.stub(FeatureFile.prototype, 'save').returns(Promise.resolve());
+
+            let update = {
+                oldPath: filePath,
+                newPath: newFilePath
+            };
+            let options = {};
+
+            return file.move(update, options)
+            .then(() => {
+                expect(FeatureFile.prototype.save).to.have.been.calledWith('Feature: new file\n');
+            })
+            .finally(() => {
+                File.prototype.move.restore();
+                FeatureFile.prototype.save.restore();
             });
         });
     });
@@ -181,27 +228,41 @@ describe('server/files: FeatureFile:', () => {
 
         it('should turn log any errors and create a TractorError', () => {
             let content = '';
-            let error = new Error();
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.feature');
 
-            sinon.stub(File.prototype, 'save').returns(Promise.reject(error));
-            sinon.stub(console, 'error');
+            sinon.stub(File.prototype, 'save').returns(Promise.reject());
 
             let file = new FeatureFile(filePath, fileStructure);
 
             return file.save(content)
             .catch((tractorError) => {
-                expect(console.error).to.have.been.calledWith(error);
-
                 expect(tractorError).to.be.an.instanceof(TractorError);
                 expect(tractorError.message).to.equal(`Generating step definitions from "${path.join(path.sep, 'file-structure', 'directory', 'file.feature')}" failed.`);
-                expect(tractorError.status).to.equal(CONSTANTS.REQUEST_ERROR);
+                expect(tractorError.status).to.equal(REQUEST_ERROR);
             })
             .finally(() => {
                 File.prototype.save.restore();
-                console.error.restore();
             });
+        });
+    });
+
+    describe('FeatureFile.serialise:', () => {
+        it(`should include the file's tokens`, () => {
+            let tokens = { };
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.feature');
+
+            sinon.stub(File.prototype, 'serialise').returns({});
+
+            let file = new FeatureFile(filePath, fileStructure);
+            file.tokens = tokens;
+
+            file.serialise();
+
+            expect(file.tokens).to.equal(tokens);
+
+            File.prototype.serialise.restore();
         });
     });
 });

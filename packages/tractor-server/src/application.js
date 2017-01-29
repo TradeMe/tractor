@@ -4,7 +4,6 @@ import config from './config/config';
 // Utilities:
 import _ from 'lodash';
 import fs from 'fs';
-import log from 'npmlog';
 import path from 'path';
 
 // Dependencies:
@@ -35,10 +34,10 @@ let server;
 export default { init, start };
 
 function start () {
-    log.verbose('Starting tractor... brrrrrrmmmmmmm');
+    console.log('Starting tractor... brrrrrrmmmmmmm');
 
     let tractor = server.listen(config.port, () => {
-        log.info(`tractor is running at port ${tractor.address().port}`);
+        console.info(`tractor is running at port ${tractor.address().port}`);
     });
 }
 

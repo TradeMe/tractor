@@ -1,26 +1,26 @@
 // Constants:
-import CONSTANTS from '../../constants';
 const IN_ORDER_TO = /^In order to /;
 const AS_A = /^As a /;
 const I_WANT = /^I want /;
 
 // Utilities:
-import _ from 'lodash';
+import last from 'lodash.last';
 
 export default class FeatureLexerFormatter {
     constructor () {
         this.features = [];
 
         /* eslint-disable camelcase */
-        this.comment = this.doc_string = this.examples = this.eof = this.tag = () => {};
+        /* istanbul ignore next */
+        this.comment = this.doc_string = this.examples = this.eof = () => {};
         /* eslint-enable camelcase */
     }
 
     get lastFeature () {
-        return _.last(this.features);
+        return last(this.features);
     }
     get lastElement () {
-        return _.last(this.lastFeature.elements);
+        return this.lastFeature && last(this.lastFeature.elements);
     }
 
     feature (type, name, description) {
@@ -29,23 +29,23 @@ export default class FeatureLexerFormatter {
         asA = asA.replace(AS_A, '').replace(/\r/g, '');
         iWant = iWant.replace(I_WANT, '');
 
-        let feature = { type, name, inOrderTo, asA, iWant, elements: [] };
+        let feature = { type, name, inOrderTo, asA, iWant, elements: [], tags: [] };
         this.features.push(feature);
     }
 
     background (type, name, description) {
-        let background = { type, name, description, examples: [], stepDeclarations: [] };
+        let background = { type, name, description, examples: [], stepDeclarations: [], tags: [] };
         this.lastFeature.elements.push(background);
     }
 
     scenario (type, name, description) {
-        let scenario = { type, name, description, examples: [], stepDeclarations: [] };
+        let scenario = { type, name, description, examples: [], stepDeclarations: [], tags: [] };
         this.lastFeature.elements.push(scenario);
     }
 
     /* eslint-disable camelcase */
     scenario_outline (type, name, description) {
-        let scenario_outline = { type, name, description, examples: [], stepDeclarations: [] };
+        let scenario_outline = { type, name, description, examples: [], stepDeclarations: [], tags: [] };
         this.lastFeature.elements.push(scenario_outline);
     }
     /* eslint-enable camelcase */
@@ -62,6 +62,21 @@ export default class FeatureLexerFormatter {
         type = type.replace(/ $/, '');
         let stepDeclaration = { type, step };
         this.lastElement.stepDeclarations.push(stepDeclaration);
+    }
+
+    tag (value) {
+        let tags;
+        if (this.lastFeature) {
+            tags = this.lastFeature.tags;
+        }
+
+        if (this.lastElement) {
+            tags = this.lastElement.tags;
+        }
+
+        if (tags && !tags.includes(value)) {
+            tags.push(value);
+        }
     }
 
     done () {

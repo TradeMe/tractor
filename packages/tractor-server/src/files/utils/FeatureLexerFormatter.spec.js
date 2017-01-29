@@ -1,7 +1,6 @@
 /* global describe:true, it:true */
 
 // Utilities:
-import _ from 'lodash';
 import chai from 'chai';
 import dedent from 'dedent';
 
@@ -71,7 +70,8 @@ describe('server/files/utils: FeatureLexerFormatter:', () => {
                 inOrderTo: 'get something done',
                 asA: 'user',
                 iWant: 'to do something',
-                elements: []
+                elements: [],
+                tags: []
             });
         });
     });
@@ -92,7 +92,8 @@ describe('server/files/utils: FeatureLexerFormatter:', () => {
                 name: 'name',
                 description: 'background',
                 examples: [],
-                stepDeclarations: []
+                stepDeclarations: [],
+                tags: []
             });
         });
     });
@@ -113,7 +114,8 @@ describe('server/files/utils: FeatureLexerFormatter:', () => {
                 name: 'name',
                 description: 'scenario',
                 examples: [],
-                stepDeclarations: []
+                stepDeclarations: [],
+                tags: []
             });
         });
     });
@@ -134,7 +136,8 @@ describe('server/files/utils: FeatureLexerFormatter:', () => {
                 name: 'name',
                 description: 'scenario_outline',
                 examples: [],
-                stepDeclarations: []
+                stepDeclarations: [],
+                tags: []
             });
         });
     });
@@ -184,6 +187,54 @@ describe('server/files/utils: FeatureLexerFormatter:', () => {
         });
     });
 
+    describe('FeatureLexerFormatter.tag:', () => {
+        it('should add a tag to the last feature', () => {
+            let feature = { tags: [] };
+
+            let lexer = new FeatureLexerFormatter();
+            lexer.features.push(feature);
+
+            lexer.tag('@tag');
+
+            let [tag] = feature.tags;
+            expect(tag).to.equal('@tag');
+        });
+
+        it('should add a tag to the last element', () => {
+            let scenario = { tags: [] }
+            let feature = { elements: [scenario] };
+
+            let lexer = new FeatureLexerFormatter();
+            lexer.features.push(feature);
+
+            lexer.tag('@tag');
+
+            let [tag] = scenario.tags;
+            expect(tag).to.equal('@tag');
+        });
+
+        it('should do nothing if there is not feature', () => {
+            let lexer = new FeatureLexerFormatter();
+
+            expect(() => {
+                lexer.tag('@tag');
+            }).not.to.throw();
+        });
+
+        it('should only add each tag once', () => {
+          let scenario = { tags: [] }
+          let feature = { elements: [scenario] };
+
+          let lexer = new FeatureLexerFormatter();
+          lexer.features.push(feature);
+
+          lexer.tag('@tag');
+          lexer.tag('@tag');
+
+          expect(scenario.tags.length).to.equal(1);
+        });
+    });
+
     describe('FeatureLexerFormatter.done', () => {
         it('should return the features', () => {
             let feature = {};
@@ -193,5 +244,14 @@ describe('server/files/utils: FeatureLexerFormatter:', () => {
 
             expect(lexer.done()).to.deep.equal([feature]);
         });
+    });
+
+    describe('FeatureLexerFormatter noops:', () => {
+        let lexer = new FeatureLexerFormatter();
+
+        expect(lexer.comment).to.equal(lexer.doc_string);
+        expect(lexer.doc_string).to.equal(lexer.examples);
+        expect(lexer.examples).to.equal(lexer.eof);
+        expect(lexer.eof).to.equal(lexer.comment);
     });
 });

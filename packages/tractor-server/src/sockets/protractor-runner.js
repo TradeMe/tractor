@@ -1,8 +1,6 @@
 // Utilities:
-import _ from 'lodash';
 import Promise from 'bluebird';
 import childProcess from 'child_process';
-import log from 'npmlog';
 import path from 'path';
 
 // Constants:
@@ -19,68 +17,70 @@ import { TractorError } from 'tractor-error-handler';
 class ProtractorRunner {
     run (socket, runOptions) {
         if (module.exports.running) {
-            log.error('Protractor already running.');
+            console.error('Protractor already running.');
             return Promise.reject(new TractorError('Protractor already running.'));
         } else {
             module.exports.running = true;
 
             return Promise.resolve(config.beforeProtractor())
             .then(() => {
-                log.info('Starting Protractor...\n');
+                console.info('Starting Protractor...\n');
                 return startProtractor(socket, runOptions);
             })
             .catch((error) => {
                 socket.lastMessage = socket.lastMessage || '';
                 let [lastMessage] = socket.lastMessage.split(/\r\n|\n/);
-                log.error(`${error.message}${lastMessage}`);
+                console.error(`${error.message}${lastMessage}`);
             })
             .finally(() => {
                 socket.disconnect();
                 return Promise.resolve(config.afterProtractor())
                 .then(() => {
                     module.exports.running = false;
-                    log.info('Protractor finished.');
+                    console.info('Protractor finished.');
                 });
             });
         }
     }
 }
 
-function startProtractor (socket, runOptions) {
-    let featureToRun;
-    let resolve;
-    let reject;
-    let deferred = new Promise((...args) => {
-        resolve = args[0];
-        reject = args[1];
-    });
+function startProtractor (socket, options) {
+    let protractorArgs = [PROTRACTOR_PATH, E2E_PATH];
 
-    if (_.isUndefined(runOptions.baseUrl)) {
-        reject(new TractorError('`baseUrl` must be defined.'));
-        return deferred;
-    }
+    let { baseUrl, debug, feature, tag } = options;
 
-    // TODO: This looks a bit funky still, I’m not sure what it’s doing,
-    // but it looks too complicated.
-    if (runOptions.hasOwnProperty("feature")) {
-        if (_.isUndefined(runOptions.feature)) {
-            reject(new TractorError('to run a single feature, `feature` must be defined.'));
-            return deferred;
-        } else {
-            featureToRun = path.join(config.testDirectory, '/features', '/**/', `${runOptions.feature}.feature`);
-        }
+    if (!baseUrl) {
+        return Promise.reject(new TractorError('`baseUrl` must be defined.'));
     } else {
-        featureToRun = path.join(config.testDirectory, '/features/**/*.feature');
+        protractorArgs = protractorArgs.concat(['--baseUrl', baseUrl]);
     }
 
-    let specs = featureToRun;
+    if (feature) {
+        debug = !!debug;
+    } else {
+        feature = '*';
+        debug = false;
+    }
 
-    let protractor = childProcess.spawn('node', [PROTRACTOR_PATH, E2E_PATH, '--baseUrl', runOptions.baseUrl, '--specs', specs]);
+    let specsGlob = path.join(config.testDirectory, 'features', '**', `${feature}.feature`);
+
+    protractorArgs = protractorArgs.concat(['--specs', specsGlob]);
+    protractorArgs = protractorArgs.concat(['--params.debug', debug]);
+
+    if (tag) {
+        protractorArgs = protractorArgs.concat(['--cucumberOpts.tags', tag]);
+        console.log(`Running cucumber with tag: ${tag}`);
+     }
+
+    let protractor = childProcess.spawn('node', protractorArgs);
 
     protractor.stdout.on('data', sendDataToClient.bind(socket));
     protractor.stderr.on('data', sendErrorToClient.bind(socket));
     protractor.stdout.pipe(process.stdout);
     protractor.stderr.pipe(process.stderr);
+
+    let resolve, reject;
+    let deferred = new Promise((...args) => [resolve, reject] = args);
 
     protractor.on('error', error => reject(new TractorError(error.message)));
     protractor.on('exit', (code) => {

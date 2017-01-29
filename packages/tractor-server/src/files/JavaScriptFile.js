@@ -1,10 +1,10 @@
 // Constants:
-import CONSTANTS from '../constants';
 const LEADING_SLASH_REGEX = /^\//;
-const TRAILING_SLASH_REGEX = /(\/)[gimuy]*?$/;
+const LITERAL = 'Literal';
 const REGEXP_CONTENT_REGEX = /^\/.*\/[gimuy]*?$/;
 const REGEXP_FLAGS_REGEX = /([gimuy]*)$/;
-const LITERAL = 'Literal';
+const REQUEST_ERROR = 400;
+const TRAILING_SLASH_REGEX = /(\/)[gimuy]*?$/;
 
 // Utilities:
 import _ from 'lodash';
@@ -19,14 +19,16 @@ import { TractorError } from 'tractor-error-handler';
 
 export default class JavaScriptFile extends File {
     read () {
-        return super.read()
-        .then(content => {
+        // Hack to fix coverage bug: https://github.com/gotwarlost/istanbul/issues/690
+        /* istanbul ignore next */
+        let read = super.read();
+
+        return read.then(content => {
             setAST.call(this, content);
             return content;
         })
-        .catch(error => {
-            console.error(error);
-            throw new TractorError(`Parsing "${this.path}" failed.`, CONSTANTS.REQUEST_ERROR);
+        .catch(() => {
+            throw new TractorError(`Parsing "${this.path}" failed.`, REQUEST_ERROR);
         });
     }
 
@@ -36,25 +38,33 @@ export default class JavaScriptFile extends File {
             comment: true
         });
 
-        return super.save(javascript)
-        .then(content => {
+        // Hack to fix coverage bug: https://github.com/gotwarlost/istanbul/issues/690
+        /* istanbul ignore next */
+        let save = super.save(javascript);
+
+        return save.then(content => {
             setAST.call(this, content);
             return content;
         })
-        .catch(error => {
-            console.error(error);
-            throw new TractorError(`Saving "${this.path}" failed.`, CONSTANTS.REQUEST_ERROR);
+        .catch(() => {
+            throw new TractorError(`Saving "${this.path}" failed.`, REQUEST_ERROR);
         });
     }
 
     serialise () {
+        // Hack to fix coverage bug: https://github.com/gotwarlost/istanbul/issues/690
+        /* istanbul ignore next */
         let serialised = super.serialise();
+
         serialised.ast = this.ast;
         return serialised;
     }
 
     toJSON () {
+        // Hack to fix coverage bug: https://github.com/gotwarlost/istanbul/issues/690
+        /* istanbul ignore next */
         let json = super.toJSON();
+
         let meta;
         try {
             let [metaComment] = this.ast.comments;

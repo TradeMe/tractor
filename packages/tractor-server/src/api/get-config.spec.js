@@ -15,9 +15,9 @@ import config from '../config/config';
 // Under test:
 import getConfig from './get-config';
 
-describe('server/api: get-config', () => {
-    it('should respond with the current config:', () => {
-        let request = { };
+describe('server/api: get-config:', () => {
+    it('should respond with the current config', () => {
+        let request = {};
         let response = {
             send: () => {}
         };

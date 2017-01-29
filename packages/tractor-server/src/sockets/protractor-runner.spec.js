@@ -18,7 +18,6 @@ chai.use(sinonChai);
 // Dependencies:
 import childProcess from 'child_process';
 import { EventEmitter } from 'events';
-import log from 'npmlog';
 import path from 'path';
 
 // Under test:
@@ -35,19 +34,17 @@ describe('server/sockets: protractor-runner:', () => {
             disconnect: () => {}
         };
 
-        let specs = path.join(config.testDirectory, '/features/**/*.feature');
-
-        let runOptions = {
-            baseUrl: "baseUrl"
-        };
-
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
         sinon.stub(config, 'beforeProtractor');
         sinon.stub(config, 'afterProtractor');
-        sinon.stub(log, 'info');
-        sinon.stub(log, 'verbose');
+        sinon.stub(console, 'info');
+        sinon.stub(console, 'log');
 
-        let run = protractorRunner.run(socket, runOptions);
+        let options = {
+            baseUrl: 'baseUrl'
+        };
+
+        let run = protractorRunner.run(socket, options);
         setTimeout(() => {
             spawnEmitter.emit('exit', 0);
         }, MAGIC_TIMEOUT_NUMBER);
@@ -55,18 +52,19 @@ describe('server/sockets: protractor-runner:', () => {
         return run.then(() => {
             let protractorPath = path.join('node_modules', 'protractor', 'bin', 'protractor');
             let protractorConfPath = path.join('e2e-tests', 'protractor.conf.js');
-            expect(childProcess.spawn).to.have.been.calledWith('node', [protractorPath, protractorConfPath, '--baseUrl', 'baseUrl', '--specs', specs]);
+            let specs = path.join(config.testDirectory, '/features/**/*.feature');
+            expect(childProcess.spawn).to.have.been.calledWith('node', [protractorPath, protractorConfPath, '--baseUrl', 'baseUrl', '--specs', specs, '--params.debug', false]);
         })
         .finally(() => {
             childProcess.spawn.restore();
             config.beforeProtractor.restore();
             config.afterProtractor.restore();
-            log.info.restore();
-            log.verbose.restore();
+            console.info.restore();
+            console.log.restore();
         });
     });
 
-    it('should run "protractor" for single feature', () => {
+    it('should run "protractor" for a single feature', () => {
         let spawnEmitter = new EventEmitter();
         spawnEmitter.stdout = new EventEmitter();
         spawnEmitter.stdout.pipe = () => {};
@@ -76,20 +74,18 @@ describe('server/sockets: protractor-runner:', () => {
             disconnect: () => {}
         };
 
-        let runOptions = {
-            baseUrl: "baseUrl",
-            feature: "feature"
-        };
-
-        let specs = path.join(config.testDirectory, '/features/**/feature.feature');
-
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
         sinon.stub(config, 'beforeProtractor');
         sinon.stub(config, 'afterProtractor');
-        sinon.stub(log, 'info');
-        sinon.stub(log, 'verbose');
+        sinon.stub(console, 'info');
+        sinon.stub(console, 'log');
 
-        let run = protractorRunner.run(socket, runOptions);
+        let options = {
+            baseUrl: 'baseUrl',
+            feature: 'feature'
+        };
+
+        let run = protractorRunner.run(socket, options);
         setTimeout(() => {
             spawnEmitter.emit('exit', 0);
         }, MAGIC_TIMEOUT_NUMBER);
@@ -97,68 +93,85 @@ describe('server/sockets: protractor-runner:', () => {
         return run.then(() => {
             let protractorPath = path.join('node_modules', 'protractor', 'bin', 'protractor');
             let protractorConfPath = path.join('e2e-tests', 'protractor.conf.js');
-            expect(childProcess.spawn).to.have.been.calledWith('node', [protractorPath, protractorConfPath, '--baseUrl', 'baseUrl', '--specs', specs]);
+            let specs = path.join(config.testDirectory, '/features/**/feature.feature');
+            expect(childProcess.spawn).to.have.been.calledWith('node', [protractorPath, protractorConfPath, '--baseUrl', 'baseUrl', '--specs', specs, '--params.debug', false]);
         })
         .finally(() => {
             childProcess.spawn.restore();
             config.beforeProtractor.restore();
             config.afterProtractor.restore();
-            log.info.restore();
-            log.verbose.restore();
+            console.info.restore();
+            console.log.restore();
+        });
+    });
+
+    it('should run "protractor" for features that match a tag', () => {
+        let spawnEmitter = new EventEmitter();
+        spawnEmitter.stdout = new EventEmitter();
+        spawnEmitter.stdout.pipe = () => {};
+        spawnEmitter.stderr = new EventEmitter();
+        spawnEmitter.stderr.pipe = () => {};
+
+        let socket = {
+            disconnect: () => {}
+        };
+
+        sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
+        sinon.stub(config, 'beforeProtractor');
+        sinon.stub(config, 'afterProtractor');
+        sinon.stub(console, 'info');
+        sinon.stub(console, 'log');
+
+        let options = {
+            baseUrl: 'baseUrl',
+            tag: '@tag'
+        };
+
+        let run = protractorRunner.run(socket, options);
+        setTimeout(() => {
+            spawnEmitter.emit('exit', 0);
+        }, MAGIC_TIMEOUT_NUMBER);
+
+        return run.then(() => {
+            let protractorPath = path.join('node_modules', 'protractor', 'bin', 'protractor');
+            let protractorConfPath = path.join('e2e-tests', 'protractor.conf.js');
+            let specs = path.join(config.testDirectory, '/features/**/*.feature');
+            expect(childProcess.spawn).to.have.been.calledWith('node', [protractorPath, protractorConfPath, '--baseUrl', 'baseUrl', '--specs', specs, '--params.debug', false, '--cucumberOpts.tags', '@tag']);
+        })
+        .finally(() => {
+            childProcess.spawn.restore();
+            config.beforeProtractor.restore();
+            config.afterProtractor.restore();
+            console.info.restore();
+            console.log.restore();
         });
     });
 
     it('should throw an `Error` if `baseUrl` is not defined:', () => {
-        let runOptions = {};
         let socket = {
             disconnect: () => {}
         };
 
         sinon.stub(config, 'beforeProtractor');
         sinon.stub(config, 'afterProtractor');
-        sinon.stub(log, 'error');
-        sinon.stub(log, 'info');
+        sinon.stub(console, 'error');
+        sinon.stub(console, 'info');
 
-        return protractorRunner.run(socket, runOptions)
+        let options = {};
+
+        return protractorRunner.run(socket, options)
         .then(() => {
-            expect(log.error).to.have.been.calledWith('`baseUrl` must be defined.');
+            expect(console.error).to.have.been.calledWith('`baseUrl` must be defined.');
         })
         .finally(() => {
             config.beforeProtractor.restore();
             config.afterProtractor.restore();
-            log.error.restore();
-            log.info.restore();
+            console.error.restore();
+            console.info.restore();
         });
     });
 
-    it('should throw an `Error` on single feature run, if `feature` is not defined:', () => {
-        let feature;
-        let runOptions = {
-            baseUrl: "baseUrl",
-            feature
-        };
-        let socket = {
-            disconnect: () => {}
-        };
-
-        sinon.stub(config, 'beforeProtractor');
-        sinon.stub(config, 'afterProtractor');
-        sinon.stub(log, 'error');
-        sinon.stub(log, 'info');
-
-        return protractorRunner.run(socket, runOptions)
-        .then(() => {
-            expect(log.error).to.have.been.calledWith('to run a single feature, `feature` must be defined.');
-        })
-        .finally(() => {
-            config.beforeProtractor.restore();
-            config.afterProtractor.restore();
-            log.error.restore();
-            log.info.restore();
-        });
-    });
-
-    it('shouldn\'t run "protractor" if it is already running', () => {
+    it(`shouldn't run "protractor" if it is already running`, () => {
         let spawnEmitter = new EventEmitter();
         spawnEmitter.stdout = new EventEmitter();
         spawnEmitter.stdout.pipe = () => {};
@@ -167,18 +180,19 @@ describe('server/sockets: protractor-runner:', () => {
         let socket = {
             disconnect: () => {}
         };
-        let runOptions = {
-            baseUrl: 'baseUrl'
-        };
 
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
         sinon.stub(config, 'beforeProtractor');
         sinon.stub(config, 'afterProtractor');
-        sinon.stub(log, 'info');
-        sinon.stub(log, 'error');
-        sinon.stub(log, 'verbose');
+        sinon.stub(console, 'error');
+        sinon.stub(console, 'info');
+        sinon.stub(console, 'log');
 
-        let run = protractorRunner.run(socket, runOptions);
+        let options = {
+            baseUrl: 'baseUrl'
+        };
+
+        let run = protractorRunner.run(socket, options);
         protractorRunner.run().catch(() => {
             setTimeout(() => {
                 spawnEmitter.emit('exit', 0);
@@ -186,15 +200,15 @@ describe('server/sockets: protractor-runner:', () => {
         });
 
         return run.then(() => {
-            expect(log.error).to.have.been.calledWith('Protractor already running.');
+            expect(console.error).to.have.been.calledWith('Protractor already running.');
         })
         .finally(() => {
             childProcess.spawn.restore();
             config.beforeProtractor.restore();
             config.afterProtractor.restore();
-            log.info.restore();
-            log.error.restore();
-            log.verbose.restore();
+            console.error.restore();
+            console.info.restore();
+            console.log.restore();
         });
     });
 
@@ -207,18 +221,19 @@ describe('server/sockets: protractor-runner:', () => {
         let socket = {
             disconnect: () => {}
         };
-        let runOptions = {
-            baseUrl: 'baseUrl'
-        };
 
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
         sinon.stub(config, 'beforeProtractor');
         sinon.stub(config, 'afterProtractor');
-        sinon.stub(log, 'info');
-        sinon.stub(log, 'verbose');
+        sinon.stub(console, 'info');
+        sinon.stub(console, 'log');
         sinon.spy(socket, 'disconnect');
 
-        let run = protractorRunner.run(socket, runOptions);
+        let options = {
+            baseUrl: 'baseUrl'
+        };
+
+        let run = protractorRunner.run(socket, options);
         setTimeout(() => {
             spawnEmitter.emit('exit', 0);
         }, MAGIC_TIMEOUT_NUMBER);
@@ -230,8 +245,8 @@ describe('server/sockets: protractor-runner:', () => {
             childProcess.spawn.restore();
             config.beforeProtractor.restore();
             config.afterProtractor.restore();
-            log.info.restore();
-            log.verbose.restore();
+            console.info.restore();
+            console.log.restore();
         });
     });
 
@@ -245,34 +260,35 @@ describe('server/sockets: protractor-runner:', () => {
             disconnect: () => {},
             lastMessage: ''
         };
-        let runOptions = {
-            baseUrl: 'baseUrl'
-        };
 
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
         sinon.stub(config, 'beforeProtractor');
         sinon.stub(config, 'afterProtractor');
-        sinon.stub(log, 'info');
-        sinon.stub(log, 'error');
-        sinon.stub(log, 'verbose');
-        sinon.stub(log, 'warn');
+        sinon.stub(console, 'error');
+        sinon.stub(console, 'info');
+        sinon.stub(console, 'log');
+        sinon.stub(console, 'warn');
 
-        let run = protractorRunner.run(socket, runOptions);
+        let options = {
+            baseUrl: 'baseUrl'
+        };
+
+        let run = protractorRunner.run(socket, options);
         setTimeout(() => {
             spawnEmitter.emit('error', { message: 'error' });
         }, MAGIC_TIMEOUT_NUMBER);
 
         return run.then(() => {
-            expect(log.error).to.have.been.calledOnce();
+            expect(console.error).to.have.been.calledOnce();
         })
         .finally(() => {
             childProcess.spawn.restore();
             config.beforeProtractor.restore();
             config.afterProtractor.restore();
-            log.info.restore();
-            log.error.restore();
-            log.verbose.restore();
-            log.warn.restore();
+            console.error.restore();
+            console.info.restore();
+            console.log.restore();
+            console.warn.restore();
         });
     });
 
@@ -286,32 +302,33 @@ describe('server/sockets: protractor-runner:', () => {
             disconnect: () => {},
             lastMessage: ''
         };
-        let runOptions = {
-            baseUrl: 'baseUrl'
-        };
 
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
         sinon.stub(config, 'beforeProtractor');
         sinon.stub(config, 'afterProtractor');
-        sinon.stub(log, 'error');
-        sinon.stub(log, 'info');
-        sinon.stub(log, 'verbose');
+        sinon.stub(console, 'error');
+        sinon.stub(console, 'info');
+        sinon.stub(console, 'log');
 
-        let run = protractorRunner.run(socket, runOptions);
+        let options = {
+            baseUrl: 'baseUrl'
+        };
+
+        let run = protractorRunner.run(socket, options);
         setTimeout(() => {
             spawnEmitter.emit('exit', 1);
         }, MAGIC_TIMEOUT_NUMBER);
 
         return run.then(() => {
-            expect(log.error).to.have.been.calledOnce();
+            expect(console.error).to.have.been.calledOnce();
         })
         .finally(() => {
             childProcess.spawn.restore();
             config.beforeProtractor.restore();
             config.afterProtractor.restore();
-            log.error.restore();
-            log.info.restore();
-            log.verbose.restore();
+            console.error.restore();
+            console.info.restore();
+            console.log.restore();
         });
     });
 
@@ -325,18 +342,19 @@ describe('server/sockets: protractor-runner:', () => {
             emit: () => {},
             disconnect: () => {}
         };
-        let runOptions = {
-            baseUrl: 'baseUrl'
-        };
 
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
         sinon.stub(config, 'beforeProtractor');
         sinon.stub(config, 'afterProtractor');
-        sinon.stub(log, 'info');
-        sinon.stub(log, 'verbose');
+        sinon.stub(console, 'info');
+        sinon.stub(console, 'log');
         sinon.spy(socket, 'emit');
 
-        let run = protractorRunner.run(socket, runOptions);
+        let options = {
+            baseUrl: 'baseUrl'
+        };
+
+        let run = protractorRunner.run(socket, options);
         setTimeout(() => {
             spawnEmitter.stdout.emit('data', 'Scenario');
             spawnEmitter.stdout.emit('data', 'Error:');
@@ -357,8 +375,8 @@ describe('server/sockets: protractor-runner:', () => {
             childProcess.spawn.restore();
             config.beforeProtractor.restore();
             config.afterProtractor.restore();
-            log.info.restore();
-            log.verbose.restore();
+            console.info.restore();
+            console.log.restore();
         });
     });
 
@@ -372,18 +390,19 @@ describe('server/sockets: protractor-runner:', () => {
             emit: () => {},
             disconnect: () => {}
         };
-        let runOptions = {
-            baseUrl: 'baseUrl'
-        };
 
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
         sinon.stub(config, 'beforeProtractor');
         sinon.stub(config, 'afterProtractor');
-        sinon.stub(log, 'info');
-        sinon.stub(log, 'verbose');
+        sinon.stub(console, 'info');
+        sinon.stub(console, 'log');
         sinon.spy(socket, 'emit');
 
-        let run = protractorRunner.run(socket, runOptions);
+        let options = {
+            baseUrl: 'baseUrl'
+        };
+
+        let run = protractorRunner.run(socket, options);
         setTimeout(() => {
             spawnEmitter.stderr.emit('data', 'error');
             spawnEmitter.emit('exit', 0);
@@ -399,8 +418,8 @@ describe('server/sockets: protractor-runner:', () => {
             childProcess.spawn.restore();
             config.beforeProtractor.restore();
             config.afterProtractor.restore();
-            log.info.restore();
-            log.verbose.restore();
+            console.info.restore();
+            console.log.restore();
         });
     });
 
@@ -414,18 +433,19 @@ describe('server/sockets: protractor-runner:', () => {
             emit: () => {},
             disconnect: () => {}
         };
-        let runOptions = {
-            baseUrl: 'baseUrl'
-        };
 
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
         sinon.stub(config, 'beforeProtractor');
         sinon.stub(config, 'afterProtractor');
-        sinon.stub(log, 'info');
-        sinon.stub(log, 'verbose');
+        sinon.stub(console, 'info');
+        sinon.stub(console, 'log');
         sinon.spy(socket, 'emit');
 
-        let run = protractorRunner.run(socket, runOptions);
+        let options = {
+            baseUrl: 'baseUrl'
+        };
+
+        let run = protractorRunner.run(socket, options);
         setTimeout(() => {
             spawnEmitter.stdout.emit('data', '');
             spawnEmitter.stdout.emit('data', 'something irrelevant');
@@ -439,8 +459,8 @@ describe('server/sockets: protractor-runner:', () => {
             childProcess.spawn.restore();
             config.beforeProtractor.restore();
             config.afterProtractor.restore();
-            log.info.restore();
-            log.verbose.restore();
+            console.info.restore();
+            console.log.restore();
         });
     });
 });

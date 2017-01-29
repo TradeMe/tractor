@@ -19,9 +19,9 @@
     "prepublish": "npm run build",
     "build": "npm run lint && npm run cover && npm run compile",
     "compile": "babel src/ --out-dir dist --ignore *.spec.js",
-    "cover": "istanbul cover --config .istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ./.mocharc src/*/*.spec.js src/*/*/*.spec.js",
+    "cover": "istanbul cover --config .istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ./.mocharc 'src/**/*.spec.js'",
     "lint": "eslint src/**/*.js; true",
-    "test": "mocha --opts ./.mocharc src/*/*.spec.js src/*/*/*.spec.js",
+    "test": "mocha --opts ./.mocharc 'src/**/*.spec.js'",
     "watch": "npm-watch"
   },
   "license": "MIT",
@@ -57,14 +57,15 @@
     "express": "4.14.0",
     "gherkin": "2.12.2",
     "lodash": "4.17.2",
+    "lodash.last": "3.0.0",
     "npmlog": "4.0.2",
     "socket.io": "1.7.2",
     "stripcolorcodes": "0.1.0",
     "tractor-client": "0.10.0-beta.0",
     "tractor-config-loader": "0.1.0",
     "tractor-error-handler": "0.1.1",
-    "tractor-file-structure": "0.1.0-beta.2",
-    "tractor-js-file-transformer": "0.1.0-beta.4",
+    "tractor-file-structure": "0.1.0-beta.5",
+    "tractor-js-file-transformer": "0.1.0",
     "tractor-plugin-loader": "0.1.1"
   }
 }

@@ -1,10 +1,10 @@
 // Constants:
+const PENDING_IDENTIFIER = 'pending';
+const PENDING_QUERY = 'CallExpression[callee.name="callback"] .arguments[value]';
 const REQUIRE_QUERY = 'CallExpression[callee.name="require"] Literal';
 
 // Utilities:
-import _ from 'lodash';
 import path from 'path';
-import Promise from 'bluebird';
 
 // Dependencies:
 import esquery from 'esquery';
@@ -14,30 +14,43 @@ import transformer from 'tractor-js-file-transformer';
 
 export default class StepDefinitionFile extends JavaScriptFile {
     move (update, options) {
-        let { oldPath } = update;
         let referencePaths = Object.keys(this.fileStructure.references)
-        .filter(reference => this.fileStructure.references[reference].includes(oldPath));
+        .filter(reference => this.fileStructure.references[reference].includes(this.path));
 
-        return super.move(update, options)
-        .then(newFile => {
-            transformer.transformReferencesRequirePaths(referencePaths, this.path, newFile.path);
+        // Hack to fix coverage bug: https://github.com/gotwarlost/istanbul/issues/690
+        /* istanbul ignore next */
+        let move = super.move(update, options);
 
-            return Promise.map(referencePaths, referencePath => {
-                let reference = tractorFileStructure.fileStructure.allFilesByPath[referencePath];
-                return reference.save(reference.ast);
+        return move.then(newFile => {
+            referencePaths.forEach(referencePath => {
+                transformer.transformRequirePaths(newFile, {
+                    oldFromPath: this.path,
+                    newFromPath: newFile.path,
+                    toPath: referencePath
+                });
             });
+
+            return newFile.save(newFile.ast);
         });
     }
 
     read () {
-        return super.read()
-        .then(() => getFileReferences.call(this))
+        // Hack to fix coverage bug: https://github.com/gotwarlost/istanbul/issues/690
+        /* istanbul ignore next */
+        let read = super.read();
+
+        return read.then(() => getFileReferences.call(this))
+        .then(() => checkIfPending.call(this))
         .then(() => this.content);
     }
 
     save (data) {
-        return super.save(data)
-        .then(() => getFileReferences.call(this))
+        // Hack to fix coverage bug: https://github.com/gotwarlost/istanbul/issues/690
+        /* istanbul ignore next */
+        let save = super.save(data);
+
+        return save.then(() => getFileReferences.call(this))
+        .then(() => checkIfPending.call(this))
         .then(() => this.content);
     }
 }
@@ -48,17 +61,31 @@ StepDefinitionFile.prototype.type = 'step-definitions';
 function getFileReferences () {
     let { references } = this.fileStructure;
 
-    _.each(references, referencePaths => {
-        _.remove(referencePaths, referencePath => referencePath === this.path);
+    Object.keys(references).forEach(filePath => {
+        let referencePaths = references[filePath];
+        if (referencePaths.includes(this.path)) {
+            let index = referencePaths.indexOf(this.path);
+            referencePaths.splice(index, 1);
+        }
     });
 
-    let requirePaths = esquery(this.ast, REQUIRE_QUERY);
-    _.each(requirePaths, (requirePath) => {
+    esquery(this.ast, REQUIRE_QUERY).forEach(requirePath => {
         let directoryPath = path.dirname(this.path);
         let referencePath = path.resolve(directoryPath, requirePath.value);
         references[referencePath] = references[referencePath] || [];
         references[referencePath].push(this.path);
     });
 }
+
+function checkIfPending () {
+     this.isPending = false;
+
+     let pendingIdentifiers = esquery(this.ast, PENDING_QUERY);
+     pendingIdentifiers.forEach(pendingIdentifier => {
+         if (pendingIdentifier.value === PENDING_IDENTIFIER) {
+             this.isPending = true;
+         }
+     });
+ }
 
 tractorFileStructure.registerFileType(StepDefinitionFile);

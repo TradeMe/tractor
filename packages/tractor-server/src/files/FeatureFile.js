@@ -1,5 +1,5 @@
 // Constants:
-import CONSTANTS from '../constants';
+const REQUEST_ERROR = 400;
 
 // Utilities:
 import _ from 'lodash';
@@ -17,64 +17,74 @@ import { TractorError } from 'tractor-error-handler';
 
 export default class FeatureFile extends File {
     read () {
-        return super.read()
-        .then(content => {
-            setTokens.call(this, content);
+        // Hack to fix coverage bug: https://github.com/gotwarlost/istanbul/issues/690
+        /* istanbul ignore next */
+        let read = super.read();
+
+        return read.then(content => {
+            setTokens(this, content);
             return content;
         })
-        .catch(error => {
-            console.error(error);
-            throw new TractorError(`Lexing "${this.path}" failed.`, CONSTANTS.REQUEST_ERROR);
+        .catch(() => {
+            throw new TractorError(`Lexing "${this.path}" failed.`, REQUEST_ERROR);
         });
     }
 
     move (update, options) {
-        return super.move(update, options)
-        .then(newFile => {
+        // Hack to fix coverage bug: https://github.com/gotwarlost/istanbul/issues/690
+        /* istanbul ignore next */
+        let move = super.move(update, options);
+
+        return move.then(newFile => {
             let { oldPath, newPath } = update;
             if (oldPath && newPath) {
                 let oldName = path.basename(oldPath, this.extension);
                 let newName = path.basename(newPath, this.extension);
 
-                return refactorName.call(newFile, oldName, newName);
+                return refactorName(newFile, oldName, newName);
             }
         });
     }
 
     save (data) {
-        return super.save(data)
-        .then(content => {
-            setTokens.call(this, content);
+        // Hack to fix coverage bug: https://github.com/gotwarlost/istanbul/issues/690
+        /* istanbul ignore next */
+        let save = super.save(data);
+
+        return save.then(content => {
+            setTokens(this, content);
             let generator = new StepDefinitionGenerator(this);
             return generator.generate()
             .then(() => content)
         })
-        .catch(error => {
-            console.error(error);
-            throw new TractorError(`Generating step definitions from "${this.path}" failed.`, CONSTANTS.REQUEST_ERROR);
+        .catch(() => {
+            throw new TractorError(`Generating step definitions from "${this.path}" failed.`, REQUEST_ERROR);
         });
     }
 
     serialise () {
+        // Hack to fix coverage bug: https://github.com/gotwarlost/istanbul/issues/690
+        /* istanbul ignore next */
         let serialised = super.serialise();
+
         serialised.tokens = this.tokens;
         return serialised;
     }
 }
 
-function refactorName (oldName, newName) {
+function refactorName (newFile, oldName, newName) {
     let escapedOldName = _.escapeRegExp(oldName);
     let oldNameRegExp = new RegExp(`(Feature:\\s)${escapedOldName}(\\r\\n|\\n)`);
 
-    return this.save(this.content.replace(oldNameRegExp, `$1${newName}$2`));
+    return newFile.save(newFile.content.replace(oldNameRegExp, `$1${newName}$2`));
 }
 
-function setTokens (content) {
+function setTokens (file, content) {
     let formatter = new FeatureLexerFormatter();
     let EnLexer = gherkin.Lexer('en');
     let enLexer = new EnLexer(formatter);
     enLexer.scan(content);
-    this.tokens = formatter.done();
+    file.tokens = formatter.done();
 }
 
 FeatureFile.prototype.extension = '.feature';

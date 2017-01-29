@@ -1,7 +1,7 @@
 /* global describe:true, it:true */
 
 // Constants:
-import CONSTANTS from '../constants';
+const REQUEST_ERROR = 400;
 
 // Utilities:
 import chai from 'chai';
@@ -85,26 +85,21 @@ describe('server/files: JavaScriptFile:', () => {
         });
 
         it('should turn log any errors and create a TractorError', () => {
-            let error = new Error();
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
 
-            sinon.stub(File.prototype, 'read').returns(Promise.reject(error));
-            sinon.stub(console, 'error');
+            sinon.stub(File.prototype, 'read').returns(Promise.reject());
 
             let file = new JavaScriptFile(filePath, fileStructure);
 
             return file.read()
             .catch((tractorError) => {
-                expect(console.error).to.have.been.calledWith(error);
-
                 expect(tractorError).to.be.an.instanceof(TractorError);
                 expect(tractorError.message).to.equal(`Parsing "${path.join(path.sep, 'file-structure', 'directory', 'file.js')}" failed.`);
-                expect(tractorError.status).to.equal(CONSTANTS.REQUEST_ERROR);
+                expect(tractorError.status).to.equal(REQUEST_ERROR);
             })
             .finally(() => {
                 File.prototype.read.restore();
-                console.error.restore();
             });
         });
     });
@@ -153,7 +148,7 @@ describe('server/files: JavaScriptFile:', () => {
         });
 
         it('should generate JavaScript from the AST', () => {
-            let ast = { };
+            let ast = {};
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
 
@@ -208,29 +203,92 @@ describe('server/files: JavaScriptFile:', () => {
 
         it('should turn log any errors and create a TractorError', () => {
             let ast = {};
-            let error = new Error();
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
 
             sinon.stub(escodegen, 'generate');
-            sinon.stub(File.prototype, 'save').returns(Promise.reject(error));
-            sinon.stub(console, 'error');
+            sinon.stub(File.prototype, 'save').returns(Promise.reject());
 
             let file = new JavaScriptFile(filePath, fileStructure);
 
             return file.save(ast)
             .catch((tractorError) => {
-                expect(console.error).to.have.been.calledWith(error);
-
                 expect(tractorError).to.be.an.instanceof(TractorError);
                 expect(tractorError.message).to.equal(`Saving "${path.join(path.sep, 'file-structure', 'directory', 'file.js')}" failed.`);
-                expect(tractorError.status).to.equal(CONSTANTS.REQUEST_ERROR);
+                expect(tractorError.status).to.equal(REQUEST_ERROR);
             })
             .finally(() => {
                 escodegen.generate.restore();
                 File.prototype.save.restore();
-                console.error.restore();
             });
         });
+    });
+
+    describe('JavaScriptFile.serialise:', () => {
+        it(`should include the file's AST`, () => {
+            let ast = {
+                type: 'Program',
+                body: [],
+                sourceType: 'script'
+            };
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
+
+            sinon.stub(File.prototype, 'serialise').returns({});
+
+            let file = new JavaScriptFile(filePath, fileStructure);
+            file.ast = ast;
+
+            file.serialise();
+
+            expect(file.ast).to.equal(ast);
+
+            File.prototype.serialise.restore();
+        });
+    });
+
+    describe('JavaScriptFile.toJSON:', () => {
+        it('should include the parsed metadata', () => {
+            let metadata = {
+                name: 'javascrpt file'
+            };
+            let ast = {
+                type: 'Program',
+                body: [],
+                comments: [{
+                    value: JSON.stringify(metadata)
+                }],
+                sourceType: 'script'
+            };
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
+
+            let file = new JavaScriptFile(filePath, fileStructure);
+            file.ast = ast;
+
+            let json = file.toJSON();
+
+            expect(json.meta).to.deep.equal(metadata);
+        });
+
+        it('should handle invalid JSON', () => {
+            let ast = {
+                type: 'Program',
+                body: [],
+                comments: [{
+                    value: 'Not JSON'
+                }],
+                sourceType: 'script'
+            };
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
+
+            let file = new JavaScriptFile(filePath, fileStructure);
+            file.ast = ast;
+
+            let json = file.toJSON();
+
+            expect(json.meta).to.deep.equal(null);
+        })
     });
 });
