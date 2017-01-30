@@ -31,7 +31,7 @@
     "camel-case": "3.0.0",
     "param-case": "2.1.0",
     "sentence-case": "2.1.0",
-    "tractor-config-loader": "0.1.0",
+    "tractor-config-loader": "0.1.1",
     "tractor-error-handler": "0.1.2"
   },
   "devDependencies": {

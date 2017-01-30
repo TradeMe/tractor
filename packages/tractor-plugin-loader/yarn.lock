@@ -2100,7 +2100,7 @@ minimist@0.0.8, minimist@~0.0.1:
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-0.0.8.tgz#857fcabfc3397d2625b8228262e86aa7a011b05d"
 
-minimist@^1.2.0:
+minimist@1.2.0, minimist@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.0.tgz#a35008b20f41383eec1fb914f4cd5df79a264284"
 
@@ -2854,12 +2854,12 @@ tough-cookie@~2.3.0:
   dependencies:
     punycode "^1.4.1"
 
-tractor-config-loader@0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/tractor-config-loader/-/tractor-config-loader-0.1.0.tgz#56f719122c9b54d8d9d76168b3269887f71ec5da"
+tractor-config-loader@0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/tractor-config-loader/-/tractor-config-loader-0.1.1.tgz#240fdfba4f3b8144163d6c0edcb830d50424dcb2"
   dependencies:
-    commander "2.9.0"
     lodash.defaults "4.2.0"
+    minimist "1.2.0"
 
 tractor-error-handler@0.1.2:
   version "0.1.2"
