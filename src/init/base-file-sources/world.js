@@ -13,7 +13,7 @@ var CustomWorld = (function () {
         global.expect = chai.expect;
         global.Promise = require('bluebird');
 
-        tractorPluginLoader.getPlugins()
+        tractorPluginLoader.default.getPlugins()
         .map(function (plugin) {
             global[plugin.description.variableName] = plugin.create(global.browser);
         });
