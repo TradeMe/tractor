@@ -1,4 +1,6 @@
 # tractor-plugin-browser
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/phenomnomnominal/tractor-plugin-browser.svg)](https://greenkeeper.io/)
 [![npm version](https://img.shields.io/npm/v/tractor-plugin-browser.svg)](https://img.shields.io/npm/v/tractor-plugin-browser.svg)
 
 
