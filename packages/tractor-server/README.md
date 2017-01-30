@@ -1,3 +1,4 @@
-# tractor-server - 0.9.0:
+# tractor-server
+[![npm version](https://img.shields.io/npm/v/tractor-server.svg)](https://img.shields.io/npm/v/tractor-server.svg)
 
-The server for [tractor](https://github.com/TradeMe/tractor). Check out that project for how to install.
+The server for [**tractor**](https://github.com/TradeMe/tractor).
