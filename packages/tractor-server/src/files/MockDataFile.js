@@ -4,7 +4,8 @@ const INSTANCE_DECLARATOR_QUERY = 'VariableDeclarator';
 
 // Utilities:
 import Promise from 'bluebird';
-import changeCase from 'change-case';
+import camelcase from 'camel-case';
+import pascalcase from 'pascal-case';
 import path from 'path';
 
 // Dependencies:
@@ -44,10 +45,10 @@ export default class MockDataFile extends File {
 
             let oldName = path.basename(this.path, this.extension);
             let newName = path.basename(newFile.path, this.extension);
-            let oldClassName = changeCase.pascal(oldName);
-            let newClassName = changeCase.pascal(newName);
-            let oldInstanceName = changeCase.camel(oldName);
-            let newInstanceName = changeCase.camel(newName);
+            let oldClassName = pascalcase(oldName);
+            let newClassName = pascalcase(newName);
+            let oldInstanceName = camelcase(oldName);
+            let newInstanceName = camelcase(newName);
 
             return Promise.map(referencePaths, referencePath => {
                 let reference = tractorFileStructure.fileStructure.allFilesByPath[referencePath];

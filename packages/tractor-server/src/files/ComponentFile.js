@@ -9,7 +9,8 @@ const INSTANCE_DECLARATOR_QUERY = 'VariableDeclarator';
 
 // Utilities:
 import Promise from 'bluebird';
-import changeCase from 'change-case';
+import camelcase from 'camel-case';
+import pascalcase from 'pascal-case';
 
 // Dependencies:
 import JavaScriptFile from './JavaScriptFile';
@@ -48,10 +49,10 @@ export default class ComponentFile extends JavaScriptFile {
 
             let oldName = this.basename;
             let newName = newFile.basename;
-            let oldClassName = changeCase.pascal(oldName);
-            let newClassName = changeCase.pascal(newName);
-            let oldInstanceName = changeCase.camel(oldName);
-            let newInstanceName = changeCase.camel(newName);
+            let oldClassName = pascalcase(oldName);
+            let newClassName = pascalcase(newName);
+            let oldInstanceName = camelcase(oldName);
+            let newInstanceName = camelcase(newName);
 
             transformer.transformIdentifiers(newFile, oldClassName, newClassName, CLASS_CONSTRUCTOR_DECLARATOR_QUERY);
             transformer.transformIdentifiers(newFile, oldClassName, newClassName, CLASS_CONSTRUCTOR_FUNCTION_QUERY);
