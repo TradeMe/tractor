@@ -14,6 +14,7 @@ import http from 'http';
 import io from 'socket.io';
 import tractorFileStructure from 'tractor-file-structure';
 import tractorPluginLoader from 'tractor-plugin-loader';
+import { info } from 'tractor-logger';
 
 // Errors:
 import { TractorError } from 'tractor-error-handler';
@@ -34,10 +35,10 @@ let server;
 export default { init, start };
 
 function start () {
-    console.log('Starting tractor... brrrrrrmmmmmmm');
+    info('Starting tractor... brrrrrrmmmmmmm');
 
     let tractor = server.listen(config.port, () => {
-        console.info(`tractor is running at port ${tractor.address().port}`);
+        info(`tractor is running at port ${tractor.address().port}`);
     });
 }
 
