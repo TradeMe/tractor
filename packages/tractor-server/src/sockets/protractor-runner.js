@@ -2,6 +2,7 @@
 import Promise from 'bluebird';
 import childProcess from 'child_process';
 import path from 'path';
+import { error, info } from 'tractor-logger';
 
 // Constants:
 import config from '../config/config';
@@ -17,27 +18,27 @@ import { TractorError } from 'tractor-error-handler';
 class ProtractorRunner {
     run (socket, runOptions) {
         if (module.exports.running) {
-            console.error('Protractor already running.');
+            info('Protractor already running.');
             return Promise.reject(new TractorError('Protractor already running.'));
         } else {
             module.exports.running = true;
 
             return Promise.resolve(config.beforeProtractor())
             .then(() => {
-                console.info('Starting Protractor...\n');
+                info('Starting Protractor...');
                 return startProtractor(socket, runOptions);
             })
-            .catch((error) => {
+            .catch(e => {
                 socket.lastMessage = socket.lastMessage || '';
                 let [lastMessage] = socket.lastMessage.split(/\r\n|\n/);
-                console.error(`${error.message}${lastMessage}`);
+                error(`${e.message}${lastMessage}`);
             })
             .finally(() => {
                 socket.disconnect();
                 return Promise.resolve(config.afterProtractor())
                 .then(() => {
                     module.exports.running = false;
-                    console.info('Protractor finished.');
+                    info('Protractor finished.');
                 });
             });
         }
@@ -69,7 +70,7 @@ function startProtractor (socket, options) {
 
     if (tag) {
         protractorArgs = protractorArgs.concat(['--cucumberOpts.tags', tag]);
-        console.log(`Running cucumber with tag: ${tag}`);
+        info(`Running cucumber with tag: ${tag}`);
      }
 
     let protractor = childProcess.spawn('node', protractorArgs);

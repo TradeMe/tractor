@@ -7,6 +7,7 @@ const MAGIC_TIMEOUT_NUMBER = 10;
 // Utilities:
 import chai from 'chai';
 import dirtyChai from 'dirty-chai';
+import Promise from 'bluebird';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 
@@ -19,6 +20,8 @@ chai.use(sinonChai);
 import childProcess from 'child_process';
 import { EventEmitter } from 'events';
 import path from 'path';
+import { TractorError } from 'tractor-error-handler';
+import * as tractorLogger from 'tractor-logger';
 
 // Under test:
 import protractorRunner from './protractor-runner';
@@ -37,8 +40,7 @@ describe('server/sockets: protractor-runner:', () => {
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
         sinon.stub(config, 'beforeProtractor');
         sinon.stub(config, 'afterProtractor');
-        sinon.stub(console, 'info');
-        sinon.stub(console, 'log');
+        sinon.stub(tractorLogger, 'info');
 
         let options = {
             baseUrl: 'baseUrl'
@@ -59,8 +61,7 @@ describe('server/sockets: protractor-runner:', () => {
             childProcess.spawn.restore();
             config.beforeProtractor.restore();
             config.afterProtractor.restore();
-            console.info.restore();
-            console.log.restore();
+            tractorLogger.info.restore();
         });
     });
 
@@ -77,8 +78,7 @@ describe('server/sockets: protractor-runner:', () => {
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
         sinon.stub(config, 'beforeProtractor');
         sinon.stub(config, 'afterProtractor');
-        sinon.stub(console, 'info');
-        sinon.stub(console, 'log');
+        sinon.stub(tractorLogger, 'info');
 
         let options = {
             baseUrl: 'baseUrl',
@@ -100,8 +100,7 @@ describe('server/sockets: protractor-runner:', () => {
             childProcess.spawn.restore();
             config.beforeProtractor.restore();
             config.afterProtractor.restore();
-            console.info.restore();
-            console.log.restore();
+            tractorLogger.info.restore();
         });
     });
 
@@ -119,8 +118,7 @@ describe('server/sockets: protractor-runner:', () => {
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
         sinon.stub(config, 'beforeProtractor');
         sinon.stub(config, 'afterProtractor');
-        sinon.stub(console, 'info');
-        sinon.stub(console, 'log');
+        sinon.stub(tractorLogger, 'info');
 
         let options = {
             baseUrl: 'baseUrl',
@@ -142,8 +140,7 @@ describe('server/sockets: protractor-runner:', () => {
             childProcess.spawn.restore();
             config.beforeProtractor.restore();
             config.afterProtractor.restore();
-            console.info.restore();
-            console.log.restore();
+            tractorLogger.info.restore();
         });
     });
 
@@ -154,20 +151,20 @@ describe('server/sockets: protractor-runner:', () => {
 
         sinon.stub(config, 'beforeProtractor');
         sinon.stub(config, 'afterProtractor');
-        sinon.stub(console, 'error');
-        sinon.stub(console, 'info');
+        sinon.stub(Promise, 'reject');
+        sinon.stub(tractorLogger, 'info');
 
         let options = {};
 
         return protractorRunner.run(socket, options)
         .then(() => {
-            expect(console.error).to.have.been.calledWith('`baseUrl` must be defined.');
+            expect(Promise.reject).to.have.been.calledWith(new TractorError('`baseUrl` must be defined.'));
         })
         .finally(() => {
             config.beforeProtractor.restore();
             config.afterProtractor.restore();
-            console.error.restore();
-            console.info.restore();
+            Promise.reject.restore();
+            tractorLogger.info.restore();
         });
     });
 
@@ -184,9 +181,8 @@ describe('server/sockets: protractor-runner:', () => {
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
         sinon.stub(config, 'beforeProtractor');
         sinon.stub(config, 'afterProtractor');
-        sinon.stub(console, 'error');
-        sinon.stub(console, 'info');
-        sinon.stub(console, 'log');
+        sinon.spy(Promise, 'reject');
+        sinon.stub(tractorLogger, 'info');
 
         let options = {
             baseUrl: 'baseUrl'
@@ -199,16 +195,16 @@ describe('server/sockets: protractor-runner:', () => {
             }, MAGIC_TIMEOUT_NUMBER);
         });
 
-        return run.then(() => {
-            expect(console.error).to.have.been.calledWith('Protractor already running.');
+        return run
+        .then(() => {
+            expect(Promise.reject).to.have.been.calledWith(new TractorError('Protractor already running.'));
         })
         .finally(() => {
             childProcess.spawn.restore();
             config.beforeProtractor.restore();
             config.afterProtractor.restore();
-            console.error.restore();
-            console.info.restore();
-            console.log.restore();
+            Promise.reject.restore();
+            tractorLogger.info.restore();
         });
     });
 
@@ -225,9 +221,8 @@ describe('server/sockets: protractor-runner:', () => {
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
         sinon.stub(config, 'beforeProtractor');
         sinon.stub(config, 'afterProtractor');
-        sinon.stub(console, 'info');
-        sinon.stub(console, 'log');
         sinon.spy(socket, 'disconnect');
+        sinon.stub(tractorLogger, 'info');
 
         let options = {
             baseUrl: 'baseUrl'
@@ -245,8 +240,7 @@ describe('server/sockets: protractor-runner:', () => {
             childProcess.spawn.restore();
             config.beforeProtractor.restore();
             config.afterProtractor.restore();
-            console.info.restore();
-            console.log.restore();
+            tractorLogger.info.restore();
         });
     });
 
@@ -264,10 +258,8 @@ describe('server/sockets: protractor-runner:', () => {
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
         sinon.stub(config, 'beforeProtractor');
         sinon.stub(config, 'afterProtractor');
-        sinon.stub(console, 'error');
-        sinon.stub(console, 'info');
-        sinon.stub(console, 'log');
-        sinon.stub(console, 'warn');
+        sinon.stub(tractorLogger, 'error');
+        sinon.stub(tractorLogger, 'info');
 
         let options = {
             baseUrl: 'baseUrl'
@@ -279,16 +271,14 @@ describe('server/sockets: protractor-runner:', () => {
         }, MAGIC_TIMEOUT_NUMBER);
 
         return run.then(() => {
-            expect(console.error).to.have.been.calledOnce();
+            expect(tractorLogger.error).to.have.been.calledOnce();
         })
         .finally(() => {
             childProcess.spawn.restore();
             config.beforeProtractor.restore();
             config.afterProtractor.restore();
-            console.error.restore();
-            console.info.restore();
-            console.log.restore();
-            console.warn.restore();
+            tractorLogger.error.restore();
+            tractorLogger.info.restore();
         });
     });
 
@@ -306,9 +296,8 @@ describe('server/sockets: protractor-runner:', () => {
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
         sinon.stub(config, 'beforeProtractor');
         sinon.stub(config, 'afterProtractor');
-        sinon.stub(console, 'error');
-        sinon.stub(console, 'info');
-        sinon.stub(console, 'log');
+        sinon.stub(tractorLogger, 'error');
+        sinon.stub(tractorLogger, 'info');
 
         let options = {
             baseUrl: 'baseUrl'
@@ -320,15 +309,14 @@ describe('server/sockets: protractor-runner:', () => {
         }, MAGIC_TIMEOUT_NUMBER);
 
         return run.then(() => {
-            expect(console.error).to.have.been.calledOnce();
+            expect(tractorLogger.error).to.have.been.calledOnce();
         })
         .finally(() => {
             childProcess.spawn.restore();
             config.beforeProtractor.restore();
             config.afterProtractor.restore();
-            console.error.restore();
-            console.info.restore();
-            console.log.restore();
+            tractorLogger.error.restore();
+            tractorLogger.info.restore();
         });
     });
 
@@ -346,9 +334,8 @@ describe('server/sockets: protractor-runner:', () => {
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
         sinon.stub(config, 'beforeProtractor');
         sinon.stub(config, 'afterProtractor');
-        sinon.stub(console, 'info');
-        sinon.stub(console, 'log');
         sinon.spy(socket, 'emit');
+        sinon.stub(tractorLogger, 'info');
 
         let options = {
             baseUrl: 'baseUrl'
@@ -375,8 +362,7 @@ describe('server/sockets: protractor-runner:', () => {
             childProcess.spawn.restore();
             config.beforeProtractor.restore();
             config.afterProtractor.restore();
-            console.info.restore();
-            console.log.restore();
+            tractorLogger.info.restore();
         });
     });
 
@@ -394,9 +380,8 @@ describe('server/sockets: protractor-runner:', () => {
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
         sinon.stub(config, 'beforeProtractor');
         sinon.stub(config, 'afterProtractor');
-        sinon.stub(console, 'info');
-        sinon.stub(console, 'log');
         sinon.spy(socket, 'emit');
+        sinon.stub(tractorLogger, 'info');
 
         let options = {
             baseUrl: 'baseUrl'
@@ -418,8 +403,7 @@ describe('server/sockets: protractor-runner:', () => {
             childProcess.spawn.restore();
             config.beforeProtractor.restore();
             config.afterProtractor.restore();
-            console.info.restore();
-            console.log.restore();
+            tractorLogger.info.restore();
         });
     });
 
@@ -437,9 +421,8 @@ describe('server/sockets: protractor-runner:', () => {
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
         sinon.stub(config, 'beforeProtractor');
         sinon.stub(config, 'afterProtractor');
-        sinon.stub(console, 'info');
-        sinon.stub(console, 'log');
         sinon.spy(socket, 'emit');
+        sinon.stub(tractorLogger, 'info');
 
         let options = {
             baseUrl: 'baseUrl'
@@ -459,8 +442,7 @@ describe('server/sockets: protractor-runner:', () => {
             childProcess.spawn.restore();
             config.beforeProtractor.restore();
             config.afterProtractor.restore();
-            console.info.restore();
-            console.log.restore();
+            tractorLogger.info.restore();
         });
     });
 });
