@@ -7,13 +7,12 @@ import path from 'path';
 
 // Dependencies:
 import defaults from 'lodash.defaults';
-import commander from 'commander';
+import minimist from 'minimist';
 
 class TractorConfigLoader {
     loadConfig () {
-        commander.option('-c, --config <path>').parse(process.argv);
-
-        let configPath = path.resolve(process.cwd(), commander.config || CONFIG_FILE_NAME);
+        let args = minimist(process.argv.slice(2));
+        let configPath = path.resolve(process.cwd(), args.config || CONFIG_FILE_NAME);
 
         let config;
         try {

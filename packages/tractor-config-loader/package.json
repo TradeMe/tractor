@@ -1,6 +1,6 @@
 {
   "name": "tractor-config-loader",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -43,7 +43,7 @@
     "sinon-chai": "2.8.0"
   },
   "dependencies": {
-    "commander": "2.9.0",
-    "lodash.defaults": "4.2.0"
+    "lodash.defaults": "4.2.0",
+    "minimist": "1.2.0"
   }
 }

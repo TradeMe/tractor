@@ -10,27 +10,12 @@ const expect = chai.expect;
 chai.use(sinonChai);
 
 // Dependencies:
-import commander from 'commander';
 import path from 'path';
 
 // Under test:
 import tractorConfigLoader from './index';
 
 describe('tractor-config-loader: loadConfig:', () => {
-    it('should parse the argv to find a config file path', () => {
-        sinon.spy(commander, 'option');
-        sinon.spy(commander, 'parse');
-
-        tractorConfigLoader.loadConfig();
-
-        expect(commander.option).to.have.been.calledWith('-c, --config <path>');
-        expect(commander.parse).to.have.been.calledWith(process.argv);
-
-        commander.option.restore();
-        commander.parse.restore();
-        delete commander.config;
-    });
-
     it('should use the value from argv to load the config', () => {
         process.argv.push('--config');
         process.argv.push('./my.conf.js');
@@ -45,7 +30,6 @@ describe('tractor-config-loader: loadConfig:', () => {
         process.argv.pop();
         process.cwd.restore();
         path.resolve.restore();
-        delete commander.config;
     });
 
     it('should fall back to looking from "./tractor.conf.js"', () => {
@@ -58,7 +42,6 @@ describe('tractor-config-loader: loadConfig:', () => {
 
         process.cwd.restore();
         path.resolve.restore();
-        delete commander.config;
     });
 
     it('should load config values from a file', () => {
@@ -72,7 +55,6 @@ describe('tractor-config-loader: loadConfig:', () => {
 
         process.argv.pop();
         process.argv.pop();
-        delete commander.config;
     });
 
     it('should load config values from an ES2015 module', () => {
@@ -86,7 +68,6 @@ describe('tractor-config-loader: loadConfig:', () => {
 
         process.argv.pop();
         process.argv.pop();
-        delete commander.config;
     });
 
     it('should load any missing values from the default config', () => {
