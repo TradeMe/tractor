@@ -17,8 +17,8 @@ echo "Done 👍"
 # See if commit message includes "update"
 git log --name-status HEAD^..HEAD | grep "update" || exit 0
 
-echo "(Creat/updat)ing lockfile... 🔒"
-yarn
+echo "Creating lockfile... 🔒"
+yarn --ignore-scripts
 echo "Done 👍"
 
 echo "Committing and pushing yarn.lock... 🖐"
