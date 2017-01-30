@@ -7,7 +7,7 @@ const REQUEST_ERROR = 400;
 const TRAILING_SLASH_REGEX = /(\/)[gimuy]*?$/;
 
 // Utilities:
-import _ from 'lodash';
+import isObject from 'lodash.isobject';
 
 // Dependencies:
 import escodegen from 'escodegen';
@@ -78,14 +78,16 @@ export default class JavaScriptFile extends File {
 }
 
 function rebuildRegExps (object) {
-    _.each(object, value => {
+    Object.keys(object)
+    .forEach(key => {
+        let value = object[key];
         if (value && isRegexLiteral(value)) {
             let regexContent = value.raw
             .replace(LEADING_SLASH_REGEX, '')
             .replace(TRAILING_SLASH_REGEX, '');
             let [regexFlags] = REGEXP_FLAGS_REGEX.exec(value.raw);
             value.value = new RegExp(regexContent, regexFlags);
-        } else if (_.isArray(value) || _.isObject(value)) {
+        } else if (Array.isArray(value) || isObject(value)) {
             rebuildRegExps(value);
         }
     });

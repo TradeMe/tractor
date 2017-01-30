@@ -2,8 +2,8 @@
 import config from './config/config';
 
 // Utilities:
-import _ from 'lodash';
 import fs from 'fs';
+import template from 'lodash.template';
 import path from 'path';
 
 // Dependencies:
@@ -99,9 +99,9 @@ function injectPlugins (application, templatePath) {
     plugins.forEach(plugin => application.use(express.static(path.dirname(plugin.script))));
 
     return (request, response) => {
-        let template = _.template(fs.readFileSync(templatePath, 'utf8'));
+        let createTemplate = template(fs.readFileSync(templatePath, 'utf8'));
         let scripts = plugins.map(plugin => path.basename(plugin.script));
-        let rendered = template({ scripts });
+        let rendered = createTemplate({ scripts });
         response.header('Content-Type', 'text/html');
         response.send(rendered);
     };

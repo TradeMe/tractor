@@ -2,7 +2,7 @@
 const REQUEST_ERROR = 400;
 
 // Utilities:
-import _ from 'lodash';
+import escapeRegExp from 'lodash.escapeRegExp';
 import path from 'path';
 
 // Dependencies:
@@ -73,7 +73,7 @@ export default class FeatureFile extends File {
 }
 
 function refactorName (newFile, oldName, newName) {
-    let escapedOldName = _.escapeRegExp(oldName);
+    let escapedOldName = escapeRegExp(oldName);
     let oldNameRegExp = new RegExp(`(Feature:\\s)${escapedOldName}(\\r\\n|\\n)`);
 
     return newFile.save(newFile.content.replace(oldNameRegExp, `$1${newName}$2`));
