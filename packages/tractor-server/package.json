@@ -70,6 +70,6 @@
     "tractor-file-structure": "0.1.0-beta.5",
     "tractor-js-file-transformer": "0.1.0",
     "tractor-logger": "0.1.0-beta.0",
-    "tractor-plugin-loader": "0.1.1"
+    "tractor-plugin-loader": "0.1.2"
   }
 }

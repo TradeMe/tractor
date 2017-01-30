@@ -3403,9 +3403,9 @@ tractor-config-loader@0.1.0:
     commander "2.9.0"
     lodash.defaults "4.2.0"
 
-tractor-error-handler@0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/tractor-error-handler/-/tractor-error-handler-0.1.0.tgz#4513ef79274adda28ceb629c61be22281699e875"
+tractor-error-handler@0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/tractor-error-handler/-/tractor-error-handler-0.1.1.tgz#6fe73d95d3050fddb17fa5e4e243d723bb01585d"
 
 tractor-error-handler@0.1.2:
   version "0.1.2"
@@ -3440,15 +3440,15 @@ tractor-logger@0.1.0-beta.0:
   dependencies:
     npmlog "4.0.2"
 
-tractor-plugin-loader@0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/tractor-plugin-loader/-/tractor-plugin-loader-0.1.1.tgz#7943a8b9b9e886a885bbe0d4c8b8a9373b88f35e"
+tractor-plugin-loader@0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/tractor-plugin-loader/-/tractor-plugin-loader-0.1.2.tgz#53e6588c6180a089c35bffc6e6969404b0c76517"
   dependencies:
     camel-case "3.0.0"
     param-case "2.1.0"
     sentence-case "2.1.0"
     tractor-config-loader "0.1.0"
-    tractor-error-handler "0.1.0"
+    tractor-error-handler "0.1.1"
 
 tryit@^1.0.1:
   version "1.0.3"
