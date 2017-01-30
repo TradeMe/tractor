@@ -45,7 +45,7 @@
   },
   "dependencies": {
     "bluebird": "3.4.7",
-    "tractor-config-loader": "0.1.0",
+    "tractor-config-loader": "0.1.1",
     "tractor-error-handler": "0.1.2"
   }
 }
