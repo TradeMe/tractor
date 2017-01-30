@@ -14,6 +14,7 @@ chai.use(sinonChai);
 
 // Dependencies:
 import childProcess from 'child_process';
+import * as tractorLogger from 'tractor-logger';
 
 // Under test:
 import installTractorDependenciesLocally from './install-tractor-dependencies-locally';
@@ -28,8 +29,7 @@ describe('tractor - init/install-tractor-dependencies-locally:', () => {
             }
         });
         sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(''));
-        sinon.stub(console, 'info');
-        sinon.stub(console, 'log');
+        sinon.stub(tractorLogger, 'info');
 
         return installTractorDependenciesLocally.run()
         .then(() => {
@@ -38,8 +38,7 @@ describe('tractor - init/install-tractor-dependencies-locally:', () => {
         .finally(() => {
             childProcess.exec.restore();
             childProcess.execAsync.restore();
-            console.info.restore();
-            console.log.restore();
+            tractorLogger.info.restore();
         });
     });
 
@@ -52,8 +51,7 @@ describe('tractor - init/install-tractor-dependencies-locally:', () => {
             }
         });
         sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(''));
-        sinon.stub(console, 'info');
-        sinon.stub(console, 'log');
+        sinon.stub(tractorLogger, 'info');
 
         return installTractorDependenciesLocally.run()
         .then(() => {
@@ -71,8 +69,7 @@ describe('tractor - init/install-tractor-dependencies-locally:', () => {
         .finally(() => {
             childProcess.exec.restore();
             childProcess.execAsync.restore();
-            console.info.restore();
-            console.log.restore();
+            tractorLogger.info.restore();
         });
     });
 
@@ -85,8 +82,7 @@ describe('tractor - init/install-tractor-dependencies-locally:', () => {
             }
         });
         sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(''));
-        sinon.stub(console, 'info');
-        sinon.stub(console, 'log');
+        sinon.stub(tractorLogger, 'info');
 
         return installTractorDependenciesLocally.run()
         .then(() => {
@@ -104,8 +100,7 @@ describe('tractor - init/install-tractor-dependencies-locally:', () => {
         .finally(() => {
             childProcess.exec.restore();
             childProcess.execAsync.restore();
-            console.info.restore();
-            console.log.restore();
+            tractorLogger.info.restore();
         });
     });
 
@@ -118,21 +113,19 @@ describe('tractor - init/install-tractor-dependencies-locally:', () => {
             }
         });
         sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(''));
-        sinon.stub(console, 'info');
-        sinon.stub(console, 'log');
+        sinon.stub(tractorLogger, 'info');
 
         return installTractorDependenciesLocally.run()
         .then(() => {
-            expect(console.info).to.have.been.calledWith('Checking installed npm dependencies...');
-            expect(console.info).to.have.been.calledWith('Installing npm dependencies for tractor...');
-            expect(console.info).to.have.been.calledWith('Installing "bluebird@2.10.2"...');
-            expect(console.log).to.have.been.calledWith('Installed "bluebird@2.10.2".');
+            expect(tractorLogger.info).to.have.been.calledWith('Checking installed npm dependencies...');
+            expect(tractorLogger.info).to.have.been.calledWith('Installing npm dependencies for tractor...');
+            expect(tractorLogger.info).to.have.been.calledWith('Installing "bluebird@2.10.2"...');
+            expect(tractorLogger.info).to.have.been.calledWith('Installed "bluebird@2.10.2".');
         })
         .finally(() => {
             childProcess.exec.restore();
             childProcess.execAsync.restore();
-            console.info.restore();
-            console.log.restore();
+            tractorLogger.info.restore();
         });
     });
 
@@ -145,18 +138,16 @@ describe('tractor - init/install-tractor-dependencies-locally:', () => {
             }
         });
         sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(''));
-        sinon.stub(console, 'info');
-        sinon.stub(console, 'log');
+        sinon.stub(tractorLogger, 'info');
 
         return installTractorDependenciesLocally.run()
         .then(() => {
-            expect(console.info).to.have.been.calledWith('All npm dependencies for tractor already installed.');
+            expect(tractorLogger.info).to.have.been.calledWith('All npm dependencies for tractor already installed.');
         })
         .finally(() => {
             childProcess.exec.restore();
             childProcess.execAsync.restore();
-            console.info.restore();
-            console.log.restore();
+            tractorLogger.info.restore();
         });
     });
 
@@ -169,18 +160,18 @@ describe('tractor - init/install-tractor-dependencies-locally:', () => {
             }
         });
         sinon.stub(childProcess, 'execAsync').returns(Promise.reject(new Error()));
-        sinon.stub(console, 'error');
-        sinon.stub(console, 'info');
+        sinon.stub(tractorLogger, 'error');
+        sinon.stub(tractorLogger, 'info');
 
         return installTractorDependenciesLocally.run()
         .then(() => {
-            expect(console.error).to.have.been.calledWith(`Couldn't install "bluebird@2.10.2". Either run "tractor init" again, or install it manually by running "npm install bluebird@2.10.2"`);
+            expect(tractorLogger.error).to.have.been.calledWith(`Couldn't install "bluebird@2.10.2". Either run "tractor init" again, or install it manually by running "npm install bluebird@2.10.2"`);
         })
         .finally(() => {
             childProcess.exec.restore();
             childProcess.execAsync.restore();
-            console.error.restore();
-            console.info.restore();
+            tractorLogger.error.restore();
+            tractorLogger.info.restore();
         });
     });
 });

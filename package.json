@@ -47,6 +47,7 @@
     "commander": "2.9.0",
     "tractor-config-loader": "0.1.1",
     "tractor-error-handler": "0.1.2",
+    "tractor-logger": "0.1.0-beta.0",
     "tractor-server": "0.10.0-beta.0"
   },
   "bin": {

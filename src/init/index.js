@@ -1,5 +1,6 @@
-// Dependencies:
+// Utilities:
 import tractorConfigLoader from 'tractor-config-loader';
+import { error, info } from 'tractor-logger';
 
 // Config:
 const CONFIG = tractorConfigLoader.loadConfig();
@@ -11,16 +12,16 @@ import installTractorDependenciesLocally from './install-tractor-dependencies-lo
 import setUpSelenium from './set-up-selenium';
 
 export default function init () {
-    console.info('Setting up tractor...');
+    info('Setting up tractor...');
 
     return createTestDirectoryStructure.run(CONFIG.testDirectory)
     .then(() => createBaseTestFiles.run(CONFIG.testDirectory))
     .then(() => installTractorDependenciesLocally.run())
     .then(() => setUpSelenium.run())
-    .then(() => console.info('Set up complete!'))
-    .catch(error => {
-        console.error('Something broke, sorry :(');
-        console.error(error.message);
-        throw error;
+    .then(() => info('Set up complete!'))
+    .catch(e => {
+        error('Something broke, sorry :(');
+        error(e.message);
+        throw e;
     });
 }

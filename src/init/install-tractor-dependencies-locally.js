@@ -16,6 +16,7 @@ const TO_INSTALL = [
 
 // Utilities:
 import Promise from 'bluebird';
+import { error, info } from 'tractor-logger';
 
 // Dependencies:
 const childProcess = Promise.promisifyAll(require('child_process'));
@@ -33,7 +34,7 @@ function installTractorDependenciesLocally () {
 }
 
 function getInstalledDependencies () {
-    console.info('Checking installed npm dependencies...');
+    info('Checking installed npm dependencies...');
 
     let resolve;
     let deferred = new Promise((...args) => {
@@ -54,15 +55,15 @@ function filterAreadyInstalledDependencies (installed, dependencies) {
 
 function installDependencies (modules) {
     if (modules.length) {
-        console.info('Installing npm dependencies for tractor...');
+        info('Installing npm dependencies for tractor...');
     } else {
-        console.info('All npm dependencies for tractor already installed.');
+        info('All npm dependencies for tractor already installed.');
     }
 
     return Promise.all(modules.map(module => {
-        console.info(`Installing "${module}"...`);
+        info(`Installing "${module}"...`);
         return childProcess.execAsync(`${INSTALL_DEPENDENCIES_COMMAND}${module}`)
-        .then(() => console.log(`Installed "${module}".`))
-        .catch(() => console.error(`Couldn't install "${module}". Either run "tractor init" again, or install it manually by running "npm install ${module}"`));
+        .then(() => info(`Installed "${module}".`))
+        .catch(() => error(`Couldn't install "${module}". Either run "tractor init" again, or install it manually by running "npm install ${module}"`));
     }));
 }

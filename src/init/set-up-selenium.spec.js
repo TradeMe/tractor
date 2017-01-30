@@ -13,6 +13,7 @@ chai.use(sinonChai);
 // Dependencies:
 import childProcess from 'child_process';
 import path from 'path';
+import * as tractorLogger from 'tractor-logger';
 
 // Under test:
 import setUpSelenium from './set-up-selenium';
@@ -20,8 +21,7 @@ import setUpSelenium from './set-up-selenium';
 describe('tractor - init/set-up-selenium:', () => {
     it('should run the "webdriver-manager update" command', () => {
         sinon.stub(childProcess, 'execAsync').returns(Promise.resolve());
-        sinon.stub(console, 'info');
-        sinon.stub(console, 'log');
+        sinon.stub(tractorLogger, 'info');
 
         return setUpSelenium.run()
         .then(() => {
@@ -30,25 +30,22 @@ describe('tractor - init/set-up-selenium:', () => {
         })
         .finally(() => {
             childProcess.execAsync.restore();
-            console.info.restore();
-            console.log.restore();
+            tractorLogger.info.restore();
         });
     });
 
     it('should tell the user what it is doing', () => {
         sinon.stub(childProcess, 'execAsync').returns(Promise.resolve());
-        sinon.stub(console, 'info');
-        sinon.stub(console, 'log');
+        sinon.stub(tractorLogger, 'info');
 
         return setUpSelenium.run()
         .then(() => {
-            expect(console.info).to.have.been.calledWith('Setting up Selenium...');
-            expect(console.log).to.have.been.calledWith('Selenium setup complete.');
+            expect(tractorLogger.info).to.have.been.calledWith('Setting up Selenium...');
+            expect(tractorLogger.info).to.have.been.calledWith('Selenium setup complete.');
         })
         .finally(() => {
             childProcess.execAsync.restore();
-            console.info.restore();
-            console.log.restore();
+            tractorLogger.info.restore();
         });
     });
 });

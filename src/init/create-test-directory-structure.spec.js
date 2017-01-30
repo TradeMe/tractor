@@ -13,6 +13,7 @@ chai.use(sinonChai);
 // Dependencies:
 import fs from 'graceful-fs';
 import path from 'path';
+import * as tractorLogger from 'tractor-logger';
 
 // Under test:
 import createTestDirectoryStructure from './create-test-directory-structure';
@@ -20,8 +21,8 @@ import createTestDirectoryStructure from './create-test-directory-structure';
 describe('tractor - init/create-test-directory-structure:', () => {
     it('should create the tests directory structure', () => {
         sinon.stub(fs, 'mkdirAsync').returns(Promise.resolve());
-        sinon.stub(console, 'info');
-        sinon.stub(console, 'warn');
+        sinon.stub(tractorLogger, 'info');
+        sinon.stub(tractorLogger, 'warn');
 
         return createTestDirectoryStructure.run('directory')
         .then(() => {
@@ -35,8 +36,8 @@ describe('tractor - init/create-test-directory-structure:', () => {
         })
         .finally(() => {
             fs.mkdirAsync.restore();
-            console.info.restore();
-            console.warn.restore();
+            tractorLogger.info.restore();
+            tractorLogger.warn.restore();
         });
     });
 
@@ -46,51 +47,51 @@ describe('tractor - init/create-test-directory-structure:', () => {
             code: 'EEXIST'
         };
         sinon.stub(fs, 'mkdirAsync').returns(Promise.reject(error));
-        sinon.stub(console, 'info');
-        sinon.stub(console, 'warn');
+        sinon.stub(tractorLogger, 'info');
+        sinon.stub(tractorLogger, 'warn');
 
         return createTestDirectoryStructure.run('directory')
         .then(() => {
-            expect(console.warn).to.have.been.calledWith('"directory" directory already exists. Moving on...');
+            expect(tractorLogger.warn).to.have.been.calledWith('"directory" directory already exists. Moving on...');
         })
         .finally(() => {
             fs.mkdirAsync.restore();
-            console.info.restore();
-            console.warn.restore();
+            tractorLogger.info.restore();
+            tractorLogger.warn.restore();
         });
     });
 
     it('should rethrow any other errors', () => {
         sinon.stub(fs, 'mkdirAsync').returns(Promise.reject(new Promise.OperationalError()));
-        sinon.stub(console, 'info');
-        sinon.stub(console, 'warn');
+        sinon.stub(tractorLogger, 'info');
+        sinon.stub(tractorLogger, 'warn');
 
         return createTestDirectoryStructure.run('directory')
         .catch(() => { })
         .then(() => {
-            expect(console.warn).to.not.have.been.called();
+            expect(tractorLogger.warn).to.not.have.been.called();
         })
         .finally(() => {
             fs.mkdirAsync.restore();
-            console.info.restore();
-            console.warn.restore();
+            tractorLogger.info.restore();
+            tractorLogger.warn.restore();
         });
     });
 
     it('should tell the user what it is doing', () => {
         sinon.stub(fs, 'mkdirAsync').returns(Promise.resolve());
-        sinon.stub(console, 'info');
-        sinon.stub(console, 'warn');
+        sinon.stub(tractorLogger, 'info');
+        sinon.stub(tractorLogger, 'warn');
 
         return createTestDirectoryStructure.run('directory')
         .then(() => {
-            expect(console.info).to.have.been.calledWith('Creating directory structure...');
-            expect(console.info).to.have.been.calledWith('Directory structure created.');
+            expect(tractorLogger.info).to.have.been.calledWith('Creating directory structure...');
+            expect(tractorLogger.info).to.have.been.calledWith('Directory structure created.');
         })
         .finally(() => {
             fs.mkdirAsync.restore();
-            console.info.restore();
-            console.warn.restore();
+            tractorLogger.info.restore();
+            tractorLogger.warn.restore();
         });
     });
 });

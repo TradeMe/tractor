@@ -11,6 +11,7 @@ const SUPPORT_DIRECTORY = 'support';
 import Promise from 'bluebird';
 const fs = Promise.promisifyAll(require('graceful-fs'));
 import path from 'path';
+import { info, warn } from 'tractor-logger';
 
 // Errors:
 import { TractorError } from 'tractor-error-handler';
@@ -20,7 +21,7 @@ export default {
 };
 
 function createTestDirectoryStructure (testDirectory) {
-    console.info('Creating directory structure...');
+    info('Creating directory structure...');
     return createAllDirectories(testDirectory);
 }
 
@@ -39,11 +40,11 @@ function createAllDirectories (testDirectory) {
         SUPPORT_DIRECTORY
     ].map(directory => {
         return createDir(path.join(testDirectory, directory))
-        .catch(TractorError, error => console.warn(`${error.message} Moving on...`));
+        .catch(TractorError, error => warn(`${error.message} Moving on...`));
     });
 
     return Promise.all(createDirectories)
-    .then(() => console.info('Directory structure created.'));
+    .then(() => info('Directory structure created.'));
 }
 
 function createDir (dir) {

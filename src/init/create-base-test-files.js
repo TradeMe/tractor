@@ -9,6 +9,7 @@ const WORLD_FILE_NAME = 'world.js';
 import Promise from 'bluebird';
 const fs = Promise.promisifyAll(require('graceful-fs'));
 import path from 'path';
+import { info, warn } from 'tractor-logger';
 
 // Errors:
 import { TractorError } from 'tractor-error-handler';
@@ -34,12 +35,12 @@ function createFile (fileName, directoryPath) {
     .then(() => {
         throw new TractorError(`"${fileName}" already exists.`);
     })
-    .catch(Promise.OperationalError, () => console.info(`Creating "${fileName}"...`))
+    .catch(Promise.OperationalError, () => info(`Creating "${fileName}"...`))
     .then(() => fs.readFileAsync(readPath))
     .then(contents => fs.writeFileAsync(writePath, contents))
-    .then(() => console.log(`"${fileName}" created.`));
+    .then(() => info(`"${fileName}" created.`));
 }
 
 function logNotCopying (error) {
-    console.warn(`${error.message} Not copying...`);
+    warn(`${error.message} Not copying...`);
 }

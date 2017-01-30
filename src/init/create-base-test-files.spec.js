@@ -13,6 +13,7 @@ chai.use(sinonChai);
 // Dependencies:
 import fs from 'graceful-fs';
 import path from 'path';
+import * as tractorLogger from 'tractor-logger';
 
 // Under test:
 import createBaseTestFiles from './create-base-test-files';
@@ -22,8 +23,7 @@ describe('tractor - init/create-base-test-files:', () => {
         sinon.stub(fs, 'openAsync').returns(Promise.reject(new Promise.OperationalError()));
         sinon.stub(fs, 'readFileAsync').returns(Promise.resolve('world'));
         sinon.stub(fs, 'writeFileAsync').returns(Promise.resolve());
-        sinon.stub(console, 'info');
-        sinon.stub(console, 'log');
+        sinon.stub(tractorLogger, 'info');
 
         return createBaseTestFiles.run('')
         .then(() => {
@@ -34,22 +34,21 @@ describe('tractor - init/create-base-test-files:', () => {
             fs.openAsync.restore();
             fs.readFileAsync.restore();
             fs.writeFileAsync.restore();
-            console.info.restore();
-            console.log.restore();
+            tractorLogger.info.restore();
         });
     });
 
     it('should tell the user if "world.js" already exists', () => {
         sinon.stub(fs, 'openAsync').returns(Promise.resolve(''));
-        sinon.stub(console, 'warn');
+        sinon.stub(tractorLogger, 'warn');
 
         return createBaseTestFiles.run('')
         .then(() => {
-            expect(console.warn).to.have.been.calledWith('"world.js" already exists. Not copying...');
+            expect(tractorLogger.warn).to.have.been.calledWith('"world.js" already exists. Not copying...');
         })
         .finally(() => {
             fs.openAsync.restore();
-            console.warn.restore();
+            tractorLogger.warn.restore();
         });
     });
 
@@ -57,8 +56,7 @@ describe('tractor - init/create-base-test-files:', () => {
         sinon.stub(fs, 'openAsync').returns(Promise.reject(new Promise.OperationalError()));
         sinon.stub(fs, 'readFileAsync').returns(Promise.resolve('config'));
         sinon.stub(fs, 'writeFileAsync').returns(Promise.resolve());
-        sinon.stub(console, 'info');
-        sinon.stub(console, 'log');
+        sinon.stub(tractorLogger, 'info');
 
         return createBaseTestFiles.run('')
         .then(() => {
@@ -69,22 +67,21 @@ describe('tractor - init/create-base-test-files:', () => {
             fs.openAsync.restore();
             fs.readFileAsync.restore();
             fs.writeFileAsync.restore();
-            console.info.restore();
-            console.log.restore();
+            tractorLogger.info.restore();
         });
     });
 
     it('should tell the user if "protractor.conf.js" already exists', () => {
         sinon.stub(fs, 'openAsync').returns(Promise.resolve(''));
-        sinon.stub(console, 'warn');
+        sinon.stub(tractorLogger, 'warn');
 
         return createBaseTestFiles.run('')
         .then(() => {
-            expect(console.warn).to.have.been.calledWith('"protractor.conf.js" already exists. Not copying...');
+            expect(tractorLogger.warn).to.have.been.calledWith('"protractor.conf.js" already exists. Not copying...');
         })
         .finally(() => {
             fs.openAsync.restore();
-            console.warn.restore();
+            tractorLogger.warn.restore();
         });
     });
 
@@ -92,8 +89,7 @@ describe('tractor - init/create-base-test-files:', () => {
         sinon.stub(fs, 'openAsync').returns(Promise.reject(new Promise.OperationalError()));
         sinon.stub(fs, 'readFileAsync').returns(Promise.resolve('hooks'));
         sinon.stub(fs, 'writeFileAsync').returns(Promise.resolve());
-        sinon.stub(console, 'info');
-        sinon.stub(console, 'log');
+        sinon.stub(tractorLogger, 'info');
 
         return createBaseTestFiles.run('')
         .then(() => {
@@ -104,22 +100,21 @@ describe('tractor - init/create-base-test-files:', () => {
             fs.openAsync.restore();
             fs.readFileAsync.restore();
             fs.writeFileAsync.restore();
-            console.info.restore();
-            console.log.restore();
+            tractorLogger.info.restore();
         });
     });
 
     it('should tell the user if "hooks.js" already exists', () => {
         sinon.stub(fs, 'openAsync').returns(Promise.resolve(''));
-        sinon.stub(console, 'warn');
+        sinon.stub(tractorLogger, 'warn');
 
         return createBaseTestFiles.run('')
         .then(() => {
-            expect(console.warn).to.have.been.calledWith('"hooks.js" already exists. Not copying...');
+            expect(tractorLogger.warn).to.have.been.calledWith('"hooks.js" already exists. Not copying...');
         })
         .finally(() => {
             fs.openAsync.restore();
-            console.warn.restore();
+            tractorLogger.warn.restore();
         });
     });
 
@@ -127,24 +122,22 @@ describe('tractor - init/create-base-test-files:', () => {
         sinon.stub(fs, 'openAsync').returns(Promise.reject(new Promise.OperationalError()));
         sinon.stub(fs, 'readFileAsync').returns(Promise.resolve(''));
         sinon.stub(fs, 'writeFileAsync').returns(Promise.resolve());
-        sinon.stub(console, 'info');
-        sinon.stub(console, 'log');
+        sinon.stub(tractorLogger, 'info');
 
         return createBaseTestFiles.run('')
         .then(() => {
-            expect(console.info).to.have.been.calledWith('Creating "world.js"...');
-            expect(console.info).to.have.been.calledWith('Creating "protractor.conf.js"...');
-            expect(console.info).to.have.been.calledWith('Creating "hooks.js"...');
-            expect(console.log).to.have.been.calledWith('"world.js" created.');
-            expect(console.log).to.have.been.calledWith('"protractor.conf.js" created.');
-            expect(console.log).to.have.been.calledWith('"hooks.js" created.');
+            expect(tractorLogger.info).to.have.been.calledWith('Creating "world.js"...');
+            expect(tractorLogger.info).to.have.been.calledWith('Creating "protractor.conf.js"...');
+            expect(tractorLogger.info).to.have.been.calledWith('Creating "hooks.js"...');
+            expect(tractorLogger.info).to.have.been.calledWith('"world.js" created.');
+            expect(tractorLogger.info).to.have.been.calledWith('"protractor.conf.js" created.');
+            expect(tractorLogger.info).to.have.been.calledWith('"hooks.js" created.');
         })
         .finally(() => {
             fs.openAsync.restore();
             fs.readFileAsync.restore();
             fs.writeFileAsync.restore();
-            console.info.restore();
-            console.log.restore();
+            tractorLogger.info.restore();
         });
     });
 });
