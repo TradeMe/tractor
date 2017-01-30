@@ -22,7 +22,7 @@ yarn --ignore-scripts
 echo "Done 👍"
 
 echo "Committing and pushing yarn.lock... 🖐"
-git config --global user.email "no@no.com"
+git config --global user.email "$PUSH_EMAIL"
 git config --global user.name "Travis CI"
 git config --global push.default simple
 
