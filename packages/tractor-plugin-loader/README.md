@@ -1,4 +1,6 @@
 # tractor-plugin-loader
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/phenomnomnominal/tractor-plugin-loader.svg)](https://greenkeeper.io/)
 [![npm version](https://img.shields.io/npm/v/tractor-plugin-loader.svg)](https://img.shields.io/npm/v/tractor-plugin-loader.svg)
 
 Plugin loader for [**tractor**](https://github.com/TradeMe/tractor) to provide additional UI testing capabilities.
