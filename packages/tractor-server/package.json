@@ -65,7 +65,7 @@
     "stripcolorcodes": "0.1.0",
     "tractor-client": "0.10.0-beta.0",
     "tractor-config-loader": "0.1.0",
-    "tractor-error-handler": "0.1.1",
+    "tractor-error-handler": "0.1.2",
     "tractor-file-structure": "0.1.0-beta.5",
     "tractor-js-file-transformer": "0.1.0",
     "tractor-logger": "0.1.0-beta.0",
