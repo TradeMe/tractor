@@ -1,4 +1,6 @@
 # tractor-logger
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/phenomnomnominal/tractor-logger.svg)](https://greenkeeper.io/)
 [![npm version](https://img.shields.io/npm/v/tractor-logger.svg)](https://img.shields.io/npm/v/tractor-logger.svg)
 
 A general logger for [**tractor**](https://github.com/TradeMe/tractor).
