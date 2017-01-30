@@ -2,7 +2,7 @@
 const REQUEST_ERROR = 400;
 
 // Utilities:
-import escapeRegExp from 'lodash.escapeRegExp';
+import escapeRegExp from 'lodash.escaperegexp';
 import path from 'path';
 
 // Dependencies:
