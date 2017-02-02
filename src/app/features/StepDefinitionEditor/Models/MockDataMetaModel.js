@@ -14,7 +14,7 @@ var createMockDataMetaModelConstructor = function () {
         Object.defineProperties(this, {
             name: {
                 get: function () {
-                    return mockData.meta.name;
+                    return mockData.basename;
                 }
             },
             variableName: {

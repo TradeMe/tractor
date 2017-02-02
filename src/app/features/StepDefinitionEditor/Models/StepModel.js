@@ -115,7 +115,7 @@ var createStepModelConstructor = function (
         } else if (expectations.length) {
             template += 'Promise.all([%= expectations %]).spread(function () {  done(); }).catch(done.fail);';
         } else {
-            template += 'done.pending();';
+            template += 'done(null, \'pending\');';
         }
         template += '});';
 

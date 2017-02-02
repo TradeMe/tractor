@@ -65,7 +65,7 @@ var createMockDataInstanceModelConstructor = function (
     }
 
     function getRelativePath () {
-        var relativePath = path.relative(path.dirname(this.mockData.url), this.stepDefinition.url);
+        var relativePath = path.relative(path.dirname(this.stepDefinition.url), this.mockData.url);
         return relativePath;
     }
 };
