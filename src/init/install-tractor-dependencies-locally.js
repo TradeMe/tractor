@@ -11,7 +11,7 @@ const TO_INSTALL = [
     'protractor@4.0.11',
     'protractor-cucumber-framework@0.6.0',
     'tractor-plugin-browser@0.1.0',
-    'tractor-plugin-loader@0.1.1'
+    'tractor-plugin-loader@0.1.3'
 ];
 
 // Utilities:
