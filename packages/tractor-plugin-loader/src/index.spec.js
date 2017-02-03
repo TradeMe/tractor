@@ -448,7 +448,7 @@ describe('tractor-plugin-loader:', () => {
             tractorPluginLoader._plugins = null;
         });
 
-        it('should try to load the UI bundle and set the `hasUI` flag to true if it works', () => {
+        it('should try to load the UI bundle and set the `hasUI` flag to false if it fails', () => {
             let npmLsResult = {
                 stderr: '',
                 stdout: 'tractor-plugin-test'
