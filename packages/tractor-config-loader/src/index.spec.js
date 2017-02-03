@@ -76,5 +76,6 @@ describe('tractor-config-loader: loadConfig:', () => {
         expect(config.port).to.equal(4000);
         expect(config.testDirectory).to.equal('./e2e-tests');
         expect(config.environments).to.deep.equal(['http://localhost:8080']);
+        expect(config.tags).to.deep.equal([]);
     });
 });

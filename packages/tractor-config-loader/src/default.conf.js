@@ -10,6 +10,7 @@ export default {
     environments: [
         DEFAULT_ENVIRONMENT
     ],
+    tags: [],
     beforeProtractor: NOOP,
     afterProtractor: NOOP
 };
