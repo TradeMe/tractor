@@ -11,8 +11,5 @@
             "impliedStrict": true,
             "experimentalObjectRestSpread": true
         }
-    },
-    "rules": {
-        "no-console": ["error", { "allow": ["error"] }]
     }
 }

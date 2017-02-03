@@ -13,12 +13,15 @@ import sinonChai from 'sinon-chai';
 const expect = chai.expect;
 chai.use(sinonChai);
 
+// Dependencies:
+import * as tractorLogger from 'tractor-logger';
+
 // Under test:
 import { handle } from './error-handler';
 
 describe('tractor-error-handler: error-handler:', () => {
     it('should log the error to the console', () => {
-        sinon.stub(console, 'error');
+        sinon.stub(tractorLogger, 'error');
         let response = {
             status: _.noop,
             send: _.noop
@@ -26,13 +29,13 @@ describe('tractor-error-handler: error-handler:', () => {
 
         handle(response, new Error(), 'error');
 
-        expect(console.error).to.have.been.calledWith('error');
+        expect(tractorLogger.error).to.have.been.calledWith('error');
 
-        console.error.restore();
+        tractorLogger.error.restore();
     });
 
     it('should fall back to the `message` from the given `error`', () => {
-        sinon.stub(console, 'error');
+        sinon.stub(tractorLogger, 'error');
         let response = {
             status: _.noop,
             send: _.noop
@@ -40,13 +43,13 @@ describe('tractor-error-handler: error-handler:', () => {
 
         handle(response, new Error('error'));
 
-        expect(console.error).to.have.been.calledWith('error');
+        expect(tractorLogger.error).to.have.been.calledWith('error');
 
-        console.error.restore();
+        tractorLogger.error.restore();
     });
 
     it('should have a `status` of `500`', () => {
-        sinon.stub(console, 'error');
+        sinon.stub(tractorLogger, 'error');
         let response = {
             status: _.noop,
             send: _.noop
@@ -57,11 +60,11 @@ describe('tractor-error-handler: error-handler:', () => {
 
         expect(response.status).to.have.been.calledWith(constants.SERVER_ERROR);
 
-        console.error.restore();
+        tractorLogger.error.restore();
     });
 
     it('should response with the `message`', () => {
-        sinon.stub(console, 'error');
+        sinon.stub(tractorLogger, 'error');
         let response = {
             status: _.noop,
             send: _.noop
@@ -73,11 +76,11 @@ describe('tractor-error-handler: error-handler:', () => {
         let [responseData] = response.send.firstCall.args;
         expect(JSON.parse(responseData).error).to.equal('error');
 
-        console.error.restore();
+        tractorLogger.error.restore();
     });
 
     it('should fall back to the `message` from the given `error`', () => {
-        sinon.stub(console, 'error');
+        sinon.stub(tractorLogger, 'error');
         let response = {
             status: _.noop,
             send: _.noop
@@ -89,6 +92,6 @@ describe('tractor-error-handler: error-handler:', () => {
         let [responseData] = response.send.firstCall.args;
         expect(JSON.parse(responseData).error).to.equal('error');
 
-        console.error.restore();
+        tractorLogger.error.restore();
     });
 });
