@@ -2854,9 +2854,9 @@ tough-cookie@~2.3.0:
   dependencies:
     punycode "^1.4.1"
 
-tractor-logger@^0.1.0-beta.0:
-  version "0.1.0-beta.0"
-  resolved "https://registry.yarnpkg.com/tractor-logger/-/tractor-logger-0.1.0-beta.0.tgz#6039e52c896d9777f971efe46809f1360a759b4f"
+tractor-logger@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/tractor-logger/-/tractor-logger-0.1.0.tgz#8d0215c7dd238abc6f8d87303952444c74e3785b"
   dependencies:
     npmlog "4.0.2"
 
