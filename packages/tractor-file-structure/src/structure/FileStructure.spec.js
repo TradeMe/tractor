@@ -14,8 +14,10 @@ chai.use(dirtyChai);
 chai.use(sinonChai);
 
 // Dependencies:
+import fs from 'fs';
 import Directory from './Directory';
 import File from './File';
+import * as tractorLogger from 'tractor-logger';
 
 // Under test:
 import FileStructure from './FileStructure';
@@ -45,6 +47,60 @@ describe('tractor-file-structure - FileStructure:', () => {
             expect(fileStructure.structure.path).to.equal(path.join(path.sep, 'file-structure'));
 
             process.cwd.restore();
+        });
+    });
+
+    describe('FileStructure.addItem:', () => {
+        it('should add a file to the fileStructure', () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file'), fileStructure);
+
+            fileStructure.removeItem(file);
+            expect(fileStructure.allFilesByPath[path.join(path.sep, 'file-structure', 'directory', 'file')]).to.equal(null);
+
+            fileStructure.addItem(file);
+
+            expect(fileStructure.allFilesByPath[path.join(path.sep, 'file-structure', 'directory', 'file')]).to.equal(file);
+        });
+
+
+        it('should add a directory to the fileStructure', () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
+
+            fileStructure.removeItem(directory);
+
+            expect(fileStructure.allDirectoriesByPath[path.join(path.sep, 'file-structure', 'directory')]).to.equal(null);
+
+            fileStructure.addItem(directory);
+
+            expect(fileStructure.allDirectoriesByPath[path.join(path.sep, 'file-structure', 'directory')]).to.equal(directory);
+        });
+    });
+
+    describe('FileStructure.getFiles', () => {
+        it('should return all files of a specific type', () => {
+            class SomeFile extends File { }
+            SomeFile.prototype.extension = '.some.ext';
+            SomeFile.prototype.type = 'some-file';
+            class SomeOtherFile extends File { }
+            SomeOtherFile.prototype.extension = '.other.ext';
+            SomeOtherFile.prototype.type = 'some-other-file';
+            class FakeOtherFile { }
+            FakeOtherFile.prototype.type = 'some-other-file';
+
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let file1 = new SomeFile(path.join(path.sep, 'file-structure', 'directory', 'file1.some.ext'), fileStructure);
+            let file2 = new SomeFile(path.join(path.sep, 'file-structure', 'directory', 'file2.some.ext'), fileStructure);
+            let file3 = new SomeOtherFile(path.join(path.sep, 'file-structure', 'directory', 'other-file.other.ext'), fileStructure);
+
+            let files = fileStructure.getFiles(SomeFile);
+            let otherFiles = fileStructure.getFiles(SomeOtherFile);
+            let fakeOtherFiles = fileStructure.getFiles(FakeOtherFile);
+
+            expect(files).to.deep.equal([file1, file2]);
+            expect(otherFiles).to.deep.equal([file3]);
+            expect(fakeOtherFiles).to.deep.equal([file3]);
         });
     });
 
@@ -85,34 +141,6 @@ describe('tractor-file-structure - FileStructure:', () => {
         });
     });
 
-    describe('FileStructure.addItem:', () => {
-        it('should add a file to the fileStructure', () => {
-            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file'), fileStructure);
-
-            fileStructure.removeItem(file);
-            expect(fileStructure.allFilesByPath[path.join(path.sep, 'file-structure', 'directory', 'file')]).to.equal(null);
-
-            fileStructure.addItem(file);
-
-            expect(fileStructure.allFilesByPath[path.join(path.sep, 'file-structure', 'directory', 'file')]).to.equal(file);
-        });
-
-
-        it('should add a directory to the fileStructure', () => {
-            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-            let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
-
-            fileStructure.removeItem(directory);
-
-            expect(fileStructure.allDirectoriesByPath[path.join(path.sep, 'file-structure', 'directory')]).to.equal(null);
-
-            fileStructure.addItem(directory);
-
-            expect(fileStructure.allDirectoriesByPath[path.join(path.sep, 'file-structure', 'directory')]).to.equal(directory);
-        });
-    });
-
     describe('FileStructure.removeItem:', () => {
         it('should remove a file from the fileStructure', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
@@ -137,29 +165,19 @@ describe('tractor-file-structure - FileStructure:', () => {
         });
     });
 
-    describe('FileStructure.getFiles', () => {
-        it('should return all files of a specific type', () => {
-            class SomeFile extends File { }
-            SomeFile.prototype.extension = '.some.ext';
-            SomeFile.prototype.type = 'some-file';
-            class SomeOtherFile extends File { }
-            SomeOtherFile.prototype.extension = '.other.ext';
-            SomeOtherFile.prototype.type = 'some-other-file';
-            class FakeOtherFile { }
-            FakeOtherFile.prototype.type = 'some-other-file';
-
+    describe('FileStructure.watch:', () => {
+        it('should set up a watcher on the file structure', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-            let file1 = new SomeFile(path.join(path.sep, 'file-structure', 'directory', 'file1.some.ext'), fileStructure);
-            let file2 = new SomeFile(path.join(path.sep, 'file-structure', 'directory', 'file2.some.ext'), fileStructure);
-            let file3 = new SomeOtherFile(path.join(path.sep, 'file-structure', 'directory', 'other-file.other.ext'), fileStructure);
 
-            let files = fileStructure.getFiles(SomeFile);
-            let otherFiles = fileStructure.getFiles(SomeOtherFile);
-            let fakeOtherFiles = fileStructure.getFiles(FakeOtherFile);
+            sinon.stub(tractorLogger, 'info');
+            sinon.stub(fs, 'watch');
 
-            expect(files).to.deep.equal([file1, file2]);
-            expect(otherFiles).to.deep.equal([file3]);
-            expect(fakeOtherFiles).to.deep.equal([file3]);
+            fileStructure.watch();
+
+            expect(fs.watch).to.have.been.calledWith(path.join(path.sep, 'file-structure'));
+
+            fs.watch.restore();
+            tractorLogger.info.restore();
         });
     });
 });

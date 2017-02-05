@@ -2,7 +2,6 @@
 
 // Constants:
 import CONSTANTS from '../constants';
-import config from '../config';
 
 // Utilities:
 import chai from 'chai';
@@ -28,7 +27,6 @@ describe('tractor-file-structure - actions/open-item:', () => {
     it('should open a file', () => {
         fileStructure.path = path.join(path.sep, 'file-structure');
         fileStructure.init();
-        config.testDirectory = '/';
 
         let file = new File(path.join(path.sep, 'file-structure', 'file.ext'), fileStructure);
         let serialised = { };
@@ -53,7 +51,6 @@ describe('tractor-file-structure - actions/open-item:', () => {
     it('should open a directory', () => {
         fileStructure.path = path.join(path.sep, 'file-structure');
         fileStructure.init();
-        config.testDirectory = '/';
 
         let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
         let request = {
@@ -73,7 +70,6 @@ describe('tractor-file-structure - actions/open-item:', () => {
     it(`should throw an error if it can't find the file to open`, () => {
         fileStructure.path = path.join(path.sep, 'file-structure');
         fileStructure.init();
-        config.testDirectory = '/';
 
         let request = {
             params: ['/directory/missing-item']

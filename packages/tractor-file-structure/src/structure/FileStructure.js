@@ -1,5 +1,8 @@
 // Utilities:
+import Promise from 'bluebird';
+const fs = Promise.promisifyAll(require('fs'));
 import path from 'path';
+import { info } from 'tractor-logger';
 
 // Dependencies:
 import Directory from './Directory';
@@ -13,6 +16,15 @@ export default class FileStructure {
         this.fileTypes = types;
 
         this.init();
+    }
+
+    addItem (item) {
+        let collection = item instanceof Directory ? this.allDirectoriesByPath : this.allFilesByPath;
+        collection[item.path] = item;
+    }
+
+    getFiles (type) {
+        return this.structure.getFiles(type);
     }
 
     init () {
@@ -31,17 +43,13 @@ export default class FileStructure {
         return this.read();
     }
 
-    addItem (item) {
-        let collection = item instanceof Directory ? this.allDirectoriesByPath : this.allFilesByPath;
-        collection[item.path] = item;
-    }
-
     removeItem (item) {
         let collection = item instanceof Directory ? this.allDirectoriesByPath : this.allFilesByPath;
         collection[item.path] = null;
     }
 
-    getFiles (type) {
-        return this.structure.getFiles(type);
+    watch () {
+        info(`Watching ${this.path} for changes...`);
+        return fs.watch(this.path, { recursive: true });
     }
 }
