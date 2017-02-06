@@ -103,7 +103,7 @@ describe('tractor-plugin-screen-size - ScreenSize:', () => {
 
             return screenSize.setSize('sm')
             .catch(e => {
-                expect(e).to.deep.equal(new TractorError('Cannot find screen dimensions for "sm"'));
+                expect(e).to.deep.equal(new TractorError('Cannot find a screen size configuration for "sm"'));
             });
         });
     })
