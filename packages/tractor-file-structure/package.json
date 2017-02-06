@@ -1,6 +1,6 @@
 {
   "name": "tractor-file-structure",
-  "version": "0.1.0-beta.8",
+  "version": "0.1.0",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -46,7 +46,7 @@
   "dependencies": {
     "bluebird": "3.4.7",
     "express": "4.14.1",
-    "tractor-config-loader": "^0.2.1",
+    "tractor-config-loader": "^0.2.2",
     "tractor-error-handler": "^0.1.4",
     "tractor-logger": "^0.1.0"
   }

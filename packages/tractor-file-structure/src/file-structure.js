@@ -1,6 +1,6 @@
-// Constants:
-import config from './config';
-
+// Dependencies:
+import { getConfig } from 'tractor-config-loader';
 import FileStructure from './structure/FileStructure';
 
-export let fileStructure = new FileStructure(config.testDirectory);
+let { testDirectory } = getConfig();
+export let fileStructure = new FileStructure(testDirectory);
