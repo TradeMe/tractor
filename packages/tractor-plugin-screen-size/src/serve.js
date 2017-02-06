@@ -1,7 +1,7 @@
 // Utilities:
 import { createTag } from './utilities/create-tag';
 
-export function serve (application, config) {
+export default function serve (application, config) {
     config.screenSizes = config.screenSizes || {};
 
     Object.keys(config.screenSizes)
