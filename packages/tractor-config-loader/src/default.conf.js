@@ -1,16 +1,10 @@
-// Constants:
-const DEFAULT_DIRECTORY = './e2e-tests';
-const DEFAULT_PORT = 4000;
-const DEFAULT_ENVIRONMENT = 'http://localhost:8080';
-const NOOP = () => {};
-
-export default {
-    testDirectory: DEFAULT_DIRECTORY,
-    port: DEFAULT_PORT,
+export const DEFAULT_CONFIG = {
+    testDirectory: './e2e-tests',
+    port: 4000,
     environments: [
-        DEFAULT_ENVIRONMENT
+        'http://localhost:8080'
     ],
     tags: [],
-    beforeProtractor: NOOP,
-    afterProtractor: NOOP
+    beforeProtractor: () => {},
+    afterProtractor: () => {}
 };
