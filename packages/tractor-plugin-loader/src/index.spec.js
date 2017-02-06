@@ -14,7 +14,7 @@ import childProcess from 'child_process';
 import fs from 'fs';
 import module from 'module';
 import path from 'path';
-import tractorConfigLoader from 'tractor-config-loader';
+import * as tractorConfigLoader from 'tractor-config-loader';
 import { TractorError } from 'tractor-error-handler';
 
 // Under test:
@@ -28,14 +28,14 @@ describe('tractor-plugin-loader:', () => {
                 stdout: ''
             };
 
-            sinon.stub(tractorConfigLoader, 'loadConfig').returns({});
+            sinon.stub(tractorConfigLoader, 'getConfig').returns({});
             sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
 
             let plugins = tractorPluginLoader.getPlugins();
 
             expect(plugins.length).to.equal(0);
 
-            tractorConfigLoader.loadConfig.restore();
+            tractorConfigLoader.getConfig.restore();
             childProcess.spawnSync.restore();
             tractorPluginLoader._plugins = null;
         });
@@ -46,7 +46,7 @@ describe('tractor-plugin-loader:', () => {
                 stdout: ''
             };
 
-            sinon.stub(tractorConfigLoader, 'loadConfig').returns({});
+            sinon.stub(tractorConfigLoader, 'getConfig').returns({});
             sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
 
             let plugins1 = tractorPluginLoader.getPlugins();
@@ -54,7 +54,7 @@ describe('tractor-plugin-loader:', () => {
 
             expect(plugins1).to.equal(plugins2);
 
-            tractorConfigLoader.loadConfig.restore();
+            tractorConfigLoader.getConfig.restore();
             childProcess.spawnSync.restore();
             tractorPluginLoader._plugins = null;
         });
@@ -65,14 +65,14 @@ describe('tractor-plugin-loader:', () => {
                 stdout: ''
             };
 
-            sinon.stub(tractorConfigLoader, 'loadConfig').returns({});
+            sinon.stub(tractorConfigLoader, 'getConfig').returns({});
             sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
 
             let plugins = tractorPluginLoader.getPlugins();
 
             expect(plugins.length).to.equal(0);
 
-            tractorConfigLoader.loadConfig.restore();
+            tractorConfigLoader.getConfig.restore();
             childProcess.spawnSync.restore();
             tractorPluginLoader._plugins = null;
         });
@@ -83,14 +83,14 @@ describe('tractor-plugin-loader:', () => {
                 stdout: ''
             };
 
-            sinon.stub(tractorConfigLoader, 'loadConfig').returns({});
+            sinon.stub(tractorConfigLoader, 'getConfig').returns({});
             sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
 
             let plugins = tractorPluginLoader.getPlugins();
 
             expect(plugins.length).to.equal(0);
 
-            tractorConfigLoader.loadConfig.restore();
+            tractorConfigLoader.getConfig.restore();
             childProcess.spawnSync.restore();
             tractorPluginLoader._plugins = null;
         });
@@ -101,14 +101,14 @@ describe('tractor-plugin-loader:', () => {
                 stdout: ''
             };
 
-            sinon.stub(tractorConfigLoader, 'loadConfig').returns({});
+            sinon.stub(tractorConfigLoader, 'getConfig').returns({});
             sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
 
             let plugins = tractorPluginLoader.getPlugins();
 
             expect(plugins.length).to.equal(0);
 
-            tractorConfigLoader.loadConfig.restore();
+            tractorConfigLoader.getConfig.restore();
             childProcess.spawnSync.restore();
             tractorPluginLoader._plugins = null;
         });
@@ -119,14 +119,14 @@ describe('tractor-plugin-loader:', () => {
                 stdout: ''
             };
 
-            sinon.stub(tractorConfigLoader, 'loadConfig').returns({});
+            sinon.stub(tractorConfigLoader, 'getConfig').returns({});
             sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
 
             expect(() => {
                 tractorPluginLoader.getPlugins();
             }).to.throw(TractorError, 'uh oh!');
 
-            tractorConfigLoader.loadConfig.restore();
+            tractorConfigLoader.getConfig.restore();
             childProcess.spawnSync.restore();
             tractorPluginLoader._plugins = null;
         });
@@ -141,7 +141,7 @@ describe('tractor-plugin-loader:', () => {
                 create: () => {}
             };
 
-            sinon.stub(tractorConfigLoader, 'loadConfig').returns({});
+            sinon.stub(tractorConfigLoader, 'getConfig').returns({});
             sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
             sinon.stub(module, '_load').returns(pluginModule);
 
@@ -151,7 +151,7 @@ describe('tractor-plugin-loader:', () => {
             expect(pluginModule.fullName).to.equal('tractor-plugin-test');
             expect(pluginModule.name).to.equal('test');
 
-            tractorConfigLoader.loadConfig.restore();
+            tractorConfigLoader.getConfig.restore();
             childProcess.spawnSync.restore();
             module._load.restore();
             tractorPluginLoader._plugins = null;
@@ -169,7 +169,7 @@ describe('tractor-plugin-loader:', () => {
                 }
             };
 
-            sinon.stub(tractorConfigLoader, 'loadConfig').returns({});
+            sinon.stub(tractorConfigLoader, 'getConfig').returns({});
             sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
             sinon.stub(module, '_load').returns(pluginModule);
 
@@ -177,7 +177,7 @@ describe('tractor-plugin-loader:', () => {
 
             expect(plugins.length).to.equal(1);
 
-            tractorConfigLoader.loadConfig.restore();
+            tractorConfigLoader.getConfig.restore();
             childProcess.spawnSync.restore();
             module._load.restore();
             tractorPluginLoader._plugins = null;
@@ -189,7 +189,7 @@ describe('tractor-plugin-loader:', () => {
                 stdout: 'tractor-plugin-test'
             };
 
-            sinon.stub(tractorConfigLoader, 'loadConfig').returns({});
+            sinon.stub(tractorConfigLoader, 'getConfig').returns({});
             sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
             sinon.stub(module, '_load').throws(new Error());
 
@@ -197,7 +197,7 @@ describe('tractor-plugin-loader:', () => {
                 tractorPluginLoader.getPlugins();
             }).to.throw(TractorError, `could not require 'tractor-plugin-test'`);
 
-            tractorConfigLoader.loadConfig.restore();
+            tractorConfigLoader.getConfig.restore();
             childProcess.spawnSync.restore();
             module._load.restore();
             tractorPluginLoader._plugins = null;
@@ -210,7 +210,7 @@ describe('tractor-plugin-loader:', () => {
             };
             let pluginModule = {};
 
-            sinon.stub(tractorConfigLoader, 'loadConfig').returns({});
+            sinon.stub(tractorConfigLoader, 'getConfig').returns({});
             sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
             sinon.stub(module, '_load').returns(pluginModule);
 
@@ -218,7 +218,7 @@ describe('tractor-plugin-loader:', () => {
                 tractorPluginLoader.getPlugins();
             }).to.throw(TractorError, `'tractor-plugin-test' has no \`description\``);
 
-            tractorConfigLoader.loadConfig.restore();
+            tractorConfigLoader.getConfig.restore();
             childProcess.spawnSync.restore();
             module._load.restore();
             tractorPluginLoader._plugins = null;
@@ -233,7 +233,7 @@ describe('tractor-plugin-loader:', () => {
                 description: {}
             };
 
-            sinon.stub(tractorConfigLoader, 'loadConfig').returns({});
+            sinon.stub(tractorConfigLoader, 'getConfig').returns({});
             sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
             sinon.stub(module, '_load').returns(pluginModule);
 
@@ -241,7 +241,7 @@ describe('tractor-plugin-loader:', () => {
                 tractorPluginLoader.getPlugins();
             }).to.throw(TractorError, `'tractor-plugin-test' has no \`create\` function`);
 
-            tractorConfigLoader.loadConfig.restore();
+            tractorConfigLoader.getConfig.restore();
             childProcess.spawnSync.restore();
             module._load.restore();
             tractorPluginLoader._plugins = null;
@@ -257,7 +257,7 @@ describe('tractor-plugin-loader:', () => {
                 create: () => {}
             };
 
-            sinon.stub(tractorConfigLoader, 'loadConfig').returns({});
+            sinon.stub(tractorConfigLoader, 'getConfig').returns({});
             sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
             sinon.stub(module, '_load').returns(pluginModule);
 
@@ -268,7 +268,7 @@ describe('tractor-plugin-loader:', () => {
             expect(test.description.variableName).to.equal('testPlugin');
             expect(test.description.url).to.equal('test-plugin');
 
-            tractorConfigLoader.loadConfig.restore();
+            tractorConfigLoader.getConfig.restore();
             childProcess.spawnSync.restore();
             module._load.restore();
             tractorPluginLoader._plugins = null;
@@ -288,7 +288,7 @@ describe('tractor-plugin-loader:', () => {
             };
             let cucumber = {};
 
-            sinon.stub(tractorConfigLoader, 'loadConfig').returns(config);
+            sinon.stub(tractorConfigLoader, 'getConfig').returns(config);
             sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
             sinon.stub(module, '_load').returns(pluginModule);
             let addHooksStub = sinon.stub(pluginModule, 'addHooks');
@@ -299,7 +299,7 @@ describe('tractor-plugin-loader:', () => {
 
             expect(addHooksStub).to.have.been.calledWith(cucumber, config);
 
-            tractorConfigLoader.loadConfig.restore();
+            tractorConfigLoader.getConfig.restore();
             childProcess.spawnSync.restore();
             module._load.restore();
             tractorPluginLoader._plugins = null;
@@ -315,7 +315,7 @@ describe('tractor-plugin-loader:', () => {
                 create: () => {},
             };
 
-            sinon.stub(tractorConfigLoader, 'loadConfig').returns({});
+            sinon.stub(tractorConfigLoader, 'getConfig').returns({});
             sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
             sinon.stub(module, '_load').returns(pluginModule);
 
@@ -325,7 +325,7 @@ describe('tractor-plugin-loader:', () => {
                 test.addHooks();
             }).to.not.throw();
 
-            tractorConfigLoader.loadConfig.restore();
+            tractorConfigLoader.getConfig.restore();
             childProcess.spawnSync.restore();
             module._load.restore();
             tractorPluginLoader._plugins = null;
@@ -344,7 +344,7 @@ describe('tractor-plugin-loader:', () => {
             };
             let browser = {};
 
-            sinon.stub(tractorConfigLoader, 'loadConfig').returns(config);
+            sinon.stub(tractorConfigLoader, 'getConfig').returns(config);
             sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
             sinon.stub(module, '_load').returns(pluginModule);
             let createStub = sinon.stub(pluginModule, 'create');
@@ -355,7 +355,7 @@ describe('tractor-plugin-loader:', () => {
 
             expect(createStub).to.have.been.calledWith(browser, config);
 
-            tractorConfigLoader.loadConfig.restore();
+            tractorConfigLoader.getConfig.restore();
             childProcess.spawnSync.restore();
             module._load.restore();
             tractorPluginLoader._plugins = null;
@@ -375,7 +375,7 @@ describe('tractor-plugin-loader:', () => {
             };
             let application = {}
 
-            sinon.stub(tractorConfigLoader, 'loadConfig').returns(config);
+            sinon.stub(tractorConfigLoader, 'getConfig').returns(config);
             sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
             sinon.stub(module, '_load').returns(pluginModule);
             let serveStub = sinon.stub(pluginModule, 'serve');
@@ -386,7 +386,7 @@ describe('tractor-plugin-loader:', () => {
 
             expect(serveStub).to.have.been.calledWith(application, config);
 
-            tractorConfigLoader.loadConfig.restore();
+            tractorConfigLoader.getConfig.restore();
             childProcess.spawnSync.restore();
             module._load.restore();
             tractorPluginLoader._plugins = null;
@@ -402,7 +402,7 @@ describe('tractor-plugin-loader:', () => {
                 create: () => {},
             };
 
-            sinon.stub(tractorConfigLoader, 'loadConfig').returns({});
+            sinon.stub(tractorConfigLoader, 'getConfig').returns({});
             sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
             sinon.stub(module, '_load').returns(pluginModule);
 
@@ -412,7 +412,7 @@ describe('tractor-plugin-loader:', () => {
                 test.serve();
             }).to.not.throw();
 
-            tractorConfigLoader.loadConfig.restore();
+            tractorConfigLoader.getConfig.restore();
             childProcess.spawnSync.restore();
             module._load.restore();
             tractorPluginLoader._plugins = null;
@@ -431,7 +431,7 @@ describe('tractor-plugin-loader:', () => {
                 init
             };
 
-            sinon.stub(tractorConfigLoader, 'loadConfig').returns(config);
+            sinon.stub(tractorConfigLoader, 'getConfig').returns(config);
             sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
             sinon.stub(module, '_load').returns(pluginModule);
             let initStub = sinon.stub(pluginModule, 'init');
@@ -442,7 +442,7 @@ describe('tractor-plugin-loader:', () => {
 
             expect(initStub).to.have.been.calledWith(config);
 
-            tractorConfigLoader.loadConfig.restore();
+            tractorConfigLoader.getConfig.restore();
             childProcess.spawnSync.restore();
             module._load.restore();
             tractorPluginLoader._plugins = null;
@@ -458,7 +458,7 @@ describe('tractor-plugin-loader:', () => {
                 create: () => {},
             };
 
-            sinon.stub(tractorConfigLoader, 'loadConfig').returns({});
+            sinon.stub(tractorConfigLoader, 'getConfig').returns({});
             sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
             sinon.stub(module, '_load').returns(pluginModule);
 
@@ -468,7 +468,7 @@ describe('tractor-plugin-loader:', () => {
                 test.init();
             }).to.not.throw();
 
-            tractorConfigLoader.loadConfig.restore();
+            tractorConfigLoader.getConfig.restore();
             childProcess.spawnSync.restore();
             module._load.restore();
             tractorPluginLoader._plugins = null;
@@ -484,7 +484,7 @@ describe('tractor-plugin-loader:', () => {
                 create: () => {}
             };
 
-            sinon.stub(tractorConfigLoader, 'loadConfig').returns({});
+            sinon.stub(tractorConfigLoader, 'getConfig').returns({});
             sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
             sinon.stub(module, '_load').returns(pluginModule);
             sinon.stub(process, 'cwd').returns('.');
@@ -496,7 +496,7 @@ describe('tractor-plugin-loader:', () => {
             expect(test.script).to.equal(path.join('node_modules', 'tractor-plugin-test', 'dist', 'client', 'bundle.js'));
             expect(test.description.hasUI).to.equal(true);
 
-            tractorConfigLoader.loadConfig.restore();
+            tractorConfigLoader.getConfig.restore();
             childProcess.spawnSync.restore();
             module._load.restore();
             process.cwd.restore();
@@ -514,7 +514,7 @@ describe('tractor-plugin-loader:', () => {
                 create: () => {}
             };
 
-            sinon.stub(tractorConfigLoader, 'loadConfig').returns({});
+            sinon.stub(tractorConfigLoader, 'getConfig').returns({});
             sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
             sinon.stub(module, '_load').returns(pluginModule);
             sinon.stub(process, 'cwd').returns('.');
@@ -525,7 +525,7 @@ describe('tractor-plugin-loader:', () => {
 
             expect(test.description.hasUI).to.equal(false);
 
-            tractorConfigLoader.loadConfig.restore();
+            tractorConfigLoader.getConfig.restore();
             childProcess.spawnSync.restore();
             module._load.restore();
             process.cwd.restore();
@@ -546,7 +546,7 @@ describe('tractor-plugin-loader:', () => {
                 create: () => {}
             };
 
-            sinon.stub(tractorConfigLoader, 'loadConfig').returns({});
+            sinon.stub(tractorConfigLoader, 'getConfig').returns({});
             sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
             sinon.stub(module, '_load').returns(pluginModule);
 
@@ -556,7 +556,7 @@ describe('tractor-plugin-loader:', () => {
             let [test] = descriptions;
             expect(test).to.equal(description);
 
-            tractorConfigLoader.loadConfig.restore();
+            tractorConfigLoader.getConfig.restore();
             childProcess.spawnSync.restore();
             module._load.restore();
             tractorPluginLoader._plugins = null;

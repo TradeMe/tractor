@@ -17,16 +17,14 @@ import path from 'path';
 import camelCase from 'camel-case';
 import paramCase from 'param-case';
 import sentenceCase from 'sentence-case';
-import tractorConfigLoader from 'tractor-config-loader';
+import { getConfig } from 'tractor-config-loader';
 
 // Errors:
 import { TractorError } from 'tractor-error-handler';
 
 class TractorPluginLoader {
     get plugins () {
-        if (!this._plugins) {
-            this._plugins = decoratePlugins(loadPlugins(), tractorConfigLoader.loadConfig());
-        }
+        this._plugins = this._plugins || decoratePlugins(loadPlugins(), getConfig());
         return this._plugins;
     }
 
