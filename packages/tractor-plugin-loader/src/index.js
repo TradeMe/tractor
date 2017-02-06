@@ -86,16 +86,17 @@ function decoratePlugins (plugins, config) {
             plugin.description.hasUI = false;
         }
 
-        let { create } = plugin;
-        plugin.create = (browser) => create(browser, config);
+        let addHooks = plugin.addHooks || (() => {});
+        plugin.addHooks = cucumber => addHooks(cucumber, config);
+
+        let create = plugin.create;
+        plugin.create = browser => create(browser, config);
 
         let init = plugin.init || (() => {});
         plugin.init = () => init(config);
 
         let serve = plugin.serve || (() => {});
-        plugin.serve = (express, application) => {
-            serve(express, application, config);
-        };
+        plugin.serve = application => serve(application, config);
     });
     return plugins;
 }

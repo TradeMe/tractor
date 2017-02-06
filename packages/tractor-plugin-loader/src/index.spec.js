@@ -274,6 +274,63 @@ describe('tractor-plugin-loader:', () => {
             tractorPluginLoader._plugins = null;
         });
 
+        it('should decorate the `addHooks` function so that it takes the current config', () => {
+            let config = {};
+            let npmLsResult = {
+                stderr: '',
+                stdout: 'tractor-plugin-test'
+            };
+            let addHooks = () => {};
+            let pluginModule = {
+                description: {},
+                addHooks,
+                create: () => {}
+            };
+            let cucumber = {};
+
+            sinon.stub(tractorConfigLoader, 'loadConfig').returns(config);
+            sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
+            sinon.stub(module, '_load').returns(pluginModule);
+            let addHooksStub = sinon.stub(pluginModule, 'addHooks');
+
+            let plugins = tractorPluginLoader.getPlugins();
+            let [test] = plugins;
+            test.addHooks(cucumber);
+
+            expect(addHooksStub).to.have.been.calledWith(cucumber, config);
+
+            tractorConfigLoader.loadConfig.restore();
+            childProcess.spawnSync.restore();
+            module._load.restore();
+            tractorPluginLoader._plugins = null;
+        });
+
+        it('should have a default `addHooks` function that is a noop', () => {
+            let npmLsResult = {
+                stderr: '',
+                stdout: 'tractor-plugin-test'
+            };
+            let pluginModule = {
+                description: {},
+                create: () => {},
+            };
+
+            sinon.stub(tractorConfigLoader, 'loadConfig').returns({});
+            sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
+            sinon.stub(module, '_load').returns(pluginModule);
+
+            let plugins = tractorPluginLoader.getPlugins();
+            let [test] = plugins;
+            expect(() => {
+                test.addHooks();
+            }).to.not.throw();
+
+            tractorConfigLoader.loadConfig.restore();
+            childProcess.spawnSync.restore();
+            module._load.restore();
+            tractorPluginLoader._plugins = null;
+        });
+
         it('should decorate the `create` function so that it takes the current config', () => {
             let config = {};
             let npmLsResult = {
@@ -316,7 +373,6 @@ describe('tractor-plugin-loader:', () => {
                 create: () => {},
                 serve
             };
-            let express = {};
             let application = {}
 
             sinon.stub(tractorConfigLoader, 'loadConfig').returns(config);
@@ -326,9 +382,9 @@ describe('tractor-plugin-loader:', () => {
 
             let plugins = tractorPluginLoader.getPlugins();
             let [test] = plugins;
-            test.serve(express, application);
+            test.serve(application);
 
-            expect(serveStub).to.have.been.calledWith(express, application, config);
+            expect(serveStub).to.have.been.calledWith(application, config);
 
             tractorConfigLoader.loadConfig.restore();
             childProcess.spawnSync.restore();

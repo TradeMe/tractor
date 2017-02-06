@@ -26,21 +26,30 @@ A **tractor** plugin is just a plain old node module, with a few specially named
 
 ### `description` (required):
 
-> The `description` of any actions that the plugin provides to **tractor**. It should be an object with a single property, `methods: Array`[`<Method>`](https://github.com/phenomnomnominal/tractor-plugin-loader#method). 
+> The `description` of any actions that the plugin provides to **tractor**. It should be an object with a single property, `methods: Array`[`<Method>`](https://github.com/phenomnomnominal/tractor-plugin-loader#method).
+
+## `addHooks` (optional):
+
+> Add any Cucumber hooks that the plugin needs, e.g. Before, After.
+
+> #### Arguments:
+> * `cucumber: `[`Cucumber`](https://cucumber.io/docs/reference#hooks)
 
 ### `init` (optional):
 
-> Initialises anything that your plugin needs before it runs. This may be things like creating directories or getting information about the current environment, before **tractor** starts running.
+> Initialise anything that your plugin needs before it runs. This may be things like creating directories or getting information about the current environment, before **tractor** starts running.
 
 > #### Arguments:
 > * `config: `[`TractorConfig`](https://github.com/TradeMe/tractor#config)
 
+> #### Returns:
+> * `promise?: Promise`
+
 ### `serve` (optional):
 
-> Defines any new endpoints that you want to attach to the [**tractor-server**](https://github.com/phenomnomnominal/tractor-server), typically for consuming from the [**tractor-client**](https://github.com/phenomnomnominal/tractor-client). It should have the following function signature:
+> Define any new endpoints that you want to attach to the [**tractor-server**](https://github.com/phenomnomnominal/tractor-server), typically for consuming from the [**tractor-client**](https://github.com/phenomnomnominal/tractor-client).
 
 > #### Arguments:
-* `express: `[`Express`](https://expressjs.com/en/4x/api.html#express)
 * `application: `[`Application`](https://expressjs.com/en/4x/api.html#app)
 * `config: `[`TractorConfig`](https://github.com/TradeMe/tractor#config)
 
