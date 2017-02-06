@@ -1,12 +1,7 @@
 // Utilities:
 import { createTag } from './utilities/create-tag';
 
-// Dependencies:
-import { getConfig } from 'tractor-config-loader';
-
-let config = getConfig();
-
-export function serve () {
+export function serve (application, config) {
     config.screenSizes = config.screenSizes || {};
 
     Object.keys(config.screenSizes)

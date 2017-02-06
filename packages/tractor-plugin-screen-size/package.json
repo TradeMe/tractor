@@ -1,6 +1,6 @@
 {
   "name": "tractor-plugin-screen-size",
-  "version": "0.1.0-beta.0",
+  "version": "0.1.0-beta.1",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -42,6 +42,6 @@
     "sinon-chai": "2.8.0"
   },
   "dependencies": {
-    "tractor-config-loader": "^0.2.2"
+    "tractor-error-handler": "^0.1.4"
   }
 }
