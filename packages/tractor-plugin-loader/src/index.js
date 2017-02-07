@@ -2,9 +2,11 @@
 const NPM_EXTRANEOUS_ERROR = 'npm ERR! extraneous';
 const NPM_INVALID_ERROR = 'npm ERR! invalid';
 const NPM_PEER_DEP_ERROR = 'npm ERR! peer dep missing';
+const OUT_NEWLINE = '\n';
 const TRACTOR_PLUGIN_LOADER = 'tractor-plugin-loader';
-const TRACTOR_PLUGIN_MODULE_NAME_REGEX = new RegExp(`(tractor-plugin[^${path.sep}]*$)`);
+const TRACTOR_PLUGIN_MODULE_NAME_REGEX = /(tractor-plugin-.*$)/;
 const TRACTOR_PLUGIN_NAME_REGEX = /tractor-plugin-(.*)/;
+const WINDOWS = 'win32';
 
 // Utilities:
 import childProcess from 'child_process';
@@ -100,9 +102,10 @@ function decoratePlugins (plugins, config) {
 }
 
 function getInstalledPluginNames () {
-    let ls = childProcess.spawnSync('npm', ['ls', '--depth=0', '--parseable']);
+    let npm = os.plaform === WINDOWS ? 'npm.cmd' : 'npm';
+    let ls = childProcess.spawnSync(npm, ['ls', '--depth=0', '--parseable']);
 
-    let errors = ls.stderr.toString().trim().split(os.EOL);
+    let errors = ls.stderr.toString().trim().split(OUT_NEWLINE);
     errors = errors
     .filter(error => {
         let isExtraneous = error.startsWith(NPM_EXTRANEOUS_ERROR);
@@ -116,7 +119,7 @@ function getInstalledPluginNames () {
         throw new TractorError(firstError);
     }
 
-    let allModulePaths = ls.stdout.toString().trim().split(os.EOL);
+    let allModulePaths = ls.stdout.toString().trim().split(OUT_NEWLINE);
 
     let moduleNames = allModulePaths
     .filter(modulePath => modulePath.match(TRACTOR_PLUGIN_MODULE_NAME_REGEX))
@@ -124,9 +127,9 @@ function getInstalledPluginNames () {
         let [, moduleName] = modulePath.match(TRACTOR_PLUGIN_MODULE_NAME_REGEX);
         return moduleName;
     })
-    .filter(modulePath => modulePath !== TRACTOR_PLUGIN_LOADER);
+    .filter(moduleName => moduleName !== TRACTOR_PLUGIN_LOADER);
 
-    return moduleNames
+    return moduleNames;
 }
 
 let tractorPluginLoader = new TractorPluginLoader();
