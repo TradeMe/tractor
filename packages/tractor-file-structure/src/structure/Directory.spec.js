@@ -13,7 +13,7 @@ chai.use(sinonChai);
 // Dependencies:
 import File from './File';
 import FileStructure from './FileStructure';
-import { extensions, registerFileType, types } from '../file-types';
+import { fileExtensions, fileTypes, registerFileType } from '../file-types';
 import fs from 'fs';
 import path from 'path';
 import { TractorError } from 'tractor-error-handler';
@@ -524,8 +524,8 @@ describe('tractor-file-structure - Directory:', () => {
                 File.prototype.read.restore();
                 fs.readdirAsync.restore();
                 fs.statAsync.restore();
-                delete extensions['test-file'];
-                delete types['.ext'];
+                delete fileExtensions['test-file'];
+                delete fileTypes['.ext'];
             });
         });
 
@@ -559,8 +559,28 @@ describe('tractor-file-structure - Directory:', () => {
                 File.prototype.read.restore();
                 fs.readdirAsync.restore();
                 fs.statAsync.restore();
-                delete extensions['special-test-file'];
-                delete types['.special.ext'];
+                delete fileExtensions['special-test-file'];
+                delete fileTypes['.special.ext'];
+            });
+        });
+    });
+
+    describe('Directory.refresh:', () => {
+        it('should refresh the directory', () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
+
+            sinon.stub(Directory.prototype, 'init');
+            sinon.stub(Directory.prototype, 'read').returns(Promise.resolve());
+
+            return directory.refresh()
+            .then(() => {
+                expect(Directory.prototype.init).to.have.been.called();
+                expect(Directory.prototype.read).to.have.been.called();
+            })
+            .finally(() => {
+                Directory.prototype.init.restore();
+                Directory.prototype.read.restore();
             });
         });
     });

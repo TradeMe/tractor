@@ -1,10 +1,8 @@
-// Constants:
-import CONSTANTS from '../constants';
-
 // Utilities:
 import Promise from 'bluebird';
 const fs = Promise.promisifyAll(require('fs'));
 import path from 'path';
+import { getFileConstructorFromFilePath } from '../utilities/utilities';
 
 // Dependencies:
 import File from './File';
@@ -24,10 +22,7 @@ export default class Directory {
             throw new TractorError(`Cannot create "${this.path}" because it is outside of the root of the FileStructure`);
         }
 
-        this.directories = [];
-        this.allDirectories = [];
-        this.files = [];
-        this.allFiles = [];
+        this.init();
 
         let relativePath = path.relative(this.fileStructure.path, this.path);
         this.name = path.basename(this.path);
@@ -91,6 +86,13 @@ export default class Directory {
         }
     }
 
+    init () {
+        this.directories = [];
+        this.allDirectories = [];
+        this.files = [];
+        this.allFiles = [];
+    }
+
     getFiles (type) {
         type = type || File;
         return this.allFiles
@@ -117,6 +119,11 @@ export default class Directory {
     read () {
         return fs.readdirAsync(this.path)
         .then(itemPaths => readItems.call(this, itemPaths));
+    }
+
+    refresh () {
+        this.init();
+        return this.read();
     }
 
     removeItem (item) {
@@ -173,11 +180,7 @@ function handleItem (itemPath, stat) {
         let directory = new this.constructor(itemPath, this.fileStructure);
         return directory.read();
     } else {
-        let fileName = path.basename(itemPath);
-        let [, fullExtension] = fileName.match(CONSTANTS.EXTENSION_MATCH_REGEX);
-        let extension = path.extname(fileName);
-        let { fileTypes } = this.fileStructure;
-        let fileConstructor = fileTypes[fullExtension] || fileTypes[extension] || File;
+        let fileConstructor = getFileConstructorFromFilePath(itemPath);
         let file = new fileConstructor(itemPath, this.fileStructure);
         if (fileConstructor === File) {
             return file;

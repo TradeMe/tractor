@@ -1,19 +1,18 @@
+// Constants:
+const DOT_FILE_REGEX = /(^|[\/\\])\../;
+
 // Utilities:
-import Promise from 'bluebird';
-const fs = Promise.promisifyAll(require('fs'));
+import chokidar from 'chokidar';
+import { EventEmitter } from 'events';
 import path from 'path';
 import { info } from 'tractor-logger';
 
 // Dependencies:
 import Directory from './Directory';
-import { extensions, types } from '../file-types';
 
 export default class FileStructure {
     constructor (fsPath) {
         this.path = path.resolve(process.cwd(), fsPath);
-
-        this.fileExtensions = extensions;
-        this.fileTypes = types;
 
         this.init();
     }
@@ -38,11 +37,6 @@ export default class FileStructure {
         return this.structure.read();
     }
 
-    refresh () {
-        this.init();
-        return this.read();
-    }
-
     removeItem (item) {
         let collection = item instanceof Directory ? this.allDirectoriesByPath : this.allFilesByPath;
         collection[item.path] = null;
@@ -50,6 +44,21 @@ export default class FileStructure {
 
     watch () {
         info(`Watching ${this.path} for changes...`);
-        return fs.watch(this.path, { recursive: true });
+        let watcher = new EventEmitter();
+        chokidar.watch(this.path, {
+            ignored: DOT_FILE_REGEX,
+            ignoreInitial: true,
+            awaitWriteFinish: true
+        })
+        .on('all', (event, itemPath) => {
+            let changeDirectory = this.allDirectoriesByPath[path.dirname(itemPath)];
+            if (changeDirectory) {
+                changeDirectory.refresh()
+                .then(() => {
+                    watcher.emit('change');
+                });
+            }
+        });
+        return watcher;
     }
 }

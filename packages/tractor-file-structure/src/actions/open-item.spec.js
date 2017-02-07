@@ -1,8 +1,5 @@
 /* global describe:true, it:true */
 
-// Constants:
-import CONSTANTS from '../constants';
-
 // Utilities:
 import chai from 'chai';
 import path from 'path';
@@ -16,18 +13,16 @@ chai.use(sinonChai);
 // Dependencies:
 import Directory from '../structure/Directory';
 import File from '../structure/File';
-import { fileStructure } from '../file-structure';
+import FileStructure from '../structure/FileStructure';
 import tractorErrorHandler from 'tractor-error-handler';
 import { TractorError } from 'tractor-error-handler';
 
 // Under test:
-import { openItem } from './open-item';
+import { createOpenItemHandler } from './open-item';
 
 describe('tractor-file-structure - actions/open-item:', () => {
     it('should open a file', () => {
-        fileStructure.path = path.join(path.sep, 'file-structure');
-        fileStructure.init();
-
+        let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let file = new File(path.join(path.sep, 'file-structure', 'file.ext'), fileStructure);
         let serialised = { };
         let request = {
@@ -40,6 +35,7 @@ describe('tractor-file-structure - actions/open-item:', () => {
         sinon.stub(File.prototype, 'serialise').returns(serialised)
         sinon.stub(response, 'send');
 
+        let openItem = createOpenItemHandler(fileStructure);
         openItem(request, response);
 
         expect(File.prototype.serialise).to.have.been.called();
@@ -49,9 +45,7 @@ describe('tractor-file-structure - actions/open-item:', () => {
     });
 
     it('should open a directory', () => {
-        fileStructure.path = path.join(path.sep, 'file-structure');
-        fileStructure.init();
-
+        let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
         let request = {
             params: [directory.url]
@@ -62,15 +56,14 @@ describe('tractor-file-structure - actions/open-item:', () => {
 
         sinon.stub(response, 'send');
 
+        let openItem = createOpenItemHandler(fileStructure);
         openItem(request, response);
 
         expect(response.send).to.have.been.calledWith(directory);
     });
 
     it(`should throw an error if it can't find the file to open`, () => {
-        fileStructure.path = path.join(path.sep, 'file-structure');
-        fileStructure.init();
-
+        let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let request = {
             params: ['/directory/missing-item']
         };
@@ -80,9 +73,10 @@ describe('tractor-file-structure - actions/open-item:', () => {
 
         sinon.stub(tractorErrorHandler, 'handle');
 
+        let openItem = createOpenItemHandler(fileStructure);
         openItem(request, response);
 
-        expect(tractorErrorHandler.handle).to.have.been.calledWith(response, new TractorError(`Could not find "${path.join(path.sep, 'file-structure', 'directory', 'missing-item')}"`, CONSTANTS.ITEM_NOT_FOUND_ERROR));
+        expect(tractorErrorHandler.handle).to.have.been.calledWith(response, new TractorError(`Could not find "${path.join(path.sep, 'file-structure', 'directory', 'missing-item')}"`, 404));
 
         tractorErrorHandler.handle.restore();
     });

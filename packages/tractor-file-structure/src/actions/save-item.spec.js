@@ -1,13 +1,10 @@
 /* global describe:true, it:true */
 
-// Constants:
-import CONSTANTS from '../constants';
-
 // Utilities:
+import Promise from 'bluebird';
 import chai from 'chai';
 import dirtyChai from 'dirty-chai';
 import path from 'path';
-import Promise from 'bluebird';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 
@@ -19,19 +16,16 @@ chai.use(sinonChai);
 // Dependencies:
 import Directory from '../structure/Directory';
 import File from '../structure/File';
-import { fileStructure } from '../file-structure';
-import { extensions, registerFileType, types } from '../file-types';
+import FileStructure from '../structure/FileStructure';
+import { fileExtensions, fileTypes, registerFileType } from '../file-types';
 import tractorErrorHandler from 'tractor-error-handler';
 import { TractorError } from 'tractor-error-handler';
 
 // Under test:
-import { saveItem } from './save-item';
+import { createSaveItemHandler } from './save-item';
 
 describe('tractor-file-structure - actions/save-item:', () => {
     it('should save a file', () => {
-        fileStructure.path = path.join(path.sep, 'file-structure');
-        fileStructure.init();
-
         class TestFile extends File {
             save () { }
         }
@@ -39,6 +33,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
         TestFile.prototype.type = 'test-file';
         registerFileType(TestFile);
 
+        let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let request = {
             body: {
                 data: 'data'
@@ -46,28 +41,26 @@ describe('tractor-file-structure - actions/save-item:', () => {
             params: ['/directory/file.ext']
         };
         let response = {
-            send: () => { }
+            sendStatus: () => { }
         };
 
         sinon.stub(Directory.prototype, 'save').returns(Promise.resolve());
         sinon.stub(TestFile.prototype, 'save').returns(Promise.resolve());
 
+        let saveItem = createSaveItemHandler(fileStructure);
         return saveItem(request, response)
         .then(() => {
             expect(TestFile.prototype.save).to.have.been.calledWith('data');
         })
         .finally(() => {
-            delete extensions['test-file'];
-            delete types['.ext'];
+            delete fileExtensions['test-file'];
+            delete fileTypes['.ext'];
 
             Directory.prototype.save.restore();
         });
     });
 
     it('should save a new file with multiple extensions', () => {
-        fileStructure.path = path.join(path.sep, 'file-structure');
-        fileStructure.init();
-
         class SpecialTestFile extends File {
             save () { }
         }
@@ -75,6 +68,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
         SpecialTestFile.prototype.type = 'special-test-file';
         registerFileType(SpecialTestFile);
 
+        let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let request = {
             body: {
                 data: 'data'
@@ -82,25 +76,24 @@ describe('tractor-file-structure - actions/save-item:', () => {
             params: ['/directory/file.special.ext']
         };
         let response = {
-            send: () => { }
+            sendStatus: () => { }
         };
 
         sinon.stub(SpecialTestFile.prototype, 'save').returns(Promise.resolve());
 
+        let saveItem = createSaveItemHandler(fileStructure);
         return saveItem(request, response)
         .then(() => {
             expect(SpecialTestFile.prototype.save).to.have.been.calledWith('data');
         })
         .finally(() => {
-            delete extensions['special-test-file'];
-            delete types['.special.ext'];
+            delete fileExtensions['special-test-file'];
+            delete fileTypes['.special.ext'];
         });
     });
 
     it('should fall back to the default File', () => {
-        fileStructure.path = path.join(path.sep, 'file-structure');
-        fileStructure.init();
-
+        let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let request = {
             body: {
                 data: 'data'
@@ -108,11 +101,12 @@ describe('tractor-file-structure - actions/save-item:', () => {
             params: ['/directory/file.ext']
         };
         let response = {
-            send: () => { }
+            sendStatus: () => { }
         };
 
         sinon.stub(File.prototype, 'save').returns(Promise.resolve());
 
+        let saveItem = createSaveItemHandler(fileStructure);
         return saveItem(request, response)
         .then(() => {
             expect(File.prototype.save).to.have.been.calledWith('data');
@@ -130,9 +124,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
         TestFile.prototype.type = 'test-file';
         registerFileType(TestFile);
 
-        fileStructure.path = path.join(path.sep, 'file-structure');
-        fileStructure.init();
-
+        let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let file = new TestFile(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
         let request = {
             body: {
@@ -141,20 +133,21 @@ describe('tractor-file-structure - actions/save-item:', () => {
             params: [file.url]
         };
         let response = {
-            send: () => { }
+            sendStatus: () => { }
         };
 
         sinon.spy(file, 'save');
         sinon.stub(TestFile.prototype, 'save').returns(Promise.resolve());
 
+        let saveItem = createSaveItemHandler(fileStructure);
         return saveItem(request, response)
         .then(() => {
             expect(file.save).to.not.have.been.called();
             expect(TestFile.prototype.save).to.have.been.calledWith('data');
         })
         .finally(() => {
-            delete extensions['test-file'];
-            delete types['.ext'];
+            delete fileExtensions['test-file'];
+            delete fileTypes['.ext'];
         });
     });
 
@@ -166,9 +159,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
         TestFile.prototype.type = 'test-file';
         registerFileType(TestFile);
 
-        fileStructure.path = path.join(path.sep, 'file-structure');
-        fileStructure.init();
-
+        let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let file = new TestFile(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
         let request = {
             body: {
@@ -178,35 +169,35 @@ describe('tractor-file-structure - actions/save-item:', () => {
             params: [file.url]
         };
         let response = {
-            send: () => { }
+            sendStatus: () => { }
         };
 
         sinon.stub(TestFile.prototype, 'save').returns(Promise.resolve());
 
+        let saveItem = createSaveItemHandler(fileStructure);
         return saveItem(request, response)
         .then(() => {
             expect(TestFile.prototype.save).to.have.been.calledWith('data');
         })
         .finally(() => {
-            delete extensions['test-file'];
-            delete types['.ext'];
+            delete fileExtensions['test-file'];
+            delete fileTypes['.ext'];
         });
     });
 
     it('should save a directory', () => {
-        fileStructure.path = path.join(path.sep, 'file-structure');
-        fileStructure.init();
-
+        let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let request = {
             body: { },
             params: ['/directory']
         };
         let response = {
-            send: () => { }
+            sendStatus: () => { }
         };
 
         sinon.stub(Directory.prototype, 'save').returns(Promise.resolve());
 
+        let saveItem = createSaveItemHandler(fileStructure);
         return saveItem(request, response)
         .then(() => {
             expect(Directory.prototype.save).to.have.been.called();
@@ -217,21 +208,20 @@ describe('tractor-file-structure - actions/save-item:', () => {
     });
 
     it('should save a copy of a directory if it already exists', () => {
-        fileStructure.path = path.join(path.sep, 'file-structure');
-        fileStructure.init();
-
+        let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
         let request = {
             body: { },
             params: [directory.url]
         };
         let response = {
-            send: () => { }
+            sendStatus: () => { }
         };
 
         sinon.spy(directory, 'save');
         sinon.stub(Directory.prototype, 'save').returns(Promise.resolve());
 
+        let saveItem = createSaveItemHandler(fileStructure);
         return saveItem(request, response)
         .then(() => {
             expect(directory.save).to.not.have.been.called();
@@ -243,9 +233,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
     });
 
     it('should overwrite an existing directory', () => {
-        fileStructure.path = path.join(path.sep, 'file-structure');
-        fileStructure.init();
-
+        let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
         let request = {
             body: {
@@ -254,11 +242,12 @@ describe('tractor-file-structure - actions/save-item:', () => {
             params: [directory.url]
         };
         let response = {
-            send: () => { }
+            sendStatus: () => { }
         };
 
         sinon.stub(Directory.prototype, 'save').returns(Promise.resolve());
 
+        let saveItem = createSaveItemHandler(fileStructure);
         return saveItem(request, response)
         .then(() => {
             expect(Directory.prototype.save).to.have.been.called();
@@ -269,9 +258,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
     });
 
     it('should handle known TractorErrors', () => {
-        fileStructure.path = path.join(path.sep, 'file-structure');
-        fileStructure.init();
-
+        let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let error = new TractorError();
         let request = {
             body: {
@@ -280,12 +267,13 @@ describe('tractor-file-structure - actions/save-item:', () => {
             params: ['/directory/file.ext']
         };
         let response = {
-            send: () => { }
+            sendStatus: () => { }
         };
 
         sinon.stub(File.prototype, 'save').returns(Promise.reject(error));
         sinon.stub(tractorErrorHandler, 'handle');
 
+        let saveItem = createSaveItemHandler(fileStructure);
         return saveItem(request, response)
         .then(() => {
             expect(tractorErrorHandler.handle).to.have.been.calledWith(response, error);
@@ -297,9 +285,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
     });
 
     it('should handle unknown errors', () => {
-        fileStructure.path = path.join(path.sep, 'file-structure');
-        fileStructure.init();
-
+        let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let request = {
             body: {
                 data: 'data'
@@ -307,15 +293,16 @@ describe('tractor-file-structure - actions/save-item:', () => {
             params: ['/directory/file.ext']
         };
         let response = {
-            send: () => { }
+            sendStatus: () => { }
         };
 
         sinon.stub(File.prototype, 'save').returns(Promise.reject(new Error()));
         sinon.stub(tractorErrorHandler, 'handle');
 
+        let saveItem = createSaveItemHandler(fileStructure);
         return saveItem(request, response)
         .then(() => {
-            expect(tractorErrorHandler.handle).to.have.been.calledWith(response, new TractorError(`Could not save "${path.join(path.sep, 'file-structure', 'directory', 'file.ext')}"`, CONSTANTS.SERVER_ERROR));
+            expect(tractorErrorHandler.handle).to.have.been.calledWith(response, new TractorError(`Could not save "${path.join(path.sep, 'file-structure', 'directory', 'file.ext')}"`));
         })
         .finally(() => {
             File.prototype.save.restore();

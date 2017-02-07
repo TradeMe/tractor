@@ -1,12 +1,15 @@
 // Constants:
-import CONSTANTS from '../constants';
+const EXTENSION_MATCH_REGEX = /[^\.]*(\..*)?/;
+const ITEM_NOT_FOUND_STATUS = 404;
+const OKAY_STATUS = 200;
 
 // Utilities:
 import path from 'path';
 
 // Dependencies:
 import Directory from '../structure/Directory';
-import { fileStructure } from '../file-structure';
+import File from '../structure/File';
+import { fileTypes } from '../file-types';
 
 // Errors:
 import tractorErrorHandler from 'tractor-error-handler';
@@ -18,7 +21,14 @@ export function getCopyPath (item) {
     return path.join(item.directory.path, getUniqueName(collection, item));
 }
 
-export function getItemPath (itemUrl) {
+export function getFileConstructorFromFilePath (filePath) {
+    let fileName = path.basename(filePath);
+    let [, fullExtension] = fileName.match(EXTENSION_MATCH_REGEX);
+    let extension = path.extname(fileName);
+    return fileTypes[fullExtension] || fileTypes[extension] || File;
+}
+
+export function getItemPath (fileStructure, itemUrl) {
     itemUrl = itemUrl
     .replace(/\/$/, '')
     .replace(/\//g, path.sep);
@@ -28,12 +38,12 @@ export function getItemPath (itemUrl) {
     return path.resolve(process.cwd(), path.join(fileStructure.path, cleanUrl));
 }
 
-export function respondFileStructure (response) {
-    response.send(fileStructure.structure);
+export function respondOkay (response) {
+    response.sendStatus(OKAY_STATUS);
 }
 
 export function respondItemNotFound (itemPath, response) {
-    tractorErrorHandler.handle(response, new TractorError(`Could not find "${itemPath}"`, CONSTANTS.ITEM_NOT_FOUND_ERROR));
+    tractorErrorHandler.handle(response, new TractorError(`Could not find "${itemPath}"`, ITEM_NOT_FOUND_STATUS));
 }
 
 function getUniqueName (items, item) {

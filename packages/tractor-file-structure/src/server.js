@@ -1,24 +1,22 @@
 // Dependencies:
 import express from 'express';
-import { fileStructure } from './file-structure';
 
 // Actions:
-import { deleteItem } from './actions/delete-item';
-import { moveItem } from './actions/move-item';
-import { openItem } from './actions/open-item';
-import { refactorItem } from './actions/refactor-item';
-import { saveItem } from './actions/save-item';
+import { createDeleteItemHandler } from './actions/delete-item';
+import { createMoveItemHandler } from './actions/move-item';
+import { createOpenItemHandler } from './actions/open-item';
+import { createRefactorItemHandler } from './actions/refactor-item';
+import { createSaveItemHandler } from './actions/save-item';
 import { watchFileStructure } from './actions/watch-file-structure';
 
-export function serve (application, sockets) {
+export function serve (application, sockets, fileStructure) {
     application.use('/fs/static/', express.static(fileStructure.path));
 
-    application.delete('/fs*', deleteItem);
-    application.post('/fs/move*', moveItem);
-    application.get('/fs*', openItem);
-    application.post('/fs/refactor*', refactorItem);
-    application.put('/fs*', saveItem);
+    application.delete('/fs*', createDeleteItemHandler(fileStructure));
+    application.post('/fs/move*', createMoveItemHandler(fileStructure));
+    application.get('/fs*', createOpenItemHandler(fileStructure));
+    application.post('/fs/refactor*', createRefactorItemHandler(fileStructure));
+    application.put('/fs*', createSaveItemHandler(fileStructure));
 
-    sockets.of('/watch-file-structure')
-    .on('connection', watchFileStructure);
+    watchFileStructure(fileStructure, sockets.of('/watch-file-structure'));
 }

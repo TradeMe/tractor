@@ -3,6 +3,7 @@
 // Utilities:
 import chai from 'chai';
 import dirtyChai from 'dirty-chai';
+import path from 'path';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 
@@ -13,29 +14,33 @@ chai.use(sinonChai);
 
 // Dependencies:
 import { EventEmitter } from 'events';
-import { fileStructure } from '../file-structure';
+import FileStructure from '../structure/FileStructure';
 
 // Under test:
 import { watchFileStructure } from './watch-file-structure';
 
 describe('tractor-file-structure - actions/watch-file-structure:', () => {
     it('should start watching the file structure', () => {
-        let socket = {
+        let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+        let sockets = {
             emit: () => {}
         };
         let watcher = new EventEmitter();
 
         sinon.stub(fileStructure, 'watch').returns(watcher);
-        sinon.stub(socket, 'emit');
+        sinon.stub(sockets, 'emit');
         sinon.spy(watcher, 'on');
+        let timers = sinon.useFakeTimers();
 
-        watchFileStructure(socket);
+        watchFileStructure(fileStructure, sockets);
         watcher.emit('change');
+        timers.tick(100);
 
         expect(fileStructure.watch).to.have.been.called();
         expect(watcher.on).to.have.been.calledWith('change');
-        expect(socket.emit).to.have.been.calledWith('file-structure-change');
+        expect(sockets.emit).to.have.been.calledWith('file-structure-change');
 
         fileStructure.watch.restore();
+        timers.restore();
     });
 });

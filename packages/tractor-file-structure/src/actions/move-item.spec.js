@@ -1,12 +1,9 @@
 /* global describe:true, it:true */
 
-// Constants:
-import CONSTANTS from '../constants';
-
 // Utilities:
+import Promise from 'bluebird';
 import chai from 'chai';
 import path from 'path';
-import Promise from 'bluebird';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 
@@ -17,18 +14,16 @@ chai.use(sinonChai);
 // Dependencies:
 import Directory from '../structure/Directory';
 import File from '../structure/File';
-import { fileStructure } from '../file-structure';
+import FileStructure from '../structure/FileStructure';
 import tractorErrorHandler from 'tractor-error-handler';
 import { TractorError } from 'tractor-error-handler';
 
 // Under test:
-import { moveItem } from './move-item';
+import { createMoveItemHandler } from './move-item';
 
 describe('tractor-file-structure - actions/move-item:', () => {
     it('should move a file', () => {
-        fileStructure.path = path.join(path.sep, 'file-structure');
-        fileStructure.init();
-
+        let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
         let request = {
             body: {
@@ -37,11 +32,12 @@ describe('tractor-file-structure - actions/move-item:', () => {
             params: [file.url]
         };
         let response = {
-            send: () => { }
+            sendStatus: () => { }
         };
 
         sinon.stub(File.prototype, 'move').returns(Promise.resolve());
 
+        let moveItem = createMoveItemHandler(fileStructure);
         return moveItem(request, response)
         .then(() => {
             expect(File.prototype.move).to.have.been.calledWith({
@@ -54,9 +50,7 @@ describe('tractor-file-structure - actions/move-item:', () => {
     });
 
     it('should copy a file', () => {
-        fileStructure.path = path.join(path.sep, 'file-structure');
-        fileStructure.init();
-
+        let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
         let request = {
             body: {
@@ -65,11 +59,12 @@ describe('tractor-file-structure - actions/move-item:', () => {
             params: [file.url]
         };
         let response = {
-            send: () => { }
+            sendStatus: () => { }
         };
 
         sinon.stub(File.prototype, 'move').returns(Promise.resolve());
 
+        let moveItem = createMoveItemHandler(fileStructure);
         return moveItem(request, response)
         .then(() => {
             expect(File.prototype.move).to.have.been.calledWith({
@@ -82,9 +77,7 @@ describe('tractor-file-structure - actions/move-item:', () => {
     });
 
     it('should move a directory', () => {
-        fileStructure.path = path.join(path.sep, 'file-structure');
-        fileStructure.init();
-
+        let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
 
         let request = {
@@ -94,11 +87,12 @@ describe('tractor-file-structure - actions/move-item:', () => {
             params: [directory.url]
         };
         let response = {
-            send: () => { }
+            sendStatus: () => { }
         };
 
         sinon.stub(Directory.prototype, 'move').returns(Promise.resolve());
 
+        let moveItem = createMoveItemHandler(fileStructure);
         return moveItem(request, response)
         .then(() => {
             expect(Directory.prototype.move).to.have.been.calledWith({
@@ -111,9 +105,7 @@ describe('tractor-file-structure - actions/move-item:', () => {
     });
 
     it('should copy a directory', () => {
-        fileStructure.path = path.join(path.sep, 'file-structure');
-        fileStructure.init();
-
+        let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
 
         let request = {
@@ -123,11 +115,12 @@ describe('tractor-file-structure - actions/move-item:', () => {
             params: [directory.url]
         };
         let response = {
-            send: () => { }
+            sendStatus: () => { }
         };
 
         sinon.stub(Directory.prototype, 'move').returns(Promise.resolve());
 
+        let moveItem = createMoveItemHandler(fileStructure);
         return moveItem(request, response)
         .then(() => {
             expect(Directory.prototype.move).to.have.been.calledWith({
@@ -139,10 +132,8 @@ describe('tractor-file-structure - actions/move-item:', () => {
         });
     });
 
-    it(`should respond with the updated fileStructure`, () => {
-        fileStructure.path = path.join(path.sep, 'file-structure');
-        fileStructure.init();
-
+    it(`should respond with OK`, () => {
+        let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
         let request = {
             body: {
@@ -151,15 +142,16 @@ describe('tractor-file-structure - actions/move-item:', () => {
             params: [file.url]
         };
         let response = {
-            send: () => { }
+            sendStatus: () => { }
         };
 
         sinon.stub(File.prototype, 'move').returns(Promise.resolve());
-        sinon.stub(response, 'send');
+        sinon.stub(response, 'sendStatus');
 
+        let moveItem = createMoveItemHandler(fileStructure);
         return moveItem(request, response)
         .then(() => {
-            expect(response.send).to.have.been.calledWith(fileStructure.structure);
+            expect(response.sendStatus).to.have.been.calledWith(200);
         })
         .finally(() => {
             File.prototype.move.restore();
@@ -167,9 +159,7 @@ describe('tractor-file-structure - actions/move-item:', () => {
     });
 
     it(`should throw an error if it can't find the item to move`, () => {
-        fileStructure.path = path.join(path.sep, 'file-structure');
-        fileStructure.init();
-
+        let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let request = {
             body: {
                 newUrl: path.join(path.sep, 'other-directory', 'missing-item')
@@ -177,22 +167,21 @@ describe('tractor-file-structure - actions/move-item:', () => {
             params: ['/directory/missing-item']
         };
         let response = {
-            send: () => { }
+            sendStatus: () => { }
         };
 
         sinon.stub(tractorErrorHandler, 'handle');
 
+        let moveItem = createMoveItemHandler(fileStructure);
         moveItem(request, response);
 
-        expect(tractorErrorHandler.handle).to.have.been.calledWith(response, new TractorError(`Could not find "${path.join(path.sep, 'file-structure', 'directory', 'missing-item')}"`, CONSTANTS.ITEM_NOT_FOUND_ERROR));
+        expect(tractorErrorHandler.handle).to.have.been.calledWith(response, new TractorError(`Could not find "${path.join(path.sep, 'file-structure', 'directory', 'missing-item')}"`, 404));
 
         tractorErrorHandler.handle.restore();
     });
 
     it('should handle known TractorErrors', () => {
-        fileStructure.path = path.join(path.sep, 'file-structure');
-        fileStructure.init();
-
+        let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
         let request = {
             body: {
@@ -201,13 +190,14 @@ describe('tractor-file-structure - actions/move-item:', () => {
             params: [file.url]
         };
         let response = {
-            send: () => { }
+            sendStatus: () => { }
         };
         let error = new TractorError();
 
         sinon.stub(File.prototype, 'move').returns(Promise.reject(error));
         sinon.stub(tractorErrorHandler, 'handle');
 
+        let moveItem = createMoveItemHandler(fileStructure);
         return moveItem(request, response)
         .then(() => {
             expect(tractorErrorHandler.handle).to.have.been.calledWith(response, error);
@@ -219,9 +209,7 @@ describe('tractor-file-structure - actions/move-item:', () => {
     });
 
     it('should handle unknown errors', () => {
-        fileStructure.path = path.join(path.sep, 'file-structure');
-        fileStructure.init();
-
+        let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
         let request = {
             body: {
@@ -230,15 +218,16 @@ describe('tractor-file-structure - actions/move-item:', () => {
             params: [file.url]
         };
         let response = {
-            send: () => { }
+            sendStatus: () => { }
         };
 
         sinon.stub(File.prototype, 'move').returns(Promise.reject(new Error()));
         sinon.stub(tractorErrorHandler, 'handle');
 
+        let moveItem = createMoveItemHandler(fileStructure);
         return moveItem(request, response)
         .then(() => {
-            expect(tractorErrorHandler.handle).to.have.been.calledWith(response, new TractorError(`Could not move "${path.join(path.sep, 'file-structure', 'directory', 'file.ext')}"`, CONSTANTS.SERVER_ERROR));
+            expect(tractorErrorHandler.handle).to.have.been.calledWith(response, new TractorError(`Could not move "${path.join(path.sep, 'file-structure', 'directory', 'file.ext')}"`));
         })
         .finally(() => {
             File.prototype.move.restore();

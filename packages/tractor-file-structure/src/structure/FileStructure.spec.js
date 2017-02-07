@@ -14,7 +14,8 @@ chai.use(dirtyChai);
 chai.use(sinonChai);
 
 // Dependencies:
-import fs from 'fs';
+import chokidar from 'chokidar';
+import { EventEmitter } from 'events';
 import Directory from './Directory';
 import File from './File';
 import * as tractorLogger from 'tractor-logger';
@@ -120,27 +121,6 @@ describe('tractor-file-structure - FileStructure:', () => {
         });
     });
 
-    describe('fileStructure.refresh:', () => {
-        it('should reload the File System', () => {
-            sinon.stub(Directory.prototype, 'read').returns(Promise.resolve());
-            sinon.stub(FileStructure.prototype, 'init');
-            sinon.stub(FileStructure.prototype, 'read').returns(Promise.resolve());
-
-            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-
-            return fileStructure.refresh()
-            .then(() => {
-                expect(FileStructure.prototype.init).to.have.been.called();
-                expect(FileStructure.prototype.read).to.have.been.called();
-            })
-            .finally(() => {
-                Directory.prototype.read.restore();
-                FileStructure.prototype.init.restore();
-                FileStructure.prototype.read.restore();
-            });
-        });
-    });
-
     describe('FileStructure.removeItem:', () => {
         it('should remove a file from the fileStructure', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
@@ -170,13 +150,13 @@ describe('tractor-file-structure - FileStructure:', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
             sinon.stub(tractorLogger, 'info');
-            sinon.stub(fs, 'watch');
+            sinon.stub(chokidar, 'watch').returns(new EventEmitter());
 
             fileStructure.watch();
 
-            expect(fs.watch).to.have.been.calledWith(path.join(path.sep, 'file-structure'));
+            expect(chokidar.watch).to.have.been.calledWith(path.join(path.sep, 'file-structure'));
 
-            fs.watch.restore();
+            chokidar.watch.restore();
             tractorLogger.info.restore();
         });
     });

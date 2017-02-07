@@ -1,6 +1,6 @@
 {
   "name": "tractor-file-structure",
-  "version": "0.1.0",
+  "version": "0.1.1-beta.0",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -44,9 +44,10 @@
     "sinon-chai": "2.8.0"
   },
   "dependencies": {
-    "bluebird": "3.4.7",
-    "express": "4.14.1",
-    "tractor-config-loader": "^0.2.2",
+    "bluebird": "^3.4.7",
+    "chokidar": "^1.6.1",
+    "express": "^4.14.1",
+    "lodash.debounce": "^4.0.8",
     "tractor-error-handler": "^0.1.4",
     "tractor-logger": "^0.1.0"
   }
