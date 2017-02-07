@@ -19,7 +19,8 @@ var ExpectationParserService = function ExpectationParserService (
     function parse (step, ast) {
         try {
             var expectation = new ExpectationModel(step);
-            expectation.value = _.first(ast.arguments).value;
+            var argument = _.first(ast.arguments);
+            expectation.value = _.isString(argument) ? argument.raw : argument.value;
 
             var expectationCallExpression = _.first(ast.callee.object.object.object.arguments);
 

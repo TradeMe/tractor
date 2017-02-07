@@ -24,22 +24,31 @@ var ControlPanelController = (function () {
         this.plugins = plugins.filter(function (plugin) {
             return plugin.hasUI;
         });
+        this.tags = getTags(config.tags);
 
         var environment;
-        Object.defineProperty(this, 'environment', {
-            get: function () {
-                return environment;
-            },
-            set: function (newEnv) {
-                environment = newEnv;
-                runnerService.baseUrl = environment;
+        var tag;
+
+        Object.defineProperties(this, {
+            environment: {
+                get: function () {
+                    return environment;
+                },
+                set: function (newEnv) {
+                    environment = newEnv;
+                    runnerService.baseUrl = environment;
+                }
             }
         });
+
         this.environment = _.first(this.environments);
-    }
+        this.tag = _.first(this.tags);
+    };
 
     ControlPanelController.prototype.runProtractor = function () {
-        this.runnerService.runProtractor();
+        this.runnerService.runProtractor({
+            tag: this.tag.value
+        });
     };
 
     ControlPanelController.prototype.isServerRunning = function () {
@@ -48,5 +57,24 @@ var ControlPanelController = (function () {
 
     return ControlPanelController;
 })();
+
+function getTags (tags) {
+    let allTags = [{
+        name: 'All tests',
+        value: ''
+    }];
+    tags.forEach(function (tag) {
+        allTags.push(createTagOption(tag));
+        allTags.push(createTagOption('~' + tag));
+    });
+    return allTags;
+}
+
+function createTagOption (tag) {
+    return {
+        name: tag,
+        value: tag
+    };
+}
 
 ControlPanel.controller('ControlPanelController', ControlPanelController);

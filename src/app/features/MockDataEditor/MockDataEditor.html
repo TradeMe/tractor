@@ -37,6 +37,22 @@
                     required>
                 </textarea>
             </section>
+
+            <section
+                class="file-editor__container"
+                ng-if="mockDataEditor.fileModel.references.length">
+                <h2>Used by Step Definitions:</h2>
+                <ul>
+                    <li
+                        ng-repeat="reference in mockDataEditor.fileModel.references">
+                        <span
+                            class="file-editor__list-item-reference"
+                            title="Edit the step definition"
+                            ui-sref="tractor.step-definitions({ file: reference })">{{ reference.name }}
+                        </span>
+                    </li>
+                </ul>
+            </section>
         </section>
     </form>
 </div>

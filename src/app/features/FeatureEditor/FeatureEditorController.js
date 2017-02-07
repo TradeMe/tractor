@@ -38,14 +38,27 @@ var FeatureEditorController = function FeatureEditorController (
     );
 
     this.runnerService = runnerService;
+    controller.debug = false;
+    this.controller = controller;
     controller.runFeature = runFeature.bind(this);
+
     return controller;
 };
+
+function createTagOptions (tags) {
+    return tags.map(function (tag) {
+        return {
+            tag: tag,
+            value: value
+        };
+    });
+}
 
 function runFeature (toRun) {
     if (toRun){
         this.runnerService.runProtractor({
-            feature: toRun
+            feature: toRun,
+            debug: this.controller.debug
         });
     }
 }

@@ -19,11 +19,19 @@
                 <tractor-confirm-dialog trigger="featureEditor.confirmOverWrite">
                     <p>This will overwrite "{{ featureEditor.fileModel.name }}". Continue?</p>
                 </tractor-confirm-dialog>
-                 <tractor-action ng-show="featureEditor.fileModel.name"
-                      class="file-options__save-file"
-                      action="Run feature"
-                      model="featureEditor"
-                      argument="featureEditor.fileModel.name">
+                <tractor-checkbox
+                    ng-show="featureEditor.fileModel.name"
+                    class="file-options__save-file"
+                    label="debug"
+                    model="featureEditor"
+                    ng-if="featureEditor.fileModel.name">
+                </tractor-checkbox>
+                <tractor-action
+                    ng-if="featureEditor.fileModel.name"
+                    class="file-options__save-file"
+                    action="Run feature"
+                    model="featureEditor"
+                    argument="featureEditor.fileModel.name">
                 </tractor-action>
                 <tractor-submit class="file-options__save-file"
                     action="Save feature file">
@@ -38,6 +46,13 @@
         <section class="file-editor">
             <section ng-show="featureEditor.fileModel.name">
                 <section class="file-editor__container">
+                    <section>
+                        <tractor-select
+                            label="Feature Tag"
+                            model="featureEditor.fileModel">
+                        </tractor-select>
+                    </section>
+
                     <h2>Feature:</h2>
 
                     <tractor-text-input
@@ -68,7 +83,14 @@
                             ng-repeat="scenario in featureEditor.fileModel.scenarios"
                             ng-class="{ 'file-editor__list-item--minimised': scenario.minimised }">
 
-                            <h3 class="file-editor__list-item-name">{{ scenario.name }}</h3>
+                            <section>
+                                 <tractor-select
+                                    label="Scenario Tag"
+                                    model="scenario">
+                                 </tractor-select>
+                            </section>
+
+                            <h3 class="file-editor__list-item-name">{{ scenario.name }} {{ scenario.scenarioTag }}</h3>
 
                             <tractor-action
                                 model="featureEditor.fileModel"
@@ -111,6 +133,12 @@
                                             model="stepDeclaration"
                                             example="something happens">
                                         </tractor-step-input>
+
+                                        <span
+                                            class="file-editor__list-item-link"
+                                            title="See step details"
+                                            ui-sref="tractor.step-definitions({file: featureEditor.fileModel.findStep(stepDeclaration.step)})">
+                                        </span>
                                     </li>
                                 </ol>
 

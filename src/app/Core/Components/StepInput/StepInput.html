@@ -1,6 +1,8 @@
-<label>{{ label }}: </label>
-<input name="step-{{ id }}" type="text" placeholder="e.g. {{ example }}"
-    ng-model="model[property]"
+<label>{{ stepInput.label }}: </label>
+<input name="step-{{ stepInput.id }}" type="text" placeholder="e.g. {{ example }}"
+    ng-change="stepInput.handleSearch(stepInput.model.step)"
+    ng-keydown="handleKeyDown($event)"
+    ng-model="stepInput.model.step"
     ng-model-options="{ allowInvalid: true }"
     example-name
     required />
@@ -8,3 +10,14 @@
     <ng-message when="required">Required</ng-message>
     <ng-message when="exampleName">That is not a valid example name</ng-message>
 </div>
+<ul
+    class="suggestions-list"
+    ng-if="stepInput.isOpen">
+    <li ng-repeat="suggestion in stepInput.items track by $index"
+        ng-class="{
+           'active': selectedIndex === $index
+        }"
+        ng-click="stepInput.itemSelected($index)"
+        ng-mouseover="$parent.selectedIndex = $index">{{ suggestion }}
+    </li>
+</ul>

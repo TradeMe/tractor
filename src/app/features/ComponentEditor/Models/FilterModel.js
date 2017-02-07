@@ -46,7 +46,10 @@ var createFilterModelConstructor = function (
         this.locator = '';
     };
 
-    FilterModel.prototype.types = ['model', 'binding', 'text', 'css', 'options', 'repeater'];
+    // TODO: I don't like that the user has to know to use
+    // 'buttonText' or 'linkText'. We should infer it from
+    // the CSS selector.
+    FilterModel.prototype.types = ['model', 'binding', 'text', 'css', 'options', 'repeater', 'buttonText', 'linkText'];
 
     return FilterModel;
 
@@ -78,19 +81,26 @@ var createFilterModelConstructor = function (
     }
 
     function toSingleAST () {
-        var locatorLiteral = ast.literal(this.locator);
         var template = '';
 
         if (!this.isText) {
+            var locatorLiteral = ast.literal(this.locator);
             template += 'by.<%= type %>(<%= locator %>)';
             return ast.expression(template, {
                 type: ast.identifier(this.type),
                 locator: locatorLiteral
             });
         } else {
-            template += 'by.cssContainingText(\'*\', <%= locator %>)';
+            // TODO: The comma-separated thing is weird here,
+            // it makes the code a bit yuck. Can we just have
+            // an extra input?
+            var locator = this.locator.split(',');
+            var cssLiteral = ast.literal(locator[0].trim());
+            var searchStringLiteral = ast.literal(locator[1].trim());
+            template += 'by.cssContainingText(<%= cssSelector %>,<%= searchString %>)';
             return ast.expression(template, {
-                locator: locatorLiteral
+                cssSelector: cssLiteral,
+                searchString: searchStringLiteral
             });
         }
     }

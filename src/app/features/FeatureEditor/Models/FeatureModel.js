@@ -12,12 +12,28 @@ require('./ScenarioModel');
 var createFeatureModelConstructor = function (
     ScenarioModel,
     FeatureIndent,
-    FeatureNewLine
+    FeatureNewLine,
+    config
 ) {
-    var FeatureModel = function FeatureModel (options) {
+    var FeatureModel = function FeatureModel (options, availableStepDefinitions) {
         var scenarios = [];
 
+        this.featureTags = config.tags;
+
         Object.defineProperties(this, {
+            // TODO: Not sure why this is here, it
+            // should probably be on the FeatureEditorController
+            availableStepDefinitions: {
+                get: function () {
+                    return _.map(availableStepDefinitions, function(stepDefinition) {
+                        return {
+                            type: stepDefinition.name.substring(0, stepDefinition.name.indexOf(' ')),
+                            name: stepDefinition.name.substring(stepDefinition.name.indexOf(' ') + 1),
+                            path: stepDefinition.path
+                        }
+                    });
+                }
+            },
             isSaved: {
                 get: function () {
                     return !!(options && options.isSaved);
@@ -49,6 +65,7 @@ var createFeatureModelConstructor = function (
         this.inOrderTo = '';
         this.asA = '';
         this.iWant = '';
+        this.featureTag = _.first(this.featureTags);
     };
 
     FeatureModel.prototype.addScenario = function () {
@@ -61,9 +78,18 @@ var createFeatureModelConstructor = function (
         });
     };
 
+    // TODO: This should also be on the FeatureEditorController
+    FeatureModel.prototype.findStep = function (step) {
+        var stepDefinition = _.find(this.availableStepDefinitions, function(stepDefinition){
+            return stepDefinition.name.replace(/[_]/g,'') === step.replace(/[*_\/|"<>?]/g, '');
+        });
+        return stepDefinition;
+    };
+
     return FeatureModel;
 
     function toFeatureString () {
+        var featureTag = this.featureTag || '';
         var feature = 'Feature: ' + this.name;
 
         var inOrderTo = FeatureIndent + 'In order to ' + this.inOrderTo;
@@ -74,7 +100,7 @@ var createFeatureModelConstructor = function (
             return FeatureIndent + scenario.featureString;
         });
 
-        var lines = _.flatten([feature, inOrderTo, asA, iWant, scenarios]);
+        var lines = _.flatten([featureTag, feature, inOrderTo, asA, iWant, scenarios]);
         return lines.join(FeatureNewLine);
     }
 };
@@ -82,7 +108,8 @@ var createFeatureModelConstructor = function (
 FeatureEditor.factory('FeatureModel', function (
     ScenarioModel,
     FeatureIndent,
-    FeatureNewLine
+    FeatureNewLine,
+    config
 ) {
-    return createFeatureModelConstructor(ScenarioModel, FeatureIndent, FeatureNewLine);
+    return createFeatureModelConstructor(ScenarioModel, FeatureIndent, FeatureNewLine, config);
 });

@@ -14,11 +14,14 @@ var createScenarioModelConstructor = function (
     StepDeclarationModel,
     ExampleModel,
     FeatureIndent,
-    FeatureNewLine
+    FeatureNewLine,
+    config
 ) {
     var ScenarioModel = function ScenarioModel () {
         var stepDeclarations = [];
         var examples = [];
+
+        this.scenarioTags = config.tags
 
         Object.defineProperties(this, {
             stepDeclarations: {
@@ -44,6 +47,7 @@ var createScenarioModelConstructor = function (
         });
 
         this.name = '';
+        this.scenarioTag = _.first(this.scenarioTags);
     };
 
     ScenarioModel.prototype.addStepDeclaration = function () {
@@ -83,7 +87,9 @@ var createScenarioModelConstructor = function (
             return FeatureIndent + FeatureIndent + stepDeclaration.feature;
         });
 
-        var lines = [scenario, stepDeclarations];
+        var scenarioTag = this.scenarioTag || '';
+
+        var lines = [scenarioTag, scenario, stepDeclarations];
 
         if (this.examples.length) {
             lines.push(FeatureIndent + FeatureIndent + 'Examples:');
@@ -103,7 +109,8 @@ FeatureEditor.factory('ScenarioModel', function (
     StepDeclarationModel,
     ExampleModel,
     FeatureIndent,
-    FeatureNewLine
+    FeatureNewLine,
+    config
 ) {
-    return createScenarioModelConstructor(StepDeclarationModel, ExampleModel, FeatureIndent, FeatureNewLine);
+    return createScenarioModelConstructor(StepDeclarationModel, ExampleModel, FeatureIndent, FeatureNewLine, config);
 });

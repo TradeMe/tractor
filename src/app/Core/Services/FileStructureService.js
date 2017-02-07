@@ -7,7 +7,8 @@ var _ = require('lodash');
 var Core = require('../Core');
 
 var FileStructureService = function FileStructureService (
-    $http
+    $http,
+    realTimeService
 ) {
     var _fileStructure = null;
 
@@ -27,6 +28,11 @@ var FileStructureService = function FileStructureService (
         }
     });
 
+    realTimeService.connect('watch-file-structure', {
+        'file-structure-change': getFileStructure.bind(this)
+    });
+    getFileStructure();
+
     return service;
 
     function checkFileExists (fileStructure, fileUrl) {
@@ -36,8 +42,7 @@ var FileStructureService = function FileStructureService (
     function deleteItem (itemUrl, options) {
         return $http.delete('/fs' + itemUrl, {
             params: options
-        })
-        .then(updateFileStructure.bind(this));
+        });
     }
 
     function getFileStructure () {
@@ -46,8 +51,7 @@ var FileStructureService = function FileStructureService (
     }
 
     function moveItem (itemUrl, options) {
-        return $http.post('/fs/move' + itemUrl, options)
-        .then(updateFileStructure.bind(this));
+        return $http.post('/fs/move' + itemUrl, options);
     }
 
     function openItem (itemUrl) {
@@ -56,15 +60,13 @@ var FileStructureService = function FileStructureService (
     }
 
     function refactorItem (itemUrl, options) {
-        debugger;
         return $http.post('/fs/refactor' + itemUrl, {
             update: options
         });
     }
 
     function saveItem (itemUrl, options) {
-        return $http.put('/fs' + itemUrl, options)
-        .then(updateFileStructure.bind(this));
+        return $http.put('/fs' + itemUrl, options);
     }
 
     function getAllFiles (directory) {

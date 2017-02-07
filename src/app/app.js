@@ -112,6 +112,15 @@ tractor.config(function (
         /* eslint-enable no-path-concat */
         controller: 'FeatureEditorController as featureEditor',
         resolve: {
+            availableStepDefinitions: function (fileStructureService) {
+                return fileStructureService.getFileStructure()
+                .then(function () {
+                    return fileStructureService.fileStructure.allFiles
+                    .filter(function (file) {
+                        return file.url.endsWith('.step.js');
+                    });
+                });
+            },
             feature: function ($stateParams, fileStructureService, FeatureParserService) {
                 var featureUrl = $stateParams.file && $stateParams.file.url;
                 if (!featureUrl) {

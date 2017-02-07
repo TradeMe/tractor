@@ -113,8 +113,12 @@
                 ng-if="stepDefinitionEditor.hasComponents">
                 <h2>Active components:</h2>
                 <ul>
-                    <li ng-repeat="component in stepDefinitionEditor.fileModel.componentInstances">
-                        <span> {{ component.component.name }} </span>
+                    <li ng-repeat="component in stepDefinitionEditor.fileModel.componentInstances | orderBy: 'component.name'">
+                        <a
+                            class="file-editor__list-item-reference"
+                            ui-sref="tractor.components({file: component.component })"
+                            title="{{ component.component.meta }}">{{ component.component.name }}
+                        </a>
                         <tractor-action
                             model="stepDefinitionEditor.fileModel"
                             action="Remove component"
@@ -128,9 +132,13 @@
             <section class="file-editor__container">
                 <h2>Available components:</h2>
                 <ul>
-                    <li ng-repeat="component in stepDefinitionEditor.fileModel.availableComponents"
+                    <li ng-repeat="component in stepDefinitionEditor.fileModel.availableComponents | orderBy: 'name'"
                         ng-if="stepDefinitionEditor.fileModel.components.indexOf(component) === -1">
-                        <span title=" {{ component.meta }}"> {{ component.name }} </spam>
+                        <a
+                            class="file-editor__list-item-reference"
+                            title="{{ component.meta }}"
+                            ui-sref="tractor.components({file: component })">{{ component.name }}
+                        </a>
                         <tractor-action
                             model="stepDefinitionEditor.fileModel"
                             action="Add component"
@@ -145,7 +153,12 @@
             <h2>Mock Data:</h2>
 
             <ul>
-                <li class="file-editor__list-item" ng-repeat="mock in stepDefinitionEditor.fileModel.step.mocks">
+                <li ng-repeat="mock in stepDefinitionEditor.fileModel.mockDataInstances | orderBy: 'mock.name'">
+                    <a
+                        class="file-editor__list-item-reference"
+                        title="{{ mock.mock.json }}"
+                        ui-sref="tractor.mock-data({ file: mock.mock })">{{ mock.mock.name }}
+                    </a>
                     <tractor-action
                         model="stepDefinitionEditor.fileModel.step"
                         action="Remove mock"
@@ -203,9 +216,13 @@
             <section class="file-editor__container">
                 <h2>Available mock data:</h2>
                 <ul>
-                    <li ng-repeat="mockData in stepDefinitionEditor.fileModel.availableMockData"
+                    <li ng-repeat="mockData in stepDefinitionEditor.fileModel.availableMockData | orderBy: 'name'"
                         ng-if="stepDefinitionEditor.fileModel.mockData.indexOf(mockData) === -1">
-                            <span title=" {{ mockData.json }} "> {{ mockData.name }} </span>
+                        <a
+                            class="file-editor__list-item-reference"
+                            ui-sref="tractor.mock-data({ file: mock })"
+                            title="{{ mock.json }}">{{ mock.name }}
+                        </a>
                         <tractor-action
                             model="stepDefinitionEditor.fileModel"
                             action="Add mock"

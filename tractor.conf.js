@@ -15,6 +15,10 @@ module.exports = {
         'http://localhost:3000',
         'http://localhost:4000'
     ],
+    tags: [
+        'smoke',
+        'ignore'
+    ],
   	beforeProtractor: function () {
         // var fileStructure = require('./server/file-structure');
         //

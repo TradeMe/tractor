@@ -85,8 +85,8 @@ form.file {
         & button {
             margin-top: 0;
         }
-    }    
-	
+    }
+
     & .file-editor__list-item-name {
         display: none;
     }
@@ -103,7 +103,7 @@ form.file {
 
     &.file-editor__list-item--minimised {
         padding: 0 0.5rem;
-        
+
         [icon="collapse"] button{
             -webkit-transform: rotate(180deg);
             -moz-transform: rotate(180deg);
@@ -127,4 +127,22 @@ form.file {
             display: none;
         }
     }
+}
+
+.file-editor__list-item-reference:hover {
+   cursor: pointer;
+   color: dodgerblue;
+}
+
+.file-editor__list-item-link {
+    background-image: url('./images/link.png');
+    width: 16px;
+    height: 16px;
+    display: block;
+    float: right;
+    cursor: pointer;
+}
+
+.file-editor__container section > tractor-select {
+    width: 20%;
 }

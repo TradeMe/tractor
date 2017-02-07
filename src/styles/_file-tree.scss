@@ -25,6 +25,21 @@ tractor-file-tree .file-tree__item-name {
     text-decoration: none;
     color: $font-dark;
     white-space: nowrap;
+
+    &.file-tree__item--pending {
+        background-color: limegreen;
+        animation-name: pending;
+        animation-duration: 1s;
+    }
+}
+
+@keyframes pending {
+    from {
+        background-color: limegreen;
+    }
+    to {
+        background-color: green;
+    }
 }
 
 tractor-file-tree .file-tree__item-rename {

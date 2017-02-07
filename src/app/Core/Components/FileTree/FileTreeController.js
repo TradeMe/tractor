@@ -37,8 +37,6 @@ var FileTreeController = (function () {
 
         this.moveItem = this.moveItem.bind(this);
 
-        this.fileStructureService.getFileStructure(this.extension);
-
         Object.defineProperty(this, 'fileStructure', {
             get: function () {
                 return updateFileStructure.call(this);

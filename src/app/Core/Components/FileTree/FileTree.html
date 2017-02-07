@@ -41,6 +41,9 @@
     <div ng-include="'file-options.html'"></div>
 
     <p class="file-tree__item-name"
+        ng-class="{
+            'file-tree__item--pending': item.isPending
+        }"
         ng-if="item.basename && !item.editingName"
         ng-click="fileTree.toggleOpenDirectory(item)"
         ng-dblclick="fileTree.editName(item)">
