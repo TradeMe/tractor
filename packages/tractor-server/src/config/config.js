@@ -1,4 +1,4 @@
 // Dependencies:
-import tractorConfigLoader from 'tractor-config-loader';
+import { getConfig } from 'tractor-config-loader';
 
-export default tractorConfigLoader.loadConfig();
+export default getConfig();

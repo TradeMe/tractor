@@ -3385,70 +3385,54 @@ tough-cookie@~2.3.0:
   dependencies:
     punycode "^1.4.1"
 
-tractor-client@0.10.0-beta.0:
-  version "0.10.0-beta.0"
-  resolved "https://registry.yarnpkg.com/tractor-client/-/tractor-client-0.10.0-beta.0.tgz#60da9d99c5b0123bb14ea653ba9ea89a87358804"
+tractor-client@0.10.2-beta.0:
+  version "0.10.2-beta.0"
+  resolved "https://registry.yarnpkg.com/tractor-client/-/tractor-client-0.10.2-beta.0.tgz#c588f92a8abf30a132681e0f490b331170c02ed8"
 
-tractor-config-loader@0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/tractor-config-loader/-/tractor-config-loader-0.1.0.tgz#56f719122c9b54d8d9d76168b3269887f71ec5da"
-  dependencies:
-    commander "2.9.0"
-    lodash.defaults "4.2.0"
-
-tractor-config-loader@0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/tractor-config-loader/-/tractor-config-loader-0.1.1.tgz#240fdfba4f3b8144163d6c0edcb830d50424dcb2"
+tractor-config-loader@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/tractor-config-loader/-/tractor-config-loader-0.2.2.tgz#bd17a5b94b1af7f8aeacb46c31ecb4a159ebe5fd"
   dependencies:
     lodash.defaults "4.2.0"
     minimist "1.2.0"
 
-tractor-error-handler@0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/tractor-error-handler/-/tractor-error-handler-0.1.1.tgz#6fe73d95d3050fddb17fa5e4e243d723bb01585d"
-
-tractor-error-handler@0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/tractor-error-handler/-/tractor-error-handler-0.1.2.tgz#134c6f058740c8c6c3fed87af018422f3a934db3"
-
-tractor-file-structure@0.1.0-beta.4:
-  version "0.1.0-beta.4"
-  resolved "https://registry.yarnpkg.com/tractor-file-structure/-/tractor-file-structure-0.1.0-beta.4.tgz#4be50df47475bfce852f5ab74f89be17dfce5383"
+tractor-error-handler@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/tractor-error-handler/-/tractor-error-handler-0.1.4.tgz#dc965011611e65284bdb809aeca94528b11bd7c2"
   dependencies:
-    bluebird "3.4.7"
-    tractor-config-loader "0.1.0"
-    tractor-error-handler "0.1.2"
+    tractor-logger "^0.1.0"
 
-tractor-file-structure@0.1.0-beta.5:
-  version "0.1.0-beta.5"
-  resolved "https://registry.yarnpkg.com/tractor-file-structure/-/tractor-file-structure-0.1.0-beta.5.tgz#3d372cfaba2a13b4bda9403ea6203cf35eba4f9e"
-  dependencies:
-    bluebird "3.4.7"
-    tractor-config-loader "0.1.0"
-    tractor-error-handler "0.1.2"
-
-tractor-js-file-transformer@0.1.0:
+tractor-file-structure@^0.1.0:
   version "0.1.0"
-  resolved "https://registry.yarnpkg.com/tractor-js-file-transformer/-/tractor-js-file-transformer-0.1.0.tgz#e099b673e285478a087f72a4285637a757ca08ee"
+  resolved "https://registry.yarnpkg.com/tractor-file-structure/-/tractor-file-structure-0.1.0.tgz#a4813c19fe26f3d9b3e9aea6cec73515f2a68733"
+  dependencies:
+    bluebird "3.4.7"
+    express "4.14.1"
+    tractor-config-loader "^0.2.2"
+    tractor-error-handler "^0.1.4"
+    tractor-logger "^0.1.0"
+
+tractor-js-file-transformer@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/tractor-js-file-transformer/-/tractor-js-file-transformer-0.1.1.tgz#f19697b7cf32a22f3b4059c3742e07679c705a9a"
   dependencies:
     esquery "0.4.0"
-    tractor-file-structure "0.1.0-beta.4"
 
-tractor-logger@0.1.0-beta.0:
-  version "0.1.0-beta.0"
-  resolved "https://registry.yarnpkg.com/tractor-logger/-/tractor-logger-0.1.0-beta.0.tgz#6039e52c896d9777f971efe46809f1360a759b4f"
+tractor-logger@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/tractor-logger/-/tractor-logger-0.1.0.tgz#8d0215c7dd238abc6f8d87303952444c74e3785b"
   dependencies:
     npmlog "4.0.2"
 
-tractor-plugin-loader@0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/tractor-plugin-loader/-/tractor-plugin-loader-0.1.2.tgz#53e6588c6180a089c35bffc6e6969404b0c76517"
+tractor-plugin-loader@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/tractor-plugin-loader/-/tractor-plugin-loader-0.2.0.tgz#fa6fbaef332dbb798fbc27a95cab4d62be802f70"
   dependencies:
     camel-case "3.0.0"
     param-case "2.1.0"
     sentence-case "2.1.0"
-    tractor-config-loader "0.1.0"
-    tractor-error-handler "0.1.1"
+    tractor-config-loader "^0.2.2"
+    tractor-error-handler "^0.1.4"
 
 tryit@^1.0.1:
   version "1.0.3"

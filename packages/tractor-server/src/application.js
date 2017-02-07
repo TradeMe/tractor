@@ -3,18 +3,18 @@ import config from './config/config';
 
 // Utilities:
 import fs from 'fs';
-import template from 'lodash.template';
 import path from 'path';
+import { info } from 'tractor-logger';
 
 // Dependencies:
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import express from 'express';
 import http from 'http';
+import template from 'lodash.template';
 import io from 'socket.io';
 import tractorFileStructure from 'tractor-file-structure';
 import tractorPluginLoader from 'tractor-plugin-loader';
-import { info } from 'tractor-logger';
 
 // Errors:
 import { TractorError } from 'tractor-error-handler';
@@ -35,16 +35,12 @@ let server;
 export default { init, start };
 
 function start () {
-    info('Starting tractor... brrrrrrmmmmmmm');
-
     let tractor = server.listen(config.port, () => {
         info(`tractor is running at port ${tractor.address().port}`);
     });
 }
 
 function init () {
-    initPlugins();
-
     let application = express();
     /* eslint-disable new-cap */
     server = http.Server(application);
@@ -75,7 +71,7 @@ function init () {
 
     servePlugins(application);
 
-    tractorFileStructure.serve(express, application, config);
+    tractorFileStructure.serve(application, sockets);
 
     application.get('/config', getConfig.handler);
     application.get('/plugins', getPlugins.handler);
@@ -86,11 +82,6 @@ function init () {
     .on('connection', socketConnect);
 
     sockets.of('/server-status');
-}
-
-function initPlugins () {
-    let plugins = tractorPluginLoader.getPlugins();
-    plugins.forEach(plugin => plugin.init());
 }
 
 function injectPlugins (application, templatePath) {
@@ -109,5 +100,5 @@ function injectPlugins (application, templatePath) {
 
 function servePlugins (application) {
     let plugins = tractorPluginLoader.getPlugins();
-    plugins.forEach(plugin => plugin.serve(express, application));
+    plugins.forEach(plugin => plugin.serve(application));
 }
