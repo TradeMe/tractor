@@ -16,14 +16,14 @@ import path from 'path';
 import * as tractorLogger from 'tractor-logger';
 
 // Under test:
-import setUpSelenium from './set-up-selenium';
+import { setUpSelenium } from './set-up-selenium';
 
 describe('tractor - init/set-up-selenium:', () => {
     it('should run the "webdriver-manager update" command', () => {
         sinon.stub(childProcess, 'execAsync').returns(Promise.resolve());
         sinon.stub(tractorLogger, 'info');
 
-        return setUpSelenium.run()
+        return setUpSelenium()
         .then(() => {
             let webdriverManagerPath = path.join('node_modules', 'protractor', 'bin', 'webdriver-manager');
             expect(childProcess.execAsync).to.have.been.calledWith(`node ${webdriverManagerPath} update`);
@@ -38,7 +38,7 @@ describe('tractor - init/set-up-selenium:', () => {
         sinon.stub(childProcess, 'execAsync').returns(Promise.resolve());
         sinon.stub(tractorLogger, 'info');
 
-        return setUpSelenium.run()
+        return setUpSelenium()
         .then(() => {
             expect(tractorLogger.info).to.have.been.calledWith('Setting up Selenium...');
             expect(tractorLogger.info).to.have.been.calledWith('Selenium setup complete.');

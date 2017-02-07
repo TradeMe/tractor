@@ -11,7 +11,7 @@ const TO_INSTALL = [
     'protractor@4.0.11',
     'protractor-cucumber-framework@0.6.0',
     'tractor-plugin-browser@0.1.0',
-    'tractor-plugin-loader@0.1.3'
+    'tractor-plugin-loader@0.2.0'
 ];
 
 // Utilities:
@@ -21,11 +21,7 @@ import { error, info } from 'tractor-logger';
 // Dependencies:
 const childProcess = Promise.promisifyAll(require('child_process'));
 
-export default {
-    run: installTractorDependenciesLocally
-};
-
-function installTractorDependenciesLocally () {
+export function installTractorDependenciesLocally () {
     return getInstalledDependencies()
     .then(installed => {
         let toInstall = filterAreadyInstalledDependencies(installed, TO_INSTALL);

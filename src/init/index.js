@@ -1,26 +1,26 @@
 // Utilities:
-import tractorConfigLoader from 'tractor-config-loader';
+import { getConfig } from 'tractor-config-loader';
 import { error, info } from 'tractor-logger';
 
-// Config:
-const CONFIG = tractorConfigLoader.loadConfig();
-
 // Dependencies:
-import createTestDirectoryStructure from './create-test-directory-structure';
-import createBaseTestFiles from './create-base-test-files';
-import installTractorDependenciesLocally from './install-tractor-dependencies-locally';
-import setUpSelenium from './set-up-selenium';
+import { createTestDirectoryStructure } from './create-test-directory-structure';
+import { createBaseTestFiles } from './create-base-test-files';
+import { initialisePlugins } from './initialise-plugins';
+import { installTractorDependenciesLocally } from './install-tractor-dependencies-locally';
+import { setUpSelenium } from './set-up-selenium';
 
 export default function init () {
     info('Setting up tractor...');
+    let config = getConfig();
 
-    return createTestDirectoryStructure.run(CONFIG.testDirectory)
-    .then(() => createBaseTestFiles.run(CONFIG.testDirectory))
-    .then(() => installTractorDependenciesLocally.run())
-    .then(() => setUpSelenium.run())
+    return createTestDirectoryStructure(config.testDirectory)
+    .then(() => createBaseTestFiles(config.testDirectory))
+    .then(() => installTractorDependenciesLocally())
+    .then(() => setUpSelenium())
+    .then(() => initialisePlugins())
     .then(() => info('Set up complete!'))
     .catch(e => {
-        error('Something broke, sorry :(');
+        error('Something broke, sorry 😕');
         error(e.message);
         throw e;
     });

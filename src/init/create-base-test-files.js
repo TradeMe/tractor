@@ -14,11 +14,7 @@ import { info, warn } from 'tractor-logger';
 // Errors:
 import { TractorError } from 'tractor-error-handler';
 
-export default {
-    run: createBaseTestFiles
-};
-
-function createBaseTestFiles (testDirectoryPath) {
+export function createBaseTestFiles (testDirectoryPath) {
     let supportDirPath = path.join(testDirectoryPath, SUPPORT_DIR);
     return createFile(WORLD_FILE_NAME, supportDirPath)
     .catch(TractorError, error => logNotCopying(error))

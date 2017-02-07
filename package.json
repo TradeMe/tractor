@@ -1,6 +1,6 @@
 {
   "name": "tractor",
-  "version": "0.10.1-beta.0",
+  "version": "0.10.2-beta.0",
   "author": "Craig Spence <craig@trademe.co.nz>",
   "repository": {
     "type": "git",
@@ -45,10 +45,10 @@
   "dependencies": {
     "bluebird": "3.4.3",
     "commander": "2.9.0",
-    "tractor-config-loader": "0.1.1",
-    "tractor-error-handler": "0.1.2",
-    "tractor-logger": "0.1.0-beta.0",
-    "tractor-server": "0.10.1-beta.0"
+    "tractor-config-loader": "^0.2.2",
+    "tractor-error-handler": "^0.1.4",
+    "tractor-logger": "^0.1.0",
+    "tractor-server": "^0.10.1-beta.2"
   },
   "bin": {
     "tractor": "./bin/tractor"

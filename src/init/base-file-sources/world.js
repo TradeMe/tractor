@@ -1,8 +1,11 @@
 'use strict';
 
 /* eslint-disable no-var, prefer-arrow-callback */
+var Promise = require('bluebird');
 var HttpBackend = require('httpbackend');
 var tractorPluginLoader = require('tractor-plugin-loader');
+
+let plugins = tractorPluginLoader.default.getPlugins();
 
 var CustomWorld = (function () {
     var chai = require('chai');
@@ -11,10 +14,9 @@ var CustomWorld = (function () {
         global.By = global.protractor.By;
         chai.use(chaiAsPromised);
         global.expect = chai.expect;
-        global.Promise = require('bluebird');
+        global.Promise = Promise;
 
-        tractorPluginLoader.default.getPlugins()
-        .map(function (plugin) {
+        plugins.map(function (plugin) {
             global[plugin.description.variableName] = plugin.create(global.browser);
         });
     };
@@ -23,6 +25,13 @@ var CustomWorld = (function () {
 })();
 
 module.exports = function () {
+
+    let cucumber = this;
+
+    plugins.map(function (plugin) {
+        plugin.addHooks(cucumber);
+    });
+
     this.World = function () {
         return new CustomWorld();
     };

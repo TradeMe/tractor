@@ -16,11 +16,7 @@ import { info, warn } from 'tractor-logger';
 // Errors:
 import { TractorError } from 'tractor-error-handler';
 
-export default {
-    run: createTestDirectoryStructure
-};
-
-function createTestDirectoryStructure (testDirectory) {
+export function createTestDirectoryStructure (testDirectory) {
     info('Creating directory structure...');
     return createAllDirectories(testDirectory);
 }

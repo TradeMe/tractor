@@ -16,7 +16,7 @@ import path from 'path';
 import * as tractorLogger from 'tractor-logger';
 
 // Under test:
-import createTestDirectoryStructure from './create-test-directory-structure';
+import { createTestDirectoryStructure } from './create-test-directory-structure';
 
 describe('tractor - init/create-test-directory-structure:', () => {
     it('should create the tests directory structure', () => {
@@ -24,7 +24,7 @@ describe('tractor - init/create-test-directory-structure:', () => {
         sinon.stub(tractorLogger, 'info');
         sinon.stub(tractorLogger, 'warn');
 
-        return createTestDirectoryStructure.run('directory')
+        return createTestDirectoryStructure('directory')
         .then(() => {
             expect(fs.mkdirAsync).to.have.been.calledWith('directory');
             expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'components'));
@@ -50,7 +50,7 @@ describe('tractor - init/create-test-directory-structure:', () => {
         sinon.stub(tractorLogger, 'info');
         sinon.stub(tractorLogger, 'warn');
 
-        return createTestDirectoryStructure.run('directory')
+        return createTestDirectoryStructure('directory')
         .then(() => {
             expect(tractorLogger.warn).to.have.been.calledWith('"directory" directory already exists. Moving on...');
         })
@@ -66,7 +66,7 @@ describe('tractor - init/create-test-directory-structure:', () => {
         sinon.stub(tractorLogger, 'info');
         sinon.stub(tractorLogger, 'warn');
 
-        return createTestDirectoryStructure.run('directory')
+        return createTestDirectoryStructure('directory')
         .catch(() => { })
         .then(() => {
             expect(tractorLogger.warn).to.not.have.been.called();
@@ -83,7 +83,7 @@ describe('tractor - init/create-test-directory-structure:', () => {
         sinon.stub(tractorLogger, 'info');
         sinon.stub(tractorLogger, 'warn');
 
-        return createTestDirectoryStructure.run('directory')
+        return createTestDirectoryStructure('directory')
         .then(() => {
             expect(tractorLogger.info).to.have.been.calledWith('Creating directory structure...');
             expect(tractorLogger.info).to.have.been.calledWith('Directory structure created.');
