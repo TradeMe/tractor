@@ -3385,9 +3385,9 @@ tough-cookie@~2.3.0:
   dependencies:
     punycode "^1.4.1"
 
-tractor-client@0.10.2-beta.0:
-  version "0.10.2-beta.0"
-  resolved "https://registry.yarnpkg.com/tractor-client/-/tractor-client-0.10.2-beta.0.tgz#c588f92a8abf30a132681e0f490b331170c02ed8"
+tractor-client@^0.10.3-beta.0:
+  version "0.10.3-beta.0"
+  resolved "https://registry.yarnpkg.com/tractor-client/-/tractor-client-0.10.3-beta.0.tgz#8242b13cb2528485f3b8e646eee75810be25dfb7"
 
 tractor-config-loader@^0.2.2:
   version "0.2.2"
