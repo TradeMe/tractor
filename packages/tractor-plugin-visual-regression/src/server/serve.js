@@ -1,30 +1,24 @@
+// Constants:
+import { VISUAL_REGRESSION_DIRECTORY } from './constants';
+
+// Utilities:
+import path from 'path';
+
 // Dependencies:
-import ConsoleRenderer from './renderers/ConsoleRenderer';
-import DiffReporter from './reporters/DiffReporter';
+import { FileStructure } from 'tractor-file-structure';
+import { createGetDiffsHandler } from './actions/get-diffs';
+import { createTakeChangesHandler } from './actions/take-changes';
+import { watchFileStructure } from './actions/watch-file-structure';
 
-// Errors:
-import tractorErrorHandler from 'tractor-error-handler';
+function serve (application, sockets, config) {
+    let fileStructure = new FileStructure(path.join(process.cwd(), config.testDirectory, VISUAL_REGRESSION_DIRECTORY));
 
-function serve (express, application) {
-    application.get('/visual-regression/report', getReport);
-    application.put('/visual-regression/take-changes', takeChanges());
+    application.get('/visual-regression/get-diffs', createGetDiffsHandler(fileStructure));
+    application.put('/visual-regression/take-changes', createTakeChangesHandler(fileStructure));
 
-    let diffReporter = new DiffReporter();
-    let consoleRenderer = new ConsoleRenderer();
+    watchFileStructure(fileStructure, sockets.of('/watch-visual-regression'));
 
-    function getReport (request, response) {
-        diffReporter.generateReport(consoleRenderer)
-        .then(report => response.send(report))
-        .catch(error => tractorErrorHandler.handle(response, error));
-    }
-
-    function takeChanges () {
-        return function (request, response) {
-            let { path } = request.body;
-            console.log(path);
-            response.sendStatus(200);
-        };
-    }
+    return fileStructure.read();
 }
 
 export default serve;

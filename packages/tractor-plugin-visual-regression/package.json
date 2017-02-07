@@ -1,6 +1,6 @@
 {
   "name": "tractor-plugin-visual-regression",
-  "version": "0.1.0-beta.3",
+  "version": "0.1.0-beta.6",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -33,8 +33,7 @@
     "browserify": "13.1.0",
     "browserify-ngannotate": "2.0.0",
     "browserify-shim": "3.8.12",
-    "eslint": "3.4.0",
-    "pngjs": "3.0.0"
+    "eslint": "3.4.0"
   },
   "browserify": {
     "transform": [
@@ -47,8 +46,10 @@
     "angular": "angular"
   },
   "dependencies": {
+    "lodash.debounce": "^4.0.8",
     "pixelmatch": "4.0.2",
-    "tractor-error-handler": "0.1.0",
-    "tractor-file-structure": "0.1.0-beta.2"
+    "pngjs": "3.0.0",
+    "tractor-error-handler": "^0.1.2",
+    "tractor-file-structure": "^0.1.1-beta.0"
   }
 }

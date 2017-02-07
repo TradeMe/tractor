@@ -3,48 +3,63 @@
     <style>
         {{ $ctrl.style }}
     </style>
-    <section
-        class="tractor-visual-regression__column-header">
+    <div
+        ng-if="!$ctrl.diffs.length">
         <h2>
-            Baseline
+            No diff files, yay.
         </h2>
-        <h2>
-            Changes
-        </h2>
-        <h2>
-            Diff
-        </h2>
-    </section>
-    <section
-        class="tractor-visual-regression__sets">
-        <div
-            ng-repeat="set in $ctrl.sets">
-            <h4>
-                {{ set.baselineUrl }}
-            </h4>
-            <tractor-action
-                model="$ctrl"
-                action="Take changes"
-                argument="set">
-            </tractor-action>
-            <ul
-                class="tractor-visual-regression__set">
-                <li
-                    class="tractor-visual-regression__image"
-                    ng-attr-title="{{ set.name }} baseline">
-                    <img ng-src="/fs/static/{{ set.baselineUrl }}"/>
-                </li>
-                <li
-                    class="tractor-visual-regression__image"
-                    ng-attr-title="{{ set.name }} changes">
-                    <img ng-src="/fs/static/{{ set.changesUrl }}"/>
-                </li>
-                <li
-                    class="tractor-visual-regression__image"
-                    ng-attr-title="{{ set.name }} diff">
-                    <img ng-src="/fs/static/{{ set.diffUrl }}"/>
-                </li>
-            </ul>
-        <div>
-    <section>
+    </div>
+    <div
+        ng-if="$ctrl.diffs.length > 0">
+        <section
+            class="tractor-visual-regression__column-header">
+            <h2>
+                Baseline
+            </h2>
+            <h2>
+                Changes
+            </h2>
+            <h2>
+                Diff
+            </h2>
+        </section>
+        <section
+            class="tractor-visual-regression__diffs">
+            <div
+                ng-repeat="diff in $ctrl.diffs">
+                <h4>
+                    {{ diff.name }}
+                </h4>
+                <tractor-action
+                    model="$ctrl"
+                    action="Take changes"
+                    argument="diff">
+                </tractor-action>
+                <ul
+                    class="tractor-visual-regression__diff">
+                    <li
+                        class="tractor-visual-regression__image"
+                        ng-attr-title="{{ diff.name }} baseline">
+                        <a href="/fs/static/visual-regression{{ diff.baseline.url }}" target="_blank">
+                            <img ng-src="/fs/static/visual-regression{{ diff.baseline.url }}"/>
+                        </a>
+                    </li>
+                    <li
+                        class="tractor-visual-regression__image"
+                        ng-attr-title="{{ diff.name }} changes">
+                        <a href="/fs/static/visual-regression{{ diff.changes.url }}" target="_blank">
+                            <img ng-src="/fs/static/visual-regression{{ diff.changes.url }}"/>
+                        </a>
+                    </li>
+                    <li
+                        class="tractor-visual-regression__image"
+                        ng-attr-title="{{ diff.name }} diff">
+                        <a href="/fs/static/visual-regression{{ diff.diff.url }}" target="_blank">
+                            <img ng-src="/fs/static/visual-regression{{ diff.diff.url }}"/>
+                        </a>
+                    </li>
+                </ul>
+            <div>
+        <section>
+    </div>
 </div>

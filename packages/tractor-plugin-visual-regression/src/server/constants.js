@@ -1,8 +1,4 @@
-const CONSTANTS = {
-    BASELINE_DIRECTORY: 'baseline',
-    CHANGES_DIRECTORY: 'changes',
-    DIFFS_DIRECTORY: 'diffs',
-    VISUAL_REGRESSION_DIRECTORY: 'visual-regression'
-};
-
-export default CONSTANTS;
+export const BASELINE_DIRECTORY = 'baseline';
+export const CHANGES_DIRECTORY = 'changes';
+export const DIFFS_DIRECTORY = 'diffs';
+export const VISUAL_REGRESSION_DIRECTORY = 'visual-regression';

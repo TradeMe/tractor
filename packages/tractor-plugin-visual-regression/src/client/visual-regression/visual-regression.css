@@ -15,20 +15,20 @@
     padding-left: 1rem;
 }
 
-.tractor-visual-regression__sets {
+.tractor-visual-regression__diffs {
     height: 94%;
     overflow-x: hidden;
     overflow-y: scroll;
     padding-left: 1rem;
 }
 
-.tractor-visual-regression__sets h4 {
+.tractor-visual-regression__diffs h4 {
     display: inline-block;
     width: 30%;
     margin-right: 0.5rem;
 }
 
-.tractor-visual-regression__set {
+.tractor-visual-regression__diff {
     padding-left: 0;
 }
 

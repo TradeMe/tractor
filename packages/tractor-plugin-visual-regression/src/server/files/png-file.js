@@ -2,9 +2,9 @@
 import { File } from 'tractor-file-structure';
 import tractorFileStructure from 'tractor-file-structure';
 
-export default class PNGFile extends File { }
+export class PNGFile extends File { }
 
-PNGFile.extension = '.png';
-PNGFile.type = 'visual-regression';
+PNGFile.prototype.extension = '.vr.png';
+PNGFile.prototype.type = 'visual-regression';
 
 tractorFileStructure.registerFileType(PNGFile);
