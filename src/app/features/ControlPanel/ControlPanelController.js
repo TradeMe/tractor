@@ -59,7 +59,7 @@ var ControlPanelController = (function () {
 })();
 
 function getTags (tags) {
-    let allTags = [{
+    var allTags = [{
         name: 'All tests',
         value: ''
     }];
