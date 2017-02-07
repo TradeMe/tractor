@@ -50,8 +50,12 @@ A **tractor** plugin is just a plain old node module, with a few specially named
 > Define any new endpoints that you want to attach to the [**tractor-server**](https://github.com/phenomnomnominal/tractor-server), typically for consuming from the [**tractor-client**](https://github.com/phenomnomnominal/tractor-client).
 
 > #### Arguments:
-* `application: `[`Application`](https://expressjs.com/en/4x/api.html#app)
-* `config: `[`TractorConfig`](https://github.com/TradeMe/tractor#config)
+> * `application: `[`Express application`](https://expressjs.com/en/4x/api.html#app)
+> * `sockets: `[`socket.io server`](http://socket.io/docs/server-api/#server)
+> * `config: `[`TractorConfig`](https://github.com/TradeMe/tractor#config)
+
+> #### Returns:
+> * `promise?: Promise`
 
 ### UI Script (optional):
 

@@ -94,7 +94,7 @@ function decoratePlugins (plugins, config) {
         plugin.init = () => init(config);
 
         let serve = plugin.serve || (() => {});
-        plugin.serve = application => serve(application, config);
+        plugin.serve = (application, sockets) => serve(application, sockets, config);
     });
     return plugins;
 }

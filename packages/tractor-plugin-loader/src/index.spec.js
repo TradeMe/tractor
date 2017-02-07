@@ -374,6 +374,7 @@ describe('tractor-plugin-loader:', () => {
                 serve
             };
             let application = {}
+            let sockets = {};
 
             sinon.stub(tractorConfigLoader, 'getConfig').returns(config);
             sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
@@ -382,9 +383,9 @@ describe('tractor-plugin-loader:', () => {
 
             let plugins = tractorPluginLoader.getPlugins();
             let [test] = plugins;
-            test.serve(application);
+            test.serve(application, sockets);
 
-            expect(serveStub).to.have.been.calledWith(application, config);
+            expect(serveStub).to.have.been.calledWith(application, sockets, config);
 
             tractorConfigLoader.getConfig.restore();
             childProcess.spawnSync.restore();
