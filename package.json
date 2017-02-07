@@ -1,6 +1,6 @@
 {
   "name": "tractor",
-  "version": "0.10.2-beta.1",
+  "version": "0.10.2-beta.2",
   "author": "Craig Spence <craig@trademe.co.nz>",
   "repository": {
     "type": "git",
@@ -43,9 +43,9 @@
     "sinon-chai": "2.8.0"
   },
   "dependencies": {
-    "bluebird": "3.4.3",
-    "commander": "2.9.0",
-    "graceful-fs": "4.1.11",
+    "bluebird": "^3.4.3",
+    "commander": "^2.9.0",
+    "graceful-fs": "^4.1.11",
     "tractor-config-loader": "^0.2.2",
     "tractor-error-handler": "^0.1.4",
     "tractor-logger": "^0.1.0",
