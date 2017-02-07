@@ -22,7 +22,7 @@ import { TractorError } from 'tractor-error-handler';
 
 export default class ComponentFile extends JavaScriptFile {
     delete (options = {}) {
-        let { references } = tractorFileStructure.fileStructure;
+        let { references } = this.fileStructure;
         let referencePaths = references[this.path];
         if (!options.isMove && referencePaths && referencePaths.length) {
             return Promise.reject(new TractorError(`Cannot delete ${this.path} as it is referenced by another file.`));
@@ -61,7 +61,7 @@ export default class ComponentFile extends JavaScriptFile {
             transformer.transformMetadata(newFile, oldName, newName, null);
 
             return Promise.map(referencePaths, referencePath => {
-                let reference = tractorFileStructure.fileStructure.allFilesByPath[referencePath];
+                let reference = this.fileStructure.allFilesByPath[referencePath];
 
                 transformer.transformIdentifiers(reference, oldClassName, newClassName, CLASS_CONSTRUCTOR_DECLARATOR_QUERY);
                 transformer.transformIdentifiers(reference, oldClassName, newClassName, CLASS_CONSTRUCTOR_NEW_QUERY);

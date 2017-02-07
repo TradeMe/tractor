@@ -873,7 +873,7 @@ block-stream@*:
   dependencies:
     inherits "~2.0.0"
 
-bluebird@3.4.7:
+bluebird@3.4.7, bluebird@^3.4.7:
   version "3.4.7"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.4.7.tgz#f72d760be09b7f76d08ed8fae98b289a8d05fab3"
 
@@ -1509,7 +1509,7 @@ expand-range@^1.8.1:
   dependencies:
     fill-range "^2.1.0"
 
-express@4.14.1:
+express@4.14.1, express@^4.14.1:
   version "4.14.1"
   resolved "https://registry.yarnpkg.com/express/-/express-4.14.1.tgz#646c237f766f148c2120aff073817b9e4d7e0d33"
   dependencies:
@@ -2311,6 +2311,10 @@ lodash.create@3.1.1:
     lodash._baseassign "^3.0.0"
     lodash._basecreate "^3.0.0"
     lodash._isiterateecall "^3.0.0"
+
+lodash.debounce@^4.0.8:
+  version "4.0.8"
+  resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
 
 lodash.defaults@4.2.0:
   version "4.2.0"
@@ -3402,13 +3406,14 @@ tractor-error-handler@^0.1.4:
   dependencies:
     tractor-logger "^0.1.0"
 
-tractor-file-structure@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/tractor-file-structure/-/tractor-file-structure-0.1.0.tgz#a4813c19fe26f3d9b3e9aea6cec73515f2a68733"
+tractor-file-structure@^0.1.1-beta.0:
+  version "0.1.1-beta.0"
+  resolved "https://registry.yarnpkg.com/tractor-file-structure/-/tractor-file-structure-0.1.1-beta.0.tgz#50f7b24b8f82cf2e489f46eca23080523b18a836"
   dependencies:
-    bluebird "3.4.7"
-    express "4.14.1"
-    tractor-config-loader "^0.2.2"
+    bluebird "^3.4.7"
+    chokidar "^1.6.1"
+    express "^4.14.1"
+    lodash.debounce "^4.0.8"
     tractor-error-handler "^0.1.4"
     tractor-logger "^0.1.0"
 
@@ -3424,9 +3429,9 @@ tractor-logger@^0.1.0:
   dependencies:
     npmlog "4.0.2"
 
-tractor-plugin-loader@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/tractor-plugin-loader/-/tractor-plugin-loader-0.2.0.tgz#fa6fbaef332dbb798fbc27a95cab4d62be802f70"
+tractor-plugin-loader@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/tractor-plugin-loader/-/tractor-plugin-loader-0.2.1.tgz#15a4ad93ae305d6214bdac55ba8ce0889c2da923"
   dependencies:
     camel-case "3.0.0"
     param-case "2.1.0"

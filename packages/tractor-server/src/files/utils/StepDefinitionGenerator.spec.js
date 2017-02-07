@@ -1,4 +1,4 @@
-/* global afterEach: true, beforeEach: true, describe:true, it:true */
+/* global describe:true, it:true */
 
 // Utilities:
 import chai from 'chai';
@@ -14,44 +14,31 @@ chai.use(sinonChai);
 
 // Dependencies:
 import childProcess from 'child_process';
+import FeatureFile from '../FeatureFile';
 import StepDefinitionFile from '../StepDefinitionFile';
 import { Directory, FileStructure } from 'tractor-file-structure';
-import tractorFileStructure from 'tractor-file-structure';
 
 // Under test:
 import StepDefinitionGenerator from './StepDefinitionGenerator';
 
 describe('server/utils: StepDefinitionGenerator:', () => {
     describe('StepDefinitionGenerator.generate:', () => {
-        let oldFileStructure;
-        let fileStructure;
-
-        beforeEach(() => {
-            fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-            tractorFileStructure.fileStructure = fileStructure;
-        });
-
-        afterEach(() => {
-            tractorFileStructure.fileStructure = oldFileStructure;
-        });
-
         it('should generate files for each step in a feature', () => {
-            let directory = new Directory(path.join(path.sep, 'file-structure', 'step-definitions'), fileStructure);
-            let file = {
-                content: dedent(`
-                    Feature: Test
-                    In order to test
-                    As a test
-                    I want to test
-                    Scenario: Test
-                      Given something
-                      And something else
-                      When something happens
-                      Then something else happens
-                      But something else does not happen
-                `),
-                path: ''
-            };
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let stepDefinitionsDirectory = new Directory(path.join(path.sep, 'file-structure', 'step-definitions'), fileStructure);
+            let file = new FeatureFile(path.join(path.sep, 'file-structure', 'features', 'feature.feature'), fileStructure);
+            file.content = dedent(`
+                Feature: Test
+                In order to test
+                As a test
+                I want to test
+                Scenario: Test
+                  Given something
+                  And something else
+                  When something happens
+                  Then something else happens
+                  But something else does not happen
+            `);
             let result = `
                 this.Given(/^something$/, function (callback) {
                     // Write code here that turns the phrase above into concrete actions
@@ -81,7 +68,7 @@ describe('server/utils: StepDefinitionGenerator:', () => {
 
             sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(result));
             sinon.stub(StepDefinitionFile.prototype, 'save').returns(Promise.resolve());
-            sinon.spy(directory, 'addItem');
+            sinon.spy(stepDefinitionsDirectory, 'addItem');
 
             let stepDefinitionGenerator = new StepDefinitionGenerator(file);
             return stepDefinitionGenerator.generate()
@@ -95,7 +82,7 @@ describe('server/utils: StepDefinitionGenerator:', () => {
                 ];
 
                 expectations.forEach((expectation, index) => {
-                    let call = directory.addItem.getCall(index);
+                    let call = stepDefinitionsDirectory.addItem.getCall(index);
                     let [file] = call.args;
 
                     expect(file.basename).to.equal(expectation);
@@ -108,17 +95,17 @@ describe('server/utils: StepDefinitionGenerator:', () => {
         });
 
         it('should escape underscore', () => {
-            let directory = new Directory(path.join(path.sep, 'file-structure', 'step-definitions'), fileStructure);
-            let file = {
-                content: dedent(`
-                    Feature: Test
-                    In order to test
-                    As a test
-                    I want to test
-                    Scenario: Test
-                      Given _
-                `)
-            };
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let stepDefinitionsDirectory = new Directory(path.join(path.sep, 'file-structure', 'step-definitions'), fileStructure);
+            let file = new FeatureFile(path.join(path.sep, 'file-structure', 'features', 'feature.feature'), fileStructure);
+            file.content = dedent(`
+                Feature: Test
+                In order to test
+                As a test
+                I want to test
+                Scenario: Test
+                  Given _
+            `);
             let result = `
                 this.Given(/^_$/, function (callback) {
                     // Write code here that turns the phrase above into concrete actions
@@ -128,12 +115,12 @@ describe('server/utils: StepDefinitionGenerator:', () => {
 
             sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(result));
             sinon.stub(StepDefinitionFile.prototype, 'save').returns(Promise.resolve());
-            sinon.spy(directory, 'addItem');
+            sinon.spy(stepDefinitionsDirectory, 'addItem');
 
             let stepDefinitionGenerator = new StepDefinitionGenerator(file);
             return stepDefinitionGenerator.generate()
             .then(() => {
-                let addFileCall = directory.addItem.getCall(0);
+                let addFileCall = stepDefinitionsDirectory.addItem.getCall(0);
                 let [file] = addFileCall.args;
                 let saveCall = StepDefinitionFile.prototype.save.getCall(0);
                 let [ast] = saveCall.args;
@@ -150,17 +137,17 @@ describe('server/utils: StepDefinitionGenerator:', () => {
         });
 
         it('should escape slashes', () => {
-            let directory = new Directory(path.join(path.sep, 'file-structure', 'step-definitions'), fileStructure);
-            let file = {
-                content: dedent(`
-                    Feature: Test
-                    In order to test'
-                    As a test
-                    I want to test
-                    Scenario: Test
-                      Given /\\\\
-                `)
-            };
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let stepDefinitionsDirectory = new Directory(path.join(path.sep, 'file-structure', 'step-definitions'), fileStructure);
+            let file = new FeatureFile(path.join(path.sep, 'file-structure', 'features', 'feature.feature'), fileStructure);
+            file.content = dedent(`
+                Feature: Test
+                In order to test'
+                As a test
+                I want to test
+                Scenario: Test
+                  Given /\\\\
+            `);
             let result = `
                 this.Given(/^\\\/\\\\$/, function (callback) {
                     // Write code here that turns the phrase above into concrete actions
@@ -170,12 +157,12 @@ describe('server/utils: StepDefinitionGenerator:', () => {
 
             sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(result));
             sinon.stub(StepDefinitionFile.prototype, 'save').returns(Promise.resolve());
-            sinon.spy(directory, 'addItem');
+            sinon.spy(stepDefinitionsDirectory, 'addItem');
 
             let stepDefinitionGenerator = new StepDefinitionGenerator(file);
             return stepDefinitionGenerator.generate()
             .then(() => {
-                let addFileCall = directory.addItem.getCall(0);
+                let addFileCall = stepDefinitionsDirectory.addItem.getCall(0);
                 let [file] = addFileCall.args;
                 let saveCall = StepDefinitionFile.prototype.save.getCall(0);
                 let [ast] = saveCall.args;
@@ -192,17 +179,17 @@ describe('server/utils: StepDefinitionGenerator:', () => {
         });
 
         it('should escape brackets', () => {
-            let directory = new Directory(path.join(path.sep, 'file-structure', 'step-definitions'), fileStructure);
-            let file = {
-                content: dedent(`
-                    Feature: Test
-                    In order to test
-                    As a test
-                    I want to test
-                    Scenario: Test
-                      Given <>
-                `)
-            };
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let stepDefinitionsDirectory = new Directory(path.join(path.sep, 'file-structure', 'step-definitions'), fileStructure);
+            let file = new FeatureFile(path.join(path.sep, 'file-structure', 'features', 'feature.feature'), fileStructure);
+            file.content = dedent(`
+                Feature: Test
+                In order to test
+                As a test
+                I want to test
+                Scenario: Test
+                  Given <>
+            `);
             let result = `
                 this.Given(/^<>$/, function (callback) {
                     // Write code here that turns the phrase above into concrete actions
@@ -212,12 +199,12 @@ describe('server/utils: StepDefinitionGenerator:', () => {
 
             sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(result));
             sinon.stub(StepDefinitionFile.prototype, 'save').returns(Promise.resolve());
-            sinon.spy(directory, 'addItem');
+            sinon.spy(stepDefinitionsDirectory, 'addItem');
 
             let stepDefinitionGenerator = new StepDefinitionGenerator(file);
             return stepDefinitionGenerator.generate()
             .then(() => {
-                let addFileCall = directory.addItem.getCall(0);
+                let addFileCall = stepDefinitionsDirectory.addItem.getCall(0);
                 let [file] = addFileCall.args;
                 let saveCall = StepDefinitionFile.prototype.save.getCall(0);
                 let [ast] = saveCall.args;
@@ -234,17 +221,17 @@ describe('server/utils: StepDefinitionGenerator:', () => {
         });
 
         it('should escape special characters', () => {
-            let directory = new Directory(path.join(path.sep, 'file-structure', 'step-definitions'), fileStructure);
-            let file = {
-                content: dedent(`
-                    Feature: Test
-                    In order to test
-                    As a test
-                    I want to test
-                    Scenario: Test
-                      Given ?:*"|
-                `)
-            };
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let stepDefinitionsDirectory = new Directory(path.join(path.sep, 'file-structure', 'step-definitions'), fileStructure);
+            let file = new FeatureFile(path.join(path.sep, 'file-structure', 'features', 'feature.feature'), fileStructure);
+            file.content = dedent(`
+                Feature: Test
+                In order to test
+                As a test
+                I want to test
+                Scenario: Test
+                  Given ?:*"|
+            `);
             let result = `
                 this.Given(/^\\?\\:\\*\\"\\|$/, function (callback) {
                     // Write code here that turns the phrase above into concrete actions
@@ -254,12 +241,12 @@ describe('server/utils: StepDefinitionGenerator:', () => {
 
             sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(result));
             sinon.stub(StepDefinitionFile.prototype, 'save').returns(Promise.resolve());
-            sinon.spy(directory, 'addItem');
+            sinon.spy(stepDefinitionsDirectory, 'addItem');
 
             let stepDefinitionGenerator = new StepDefinitionGenerator(file);
             return stepDefinitionGenerator.generate()
                 .then(() => {
-                    let addFileCall = directory.addItem.getCall(0);
+                    let addFileCall = stepDefinitionsDirectory.addItem.getCall(0);
                     let [file] = addFileCall.args;
                     let saveCall = StepDefinitionFile.prototype.save.getCall(0);
                     let [ast] = saveCall.args;
@@ -276,17 +263,17 @@ describe('server/utils: StepDefinitionGenerator:', () => {
         });
 
         it('should escape money amounts:', () => {
-            let directory = new Directory(path.join(path.sep, 'file-structure', 'step-definitions'), fileStructure);
-            let file = {
-                content: dedent(`
-                    Feature: Test
-                    In order to test
-                    As a test
-                    I want to test
-                    Scenario: Test
-                      When $100
-                `)
-            };
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let stepDefinitionsDirectory = new Directory(path.join(path.sep, 'file-structure', 'step-definitions'), fileStructure);
+            let file = new FeatureFile(path.join(path.sep, 'file-structure', 'features', 'feature.feature'), fileStructure);
+            file.content = dedent(`
+                Feature: Test
+                In order to test
+                As a test
+                I want to test
+                Scenario: Test
+                  When $100
+            `);
             let result = `
                 this.When(/^\\$\\d+$/, function (callback) {
                     // Write code here that turns the phrase above into concrete actions
@@ -296,12 +283,12 @@ describe('server/utils: StepDefinitionGenerator:', () => {
 
             sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(result));
             sinon.stub(StepDefinitionFile.prototype, 'save').returns(Promise.resolve());
-            sinon.spy(directory, 'addItem');
+            sinon.spy(stepDefinitionsDirectory, 'addItem');
 
             let stepDefinitionGenerator = new StepDefinitionGenerator(file);
             return stepDefinitionGenerator.generate()
             .finally(() => {
-                let addFileCall = directory.addItem.getCall(0);
+                let addFileCall = stepDefinitionsDirectory.addItem.getCall(0);
                 let [file] = addFileCall.args;
                 let saveCall = StepDefinitionFile.prototype.save.getCall(0);
                 let [ast] = saveCall.args;
@@ -318,18 +305,17 @@ describe('server/utils: StepDefinitionGenerator:', () => {
         });
 
         it('should escape number amounts:', () => {
-            let directory = new Directory(path.join(path.sep, 'file-structure', 'step-definitions'), fileStructure);
-            let file = {
-                content: dedent(`
-                    Feature: Test
-                    In order to test
-                    As a test
-                    I want to test
-                    Scenario: Test
-                      When 100
-                `),
-                parent: directory
-            };
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let stepDefinitionsDirectory = new Directory(path.join(path.sep, 'file-structure', 'step-definitions'), fileStructure);
+            let file = new FeatureFile(path.join(path.sep, 'file-structure', 'features', 'feature.feature'), fileStructure);
+            file.content = dedent(`
+                Feature: Test
+                In order to test
+                As a test
+                I want to test
+                Scenario: Test
+                  When 100
+            `);
             let result = `
                 this.When(/^\\d+$/, function (callback) {
                     // Write code here that turns the phrase above into concrete actions
@@ -339,12 +325,12 @@ describe('server/utils: StepDefinitionGenerator:', () => {
 
             sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(result));
             sinon.stub(StepDefinitionFile.prototype, 'save').returns(Promise.resolve());
-            sinon.spy(directory, 'addItem');
+            sinon.spy(stepDefinitionsDirectory, 'addItem');
 
             let stepDefinitionGenerator = new StepDefinitionGenerator(file);
             return stepDefinitionGenerator.generate()
             .then(() => {
-                let addFileCall = directory.addItem.getCall(0);
+                let addFileCall = stepDefinitionsDirectory.addItem.getCall(0);
                 let [file] = addFileCall.args;
                 let saveCall = StepDefinitionFile.prototype.save.getCall(0);
                 let [ast] = saveCall.args;
@@ -361,22 +347,17 @@ describe('server/utils: StepDefinitionGenerator:', () => {
         });
 
         it('should not overwrite existing files:', () => {
-            let directory = new Directory(path.join(path.sep, 'file-structure', 'step-definitions'), fileStructure);
-            let existingFile = {
-                basename: 'Given something',
-                path: '/file-structure/step-definitions/Given something.step.js'
-            };
-            let file = {
-                content: dedent(`
-                    Feature: Test
-                    In order to test
-                    As a test
-                    I want to test
-                    Scenario: Test
-                      Given something
-                `),
-                parent: directory
-            };
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let existingFile = new StepDefinitionFile(path.join(path.sep, 'file-structure', 'step-definitions', 'Given something.step.js'), fileStructure);
+            let file = new FeatureFile(path.join(path.sep, 'file-structure', 'features', 'feature.feature'), fileStructure);
+            file.content = dedent(`
+                Feature: Test
+                In order to test
+                As a test
+                I want to test
+                Scenario: Test
+                  Given something
+            `);
             let result = `
                 this.Given(/^something$/, function (callback) {
                     // Write code here that turns the phrase above into concrete actions
@@ -384,7 +365,6 @@ describe('server/utils: StepDefinitionGenerator:', () => {
                 });
             `;
 
-            let oldAllFiles = fileStructure.structure.allFiles;
             fileStructure.structure.allFiles = [existingFile];
             sinon.stub(childProcess, 'execAsync').returns(Promise.resolve(result));
             sinon.stub(StepDefinitionFile.prototype, 'save').returns(Promise.resolve());
@@ -396,7 +376,6 @@ describe('server/utils: StepDefinitionGenerator:', () => {
             })
             .finally(() => {
                 childProcess.execAsync.restore();
-                fileStructure.structure.allFiles = oldAllFiles;
                 StepDefinitionFile.prototype.save.restore();
             });
         });

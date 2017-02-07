@@ -2,6 +2,7 @@
 import config from './config/config';
 
 // Utilities:
+import Promise from 'bluebird';
 import fs from 'fs';
 import path from 'path';
 import { info } from 'tractor-logger';
@@ -40,7 +41,7 @@ function start () {
     });
 }
 
-function init () {
+function init (fileStructure) {
     let application = express();
     /* eslint-disable new-cap */
     server = http.Server(application);
@@ -69,19 +70,22 @@ function init () {
 
     application.use(express.static(dir));
 
-    servePlugins(application);
-
-    tractorFileStructure.serve(application, sockets);
-
     application.get('/config', getConfig.handler);
     application.get('/plugins', getPlugins.handler);
-
-    application.get('*', renderIndex);
 
     sockets.of('/run-protractor')
     .on('connection', socketConnect);
 
     sockets.of('/server-status');
+
+    return servePlugins(application, sockets)
+    .then(() => {
+        // Make sure the file structure handlers are added after the plugins:
+        tractorFileStructure.serve(application, sockets, fileStructure);
+
+        // Always make sure the '*' handler happens last:
+        application.get('*', renderIndex);
+    });
 }
 
 function injectPlugins (application, templatePath) {
@@ -98,7 +102,7 @@ function injectPlugins (application, templatePath) {
     };
 }
 
-function servePlugins (application) {
+function servePlugins (application, sockets) {
     let plugins = tractorPluginLoader.getPlugins();
-    plugins.forEach(plugin => plugin.serve(application));
+    return Promise.map(plugins, plugin => plugin.serve(application, sockets));
 }

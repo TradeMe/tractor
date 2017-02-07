@@ -67,9 +67,9 @@
     "tractor-client": "^0.10.3-beta.0",
     "tractor-config-loader": "^0.2.2",
     "tractor-error-handler": "^0.1.4",
-    "tractor-file-structure": "^0.1.0",
+    "tractor-file-structure": "^0.1.1-beta.0",
     "tractor-js-file-transformer": "^0.1.1",
     "tractor-logger": "^0.1.0",
-    "tractor-plugin-loader": "^0.2.0"
+    "tractor-plugin-loader": "^0.2.1"
   }
 }

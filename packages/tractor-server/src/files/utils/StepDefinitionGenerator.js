@@ -19,7 +19,6 @@ import esprima from 'esprima';
 import estemplate from 'estemplate';
 import StepDefinitionFile from '../StepDefinitionFile';
 import stripcolorcodes from 'stripcolorcodes';
-import tractorFileStructure from 'tractor-file-structure';
 
 export default class StepDefinitionGenerator {
     constructor (file) {
@@ -31,7 +30,7 @@ export default class StepDefinitionGenerator {
         let stepNames = extractStepNames(content);
 
         return childProcess.execAsync(`${CUCUMBER_COMMAND} "${path}"`)
-        .then(result => generateStepDefinitionFiles(stepNames, result));
+        .then(result => generateStepDefinitionFiles.call(this, stepNames, result));
     }
 }
 
@@ -59,14 +58,13 @@ function extractStepNames (feature) {
 
 function generateStepDefinitionFiles (stepNames, result) {
     let stepDefinitionExtension = StepDefinitionFile.prototype.extension;
+    let { fileStructure } = this.file;
+    let { structure } = fileStructure;
 
-    let existingFileNames = tractorFileStructure.fileStructure.structure.allFiles
+    let existingFileNames = fileStructure.structure.allFiles
     .filter(file => file.path.endsWith(stepDefinitionExtension))
     .map(file => file.basename);
 
-    let directory = tractorFileStructure.fileStructure.structure.directories.find(directory => {
-        return directory.name === STEP_DEFINITIONS_DIR;
-    });
     let stubs = splitResultToStubs(result);
 
     return Promise.map(stubs, stub => {
@@ -75,8 +73,8 @@ function generateStepDefinitionFiles (stepNames, result) {
         let fileData = generateStepDefinitionFile(existingFileNames, stub, stepName);
         if (fileData) {
             let { ast, fileName } = fileData;
-            let filePath = path.join(directory.path, `${fileName}${stepDefinitionExtension}`);
-            let file = new StepDefinitionFile(filePath, tractorFileStructure.fileStructure);
+            let filePath = path.join(structure.path, STEP_DEFINITIONS_DIR, `${fileName}${stepDefinitionExtension}`);
+            let file = new StepDefinitionFile(filePath, fileStructure);
             return file.save(ast);
         }
     });

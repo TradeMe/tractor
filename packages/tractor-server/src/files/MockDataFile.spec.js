@@ -16,7 +16,6 @@ chai.use(sinonChai);
 // Dependencies:
 import { TractorError } from 'tractor-error-handler';
 import { File, FileStructure } from 'tractor-file-structure';
-import tractorFileStructure from 'tractor-file-structure';
 import transformer from 'tractor-js-file-transformer';
 
 // Under test:
@@ -62,10 +61,7 @@ describe('server/files: MockDataFile:', () => {
         });
 
         it('should delete the list of references to the file', () => {
-            let oldFileStructure = tractorFileStructure.fileStructure;
-
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-            tractorFileStructure.fileStructure = fileStructure;
             let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.mock.json');
             fileStructure.references[filePath] = [];
 
@@ -79,15 +75,11 @@ describe('server/files: MockDataFile:', () => {
             })
             .finally(() => {
                 File.prototype.delete.restore();
-                tractorFileStructure.fileStructure = oldFileStructure;
             });
         });
 
         it('should throw an error if the mock data is referenced by other files', () => {
-            let oldFileStructure = tractorFileStructure.fileStructure;
-
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-            tractorFileStructure.fileStructure = fileStructure;
             let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.mock.json');
             fileStructure.references[filePath] = ['fake reference'];
 
@@ -101,15 +93,11 @@ describe('server/files: MockDataFile:', () => {
             })
             .finally(() => {
                 File.prototype.delete.restore();
-                tractorFileStructure.fileStructure = oldFileStructure;
             });
         });
 
         it('should not throw an error if `isMove` is true', () => {
-            let oldFileStructure = tractorFileStructure.fileStructure;
-
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-            tractorFileStructure.fileStructure = fileStructure;
             let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.mock.json');
             fileStructure.references[filePath] = [];
 
@@ -125,7 +113,6 @@ describe('server/files: MockDataFile:', () => {
             .finally(() => {
                 File.prototype.delete.restore();
                 Promise.reject.restore();
-                tractorFileStructure.fileStructure = oldFileStructure;
             });
         });
     });
@@ -171,10 +158,7 @@ describe('server/files: MockDataFile:', () => {
 
     describe('MockDataFile.move:', () => {
         it('should move the file', () => {
-            let oldFileStructure = tractorFileStructure.fileStructure;
-
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-            tractorFileStructure.fileStructure = fileStructure;
             let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.mock.json');
             let file = new MockDataFile(filePath, fileStructure);
             let newFilePath = path.join(path.sep, 'file-structure', 'directory', 'new file.mock.json');
@@ -195,15 +179,11 @@ describe('server/files: MockDataFile:', () => {
                 File.prototype.move.restore();
                 File.prototype.save.restore();
                 Promise.map.restore();
-                tractorFileStructure.fileStructure = oldFileStructure;
             });
         });
 
         it('should update the class name of the mock data in files that reference it', () => {
-            let oldFileStructure = tractorFileStructure.fileStructure;
-
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-            tractorFileStructure.fileStructure = fileStructure;
             let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.mock.json');
             let file = new MockDataFile(filePath, fileStructure);
             let newFilePath = path.join(path.sep, 'file-structure', 'directory', 'new file.mock.json');
@@ -231,15 +211,11 @@ describe('server/files: MockDataFile:', () => {
                 transformer.transformIdentifiers.restore();
                 transformer.transformMetadata.restore();
                 transformer.transformRequirePaths.restore();
-                tractorFileStructure.fileStructure = oldFileStructure;
             });
         });
 
         it('should update the instance name of the mock data in files that reference it', () => {
-            let oldFileStructure = tractorFileStructure.fileStructure;
-
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-            tractorFileStructure.fileStructure = fileStructure;
             let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.mock.json');
             let file = new MockDataFile(filePath, fileStructure);
             let newFilePath = path.join(path.sep, 'file-structure', 'directory', 'new file.mock.json');
@@ -267,15 +243,11 @@ describe('server/files: MockDataFile:', () => {
                 transformer.transformIdentifiers.restore();
                 transformer.transformMetadata.restore();
                 transformer.transformRequirePaths.restore();
-                tractorFileStructure.fileStructure = oldFileStructure;
             });
         });
 
         it('should update the metadata of the mock data in files that reference it', () => {
-            let oldFileStructure = tractorFileStructure.fileStructure;
-
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-            tractorFileStructure.fileStructure = fileStructure;
             let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.mock.json');
             let file = new MockDataFile(filePath, fileStructure);
             let newFilePath = path.join(path.sep, 'file-structure', 'directory', 'new file.mock.json');
@@ -303,15 +275,11 @@ describe('server/files: MockDataFile:', () => {
                 transformer.transformIdentifiers.restore();
                 transformer.transformMetadata.restore();
                 transformer.transformRequirePaths.restore();
-                tractorFileStructure.fileStructure = oldFileStructure;
             });
         });
 
         it('should update the require path to the mock data in files that reference it', () => {
-            let oldFileStructure = tractorFileStructure.fileStructure;
-
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-            tractorFileStructure.fileStructure = fileStructure;
             let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.mock.json');
             let file = new MockDataFile(filePath, fileStructure);
             let newFilePath = path.join(path.sep, 'file-structure', 'directory', 'new file.mock.json');
@@ -343,15 +311,11 @@ describe('server/files: MockDataFile:', () => {
                 transformer.transformIdentifiers.restore();
                 transformer.transformMetadata.restore();
                 transformer.transformRequirePaths.restore();
-                tractorFileStructure.fileStructure = oldFileStructure;
             });
         });
 
         it('should throw if updating references fails', () => {
-            let oldFileStructure = tractorFileStructure.fileStructure;
-
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-            tractorFileStructure.fileStructure = fileStructure;
             let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.mock.json');
             let file = new MockDataFile(filePath, fileStructure);
             let newFilePath = path.join(path.sep, 'file-structure', 'directory', 'new file.mock.json');
@@ -376,7 +340,6 @@ describe('server/files: MockDataFile:', () => {
                 Promise.map.restore();
                 transformer.transformIdentifiers.restore();
                 transformer.transformMetadata.restore();
-                tractorFileStructure.fileStructure = oldFileStructure;
             });
         });
     });
