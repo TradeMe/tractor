@@ -14,7 +14,7 @@
   "scripts": {
     "prepublish": "npm run build",
     "build": "npm run lint && npm run cover && npm run compile && npm run bundle",
-    "bundle": "mkdir ./dist/client && browserify src/client/index.js -o dist/client/bundle.js",
+    "bundle": "touch ./dist/client/bundle.js && browserify src/client/index.js -o dist/client/bundle.js",
     "compile": "babel src/server/ --out-dir dist/server/ --ignore *.spec.js",
     "cover": "istanbul cover --config .istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ./.mocharc 'src/**/*.spec.js'",
     "coveralls": "cat ./reports/coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
