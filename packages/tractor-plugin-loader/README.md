@@ -2,6 +2,7 @@
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/phenomnomnominal/tractor-plugin-loader.svg)](https://greenkeeper.io/)
 [![npm version](https://img.shields.io/npm/v/tractor-plugin-loader.svg)](https://img.shields.io/npm/v/tractor-plugin-loader.svg)
+[![Coveralls](https://img.shields.io/coveralls/phenomnomnominal/tractor-plugin-loader.svg)](https://coveralls.io/github/phenomnomnominal/tractor-plugin-loader)
 
 Plugin loader for [**tractor**](https://github.com/TradeMe/tractor) to provide additional UI testing capabilities.
 
