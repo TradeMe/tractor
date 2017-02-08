@@ -1,7 +1,7 @@
 # tractor-error-handler
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/phenomnomnominal/tractor-error-handler.svg)](https://greenkeeper.io/)
-[![npm version](https://img.shields.io/npm/v/tractor-error-handler.svg)](https://img.shields.io/npm/v/tractor-error-handler.svg)
+[![npm version](https://img.shields.io/npm/v/tractor-error-handler.svg)](https://www.npmjs.com/package/tractor-error-handler)
 [![Coveralls](https://img.shields.io/coveralls/phenomnomnominal/tractor-error-handler.svg)](https://coveralls.io/github/phenomnomnominal/tractor-error-handler)
 
 A general HTTP request error handler for [**tractor**](https://github.com/TradeMe/tractor).
