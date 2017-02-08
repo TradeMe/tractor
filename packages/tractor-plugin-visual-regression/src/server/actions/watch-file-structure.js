@@ -5,7 +5,7 @@ const CHANGE_DEBOUNCE_TIME = 100;
 import debounce from 'lodash.debounce'
 
 let watcher;
-export function watchFileStructure (fileStructure, sockets) {
+export function watchFileStructure (sockets, fileStructure) {
     watcher = watcher || fileStructure.watch();
     watcher.on('change', debounce(() => {
         sockets.emit('visual-regression-change');

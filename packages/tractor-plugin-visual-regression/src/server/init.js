@@ -10,10 +10,10 @@ const fs = Promise.promisifyAll(require('fs'));
 import path from 'path';
 
 function init (config) {
-    let visualRegressionPath = path.join(config.testDirectory, VISUAL_REGRESSION_DIRECTORY);
-    let baselinePath = path.join(config.testDirectory, VISUAL_REGRESSION_DIRECTORY, BASELINE_DIRECTORY);
-    let changesPath = path.join(config.testDirectory, VISUAL_REGRESSION_DIRECTORY, CHANGES_DIRECTORY);
-    let diffsPath = path.join(config.testDirectory, VISUAL_REGRESSION_DIRECTORY, DIFFS_DIRECTORY);
+    let visualRegressionPath = path.join(process.cwd(), config.testDirectory, VISUAL_REGRESSION_DIRECTORY);
+    let baselinePath = path.join(process.cwd(), config.testDirectory, VISUAL_REGRESSION_DIRECTORY, BASELINE_DIRECTORY);
+    let changesPath = path.join(process.cwd(), config.testDirectory, VISUAL_REGRESSION_DIRECTORY, CHANGES_DIRECTORY);
+    let diffsPath = path.join(process.cwd(), config.testDirectory, VISUAL_REGRESSION_DIRECTORY, DIFFS_DIRECTORY);
 
     return fs.mkdirAsync(visualRegressionPath)
     .catch(catchExists)

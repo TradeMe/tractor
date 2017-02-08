@@ -28,13 +28,24 @@ export function checkDiff (fileStructure, testDirectory, fileName) {
         return;
     }
 
+    let error;
+    if (!imagesAreSameSize(baselinePNG, changesPNG)) {
+        error = new TractorError(`New screenshot for ${fileName} is not the same size as baseline.`);
+    }
+
     pixelmatch(baselinePNG.data, changesPNG.data, diffPNG.data, width, height, { threshold: 0.1 });
 
     let diffsPath = replaceExtension(path.join(testDirectory, VISUAL_REGRESSION_DIRECTORY, DIFFS_DIRECTORY, fileName));
 
     let diffPNGFile = new DiffPNGFile(diffsPath, fileStructure);
     return diffPNGFile.save(PNG.sync.write(diffPNG))
-    .then(() => Promise.reject(new TractorError(`Visual Regression failed for ${fileName}`)));
+    .then(() => Promise.reject(error || new TractorError(`Visual Regression failed for ${fileName}`)));
+}
+
+function imagesAreSameSize (baselinePNG, changePNG) {
+    let sameWidth = baselinePNG.width === changePNG.width;
+    let sameHeight = baselinePNG.height === changePNG.height;
+    return sameWidth && sameHeight;
 }
 
 function replaceExtension (filePath) {

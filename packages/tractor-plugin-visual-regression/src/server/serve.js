@@ -16,7 +16,7 @@ function serve (application, sockets, config) {
     application.get('/visual-regression/get-diffs', createGetDiffsHandler(fileStructure));
     application.put('/visual-regression/take-changes', createTakeChangesHandler(fileStructure));
 
-    watchFileStructure(fileStructure, sockets.of('/watch-visual-regression'));
+    watchFileStructure(sockets.of('/watch-visual-regression'), fileStructure);
 
     return fileStructure.read();
 }

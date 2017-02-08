@@ -1,6 +1,6 @@
 {
   "name": "tractor-plugin-visual-regression",
-  "version": "0.1.0-beta.6",
+  "version": "0.1.0-beta.7",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -13,10 +13,14 @@
   "main": "dist/server/index.js",
   "scripts": {
     "prepublish": "npm run build",
-    "build": "npm run lint && npm run compile && npm run bundle",
+    "build": "npm run lint && npm run cover && npm run compile && npm run bundle",
     "bundle": "browserify src/client/index.js -o dist/client/bundle.js",
     "compile": "babel src/server/ --out-dir dist/server/ --ignore *.spec.js",
-    "lint": "eslint src/**/*.js; true"
+    "cover": "istanbul cover --config .istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ./.mocharc 'src/**/*.spec.js'",
+    "coveralls": "cat ./reports/coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
+    "lint": "eslint src/**/*.js; true",
+    "test": "mocha --opts ./.mocharc 'src/server/**/*.spec.js'",
+    "watch": "npm-watch"
   },
   "license": "MIT",
   "engines": {
@@ -33,7 +37,15 @@
     "browserify": "13.1.0",
     "browserify-ngannotate": "2.0.0",
     "browserify-shim": "3.8.12",
-    "eslint": "3.4.0"
+    "chai": "3.5.0",
+    "coveralls": "2.11.16",
+    "dirty-chai": "1.2.2",
+    "eslint": "3.4.0",
+    "istanbul": "1.0.0-alpha.2",
+    "mocha": "3.2.0",
+    "npm-watch": "0.1.8",
+    "sinon": "1.17.7",
+    "sinon-chai": "2.8.0"
   },
   "browserify": {
     "transform": [

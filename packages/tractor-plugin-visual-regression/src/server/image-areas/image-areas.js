@@ -16,20 +16,22 @@ export function updateAreas (rawPngData, areas) {
     let png = PNG.sync.read(new Buffer(rawPngData, 'base64'));
 
     if (areas.length) {
-        ignoreAreas(png, calculateIgnoreAreas(areas));
+        let areaData = calculateAreas(areas)
+        updateData(png, areaData);
+
+        let [firstArea] = areas;
+        if (!firstArea.ignored) {
+            png = cropImage(png, areaData);
+        }
     }
 
     return PNG.sync.write(png);
 }
 
-function calculateIgnoreAreas (areas) {
-    let areaData = {
-        positions: [],
-        minX: Infinity,
-        maxX: -Infinity,
-        minY: Infinity,
-        maxY: -Infinity
-    };
+function calculateAreas (areas) {
+    let [firstArea] = areas;
+
+    let areaData = createImageData(firstArea);
     areas.forEach(area => {
         let { topLeftX, topLeftY, bottomRightX, bottomRightY } = area;
         if (topLeftX < areaData.minX) {
@@ -59,7 +61,27 @@ function createImageArea (topLeftX, topLeftY, bottomRightX, bottomRightY) {
     return new ImageArea(topLeftX, topLeftY, bottomRightX, bottomRightY)
 }
 
-function ignoreAreas (png, areaData) {
+function createImageData (area) {
+    let isInclude = !area.ignored;
+    return {
+        positions: [],
+        minX: isInclude ? area.topLeftX : Infinity,
+        maxX: isInclude ? area.bottomRightX : -Infinity,
+        minY: isInclude ? area.topLeftY : Infinity,
+        maxY: isInclude ? area.bottomRightY : -Infinity
+    };
+}
+
+function cropImage (png, areaData) {
+    let { minX, minY, maxX, maxY } = areaData;
+    let width = maxX - minX;
+    let height = maxY - minY;
+    let cropped = new PNG({ width, height });
+    PNG.bitblt(png, cropped, minX, minY, width, height, 0, 0);
+    return cropped;
+}
+
+function updateData (png, areaData) {
     for (let y = areaData.minY; y < areaData.maxY; y += 1) {
         for (let x = areaData.minX; x < areaData.maxX; x += 1) {
             if (areaData.positions[y] && areaData.positions[y][x]) {

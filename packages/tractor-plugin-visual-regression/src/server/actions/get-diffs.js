@@ -2,8 +2,8 @@
 import { BASELINE_DIRECTORY, CHANGES_DIRECTORY, DIFFS_DIRECTORY } from '../constants';
 
 // Dependencies:
-import { DiffPNGFile } from '../file-structure/diff-png-file';
-import { PNGFile } from '../file-structure/png-file';
+import { DiffPNGFile } from '../files/diff-png-file';
+import { PNGFile } from '../files/png-file';
 
 // Errors:
 import tractorErrorHandler from 'tractor-error-handler';
