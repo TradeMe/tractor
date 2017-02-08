@@ -1,6 +1,6 @@
 {
   "name": "tractor-server",
-  "version": "0.10.1-beta.4",
+  "version": "0.10.1-beta.5",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -70,6 +70,6 @@
     "tractor-file-structure": "^0.1.1-beta.0",
     "tractor-js-file-transformer": "^0.1.1",
     "tractor-logger": "^0.1.0",
-    "tractor-plugin-loader": "^0.2.2-beta.0"
+    "tractor-plugin-loader": "^0.2.2"
   }
 }
