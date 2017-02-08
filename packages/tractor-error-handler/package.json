@@ -38,7 +38,7 @@
     "chai": "3.5.0",
     "coveralls": "2.11.16",
     "dirty-chai": "1.2.2",
-    "eslint": "3.14.1",
+    "eslint": "3.15.0",
     "istanbul": "1.0.0-alpha.2",
     "mocha": "3.2.0",
     "npm-watch": "0.1.7",
