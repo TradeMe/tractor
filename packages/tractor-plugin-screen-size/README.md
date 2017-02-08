@@ -1,10 +1,10 @@
 # tractor-plugin-screen-size
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/phenomnomnominal/tractor-plugin-screen-size.svg)](https://greenkeeper.io/)
-[![npm version](https://img.shields.io/npm/v/tractor-plugin-screen-size.svg)](https://img.shields.io/npm/v/tractor-plugin-screen-size.svg)
-[![Coveralls](https://img.shields.io/coveralls/phenomnomnominal/tractor-plugin-screen-size.svg)](https://coveralls.io/github/phenomnomnominal/tractor-plugin-screen-size)
-
 Plugin for [tractor](http://github.com/TradeMe/tractor) for running tests at different screen sizes.
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/phenomnomnominal/tractor-plugin-screen-size.svg)](https://greenkeeper.io/)
+[![npm version](https://img.shields.io/npm/v/tractor-plugin-screen-size.svg)](https://www.npmjs.com/package/tractor-plugin-screen-size)
+[![Coveralls](https://img.shields.io/coveralls/phenomnomnominal/tractor-plugin-screen-size.svg)](https://coveralls.io/github/phenomnomnominal/tractor-plugin-screen-size)
 
 ## How to use:
 
