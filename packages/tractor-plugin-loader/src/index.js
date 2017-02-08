@@ -102,7 +102,7 @@ function decoratePlugins (plugins, config) {
 }
 
 function getInstalledPluginNames () {
-    let npm = os.plaform === WINDOWS ? 'npm.cmd' : 'npm';
+    let npm = os.platform() === WINDOWS ? 'npm.cmd' : 'npm';
     let ls = childProcess.spawnSync(npm, ['ls', '--depth=0', '--parseable']);
 
     let errors = ls.stderr.toString().trim().split(OUT_NEWLINE);

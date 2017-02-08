@@ -13,6 +13,7 @@ chai.use(sinonChai);
 import childProcess from 'child_process';
 import fs from 'fs';
 import module from 'module';
+import os from 'os';
 import path from 'path';
 import * as tractorConfigLoader from 'tractor-config-loader';
 import { TractorError } from 'tractor-error-handler';
@@ -22,6 +23,43 @@ import tractorPluginLoader from './index';
 
 describe('tractor-plugin-loader:', () => {
     describe('tractor-plugin-loader: getPlugins:', () => {
+        it('should query npm from any installed plugins', () => {
+            let npmLsResult = {
+                stderr: '',
+                stdout: ''
+            };
+
+            sinon.stub(tractorConfigLoader, 'getConfig').returns({});
+            sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
+
+            tractorPluginLoader.getPlugins();
+
+            expect(childProcess.spawnSync).to.have.been.calledWith('npm');
+
+            tractorConfigLoader.getConfig.restore();
+            childProcess.spawnSync.restore();
+            tractorPluginLoader._plugins = null;
+        });
+
+        it('should use npm.cmd on Windows', () => {
+            let npmLsResult = {
+                stderr: '',
+                stdout: ''
+            };
+
+            sinon.stub(tractorConfigLoader, 'getConfig').returns({});
+            sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
+            sinon.stub(os, 'platform').returns('win32');
+
+            tractorPluginLoader.getPlugins();
+
+            expect(childProcess.spawnSync).to.have.been.calledWith('npm.cmd');
+
+            tractorConfigLoader.getConfig.restore();
+            childProcess.spawnSync.restore();
+            os.platform.restore();
+        });
+
         it('should do nothing if there is not any installed plugins', () => {
             let npmLsResult = {
                 stderr: '',
