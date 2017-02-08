@@ -14,7 +14,7 @@
   "scripts": {
     "prepublish": "npm run build",
     "build": "npm run lint && npm run cover && npm run compile && npm run bundle",
-    "bundle": "browserify ./src/client/index.js -o ./dist/client/bundle.js",
+    "bundle": "mkdirp ./dist/client/ && touch ./dist/client/bundle.js && browserify ./src/client/index.js -o ./dist/client/bundle.js",
     "compile": "babel src/server/ --out-dir dist/server/ --ignore *.spec.js",
     "cover": "istanbul cover --config .istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ./.mocharc 'src/**/*.spec.js'",
     "coveralls": "cat ./reports/coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
@@ -42,6 +42,7 @@
     "dirty-chai": "1.2.2",
     "eslint": "3.4.0",
     "istanbul": "1.0.0-alpha.2",
+    "mkdirp": "0.5.1",
     "mocha": "3.2.0",
     "npm-watch": "0.1.8",
     "sinon": "1.17.7",
