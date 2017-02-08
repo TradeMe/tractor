@@ -19,6 +19,7 @@
     "build": "npm run lint && npm run cover && npm run compile",
     "compile": "babel src/ --out-dir dist --ignore *.spec.js",
     "cover": "istanbul cover --config .istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ./.mocharc src/*.spec.js",
+    "coveralls": "cat ./reports/coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "lint": "eslint src/**/*.js; true",
     "test": "mocha --opts ./.mocharc src/*.spec.js",
     "watch": "npm-watch"
@@ -35,6 +36,7 @@
     "babel-preset-stage-0": "6.22.0",
     "babel-register": "6.22.0",
     "chai": "3.5.0",
+    "coveralls": "2.11.16",
     "dirty-chai": "1.2.2",
     "eslint": "3.14.1",
     "istanbul": "1.0.0-alpha.2",
