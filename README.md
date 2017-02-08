@@ -3,7 +3,7 @@
 A UI around [Gherkin](http://cukes.info/gherkin.html) & [Protractor](http://angular.github.io/protractor/) to help write E2E tests for [Angular](https://angularjs.org/) applications without needing to know JavaScript
 
 [![npm version](https://img.shields.io/npm/v/tractor.svg)](https://www.npmjs.com/package/tractor)
-[![Coveralls](https://img.shields.io/coveralls/TradeMe/tractor.svg)](https://coveralls.io/github/TradeMe/tractor)
+[![Coveralls](https://img.shields.io/coveralls/TradeMe/tractor/cli.svg)](https://coveralls.io/github/TradeMe/tractor)
 
 ## Install:
 
