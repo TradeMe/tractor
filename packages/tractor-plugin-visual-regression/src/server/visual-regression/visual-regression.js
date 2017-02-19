@@ -1,5 +1,6 @@
 // Constants:
 import { BASELINE_DIRECTORY, CHANGES_DIRECTORY, VISUAL_REGRESSION_DIRECTORY } from '../constants';
+const GET_PIXEL_RATIO = 'return window.devicePixelRatio';
 
 // Utilities:
 import Promise from 'bluebird';
@@ -39,6 +40,7 @@ export class VisualRegression {
 
         let fileStructure;
         let hasBaseline;
+        let pixelRatio;
         let savePath;
 
         return createFileStructure(visualRegressionPath)
@@ -50,8 +52,13 @@ export class VisualRegression {
             hasBaseline = _hasBaseline;
             savePath = hasBaseline ? changesFilePath : baselineFilePath;
         })
-        .then(() => this.browser.takeScreenshot())
-        .then(rawPngData => saveScreenshot(fileStructure, savePath, updateAreas(rawPngData, this.areas)))
+        .then(() => this.browser.sleep(1000))
+        .then(() => this.browser.executeScript(GET_PIXEL_RATIO))
+        .then(_pixelRatio => {
+            pixelRatio = _pixelRatio;
+            return this.browser.takeScreenshot();
+        })
+        .then(rawPngData => saveScreenshot(fileStructure, savePath, updateAreas(rawPngData, this.areas, pixelRatio)))
         .then(() => {
             if (hasBaseline) {
                 return checkDiff(fileStructure, testDirectory, fileName);

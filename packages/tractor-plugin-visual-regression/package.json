@@ -1,6 +1,6 @@
 {
   "name": "tractor-plugin-visual-regression",
-  "version": "0.1.0-beta.7",
+  "version": "0.1.0-beta.10",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -13,7 +13,7 @@
   "main": "dist/server/index.js",
   "scripts": {
     "prepublish": "npm run build",
-    "build": "npm run lint && npm run cover && npm run compile && npm run bundle",
+    "build": "rm -rf dist && npm run lint && npm run cover && npm run compile && npm run bundle",
     "bundle": "mkdirp ./dist/client/ && touch ./dist/client/bundle.js && browserify ./src/client/index.js -o ./dist/client/bundle.js",
     "compile": "babel src/server/ --out-dir dist/server/ --ignore *.spec.js",
     "cover": "istanbul cover --config .istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ./.mocharc 'src/**/*.spec.js'",

@@ -12,15 +12,17 @@ export function createIncludedArea (...coordinates) {
     return createImageArea(...coordinates);
 }
 
-export function updateAreas (rawPngData, areas) {
+export function updateAreas (rawPngData, areas, ratio) {
     let png = PNG.sync.read(new Buffer(rawPngData, 'base64'));
 
     if (areas.length) {
+        areas.forEach(area => area.updateRatio(ratio));
+
         let areaData = calculateAreas(areas)
         updateData(png, areaData);
 
         let [firstArea] = areas;
-        if (!firstArea.ignored) {
+        if (firstArea.included) {
             png = cropImage(png, areaData);
         }
     }
@@ -29,9 +31,7 @@ export function updateAreas (rawPngData, areas) {
 }
 
 function calculateAreas (areas) {
-    let [firstArea] = areas;
-
-    let areaData = createImageData(firstArea);
+    let areaData = createImageData();
     areas.forEach(area => {
         let { topLeftX, topLeftY, bottomRightX, bottomRightY } = area;
         if (topLeftX < areaData.minX) {
@@ -47,10 +47,10 @@ function calculateAreas (areas) {
             areaData.maxY = bottomRightY;
         }
 
-        for (let y = topLeftY; y <= bottomRightY; y += 1) {
+        for (let y = topLeftY; y < bottomRightY; y += 1) {
             areaData.positions[y] = areaData.positions[y] || [];
-            for (let x = topLeftX; x <= bottomRightX; x += 1) {
-                areaData.positions[y][x] = !!area.ignored;
+            for (let x = topLeftX; x < bottomRightX; x += 1) {
+                areaData.positions[y][x] = !!area.included;
             }
         }
     });
@@ -61,14 +61,13 @@ function createImageArea (topLeftX, topLeftY, bottomRightX, bottomRightY) {
     return new ImageArea(topLeftX, topLeftY, bottomRightX, bottomRightY)
 }
 
-function createImageData (area) {
-    let isInclude = !area.ignored;
+function createImageData () {
     return {
         positions: [],
-        minX: isInclude ? area.topLeftX : Infinity,
-        maxX: isInclude ? area.bottomRightX : -Infinity,
-        minY: isInclude ? area.topLeftY : Infinity,
-        maxY: isInclude ? area.bottomRightY : -Infinity
+        minX: Infinity,
+        maxX: -Infinity,
+        minY: Infinity,
+        maxY: -Infinity
     };
 }
 
@@ -84,7 +83,7 @@ function cropImage (png, areaData) {
 function updateData (png, areaData) {
     for (let y = areaData.minY; y < areaData.maxY; y += 1) {
         for (let x = areaData.minX; x < areaData.maxX; x += 1) {
-            if (areaData.positions[y] && areaData.positions[y][x]) {
+            if (!areaData.positions[y][x]) {
                 let index = (png.width * y + x) << 2;
                 paintItBlack(png.data, index);
             }

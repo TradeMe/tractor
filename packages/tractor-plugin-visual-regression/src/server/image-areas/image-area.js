@@ -9,10 +9,17 @@ export class ImageArea {
     }
 
     ignore () {
-        this.ignored = true;
+        this.included = false;
     }
 
     include () {
-        this.ignored = false;
+        this.included = true;
+    }
+
+    updateRatio (ratio) {
+        this.topLeftX *= ratio;
+        this.topLeftY *= ratio;
+        this.bottomRightX *= ratio;
+        this.bottomRightY *= ratio;
     }
 }
