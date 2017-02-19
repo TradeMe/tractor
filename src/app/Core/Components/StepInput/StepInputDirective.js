@@ -19,7 +19,8 @@ var StepInputDirective = function () {
         scope: {
             model: '=',
             label: '@',
-            example: '@'
+            example: '@',
+            availableStepDefinitions: '='
         },
 
         /* eslint-disable no-path-concat */
@@ -53,14 +54,14 @@ var StepInputDirective = function () {
         $scope.handleKeyDown = function (event) {
             if (event.keyCode === 40) {
                 event.preventDefault();
-                if ($scope.selectedIndex + 1 !== $scope.stepInput.items.length) {
-                    $scope.selectedIndex++;
+                if ($scope.selectedIndex !== $scope.stepInput.items.length - 1) {
+                    $scope.selectedIndex += 1;
                 }
             }
             else if (event.keyCode === 38) {
                 event.preventDefault();
-                if ($scope.selectedIndex - 1 !== -1) {
-                    $scope.selectedIndex--;
+                if ($scope.selectedIndex !== 0) {
+                    $scope.selectedIndex -= 1;
                 }
             }
             else if (event.keyCode === 27) {

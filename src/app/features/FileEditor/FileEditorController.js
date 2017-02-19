@@ -98,6 +98,10 @@ var FileEditorController = (function () {
         this.persistentStateService.set(this.fileModel.name, displayState);
     };
 
+    FileEditorController.prototype.getLink = function (state, file) {
+        return decodeURIComponent(this.$state.href(state, { file: file }));
+    }
+
     return FileEditorController;
 })();
 

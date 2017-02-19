@@ -27,6 +27,10 @@ var MockParserService = function MockParserService (
             mock.url = parseUrl(mock, mockCallExpression);
 
             try {
+                return parseDataWithHeaders(mock, mockCallExpression);
+            } catch (e) { }
+
+            try {
                 return parseData(mock, mockCallExpression);
             } catch (e) { }
 
@@ -48,18 +52,29 @@ var MockParserService = function MockParserService (
         return action;
     }
 
-    /* The returned url should be the inner contents of the RegExp, 
+    /* The returned url should be the inner contents of the RegExp,
        with all escape sequences removed, so we strip out leading and
        trailing/characters, and any occurences of //. */
     function parseUrl (mock, mockCallExpression) {
-        var rawUrl = _.last(mockCallExpression.callee.object.arguments).raw; 
-        var url = rawUrl.replace(/^\//, '').replace(/\/$/, '').replace(/\\/g,''); 
+        var rawUrl = _.last(mockCallExpression.callee.object.arguments).raw;
+        var url = rawUrl.replace(/^\//, '').replace(/\/$/, '').replace(/\\/g,'');
         assert(url);
-        return url;  
+        return url;
     }
 
     function parseData (mock, mockCallExpression) {
         var instanceName = _.first(mockCallExpression.arguments).name;
+        mock.data = _.find(mock.step.stepDefinition.mockDataInstances, function (mockDataInstance) {
+            return mockDataInstance.variableName === instanceName;
+        });
+        return mock;
+    }
+
+    function parseDataWithHeaders (mock, mockCallExpression) {
+        var newFunction = _.first(mockCallExpression.arguments);
+        var requestResult = _.first(newFunction.arguments);
+        var stringifyCall = requestResult.left.right;
+        var instanceName = _.first(stringifyCall.arguments).name;
         mock.data = _.find(mock.step.stepDefinition.mockDataInstances, function (mockDataInstance) {
             return mockDataInstance.variableName === instanceName;
         });

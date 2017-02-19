@@ -19,7 +19,14 @@
             <h2>Tasks:</h2>
 
             <ol ng-if="stepDefinitionEditor.fileModel.step.tasks.length" as-sortable ng-model="stepDefinitionEditor.fileModel.step.tasks" is-disabled="stepDefinitionEditor.fileModel.step.tasks.length < 2">
-                <li class="file-editor__list-item" ng-repeat="task in stepDefinitionEditor.fileModel.step.tasks" as-sortable-item>
+                <li
+                    class="file-editor__list-item"
+                    ng-repeat="task in stepDefinitionEditor.fileModel.step.tasks" as-sortable-item>
+                    <a
+                        class="file-editor__list-item-reference"
+                        title="{{ task.component.name }}"
+                        ng-href="{{ stepDefinitionEditor.getLink('tractor.components', task.component) }}">
+                    </a>
                     <tractor-action
                         model="stepDefinitionEditor.fileModel.step"
                         action="Remove task"
@@ -61,7 +68,14 @@
             <h2>Expectations:</h2>
 
             <ul>
-                <li class="file-editor__list-item" ng-repeat="expectation in stepDefinitionEditor.fileModel.step.expectations">
+                <li
+                    class="file-editor__list-item"
+                    ng-repeat="expectation in stepDefinitionEditor.fileModel.step.expectations">
+                    <a
+                        class="file-editor__list-item-reference"
+                        title="{{ expectation.component.name }}"
+                        ng-href="{{ stepDefinitionEditor.getLink('tractor.components', expectation.component) }}">
+                    </a>
                     <tractor-action
                         model="stepDefinitionEditor.fileModel.step"
                         action="Remove expectation"
@@ -112,19 +126,20 @@
             <section class="file-editor__container"
                 ng-if="stepDefinitionEditor.hasComponents">
                 <h2>Active components:</h2>
-                <ul>
-                    <li ng-repeat="component in stepDefinitionEditor.fileModel.componentInstances | orderBy: 'component.name'">
-                        <a
-                            class="file-editor__list-item-reference"
-                            ui-sref="tractor.components({file: component.component })"
-                            title="{{ component.component.meta }}">{{ component.component.name }}
-                        </a>
+                <ul
+                    class="file-editor__list-item">
+                    <li ng-repeat="component in stepDefinitionEditor.fileModel.componentInstances | orderBy: 'name'">
                         <tractor-action
                             model="stepDefinitionEditor.fileModel"
                             action="Remove component"
                             argument="component"
                             icon="remove">
                         </tractor-action>
+                        <a
+                            title="{{ component.name }}"
+                            ng-href="{{ stepDefinitionEditor.getLink('tractor.components', component.component) }}">
+                            {{ component.name }}
+                        </a>
                     </li>
                 </ul>
             </section>
@@ -134,16 +149,16 @@
                 <ul>
                     <li ng-repeat="component in stepDefinitionEditor.fileModel.availableComponents | orderBy: 'name'"
                         ng-if="stepDefinitionEditor.fileModel.components.indexOf(component) === -1">
-                        <a
-                            class="file-editor__list-item-reference"
-                            title="{{ component.meta }}"
-                            ui-sref="tractor.components({file: component })">{{ component.name }}
-                        </a>
                         <tractor-action
                             model="stepDefinitionEditor.fileModel"
                             action="Add component"
                             argument="component.name">
                         </tractor-action>
+                        <a
+                            title="{{ component.name }}"
+                            ng-href="{{ stepDefinitionEditor.getLink('tractor.components', component) }}">
+                            {{ component.name }}
+                        </a>
                     </li>
                 </ul>
             </section>
@@ -153,11 +168,13 @@
             <h2>Mock Data:</h2>
 
             <ul>
-                <li ng-repeat="mock in stepDefinitionEditor.fileModel.mockDataInstances | orderBy: 'mock.name'">
+                <li
+                    class="file-editor__list-item"
+                    ng-repeat="mock in stepDefinitionEditor.fileModel.step.mocks">
                     <a
                         class="file-editor__list-item-reference"
-                        title="{{ mock.mock.json }}"
-                        ui-sref="tractor.mock-data({ file: mock.mock })">{{ mock.mock.name }}
+                        title="{{ mock.data.name }}"
+                        ng-href="{{ stepDefinitionEditor.getLink('tractor.mock-data', mock.data) }}">
                     </a>
                     <tractor-action
                         model="stepDefinitionEditor.fileModel.step"
@@ -200,15 +217,20 @@
             <section class="file-editor__container"
                 ng-if="stepDefinitionEditor.hasMockData">
                 <h2>Active mock data:</h2>
-                <ul>
-                    <li ng-repeat="mockData in stepDefinitionEditor.fileModel.mockDataInstances">
-                        <span> {{ mockData.mockData.name }} </span>
+                <ul
+                    class="file-editor__list-item">
+                    <li ng-repeat="mockData in stepDefinitionEditor.fileModel.mockDataInstances | orderBy: 'name'">
                         <tractor-action
                             model="stepDefinitionEditor.fileModel"
                             action="Remove mock"
                             argument="mockData"
                             icon="remove">
                         </tractor-action>
+                        <a
+                            title="{{ mockData.name }}"
+                            ng-href="{{ stepDefinitionEditor.getLink('tractor.mock-data', mockData.mockData) }}">
+                            {{ mockData.name }}
+                        </a>
                     </li>
                 </ul>
             </section>
@@ -218,20 +240,19 @@
                 <ul>
                     <li ng-repeat="mockData in stepDefinitionEditor.fileModel.availableMockData | orderBy: 'name'"
                         ng-if="stepDefinitionEditor.fileModel.mockData.indexOf(mockData) === -1">
-                        <a
-                            class="file-editor__list-item-reference"
-                            ui-sref="tractor.mock-data({ file: mock })"
-                            title="{{ mock.json }}">{{ mock.name }}
-                        </a>
                         <tractor-action
                             model="stepDefinitionEditor.fileModel"
                             action="Add mock"
                             argument="mockData.name">
                         </tractor-action>
+                        <a
+                            title="{{ mockData.name }}"
+                            ng-href="{{ stepDefinitionEditor.getLink('tractor.mock-data', mockData) }}">
+                            {{ mockData.name }}
+                        </a>
                     </li>
                 </ul>
             </section>
         </section>
-
     </section>
 </form>

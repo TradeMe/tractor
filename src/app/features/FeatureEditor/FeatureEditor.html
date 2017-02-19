@@ -131,14 +131,15 @@
                                             form="file-editor"
                                             label="Step"
                                             model="stepDeclaration"
-                                            example="something happens">
+                                            example="something happens"
+                                            available-step-definitions="featureEditor.availableStepDefinitions">
                                         </tractor-step-input>
 
-                                        <span
-                                            class="file-editor__list-item-link"
+                                        <a
+                                            class="file-editor__list-item-reference"
                                             title="See step details"
-                                            ui-sref="tractor.step-definitions({file: featureEditor.fileModel.findStep(stepDeclaration.step)})">
-                                        </span>
+                                            ui-sref="tractor.step-definitions({ file: featureEditor.findStep(stepDeclaration) })">
+                                        </a>
                                     </li>
                                 </ol>
 

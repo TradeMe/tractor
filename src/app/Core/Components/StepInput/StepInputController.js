@@ -12,21 +12,28 @@ require('../../Services/FileStructureService');
 
 var StepInputController = (function () {
     var StepInputController = function StepInputController (
-        fileStructureService
+        fileStructureService,
+        StepModel
     ) {
         this.fileStructureService = fileStructureService;
-        this.items = [];
+        var stepNamesRegex = new RegExp('(' + StepModel.prototype.stepTypes.join('|') + ') ');
+        this.stepNames = this.availableStepDefinitions.map(function (stepDefinition) {
+            return stepDefinition.meta.name.replace(stepNamesRegex, '');
+        });
+        this.stepNamesLowerCase = this.stepNames.map(function (stepName) {
+            return stepName.toLowerCase();
+        });
+
         this.isOpen = false;
     };
 
     StepInputController.prototype.handleSearch = function (searchKey) {
         if (searchKey) {
             this.searchKey = searchKey;
-            return getSearchData(this)
-               .then(getSuggestions.bind(this));
-        } else {
-            this.isOpen = false;
+            this.items = getSuggestions.call(this);
         }
+        this.isOpen = !!searchKey;
+        this.hasMore = this.items.length > 10;
      };
 
     StepInputController.prototype.itemSelected = function (index) {
@@ -34,49 +41,20 @@ var StepInputController = (function () {
         this.isOpen = false;
     };
 
-    function getSearchData (that){
-        return that.fileStructureService.getFileStructure('features')
-        .then(function (results) {
-            return results;
-        }).then(getFilteredList.bind(that));
-    };
 
-    function getFilteredList (fileStructure) {
-        var type = this.model.type;
-        return Array.from(new Set(
-            fileStructure.directory.allFiles
-            .reduce(function (p, feature) { return p.concat(feature.tokens); } ,[])
-            .reduce(function (p, token) { return p.concat(token.elements); }, [])
-            .reduce(function (p, element) { return p.concat(element.stepDeclarations); } ,[])
-            .map(function (declaration) { return declaration.step})
-        ));
-   };
-
-   function getSuggestions (searchData) {
-        this.items=[];
-        if (searchData.length > 0) {
-            var searchTextSmallLetters = angular.lowercase(this.searchKey);
-            var searchTerms = searchTextSmallLetters.split(' ');
-            for(var i=0; i< searchData.length; i++) {
-                var searchItemsSmallLetters = angular.lowercase(searchData[i]);
-                var isMissingTerm = false;
-                for(var j=0; j < searchTerms.length; j++){
-                    if ( searchItemsSmallLetters.indexOf(searchTerms[j]) === -1) {
-                        isMissingTerm = true;
-                        break;
-                    }
-                }
-                if (!isMissingTerm) {
-                    if (this.items.indexOf(searchData[i])==-1){
-                        this.items.push(searchData[i]);
-                    }
-                }
+   function getSuggestions () {
+        var items = [];
+        var searchKey = this.searchKey.toLowerCase();
+        var steps = this.stepNamesLowerCase.length
+        for (var i = 0; i < steps; i += 1) {
+            if (this.stepNamesLowerCase[i].indexOf(searchKey) >= 0) {
+                items.push(this.stepNames[i]);
             }
-
-            this.isOpen = true;
-        } else {
-            this.model.step = this.searchKey;
+            if (items.length === 11) {
+                break;
+            }
         }
+        return items;
     };
 
     return StepInputController;

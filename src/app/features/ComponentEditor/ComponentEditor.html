@@ -240,11 +240,12 @@
                         class="file-editor__list-item">
                         <li
                             ng-repeat="reference in componentEditor.fileModel.references">
-                            <span
+                            {{ reference.name }}
+                            <a
                                 class="file-editor__list-item-reference"
                                 title="Edit the step definition"
-                                ui-sref="tractor.step-definitions({ file: reference })">{{ reference.name }}
-                            </span>
+                                ui-sref="tractor.step-definitions({ file: reference })">
+                            </a>
                         </li>
                     </ul>
                 </section>

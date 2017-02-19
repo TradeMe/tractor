@@ -47,7 +47,6 @@ var createMockDataInstanceModelConstructor = function (
                     return toAST.call(this);
                 }
             }
-
         });
     };
 

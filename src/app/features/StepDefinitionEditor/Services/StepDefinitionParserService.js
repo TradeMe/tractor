@@ -68,7 +68,6 @@ var StepDefinitionParserService = function StepDefinitionParserService (
     }
 
     function parseComponent (stepDefinition, statement, meta) {
-        debugger;
         var declarator = _.last(statement.declarations);
         var name = declarator.init.callee.name;
         assert(name !== 'require');

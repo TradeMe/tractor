@@ -121,7 +121,7 @@ var createComponentModelConstructor = function (
         return _.chain(objects).flatten().compact().reject(function (object) {
             return object === currentObject;
         }).map(function (object) {
-            return object.name;
+            return object.variableName;
         }).compact().value();
     };
 

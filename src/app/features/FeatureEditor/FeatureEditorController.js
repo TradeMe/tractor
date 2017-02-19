@@ -19,9 +19,11 @@ var FeatureEditorController = function FeatureEditorController (
     fileStructureService,
     persistentStateService,
     notifierService,
+    runnerService,
+    availableStepDefinitions,
     FeatureModel,
     feature,
-    runnerService
+    StepModel
 ) {
     var controller = new FileEditorController(
         $scope,
@@ -37,22 +39,24 @@ var FeatureEditorController = function FeatureEditorController (
         '.feature'
     );
 
+    this.availableStepDefinitions = availableStepDefinitions;
     this.runnerService = runnerService;
-    controller.debug = false;
+
     this.controller = controller;
+    controller.availableStepDefinitions = availableStepDefinitions;
+    controller.debug = false;
+    controller.findStep = findStep.bind(this);
     controller.runFeature = runFeature.bind(this);
+    this.typeRegex = new RegExp('(' + StepModel.prototype.stepTypes.join('|') + ') ');
 
     return controller;
 };
 
-function createTagOptions (tags) {
-    return tags.map(function (tag) {
-        return {
-            tag: tag,
-            value: value
-        };
-    });
-}
+function findStep (stepDeclaration) {
+    return this.availableStepDefinitions.find(function (stepDefinition) {
+        return stepDefinition.meta.name.replace(this.typeRegex, '') === stepDeclaration.step;
+    }.bind(this));
+};
 
 function runFeature (toRun) {
     if (toRun){

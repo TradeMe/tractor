@@ -79,14 +79,12 @@ var InteractionParserService = function InteractionParserService (
         }
 
         try {
-            interaction.element = _.find(action.component.elements, function (element) {
+            var pluginElement = _.find(action.component.elements, function (element) {
                 return element.variableName === interactionCallExpression.callee.object.name;
             });
-            if (!interaction.element) {
-                interaction.element = _.find(action.component.elements, function (element) {
-                    return element.variableName === interactionCallExpression.callee.object.property.name;
-                });
-            }
+            interaction.element = pluginElement || _.find(action.component.elements, function (element) {
+                return element.variableName === interactionCallExpression.callee.object.property.name;
+            });
             assert(interaction.element);
             interaction.method = _.find(interaction.element.methods, function (elementAction) {
                 return elementAction.name === interactionCallExpression.callee.property.name;

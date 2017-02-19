@@ -129,12 +129,7 @@ form.file {
     }
 }
 
-.file-editor__list-item-reference:hover {
-   cursor: pointer;
-   color: dodgerblue;
-}
-
-.file-editor__list-item-link {
+.file-editor__list-item-reference {
     background-image: url('./images/link.png');
     width: 16px;
     height: 16px;

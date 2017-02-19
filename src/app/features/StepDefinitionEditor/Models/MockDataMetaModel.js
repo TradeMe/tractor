@@ -30,6 +30,8 @@ var createMockDataMetaModelConstructor = function () {
         });
     };
 
+    MockDataMetaModel.prototype.actions = ['GET', 'POST', 'DELETE', 'PUT', 'HEAD', 'PATCH'];
+
     return MockDataMetaModel;
 };
 

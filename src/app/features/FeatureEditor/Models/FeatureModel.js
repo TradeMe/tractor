@@ -15,25 +15,12 @@ var createFeatureModelConstructor = function (
     FeatureNewLine,
     config
 ) {
-    var FeatureModel = function FeatureModel (options, availableStepDefinitions) {
+    var FeatureModel = function FeatureModel (options) {
         var scenarios = [];
 
         this.featureTags = config.tags;
 
         Object.defineProperties(this, {
-            // TODO: Not sure why this is here, it
-            // should probably be on the FeatureEditorController
-            availableStepDefinitions: {
-                get: function () {
-                    return _.map(availableStepDefinitions, function(stepDefinition) {
-                        return {
-                            type: stepDefinition.name.substring(0, stepDefinition.name.indexOf(' ')),
-                            name: stepDefinition.name.substring(stepDefinition.name.indexOf(' ') + 1),
-                            path: stepDefinition.path
-                        }
-                    });
-                }
-            },
             isSaved: {
                 get: function () {
                     return !!(options && options.isSaved);
@@ -76,14 +63,6 @@ var createFeatureModelConstructor = function (
         _.remove(this.scenarios, function (scenario) {
             return scenario === toRemove;
         });
-    };
-
-    // TODO: This should also be on the FeatureEditorController
-    FeatureModel.prototype.findStep = function (step) {
-        var stepDefinition = _.find(this.availableStepDefinitions, function(stepDefinition){
-            return stepDefinition.name.replace(/[_]/g,'') === step.replace(/[*_\/|"<>?]/g, '');
-        });
-        return stepDefinition;
     };
 
     return FeatureModel;

@@ -19,12 +19,12 @@ var FeatureParserService = function FeatureParserService (
         parse: parse
     };
 
-    function parse (featureFile, availableStepDefinitions) {
+    function parse (featureFile) {
         try {
             var feature = new FeatureModel({
                 isSaved: true,
                 url: featureFile.url
-            }, availableStepDefinitions);
+            });
 
             var featureTokens = _.first(featureFile.tokens);
             feature.name = featureTokens.name;

@@ -49,8 +49,9 @@ var VariableNameValidator = function (
         });
 
         ngModelController.$validators.variableNameUnique = function (value) {
+            var variableName = $scope.$parent.isClass ? pascalcase(value) : camelcase(value);
             var allVariableNames = $scope.variableNameModel.getAllVariableNames();
-            var result = !_.contains(allVariableNames, value);
+            var result = !_.contains(allVariableNames, variableName);
             return result;
         };
 
