@@ -58,14 +58,11 @@ function loadPlugins () {
         }
     })
     .filter(plugin => {
-        let { description, fullName, create } = plugin;
+        let { description, fullName } = plugin;
         if (!description) {
             throw new TractorError(`'${fullName}' has no \`description\``);
         }
-        if (!create) {
-            throw new TractorError(`'${fullName}' has no \`create\` function`);
-        }
-        return create && description;
+        return description;
     });
 }
 
@@ -89,7 +86,7 @@ function decoratePlugins (plugins, config) {
         let addHooks = plugin.addHooks || (() => {});
         plugin.addHooks = cucumber => addHooks(cucumber, config);
 
-        let create = plugin.create;
+        let create = plugin.create || (() => {});
         plugin.create = browser => create(browser, config);
 
         let init = plugin.init || (() => {});

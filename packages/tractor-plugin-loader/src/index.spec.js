@@ -175,8 +175,7 @@ describe('tractor-plugin-loader:', () => {
                 stdout: 'tractor-plugin-test'
             };
             let pluginModule = {
-                description: {},
-                create: () => {}
+                description: {}
             };
 
             sinon.stub(tractorConfigLoader, 'getConfig').returns({});
@@ -202,8 +201,7 @@ describe('tractor-plugin-loader:', () => {
             };
             let pluginModule = {
                 default: {
-                    description: {},
-                    create: () => {}
+                    description: {}
                 }
             };
 
@@ -262,37 +260,13 @@ describe('tractor-plugin-loader:', () => {
             tractorPluginLoader._plugins = null;
         });
 
-        it('should throw if the plugin has no `create` function', () => {
-            let npmLsResult = {
-                stderr: '',
-                stdout: 'tractor-plugin-test'
-            };
-            let pluginModule = {
-                description: {}
-            };
-
-            sinon.stub(tractorConfigLoader, 'getConfig').returns({});
-            sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
-            sinon.stub(module, '_load').returns(pluginModule);
-
-            expect(() => {
-                tractorPluginLoader.getPlugins();
-            }).to.throw(TractorError, `'tractor-plugin-test' has no \`create\` function`);
-
-            tractorConfigLoader.getConfig.restore();
-            childProcess.spawnSync.restore();
-            module._load.restore();
-            tractorPluginLoader._plugins = null;
-        });
-
         it('should decorate the `description` with display values', () => {
             let npmLsResult = {
                 stderr: '',
                 stdout: 'tractor-plugin-test-plugin'
             };
             let pluginModule = {
-                description: {},
-                create: () => {}
+                description: {}
             };
 
             sinon.stub(tractorConfigLoader, 'getConfig').returns({});
@@ -321,8 +295,7 @@ describe('tractor-plugin-loader:', () => {
             let addHooks = () => {};
             let pluginModule = {
                 description: {},
-                addHooks,
-                create: () => {}
+                addHooks
             };
             let cucumber = {};
 
@@ -349,8 +322,7 @@ describe('tractor-plugin-loader:', () => {
                 stdout: 'tractor-plugin-test'
             };
             let pluginModule = {
-                description: {},
-                create: () => {},
+                description: {}
             };
 
             sinon.stub(tractorConfigLoader, 'getConfig').returns({});
@@ -399,6 +371,31 @@ describe('tractor-plugin-loader:', () => {
             tractorPluginLoader._plugins = null;
         });
 
+        it('should have a default `create` function that is a noop', () => {
+            let npmLsResult = {
+                stderr: '',
+                stdout: 'tractor-plugin-test'
+            };
+            let pluginModule = {
+                description: {}
+            };
+
+            sinon.stub(tractorConfigLoader, 'getConfig').returns({});
+            sinon.stub(childProcess, 'spawnSync').returns(npmLsResult);
+            sinon.stub(module, '_load').returns(pluginModule);
+
+            let plugins = tractorPluginLoader.getPlugins();
+            let [test] = plugins;
+            expect(() => {
+                test.create();
+            }).to.not.throw();
+
+            tractorConfigLoader.getConfig.restore();
+            childProcess.spawnSync.restore();
+            module._load.restore();
+            tractorPluginLoader._plugins = null;
+        });
+
         it('should decorate the `serve` function so that it takes the current config', () => {
             let config = {};
             let npmLsResult = {
@@ -408,7 +405,6 @@ describe('tractor-plugin-loader:', () => {
             let serve = () => {}
             let pluginModule = {
                 description: {},
-                create: () => {},
                 serve
             };
             let application = {}
@@ -438,7 +434,6 @@ describe('tractor-plugin-loader:', () => {
             };
             let pluginModule = {
                 description: {},
-                create: () => {},
             };
 
             sinon.stub(tractorConfigLoader, 'getConfig').returns({});
@@ -466,7 +461,6 @@ describe('tractor-plugin-loader:', () => {
             let init = () => {}
             let pluginModule = {
                 description: {},
-                create: () => {},
                 init
             };
 
@@ -494,7 +488,6 @@ describe('tractor-plugin-loader:', () => {
             };
             let pluginModule = {
                 description: {},
-                create: () => {},
             };
 
             sinon.stub(tractorConfigLoader, 'getConfig').returns({});
@@ -519,8 +512,7 @@ describe('tractor-plugin-loader:', () => {
                 stdout: 'tractor-plugin-test'
             };
             let pluginModule = {
-                description: {},
-                create: () => {}
+                description: {}
             };
 
             sinon.stub(tractorConfigLoader, 'getConfig').returns({});
@@ -549,8 +541,7 @@ describe('tractor-plugin-loader:', () => {
                 stdout: 'tractor-plugin-test'
             };
             let pluginModule = {
-                description: {},
-                create: () => {}
+                description: {}
             };
 
             sinon.stub(tractorConfigLoader, 'getConfig').returns({});
@@ -581,8 +572,7 @@ describe('tractor-plugin-loader:', () => {
             };
             let description = {};
             let pluginModule = {
-                description,
-                create: () => {}
+                description
             };
 
             sinon.stub(tractorConfigLoader, 'getConfig').returns({});
