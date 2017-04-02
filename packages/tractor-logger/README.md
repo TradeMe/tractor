@@ -14,9 +14,9 @@ A general logger for [**tractor**](https://github.com/TradeMe/tractor).
 
 > #### Usage:
 > ```javascript
-import { error } from 'tractor-logger';
-error('error'); // 🚜 tractor ERR! error;
-```
+> import { error } from 'tractor-logger';
+> error('error'); // 🚜 tractor ERR! error
+> ```
 
 ### `info`:
 
@@ -24,9 +24,9 @@ error('error'); // 🚜 tractor ERR! error;
 
 > #### Usage:
 > ```javascript
-import { info } from 'tractor-logger';
-info('info'); // 🚜 tractor info info;
-```
+> import { info } from 'tractor-logger';
+> info('info'); // 🚜 tractor info info;
+> ```
 
 ### `warn`:
 
@@ -34,6 +34,6 @@ info('info'); // 🚜 tractor info info;
 
 > #### Usage:
 > ```javascript
-import { warn } from 'tractor-logger';
-warn('warn'); // 🚜 tractor WARN warn;
-```
+> import { warn } from 'tractor-logger';
+> warn('warn'); // 🚜 tractor WARN warn;
+> ```
