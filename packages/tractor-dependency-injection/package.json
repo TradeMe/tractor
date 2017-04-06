@@ -1,0 +1,51 @@
+{
+  "name": "tractor-dependency-injection",
+  "version": "0.1.0-beta.0",
+  "author": "Craig Spence <craigspence0@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/phenomnomnominal/tractor-dependency-injection.git"
+  },
+  "bugs": {
+    "url": "https://github.com/phenomnomnominal/tractor-dependency-injection/issues",
+    "email": "craigspence0@gmail.com"
+  },
+  "main": "dist/index.js",
+  "watch": {
+    "build": "src/**/*.js"
+  },
+  "scripts": {
+    "prepublish": "npm run build",
+    "build": "npm run lint && npm run cover && npm run compile",
+    "compile": "babel src/ --out-dir dist --ignore *.spec.js",
+    "cover": "istanbul cover --config .istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ./.mocharc src/*.spec.js",
+    "coveralls": "cat ./reports/coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
+    "lint": "eslint src/**/*.js; true",
+    "test": "mocha --opts ./.mocharc src/*.spec.js",
+    "watch": "npm-watch"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.10"
+  },
+  "dependencies": {
+    "tractor-error-handler": "^0.1.4"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.0",
+    "babel-core": "^6.24.0",
+    "babel-eslint": "^7.2.1",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-stage-0": "^6.22.0",
+    "babel-register": "^6.24.0",
+    "chai": "^3.5.0",
+    "coveralls": "^2.13.0",
+    "dirty-chai": "^1.2.2",
+    "eslint": "^3.19.0",
+    "istanbul": "^1.0.0-alpha.2",
+    "mocha": "^3.2.0",
+    "npm-watch": "^0.1.8",
+    "sinon": "^2.1.0",
+    "sinon-chai": "^2.9.0"
+  }
+}
