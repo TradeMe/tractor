@@ -10,38 +10,28 @@ Plugin loader for [**tractor**](https://github.com/TradeMe/tractor) to provide a
 
 **tractor-plugin-loader** is automatically installed whenever you run `tractor init` in a project. Then, whenever `tractor start` is run on that project, the loader looks through your installed node modules, and finds any that are called **tractor-plugin-whatever**. Those plugins could provide new actions for Page Objects, new report generators, or entirely new bits of UI/Functionality for the [**tractor-client**](https://github.com/phenomnomnominal/tractor-client) application, all depending on what the plugin exports.
 
-## Plugin API:
+## API:
 
-A **tractor** plugin is just a plain old node module, with a few specially named exports, and maybe some bundled UI code. If you want to see an example of a basic plugin, check out [**tractor-plugin-browser**](https://github.com/phenomnomnominal/tractor-plugin-browser).
+A **tractor** plugin is just a plain old node module, with a few specially named exports, and maybe some bundled UI code. If you want to see an example of a basic plugin, check out [**tractor-plugin-browser**](https://github.com/phenomnomnominal/tractor-plugin-browser). Each of the following functions will be run using the basic DI provided by [**tractor-dependency-injection**](https://github.com/phenomnomnominal/tractor-dependency-injection).
+
+### `description`
+
+> The `description` of any actions that the plugin provides to **tractor**. It should be an object with a single property, `methods: Array`[`<Method>`](https://github.com/phenomnomnominal/tractor-plugin-loader#method).
 
 ### `create` (optional):
 
 > Defines how an instance of the plugin will be instantiated when Protractor runs. It should return a concrete implementation of each of the [`description`](https://github.com/phenomnomnominal/tractor-plugin-loader#description-required).
 
-> #### Arguments:
-> * `browser: `[`Browser`](http://www.protractortest.org/#/api?view=ProtractorBrowser)
-> * `config: `[`TractorConfig`](https://github.com/TradeMe/tractor#config)
-
 > #### Returns:
 > * `plugin: any`
-
-### `description` (optional):
-
-> The `description` of any actions that the plugin provides to **tractor**. It should be an object with a single property, `methods: Array`[`<Method>`](https://github.com/phenomnomnominal/tractor-plugin-loader#method).
 
 ## `addHooks` (optional):
 
 > Add any Cucumber hooks that the plugin needs, e.g. Before, After.
 
-> #### Arguments:
-> * `cucumber: `[`Cucumber`](https://cucumber.io/docs/reference#hooks)
-
 ### `init` (optional):
 
 > Initialise anything that your plugin needs before it runs. This may be things like creating directories or getting information about the current environment, before **tractor** starts running.
-
-> #### Arguments:
-> * `config: `[`TractorConfig`](https://github.com/TradeMe/tractor#config)
 
 > #### Returns:
 > * `promise?: Promise`
@@ -49,11 +39,6 @@ A **tractor** plugin is just a plain old node module, with a few specially named
 ### `serve` (optional):
 
 > Define any new endpoints that you want to attach to the [**tractor-server**](https://github.com/phenomnomnominal/tractor-server), typically for consuming from the [**tractor-client**](https://github.com/phenomnomnominal/tractor-client).
-
-> #### Arguments:
-> * `application: `[`Express application`](https://expressjs.com/en/4x/api.html#app)
-> * `sockets: `[`socket.io server`](http://socket.io/docs/server-api/#server)
-> * `config: `[`TractorConfig`](https://github.com/TradeMe/tractor#config)
 
 > #### Returns:
 > * `promise?: Promise`
