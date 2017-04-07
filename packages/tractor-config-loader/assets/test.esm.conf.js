@@ -1,4 +1,4 @@
 export default {
-    testDirectory: './tests/e2e',
+    directory: './tests/e2e',
     port: 5000
 };

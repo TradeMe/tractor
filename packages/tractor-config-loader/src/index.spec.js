@@ -13,30 +13,26 @@ chai.use(sinonChai);
 import path from 'path';
 
 // Under test:
-import * as tractorConfigLoader from './index';
+import { getConfig, loadConfig } from './index';
 
 describe('tractor-config-loader:', () => {
-    describe('tractor-config-loader.getConfig', () => {
+    describe('getConfig:', () => {
         it('should re-use the config if it has already been loaded', () => {
-            sinon.stub(tractorConfigLoader, 'loadConfig');
-
-            let config1 = tractorConfigLoader.getConfig();
-            let config2 = tractorConfigLoader.getConfig();
+            let config1 = getConfig();
+            let config2 = getConfig();
 
             expect(config1).to.equal(config2);
-
-            tractorConfigLoader.loadConfig.restore();
         });
     });
 
-    describe('tractor-config-loader.loadConfig:', () => {
+    describe('loadConfig:', () => {
         it('should use the value from argv to load the config', () => {
             process.argv.push('--config');
             process.argv.push('./my.conf.js');
             sinon.stub(process, 'cwd').returns('.');
             sinon.spy(path, 'resolve');
 
-            tractorConfigLoader.loadConfig();
+            loadConfig();
 
             expect(path.resolve).to.have.been.calledWith('.', './my.conf.js');
 
@@ -50,7 +46,7 @@ describe('tractor-config-loader:', () => {
             sinon.stub(process, 'cwd').returns('.');
             sinon.spy(path, 'resolve');
 
-            tractorConfigLoader.loadConfig();
+            loadConfig();
 
             expect(path.resolve).to.have.been.calledWith('.', 'tractor.conf.js');
 
@@ -62,10 +58,10 @@ describe('tractor-config-loader:', () => {
             process.argv.push('--config');
             process.argv.push('./assets/test.conf.js');
 
-            let config = tractorConfigLoader.loadConfig();
+            let config = loadConfig();
 
             expect(config.port).to.equal(5000);
-            expect(config.testDirectory).to.equal('./tests/e2e');
+            expect(config.directory).to.equal('./tests/e2e');
 
             process.argv.pop();
             process.argv.pop();
@@ -75,20 +71,20 @@ describe('tractor-config-loader:', () => {
             process.argv.push('--config');
             process.argv.push('./assets/test.esm.conf.js');
 
-            let config = tractorConfigLoader.loadConfig();
+            let config = loadConfig();
 
             expect(config.port).to.equal(5000);
-            expect(config.testDirectory).to.equal('./tests/e2e');
+            expect(config.directory).to.equal('./tests/e2e');
 
             process.argv.pop();
             process.argv.pop();
         });
 
         it('should load any missing values from the default config', () => {
-            let config = tractorConfigLoader.loadConfig();
+            let config = loadConfig();
 
             expect(config.port).to.equal(4000);
-            expect(config.testDirectory).to.equal('./e2e-tests');
+            expect(config.directory).to.equal('./tractor');
             expect(config.environments).to.deep.equal(['http://localhost:8080']);
             expect(config.tags).to.deep.equal([]);
         });

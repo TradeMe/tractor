@@ -1,5 +1,5 @@
 export const DEFAULT_CONFIG = {
-    testDirectory: './e2e-tests',
+    directory: './tractor',
     port: 4000,
     environments: [
         'http://localhost:8080'

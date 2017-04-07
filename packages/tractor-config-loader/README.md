@@ -8,7 +8,7 @@ A configuration loader utility for [**tractor**](https://github.com/TradeMe/trac
 
 ## API:
 
-### `loadConfig`:
+### `getConfig`:
 
 > Loads a **tractor** configuration file, first from a passed in `--config` flag, then in a *tractor.conf.js* file in the current working directory, before falling back to the default configuration
 
@@ -17,7 +17,7 @@ A configuration loader utility for [**tractor**](https://github.com/TradeMe/trac
 
 > #### Usage:
 > ```javascript
-import tractorConfigLoader from 'tractor-config-loader';
+import { getConfig } from 'tractor-config-loader';
 
-> const config = tractorConfigLoader.loadConfig();
+> const config = getConfig();
 ```
