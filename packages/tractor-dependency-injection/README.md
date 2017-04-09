@@ -14,12 +14,10 @@ Dependency Injection container for [**tractor**](https://github.com/TradeMe/trac
 
 > #### Usage:
 > ```javascript
-> import { constant } from 'tractor-dependency-injection';
+> import { DI } from 'tractor-dependency-injection';
 >
-> constant({ config: { my: 'config' }});
+> DI.constant({ config: { my: 'config' }});
 > ```
-
-## API:
 
 ### `factory`:
 
@@ -27,33 +25,49 @@ Dependency Injection container for [**tractor**](https://github.com/TradeMe/trac
 
 > #### Usage:
 > ```javascript
-> import { factory } from 'tractor-dependency-injection';
+> import { DI } from 'tractor-dependency-injection';
 >
-> factory(function myFunction () {});
+> DI.factory(function myFunction () {});
 > ```
 
-## API:
+### `call`:
 
-### `instantiate`:
-
-> Adds a factory function to the container by name.
+> calls a function with injected dependencies.
 
 > #### Usage:
 > ```javascript
-> import { factory } from 'tractor-dependency-injection';
+> import { DI } from 'tractor-dependency-injection';
 >
 > let config = {};
-> constant({ config });
+> DI.constant({ config });
+>
+> function init (config) {}
+> init['@Inject'] = ['config'];
+>
+> DI.call(init);
+> ```
+
+
+### `instantiate`:
+
+> Creates a new instance of a factory with injected dependencies.
+
+> #### Usage:
+> ```javascript
+> import { DI } from 'tractor-dependency-injection';
+>
+> let config = {};
+> DI.constant({ config });
 >
 > function Engine () {}
-> factory(Engine);
+> DI.factory(Engine);
 >
 > function Tractor (config, engine) {
 >     this.config = config;
 >     this.engine = engine;
 > }
 > Tractor['@Inject'] = ['config', 'Engine'];
-> factory(Tractor);
+> DI.factory(Tractor);
 >
-> let tractor = instantiate(Tractor);
+> let tractor = DI.instantiate(Tractor);
 > ```
