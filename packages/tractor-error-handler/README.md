@@ -34,7 +34,7 @@ TractorError.isTractorError(new TractorError('something bad happened')); // true
 TractorError.isTractorError(new Error('something bad happened')); // false;
 ```
 
-### `tractorErrorHandler.handle`:
+### `handleError`:
 
 > Sends an error back to the client
 
@@ -44,11 +44,11 @@ TractorError.isTractorError(new Error('something bad happened')); // false;
 
 > #### Usage:
 > ```javascript
-import tractorErrorHandler from 'tractor-error-handler';
-import { TractorError } from 'tractor-error-handler';
-export default function myApiEndpoint (request, response) {
+import { TractorError, handleError } from 'tractor-error-handler';
+
+export function myApiEndpoint (request, response) {
     if (somethingBad) {
-        tractorErrorHandler.handle(response, new TractorError('something bad happened'));
+        handleError(response, new TractorError('something bad happened'));
     } else {
         response.sendStatus(200);
     }

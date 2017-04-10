@@ -1,7 +1,7 @@
 /* global describe:true, it:true */
 
 // Constants:
-import constants from './constants';
+import { SERVER_ERROR } from './constants';
 
 // Utilities:
 import chai from 'chai';
@@ -15,7 +15,7 @@ chai.use(dirtyChai);
 chai.use(sinonChai);
 
 // Under test:
-import TractorError from './TractorError';
+import { TractorError } from './TractorError';
 
 describe('tractor-error-handler: TractorError:', () => {
     describe('TractorError constructor:', () => {
@@ -41,7 +41,7 @@ describe('tractor-error-handler: TractorError:', () => {
         it('should have an default status of 500', () => {
             let error = new TractorError();
 
-            expect(error.status).to.equal(constants.SERVER_ERROR);
+            expect(error.status).to.equal(SERVER_ERROR);
         });
 
         it('should capture the stack trace', () => {
