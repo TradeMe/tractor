@@ -2,7 +2,9 @@
 import { Container } from './container';
 
 export function container () {
-    return new Container()
+    let di = new Container()
+    di.constant({ di });
+    return di;
 }
 
 export const DI = container();
