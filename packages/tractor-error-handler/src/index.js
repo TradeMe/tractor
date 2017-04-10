@@ -1,2 +1,2 @@
-export * from './error-handler';
+export * from './handle-error';
 export * from './TractorError';
