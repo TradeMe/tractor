@@ -71,7 +71,7 @@ describe('tractor-dependency-injection - Container:', () => {
 
             container.call(wrap.test);
 
-            expect(wrap.test).to.have.been.calledWith(arg)
+            expect(wrap.test).to.have.been.calledWith(arg);
         });
 
         it('should work if the function has no dependencies', () => {
@@ -84,7 +84,25 @@ describe('tractor-dependency-injection - Container:', () => {
 
             container.call(wrap.test);
 
-            expect(wrap.test).to.have.been.called()
+            expect(wrap.test).to.have.been.called();
+        });
+
+        it('should append any extra given arguments', () => {
+            let container = new Container();
+
+            let arg1 = {};
+            container.constant({ arg1 });
+            let arg2 = {};
+
+            function test () {}
+            test['@Inject'] = ['arg1'];
+            let wrap = { test };
+
+            sinon.stub(wrap, 'test');
+
+            container.call(wrap.test, [arg2]);
+
+            expect(wrap.test).to.have.been.calledWith(arg1, arg2);
         });
     });
 

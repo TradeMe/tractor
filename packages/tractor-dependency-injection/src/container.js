@@ -10,10 +10,10 @@ export class Container {
         this._factories = {};
     }
 
-    call (func) {
+    call (func, args) {
         let toInject = func['@Inject'] || [];
         let dependencies = get.call(this, toInject);
-        return func.apply(null, dependencies);
+        return func.apply(null, dependencies.concat(args));
     }
 
     constant (constants) {
