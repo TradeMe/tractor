@@ -2252,7 +2252,7 @@ npm-watch@^0.1.8:
     nodemon "^1.3.8"
     through2 "^2.0.0"
 
-npmlog@^4.0.2:
+npmlog@4.0.2, npmlog@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/npmlog/-/npmlog-4.0.2.tgz#d03950e0e78ce1527ba26d2a7592e9348ac3e75f"
   dependencies:
@@ -2925,6 +2925,12 @@ tough-cookie@~2.3.0:
   resolved "https://registry.yarnpkg.com/tough-cookie/-/tough-cookie-2.3.2.tgz#f081f76e4c85720e6c37a5faced737150d84072a"
   dependencies:
     punycode "^1.4.1"
+
+tractor-logger@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/tractor-logger/-/tractor-logger-0.1.0.tgz#8d0215c7dd238abc6f8d87303952444c74e3785b"
+  dependencies:
+    npmlog "4.0.2"
 
 trim-right@^1.0.1:
   version "1.0.1"
