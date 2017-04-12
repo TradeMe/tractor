@@ -1,17 +1,8 @@
 // Dependencies:
 import { loadPlugins } from './load-plugins';
 
+let plugins;
 export function getPlugins () {
-    let plugins = getPlugins.plugins || loadPlugins();
-
-    Object.defineProperty(getPlugins, 'plugins', {
-        value: plugins,
-        configurable: true
-    });
-
+    plugins = plugins || loadPlugins();
     return plugins;
-}
-
-export function getPluginDescriptions () {
-    return getPlugins().map(plugin => plugin.description);
 }

@@ -13,7 +13,7 @@ chai.use(sinonChai);
 import * as loadPlugins from './load-plugins';
 
 // Under test:
-import { getPlugins, getPluginDescriptions } from './index';
+import { getPlugins } from './index';
 
 describe('tractor-plugin-loader:', () => {
     describe('getPlugins:', () => {
@@ -26,27 +26,6 @@ describe('tractor-plugin-loader:', () => {
             expect(plugins1).to.equal(plugins2);
 
             loadPlugins.loadPlugins.restore();
-            Object.defineProperty(getPlugins, 'plugins', { value: null, configurable: true });
-        });
-    });
-
-    describe('getPluginDescriptions:', () => {
-        it('should return the description for each loaded plugin', () => {
-            let description = {};
-            let pluginModule = {
-                description
-            };
-
-            sinon.stub(loadPlugins, 'loadPlugins').returns([pluginModule]);
-
-            let descriptions = getPluginDescriptions();
-
-            expect(descriptions.length).to.equal(1);
-            let [test] = descriptions;
-            expect(test).to.equal(description);
-
-            loadPlugins.loadPlugins.restore();
-            Object.defineProperty(getPlugins, 'plugins', { value: null, configurable: true });
         });
     });
 });

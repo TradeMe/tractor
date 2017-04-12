@@ -1,29 +1,25 @@
 // Constants:
-const NPM_EXTRANEOUS_ERROR = 'npm ERR! extraneous';
-const NPM_INVALID_ERROR = 'npm ERR! invalid';
-const NPM_PEER_DEP_ERROR = 'npm ERR! peer dep missing';
-const OUT_NEWLINE = '\n';
 const TRACTOR_PLUGIN_LOADER = 'tractor-plugin-loader';
 const TRACTOR_PLUGIN_MODULE_NAME_REGEX = /(tractor-plugin-.*$)/;
 const TRACTOR_PLUGIN_NAME_REGEX = /tractor-plugin-(.*)/;
-const WINDOWS = 'win32';
 
 // Utilities:
-import childProcess from 'child_process';
 import fs from 'fs';
 import module from 'module';
-import os from 'os';
 import path from 'path';
+import { info } from 'tractor-logger';
 
 // Dependencies:
 import camelCase from 'camel-case';
 import paramCase from 'param-case';
 import titleCase from 'title-case';
+import readPkgUp from 'read-pkg-up';
 
 // Errors:
 import { TractorError } from 'tractor-error-handler';
 
 export function loadPlugins () {
+    info('Loading plugins...');
     let plugins = requirePlugins();
 
     plugins.forEach(plugin => {
@@ -78,32 +74,16 @@ function requirePlugins () {
 }
 
 function getInstalledPluginNames () {
-    let npm = os.platform() === WINDOWS ? 'npm.cmd' : 'npm';
-    let ls = childProcess.spawnSync(npm, ['ls', '--depth=0', '--parseable']);
+    let { pkg } = readPkgUp.sync({ cwd: process.cwd() });
+    let dependencies = [].concat(Object.keys(pkg.dependencies), Object.keys(pkg.devDependencies));
 
-    let errors = ls.stderr.toString().trim().split(OUT_NEWLINE);
-    errors = errors
-    .filter(error => {
-        let isExtraneous = error.startsWith(NPM_EXTRANEOUS_ERROR);
-        let isInvalid = error.startsWith(NPM_INVALID_ERROR);
-        let isPeerDep =  error.startsWith(NPM_PEER_DEP_ERROR);
-        return error && !(isExtraneous || isInvalid || isPeerDep);
-    });
-
-    if (errors.length) {
-        let [firstError] = errors;
-        throw new TractorError(firstError);
-    }
-
-    let allModulePaths = ls.stdout.toString().trim().split(OUT_NEWLINE);
-
-    let moduleNames = allModulePaths
-    .filter(modulePath => modulePath.match(TRACTOR_PLUGIN_MODULE_NAME_REGEX))
-    .map(modulePath => {
-        let [, moduleName] = modulePath.match(TRACTOR_PLUGIN_MODULE_NAME_REGEX);
-        return moduleName;
+    let pluginNames = dependencies
+    .filter(dependency => dependency.match(TRACTOR_PLUGIN_MODULE_NAME_REGEX))
+    .map(dependency => {
+        let [, dependencyName] = dependency.match(TRACTOR_PLUGIN_MODULE_NAME_REGEX);
+        return dependencyName;
     })
-    .filter(moduleName => moduleName !== TRACTOR_PLUGIN_LOADER);
+    .filter(dependencyName => dependencyName !== TRACTOR_PLUGIN_LOADER);
 
-    return moduleNames;
+    return pluginNames;
 }
