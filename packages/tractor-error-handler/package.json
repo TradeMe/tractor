@@ -1,6 +1,6 @@
 {
   "name": "tractor-error-handler",
-  "version": "0.2.0-beta.1",
+  "version": "0.2.0",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
