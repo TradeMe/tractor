@@ -13,79 +13,78 @@ chai.use(dirtyChai);
 chai.use(sinonChai);
 
 // Dependencies:
-import * as createTestDirectoryStructure from './create-test-directory-structure';
-import * as createBaseTestFiles from './create-base-test-files';
-import * as initialisePlugins from './initialise-plugins';
-import * as installTractorDependenciesLocally from './install-tractor-dependencies-locally';
-import * as setUpSelenium from './set-up-selenium';
+import { createTractorDirectoryStructure } from './create-tractor-directory-structure';
+import { createBaseTractorFiles } from './create-base-tractor-files';
+import { initialisePlugins } from './initialise-plugins';
+import { installTractorDependenciesLocally } from './install-tractor-dependencies-locally';
+import { setUpSelenium } from './set-up-selenium';
+import { container } from 'tractor-dependency-injection';
 import * as tractorLogger from 'tractor-logger';
 
 // Under test:
-import cliInit from './index';
+import { init } from './index';
 
 describe('tractor - init/index:', () => {
     it('should run the initialisation steps', () => {
-        sinon.stub(createTestDirectoryStructure, 'createTestDirectoryStructure').returns(Promise.resolve());
-        sinon.stub(createBaseTestFiles, 'createBaseTestFiles').returns(Promise.resolve());
-        sinon.stub(initialisePlugins, 'initialisePlugins').returns(Promise.resolve());
-        sinon.stub(installTractorDependenciesLocally, 'installTractorDependenciesLocally').returns(Promise.resolve());
-        sinon.stub(setUpSelenium, 'setUpSelenium').returns(Promise.resolve());
+        let di = container();
+
+        let diCall = sinon.stub(di, 'call');
+        diCall.withArgs(createTractorDirectoryStructure).returns(Promise.resolve());
+        diCall.withArgs(createBaseTractorFiles).returns(Promise.resolve());
+        diCall.withArgs(initialisePlugins).returns(Promise.resolve());
+        diCall.withArgs(installTractorDependenciesLocally).returns(Promise.resolve());
+        diCall.withArgs(setUpSelenium).returns(Promise.resolve());
         sinon.stub(tractorLogger, 'info');
 
-        return cliInit()
+        return init(di)
         .then(() => {
-            expect(createTestDirectoryStructure.createTestDirectoryStructure).to.have.been.calledOnce();
-            expect(createBaseTestFiles.createBaseTestFiles).to.have.been.calledOnce();
-            expect(installTractorDependenciesLocally.installTractorDependenciesLocally).to.have.been.calledOnce();
-            expect(setUpSelenium.setUpSelenium).to.have.been.calledOnce();
+            expect(di.call).to.have.been.calledWith(createTractorDirectoryStructure);
+            expect(di.call).to.have.been.calledWith(createBaseTractorFiles);
+            expect(di.call).to.have.been.calledWith(initialisePlugins);
+            expect(di.call).to.have.been.calledWith(installTractorDependenciesLocally);
+            expect(di.call).to.have.been.calledWith(setUpSelenium);
         })
         .finally(() => {
-            createTestDirectoryStructure.createTestDirectoryStructure.restore();
-            createBaseTestFiles.createBaseTestFiles.restore();
-            initialisePlugins.initialisePlugins.restore();
-            installTractorDependenciesLocally.installTractorDependenciesLocally.restore();
-            setUpSelenium.setUpSelenium.restore();
             tractorLogger.info.restore();
         });
     });
 
     it('should tell the user what it is doing', () => {
-        sinon.stub(createTestDirectoryStructure, 'createTestDirectoryStructure').returns(Promise.resolve());
-        sinon.stub(createBaseTestFiles, 'createBaseTestFiles').returns(Promise.resolve());
-        sinon.stub(initialisePlugins, 'initialisePlugins').returns(Promise.resolve());
-        sinon.stub(installTractorDependenciesLocally, 'installTractorDependenciesLocally').returns(Promise.resolve());
-        sinon.stub(setUpSelenium, 'setUpSelenium').returns(Promise.resolve());
+        let di = container();
+
+        let diCall = sinon.stub(di, 'call');
+        diCall.withArgs(createTractorDirectoryStructure).returns(Promise.resolve());
+        diCall.withArgs(createBaseTractorFiles).returns(Promise.resolve());
+        diCall.withArgs(initialisePlugins).returns(Promise.resolve());
+        diCall.withArgs(installTractorDependenciesLocally).returns(Promise.resolve());
+        diCall.withArgs(setUpSelenium).returns(Promise.resolve());
         sinon.stub(tractorLogger, 'info');
 
-        return cliInit()
+        return init(di)
         .then(() => {
             expect(tractorLogger.info).to.have.been.calledWith('Setting up tractor...');
             expect(tractorLogger.info).to.have.been.calledWith('Set up complete!');
         })
         .finally(() => {
-            createTestDirectoryStructure.createTestDirectoryStructure.restore();
-            createBaseTestFiles.createBaseTestFiles.restore();
-            initialisePlugins.initialisePlugins.restore();
-            installTractorDependenciesLocally.installTractorDependenciesLocally.restore();
-            setUpSelenium.setUpSelenium.restore();
             tractorLogger.info.restore();
         });
     });
 
     it('should tell the user if there is an error', () => {
-        let message = 'error';
-        sinon.stub(createTestDirectoryStructure, 'createTestDirectoryStructure').returns(Promise.reject(new Error(message)));
+        let di = container();
+
+        let diCall = sinon.stub(di, 'call');
+        diCall.withArgs(createTractorDirectoryStructure).returns(Promise.reject(new Error('error')));
         sinon.stub(tractorLogger, 'error');
         sinon.stub(tractorLogger, 'info');
 
-        return cliInit()
+        return init(di)
         .catch(() => { })
         .then(() => {
             expect(tractorLogger.error).to.have.been.calledWith('Something broke, sorry 😕');
-            expect(tractorLogger.error).to.have.been.calledWith(message);
+            expect(tractorLogger.error).to.have.been.calledWith('error');
         })
         .finally(() => {
-            createTestDirectoryStructure.createTestDirectoryStructure.restore();
             tractorLogger.error.restore();
             tractorLogger.info.restore();
         });

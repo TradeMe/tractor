@@ -13,20 +13,22 @@ chai.use(dirtyChai);
 chai.use(sinonChai);
 
 // Dependencies:
-import tractorServer from 'tractor-server';
+import { container } from 'tractor-dependency-injection';
+import { server } from 'tractor-server';
 
 // Under test:
-import cliStart from './index';
+import { start } from './index';
 
 describe('tractor - start/index:', () => {
     it('should start the application', () => {
-        sinon.stub(tractorServer, 'start').returns(Promise.resolve());
+        let di = container();
 
-        return cliStart()
+        let diCall = sinon.stub(di, 'call');
+        diCall.withArgs(server).returns(Promise.resolve());
+
+        return start(di)
         .then(() => {
-            expect(tractorServer.start).to.have.been.called();
-
-            tractorServer.start.restore();
+            expect(di.call).to.have.been.calledWith(server);
         });
     });
 });

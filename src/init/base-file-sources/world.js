@@ -1,35 +1,42 @@
 'use strict';
 
 /* eslint-disable no-var, prefer-arrow-callback */
+
 var Promise = require('bluebird');
-var HttpBackend = require('httpbackend');
+var tractorConfigLoader = require('tractor-config-loader');
+var tractorDependencyInjection = require('tractor-dependency-injection');
 var tractorPluginLoader = require('tractor-plugin-loader');
 
-let plugins = tractorPluginLoader.default.getPlugins();
+var config = tractorConfigLoader.getConfig();
+var di = tractorDependencyInjection.container();
+var plugins = tractorPluginLoader.getPlugins();
 
-var CustomWorld = (function () {
+var CustomWorld = function () {
     var chai = require('chai');
     var chaiAsPromised = require('chai-as-promised');
-    var CustomWorld = function CustomWorld () {
+
+    var CustomWorld = function CustomWorld() {
         global.By = global.protractor.By;
         chai.use(chaiAsPromised);
         global.expect = chai.expect;
         global.Promise = Promise;
 
         plugins.map(function (plugin) {
-            global[plugin.description.variableName] = plugin.create(global.browser);
+            global[plugin.description.variableName] = di.call(plugin.create);
         });
     };
 
     return CustomWorld;
-})();
+}();
 
 module.exports = function () {
+    var cucumber = this;
+    var browser = global.browser;
 
-    let cucumber = this;
+    di.constant({ browser: browser, config: config, cucumber: cucumber });
 
     plugins.map(function (plugin) {
-        plugin.addHooks(cucumber);
+        di.call(plugin.addHooks);
     });
 
     this.World = function () {
@@ -37,70 +44,55 @@ module.exports = function () {
     };
 
     /* eslint-disable new-cap */
-    this.Before(function (scenario, callback) {
-    /* eslint-enable new-cap */
-        global.httpBackend = new HttpBackend(global.browser);
-        callback();
-    });
-
-    /* eslint-disable new-cap */
     this.StepResult(function (stepResult, callback) {
-        if (stepResult.getStatus() === 'failed' && global.browser.params.debug === 'true') {
-            global.browser.pause();
+        if (browser) {
+            let params = browser.params || {};
+            if (stepResult.getStatus() === 'failed' && params.debug === 'true') {
+                browser.pause();
+            }
         }
         callback();
     });
 
     /* eslint-disable new-cap */
-    this.After(function (scenario, callback) {
-    /* eslint-enable new-cap */
-        global.httpBackend.clear();
-        global.browser.manage().deleteAllCookies();
-        global.browser.executeScript('window.sessionStorage.clear();');
-        global.browser.executeScript('window.localStorage.clear();');
+    this.After(function (scenario) {
+        /* eslint-enable new-cap */
+        if (browser) {
+            browser.manage().deleteAllCookies();
+            browser.executeScript('try { window.sessionStorage.clear(); } catch (e) { }');
+            browser.executeScript('try { window.localStorage.clear(); } catch (e) { }');
+        }
 
-        if (scenario.isFailed()) {
-            Promise.all([takeScreenshot(scenario), printBrowserLog()])
-            .then(function () {
-                callback();
-            })
-            .catch(function (err) {
-                callback(err)
-            });
+        if (browser && scenario.isFailed()) {
+            return Promise.all([takeScreenshot(browser, scenario), printBrowserLog(browser)]);
         } else {
-            callback();
-        }
-
-        function takeScreenshot (scenario) {
-            return global.browser.takeScreenshot()
-            .then(function (base64png) {
-                var decodedImage = new Buffer(base64png, 'base64');
-                scenario.attach(decodedImage, 'image/png');
-            });
-        }
-
-        function printBrowserLog () {
-            return global.browser.manage().logs().get('browser')
-            .then(function (browserLog) {
-                var severeErrors = browserLog.filter(function (log) {
-                    return log.level.name === 'SEVERE';
-                })
-                .map(function (log) {
-                    return log.message.substring(log.message.indexOf('Error'), log.message.indexOf('\n'));
-                });
-
-                var uniqueErrors = {};
-                if (severeErrors) {
-                    severeErrors.forEach(function (message) {
-                        uniqueErrors[message] = true;
-                    });
-                    Object.keys(uniqueErrors).map(function (message) {
-                        console.error(message);
-                    });
-                }
-            });
+            return Promise.resolve();
         }
     });
 
     return this.World;
 };
+
+function takeScreenshot (browser, scenario) {
+    return browser.takeScreenshot().then(function (base64png) {
+        var decodedImage = new Buffer(base64png, 'base64');
+        scenario.attach(decodedImage, 'image/png');
+    });
+}
+
+function printBrowserLog (browser) {
+    return browser.manage().logs().get('browser').then(function (browserLog) {
+        var severeErrors = browserLog.filter(function (log) {
+            return log.level.name === 'SEVERE';
+        })
+        .map(function (log) {
+            return log.message.substring(log.message.indexOf('Error'), log.message.indexOf('\n'));
+        });
+
+        if (severeErrors) {
+            severeErrors.forEach(function (message) {
+                console.error(message);
+            });
+        }
+    });
+}

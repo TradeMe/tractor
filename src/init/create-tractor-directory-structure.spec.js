@@ -16,15 +16,17 @@ import path from 'path';
 import * as tractorLogger from 'tractor-logger';
 
 // Under test:
-import { createTestDirectoryStructure } from './create-test-directory-structure';
+import { createTractorDirectoryStructure } from './create-tractor-directory-structure';
 
-describe('tractor - init/create-test-directory-structure:', () => {
-    it('should create the tests directory structure', () => {
+describe('tractor - init/create-tractor-directory-structure:', () => {
+    it('should create the tractor directory structure', () => {
         sinon.stub(fs, 'mkdirAsync').returns(Promise.resolve());
         sinon.stub(tractorLogger, 'info');
         sinon.stub(tractorLogger, 'warn');
 
-        return createTestDirectoryStructure('directory')
+        return createTractorDirectoryStructure({
+            directory: 'directory'
+        })
         .then(() => {
             expect(fs.mkdirAsync).to.have.been.calledWith('directory');
             expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'components'));
@@ -50,7 +52,9 @@ describe('tractor - init/create-test-directory-structure:', () => {
         sinon.stub(tractorLogger, 'info');
         sinon.stub(tractorLogger, 'warn');
 
-        return createTestDirectoryStructure('directory')
+        return createTractorDirectoryStructure({
+            directory: 'directory'
+        })
         .then(() => {
             expect(tractorLogger.warn).to.have.been.calledWith('"directory" directory already exists. Moving on...');
         })
@@ -66,8 +70,10 @@ describe('tractor - init/create-test-directory-structure:', () => {
         sinon.stub(tractorLogger, 'info');
         sinon.stub(tractorLogger, 'warn');
 
-        return createTestDirectoryStructure('directory')
-        .catch(() => { })
+        return createTractorDirectoryStructure({
+            directory: 'directory'
+        })
+        .catch(() => {})
         .then(() => {
             expect(tractorLogger.warn).to.not.have.been.called();
         })
@@ -83,7 +89,9 @@ describe('tractor - init/create-test-directory-structure:', () => {
         sinon.stub(tractorLogger, 'info');
         sinon.stub(tractorLogger, 'warn');
 
-        return createTestDirectoryStructure('directory')
+        return createTractorDirectoryStructure({
+            directory: 'directory'
+        })
         .then(() => {
             expect(tractorLogger.info).to.have.been.calledWith('Creating directory structure...');
             expect(tractorLogger.info).to.have.been.calledWith('Directory structure created.');

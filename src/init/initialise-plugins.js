@@ -3,12 +3,11 @@ import Promise from 'bluebird';
 
 // Dependencies:
 import { info } from 'tractor-logger';
-import tractorPluginLoader from 'tractor-plugin-loader';
 
-export function initialisePlugins () {
-    let plugins = tractorPluginLoader.getPlugins();
+export function initialisePlugins (di, plugins) {
     return Promise.map(plugins, plugin => {
         info(`Initialising ${plugin.name}`);
-        return plugin.init();
+        return di.call(plugin.init);
     });
 }
+initialisePlugins['@Inject'] = ['di', 'plugins'];

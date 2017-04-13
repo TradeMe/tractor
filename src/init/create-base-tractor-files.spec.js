@@ -16,16 +16,18 @@ import path from 'path';
 import * as tractorLogger from 'tractor-logger';
 
 // Under test:
-import { createBaseTestFiles } from './create-base-test-files';
+import { createBaseTractorFiles } from './create-base-tractor-files';
 
-describe('tractor - init/create-base-test-files:', () => {
+describe('tractor - init/create-base-tractor-files:', () => {
     it('should copy the "world.js" file to the "support" folder in the users specified directory', () => {
         sinon.stub(fs, 'openAsync').returns(Promise.reject(new Promise.OperationalError()));
         sinon.stub(fs, 'readFileAsync').returns(Promise.resolve('world'));
         sinon.stub(fs, 'writeFileAsync').returns(Promise.resolve());
         sinon.stub(tractorLogger, 'info');
 
-        return createBaseTestFiles('')
+        return createBaseTractorFiles({
+            directory: ''
+        })
         .then(() => {
             expect(fs.readFileAsync).to.have.been.calledWith(path.join(__dirname, '/base-file-sources/world.js'));
             expect(fs.writeFileAsync).to.have.been.calledWith(path.join(process.cwd(), '/support/world.js'), 'world');
@@ -42,7 +44,9 @@ describe('tractor - init/create-base-test-files:', () => {
         sinon.stub(fs, 'openAsync').returns(Promise.resolve(''));
         sinon.stub(tractorLogger, 'warn');
 
-        return createBaseTestFiles('')
+        return createBaseTractorFiles({
+            directory: ''
+        })
         .then(() => {
             expect(tractorLogger.warn).to.have.been.calledWith('"world.js" already exists. Not copying...');
         })
@@ -58,7 +62,9 @@ describe('tractor - init/create-base-test-files:', () => {
         sinon.stub(fs, 'writeFileAsync').returns(Promise.resolve());
         sinon.stub(tractorLogger, 'info');
 
-        return createBaseTestFiles('')
+        return createBaseTractorFiles({
+            directory: ''
+        })
         .then(() => {
             expect(fs.readFileAsync).to.have.been.calledWith(path.join(__dirname, '/base-file-sources/protractor.conf.js'));
             expect(fs.writeFileAsync).to.have.been.calledWith(path.join(process.cwd(), '/protractor.conf.js'), 'config');
@@ -75,7 +81,9 @@ describe('tractor - init/create-base-test-files:', () => {
         sinon.stub(fs, 'openAsync').returns(Promise.resolve(''));
         sinon.stub(tractorLogger, 'warn');
 
-        return createBaseTestFiles('')
+        return createBaseTractorFiles({
+            directory: ''
+        })
         .then(() => {
             expect(tractorLogger.warn).to.have.been.calledWith('"protractor.conf.js" already exists. Not copying...');
         })
@@ -91,7 +99,9 @@ describe('tractor - init/create-base-test-files:', () => {
         sinon.stub(fs, 'writeFileAsync').returns(Promise.resolve());
         sinon.stub(tractorLogger, 'info');
 
-        return createBaseTestFiles('')
+        return createBaseTractorFiles({
+            directory: ''
+        })
         .then(() => {
             expect(fs.readFileAsync).to.have.been.calledWith(path.join(__dirname, '/base-file-sources/hooks.js'));
             expect(fs.writeFileAsync).to.have.been.calledWith(path.join(process.cwd(), '/support/hooks.js'), 'hooks');
@@ -108,7 +118,9 @@ describe('tractor - init/create-base-test-files:', () => {
         sinon.stub(fs, 'openAsync').returns(Promise.resolve(''));
         sinon.stub(tractorLogger, 'warn');
 
-        return createBaseTestFiles('')
+        return createBaseTractorFiles({
+            directory: ''
+        })
         .then(() => {
             expect(tractorLogger.warn).to.have.been.calledWith('"hooks.js" already exists. Not copying...');
         })
@@ -124,7 +136,9 @@ describe('tractor - init/create-base-test-files:', () => {
         sinon.stub(fs, 'writeFileAsync').returns(Promise.resolve());
         sinon.stub(tractorLogger, 'info');
 
-        return createBaseTestFiles('')
+        return createBaseTractorFiles({
+            directory: ''
+        })
         .then(() => {
             expect(tractorLogger.info).to.have.been.calledWith('Creating "world.js"...');
             expect(tractorLogger.info).to.have.been.calledWith('Creating "protractor.conf.js"...');

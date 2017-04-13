@@ -11,33 +11,33 @@ chai.use(sinonChai);
 
 // Dependencies:
 import * as tractorLogger from 'tractor-logger';
-import tractorPluginLoader from 'tractor-plugin-loader';
+import { container } from 'tractor-dependency-injection';
 
 // Under test:
 import { initialisePlugins } from './initialise-plugins';
 
 describe('tractor - init/initialise-plugins:', () => {
     it('should initialise all the installed plugins', () => {
+        let di = container();
         let plugin = {
             init: () => {}
         };
         let plugins = [plugin];
 
         sinon.stub(plugin, 'init');
-        sinon.stub(tractorPluginLoader, 'getPlugins').returns(plugins);
         sinon.stub(tractorLogger, 'info');
 
-        return initialisePlugins()
+        return initialisePlugins(di, plugins)
         .then(() => {
             expect(plugin.init).to.have.been.called();
         })
         .finally(() => {
             tractorLogger.info.restore();
-            tractorPluginLoader.getPlugins.restore();
         });
     });
 
     it('should tell the user what it is doing', () => {
+        let di = container();
         let plugin = {
             init: () => {},
             name: 'test-plugin'
@@ -45,16 +45,14 @@ describe('tractor - init/initialise-plugins:', () => {
         let plugins = [plugin];
 
         sinon.stub(plugin, 'init');
-        sinon.stub(tractorPluginLoader, 'getPlugins').returns(plugins);
         sinon.stub(tractorLogger, 'info');
 
-        return initialisePlugins()
+        return initialisePlugins(di, plugins)
         .then(() => {
             expect(tractorLogger.info).to.have.been.calledWith('Initialising test-plugin');
         })
         .finally(() => {
             tractorLogger.info.restore();
-            tractorPluginLoader.getPlugins.restore();
         });
     });
 });

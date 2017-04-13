@@ -1,6 +1,7 @@
 // Dependencies:
-import tractorServer from 'tractor-server';
+import { server } from 'tractor-server';
 
-export default function start () {
-    return tractorServer.start();
+export function start (di) {
+    return di.call(server);
 }
+start['@Inject'] = ['di'];

@@ -14,15 +14,16 @@ import { info, warn } from 'tractor-logger';
 // Errors:
 import { TractorError } from 'tractor-error-handler';
 
-export function createBaseTestFiles (testDirectoryPath) {
-    let supportDirPath = path.join(testDirectoryPath, SUPPORT_DIR);
+export function createBaseTractorFiles (config) {
+    let supportDirPath = path.join(config.directory, SUPPORT_DIR);
     return createFile(WORLD_FILE_NAME, supportDirPath)
     .catch(TractorError, error => logNotCopying(error))
-    .then(() => createFile(PROTRACTOR_CONF_FILE_NAME, testDirectoryPath))
+    .then(() => createFile(PROTRACTOR_CONF_FILE_NAME, config.directory))
     .catch(TractorError, error => logNotCopying(error))
     .then(() => createFile(HOOKS_FILE_NAME, supportDirPath))
     .catch(TractorError, error => logNotCopying(error));
 }
+createBaseTractorFiles['@Inject'] = ['config'];
 
 function createFile (fileName, directoryPath) {
     let readPath = path.join(__dirname, BASE_FILE_SOURCES, fileName);

@@ -38,10 +38,11 @@ If you want to change the port that `tractor` runs at, or the file where it stor
 
 ```javascript
 module.exports = {
-    testDirectory: 'path/to/test/directory', // defaults to root/e2e-tests
-    port: number,                            // defaults to 4000
-    environments: Array<string>,             // a list of URLs for the environments to run the tests in
-    beforeProtractor: Function,              // a function to run before protractor runs
-    afterProtractor: Function                // a function to run after protractor runs
+    directory: './path/to/test/directory', // defaults to root/tractor
+    port: number,                          // defaults to 4000
+    environments: Array<string>,           // a list of URLs for the environments to run the tests in
+    tags: Array<string>,                   // a list of tags for Cucumber
+    beforeProtractor: Function,            // a function to run before protractor runs
+    afterProtractor: Function              // a function to run after protractor runs
 };
 ```

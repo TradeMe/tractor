@@ -2,7 +2,21 @@
 'use strict';
 
 // Dependencies:
-var tractor = require('commander');
+let tractor = require('commander');
+
+// Actions:
+let { init } = require('../dist/init');
+let { start } = require('../dist/start');
+
+let { getConfig } = require('tractor-config-loader');
+let { container } = require('tractor-dependency-injection');
+let { getPlugins } = require('tractor-plugin-loader');
+
+let config = getConfig();
+let plugins = getPlugins();
+
+let di = container();
+di.constant({ config, plugins });
 
 tractor
 .version('0.10.0');
@@ -10,11 +24,15 @@ tractor
 tractor
 .command('init')
 .description('initialise tractor in a project')
-.action(require('../dist/init/').default);
+.action(function () {
+    return di.call(init);
+});
 
 tractor
 .command('start')
 .description('Start the tractor server')
-.action(require('../dist/start/').default);
+.action(function () {
+    return di.call(start);
+});
 
 tractor.parse(process.argv);

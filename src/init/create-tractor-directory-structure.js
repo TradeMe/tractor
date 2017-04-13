@@ -16,12 +16,13 @@ import { info, warn } from 'tractor-logger';
 // Errors:
 import { TractorError } from 'tractor-error-handler';
 
-export function createTestDirectoryStructure (testDirectory) {
+export function createTractorDirectoryStructure (config) {
     info('Creating directory structure...');
-    return createAllDirectories(testDirectory);
+    return createAllDirectories(config.directory);
 }
+createTractorDirectoryStructure['@Inject'] = ['config'];
 
-function createAllDirectories (testDirectory) {
+function createAllDirectories (tractorDirectoryPath) {
     let createDirectories = [
         /* eslint-disable no-warning-comments */
         // TODO: This is a bit cryptic, pull this out into another promise
@@ -35,7 +36,7 @@ function createAllDirectories (testDirectory) {
         STEP_DEFINITIONS_DIRECTORY,
         SUPPORT_DIRECTORY
     ].map(directory => {
-        return createDir(path.join(testDirectory, directory))
+        return createDir(path.join(tractorDirectoryPath, directory))
         .catch(TractorError, error => warn(`${error.message} Moving on...`));
     });
 
