@@ -2,4 +2,9 @@ node_modules/
 src/
 reports/
 .babelrc
+.codeclimate.yml
 .eslintrc.json
+.istanbullrc.json
+.mocharc
+.travis.yml
+travis-after-build.sh

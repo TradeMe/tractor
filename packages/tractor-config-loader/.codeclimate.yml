@@ -1,11 +1,11 @@
 engines:
   duplication:
     enabled: true
+    exclude_paths:
+    - "**.spec.js"
     config:
       languages:
       - javascript
-      exclude_paths:
-      - "**/*.spec.js"
   eslint:
     enabled: true
   fixme:
