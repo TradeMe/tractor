@@ -5,7 +5,7 @@ engines:
       languages:
       - javascript
       exclude_paths:
-      - "**.spec.js"
+      - "**/*.spec.js"
   eslint:
     enabled: true
   fixme:
