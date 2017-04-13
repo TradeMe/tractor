@@ -14,12 +14,12 @@ chai.use(sinonChai);
 
 // Dependencies:
 import childProcess from 'child_process';
-import FeatureFile from '../FeatureFile';
-import StepDefinitionFile from '../StepDefinitionFile';
+import { FeatureFile } from '../FeatureFile';
+import { StepDefinitionFile } from '../StepDefinitionFile';
 import { Directory, FileStructure } from 'tractor-file-structure';
 
 // Under test:
-import StepDefinitionGenerator from './StepDefinitionGenerator';
+import { StepDefinitionGenerator } from './StepDefinitionGenerator';
 
 describe('server/utils: StepDefinitionGenerator:', () => {
     describe('StepDefinitionGenerator.generate:', () => {

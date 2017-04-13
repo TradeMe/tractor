@@ -1,8 +1,6 @@
-// Constants:
-import config from '../config/config';
-
-export default { handler };
-
-function handler (request, response) {
-    response.send(config);
+export function getConfigHandler (config) {
+    return function (request, response) {
+        response.send(config);
+    }
 }
+getConfigHandler['@Inject'] = ['config'];

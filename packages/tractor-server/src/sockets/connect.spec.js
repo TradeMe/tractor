@@ -13,21 +13,22 @@ chai.use(sinonChai);
 
 // Dependencies:
 import { EventEmitter } from 'events';
-import protractorRunner from './protractor-runner';
+import * as protractorRunner from './protractor-runner';
 
 // Under test:
-import connect from './connect';
+import { socketHandler } from './connect';
 
 describe('server/sockets: connect:', () => {
     it('should run "Protractor" when a "run" event is recieved:', () => {
+        let config = {};
         let socket = new EventEmitter();
 
         sinon.stub(protractorRunner, 'run');
 
-        connect(socket);
+        socketHandler(config)(socket);
         socket.emit('run');
 
-        expect(protractorRunner.run).to.have.been.called();
+        expect(protractorRunner.run).to.have.been.called.with(config, socket);
 
         protractorRunner.run.restore();
     });

@@ -13,14 +13,13 @@ import camelcase from 'camel-case';
 import pascalcase from 'pascal-case';
 
 // Dependencies:
-import JavaScriptFile from './JavaScriptFile';
-import tractorFileStructure from 'tractor-file-structure';
-import transformer from 'tractor-js-file-transformer';
+import { JavaScriptFile } from './JavaScriptFile';
+import { registerFileType } from 'tractor-file-structure';
 
 // Errors:
 import { TractorError } from 'tractor-error-handler';
 
-export default class ComponentFile extends JavaScriptFile {
+export class ComponentFile extends JavaScriptFile {
     delete (options = {}) {
         let { references } = this.fileStructure;
         let referencePaths = references[this.path];
@@ -54,21 +53,21 @@ export default class ComponentFile extends JavaScriptFile {
             let oldInstanceName = camelcase(oldName);
             let newInstanceName = camelcase(newName);
 
-            transformer.transformIdentifiers(newFile, oldClassName, newClassName, CLASS_CONSTRUCTOR_DECLARATOR_QUERY);
-            transformer.transformIdentifiers(newFile, oldClassName, newClassName, CLASS_CONSTRUCTOR_FUNCTION_QUERY);
-            transformer.transformIdentifiers(newFile, oldClassName, newClassName, CLASS_ACTION_DECLARATION_QUERY);
-            transformer.transformIdentifiers(newFile, oldClassName, newClassName, CLASS_RETURN_QUERY);
-            transformer.transformMetadata(newFile, oldName, newName, null);
+            newFile.transformIdentifiers(oldClassName, newClassName, CLASS_CONSTRUCTOR_DECLARATOR_QUERY);
+            newFile.transformIdentifiers(oldClassName, newClassName, CLASS_CONSTRUCTOR_FUNCTION_QUERY);
+            newFile.transformIdentifiers(oldClassName, newClassName, CLASS_ACTION_DECLARATION_QUERY);
+            newFile.transformIdentifiers(oldClassName, newClassName, CLASS_RETURN_QUERY);
+            newFile.transformMetadata(oldName, newName, null);
 
             return Promise.map(referencePaths, referencePath => {
                 let reference = this.fileStructure.allFilesByPath[referencePath];
 
-                transformer.transformIdentifiers(reference, oldClassName, newClassName, CLASS_CONSTRUCTOR_DECLARATOR_QUERY);
-                transformer.transformIdentifiers(reference, oldClassName, newClassName, CLASS_CONSTRUCTOR_NEW_QUERY);
-                transformer.transformIdentifiers(reference, oldInstanceName, newInstanceName, INSTANCE_DECLARATOR_QUERY);
-                transformer.transformIdentifiers(reference, oldInstanceName, newInstanceName, INSTANCE_ACTION_CALL_QUERY);
-                transformer.transformMetadata(reference, oldName, newName, newFile.type);
-                transformer.transformRequirePaths(reference, {
+                reference.transformIdentifiers(oldClassName, newClassName, CLASS_CONSTRUCTOR_DECLARATOR_QUERY);
+                reference.transformIdentifiers(oldClassName, newClassName, CLASS_CONSTRUCTOR_NEW_QUERY);
+                reference.transformIdentifiers(oldInstanceName, newInstanceName, INSTANCE_DECLARATOR_QUERY);
+                reference.transformIdentifiers(oldInstanceName, newInstanceName, INSTANCE_ACTION_CALL_QUERY);
+                reference.transformMetadata(oldName, newName, newFile.type);
+                reference.transformRequirePaths({
                     fromPath: reference.path,
                     oldToPath: this.path,
                     newToPath: newFile.path
@@ -87,4 +86,4 @@ export default class ComponentFile extends JavaScriptFile {
 ComponentFile.prototype.extension = '.component.js';
 ComponentFile.prototype.type = 'components';
 
-tractorFileStructure.registerFileType(ComponentFile);
+registerFileType(ComponentFile);

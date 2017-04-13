@@ -12,12 +12,13 @@ const expect = chai.expect;
 chai.use(sinonChai);
 
 // Dependencies:
-import JavaScriptFile from './JavaScriptFile';
+import esprima from 'esprima';
+import esquery from 'esquery';
+import { JavaScriptFile } from './JavaScriptFile';
 import { File, FileStructure } from 'tractor-file-structure';
-import transformer from 'tractor-js-file-transformer';
 
 // Under test:
-import StepDefinitionFile from './StepDefinitionFile';
+import { StepDefinitionFile } from './StepDefinitionFile';
 
 describe('server/files: StepDefinitionFile:', () => {
     describe('StepDefinitionFile constructor:', () => {
@@ -78,11 +79,11 @@ describe('server/files: StepDefinitionFile:', () => {
 
             sinon.stub(File.prototype, 'move').returns(Promise.resolve(newFile));
             sinon.stub(JavaScriptFile.prototype, 'save').returns(Promise.resolve());
-            sinon.stub(transformer, 'transformRequirePaths');
+            sinon.stub(StepDefinitionFile.prototype, 'transformRequirePaths');
 
             return file.move()
             .then(() => {
-                expect(transformer.transformRequirePaths).to.have.been.calledWith(newFile, {
+                expect(newFile.transformRequirePaths).to.have.been.calledWith({
                     oldFromPath: filePath,
                     newFromPath: newFilePath,
                     toPath: referenceFilePath
@@ -91,7 +92,7 @@ describe('server/files: StepDefinitionFile:', () => {
             .finally(() => {
                 File.prototype.move.restore();
                 JavaScriptFile.prototype.save.restore();
-                transformer.transformRequirePaths.restore();
+                StepDefinitionFile.prototype.transformRequirePaths.restore();
             });
         });
     });
@@ -314,6 +315,83 @@ describe('server/files: StepDefinitionFile:', () => {
             .finally(() => {
                 JavaScriptFile.prototype.save.restore();
             });
+        });
+    });
+
+    describe('StepDefinitionFile.transformRequirePaths:', () => {
+        it(`should update the path to another file in a file's AST`, () => {
+            let ast = esprima.parse(`var reference = require('./reference.js')`);
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file');
+            let file = new StepDefinitionFile(filePath, fileStructure);
+            file.ast = ast;
+
+            file.transformRequirePaths({
+                oldFromPath: '/file-structure/directory/file.js',
+                newFromPath: '/file-structure/directory/new/file.js',
+                toPath: '/file-structure/directory/reference.js'
+            });
+
+            let [requirePath] = esquery(ast, 'CallExpression[callee.name="require"] Literal')
+            expect(requirePath.value).to.equal('../reference.js');
+        });
+
+        it(`should update the path to a file in another file's AST`, () => {
+            let ast = esprima.parse(`var reference = require('./oldName.js')`);
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file');
+            let file = new StepDefinitionFile(filePath, fileStructure);
+            file.ast = ast;
+
+            file.transformRequirePaths({
+                fromPath: '/file-structure/directory/file.js',
+                oldToPath: '/file-structure/directory/oldName.js',
+                newToPath: '/file-structure/directory/newName.js'
+            });
+
+            let [requirePath] = esquery(ast, 'CallExpression[callee.name="require"] Literal')
+            expect(requirePath.value).to.equal('./newName.js');
+        });
+
+        it(`should update the path to a file in another file's AST when it involves going up a directory`, () => {
+            let ast = esprima.parse(`var reference = require('../reference/file.js')`);
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file');
+            let file = new StepDefinitionFile(filePath, fileStructure);
+            file.ast = ast;
+
+            file.transformRequirePaths({
+                fromPath: '/file-structure/directory/some/file.js',
+                oldToPath: '/file-structure/directory/reference/file.js',
+                newToPath: '/file-structure/directory/new/reference/file.js'
+            });
+
+            let [requirePath] = esquery(ast, 'CallExpression[callee.name="require"] Literal')
+            expect(requirePath.value).to.equal('../new/reference/file.js');
+        });
+
+        it('should work with paths from Windows', () => {
+            let ast = esprima.parse(`var reference = require('./reference/file.js')`);
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file');
+            let file = new StepDefinitionFile(filePath, fileStructure);
+            file.ast = ast;
+
+            let oldPathRelative = path.relative;
+            sinon.stub(path, 'relative', (from, to) => {
+                return oldPathRelative(from, to).replace(/\//g, '\\');
+            });
+
+            file.transformRequirePaths({
+                fromPath: '/file-structure/directory/file.js',
+                oldToPath: '/file-structure/directory/reference/file.js',
+                newToPath: '/file-structure/directory/new/reference/file.js'
+            });
+
+            let [requirePath] = esquery(ast, 'CallExpression[callee.name="require"] Literal')
+            expect(requirePath.value).to.equal('./new/reference/file.js');
+
+            path.relative.restore();
         });
     });
 });

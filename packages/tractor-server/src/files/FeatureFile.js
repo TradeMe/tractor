@@ -6,16 +6,15 @@ import escapeRegExp from 'lodash.escaperegexp';
 import path from 'path';
 
 // Dependencies:
-import FeatureLexerFormatter from './utils/FeatureLexerFormatter';
 import gherkin from 'gherkin';
-import StepDefinitionGenerator from './utils/StepDefinitionGenerator';
-import { File } from 'tractor-file-structure';
-import tractorFileStructure from 'tractor-file-structure';
+import { FeatureLexerFormatter } from './utils/FeatureLexerFormatter';
+import { StepDefinitionGenerator } from './utils/StepDefinitionGenerator';
+import { File, registerFileType } from 'tractor-file-structure';
 
 // Errors:
 import { TractorError } from 'tractor-error-handler';
 
-export default class FeatureFile extends File {
+export class FeatureFile extends File {
     read () {
         // Hack to fix coverage bug: https://github.com/gotwarlost/istanbul/issues/690
         /* istanbul ignore next */
@@ -90,4 +89,4 @@ function setTokens (file, content) {
 FeatureFile.prototype.extension = '.feature';
 FeatureFile.prototype.type = 'features';
 
-tractorFileStructure.registerFileType(FeatureFile);
+registerFileType(FeatureFile);

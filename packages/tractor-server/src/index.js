@@ -2,18 +2,16 @@
 import { info } from 'tractor-logger';
 
 // Dependencies:
-import application from './application';
-import { getConfig } from 'tractor-config-loader';
+import { init, start } from './application';
 import { FileStructure } from 'tractor-file-structure';
 
-function start () {
+export function server (config, di) {
     info('Starting tractor... brrrrrrmmmmmmm');
-    let config = getConfig();
-    let fileStructure = new FileStructure(config.testDirectory);
+    let fileStructure = new FileStructure(config.directory);
+    di.constant({ fileStructure });
 
-    application.init(fileStructure)
+    di.call(init)
     .then(() => fileStructure.read())
-    .then(() => application.start());
+    .then(() => di.call(start));
 }
-
-export default { start };
+server['@Inject'] = ['config', 'di'];

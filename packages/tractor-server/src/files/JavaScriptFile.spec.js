@@ -18,12 +18,13 @@ chai.use(sinonChai);
 // Dependencies:
 import escodegen from 'escodegen';
 import esprima from 'esprima';
+import esquery from 'esquery';
 import path from 'path';
 import { TractorError } from 'tractor-error-handler';
 import { File, FileStructure } from 'tractor-file-structure';
 
 // Under test:
-import JavaScriptFile from './JavaScriptFile';
+import { JavaScriptFile } from './JavaScriptFile';
 
 describe('server/files: JavaScriptFile:', () => {
     describe('JavaScriptFile constructor:', () => {
@@ -105,7 +106,25 @@ describe('server/files: JavaScriptFile:', () => {
     });
 
     describe('JavaScriptFile.save:', () => {
-        it('should save the file to disk', () => {
+        it('should save JavaScript to disk', () => {
+            let javascript = '';
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
+
+            sinon.stub(File.prototype, 'save').returns(Promise.resolve());
+
+            let file = new JavaScriptFile(filePath, fileStructure);
+
+            return file.save(javascript)
+            .then(() => {
+                expect(File.prototype.save).to.have.been.called();
+            })
+            .finally(() => {
+                File.prototype.save.restore();
+            });
+        });
+
+        it('should convert the AST to JavaScript first', () => {
             let ast = {};
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
@@ -289,6 +308,100 @@ describe('server/files: JavaScriptFile:', () => {
             let json = file.toJSON();
 
             expect(json.meta).to.deep.equal(null);
-        })
+        });
+    });
+
+    describe('JavaScriptFile.transformIdentifiers:', () => {
+        it(`should update an identifier in a file's AST`, () => {
+            let ast = esprima.parse('var oldName');
+
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
+
+            let file = new JavaScriptFile(filePath, fileStructure);
+            file.ast = ast;
+
+            file.transformIdentifiers('oldName', 'newName');
+
+            let [identifier] = esquery(ast, 'Identifier');
+
+            expect(identifier.name).to.equal('newName');
+        });
+
+        it(`should update an identifier in a file's AST within a specific context`, () => {
+            let ast = esprima.parse('var oldName; function oldName () { }');
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
+
+            let file = new JavaScriptFile(filePath, fileStructure);
+            file.ast = ast;
+
+            file.transformIdentifiers('oldName', 'newName', 'FunctionDeclaration');
+
+            let [identifier1, identifier2] = esquery(ast, 'Identifier');
+
+            expect(identifier1.name).to.equal('oldName');
+            expect(identifier2.name).to.equal('newName');
+        });
+    });
+
+    describe('JavaScriptFile.transformIdentifiers:', () => {
+        it(`should update the name of a file in it's metadata`, () => {
+            let ast = esprima.parse('// { "name": "old name" }', { comment: true });
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
+
+            let file = new JavaScriptFile(filePath, fileStructure);
+            file.ast = ast;
+
+            file.transformMetadata('old name', 'new name');
+
+            let [comment] = file.ast.comments;
+            let name = JSON.parse(comment.value).name
+
+            expect(name).to.equal('new name');
+        });
+
+        it(`should update the name of a referenced file in another file's metadata`, () => {
+            let ast = esprima.parse('// { "components": [{ "name": "old name" }] }', { comment: true });
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
+
+            let file = new JavaScriptFile(filePath, fileStructure);
+            file.ast = ast;
+
+            file.transformMetadata('old name', 'new name', 'components')
+
+            let [comment] = file.ast.comments;
+            let [component] = JSON.parse(comment.value).components;
+
+            expect(component.name).to.equal('new name');
+        });
+
+        it(`should do nothing if comments aren't parsed`, () => {
+            let ast = esprima.parse('// { "components": [{ "name": "old name" }] }');
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
+
+            let file = new JavaScriptFile(filePath, fileStructure);
+            file.ast = ast;
+
+            expect(() => {
+                file.transformMetadata();
+            }).to.not.throw();
+        });
+
+        it(`should do nothing if there are no comments`, () => {
+            let ast = esprima.parse('var foo', { comment: true });
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
+
+            let file = new JavaScriptFile(filePath, fileStructure);
+            file.ast = ast;
+
+            expect(() => {
+                file.transformMetadata();
+            }).to.not.throw();
+        });
     });
 });

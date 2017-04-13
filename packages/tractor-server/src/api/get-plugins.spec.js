@@ -9,25 +9,25 @@ import sinonChai from 'sinon-chai';
 const expect = chai.expect;
 chai.use(sinonChai);
 
-// Dependencies:
-import tractorPluginLoader from 'tractor-plugin-loader';
-
 // Under test:
-import getPlugins from './get-plugins';
+import { getPluginsHandler } from './get-plugins';
 
 describe('server/api: get-plugins', () => {
     it('should respond with the descriptions of all installed plugins', () => {
-        let pluginDescriptions = {};
+        let plugins = [{
+            description: 'foo'
+        }, {
+            description: 'bar'
+        }];
         let request = {};
         let response = {
             send: () => {}
         };
 
         sinon.stub(response, 'send');
-        sinon.stub(tractorPluginLoader, 'getPluginDescriptions').returns(pluginDescriptions);
 
-        getPlugins.handler(request, response);
+        getPluginsHandler(plugins)(request, response);
 
-        expect(response.send).to.have.been.calledWith(pluginDescriptions);
+        expect(response.send).to.have.been.calledWith(['foo', 'bar']);
     });
 });

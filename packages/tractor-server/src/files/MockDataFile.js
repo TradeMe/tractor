@@ -9,14 +9,12 @@ import pascalcase from 'pascal-case';
 import path from 'path';
 
 // Dependencies:
-import { File } from 'tractor-file-structure';
-import tractorFileStructure from 'tractor-file-structure';
-import transformer from 'tractor-js-file-transformer';
+import { File, registerFileType } from 'tractor-file-structure';
 
 // Errors:
 import { TractorError } from 'tractor-error-handler';
 
-export default class MockDataFile extends File {
+export class MockDataFile extends File {
     delete (options = {}) {
         let { references } = this.fileStructure;
         let referencePaths = references[this.path];
@@ -53,10 +51,10 @@ export default class MockDataFile extends File {
             return Promise.map(referencePaths, referencePath => {
                 let reference = this.fileStructure.allFilesByPath[referencePath];
 
-                transformer.transformIdentifiers(reference, oldClassName, newClassName, CLASS_CONSTRUCTOR_DECLARATOR_QUERY);
-                transformer.transformIdentifiers(reference, oldInstanceName, newInstanceName, INSTANCE_DECLARATOR_QUERY);
-                transformer.transformMetadata(reference, oldName, newName, 'mockData');
-                transformer.transformRequirePaths(reference, {
+                reference.transformIdentifiers(oldClassName, newClassName, CLASS_CONSTRUCTOR_DECLARATOR_QUERY);
+                reference.transformIdentifiers(oldInstanceName, newInstanceName, INSTANCE_DECLARATOR_QUERY);
+                reference.transformMetadata(oldName, newName, 'mockData');
+                reference.transformRequirePaths({
                     fromPath: reference.path,
                     oldToPath: this.path,
                     newToPath: newFile.path
@@ -91,4 +89,4 @@ export default class MockDataFile extends File {
 MockDataFile.prototype.extension = '.mock.json';
 MockDataFile.prototype.type = 'mock-data';
 
-tractorFileStructure.registerFileType(MockDataFile);
+registerFileType(MockDataFile);

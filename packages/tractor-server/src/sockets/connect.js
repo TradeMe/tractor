@@ -1,6 +1,9 @@
 // Dependencies:
-import protractorRunner from './protractor-runner';
+import { run } from './protractor-runner';
 
-export default function connect (socket) {
-    socket.on('run', runOptions => protractorRunner.run(socket, runOptions));
+export function socketHandler (config) {
+    return function (socket) {
+        socket.on('run', runOptions => run(config, socket, runOptions));
+    }
 }
+socketHandler['@Inject'] = ['config'];

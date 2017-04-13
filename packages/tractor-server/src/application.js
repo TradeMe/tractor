@@ -1,6 +1,3 @@
-// Constants:
-import config from './config/config';
-
 // Utilities:
 import Promise from 'bluebird';
 import fs from 'fs';
@@ -14,16 +11,15 @@ import express from 'express';
 import http from 'http';
 import template from 'lodash.template';
 import io from 'socket.io';
-import tractorFileStructure from 'tractor-file-structure';
-import tractorPluginLoader from 'tractor-plugin-loader';
+import { serveFileStructure } from 'tractor-file-structure';
 
 // Errors:
 import { TractorError } from 'tractor-error-handler';
 
 // Endpoints:
-import getConfig from './api/get-config';
-import getPlugins from './api/get-plugins';
-import socketConnect from './sockets/connect';
+import { getConfigHandler } from './api/get-config';
+import { getPluginsHandler } from './api/get-plugins';
+import { socketHandler } from './sockets/connect';
 
 // Files:
 import './files/ComponentFile';
@@ -33,20 +29,21 @@ import './files/StepDefinitionFile';
 
 let server;
 
-export default { init, start };
-
-function start () {
+export function start (config) {
     let tractor = server.listen(config.port, () => {
         info(`tractor is running at port ${tractor.address().port}`);
     });
 }
+start['@Inject'] = ['config'];
 
-function init (fileStructure) {
+export function init (di, plugins) {
     let application = express();
     /* eslint-disable new-cap */
     server = http.Server(application);
     /* eslint-enable new-cap */
     let sockets = io(server);
+
+    di.constant({ application, sockets });
 
     application.use(bodyParser.json());
     application.use(bodyParser.urlencoded({
@@ -64,45 +61,52 @@ function init (fileStructure) {
         throw new TractorError('"tractor-client" is not installed.');
     }
 
-    let renderIndex = injectPlugins(application, templatePath);
+    let renderIndex = injectPlugins(plugins, application, templatePath);
 
     application.get('/', renderIndex);
 
     application.use(express.static(dir));
 
-    application.get('/config', getConfig.handler);
-    application.get('/plugins', getPlugins.handler);
+    application.get('/config', di.call(getConfigHandler));
+    application.get('/plugins', di.call(getPluginsHandler));
 
     sockets.of('/run-protractor')
-    .on('connection', socketConnect);
+    .on('connection', di.call(socketHandler));
 
     sockets.of('/server-status');
 
-    return servePlugins(application, sockets)
+    return servePlugins(di, plugins)
     .then(() => {
         // Make sure the file structure handlers are added after the plugins:
-        tractorFileStructure.serve(application, sockets, fileStructure);
+        di.call(serveFileStructure);
 
         // Always make sure the '*' handler happens last:
         application.get('*', renderIndex);
     });
 }
+init['@Inject'] = ['di', 'plugins'];
 
-function injectPlugins (application, templatePath) {
-    let plugins = tractorPluginLoader.getPlugins().filter(plugin => plugin.description.hasUI);
+function injectPlugins (plugins, application, templatePath) {
+    plugins = plugins.filter(plugin => plugin.description.hasUI);
 
-    plugins.forEach(plugin => application.use(express.static(path.dirname(plugin.script))));
+    const UP_TO_NODE_MODULE = '../../../../';
+
+    plugins.forEach(plugin => {
+        application.use(express.static(path.resolve(plugin.script, UP_TO_NODE_MODULE)))
+    });
 
     return (request, response) => {
         let createTemplate = template(fs.readFileSync(templatePath, 'utf8'));
-        let scripts = plugins.map(plugin => path.basename(plugin.script));
+        let scripts = plugins.map(plugin => {
+            let nodeModuleDir = path.resolve(plugin.script, UP_TO_NODE_MODULE);
+            return plugin.script.replace(nodeModuleDir, '');
+        });
         let rendered = createTemplate({ scripts });
         response.header('Content-Type', 'text/html');
         response.send(rendered);
     };
 }
 
-function servePlugins (application, sockets) {
-    let plugins = tractorPluginLoader.getPlugins();
-    return Promise.map(plugins, plugin => plugin.serve(application, sockets));
+function servePlugins (di, plugins) {
+    return Promise.map(plugins, plugin => di.call(plugin.serve));
 }

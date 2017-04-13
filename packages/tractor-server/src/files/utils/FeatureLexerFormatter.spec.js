@@ -8,7 +8,7 @@ import dedent from 'dedent';
 const expect = chai.expect;
 
 // Under test:
-import FeatureLexerFormatter from './FeatureLexerFormatter';
+import { FeatureLexerFormatter } from './FeatureLexerFormatter';
 
 describe('server/files/utils: FeatureLexerFormatter:', () => {
     describe('FeatureLexerFormatter constructor:', () => {

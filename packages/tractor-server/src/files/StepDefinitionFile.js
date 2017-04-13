@@ -8,11 +8,10 @@ import path from 'path';
 
 // Dependencies:
 import esquery from 'esquery';
-import JavaScriptFile from './JavaScriptFile';
-import tractorFileStructure from 'tractor-file-structure';
-import transformer from 'tractor-js-file-transformer';
+import { JavaScriptFile } from './JavaScriptFile';
+import { registerFileType } from 'tractor-file-structure';
 
-export default class StepDefinitionFile extends JavaScriptFile {
+export class StepDefinitionFile extends JavaScriptFile {
     move (update, options) {
         let referencePaths = Object.keys(this.fileStructure.references)
         .filter(reference => this.fileStructure.references[reference].includes(this.path));
@@ -23,7 +22,7 @@ export default class StepDefinitionFile extends JavaScriptFile {
 
         return move.then(newFile => {
             referencePaths.forEach(referencePath => {
-                transformer.transformRequirePaths(newFile, {
+                newFile.transformRequirePaths({
                     oldFromPath: this.path,
                     newFromPath: newFile.path,
                     toPath: referencePath
@@ -53,10 +52,37 @@ export default class StepDefinitionFile extends JavaScriptFile {
         .then(() => checkIfPending.call(this))
         .then(() => this.content);
     }
+
+    transformRequirePaths (options) {
+        let { oldFromPath, newFromPath } = options;
+        if (!(oldFromPath && newFromPath)) {
+            oldFromPath = newFromPath = options.fromPath;
+        }
+
+        let { oldToPath, newToPath } = options;
+        if (!(oldToPath && newToPath)) {
+            oldToPath = newToPath = options.toPath;
+        }
+
+        let oldRequirePath = getRelativeRequirePath(path.dirname(oldFromPath), oldToPath);
+        let newRequirePath = getRelativeRequirePath(path.dirname(newFromPath), newToPath);
+        updatePaths.call(this, oldRequirePath, newRequirePath);
+    }
 }
 
 StepDefinitionFile.prototype.extension = '.step.js';
 StepDefinitionFile.prototype.type = 'step-definitions';
+
+function checkIfPending () {
+    this.isPending = false;
+
+    let pendingIdentifiers = esquery(this.ast, PENDING_QUERY);
+    pendingIdentifiers.forEach(pendingIdentifier => {
+        if (pendingIdentifier.value === PENDING_IDENTIFIER) {
+            this.isPending = true;
+        }
+    });
+}
 
 function getFileReferences () {
     let { references } = this.fileStructure;
@@ -77,15 +103,18 @@ function getFileReferences () {
     });
 }
 
-function checkIfPending () {
-     this.isPending = false;
+function getRelativeRequirePath (from, to) {
+    let relativePath = path.relative(from, to).replace(/\\/g, '/');
+    return /^\./.test(relativePath) ? relativePath : `./${relativePath}`;
+}
 
-     let pendingIdentifiers = esquery(this.ast, PENDING_QUERY);
-     pendingIdentifiers.forEach(pendingIdentifier => {
-         if (pendingIdentifier.value === PENDING_IDENTIFIER) {
-             this.isPending = true;
-         }
-     });
- }
+function updatePaths (oldRequirePath, newRequirePath) {
+    let query = `CallExpression[callee.name="require"] Literal[value="${oldRequirePath}"]`;
 
-tractorFileStructure.registerFileType(StepDefinitionFile);
+    esquery(this.ast, query).forEach(requirePathLiteral => {
+        requirePathLiteral.value = newRequirePath;
+        requirePathLiteral.raw = `'${newRequirePath}'`;
+    });
+}
+
+registerFileType(StepDefinitionFile);

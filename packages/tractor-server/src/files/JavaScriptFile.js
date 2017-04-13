@@ -7,17 +7,18 @@ const REQUEST_ERROR = 400;
 const TRAILING_SLASH_REGEX = /(\/)[gimuy]*?$/;
 
 // Utilities:
-import isObject from 'lodash.isobject';
+import { isObject, isString } from 'util';
 
 // Dependencies:
 import escodegen from 'escodegen';
 import esprima from 'esprima';
+import esquery from 'esquery';
 import { File } from 'tractor-file-structure';
 
 // Errors:
 import { TractorError } from 'tractor-error-handler';
 
-export default class JavaScriptFile extends File {
+export class JavaScriptFile extends File {
     read () {
         // Hack to fix coverage bug: https://github.com/gotwarlost/istanbul/issues/690
         /* istanbul ignore next */
@@ -32,11 +33,14 @@ export default class JavaScriptFile extends File {
         });
     }
 
-    save (ast) {
-        ast.leadingComments = ast.comments;
-        let javascript = escodegen.generate(rebuildRegExps(ast), {
-            comment: true
-        });
+    save (javascript) {
+        if (!isString(javascript) && !Buffer.isBuffer(javascript)) {
+            let ast = javascript;
+            ast.leadingComments = ast.comments;
+            javascript = escodegen.generate(rebuildRegExps(ast), {
+                comment: true
+            });
+        }
 
         // Hack to fix coverage bug: https://github.com/gotwarlost/istanbul/issues/690
         /* istanbul ignore next */
@@ -74,6 +78,36 @@ export default class JavaScriptFile extends File {
         }
         json.meta = meta;
         return json;
+    }
+
+    transformIdentifiers (oldName, newName, context) {
+        let query = `Identifier[name="${oldName}"]`;
+
+        if (context) {
+            query = `${context} > ${query}`;
+        }
+
+        esquery(this.ast, query).forEach(identifier => identifier.name = newName);
+    }
+
+    transformMetadata (oldName, newName, type) {
+        let { comments } = this.ast;
+        if (!comments) {
+            return;
+        }
+
+        let [comment] = comments;
+        if (!comment) {
+            return;
+        }
+
+        let metaData = JSON.parse(comment.value);
+        let item = metaData;
+        if (type) {
+            item = item[type].find(item => item.name === oldName);
+        }
+        item.name = newName;
+        comment.value = JSON.stringify(metaData);
     }
 }
 

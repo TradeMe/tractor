@@ -6,6 +6,7 @@ const REQUEST_ERROR = 400;
 // Utilities:
 import chai from 'chai';
 import dirtyChai from 'dirty-chai';
+import path from 'path';
 import Promise from 'bluebird';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
@@ -16,15 +17,14 @@ chai.use(dirtyChai);
 chai.use(sinonChai);
 
 // Dependencies:
-import FeatureLexerFormatter from './utils/FeatureLexerFormatter';
 import gherkin from 'gherkin';
-import path from 'path';
-import StepDefinitionGenerator from './utils/StepDefinitionGenerator';
+import { FeatureLexerFormatter } from './utils/FeatureLexerFormatter';
+import { StepDefinitionGenerator } from './utils/StepDefinitionGenerator';
 import { TractorError } from 'tractor-error-handler';
 import { File, FileStructure } from 'tractor-file-structure';
 
 // Under test:
-import FeatureFile from './FeatureFile';
+import { FeatureFile } from './FeatureFile';
 
 describe('server/files: FeatureFile:', () => {
     describe('FeatureFile constructor:', () => {

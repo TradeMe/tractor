@@ -14,13 +14,13 @@ chai.use(dirtyChai);
 chai.use(sinonChai);
 
 // Dependencies:
-import JavaScriptFile from './JavaScriptFile';
+import { JavaScriptFile } from './JavaScriptFile';
+import { StepDefinitionFile } from './StepDefinitionFile';
 import { TractorError } from 'tractor-error-handler';
 import { File, FileStructure } from 'tractor-file-structure';
-import transformer from 'tractor-js-file-transformer';
 
 // Under test:
-import ComponentFile from './ComponentFile';
+import { ComponentFile } from './ComponentFile';
 
 describe('server/files: ComponentFile:', () => {
     describe('ComponentFile constructor:', () => {
@@ -146,9 +146,9 @@ describe('server/files: ComponentFile:', () => {
 
             sinon.stub(File.prototype, 'move').returns(Promise.resolve(newFile));
             sinon.stub(JavaScriptFile.prototype, 'save').returns(Promise.resolve());
+            sinon.stub(JavaScriptFile.prototype, 'transformIdentifiers');
+            sinon.stub(JavaScriptFile.prototype, 'transformMetadata');
             sinon.stub(Promise, 'map').returns(Promise.resolve());
-            sinon.stub(transformer, 'transformIdentifiers');
-            sinon.stub(transformer, 'transformMetadata');
 
             let update = {};
             let options = {};
@@ -160,9 +160,9 @@ describe('server/files: ComponentFile:', () => {
             .finally(() => {
                 File.prototype.move.restore();
                 JavaScriptFile.prototype.save.restore();
+                JavaScriptFile.prototype.transformIdentifiers.restore();
+                JavaScriptFile.prototype.transformMetadata.restore();
                 Promise.map.restore();
-                transformer.transformIdentifiers.restore();
-                transformer.transformMetadata.restore();
             });
         });
 
@@ -175,26 +175,26 @@ describe('server/files: ComponentFile:', () => {
 
             sinon.stub(File.prototype, 'move').returns(Promise.resolve(newFile));
             sinon.stub(JavaScriptFile.prototype, 'save').returns(Promise.resolve());
+            sinon.stub(JavaScriptFile.prototype, 'transformIdentifiers');
+            sinon.stub(JavaScriptFile.prototype, 'transformMetadata');
             sinon.stub(Promise, 'map').returns(Promise.resolve());
-            sinon.stub(transformer, 'transformIdentifiers');
-            sinon.stub(transformer, 'transformMetadata');
 
             let update = {};
             let options = {};
 
             return file.move(update, options)
             .then(() => {
-                expect(transformer.transformIdentifiers).to.have.been.calledWith(newFile, 'File', 'NewFile', 'VariableDeclarator');
-                expect(transformer.transformIdentifiers).to.have.been.calledWith(newFile, 'File', 'NewFile', 'FunctionExpression');
-                expect(transformer.transformIdentifiers).to.have.been.calledWith(newFile, 'File', 'NewFile', 'MemberExpression MemberExpression');
-                expect(transformer.transformIdentifiers).to.have.been.calledWith(newFile, 'File', 'NewFile', 'ReturnStatement');
+                expect(newFile.transformIdentifiers).to.have.been.calledWith('File', 'NewFile', 'VariableDeclarator');
+                expect(newFile.transformIdentifiers).to.have.been.calledWith('File', 'NewFile', 'FunctionExpression');
+                expect(newFile.transformIdentifiers).to.have.been.calledWith('File', 'NewFile', 'MemberExpression MemberExpression');
+                expect(newFile.transformIdentifiers).to.have.been.calledWith('File', 'NewFile', 'ReturnStatement');
             })
             .finally(() => {
                 File.prototype.move.restore();
                 JavaScriptFile.prototype.save.restore();
+                JavaScriptFile.prototype.transformIdentifiers.restore();
+                JavaScriptFile.prototype.transformMetadata.restore();
                 Promise.map.restore();
-                transformer.transformIdentifiers.restore();
-                transformer.transformMetadata.restore();
             });
         });
 
@@ -204,30 +204,30 @@ describe('server/files: ComponentFile:', () => {
             let file = new ComponentFile(filePath, fileStructure);
             let newFilePath = path.join(path.sep, 'file-structure', 'directory', 'new file.component.js');
             let newFile = new ComponentFile(newFilePath, fileStructure);
-            let referenceFilePath = path.join(path.sep, 'file-structure', 'directory', 'reference file.component.js');
-            let referenceFile = new ComponentFile(referenceFilePath, fileStructure);
+            let referenceFilePath = path.join(path.sep, 'file-structure', 'directory', 'reference file.step.js');
+            let referenceFile = new StepDefinitionFile(referenceFilePath, fileStructure);
             fileStructure.references[filePath] = [referenceFile.path];
 
             sinon.stub(File.prototype, 'move').returns(Promise.resolve(newFile));
             sinon.stub(JavaScriptFile.prototype, 'save').returns(Promise.resolve());
-            sinon.stub(transformer, 'transformIdentifiers');
-            sinon.stub(transformer, 'transformMetadata');
-            sinon.stub(transformer, 'transformRequirePaths');
+            sinon.stub(JavaScriptFile.prototype, 'transformIdentifiers');
+            sinon.stub(JavaScriptFile.prototype, 'transformMetadata');
+            sinon.stub(StepDefinitionFile.prototype, 'transformRequirePaths');
 
             let update = {};
             let options = {};
 
             return file.move(update, options)
             .then(() => {
-                expect(transformer.transformIdentifiers).to.have.been.calledWith(referenceFile, 'File', 'NewFile', 'VariableDeclarator');
-                expect(transformer.transformIdentifiers).to.have.been.calledWith(referenceFile, 'File', 'NewFile', 'NewExpression');
+                expect(referenceFile.transformIdentifiers).to.have.been.calledWith('File', 'NewFile', 'VariableDeclarator');
+                expect(referenceFile.transformIdentifiers).to.have.been.calledWith('File', 'NewFile', 'NewExpression');
             })
             .finally(() => {
                 File.prototype.move.restore();
                 JavaScriptFile.prototype.save.restore();
-                transformer.transformIdentifiers.restore();
-                transformer.transformMetadata.restore();
-                transformer.transformRequirePaths.restore();
+                JavaScriptFile.prototype.transformIdentifiers.restore();
+                JavaScriptFile.prototype.transformMetadata.restore();
+                StepDefinitionFile.prototype.transformRequirePaths.restore();
             });
         });
 
@@ -237,30 +237,30 @@ describe('server/files: ComponentFile:', () => {
             let file = new ComponentFile(filePath, fileStructure);
             let newFilePath = path.join(path.sep, 'file-structure', 'directory', 'new file.component.js');
             let newFile = new ComponentFile(newFilePath, fileStructure);
-            let referenceFilePath = path.join(path.sep, 'file-structure', 'directory', 'reference file.component.js');
-            let referenceFile = new ComponentFile(referenceFilePath, fileStructure);
+            let referenceFilePath = path.join(path.sep, 'file-structure', 'directory', 'reference file.step.js');
+            let referenceFile = new StepDefinitionFile(referenceFilePath, fileStructure);
             fileStructure.references[filePath] = [referenceFile.path];
 
             sinon.stub(File.prototype, 'move').returns(Promise.resolve(newFile));
             sinon.stub(JavaScriptFile.prototype, 'save').returns(Promise.resolve());
-            sinon.stub(transformer, 'transformIdentifiers');
-            sinon.stub(transformer, 'transformMetadata');
-            sinon.stub(transformer, 'transformRequirePaths');
+            sinon.stub(JavaScriptFile.prototype, 'transformIdentifiers');
+            sinon.stub(JavaScriptFile.prototype, 'transformMetadata');
+            sinon.stub(StepDefinitionFile.prototype, 'transformRequirePaths');
 
             let update = {};
             let options = {};
 
             return file.move(update, options)
             .then(() => {
-                expect(transformer.transformIdentifiers).to.have.been.calledWith(referenceFile, 'file', 'newFile', 'VariableDeclarator');
-                expect(transformer.transformIdentifiers).to.have.been.calledWith(referenceFile, 'file', 'newFile', 'CallExpression MemberExpression');
+                expect(referenceFile.transformIdentifiers).to.have.been.calledWith('file', 'newFile', 'VariableDeclarator');
+                expect(referenceFile.transformIdentifiers).to.have.been.calledWith('file', 'newFile', 'CallExpression MemberExpression');
             })
             .finally(() => {
                 File.prototype.move.restore();
                 JavaScriptFile.prototype.save.restore();
-                transformer.transformIdentifiers.restore();
-                transformer.transformMetadata.restore();
-                transformer.transformRequirePaths.restore();
+                JavaScriptFile.prototype.transformIdentifiers.restore();
+                JavaScriptFile.prototype.transformMetadata.restore();
+                StepDefinitionFile.prototype.transformRequirePaths.restore();
             });
         });
 
@@ -270,29 +270,29 @@ describe('server/files: ComponentFile:', () => {
             let file = new ComponentFile(filePath, fileStructure);
             let newFilePath = path.join(path.sep, 'file-structure', 'directory', 'new file.component.js');
             let newFile = new ComponentFile(newFilePath, fileStructure);
-            let referenceFilePath = path.join(path.sep, 'file-structure', 'directory', 'reference file.component.js');
-            let referenceFile = new ComponentFile(referenceFilePath, fileStructure);
+            let referenceFilePath = path.join(path.sep, 'file-structure', 'directory', 'reference file.step.js');
+            let referenceFile = new StepDefinitionFile(referenceFilePath, fileStructure);
             fileStructure.references[filePath] = [referenceFile.path];
 
             sinon.stub(File.prototype, 'move').returns(Promise.resolve(newFile));
             sinon.stub(JavaScriptFile.prototype, 'save').returns(Promise.resolve());
-            sinon.stub(transformer, 'transformIdentifiers');
-            sinon.stub(transformer, 'transformMetadata');
-            sinon.stub(transformer, 'transformRequirePaths');
+            sinon.stub(JavaScriptFile.prototype, 'transformIdentifiers');
+            sinon.stub(JavaScriptFile.prototype, 'transformMetadata');
+            sinon.stub(StepDefinitionFile.prototype, 'transformRequirePaths');
 
             let update = {};
             let options = {};
 
             return file.move(update, options)
             .then(() => {
-                expect(transformer.transformMetadata).to.have.been.calledWith(referenceFile, 'file', 'new file', 'components');
+                expect(referenceFile.transformMetadata).to.have.been.calledWith('file', 'new file', 'components');
             })
             .finally(() => {
                 File.prototype.move.restore();
                 JavaScriptFile.prototype.save.restore();
-                transformer.transformIdentifiers.restore();
-                transformer.transformMetadata.restore();
-                transformer.transformRequirePaths.restore();
+                JavaScriptFile.prototype.transformIdentifiers.restore();
+                JavaScriptFile.prototype.transformMetadata.restore();
+                StepDefinitionFile.prototype.transformRequirePaths.restore();
             });
         });
 
@@ -302,22 +302,22 @@ describe('server/files: ComponentFile:', () => {
             let file = new ComponentFile(filePath, fileStructure);
             let newFilePath = path.join(path.sep, 'file-structure', 'directory', 'new file.component.js');
             let newFile = new ComponentFile(newFilePath, fileStructure);
-            let referenceFilePath = path.join(path.sep, 'file-structure', 'directory', 'reference file.component.js');
-            let referenceFile = new ComponentFile(referenceFilePath, fileStructure);
+            let referenceFilePath = path.join(path.sep, 'file-structure', 'directory', 'reference file.step.js');
+            let referenceFile = new StepDefinitionFile(referenceFilePath, fileStructure);
             fileStructure.references[filePath] = [referenceFile.path];
 
             sinon.stub(File.prototype, 'move').returns(Promise.resolve(newFile));
             sinon.stub(JavaScriptFile.prototype, 'save').returns(Promise.resolve());
-            sinon.stub(transformer, 'transformIdentifiers');
-            sinon.stub(transformer, 'transformMetadata');
-            sinon.stub(transformer, 'transformRequirePaths');
+            sinon.stub(JavaScriptFile.prototype, 'transformIdentifiers');
+            sinon.stub(JavaScriptFile.prototype, 'transformMetadata');
+            sinon.stub(StepDefinitionFile.prototype, 'transformRequirePaths');
 
             let update = {};
             let options = {};
 
             return file.move(update, options)
             .then(() => {
-                expect(transformer.transformRequirePaths).to.have.been.calledWith(referenceFile, {
+                expect(referenceFile.transformRequirePaths).to.have.been.calledWith({
                     fromPath: referenceFilePath,
                     oldToPath: filePath,
                     newToPath: newFilePath
@@ -326,9 +326,9 @@ describe('server/files: ComponentFile:', () => {
             .finally(() => {
                 File.prototype.move.restore();
                 JavaScriptFile.prototype.save.restore();
-                transformer.transformIdentifiers.restore();
-                transformer.transformMetadata.restore();
-                transformer.transformRequirePaths.restore();
+                JavaScriptFile.prototype.transformIdentifiers.restore();
+                JavaScriptFile.prototype.transformMetadata.restore();
+                StepDefinitionFile.prototype.transformRequirePaths.restore();
             });
         });
 
@@ -338,15 +338,15 @@ describe('server/files: ComponentFile:', () => {
             let file = new ComponentFile(filePath, fileStructure);
             let newFilePath = path.join(path.sep, 'file-structure', 'directory', 'new file.component.js');
             let newFile = new ComponentFile(newFilePath, fileStructure);
-            let referenceFilePath = path.join(path.sep, 'file-structure', 'directory', 'reference file.component.js');
-            let referenceFile = new ComponentFile(referenceFilePath, fileStructure);
+            let referenceFilePath = path.join(path.sep, 'file-structure', 'directory', 'reference file.step.js');
+            let referenceFile = new StepDefinitionFile(referenceFilePath, fileStructure);
             fileStructure.references[filePath] = [referenceFile.path];
 
             sinon.stub(File.prototype, 'move').returns(Promise.resolve(newFile));
             sinon.stub(JavaScriptFile.prototype, 'save').returns(Promise.resolve());
-            sinon.stub(transformer, 'transformIdentifiers');
-            sinon.stub(transformer, 'transformMetadata');
-            sinon.stub(transformer, 'transformRequirePaths');
+            sinon.stub(JavaScriptFile.prototype, 'transformIdentifiers');
+            sinon.stub(JavaScriptFile.prototype, 'transformMetadata');
+            sinon.stub(StepDefinitionFile.prototype, 'transformRequirePaths');
 
             let update = {};
             let options = {};
@@ -358,9 +358,9 @@ describe('server/files: ComponentFile:', () => {
             .finally(() => {
                 File.prototype.move.restore();
                 JavaScriptFile.prototype.save.restore();
-                transformer.transformIdentifiers.restore();
-                transformer.transformMetadata.restore();
-                transformer.transformRequirePaths.restore();
+                JavaScriptFile.prototype.transformIdentifiers.restore();
+                JavaScriptFile.prototype.transformMetadata.restore();
+                StepDefinitionFile.prototype.transformRequirePaths.restore();
             });
         });
 
@@ -373,9 +373,9 @@ describe('server/files: ComponentFile:', () => {
 
             sinon.stub(File.prototype, 'move').returns(Promise.resolve(newFile));
             sinon.stub(JavaScriptFile.prototype, 'save').returns(Promise.resolve());
+            sinon.stub(JavaScriptFile.prototype, 'transformIdentifiers');
+            sinon.stub(JavaScriptFile.prototype, 'transformMetadata');
             sinon.stub(Promise, 'map').returns(Promise.reject());
-            sinon.stub(transformer, 'transformIdentifiers');
-            sinon.stub(transformer, 'transformMetadata');
 
             let update = {};
             let options = {};
@@ -387,9 +387,9 @@ describe('server/files: ComponentFile:', () => {
             .finally(() => {
                 File.prototype.move.restore();
                 JavaScriptFile.prototype.save.restore();
+                JavaScriptFile.prototype.transformIdentifiers.restore();
+                JavaScriptFile.prototype.transformMetadata.restore();
                 Promise.map.restore();
-                transformer.transformIdentifiers.restore();
-                transformer.transformMetadata.restore();
             });
         });
     });

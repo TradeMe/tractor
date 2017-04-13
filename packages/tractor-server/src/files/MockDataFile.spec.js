@@ -14,12 +14,13 @@ chai.use(dirtyChai);
 chai.use(sinonChai);
 
 // Dependencies:
+import { JavaScriptFile } from './JavaScriptFile';
+import { StepDefinitionFile } from './StepDefinitionFile';
 import { TractorError } from 'tractor-error-handler';
 import { File, FileStructure } from 'tractor-file-structure';
-import transformer from 'tractor-js-file-transformer';
 
 // Under test:
-import MockDataFile from './MockDataFile';
+import { MockDataFile } from './MockDataFile';
 
 describe('server/files: MockDataFile:', () => {
     describe('MockDataFile constructor:', () => {
@@ -188,29 +189,29 @@ describe('server/files: MockDataFile:', () => {
             let file = new MockDataFile(filePath, fileStructure);
             let newFilePath = path.join(path.sep, 'file-structure', 'directory', 'new file.mock.json');
             let newFile = new MockDataFile(newFilePath, fileStructure);
-            let referenceFilePath = path.join(path.sep, 'file-structure', 'directory', 'reference file.mock.json');
-            let referenceFile = new MockDataFile(referenceFilePath, fileStructure);
+            let referenceFilePath = path.join(path.sep, 'file-structure', 'directory', 'reference file.step.js');
+            let referenceFile = new StepDefinitionFile(referenceFilePath, fileStructure);
             fileStructure.references[filePath] = [referenceFile.path];
 
             sinon.stub(File.prototype, 'move').returns(Promise.resolve(newFile));
-            sinon.stub(File.prototype, 'save').returns(Promise.resolve());
-            sinon.stub(transformer, 'transformIdentifiers');
-            sinon.stub(transformer, 'transformMetadata');
-            sinon.stub(transformer, 'transformRequirePaths');
+            sinon.stub(JavaScriptFile.prototype, 'transformIdentifiers');
+            sinon.stub(JavaScriptFile.prototype, 'transformMetadata');
+            sinon.stub(StepDefinitionFile.prototype, 'save').returns(Promise.resolve());
+            sinon.stub(StepDefinitionFile.prototype, 'transformRequirePaths');
 
             let update = {};
             let options = {};
 
             return file.move(update, options)
             .then(() => {
-                expect(transformer.transformIdentifiers).to.have.been.calledWith(referenceFile, 'File', 'NewFile', 'VariableDeclarator');
+                expect(referenceFile.transformIdentifiers).to.have.been.calledWith('File', 'NewFile', 'VariableDeclarator');
             })
             .finally(() => {
                 File.prototype.move.restore();
-                File.prototype.save.restore();
-                transformer.transformIdentifiers.restore();
-                transformer.transformMetadata.restore();
-                transformer.transformRequirePaths.restore();
+                JavaScriptFile.prototype.transformIdentifiers.restore();
+                JavaScriptFile.prototype.transformMetadata.restore();
+                StepDefinitionFile.prototype.save.restore();
+                StepDefinitionFile.prototype.transformRequirePaths.restore();
             });
         });
 
@@ -220,29 +221,29 @@ describe('server/files: MockDataFile:', () => {
             let file = new MockDataFile(filePath, fileStructure);
             let newFilePath = path.join(path.sep, 'file-structure', 'directory', 'new file.mock.json');
             let newFile = new MockDataFile(newFilePath, fileStructure);
-            let referenceFilePath = path.join(path.sep, 'file-structure', 'directory', 'reference file.mock.json');
-            let referenceFile = new MockDataFile(referenceFilePath, fileStructure);
+            let referenceFilePath = path.join(path.sep, 'file-structure', 'directory', 'reference file.step.js');
+            let referenceFile = new StepDefinitionFile(referenceFilePath, fileStructure);
             fileStructure.references[filePath] = [referenceFile.path];
 
             sinon.stub(File.prototype, 'move').returns(Promise.resolve(newFile));
-            sinon.stub(File.prototype, 'save').returns(Promise.resolve());
-            sinon.stub(transformer, 'transformIdentifiers');
-            sinon.stub(transformer, 'transformMetadata');
-            sinon.stub(transformer, 'transformRequirePaths');
+            sinon.stub(JavaScriptFile.prototype, 'transformIdentifiers');
+            sinon.stub(JavaScriptFile.prototype, 'transformMetadata');
+            sinon.stub(StepDefinitionFile.prototype, 'save').returns(Promise.resolve());
+            sinon.stub(StepDefinitionFile.prototype, 'transformRequirePaths');
 
             let update = {};
             let options = {};
 
             return file.move(update, options)
             .then(() => {
-                expect(transformer.transformIdentifiers).to.have.been.calledWith(referenceFile, 'file', 'newFile', 'VariableDeclarator');
+                expect(referenceFile.transformIdentifiers).to.have.been.calledWith('file', 'newFile', 'VariableDeclarator');
             })
             .finally(() => {
                 File.prototype.move.restore();
-                File.prototype.save.restore();
-                transformer.transformIdentifiers.restore();
-                transformer.transformMetadata.restore();
-                transformer.transformRequirePaths.restore();
+                JavaScriptFile.prototype.transformIdentifiers.restore();
+                JavaScriptFile.prototype.transformMetadata.restore();
+                StepDefinitionFile.prototype.save.restore();
+                StepDefinitionFile.prototype.transformRequirePaths.restore();
             });
         });
 
@@ -252,29 +253,29 @@ describe('server/files: MockDataFile:', () => {
             let file = new MockDataFile(filePath, fileStructure);
             let newFilePath = path.join(path.sep, 'file-structure', 'directory', 'new file.mock.json');
             let newFile = new MockDataFile(newFilePath, fileStructure);
-            let referenceFilePath = path.join(path.sep, 'file-structure', 'directory', 'reference file.mock.json');
-            let referenceFile = new MockDataFile(referenceFilePath, fileStructure);
+            let referenceFilePath = path.join(path.sep, 'file-structure', 'directory', 'reference file.step.js');
+            let referenceFile = new StepDefinitionFile(referenceFilePath, fileStructure);
             fileStructure.references[filePath] = [referenceFile.path];
 
             sinon.stub(File.prototype, 'move').returns(Promise.resolve(newFile));
-            sinon.stub(File.prototype, 'save').returns(Promise.resolve());
-            sinon.stub(transformer, 'transformIdentifiers');
-            sinon.stub(transformer, 'transformMetadata');
-            sinon.stub(transformer, 'transformRequirePaths');
+            sinon.stub(JavaScriptFile.prototype, 'transformIdentifiers');
+            sinon.stub(JavaScriptFile.prototype, 'transformMetadata');
+            sinon.stub(StepDefinitionFile.prototype, 'save').returns(Promise.resolve());
+            sinon.stub(StepDefinitionFile.prototype, 'transformRequirePaths');
 
             let update = {};
             let options = {};
 
             return file.move(update, options)
             .then(() => {
-                expect(transformer.transformMetadata).to.have.been.calledWith(referenceFile, 'file', 'new file', 'mockData');
+                expect(referenceFile.transformMetadata).to.have.been.calledWith('file', 'new file', 'mockData');
             })
             .finally(() => {
                 File.prototype.move.restore();
-                File.prototype.save.restore();
-                transformer.transformIdentifiers.restore();
-                transformer.transformMetadata.restore();
-                transformer.transformRequirePaths.restore();
+                JavaScriptFile.prototype.transformIdentifiers.restore();
+                JavaScriptFile.prototype.transformMetadata.restore();
+                StepDefinitionFile.prototype.save.restore();
+                StepDefinitionFile.prototype.transformRequirePaths.restore();
             });
         });
 
@@ -284,22 +285,22 @@ describe('server/files: MockDataFile:', () => {
             let file = new MockDataFile(filePath, fileStructure);
             let newFilePath = path.join(path.sep, 'file-structure', 'directory', 'new file.mock.json');
             let newFile = new MockDataFile(newFilePath, fileStructure);
-            let referenceFilePath = path.join(path.sep, 'file-structure', 'directory', 'reference file.mock.json');
-            let referenceFile = new MockDataFile(referenceFilePath, fileStructure);
+            let referenceFilePath = path.join(path.sep, 'file-structure', 'directory', 'reference file.step.js');
+            let referenceFile = new StepDefinitionFile(referenceFilePath, fileStructure);
             fileStructure.references[filePath] = [referenceFile.path];
 
             sinon.stub(File.prototype, 'move').returns(Promise.resolve(newFile));
-            sinon.stub(File.prototype, 'save').returns(Promise.resolve());
-            sinon.stub(transformer, 'transformIdentifiers');
-            sinon.stub(transformer, 'transformMetadata');
-            sinon.stub(transformer, 'transformRequirePaths');
+            sinon.stub(JavaScriptFile.prototype, 'transformIdentifiers');
+            sinon.stub(JavaScriptFile.prototype, 'transformMetadata');
+            sinon.stub(StepDefinitionFile.prototype, 'save').returns(Promise.resolve());
+            sinon.stub(StepDefinitionFile.prototype, 'transformRequirePaths');
 
             let update = {};
             let options = {};
 
             return file.move(update, options)
             .then(() => {
-                expect(transformer.transformRequirePaths).to.have.been.calledWith(referenceFile, {
+                expect(referenceFile.transformRequirePaths).to.have.been.calledWith({
                     fromPath: referenceFilePath,
                     oldToPath: filePath,
                     newToPath: newFilePath
@@ -307,10 +308,10 @@ describe('server/files: MockDataFile:', () => {
             })
             .finally(() => {
                 File.prototype.move.restore();
-                File.prototype.save.restore();
-                transformer.transformIdentifiers.restore();
-                transformer.transformMetadata.restore();
-                transformer.transformRequirePaths.restore();
+                JavaScriptFile.prototype.transformIdentifiers.restore();
+                JavaScriptFile.prototype.transformMetadata.restore();
+                StepDefinitionFile.prototype.save.restore();
+                StepDefinitionFile.prototype.transformRequirePaths.restore();
             });
         });
 
@@ -322,10 +323,9 @@ describe('server/files: MockDataFile:', () => {
             let newFile = new MockDataFile(newFilePath, fileStructure);
 
             sinon.stub(File.prototype, 'move').returns(Promise.resolve(newFile));
-            sinon.stub(File.prototype, 'save').returns(Promise.resolve());
+            sinon.stub(JavaScriptFile.prototype, 'transformIdentifiers');
+            sinon.stub(JavaScriptFile.prototype, 'transformMetadata');
             sinon.stub(Promise, 'map').returns(Promise.reject());
-            sinon.stub(transformer, 'transformIdentifiers');
-            sinon.stub(transformer, 'transformMetadata');
 
             let update = {};
             let options = {};
@@ -336,10 +336,9 @@ describe('server/files: MockDataFile:', () => {
             })
             .finally(() => {
                 File.prototype.move.restore();
-                File.prototype.save.restore();
+                JavaScriptFile.prototype.transformIdentifiers.restore();
+                JavaScriptFile.prototype.transformMetadata.restore();
                 Promise.map.restore();
-                transformer.transformIdentifiers.restore();
-                transformer.transformMetadata.restore();
             });
         });
     });

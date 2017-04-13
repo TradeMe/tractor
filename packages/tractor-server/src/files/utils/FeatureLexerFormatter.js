@@ -6,7 +6,7 @@ const I_WANT = /^I want /;
 // Utilities:
 import last from 'lodash.last';
 
-export default class FeatureLexerFormatter {
+export class FeatureLexerFormatter {
     constructor () {
         this.features = [];
 

@@ -17,10 +17,10 @@ import Promise from 'bluebird';
 const childProcess = Promise.promisifyAll(require('child_process'));
 import esprima from 'esprima';
 import estemplate from 'estemplate';
-import StepDefinitionFile from '../StepDefinitionFile';
 import stripcolorcodes from 'stripcolorcodes';
+import { StepDefinitionFile } from '../StepDefinitionFile';
 
-export default class StepDefinitionGenerator {
+export class StepDefinitionGenerator {
     constructor (file) {
         this.file = file;
     }

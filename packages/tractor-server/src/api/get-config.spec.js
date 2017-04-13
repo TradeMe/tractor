@@ -9,14 +9,12 @@ import sinonChai from 'sinon-chai';
 const expect = chai.expect;
 chai.use(sinonChai);
 
-// Dependencies:
-import config from '../config/config';
-
 // Under test:
-import getConfig from './get-config';
+import { getConfigHandler } from './get-config';
 
 describe('server/api: get-config:', () => {
     it('should respond with the current config', () => {
+        let config = {};
         let request = {};
         let response = {
             send: () => {}
@@ -24,7 +22,7 @@ describe('server/api: get-config:', () => {
 
         sinon.stub(response, 'send');
 
-        getConfig.handler(request, response);
+        getConfigHandler(config)(request, response);
 
         expect(response.send).to.have.been.calledWith(config);
     });

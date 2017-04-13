@@ -1,9 +1,7 @@
-// Constants:
-import tractorPluginLoader from 'tractor-plugin-loader';
-
-export default { handler };
-
-function handler (request, response) {
-    let pluginDescriptions = tractorPluginLoader.getPluginDescriptions();
-    response.send(pluginDescriptions);
+export function getPluginsHandler (plugins) {
+    return function (request, response) {
+        let pluginDescriptions = plugins.map(plugin => plugin.description);
+        response.send(pluginDescriptions);
+    }
 }
+getPluginsHandler['@Inject'] = ['plugins'];

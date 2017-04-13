@@ -5,9 +5,7 @@ import path from 'path';
 import { error, info } from 'tractor-logger';
 
 // Constants:
-import config from '../config/config';
 const PROTRACTOR_PATH = path.join('node_modules', 'protractor', 'bin', 'protractor');
-const E2E_PATH = path.join(config.testDirectory, 'protractor.conf.js');
 
 // Dependencies:
 import stripcolorcodes from 'stripcolorcodes';
@@ -15,38 +13,37 @@ import stripcolorcodes from 'stripcolorcodes';
 // Errors:
 import { TractorError } from 'tractor-error-handler';
 
-class ProtractorRunner {
-    run (socket, runOptions) {
-        if (module.exports.running) {
-            info('Protractor already running.');
-            return Promise.reject(new TractorError('Protractor already running.'));
-        } else {
-            module.exports.running = true;
+export function run (config, socket, runOptions) {
+    if (module.exports.running) {
+        info('Protractor already running.');
+        return Promise.reject(new TractorError('Protractor already running.'));
+    } else {
+        module.exports.running = true;
 
-            return Promise.resolve(config.beforeProtractor())
+        return Promise.resolve(config.beforeProtractor())
+        .then(() => {
+            info('Starting Protractor...');
+            return startProtractor(config, socket, runOptions);
+        })
+        .catch(e => {
+            socket.lastMessage = socket.lastMessage || '';
+            let [lastMessage] = socket.lastMessage.split(/\r\n|\n/);
+            error(`${e.message}${lastMessage}`);
+        })
+        .finally(() => {
+            socket.disconnect();
+            return Promise.resolve(config.afterProtractor())
             .then(() => {
-                info('Starting Protractor...');
-                return startProtractor(socket, runOptions);
-            })
-            .catch(e => {
-                socket.lastMessage = socket.lastMessage || '';
-                let [lastMessage] = socket.lastMessage.split(/\r\n|\n/);
-                error(`${e.message}${lastMessage}`);
-            })
-            .finally(() => {
-                socket.disconnect();
-                return Promise.resolve(config.afterProtractor())
-                .then(() => {
-                    module.exports.running = false;
-                    info('Protractor finished.');
-                });
+                module.exports.running = false;
+                info('Protractor finished.');
             });
-        }
+        });
     }
 }
 
-function startProtractor (socket, options) {
-    let protractorArgs = [PROTRACTOR_PATH, E2E_PATH];
+function startProtractor (config, socket, options) {
+    let protractorConfigPath = path.join(config.directory, 'protractor.conf.js');
+    let protractorArgs = [PROTRACTOR_PATH, protractorConfigPath];
 
     let { baseUrl, debug, feature, tag } = options;
 
@@ -63,7 +60,7 @@ function startProtractor (socket, options) {
         debug = false;
     }
 
-    let specsGlob = path.join(config.testDirectory, 'features', '**', `${feature}.feature`);
+    let specsGlob = path.join(config.directory, 'features', '**', `${feature}.feature`);
 
     protractorArgs = protractorArgs.concat(['--specs', specsGlob]);
     protractorArgs = protractorArgs.concat(['--params.debug', debug]);
@@ -140,6 +137,3 @@ function sendErrorToClient () {
         type: 'error'
     });
 }
-
-let protractorRunner = new ProtractorRunner();
-export default protractorRunner;
