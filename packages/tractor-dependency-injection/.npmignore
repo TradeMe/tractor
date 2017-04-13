@@ -4,7 +4,7 @@ src/
 .babelrc
 .codeclimate.yml
 .eslintrc.json
-.istanbullrc.json
+.istanbulrc.json
 .mocharc
 .travis.yml
 travis-after-build.sh
