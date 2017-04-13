@@ -20,7 +20,7 @@ var ExpectationParserService = function ExpectationParserService (
         try {
             var expectation = new ExpectationModel(step);
             var argument = _.first(ast.arguments);
-            expectation.value = _.isString(argument) ? argument.raw : argument.value;
+            expectation.value = argument.raw;
 
             var expectationCallExpression = _.first(ast.callee.object.object.object.arguments);
 

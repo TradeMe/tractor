@@ -76,11 +76,10 @@ var createExpectationModelConstructor = function (
         });
 
         var literalValue;
-        if (this.value.match(/["']/)) {
+        if (this.value && this.value.match(/["']/)) {
              literalValue = this.value.replace(/["']/g, '');
         } else {
-             var stringtoLiteral = stringToLiteralService.toLiteral(this.value);
-             literalValue = !!stringtoLiteral ? stringtoLiteral : this.value;
+             literalValue = stringToLiteralService.toLiteral(this.value)
         }
 
         var expectedResult = ast.literal(literalValue);

@@ -40,18 +40,19 @@ var createMockModelConstructor = function (
         var ast = astCreatorService;
 
         var data = {
-            //The RegExp constructor does not escape special characters, so we need to double-escape "\?" to "\\\?" in the string before creating the RegExp.            
+            //The RegExp constructor does not escape special characters, so we need to double-escape "\?" to "\\\?" in the string before creating the RegExp.
             url: ast.literal(new RegExp(this.url.replace(/\?/g,'\\\?')))
         };
-        var template = 'httpBackend.when' + this.action + '(%= url %)';
+        var template = 'mockRequests.when' + this.action + '(%= url %, {';
         if (this.passThrough) {
-            template += '.passThrough(); ';
+            template += 'passThrough: true';
         } else {
-            template += '.respond(%= dataName %); ';
+            template += 'body: <%= dataName %>';
             data.dataName = ast.identifier(this.data.variableName);
         }
+        template += '});'
 
-        return ast.template(template, data);
+        return ast.template(template, data).expression;
     }
 };
 

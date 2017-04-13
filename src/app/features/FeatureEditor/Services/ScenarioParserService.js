@@ -25,7 +25,9 @@ var ScenarioParserService = function ScenarioParserService (
         var scenario = new ScenarioModel();
 
         scenario.name = tokens.name;
-        scenario.scenarioTag = tokens.tags[0];
+        if (tokens.tags.length) {
+            scenario.scenarioTag = _.first(tokens.tags);
+        }
 
         _.each(tokens.stepDeclarations, function (stepDeclaration, index) {
             var notStep = false;

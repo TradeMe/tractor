@@ -1,9 +1,11 @@
 dist
 node_modules
 reports
-e2e-tests/report
+tractor/report
+
 npm-debug.log
 npm-debug.log.*
 .idea/*
 .sass-cache
 .vscode
+.DS_Store

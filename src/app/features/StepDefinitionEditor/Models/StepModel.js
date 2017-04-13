@@ -103,8 +103,7 @@ var createStepModelConstructor = function (
 
         var template = 'this.<%= type %>(<%= regex %>, function (done) { ';
         if (mocks.length) {
-            template += '%= mocks %; ';
-            template += 'done();';
+            template += 'Promise.all([%= mocks %]).spread(function () { done(); }).catch(done.fail);';
         } else if (tasks.length) {
             template += 'var tasks = <%= tasks[0] %>';
             tasks.slice(1).forEach(function (taskAST, index) {
@@ -113,7 +112,7 @@ var createStepModelConstructor = function (
             template += ';';
             template += 'Promise.resolve(tasks).then(done).catch(done.fail);';
         } else if (expectations.length) {
-            template += 'Promise.all([%= expectations %]).spread(function () {  done(); }).catch(done.fail);';
+            template += 'Promise.all([%= expectations %]).spread(function () { done(); }).catch(done.fail);';
         } else {
             template += 'done(null, \'pending\');';
         }

@@ -70,12 +70,14 @@ var StepParserService = function StepParserService (
     }
 
     function parseMock (step, statement) {
-        var httpBackendOnloadMemberExpression = statement.expression.callee.object.callee;
-        assert(httpBackendOnloadMemberExpression.object.name === 'httpBackend');
-        assert(httpBackendOnloadMemberExpression.property.name.indexOf('when') === 0);
-        var mock = MockParserService.parse(step, statement);
-        assert(mock);
-        step.mocks.push(mock);
+        var elements = _.first(statement.expression.callee.object.callee.object.arguments).elements;
+        elements.forEach(function (element) {
+            assert(element.callee.object.name === 'mockRequests');
+            assert(element.callee.property.name.indexOf('when') === 0);
+            var mock = MockParserService.parse(step, element);
+            assert(mock);
+            step.mocks.push(mock);
+        });
         return true;
     }
 

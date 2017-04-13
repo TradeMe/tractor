@@ -31,8 +31,10 @@ var FeatureParserService = function FeatureParserService (
             feature.inOrderTo = featureTokens.inOrderTo;
             feature.asA = featureTokens.asA;
             feature.iWant = featureTokens.iWant;
-            feature.featureTag = featureTokens.tags[0];
-
+            if (featureTokens.tags.length) {
+                feature.featureTag = _.first(featureTokens.tags);
+            }
+            
             _.each(featureTokens.elements, function (element, index) {
                 try {
                     var parsedScenario = ScenarioParserService.parse(feature, element);
