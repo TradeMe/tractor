@@ -5,12 +5,12 @@ import path from 'path';
 import { getFileConstructorFromFilePath } from '../utilities/utilities';
 
 // Dependencies:
-import File from './File';
+import { File } from './File';
 
 // Errors:
 import { TractorError } from 'tractor-error-handler';
 
-export default class Directory {
+export class Directory {
     constructor (directoryPath, fileStructure) {
         this.path = path.resolve(process.cwd(), directoryPath);
         this.fileStructure = fileStructure;

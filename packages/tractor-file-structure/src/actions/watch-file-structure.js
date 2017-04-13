@@ -11,3 +11,4 @@ export function watchFileStructure (fileStructure, sockets) {
         sockets.emit('file-structure-change');
     }), CHANGE_DEBOUNCE_TIME);
 }
+watchFileStructure['@Inject'] = ['fileStructure'];

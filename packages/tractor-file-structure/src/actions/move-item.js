@@ -2,8 +2,7 @@
 import { getCopyPath, getItemPath, respondOkay, respondItemNotFound } from '../utilities/utilities';
 
 // Errors:
-import tractorErrorHandler from 'tractor-error-handler';
-import { TractorError } from 'tractor-error-handler';
+import { TractorError, handleError } from 'tractor-error-handler';
 
 export function createMoveItemHandler (fileStructure) {
     return function moveItem (request, response) {
@@ -30,7 +29,8 @@ export function createMoveItemHandler (fileStructure) {
 
         return toMove.move({ newPath }, { isCopy: copy })
         .then(() => respondOkay(response))
-        .catch(TractorError.isTractorError, error => tractorErrorHandler.handle(response, error))
-        .catch(() => tractorErrorHandler.handle(response, new TractorError(`Could not move "${itemPath}"`)));
+        .catch(TractorError.isTractorError, error => handleError(response, error))
+        .catch(() => handleError(response, new TractorError(`Could not move "${itemPath}"`)));
     }
 }
+createMoveItemHandler['@Inject'] = ['fileStructure'];

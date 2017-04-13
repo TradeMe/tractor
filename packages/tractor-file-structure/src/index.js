@@ -1,11 +1,5 @@
-import { registerFileType } from './file-types';
-import { serve } from './server';
-
-export Directory from './structure/Directory';
-export File from './structure/File';
-export FileStructure from './structure/FileStructure';
-
-export default {
-    registerFileType,
-    serve
-};
+export * from './file-types';
+export * from './server';
+export * from './structure/Directory';
+export * from './structure/File';
+export * from './structure/FileStructure';

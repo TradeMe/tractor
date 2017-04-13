@@ -2,11 +2,10 @@
 import { getFileConstructorFromFilePath, getItemPath, getCopyPath, respondOkay } from '../utilities/utilities';
 
 // Dependencies:
-import Directory from '../structure/Directory';
+import { Directory } from '../structure/Directory';
 
 // Errors:
-import tractorErrorHandler from 'tractor-error-handler';
-import { TractorError } from 'tractor-error-handler';
+import { TractorError, handleError } from 'tractor-error-handler';
 
 export function createSaveItemHandler (fileStructure) {
     return function saveItem (request, response) {
@@ -34,7 +33,8 @@ export function createSaveItemHandler (fileStructure) {
         }
         return toSave.save(data)
         .then(() => respondOkay(response))
-        .catch(TractorError.isTractorError, error => tractorErrorHandler.handle(response, error))
-        .catch(() => tractorErrorHandler.handle(response, new TractorError(`Could not save "${itemPath}"`)));
+        .catch(TractorError.isTractorError, error => handleError(response, error))
+        .catch(() => handleError(response, new TractorError(`Could not save "${itemPath}"`)));
     }
 }
+createSaveItemHandler['@Inject'] = ['fileStructure'];

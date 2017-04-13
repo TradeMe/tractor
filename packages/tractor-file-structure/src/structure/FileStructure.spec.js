@@ -16,12 +16,12 @@ chai.use(sinonChai);
 // Dependencies:
 import chokidar from 'chokidar';
 import { EventEmitter } from 'events';
-import Directory from './Directory';
-import File from './File';
+import { Directory } from './Directory';
+import { File } from './File';
 import * as tractorLogger from 'tractor-logger';
 
 // Under test:
-import FileStructure from './FileStructure';
+import { FileStructure } from './FileStructure';
 
 describe('tractor-file-structure - FileStructure:', () => {
     describe('FileStructure constructor:', () => {

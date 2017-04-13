@@ -11,11 +11,10 @@ const expect = chai.expect;
 chai.use(sinonChai);
 
 // Dependencies:
-import Directory from '../structure/Directory';
-import File from '../structure/File';
-import FileStructure from '../structure/FileStructure';
-import tractorErrorHandler from 'tractor-error-handler';
-import { TractorError } from 'tractor-error-handler';
+import { Directory } from '../structure/Directory';
+import { File } from '../structure/File';
+import { FileStructure } from '../structure/FileStructure';
+import * as utilities from '../utilities/utilities';
 
 // Under test:
 import { createOpenItemHandler } from './open-item';
@@ -71,13 +70,13 @@ describe('tractor-file-structure - actions/open-item:', () => {
             send: () => { }
         };
 
-        sinon.stub(tractorErrorHandler, 'handle');
+        sinon.stub(utilities, 'respondItemNotFound');
 
         let openItem = createOpenItemHandler(fileStructure);
         openItem(request, response);
 
-        expect(tractorErrorHandler.handle).to.have.been.calledWith(response, new TractorError(`Could not find "${path.join(path.sep, 'file-structure', 'directory', 'missing-item')}"`, 404));
+        expect(utilities.respondItemNotFound).to.have.been.calledWith(path.join(path.sep, 'file-structure', 'directory', 'missing-item'), response);
 
-        tractorErrorHandler.handle.restore();
+        utilities.respondItemNotFound.restore();
     });
 });

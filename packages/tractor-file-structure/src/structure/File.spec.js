@@ -13,14 +13,14 @@ chai.use(dirtyChai);
 chai.use(sinonChai);
 
 // Dependencies:
-import Directory from './Directory';
 import fs from 'fs';
-import FileStructure from './FileStructure';
 import path from 'path';
+import { Directory } from './Directory';
+import { FileStructure } from './FileStructure';
 import { TractorError } from 'tractor-error-handler';
 
 // Under test:
-import File from './File';
+import { File } from './File';
 
 describe('tractor-file-structure - File:', () => {
     describe('File constructor:', () => {

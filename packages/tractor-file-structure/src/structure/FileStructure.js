@@ -8,9 +8,9 @@ import path from 'path';
 import { info } from 'tractor-logger';
 
 // Dependencies:
-import Directory from './Directory';
+import { Directory } from './Directory';
 
-export default class FileStructure {
+export class FileStructure {
     constructor (fsPath) {
         this.path = path.resolve(process.cwd(), fsPath);
 

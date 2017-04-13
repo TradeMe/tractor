@@ -2,11 +2,10 @@
 import { getItemPath, respondOkay, respondItemNotFound } from '../utilities/utilities';
 
 // Dependencies:
-import Directory from '../structure/Directory';
+import { Directory } from '../structure/Directory';
 
 // Errors:
-import tractorErrorHandler from 'tractor-error-handler';
-import { TractorError } from 'tractor-error-handler';
+import { TractorError, handleError } from 'tractor-error-handler';
 
 export function createDeleteItemHandler (fileStructure) {
     return function deleteItem (request, response) {
@@ -30,7 +29,8 @@ export function createDeleteItemHandler (fileStructure) {
 
         return operation
         .then(() => respondOkay(response))
-        .catch(TractorError.isTractorError, error => tractorErrorHandler.handle(response, error))
-        .catch(() => tractorErrorHandler.handle(response, new TractorError(`Could not delete "${itemPath}"`)));
+        .catch(TractorError.isTractorError, error => handleError(response, error))
+        .catch(() => handleError(response, new TractorError(`Could not delete "${itemPath}"`)));
     }
 }
+createDeleteItemHandler['@Inject'] = ['fileStructure'];

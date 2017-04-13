@@ -4,12 +4,12 @@ const fs = Promise.promisifyAll(require('fs'));
 import path from 'path';
 
 // Dependencies:
-import Directory from './Directory';
+import { Directory } from './Directory';
 
 // Errors:
 import { TractorError } from 'tractor-error-handler';
 
-export default class File {
+export class File {
     constructor (filePath, fileStructure) {
         this.path = path.resolve(process.cwd(), filePath);
         this.fileStructure = fileStructure;

@@ -14,7 +14,7 @@ chai.use(sinonChai);
 
 // Dependencies:
 import { EventEmitter } from 'events';
-import FileStructure from '../structure/FileStructure';
+import { FileStructure } from '../structure/FileStructure';
 
 // Under test:
 import { watchFileStructure } from './watch-file-structure';

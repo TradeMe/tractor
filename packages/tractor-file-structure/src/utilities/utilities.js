@@ -7,13 +7,12 @@ const OKAY_STATUS = 200;
 import path from 'path';
 
 // Dependencies:
-import Directory from '../structure/Directory';
-import File from '../structure/File';
+import { Directory } from '../structure/Directory';
+import { File } from '../structure/File';
 import { fileTypes } from '../file-types';
 
 // Errors:
-import tractorErrorHandler from 'tractor-error-handler';
-import { TractorError } from 'tractor-error-handler';
+import { TractorError, handleError } from 'tractor-error-handler';
 
 export function getCopyPath (item) {
     let isDirectory = item instanceof Directory;
@@ -43,7 +42,7 @@ export function respondOkay (response) {
 }
 
 export function respondItemNotFound (itemPath, response) {
-    tractorErrorHandler.handle(response, new TractorError(`Could not find "${itemPath}"`, ITEM_NOT_FOUND_STATUS));
+    handleError(response, new TractorError(`Could not find "${itemPath}"`, ITEM_NOT_FOUND_STATUS));
 }
 
 function getUniqueName (items, item) {

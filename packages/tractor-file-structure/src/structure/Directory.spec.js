@@ -11,15 +11,15 @@ const expect = chai.expect;
 chai.use(sinonChai);
 
 // Dependencies:
-import File from './File';
-import FileStructure from './FileStructure';
-import { fileExtensions, fileTypes, registerFileType } from '../file-types';
 import fs from 'fs';
 import path from 'path';
+import { File } from './File';
+import { FileStructure } from './FileStructure';
+import { fileExtensions, fileTypes, registerFileType } from '../file-types';
 import { TractorError } from 'tractor-error-handler';
 
 // Under test:
-import Directory from './Directory';
+import { Directory } from './Directory';
 
 describe('tractor-file-structure - Directory:', () => {
     describe('Directory constructor:', () => {

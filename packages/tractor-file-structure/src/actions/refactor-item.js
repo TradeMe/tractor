@@ -2,8 +2,7 @@
 import { getItemPath, respondOkay, respondItemNotFound } from '../utilities/utilities';
 
 // Errors:
-import tractorErrorHandler from 'tractor-error-handler';
-import { TractorError } from 'tractor-error-handler';
+import { TractorError, handleError } from 'tractor-error-handler';
 
 export function createRefactorItemHandler (fileStructure) {
     return function refactorItem (request, response) {
@@ -19,7 +18,8 @@ export function createRefactorItemHandler (fileStructure) {
 
         return toRefactor.refactor(update)
         .then(() => respondOkay(response))
-        .catch(TractorError.isTractorError, error => tractorErrorHandler.handle(response, error))
-        .catch(() => tractorErrorHandler.handle(response, new TractorError(`Could not refactor "${itemPath}"`)));
+        .catch(TractorError.isTractorError, error => handleError(response, error))
+        .catch(() => handleError(response, new TractorError(`Could not refactor "${itemPath}"`)));
     }
 }
+createRefactorItemHandler['@Inject'] = ['fileStructure'];
