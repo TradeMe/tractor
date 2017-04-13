@@ -1,7 +1,7 @@
 // Utilities:
 import { createTag } from './utilities/create-tag';
 
-export default function serve (application, sockets, config) {
+export default function serve (config) {
     config.screenSizes = config.screenSizes || {};
 
     Object.keys(config.screenSizes)
@@ -9,3 +9,4 @@ export default function serve (application, sockets, config) {
         config.tags.push(createTag(size));
     });
 }
+serve['@Inject'] = ['config'];

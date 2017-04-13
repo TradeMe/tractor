@@ -19,15 +19,17 @@ import addHooks from './add-hooks';
 
 describe('tractor-plugin-screen-size - addHooks:', () => {
     it('should do nothing if there is no config', () => {
+        let browser = {};
         let cucumber = {};
         let config = {};
 
         expect(() => {
-            addHooks(cucumber, config);
+            addHooks(browser, cucumber, config);
         }).to.not.throw();
     });
 
     it('should add a Before hook for each screen size in the config', () => {
+        let browser = {};
         let config = {
             tags: [],
             screenSizes: {
@@ -41,7 +43,7 @@ describe('tractor-plugin-screen-size - addHooks:', () => {
 
         sinon.stub(cucumber, 'Before');
 
-        addHooks(cucumber, config);
+        addHooks(browser, cucumber, config);
 
         expect(cucumber.Before).to.have.been.calledWith({ tags: ['@screen-size:sm'] });
         expect(cucumber.Before).to.have.been.calledWith({ tags: ['@screen-size:md'] });
@@ -55,6 +57,7 @@ describe('tractor-plugin-screen-size - addHooks:', () => {
             }
         };
         let hooks = [];
+        let browser = {};
         let cucumber = {
             Before: (tag, hook) => {
                 hooks.push(hook);
@@ -63,7 +66,7 @@ describe('tractor-plugin-screen-size - addHooks:', () => {
 
         sinon.stub(ScreenSize.prototype, 'setSize');
 
-        addHooks(cucumber, config);
+        addHooks(browser, cucumber, config);
 
         let [hook] = hooks;
         hook();

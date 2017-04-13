@@ -4,15 +4,16 @@ import { createTag } from './utilities/create-tag';
 // Dependencies:
 import { ScreenSize } from './screen-size/screen-size';
 
-export default function addHooks (cucumber, config) {
+export default function addHooks (browser, cucumber, config) {
     config.screenSizes = config.screenSizes || {};
 
-    let screenSize = new ScreenSize(global.browser, config);
+    let screenSize = new ScreenSize(browser, config);
 
     Object.keys(config.screenSizes)
     .forEach(size => {
         cucumber.Before({ tags: [createTag(size)] }, () => {
-            screenSize.setSize(size);
+            return screenSize.setSize(size);
         });
     });
 }
+addHooks['@Inject'] = ['browser', 'cucumber', 'config'];

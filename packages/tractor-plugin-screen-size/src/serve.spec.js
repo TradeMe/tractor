@@ -14,7 +14,7 @@ describe('tractor-plugin-screen-size - serve:', () => {
         let config = {};
 
         expect(() => {
-            serve(null, null, config);
+            serve(config);
         }).to.not.throw();
     });
 
@@ -27,7 +27,7 @@ describe('tractor-plugin-screen-size - serve:', () => {
             }
         };
 
-        serve(null, null, config);
+        serve(config);
 
         expect(config.tags.length).to.equal(2);
 
