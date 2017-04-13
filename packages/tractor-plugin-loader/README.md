@@ -4,7 +4,8 @@ Plugin loader for [**tractor**](https://github.com/TradeMe/tractor) to provide a
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/phenomnomnominal/tractor-plugin-loader.svg)](https://greenkeeper.io/)
 [![npm version](https://img.shields.io/npm/v/tractor-plugin-loader.svg)](https://www.npmjs.com/package/tractor-plugin-loader)
-[![Coveralls](https://img.shields.io/coveralls/phenomnomnominal/tractor-plugin-loader.svg)](https://coveralls.io/github/phenomnomnominal/tractor-plugin-loader)
+[![Code Climate](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-loader/badges/gpa.svg)](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-loader)
+[![Test Coverage](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-loader/badges/coverage.svg)](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-loader/coverage)
 
 ## How it works:
 
