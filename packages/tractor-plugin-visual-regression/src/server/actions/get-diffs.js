@@ -6,8 +6,7 @@ import { DiffPNGFile } from '../files/diff-png-file';
 import { PNGFile } from '../files/png-file';
 
 // Errors:
-import tractorErrorHandler from 'tractor-error-handler';
-import { TractorError } from 'tractor-error-handler';
+import { TractorError, handleError } from 'tractor-error-handler';
 
 export function createGetDiffsHandler (fileStructure) {
   let { allFilesByPath } = fileStructure;
@@ -31,7 +30,7 @@ export function createGetDiffsHandler (fileStructure) {
             .filter(Boolean);
             response.json({ diffs });
         } catch (e) {
-            tractorErrorHandler.handle(response, new TractorError(`Could not get diffs`));
+            handleError(response, new TractorError(`Could not get diffs`));
         }
     }
 }

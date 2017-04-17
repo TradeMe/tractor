@@ -1,10 +1,11 @@
 // Constants:
-import { BASELINE_DIRECTORY, CHANGES_DIRECTORY, VISUAL_REGRESSION_DIRECTORY } from '../constants';
+import { BASELINE_DIRECTORY, CHANGES_DIRECTORY } from '../constants';
 const GET_PIXEL_RATIO = 'return window.devicePixelRatio';
 
 // Utilities:
 import Promise from 'bluebird';
 import path from 'path';
+import { getVisualRegressionPath } from '../utils';
 
 // Dependencies:
 import { checkDiff } from '../differ/check-diff';
@@ -33,8 +34,8 @@ export class VisualRegression {
     takeScreenshot (name) {
         let fileName = createFileName(name);
 
-        let testDirectory = path.join(process.cwd(), this.config.testDirectory);
-        let visualRegressionPath = path.join(testDirectory, VISUAL_REGRESSION_DIRECTORY);
+
+        let visualRegressionPath = getVisualRegressionPath(this.config);
         let baselineFilePath = path.join(visualRegressionPath, BASELINE_DIRECTORY, fileName);
         let changesFilePath = path.join(visualRegressionPath, CHANGES_DIRECTORY, fileName);
 
@@ -47,7 +48,7 @@ export class VisualRegression {
         .then(_fileStructure => {
             fileStructure = _fileStructure;
         })
-        .then(() => checkForBaseline(fileStructure, testDirectory, fileName))
+        .then(() => checkForBaseline(fileStructure, visualRegressionPath, fileName))
         .then(_hasBaseline => {
             hasBaseline = _hasBaseline;
             savePath = hasBaseline ? changesFilePath : baselineFilePath;
@@ -61,7 +62,7 @@ export class VisualRegression {
         .then(rawPngData => saveScreenshot(fileStructure, savePath, updateAreas(rawPngData, this.areas, pixelRatio)))
         .then(() => {
             if (hasBaseline) {
-                return checkDiff(fileStructure, testDirectory, fileName);
+                return checkDiff(fileStructure, visualRegressionPath, fileName);
             }
         })
         .then(() => {
@@ -86,8 +87,8 @@ function createFileName (name) {
     return `${name}${PNGFile.prototype.extension}`;
 }
 
-function checkForBaseline (fileStructure, testDirectory, fileName) {
-    let filePath = path.join(testDirectory, VISUAL_REGRESSION_DIRECTORY, BASELINE_DIRECTORY, fileName);
+function checkForBaseline (fileStructure, visualRegressionPath, fileName) {
+    let filePath = path.join(visualRegressionPath, BASELINE_DIRECTORY, fileName);
     return !!fileStructure.allFilesByPath[filePath];
 }
 

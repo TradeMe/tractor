@@ -1,5 +1,5 @@
 // Constants:
-import { BASELINE_DIRECTORY, CHANGES_DIRECTORY, DIFFS_DIRECTORY, VISUAL_REGRESSION_DIRECTORY } from '../constants';
+import { BASELINE_DIRECTORY, CHANGES_DIRECTORY, DIFFS_DIRECTORY } from '../constants';
 
 // Utilities:
 import Promise from 'bluebird';
@@ -12,9 +12,9 @@ import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
 import { TractorError } from 'tractor-error-handler';
 
-export function checkDiff (fileStructure, testDirectory, fileName) {
-    let baselinePath = path.join(testDirectory, VISUAL_REGRESSION_DIRECTORY, BASELINE_DIRECTORY, fileName);
-    let changesPath = path.join(testDirectory, VISUAL_REGRESSION_DIRECTORY, CHANGES_DIRECTORY, fileName);
+export function checkDiff (fileStructure, visualRegressionPath, fileName) {
+    let baselinePath = path.join(visualRegressionPath, BASELINE_DIRECTORY, fileName);
+    let changesPath = path.join(visualRegressionPath, CHANGES_DIRECTORY, fileName);
 
     let baselinePNGFile = fileStructure.allFilesByPath[baselinePath];
     let changesPNGFile = fileStructure.allFilesByPath[changesPath];
@@ -35,7 +35,7 @@ export function checkDiff (fileStructure, testDirectory, fileName) {
 
     pixelmatch(baselinePNG.data, changesPNG.data, diffPNG.data, width, height, { threshold: 0.1 });
 
-    let diffsPath = replaceExtension(path.join(testDirectory, VISUAL_REGRESSION_DIRECTORY, DIFFS_DIRECTORY, fileName));
+    let diffsPath = replaceExtension(path.join(visualRegressionPath, DIFFS_DIRECTORY, fileName));
 
     let diffPNGFile = new DiffPNGFile(diffsPath, fileStructure);
     return diffPNGFile.save(PNG.sync.write(diffPNG))

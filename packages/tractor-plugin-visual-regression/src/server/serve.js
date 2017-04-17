@@ -1,8 +1,5 @@
-// Constants:
-import { VISUAL_REGRESSION_DIRECTORY } from './constants';
-
 // Utilities:
-import path from 'path';
+import { getVisualRegressionPath } from './utils';
 
 // Dependencies:
 import { FileStructure } from 'tractor-file-structure';
@@ -10,8 +7,8 @@ import { createGetDiffsHandler } from './actions/get-diffs';
 import { createTakeChangesHandler } from './actions/take-changes';
 import { watchFileStructure } from './actions/watch-file-structure';
 
-function serve (application, sockets, config) {
-    let fileStructure = new FileStructure(path.join(process.cwd(), config.testDirectory, VISUAL_REGRESSION_DIRECTORY));
+function serve (application, config, sockets) {
+    let fileStructure = new FileStructure(getVisualRegressionPath(config));
 
     application.get('/visual-regression/get-diffs', createGetDiffsHandler(fileStructure));
     application.put('/visual-regression/take-changes', createTakeChangesHandler(fileStructure));
@@ -20,5 +17,6 @@ function serve (application, sockets, config) {
 
     return fileStructure.read();
 }
+serve['@Inject'] = ['application', 'config', 'sockets'];
 
 export default serve;

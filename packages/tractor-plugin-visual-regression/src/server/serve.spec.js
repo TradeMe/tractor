@@ -26,11 +26,11 @@ describe('tractor-plugin-visual-regression - serve:', () => {
             get: () => {},
             put: () => {}
         };
+        let config = {
+            directory: ''
+        };
         let sockets = {
             of: () => {}
-        };
-        let config = {
-            testDirectory: ''
         };
         let handler = () => {};
 
@@ -40,7 +40,7 @@ describe('tractor-plugin-visual-regression - serve:', () => {
         sinon.stub(watchFileStructure, 'watchFileStructure');
         sinon.stub(FileStructure.prototype, 'read');
 
-        serve(application, sockets, config);
+        serve(application, config, sockets);
 
         expect(application.get).to.have.been.calledWith('/visual-regression/get-diffs', handler);
 
@@ -55,11 +55,11 @@ describe('tractor-plugin-visual-regression - serve:', () => {
             get: () => {},
             put: () => {}
         };
+        let config = {
+            directory: ''
+        };
         let sockets = {
             of: () => {}
-        };
-        let config = {
-            testDirectory: ''
         };
         let handler = () => {};
 
@@ -69,7 +69,7 @@ describe('tractor-plugin-visual-regression - serve:', () => {
         sinon.stub(watchFileStructure, 'watchFileStructure');
         sinon.stub(FileStructure.prototype, 'read');
 
-        serve(application, sockets, config);
+        serve(application, config, sockets);
 
         expect(application.put).to.have.been.calledWith('/visual-regression/take-changes', handler);
 
@@ -84,11 +84,11 @@ describe('tractor-plugin-visual-regression - serve:', () => {
             get: () => {},
             put: () => {}
         };
+        let config = {
+            directory: ''
+        };
         let sockets = {
             of: () => {}
-        };
-        let config = {
-            testDirectory: ''
         };
         let socketsOf = () => {};
 
@@ -98,7 +98,7 @@ describe('tractor-plugin-visual-regression - serve:', () => {
         sinon.stub(watchFileStructure, 'watchFileStructure');
         sinon.stub(FileStructure.prototype, 'read');
 
-        serve(application, sockets, config);
+        serve(application, config, sockets);
 
         expect(sockets.of).to.have.been.calledWith('/watch-visual-regression');
         expect(watchFileStructure.watchFileStructure).to.have.been.calledWith(socketsOf);
@@ -114,11 +114,11 @@ describe('tractor-plugin-visual-regression - serve:', () => {
             get: () => {},
             put: () => {}
         };
+        let config = {
+            directory: ''
+        };
         let sockets = {
             of: () => {}
-        };
-        let config = {
-            testDirectory: ''
         };
 
         sinon.stub(getDiffs, 'createGetDiffsHandler');
@@ -126,7 +126,7 @@ describe('tractor-plugin-visual-regression - serve:', () => {
         sinon.stub(watchFileStructure, 'watchFileStructure');
         sinon.stub(FileStructure.prototype, 'read');
 
-        serve(application, sockets, config);
+        serve(application, config, sockets);
 
         expect(FileStructure.prototype.read).to.have.been.called();
 

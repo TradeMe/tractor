@@ -22,7 +22,7 @@ import init from './init';
 describe('tractor-plugin-visual-regression - init:', () => {
     it('should create the visual regression file structure', () => {
         let config = {
-            testDirectory: 'file-structure'
+            directory: 'file-structure'
         };
 
         sinon.stub(process, 'cwd').returns(path.sep);
@@ -43,7 +43,7 @@ describe('tractor-plugin-visual-regression - init:', () => {
 
     it('should handle the error when a directory already exists', () => {
         let config = {
-            testDirectory: 'file-structure'
+            directory: 'file-structure'
         };
         let error = {
             code: 'EEXIST'
@@ -68,7 +68,7 @@ describe('tractor-plugin-visual-regression - init:', () => {
 
     it('should throw any other errors', () => {
         let config = {
-            testDirectory: 'file-structure'
+            directory: 'file-structure'
         };
         let error = {};
 
