@@ -184,27 +184,65 @@
                         icon="remove">
                     </tractor-action>
 
-                    <tractor-text-input
-                        form="file-editor"
-                        label="URL"
-                        model="mock"
-                        example="http://example.com">
-                    </tractor-text-input>
-                    <tractor-select
-                        label="Action"
-                        model="mock">
-                    </tractor-select>
-                    <tractor-checkbox
-                        label="Pass through"
-                        model="mock">
-                    </tractor-checkbox>
-                    <tractor-select
-                        ng-if="!mock.passThrough && stepDefinitionEditor.hasMockData"
-                        label="Data"
-                        model="mock"
-                        options="stepDefinitionEditor.fileModel.mockDataInstances"
-                        as="name">
-                    </tractor-select>
+                    <section>
+                        <tractor-text-input
+                            form="file-editor"
+                            label="URL"
+                            model="mock"
+                            example="http://example.com"
+                            required>
+                        </tractor-text-input>
+                        <tractor-select
+                            label="Action"
+                            model="mock">
+                        </tractor-select>
+
+                        <tractor-checkbox
+                            label="Pass through"
+                            model="mock">
+                        </tractor-checkbox>
+                    </section>
+                    <section
+                        ng-if="!mock.passThrough && stepDefinitionEditor.hasMockData">
+                        <tractor-select
+                            label="Data"
+                            model="mock"
+                            options="stepDefinitionEditor.fileModel.mockDataInstances"
+                            as="name">
+                        </tractor-select>
+                        <tractor-text-input
+                            form="file-editor"
+                            label="Status"
+                            model="mock"
+                            example="200">
+                        </tractor-text-input>
+                    </section>
+
+                    <section class="file-editor__container">
+                        <h2>Headers:</h2>
+                        <ul>
+                            <li ng-repeat="header in mock.headers">
+                                <tractor-text-input
+                                    form="file-editor"
+                                    label="key"
+                                    model="header"
+                                    example="content-type"
+                                    required>
+                                </tractor-text-input>
+                                <tractor-text-input
+                                    form="file-editor"
+                                    label="value"
+                                    model="header"
+                                    example="application/json"
+                                    required>
+                                </tractor-text-input>
+                            </li>
+                        </ul>
+                        <tractor-action
+                            model="mock"
+                            action="Add header">
+                        </tractor-action>
+                    </section>
                 </li>
             </ul>
 

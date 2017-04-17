@@ -8,12 +8,21 @@ var StepDefinitionEditor = require('../StepDefinitionEditor');
 
 // Dependencies:
 require('../../../Core/Services/ASTCreatorService');
+require('./HeaderModel');
 
 var createMockModelConstructor = function (
-    astCreatorService
+    astCreatorService,
+    HeaderModel
 ) {
     var MockModel = function MockModel (step) {
+        var headers = [];
+
         Object.defineProperties(this, {
+            headers: {
+                get: function () {
+                    return headers;
+                }
+            },
             step: {
                 get: function () {
                     return step;
@@ -30,9 +39,14 @@ var createMockModelConstructor = function (
         this.action = _.first(this.actions);
         this.data = _.first(this.step.stepDefinition.mockDataInstances);
         this.passThrough = false;
+        this.status = 200;
     };
 
     MockModel.prototype.actions = ['GET', 'POST', 'DELETE', 'PUT', 'HEAD', 'PATCH'];
+
+    MockModel.prototype.addHeader = function () {
+        this.headers.push(new HeaderModel(this));
+    };
 
     return MockModel;
 
@@ -47,8 +61,21 @@ var createMockModelConstructor = function (
         if (this.passThrough) {
             template += 'passThrough: true';
         } else {
-            template += 'body: <%= dataName %>';
+            template += 'body: <%= dataName %>,';
             data.dataName = ast.identifier(this.data.variableName);
+
+            if (this.status) {
+                data.status = ast.literal(+this.status);
+                template += 'status: <%= status %>,';
+            }
+
+            if (this.headers.length) {
+                template += 'headers: {';
+                this.headers.map(function (header) {
+                    template += header.ast + ',';
+                });
+                template += '}';
+            }
         }
         template += '});'
 
@@ -57,7 +84,8 @@ var createMockModelConstructor = function (
 };
 
 StepDefinitionEditor.factory('MockModel', function (
-    astCreatorService
+    astCreatorService,
+    HeaderModel
 ) {
-    return createMockModelConstructor(astCreatorService);
+    return createMockModelConstructor(astCreatorService, HeaderModel);
 });

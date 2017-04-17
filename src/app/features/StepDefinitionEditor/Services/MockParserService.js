@@ -8,9 +8,11 @@ var assert = require('assert');
 var StepDefinitionEditor = require('../StepDefinitionEditor');
 
 // Dependencies:
+require('./HeaderParserService');
 require('../Models/MockModel');
 
 var MockParserService = function MockParserService (
+    HeaderParserService,
     MockModel
 ) {
     return {
@@ -27,11 +29,15 @@ var MockParserService = function MockParserService (
             mock.url = parseUrl(ast);
 
             try {
-                return parseData(mock, ast);
+                mock.passThrough = parsePassThrough(mock, ast);
+                return mock;
             } catch (e) { }
 
             try {
-                return parsePassThrough(mock, ast);
+                mock.data = parseData(mock, ast);
+                mock.status = parseStatus(mock, ast);
+                parseHeaders(mock, ast);
+                return mock;
             } catch (e) { }
 
             throw new Error();
@@ -60,21 +66,43 @@ var MockParserService = function MockParserService (
 
     function parseData (mock, ast) {
         var options = _.last(ast.arguments);
-        var body = findOption(options, 'body');
-        assert(body);
-        var instanceName = body.value.name;
-        mock.data = mock.step.stepDefinition.mockDataInstances.find(function (mockDataInstance) {
+        var bodyOption = findOption(options, 'body');
+        assert(bodyOption);
+        var instanceName = bodyOption.value.name;
+        var data = mock.step.stepDefinition.mockDataInstances.find(function (mockDataInstance) {
             return mockDataInstance.variableName === instanceName;
         });
-        return mock;
+        assert(data);
+        return data;
     }
 
     function parsePassThrough (mock, ast) {
         var options = _.last(ast.arguments);
-        var passThrough = findOption(options, 'passThrough');
+        var passThroughOption = findOption(options, 'passThrough');
+        assert(passThroughOption);
+        var passThrough = passThroughOption.value.value;
         assert(passThrough);
-        mock.passThrough = passThrough.value.value;
-        return mock;
+        return passThrough;
+    }
+
+    function parseStatus (mock, ast) {
+        var options = _.last(ast.arguments);
+        var statusOption = findOption(options, 'status');
+        assert(statusOption);
+        var status = statusOption.value.value;
+        assert(status);
+        return status;
+    }
+
+    function parseHeaders (mock, ast) {
+        var options = _.last(ast.arguments);
+        var headersOption = findOption(options, 'headers');
+        assert(headersOption);
+        headersOption.value.properties.forEach(function (property) {
+            var header = HeaderParserService.parse(mock, property);;
+            assert(header);
+            mock.headers.push(header);
+        });
     }
 
     function findOption (options, key) {
