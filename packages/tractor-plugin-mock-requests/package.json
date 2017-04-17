@@ -1,6 +1,6 @@
 {
   "name": "tractor-plugin-mock-requests",
-  "version": "0.2.0-beta.0",
+  "version": "0.2.0-beta.1",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -17,7 +17,8 @@
   "scripts": {
     "prepublish": "npm run build",
     "build": "npm run lint && npm run cover && npm run compile && npm run bundle",
-    "bundle": "npm run bundle:fetch && npm run bundle:xhr",
+    "bundle": "npm run bundle:add-mocking && npm run bundle:fetch && npm run bundle:xhr",
+    "bundle:add-mocking": "webpack src/server/script-entries/add-mocking.js dist/server/scripts/add-mocking.js",
     "bundle:fetch": "webpack src/server/script-entries/shim-fetch.js dist/server/scripts/shim-fetch.js",
     "bundle:xhr": "webpack src/server/script-entries/shim-xhr.js dist/server/scripts/shim-xhr.js",
     "compile": "babel src/server/ --out-dir dist/server/ --ignore *.spec.js,src/server/script-entries",
@@ -60,6 +61,7 @@
     "pem": "^1.9.4",
     "request": "^2.81.0",
     "request-promise-native": "^1.0.3",
+    "tractor-error-handler": "^0.2.0",
     "tractor-logger": "^0.1.0"
   }
 }

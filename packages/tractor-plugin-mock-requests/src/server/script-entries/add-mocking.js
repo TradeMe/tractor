@@ -1,5 +1,8 @@
 /* globals window */
 
+// Dependencies:
+import { TractorError } from 'tractor-error-handler';
+
 window.__tractor__ = window.__tractor__ || {};
 
 (function (tractor) {
@@ -14,9 +17,9 @@ window.__tractor__ = window.__tractor__ || {};
             var response = possibleResponses[0];
             return tractor.mockResponses[response];
         } else if (possibleResponses.length > 1){
-            // throw new Error();
+            throw new TractorError(`Multiple possible responses found for "${method}" request to "${url}". Use a more specific matcher.`);
         } else {
-            // throw new Error();
+            throw new TractorError(`Unexpected "${method}" request to ""${url}".`);
         }
     }
 })(window.__tractor__);
