@@ -1,6 +1,6 @@
 {
   "name": "tractor-plugin-mock-requests",
-  "version": "0.1.0",
+  "version": "0.2.0-beta.0",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -10,7 +10,7 @@
     "url": "https://github.com/phenomnomnominal/tractor-plugin-mock-requests/issues",
     "email": "craigspence0@gmail.com"
   },
-  "main": "dist/index.js",
+  "main": "dist/server/index.js",
   "watch": {
     "build": "src/**/*.js"
   },
@@ -18,13 +18,13 @@
     "prepublish": "npm run build",
     "build": "npm run lint && npm run cover && npm run compile && npm run bundle",
     "bundle": "npm run bundle:fetch && npm run bundle:xhr",
-    "bundle:fetch": "webpack src/script-entries/shim-fetch.js dist/scripts/shim-fetch.js",
-    "bundle:xhr": "webpack src/script-entries/shim-xhr.js dist/scripts/shim-xhr.js",
-    "compile": "babel src --out-dir dist --ignore *.spec.js,src/script-entries",
-    "cover": "istanbul cover --config .istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ./.mocharc src/*.spec.js",
+    "bundle:fetch": "webpack src/server/script-entries/shim-fetch.js dist/server/scripts/shim-fetch.js",
+    "bundle:xhr": "webpack src/server/script-entries/shim-xhr.js dist/server/scripts/shim-xhr.js",
+    "compile": "babel src/server/ --out-dir dist/server/ --ignore *.spec.js,src/server/script-entries",
+    "cover": "istanbul cover --config .istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ./.mocharc 'src/**/*.spec.js'",
     "coveralls": "cat ./reports/coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "lint": "eslint src/**/*.js; true",
-    "test": "mocha --opts ./.mocharc src/*.spec.js",
+    "test": "mocha --opts ./.mocharc 'src/server/**/*.spec.js'",
     "watch": "npm-watch"
   },
   "license": "MIT",
@@ -42,8 +42,8 @@
     "coveralls": "2.11.16",
     "dirty-chai": "1.2.2",
     "eslint": "3.15.0",
-    "fetch-mock": "5.9.4",
     "istanbul": "1.0.0-alpha.2",
+    "mkdirp": "^0.5.1",
     "mocha": "3.2.0",
     "npm-watch": "0.1.8",
     "sinon": "1.17.7",
@@ -51,6 +51,15 @@
     "webpack": "2.3.2"
   },
   "dependencies": {
-    "fake-xml-http-request": "^1.4.0"
+    "body-parser": "^1.17.1",
+    "cheerio": "^0.22.0",
+    "express": "^4.15.2",
+    "express-http-proxy": "^0.11.0",
+    "fake-xml-http-request": "^1.4.0",
+    "fetch-mock": "^5.9.4",
+    "pem": "^1.9.4",
+    "request": "^2.81.0",
+    "request-promise-native": "^1.0.3",
+    "tractor-logger": "^0.1.0"
   }
 }

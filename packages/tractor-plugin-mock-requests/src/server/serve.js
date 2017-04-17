@@ -1,0 +1,111 @@
+// Constants:
+const DEFAULT_PORT = 8765;
+
+// Utilities:
+import fs from 'fs';
+import path from 'path';
+import { info } from 'tractor-logger';
+
+// Dependencies:
+import bodyParser from 'body-parser';
+import cheerio from 'cheerio';
+import express from 'express';
+import proxy from 'express-http-proxy';
+import http from 'http';
+import zlib from 'zlib';
+
+// Scripts:
+const ADD_MOCKING = fs.readFileSync(path.resolve(__dirname, './scripts/add-mocking.js'), 'utf8');
+const INIT = fs.readFileSync(path.resolve(__dirname, './scripts/init.js'), 'utf8');
+const SHIM_FETCH = fs.readFileSync(path.resolve(__dirname, './scripts/shim-fetch.js'), 'utf8');
+const SHIM_XHR = fs.readFileSync(path.resolve(__dirname, './scripts/shim-xhr.js'), 'utf8');
+const MOCKS = [];
+
+export default function serve (config) {
+    shimZlib();
+
+    let mockRequests = config.mockRequests || {};
+    let application = express();
+
+    let server = http.createServer(application);
+
+    application.use(bodyParser.json());
+
+    application.use('/mock-requests/add-mock', addMock);
+    application.use('/mock-requests/set-host', setHost);
+
+    application.use(proxy(getProxyUrl, {
+        decorateRequest,
+        intercept,
+        memoizeHost: false
+    }));
+
+    let port = mockRequests.port || DEFAULT_PORT;
+    server.listen(port, () => {
+        info(`tractor-mock-requests is proxying at port ${port}`);
+    });
+}
+serve['@Inject'] = ['config'];
+
+function addMock (request, response) {
+    MOCKS.push(request.body.mock);
+    response.send();
+}
+
+let host;
+function getProxyUrl () {
+    return host;
+}
+
+function decorateRequest (requestOptions) {
+    requestOptions.headers['Referer'] = host;
+    return requestOptions;
+}
+
+function intercept (proxyResponse, data, request, response, callback) {
+    let result = data;
+    if (isHTML(proxyResponse)) {
+        let $ = cheerio.load(data.toString());
+        if ($('head').length) {
+            $('head').prepend(`
+                <script>
+                    ${INIT}
+                    ${SHIM_FETCH}
+                    ${SHIM_XHR}
+                    ${ADD_MOCKING}
+                    ${MOCKS.join('\n\n')}
+                </script>
+            `);
+            // MOCKS.length = 0;
+
+            result = $.html();
+        }
+    }
+    callback(null, result);
+}
+
+function isHTML (response) {
+    let { headers } = response;
+    let contentType = headers && headers['content-type'];
+    return contentType && contentType.indexOf('text/html') !== -1;
+}
+
+function setHost (request, response) {
+    host = request.body.host;
+    response.send();
+}
+
+// Temporarily adding this until GZIP issues are resolved:
+// https://github.com/villadora/express-http-proxy/issues/177
+function shimZlib () {
+    let originalGzip = zlib.gzipSync;
+    let originalGunzip = zlib.gunzipSync;
+    zlib.gzipSync = function (data, options = {}) {
+        options.finishFlush = zlib.Z_SYNC_FLUSH;
+        return originalGzip.call(zlib, data, options);
+    };
+    zlib.gunzipSync = function (data, options = {}) {
+        options.finishFlush = zlib.Z_SYNC_FLUSH;
+        return originalGunzip.call(zlib, data, options);
+    };
+}
