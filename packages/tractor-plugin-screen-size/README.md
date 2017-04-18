@@ -4,7 +4,8 @@ Plugin for [tractor](http://github.com/TradeMe/tractor) for running tests at dif
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/phenomnomnominal/tractor-plugin-screen-size.svg)](https://greenkeeper.io/)
 [![npm version](https://img.shields.io/npm/v/tractor-plugin-screen-size.svg)](https://www.npmjs.com/package/tractor-plugin-screen-size)
-[![Coveralls](https://img.shields.io/coveralls/phenomnomnominal/tractor-plugin-screen-size.svg)](https://coveralls.io/github/phenomnomnominal/tractor-plugin-screen-size)
+[![Code Climate](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-screen-size/badges/gpa.svg)](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-screen-size)
+[![Test Coverage](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-screen-size/badges/coverage.svg)](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-screen-size/coverage)
 
 ## How to use:
 
