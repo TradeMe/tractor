@@ -6,7 +6,7 @@ browser methods.
 [![Greenkeeper badge](https://badges.greenkeeper.io/phenomnomnominal/tractor-plugin-browser.svg)](https://greenkeeper.io/)
 [![npm version](https://img.shields.io/npm/v/tractor-plugin-browser.svg)](https://www.npmjs.com/package/tractor-plugin-browser)
 [![Code Climate](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-browser/badges/gpa.svg)](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-browser)
-[![Test Coverage](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-browser/badges/coverage.svg)](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-browser-loader/coverage)
+[![Test Coverage](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-browser/badges/coverage.svg)](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-browser/coverage)
 
 ## Currently implemented methods:
 
