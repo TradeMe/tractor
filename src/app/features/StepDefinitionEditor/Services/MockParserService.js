@@ -29,13 +29,13 @@ var MockParserService = function MockParserService (
             mock.url = parseUrl(ast);
 
             try {
-                mock.passThrough = parsePassThrough(mock, ast);
+                parsePassThrough(mock, ast);
                 return mock;
             } catch (e) { }
 
             try {
-                mock.data = parseData(mock, ast);
-                mock.status = parseStatus(mock, ast);
+                parseData(mock, ast);
+                parseStatus(mock, ast);
                 parseHeaders(mock, ast);
                 return mock;
             } catch (e) { }
@@ -73,7 +73,7 @@ var MockParserService = function MockParserService (
             return mockDataInstance.variableName === instanceName;
         });
         assert(data);
-        return data;
+        mock.data = data;
     }
 
     function parsePassThrough (mock, ast) {
@@ -81,17 +81,16 @@ var MockParserService = function MockParserService (
         var passThroughOption = findOption(options, 'passThrough');
         assert(passThroughOption);
         var passThrough = passThroughOption.value.value;
-        assert(passThrough);
-        return passThrough;
+        mock.passThrough = !!passThrough;
     }
 
     function parseStatus (mock, ast) {
         var options = _.last(ast.arguments);
         var statusOption = findOption(options, 'status');
-        assert(statusOption);
-        var status = statusOption.value.value;
-        assert(status);
-        return status;
+        if (statusOption) {
+            var status = statusOption.value.value;
+            mock.status = status;
+        }
     }
 
     function parseHeaders (mock, ast) {
