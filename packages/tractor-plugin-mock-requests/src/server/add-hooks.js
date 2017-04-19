@@ -1,12 +1,12 @@
 import { MockRequests } from './mock-requests';
 
 export default function addHooks (browser, config, cucumber) {
-    cucumber.Before(function (scenario, callback) {
+    cucumber.Before((scenario, callback) => {
         global.mockRequests = new MockRequests(browser, config);
         callback();
     });
 
-    cucumber.After(function (scenario, callback) {
+    cucumber.After((scenario, callback) => {
         global.mockRequests.clear();
         callback();
     });

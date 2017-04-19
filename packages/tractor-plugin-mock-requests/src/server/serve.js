@@ -4,6 +4,7 @@ const DEFAULT_PORT = 8765;
 // Utilities:
 import fs from 'fs';
 import path from 'path';
+import { getConfig } from './utilities';
 import { info } from 'tractor-logger';
 
 // Dependencies:
@@ -24,23 +25,25 @@ const MOCKS = [];
 export default function serve (config) {
     shimZlib();
 
-    let mockRequests = config.mockRequests || {};
+    config = getConfig(config);
+    
     let application = express();
 
     let server = http.createServer(application);
 
     application.use(bodyParser.json());
+    application.set('etag', false);
 
     application.use('/mock-requests/add-mock', addMock);
     application.use('/mock-requests/set-host', setHost);
 
     application.use(proxy(getProxyUrl, {
-        decorateRequest,
+        decorateRequest: createRequestDecorator(config),
         intercept,
         memoizeHost: false
     }));
 
-    let port = mockRequests.port || DEFAULT_PORT;
+    let port = config.port || DEFAULT_PORT;
     server.listen(port, () => {
         info(`tractor-mock-requests is proxying at port ${port}`);
     });
@@ -57,9 +60,17 @@ function getProxyUrl () {
     return host;
 }
 
-function decorateRequest (requestOptions) {
-    requestOptions.headers['Referer'] = host;
-    return requestOptions;
+function createRequestDecorator (config) {
+    let headers = config.headers || {};
+    return function (requestOptions) {
+        Object.keys(headers).forEach(header => {
+            if (!requestOptions.headers[header]) {
+                requestOptions.headers[header] = headers[header];
+            }
+        });
+        requestOptions.headers['Referer'] = host;
+        return requestOptions;
+    };
 }
 
 function intercept (proxyResponse, data, request, response, callback) {
