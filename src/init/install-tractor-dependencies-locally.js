@@ -13,7 +13,7 @@ const TO_INSTALL = [
     'tractor-dependency-injection@0.1.1',
     'tractor-plugin-browser@0.1.1',
     'tractor-plugin-loader@0.4.0',
-    'tractor-plugin-mock-requests@0.1.0'
+    'tractor-plugin-mock-requests@0.2.0-beta.2'
 ];
 
 // Utilities:
