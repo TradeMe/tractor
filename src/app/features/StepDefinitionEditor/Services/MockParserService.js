@@ -96,12 +96,13 @@ var MockParserService = function MockParserService (
     function parseHeaders (mock, ast) {
         var options = _.last(ast.arguments);
         var headersOption = findOption(options, 'headers');
-        assert(headersOption);
-        headersOption.value.properties.forEach(function (property) {
-            var header = HeaderParserService.parse(mock, property);;
-            assert(header);
-            mock.headers.push(header);
-        });
+        if (headersOption) {
+            headersOption.value.properties.forEach(function (property) {
+                var header = HeaderParserService.parse(mock, property);
+                assert(header);
+                mock.headers.push(header);
+            });
+        }
     }
 
     function findOption (options, key) {

@@ -222,6 +222,12 @@
                         <h2>Headers:</h2>
                         <ul>
                             <li ng-repeat="header in mock.headers">
+                                <tractor-action
+                                    model="mock"
+                                    action="Remove header"
+                                    argument="header"
+                                    icon="remove">
+                                </tractor-action>
                                 <tractor-text-input
                                     form="file-editor"
                                     label="key"

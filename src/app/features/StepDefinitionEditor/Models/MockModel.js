@@ -48,6 +48,12 @@ var createMockModelConstructor = function (
         this.headers.push(new HeaderModel(this));
     };
 
+    MockModel.prototype.removeHeader = function (toRemove) {
+        _.remove(this.headers, function (header) {
+            return header === toRemove;
+        });
+    };
+
     return MockModel;
 
     function toAST () {
