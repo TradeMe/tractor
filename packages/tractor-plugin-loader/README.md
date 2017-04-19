@@ -26,7 +26,7 @@ A **tractor** plugin is just a plain old node module, with a few specially named
 > #### Returns:
 > * `plugin: any`
 
-## `addHooks` (optional):
+### `addHooks` (optional):
 
 > Add any Cucumber hooks that the plugin needs, e.g. Before, After.
 
