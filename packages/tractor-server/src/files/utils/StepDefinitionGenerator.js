@@ -29,7 +29,7 @@ export class StepDefinitionGenerator {
         let { content, path } = this.file;
         let stepNames = extractStepNames(content);
 
-        return childProcess.execAsync(`${CUCUMBER_COMMAND} "${path}"`)
+        return childProcess.execAsync(`${CUCUMBER_COMMAND} "${path}" --format snippets`)
         .then(result => generateStepDefinitionFiles.call(this, stepNames, result));
     }
 }
