@@ -26,7 +26,7 @@ export default function serve (config) {
     shimZlib();
 
     config = getConfig(config);
-    
+
     let application = express();
 
     let server = http.createServer(application);
@@ -69,6 +69,7 @@ function createRequestDecorator (config) {
             }
         });
         requestOptions.headers['Referer'] = host;
+        requestOptions.rejectUnauthorized = false;
         return requestOptions;
     };
 }
@@ -87,7 +88,7 @@ function intercept (proxyResponse, data, request, response, callback) {
                     ${MOCKS.join('\n\n')}
                 </script>
             `);
-            // MOCKS.length = 0;
+            MOCKS.length = 0;
 
             result = $.html();
         }
@@ -108,6 +109,7 @@ function setHost (request, response) {
 
 // Temporarily adding this until GZIP issues are resolved:
 // https://github.com/villadora/express-http-proxy/issues/177
+/* istanbul ignore next */
 function shimZlib () {
     let originalGzip = zlib.gzipSync;
     let originalGunzip = zlib.gunzipSync;

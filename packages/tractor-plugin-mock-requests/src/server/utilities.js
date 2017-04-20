@@ -15,6 +15,9 @@ export function getConfig (config) {
     return config;
 }
 
+// Cannot easily stub `request`, as `proxyquire` doesn't
+// work with `babel-register`. Ignoring from coverage for now:
+/* istanbul ignore next */
 export function setProxyConfig (body, uri) {
     return request({
         body,
