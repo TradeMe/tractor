@@ -7,13 +7,13 @@ const TO_INSTALL = [
     'chai-as-promised@5.1.0',
     'cucumber@1.3.1',
     'cucumber-html-reporter@0.3.5',
-    'protractor@4.0.11',
+    'protractor@5.1.1',
     'protractor-cucumber-framework@0.6.0',
-    'tractor-config-loader@0.3.1',
-    'tractor-dependency-injection@0.1.1',
-    'tractor-plugin-browser@0.1.1',
-    'tractor-plugin-loader@0.4.0',
-    'tractor-plugin-mock-requests@0.2.0-beta.2'
+    'tractor-config-loader',
+    'tractor-dependency-injection',
+    'tractor-plugin-browser',
+    'tractor-plugin-loader',
+    'tractor-plugin-mock-requests'
 ];
 
 // Utilities:
