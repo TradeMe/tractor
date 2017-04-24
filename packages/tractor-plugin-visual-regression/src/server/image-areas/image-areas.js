@@ -33,7 +33,12 @@ export function updateAreas (rawPngData, areas, ratio) {
 function calculateAreas (areas) {
     let areaData = createImageData();
     areas.forEach(area => {
+        if (!validateArea(area)) {
+            return;
+        }
+
         let { topLeftX, topLeftY, bottomRightX, bottomRightY } = area;
+
         if (topLeftX < areaData.minX) {
             areaData.minX = topLeftX;
         }
@@ -96,4 +101,13 @@ function paintItBlack (data, index) {
     data[index + 1] = 0;
     data[index + 2] = 0;
     data[index + 3] = 255;
+}
+
+function validateArea (area) {
+    let { topLeftX, topLeftY, bottomRightX, bottomRightY } = area;
+    return validateNumber(topLeftX) && validateNumber(topLeftY) && validateNumber(bottomRightX) && validateNumber(bottomRightY)
+}
+
+function validateNumber (number) {
+    return !isNaN(number) && number != null;
 }

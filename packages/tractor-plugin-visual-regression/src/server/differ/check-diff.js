@@ -1,9 +1,6 @@
-// Constants:
-import { BASELINE_DIRECTORY, CHANGES_DIRECTORY, DIFFS_DIRECTORY } from '../constants';
-
 // Utilities:
 import Promise from 'bluebird';
-import path from 'path';
+import { getBaselinePath, getChangesPath, getDiffsPath } from '../utils';
 
 // Dependencies:
 import { DiffPNGFile } from '../files/diff-png-file';
@@ -12,9 +9,9 @@ import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
 import { TractorError } from 'tractor-error-handler';
 
-export function checkDiff (fileStructure, visualRegressionPath, fileName) {
-    let baselinePath = path.join(visualRegressionPath, BASELINE_DIRECTORY, fileName);
-    let changesPath = path.join(visualRegressionPath, CHANGES_DIRECTORY, fileName);
+export function checkDiff (config, fileStructure, filePath) {
+    let baselinePath = getBaselinePath(config, filePath);
+    let changesPath = getChangesPath(config, filePath);
 
     let baselinePNGFile = fileStructure.allFilesByPath[baselinePath];
     let changesPNGFile = fileStructure.allFilesByPath[changesPath];
@@ -30,16 +27,16 @@ export function checkDiff (fileStructure, visualRegressionPath, fileName) {
 
     let error;
     if (!imagesAreSameSize(baselinePNG, changesPNG)) {
-        error = new TractorError(`New screenshot for ${fileName} is not the same size as baseline.`);
+        error = new TractorError(`New screenshot for ${filePath} is not the same size as baseline.`);
     }
 
     pixelmatch(baselinePNG.data, changesPNG.data, diffPNG.data, width, height, { threshold: 0.1 });
 
-    let diffsPath = replaceExtension(path.join(visualRegressionPath, DIFFS_DIRECTORY, fileName));
+    let diffsPath = replaceExtension(getDiffsPath(config, filePath));
 
     let diffPNGFile = new DiffPNGFile(diffsPath, fileStructure);
     return diffPNGFile.save(PNG.sync.write(diffPNG))
-    .then(() => Promise.reject(error || new TractorError(`Visual Regression failed for ${fileName}`)));
+    .then(() => Promise.reject(error || new TractorError(`Visual Regression failed for ${filePath}`)));
 }
 
 function imagesAreSameSize (baselinePNG, changePNG) {

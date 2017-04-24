@@ -1,28 +1,21 @@
 // Constants:
-import { BASELINE_DIRECTORY, CHANGES_DIRECTORY, DIFFS_DIRECTORY } from './constants';
 const DIRECTORY_EXISTS = 'EEXIST';
 
 // Utilities:
 import Promise from 'bluebird';
-import { getVisualRegressionPath } from './utils';
+import { getBaselinePath, getChangesPath, getDiffsPath, getVisualRegressionPath } from './utils';
 
 // Dependencies:
 const fs = Promise.promisifyAll(require('fs'));
-import path from 'path';
 
 function init (config) {
-    let visualRegressionPath = getVisualRegressionPath(config);
-    let baselinePath = path.join(visualRegressionPath, BASELINE_DIRECTORY);
-    let changesPath = path.join(visualRegressionPath, CHANGES_DIRECTORY);
-    let diffsPath = path.join(visualRegressionPath, DIFFS_DIRECTORY);
-
-    return fs.mkdirAsync(visualRegressionPath)
+    return fs.mkdirAsync(getVisualRegressionPath(config))
     .catch(catchExists)
-    .then(() => fs.mkdirAsync(baselinePath))
+    .then(() => fs.mkdirAsync(getBaselinePath(config)))
     .catch(catchExists)
-    .then(() => fs.mkdirAsync(changesPath))
+    .then(() => fs.mkdirAsync(getChangesPath(config)))
     .catch(catchExists)
-    .then(() => fs.mkdirAsync(diffsPath))
+    .then(() => fs.mkdirAsync(getDiffsPath(config)))
     .catch(catchExists);
 }
 init['@Inject'] = ['config'];

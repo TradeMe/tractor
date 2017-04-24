@@ -9,7 +9,7 @@ import { PNGFile } from '../files/png-file';
 import { TractorError, handleError } from 'tractor-error-handler';
 
 export function createGetDiffsHandler (fileStructure) {
-  let { allFilesByPath } = fileStructure;
+    let { allFilesByPath } = fileStructure;
 
     return function getDiffs (request, response) {
         let diffFiles = fileStructure.getFiles(DiffPNGFile);

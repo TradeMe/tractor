@@ -1,11 +1,9 @@
 // Constants:
-import { BASELINE_DIRECTORY, CHANGES_DIRECTORY } from '../constants';
 const GET_PIXEL_RATIO = 'return window.devicePixelRatio';
 
 // Utilities:
 import Promise from 'bluebird';
-import path from 'path';
-import { getVisualRegressionPath } from '../utils';
+import { getBaselinePath, getChangesPath, getVisualRegressionPath } from '../utils';
 
 // Dependencies:
 import { checkDiff } from '../differ/check-diff';
@@ -31,24 +29,29 @@ export class VisualRegression {
         this.areas.push(createIncludedArea(...coordinates));
     }
 
-    takeScreenshot (name) {
-        let fileName = createFileName(name);
-
-
+    takeScreenshot (filePath) {
         let visualRegressionPath = getVisualRegressionPath(this.config);
-        let baselineFilePath = path.join(visualRegressionPath, BASELINE_DIRECTORY, fileName);
-        let changesFilePath = path.join(visualRegressionPath, CHANGES_DIRECTORY, fileName);
-
+        let baselineFilePath;
+        let changesFilePath;
         let fileStructure;
         let hasBaseline;
         let pixelRatio;
         let savePath;
 
-        return createFileStructure(visualRegressionPath)
+        return getBrowserSize(this.browser)
+        .then(size => {
+            let { height, width } = size;
+            filePath = createFilePath(`${filePath} @ ${width}x${height}`);
+        })
+        .then(() => {
+            baselineFilePath = getBaselinePath(this.config, filePath);
+            changesFilePath =  getChangesPath(this.config, filePath);
+        })
+        .then(() => createFileStructure(visualRegressionPath))
         .then(_fileStructure => {
             fileStructure = _fileStructure;
         })
-        .then(() => checkForBaseline(fileStructure, visualRegressionPath, fileName))
+        .then(() => checkForBaseline(baselineFilePath))
         .then(_hasBaseline => {
             hasBaseline = _hasBaseline;
             savePath = hasBaseline ? changesFilePath : baselineFilePath;
@@ -62,7 +65,7 @@ export class VisualRegression {
         .then(rawPngData => saveScreenshot(fileStructure, savePath, updateAreas(rawPngData, this.areas, pixelRatio)))
         .then(() => {
             if (hasBaseline) {
-                return checkDiff(fileStructure, visualRegressionPath, fileName);
+                return checkDiff(this.config, fileStructure, filePath);
             }
         })
         .then(() => {
@@ -73,23 +76,26 @@ export class VisualRegression {
     }
 }
 
+function getBrowserSize (browser) {
+    return browser.driver.manage().window().getSize();
+}
+
 let fileStructure;
-function createFileStructure (path) {
+function createFileStructure (visualRegressionPath) {
     if (fileStructure) {
         return Promise.resolve(fileStructure);
     }
-    fileStructure = new FileStructure(path);
+    fileStructure = new FileStructure(visualRegressionPath);
     return fileStructure.read()
-    .then(() => fileStructure)
+    .then(() => fileStructure);
 }
 
-function createFileName (name) {
-    return `${name}${PNGFile.prototype.extension}`;
+function createFilePath (filePath) {
+    return `${filePath}${PNGFile.prototype.extension}`;
 }
 
-function checkForBaseline (fileStructure, visualRegressionPath, fileName) {
-    let filePath = path.join(visualRegressionPath, BASELINE_DIRECTORY, fileName);
-    return !!fileStructure.allFilesByPath[filePath];
+function checkForBaseline (baselineFilePath) {
+    return !!fileStructure.allFilesByPath[baselineFilePath];
 }
 
 function saveScreenshot (fileStructure, savePath, png) {
