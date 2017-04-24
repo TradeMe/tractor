@@ -20,7 +20,7 @@ export class File {
             throw new TractorError(`Cannot create "${this.path}" because it is outside of the root of the FileStructure`);
         }
 
-        this.url = `/${path.relative(this.fileStructure.path, this.path)}`.replace(/\\/, '/');
+        this.url = `/${path.relative(this.fileStructure.path, this.path)}`.replace(/\\/g, '/');
         this.name = path.basename(this.path);
         this.extension = this.extension || path.extname(this.path);
         this.basename = path.basename(this.path, this.extension);

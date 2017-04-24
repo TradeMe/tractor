@@ -76,6 +76,28 @@ describe('tractor-file-structure - File:', () => {
             expect(file.url).to.equal('/directory/file.ext');
         });
 
+        it('should correctly replace Windows path seperators in the URL', () => {
+            let origPath = {};
+            Object.keys(path.win32).forEach(key => {
+                origPath = path[key];
+                path[key] = path.win32[key];
+            });
+
+            sinon.stub(process, 'cwd').returns('');
+
+            let fileStructure = new FileStructure(path.win32.join(path.win32.sep, 'file-structure'));
+
+            let file = new File(path.win32.join(path.win32.sep, 'file-structure', 'directory', 'another-directory', 'file.ext'), fileStructure);
+
+            expect(file.url).to.equal('/directory/another-directory/file.ext');
+
+            process.cwd.restore();
+
+            Object.keys(path.win32).forEach(key => {
+                path[key] = origPath[key];
+            });
+        });
+
         it('should work out the parent directory', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
