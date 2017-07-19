@@ -60,7 +60,7 @@ var createMockModelConstructor = function (
         var ast = astCreatorService;
 
         var data = {
-            //The RegExp constructor does not escape special characters, so we need to double-escape "\?" to "\\\?" in the string before creating the RegExp.
+            // The RegExp constructor does not escape special characters, so we need to double-escape "\?" to "\\\?" in the string before creating the RegExp.
             url: ast.literal(new RegExp(this.url.replace(/\?/g,'\\\?')))
         };
         var template = 'mockRequests.when' + this.action + '(%= url %, {';

@@ -1,5 +1,5 @@
 <div ng-if="featureEditor.fileModel">
-    <tractor-file-tree extension="{{ featureEditor.extension }}" model="featureEditor" type="{{ featureEditor.type }}"></tractor-file-tree>
+    <tractor-file-tree extension="{{ featureEditor.extension }}" fileStructure="featureEditor.fileStructure" type="{{ featureEditor.type }}"></tractor-file-tree>
     <tractor-panel-handle panel-name="feature-file-tree"></tractor-panel-handle>
     <form class="file" name="featureEditor.fileEditor" novalidate
         ng-submit="featureEditor.showErrors() && featureEditor.saveFile()">

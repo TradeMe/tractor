@@ -93,12 +93,12 @@ tractor.config(function (
         /* eslint-enable no-path-concat */
         controller: 'ComponentEditorController as componentEditor',
         resolve: {
-            component: function ($stateParams, fileStructureService, ComponentParserService) {
-                var componentUrl = $stateParams.file && $stateParams.file.url;
-                if (!componentUrl) {
+            component: function ($stateParams, pageObjectFileStructureService, ComponentParserService) {
+                var pageObjectUrl = $stateParams.file && $stateParams.file.url;
+                if (!pageObjectUrl) {
                     return null;
                 }
-                return fileStructureService.openItem(componentUrl)
+                return pageObjectFileStructureService.openItem(pageObjectUrl)
                 .then(function (file) {
                     return ComponentParserService.parse(file);
                 });
@@ -112,21 +112,21 @@ tractor.config(function (
         /* eslint-enable no-path-concat */
         controller: 'FeatureEditorController as featureEditor',
         resolve: {
-            availableStepDefinitions: function (fileStructureService) {
-                return fileStructureService.getFileStructure()
+            availableStepDefinitions: function (stepDefintionfileStructureService) {
+                return stepDefintionfileStructureService.getFileStructure()
                 .then(function () {
-                    return fileStructureService.fileStructure.allFiles
+                    return stepDefintionfileStructureService.fileStructure.allFiles
                     .filter(function (file) {
                         return file.url.endsWith('.step.js');
                     });
                 });
             },
-            feature: function ($stateParams, fileStructureService, FeatureParserService) {
+            feature: function ($stateParams, featureFileStructureService, FeatureParserService) {
                 var featureUrl = $stateParams.file && $stateParams.file.url;
                 if (!featureUrl) {
                     return null;
                 }
-                return fileStructureService.openItem(featureUrl)
+                return featureFileStructureService.openItem(featureUrl)
                 .then(function (file) {
                     return FeatureParserService.parse(file);
                 });
@@ -159,10 +159,10 @@ tractor.config(function (
         /* eslint-enable no-path-concat */
         controller: 'StepDefinitionEditorController as stepDefinitionEditor',
         resolve: {
-            availableComponents: function (fileStructureService) {
-                return fileStructureService.getFileStructure()
+            availableComponents: function (pageObjectFileStructureService) {
+                return pageObjectFileStructureService.getFileStructure()
                 .then(function () {
-                    return fileStructureService.fileStructure.allFiles
+                    return pageObjectFileStructureService.fileStructure.allFiles
                     .filter(function (file) {
                         return file.url.endsWith('.component.js');
                     });
@@ -177,12 +177,12 @@ tractor.config(function (
                     });
                 });
             },
-            stepDefinition: function ($stateParams, availableComponents, availableMockData, fileStructureService, StepDefinitionParserService) {
+            stepDefinition: function ($stateParams, availableComponents, availableMockData, stepDefinitionFileStructureService, StepDefinitionParserService) {
                 var stepDefinitionUrl = $stateParams.file && $stateParams.file.url;
                 if (!stepDefinitionUrl) {
                     return null;
                 }
-                return fileStructureService.openItem(stepDefinitionUrl)
+                return stepDefinitionFileStructureService.openItem(stepDefinitionUrl)
                 .then(function (file) {
                     return StepDefinitionParserService.parse(file, availableComponents, availableMockData);
                 });

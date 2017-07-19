@@ -38,21 +38,29 @@
 </script>
 
 <script type="text/ng-template" id="file-structure.html">
-    <div ng-include="'file-options.html'"></div>
+    {{ item | json }}
+    {{ fileTree.fileStructure | json }}
+    {{ item === fileTree.fileStructure }}
+    <div
+        ng-if="item !== fileTree.fileStructure">
+        <div ng-include="'file-options.html'"></div>
 
-    <p class="file-tree__item-name"
-        ng-class="{
-            'file-tree__item--pending': item.isPending
-        }"
-        ng-if="item.basename && !item.editingName"
-        ng-click="fileTree.toggleOpenDirectory(item)"
-        ng-dblclick="fileTree.editName(item)">
-        {{ item.basename }}
-    </p>
-    <div ng-include="'rename-input.html'"></div>
+        <p
+            class="file-tree__item-name"
+            ng-class="{
+                'file-tree__item--pending': item.isPending
+            }"
+            ng-if="item.basename && !item.editingName"
+            ng-click="fileTree.toggleOpenDirectory(item)"
+            ng-dblclick="fileTree.editName(item)">
+            {{ item.basename }}
+        </p>
+        <div ng-include="'rename-input.html'"></div>
+    </div>
 
-    <ul class="file-tree__file-list"
-        ng-if="(item || fileTree.fileStructure).open">
+    <ul
+        class="file-tree__file-list"
+        ng-if="item.open || item === fileTree.fileStructure">
         <li class="file-tree__file-list-item file-tree__file-list-item--new-directory">
             <tractor-action
                 model="fileTree"
@@ -62,7 +70,9 @@
         </li>
 
         <li class="file-tree__file-list-item file-tree__file-list-item--directory"
-            ng-class="{ 'file-tree__file-list-item--open-directory': item.open }"
+            ng-class="{
+                'file-tree__file-list-item--open-directory': item.open || item === fileTree.fileStructure
+            }"
             ng-repeat="item in (item || fileTree.fileStructure).directories"
             ng-include="'file-structure.html'"
             tractor-drop-file
@@ -101,6 +111,7 @@
             'file-tree--feature': fileTree.type === 'features',
             'file-tree--json': fileTree.type === 'mock-data'
         }"
-        ng-include="'file-structure.html'">
+        ng-include="'file-structure.html'"
+        ng-init="item = fileTree.fileStructure">
     </div>
 </section>

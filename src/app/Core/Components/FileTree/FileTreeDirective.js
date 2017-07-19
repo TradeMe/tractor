@@ -15,9 +15,12 @@ var FileTreeDirective = function () {
         restrict: 'E',
 
         scope: {
-            model: '=',
+            fileStructure: '=',
             type: '@',
-            extension: '@'
+            extension: '@',
+            create: '=',
+            delete: '=',
+            move: '='
         },
 
         /* eslint-disable no-path-concat */
@@ -31,10 +34,6 @@ var FileTreeDirective = function () {
     };
 
     function link ($scope) {
-        if (_.isUndefined($scope.fileTree.model)) {
-            throw new Error('The "tractor-file-tree" directive requires a "model" attribute.');
-        }
-
         if (_.isUndefined($scope.fileTree.type)) {
             throw new Error('The "tractor-file-tree" directive requires a "type" attribute.');
         }
