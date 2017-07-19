@@ -3,6 +3,7 @@ const GET_PIXEL_RATIO = 'return window.devicePixelRatio';
 
 // Utilities:
 import Promise from 'bluebird';
+import path from 'path';
 import { getBaselinePath, getChangesPath, getVisualRegressionPath } from '../utils';
 
 // Dependencies:
@@ -43,9 +44,12 @@ export class VisualRegression {
             let { height, width } = size;
             filePath = createFilePath(`${filePath} @ ${width}x${height}`);
         })
-        .then(() => {
-            baselineFilePath = getBaselinePath(this.config, filePath);
-            changesFilePath =  getChangesPath(this.config, filePath);
+        .then(() => getBrowserCapabilities(this.browser))
+        .then(capabilities => {
+            let platform = capabilities.get('platform');
+            let browser = capabilities.get('browserName');
+            baselineFilePath = getBaselinePath(this.config, path.join(platform, browser, filePath));
+            changesFilePath =  getChangesPath(this.config, path.join(platform, browser, filePath));
         })
         .then(() => createFileStructure(visualRegressionPath))
         .then(_fileStructure => {
@@ -74,6 +78,10 @@ export class VisualRegression {
         })
         .catch(error => error.message);
     }
+}
+
+function getBrowserCapabilities (browser) {
+    return browser.getCapabilities();
 }
 
 function getBrowserSize (browser) {
