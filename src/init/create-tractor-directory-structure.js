@@ -1,10 +1,6 @@
 // Constants:
-const COMPONENTS_DIRECTORY = 'components';
 const DIRECTORY_ALREADY_EXISTS = 'EEXIST';
-const FEATURES_DIRECTORY = 'features';
-const MOCK_DATA_DIRECTORY = 'mock-data';
 const REPORT_DIRECTORY = 'report';
-const STEP_DEFINITIONS_DIRECTORY = 'step-definitions';
 const SUPPORT_DIRECTORY = 'support';
 
 // Utilities:
@@ -18,34 +14,38 @@ import { TractorError } from 'tractor-error-handler';
 
 export function createTractorDirectoryStructure (config) {
     info('Creating directory structure...');
-    return createAllDirectories(config.directory);
+    return createAllDirectories(config);
 }
 createTractorDirectoryStructure['@Inject'] = ['config'];
 
-function createAllDirectories (tractorDirectoryPath) {
-    let createDirectories = [
-        /* eslint-disable no-warning-comments */
-        // TODO: This is a bit cryptic, pull this out into another promise
-        // that creates the root dir, and do that first. Otherwise there
-        // may be a race condition here?
-        '',
-        COMPONENTS_DIRECTORY,
-        FEATURES_DIRECTORY,
-        MOCK_DATA_DIRECTORY,
-        REPORT_DIRECTORY,
-        STEP_DEFINITIONS_DIRECTORY,
-        SUPPORT_DIRECTORY
-    ].map(directory => {
-        return createDir(path.join(tractorDirectoryPath, directory))
-        .catch(TractorError, error => warn(`${error.message} Moving on...`));
-    });
+function createAllDirectories (config) {
+    let tractorDirectoryPath = config.directory;
 
-    return Promise.all(createDirectories)
-    .then(() => info('Directory structure created.'));
+    return createDir(tractorDirectoryPath)
+    .then(() => {
+        return Promise.map([
+            REPORT_DIRECTORY,
+            SUPPORT_DIRECTORY
+        ], directory => {
+            return createDir(path.join(tractorDirectoryPath, directory))
+        });
+    })
+    .then(() => {
+        return Promise.map([
+            config.features.directory,
+            config.pageObjects.directory,
+            config.stepDefinitions.directory,
+        ], directory => {
+            let relative = path.relative(tractorDirectoryPath, directory);
+            return createDir(path.resolve(tractorDirectoryPath, relative));
+        });
+    })
+    .then(() => info('Directory structure created.'))
+    .catch(TractorError, error => warn(`${error.message} Moving on...`));
 }
 
 function createDir (dir) {
-    return fs.mkdirAsync(dir)
+    return fs.mkdirAsync(path.relative('.', dir))
     .catch(Promise.OperationalError, error => {
         if (error && error.cause && error.cause.code === DIRECTORY_ALREADY_EXISTS) {
             throw new TractorError(`"${dir}" directory already exists.`);

@@ -25,16 +25,24 @@ describe('tractor - init/create-tractor-directory-structure:', () => {
         sinon.stub(tractorLogger, 'warn');
 
         return createTractorDirectoryStructure({
-            directory: 'directory'
+            directory: './directory',
+            features: {
+                directory: './directory/features'
+            },
+            pageObjects: {
+                directory: './directory/page-objects'
+            },
+            stepDefinitions: {
+                directory: './directory/step-definitions'
+            },
         })
         .then(() => {
             expect(fs.mkdirAsync).to.have.been.calledWith('directory');
-            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'components'));
-            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'features'));
-            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'step-definitions'));
-            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'mock-data'));
-            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'support'));
             expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'report'));
+            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'support'));
+            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'features'));
+            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'page-objects'));
+            expect(fs.mkdirAsync).to.have.been.calledWith(path.join('directory', 'step-definitions'));
         })
         .finally(() => {
             fs.mkdirAsync.restore();
@@ -53,7 +61,16 @@ describe('tractor - init/create-tractor-directory-structure:', () => {
         sinon.stub(tractorLogger, 'warn');
 
         return createTractorDirectoryStructure({
-            directory: 'directory'
+            directory: 'directory',
+            features: {
+                directory: './directory/features'
+            },
+            pageObjects: {
+                directory: './directory/page-objects'
+            },
+            stepDefinitions: {
+                directory: './directory/step-definitions'
+            },
         })
         .then(() => {
             expect(tractorLogger.warn).to.have.been.calledWith('"directory" directory already exists. Moving on...');
@@ -71,7 +88,16 @@ describe('tractor - init/create-tractor-directory-structure:', () => {
         sinon.stub(tractorLogger, 'warn');
 
         return createTractorDirectoryStructure({
-            directory: 'directory'
+            directory: 'directory',
+            features: {
+                directory: './directory/features'
+            },
+            pageObjects: {
+                directory: './directory/page-objects'
+            },
+            stepDefinitions: {
+                directory: './directory/step-definitions'
+            },
         })
         .catch(() => {})
         .then(() => {
@@ -90,7 +116,16 @@ describe('tractor - init/create-tractor-directory-structure:', () => {
         sinon.stub(tractorLogger, 'warn');
 
         return createTractorDirectoryStructure({
-            directory: 'directory'
+            directory: 'directory',
+            features: {
+                directory: './directory/features'
+            },
+            pageObjects: {
+                directory: './directory/page-objects'
+            },
+            stepDefinitions: {
+                directory: './directory/step-definitions'
+            },
         })
         .then(() => {
             expect(tractorLogger.info).to.have.been.calledWith('Creating directory structure...');
