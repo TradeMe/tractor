@@ -39,7 +39,7 @@
     "eslint": "^3.18.0",
     "istanbul": "^1.0.0-alpha.2",
     "mocha": "^3.2.0",
-    "npm-watch": "^0.1.8",
+    "npm-watch": "^0.2.0",
     "sinon": "^2.1.0",
     "sinon-chai": "^2.9.0"
   },
