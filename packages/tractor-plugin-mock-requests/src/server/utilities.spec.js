@@ -25,16 +25,16 @@ describe('tractor-plugin-mock-requests - utilities:', () => {
             expect(config.port).to.equal(8765);
         });
 
-        it('should allow for a custom domain to be set', () => {
+        it('should allow for a custom host to be set', () => {
             let tractorConfig = {
                 mockRequests: {
-                    domain: 'tractor.trademe.co.nz'
+                    host: 'tractor.co.nz'
                 }
             };
 
             let config = getConfig(tractorConfig);
 
-            expect(config.domain).to.equal('tractor.trademe.co.nz');
+            expect(config.host).to.equal('tractor.co.nz');
         });
 
         it('should allow for a custom port to be set', () => {

@@ -1,18 +1,18 @@
 // Constants:
-const DEFAULT_DOMAIN = 'localhost';
+const DEFAULT_HOST = 'http://localhost';
 const DEFAULT_PORT = 8765;
 
 // Dependencies:
 import request from 'request-promise-native';
 
 export function createProxyUrl (config, url) {
-    let { domain, port } = getConfig(config);
-    return `http://${domain}:${port}${url}`;
+    let { host, port } = config;
+    return `${host}:${port}${url}`;
 }
 
 export function getConfig (config) {
     config = config.mockRequests || {};
-    config.domain = config.domain || DEFAULT_DOMAIN;
+    config.host = config.host || DEFAULT_HOST;
     config.port = config.port || DEFAULT_PORT;
     return config;
 }
