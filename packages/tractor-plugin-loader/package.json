@@ -32,7 +32,6 @@
     "param-case": "^2.1.1",
     "read-pkg-up": "^2.0.0",
     "title-case": "^2.1.1",
-    "tractor-config-loader": "^0.3.1",
     "tractor-error-handler": "^0.2.1",
     "tractor-logger": "^0.1.0"
   },

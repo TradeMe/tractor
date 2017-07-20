@@ -2151,10 +2151,6 @@ lodash.defaults@^3.1.2:
     lodash.assign "^3.0.0"
     lodash.restparam "^3.0.0"
 
-lodash.defaults@^4.2.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/lodash.defaults/-/lodash.defaults-4.2.0.tgz#d09178716ffea4dde9e5fb7b37f6f0802274580c"
-
 lodash.isarguments@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/lodash.isarguments/-/lodash.isarguments-3.1.0.tgz#2f573d85c6a24289ff00663b491c1d338ff3458a"
@@ -3108,14 +3104,6 @@ tough-cookie@~2.3.0:
   resolved "https://registry.yarnpkg.com/tough-cookie/-/tough-cookie-2.3.2.tgz#f081f76e4c85720e6c37a5faced737150d84072a"
   dependencies:
     punycode "^1.4.1"
-
-tractor-config-loader@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/tractor-config-loader/-/tractor-config-loader-0.3.1.tgz#3676a8e28296970552c1849656508198ecf265ed"
-  dependencies:
-    lodash.defaults "^4.2.0"
-    minimist "^1.2.0"
-    tractor-logger "^0.1.0"
 
 tractor-error-handler@^0.2.1:
   version "0.2.1"
