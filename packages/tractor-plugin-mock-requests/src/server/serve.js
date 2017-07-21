@@ -38,8 +38,8 @@ export default function serve (config) {
     application.use('/mock-requests/set-host', setHost);
 
     application.use(proxy(getProxyUrl, {
-        decorateRequest: createRequestDecorator(config),
-        intercept,
+        proxyReqOptDecorator: createRequestDecorator(config),
+        userResDecorator,
         memoizeHost: false
     }));
 
@@ -74,7 +74,7 @@ function createRequestDecorator (config) {
     };
 }
 
-function intercept (proxyResponse, data, request, response, callback) {
+function userResDecorator (proxyResponse, data) {
     let result = data;
     if (isHTML(proxyResponse)) {
         let $ = cheerio.load(data.toString());
@@ -93,7 +93,7 @@ function intercept (proxyResponse, data, request, response, callback) {
             result = $.html();
         }
     }
-    callback(null, result);
+    return result;
 }
 
 function isHTML (response) {
