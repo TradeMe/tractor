@@ -24,10 +24,7 @@ export class JavaScriptFile extends File {
         /* istanbul ignore next */
         let read = super.read();
 
-        return read.then(content => {
-            setAST.call(this, content);
-            return content;
-        })
+        return read.then(content => setAST.call(this, content))
         .catch(() => {
             throw new TractorError(`Parsing "${this.path}" failed.`, REQUEST_ERROR);
         });
@@ -46,10 +43,7 @@ export class JavaScriptFile extends File {
         /* istanbul ignore next */
         let save = super.save(javascript);
 
-        return save.then(content => {
-            setAST.call(this, content);
-            return content;
-        })
+        return save.then(content => setAST.call(this, content))
         .catch(() => {
             throw new TractorError(`Saving "${this.path}" failed.`, REQUEST_ERROR);
         });
@@ -139,4 +133,5 @@ function setAST (content) {
         comment: true
     });
     this.data = this.ast;
+    return content;
 }
