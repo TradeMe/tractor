@@ -16,13 +16,13 @@ Plugin loader for [**tractor**](https://github.com/TradeMe/tractor) to provide a
 
 A **tractor** plugin is just a plain old node module, with a few specially named exports, and maybe some bundled UI code. If you want to see an example of a basic plugin, check out [**tractor-plugin-browser**](https://github.com/phenomnomnominal/tractor-plugin-browser). Each of the following functions will be run using the basic DI provided by [**tractor-dependency-injection**](https://github.com/phenomnomnominal/tractor-dependency-injection).
 
-### `description`
+### `description` (optional)
 
 > The `description` of any actions that the plugin provides to **tractor**. It should be an object with a single property, `methods: Array`[`<Method>`](https://github.com/phenomnomnominal/tractor-plugin-loader#method).
 
 ### `create` (optional):
 
-> Defines how an instance of the plugin will be instantiated when Protractor runs. It should return a concrete implementation of each of the [`description`](https://github.com/phenomnomnominal/tractor-plugin-loader#description-required).
+> Defines how an instance of the plugin will be instantiated when Protractor runs. It should return a concrete implementation of each of the [`description`](https://github.com/phenomnomnominal/tractor-plugin-loader#description-optional).
 
 > #### Returns:
 > * `plugin: any`
@@ -34,6 +34,14 @@ A **tractor** plugin is just a plain old node module, with a few specially named
 ### `init` (optional):
 
 > Initialise anything that your plugin needs before it runs. This may be things like creating directories or getting information about the current environment, before **tractor** starts running.
+
+> #### Returns:
+> * `promise?: Promise`
+
+
+### `run` (optional):
+
+> Run any extra code you need before the app server starts. At the point that this is called all other plugins have been initialised and served.
 
 > #### Returns:
 > * `promise?: Promise`

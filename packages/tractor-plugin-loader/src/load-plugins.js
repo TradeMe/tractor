@@ -41,6 +41,7 @@ export function loadPlugins () {
         plugin.addHooks = plugin.addHooks || (() => {});
         plugin.create = plugin.create || (() => {});
         plugin.init = plugin.init || (() => {});
+        plugin.run = plugin.run || (() => {});
         plugin.serve = plugin.serve || (() => {});
     });
     return plugins;
@@ -56,6 +57,7 @@ function requirePlugins () {
             let modulePath = path.resolve(process.cwd(), path.join('node_modules', pluginName));
             plugin = module._load(modulePath);
             plugin = plugin.default ? plugin.default : plugin;
+            plugin.description = plugin.description || {};
             plugin.fullName = pluginName;
             let [, name] = plugin.fullName.match(TRACTOR_PLUGIN_NAME_REGEX);
             plugin.name = name;
@@ -63,19 +65,12 @@ function requirePlugins () {
         } catch (e) {
             throw new TractorError(`could not require '${pluginName}'`);
         }
-    })
-    .filter(plugin => {
-        let { description, fullName } = plugin;
-        if (!description) {
-            throw new TractorError(`'${fullName}' has no \`description\``);
-        }
-        return description;
     });
 }
 
 function getInstalledPluginNames () {
     let { pkg } = readPkgUp.sync({ cwd: process.cwd() });
-    let dependencies = [].concat(Object.keys(pkg.dependencies), Object.keys(pkg.devDependencies));
+    let dependencies = [].concat(Object.keys(pkg.dependencies || {}), Object.keys(pkg.devDependencies || {}));
 
     let pluginNames = dependencies
     .filter(dependency => dependency.match(TRACTOR_PLUGIN_MODULE_NAME_REGEX))
