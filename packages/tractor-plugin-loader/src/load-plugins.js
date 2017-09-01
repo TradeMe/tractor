@@ -13,7 +13,6 @@ import { info } from 'tractor-logger';
 import camelCase from 'camel-case';
 import paramCase from 'param-case';
 import titleCase from 'title-case';
-import readPkgUp from 'read-pkg-up';
 
 // Errors:
 import { TractorError } from 'tractor-error-handler';
@@ -69,10 +68,7 @@ function requirePlugins () {
 }
 
 function getInstalledPluginNames () {
-    let { pkg } = readPkgUp.sync({ cwd: process.cwd() });
-    let dependencies = [].concat(Object.keys(pkg.dependencies || {}), Object.keys(pkg.devDependencies || {}));
-
-    let pluginNames = dependencies
+    let pluginNames = fs.readdirSync(path.resolve(process.cwd(), 'node_modules'))
     .filter(dependency => dependency.match(TRACTOR_PLUGIN_MODULE_NAME_REGEX))
     .map(dependency => {
         let [, dependencyName] = dependency.match(TRACTOR_PLUGIN_MODULE_NAME_REGEX);

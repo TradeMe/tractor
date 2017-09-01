@@ -13,7 +13,6 @@ chai.use(sinonChai);
 import fs from 'fs';
 import module from 'module';
 import path from 'path';
-import readPkgUp from 'read-pkg-up';
 import * as tractorLogger from 'tractor-logger';
 import { TractorError } from 'tractor-error-handler';
 
@@ -23,47 +22,25 @@ import { loadPlugins } from './load-plugins';
 describe('tractor-plugin-loader:', () => {
     describe('load-plugins:', () => {
         it('should do nothing if there is not any installed plugins', () => {
-            let pkg = {
-                dependencies: {},
-                devDependencies: {}
-            };
+            let nodeModules = [];
 
-            sinon.stub(readPkgUp, 'sync').returns({ pkg });
+            sinon.stub(fs, 'readdirSync').returns(nodeModules);
             sinon.stub(tractorLogger, 'info');
 
             let plugins = loadPlugins();
 
             expect(plugins.length).to.equal(0);
 
-            readPkgUp.sync.restore();
-            tractorLogger.info.restore();
-        });
-
-        it('should not break if the package has no dependencies', () => {
-            let pkg = { };
-
-            sinon.stub(readPkgUp, 'sync').returns({ pkg });
-            sinon.stub(tractorLogger, 'info');
-
-            let plugins = loadPlugins();
-
-            expect(plugins.length).to.equal(0);
-
-            readPkgUp.sync.restore();
+            fs.readdirSync.restore();
             tractorLogger.info.restore();
         });
 
         it('should create a plugin for each installed plugin', () => {
-            let pkg = {
-                dependencies: {},
-                devDependencies: {
-                    'tractor-plugin-test': '1.0.0'
-                }
-            };
+            let nodeModules = ['tractor-plugin-test'];
             let pluginModule = {};
 
+            sinon.stub(fs, 'readdirSync').returns(nodeModules);
             sinon.stub(module, '_load').returns(pluginModule);
-            sinon.stub(readPkgUp, 'sync').returns({ pkg });
             sinon.stub(tractorLogger, 'info');
 
             let plugins = loadPlugins();
@@ -72,67 +49,52 @@ describe('tractor-plugin-loader:', () => {
             expect(pluginModule.fullName).to.equal('tractor-plugin-test');
             expect(pluginModule.name).to.equal('test');
 
+            fs.readdirSync.restore();
             module._load.restore();
-            readPkgUp.sync.restore();
             tractorLogger.info.restore();
         });
 
         it('should create a plugin for an ES2015 module', () => {
-            let pkg = {
-                dependencies: {},
-                devDependencies: {
-                    'tractor-plugin-test': '1.0.0'
-                }
-            };
+            let nodeModules = ['tractor-plugin-test'];
             let pluginModule = {
                 default: {}
             };
 
+            sinon.stub(fs, 'readdirSync').returns(nodeModules);
             sinon.stub(module, '_load').returns(pluginModule);
-            sinon.stub(readPkgUp, 'sync').returns({ pkg });
             sinon.stub(tractorLogger, 'info');
 
             let plugins = loadPlugins();
 
             expect(plugins.length).to.equal(1);
 
+            fs.readdirSync.restore();
             module._load.restore();
-            readPkgUp.sync.restore();
             tractorLogger.info.restore();
         });
 
         it('should throw if the plugin cannot be loaded', () => {
-            let pkg = {
-                dependencies: {},
-                devDependencies: {
-                    'tractor-plugin-test': '1.0.0'
-                }
-            };
+            let nodeModules = ['tractor-plugin-test'];
 
+            sinon.stub(fs, 'readdirSync').returns(nodeModules);
             sinon.stub(module, '_load').throws(new Error());
-            sinon.stub(readPkgUp, 'sync').returns({ pkg });
             sinon.stub(tractorLogger, 'info');
 
             expect(() => {
                 loadPlugins();
             }).to.throw(TractorError, `could not require 'tractor-plugin-test'`);
 
+            fs.readdirSync.restore();
             module._load.restore();
-            readPkgUp.sync.restore();
             tractorLogger.info.restore();
         });
 
         it('should decorate the `description` with display values', () => {
-            let pkg = {
-                dependencies: {
-                    'tractor-plugin-test-plugin': '1.0.0'
-                },
-                devDependencies: {}
-            };
+            let nodeModules = ['tractor-plugin-test-plugin'];
             let pluginModule = {};
 
+            sinon.stub(fs, 'readdirSync').returns(nodeModules);
             sinon.stub(module, '_load').returns(pluginModule);
-            sinon.stub(readPkgUp, 'sync').returns({ pkg });
             sinon.stub(tractorLogger, 'info');
 
             let plugins = loadPlugins();
@@ -142,22 +104,17 @@ describe('tractor-plugin-loader:', () => {
             expect(test.description.variableName).to.equal('testPlugin');
             expect(test.description.url).to.equal('test-plugin');
 
+            fs.readdirSync.restore();
             module._load.restore();
-            readPkgUp.sync.restore();
             tractorLogger.info.restore();
         });
 
         it('should have a default `addHooks` function that is a noop', () => {
-            let pkg = {
-                dependencies: {},
-                devDependencies: {
-                    'tractor-plugin-test': '1.0.0'
-                }
-            };
+            let nodeModules = ['tractor-plugin-test'];
             let pluginModule = {};
 
+            sinon.stub(fs, 'readdirSync').returns(nodeModules);
             sinon.stub(module, '_load').returns(pluginModule);
-            sinon.stub(readPkgUp, 'sync').returns({ pkg });
             sinon.stub(tractorLogger, 'info');
 
             let plugins = loadPlugins();
@@ -166,22 +123,17 @@ describe('tractor-plugin-loader:', () => {
                 test.addHooks();
             }).to.not.throw();
 
+            fs.readdirSync.restore();
             module._load.restore();
-            readPkgUp.sync.restore();
             tractorLogger.info.restore();
         });
 
         it('should have a default `create` function that is a noop', () => {
-            let pkg = {
-                dependencies: {},
-                devDependencies: {
-                    'tractor-plugin-test': '1.0.0'
-                }
-            };
+            let nodeModules = ['tractor-plugin-test'];
             let pluginModule = {};
 
+            sinon.stub(fs, 'readdirSync').returns(nodeModules);
             sinon.stub(module, '_load').returns(pluginModule);
-            sinon.stub(readPkgUp, 'sync').returns({ pkg });
             sinon.stub(tractorLogger, 'info');
 
             let plugins = loadPlugins();
@@ -190,22 +142,17 @@ describe('tractor-plugin-loader:', () => {
                 test.create();
             }).to.not.throw();
 
+            fs.readdirSync.restore();
             module._load.restore();
-            readPkgUp.sync.restore();
             tractorLogger.info.restore();
         });
 
         it('should have a default `init` function that is a noop', () => {
-            let pkg = {
-                dependencies: {},
-                devDependencies: {
-                    'tractor-plugin-test': '1.0.0'
-                }
-            };
+            let nodeModules = ['tractor-plugin-test'];
             let pluginModule = {};
 
+            sinon.stub(fs, 'readdirSync').returns(nodeModules);
             sinon.stub(module, '_load').returns(pluginModule);
-            sinon.stub(readPkgUp, 'sync').returns({ pkg });
             sinon.stub(tractorLogger, 'info');
 
             let plugins = loadPlugins();
@@ -214,22 +161,17 @@ describe('tractor-plugin-loader:', () => {
                 test.init();
             }).to.not.throw();
 
+            fs.readdirSync.restore();
             module._load.restore();
-            readPkgUp.sync.restore();
             tractorLogger.info.restore();
         });
 
         it('should have a default `run` function that is a noop', () => {
-            let pkg = {
-                dependencies: {},
-                devDependencies: {
-                    'tractor-plugin-test': '1.0.0'
-                }
-            };
+            let nodeModules = ['tractor-plugin-test'];
             let pluginModule = {};
 
+            sinon.stub(fs, 'readdirSync').returns(nodeModules);
             sinon.stub(module, '_load').returns(pluginModule);
-            sinon.stub(readPkgUp, 'sync').returns({ pkg });
             sinon.stub(tractorLogger, 'info');
 
             let plugins = loadPlugins();
@@ -238,22 +180,17 @@ describe('tractor-plugin-loader:', () => {
                 test.run();
             }).to.not.throw();
 
+            fs.readdirSync.restore();
             module._load.restore();
-            readPkgUp.sync.restore();
             tractorLogger.info.restore();
         });
 
         it('should have a default `serve` function that is a noop', () => {
-            let pkg = {
-                dependencies: {},
-                devDependencies: {
-                    'tractor-plugin-test': '1.0.0'
-                }
-            };
+            let nodeModules = ['tractor-plugin-test'];
             let pluginModule = {};
 
+            sinon.stub(fs, 'readdirSync').returns(nodeModules);
             sinon.stub(module, '_load').returns(pluginModule);
-            sinon.stub(readPkgUp, 'sync').returns({ pkg });
             sinon.stub(tractorLogger, 'info');
 
             let plugins = loadPlugins();
@@ -262,24 +199,19 @@ describe('tractor-plugin-loader:', () => {
                 test.serve();
             }).to.not.throw();
 
+            fs.readdirSync.restore();
             module._load.restore();
-            readPkgUp.sync.restore();
             tractorLogger.info.restore();
         });
 
         it('should try to load the UI bundle and set the `hasUI` flag to true if it works', () => {
-            let pkg = {
-                dependencies: {},
-                devDependencies: {
-                    'tractor-plugin-test': '1.0.0'
-                }
-            };
+            let nodeModules = ['tractor-plugin-test'];
             let pluginModule = {};
 
             sinon.stub(fs, 'accessSync').returns(true);
+            sinon.stub(fs, 'readdirSync').returns(nodeModules);
             sinon.stub(module, '_load').returns(pluginModule);
             sinon.stub(process, 'cwd').returns('.');
-            sinon.stub(readPkgUp, 'sync').returns({ pkg });
             sinon.stub(tractorLogger, 'info');
 
             let plugins = loadPlugins();
@@ -289,25 +221,20 @@ describe('tractor-plugin-loader:', () => {
             expect(test.description.hasUI).to.equal(true);
 
             fs.accessSync.restore();
+            fs.readdirSync.restore();
             module._load.restore();
             process.cwd.restore();
-            readPkgUp.sync.restore();
             tractorLogger.info.restore();
         });
 
         it('should try to load the UI bundle and set the `hasUI` flag to false if it fails', () => {
-            let pkg = {
-                dependencies: {},
-                devDependencies: {
-                    'tractor-plugin-test': '1.0.0'
-                }
-            };
+            let nodeModules = ['tractor-plugin-test'];
             let pluginModule = {};
 
             sinon.stub(fs, 'accessSync').throws(new Error());
+            sinon.stub(fs, 'readdirSync').returns(nodeModules);
             sinon.stub(module, '_load').returns(pluginModule);
             sinon.stub(process, 'cwd').returns('.');
-            sinon.stub(readPkgUp, 'sync').returns({ pkg });
             sinon.stub(tractorLogger, 'info');
 
             let plugins = loadPlugins();
@@ -316,9 +243,9 @@ describe('tractor-plugin-loader:', () => {
             expect(test.description.hasUI).to.equal(false);
 
             fs.accessSync.restore();
+            fs.readdirSync.restore();
             module._load.restore();
             process.cwd.restore();
-            readPkgUp.sync.restore();
             tractorLogger.info.restore();
         });
     });
