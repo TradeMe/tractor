@@ -31,20 +31,22 @@ export function loadConfig () {
     }
     config = defaults(config, DEFAULT_CONFIG);
 
-    sortTags(config);
+    config.tags = sortTags(config.tags);
+
     return config;
 }
 
-function sortTags (config) {
+function sortTags (tags) {
     // Remove empty tag
-    if (config.tags.includes(EMPTY_TAG)) {
-        let index = config.tags.indexOf(EMPTY_TAG);
-        config.tags.splice(index, 1);
+    if (tags.includes(EMPTY_TAG)) {
+        let index = tags.indexOf(EMPTY_TAG);
+        tags.splice(index, 1);
     }
 
     // Add @s
-    config.tags = config.tags.map(tag => tag.startsWith('@') ? tag : `@${tag}`);
+    tags = tags.map(tag => tag.startsWith('@') ? tag : `@${tag}`);
 
     // Add empty tag to start
-    config.tags.unshift(EMPTY_TAG);
+    tags.unshift(EMPTY_TAG);
+    return tags;
 }

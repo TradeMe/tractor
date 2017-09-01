@@ -1,6 +1,6 @@
 {
   "name": "tractor-config-loader",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -28,19 +28,19 @@
     "node": ">=0.10"
   },
   "devDependencies": {
-    "babel-cli": "^6.22.2",
-    "babel-core": "^6.24.0",
-    "babel-eslint": "^7.1.1",
-    "babel-preset-es2015": "^6.14.0",
-    "babel-preset-stage-0": "^6.5.0",
-    "babel-register": "^6.14.0",
-    "chai": "^3.5.0",
-    "eslint": "^3.15.0",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^7.2.3",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "chai": "^4.1.1",
+    "eslint": "^4.5.0",
     "istanbul": "^1.0.0-alpha.2",
-    "mocha": "^3.0.2",
-    "npm-watch": "^0.1.8",
-    "sinon": "^2.1.0",
-    "sinon-chai": "^2.8.0"
+    "mocha": "^3.5.0",
+    "npm-watch": "^0.2.0",
+    "sinon": "^3.2.1",
+    "sinon-chai": "^2.13.0"
   },
   "dependencies": {
     "lodash.defaults": "^4.2.0",
