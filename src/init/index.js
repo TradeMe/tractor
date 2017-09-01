@@ -5,7 +5,7 @@ import { error, info } from 'tractor-logger';
 import { createTractorDirectoryStructure } from './create-tractor-directory-structure';
 import { createBaseTractorFiles } from './create-base-tractor-files';
 import { initialisePlugins } from './initialise-plugins';
-import { installTractorDependenciesLocally } from './install-tractor-dependencies-locally';
+import { installTractorLocally } from './install-tractor-locally';
 import { setUpSelenium } from './set-up-selenium';
 
 export function init (di) {
@@ -13,7 +13,7 @@ export function init (di) {
 
     return di.call(createTractorDirectoryStructure)
     .then(() => di.call(createBaseTractorFiles))
-    .then(() => di.call(installTractorDependenciesLocally))
+    .then(() => di.call(installTractorLocally))
     .then(() => di.call(setUpSelenium))
     .then(() => di.call(initialisePlugins))
     .then(() => info('Set up complete!'))

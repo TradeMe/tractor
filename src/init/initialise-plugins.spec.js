@@ -49,7 +49,7 @@ describe('tractor - init/initialise-plugins:', () => {
 
         return initialisePlugins(di, plugins)
         .then(() => {
-            expect(tractorLogger.info).to.have.been.calledWith('Initialising test-plugin');
+            expect(tractorLogger.info).to.have.been.calledWith('Initialising tractor-plugin-test-plugin');
         })
         .finally(() => {
             tractorLogger.info.restore();

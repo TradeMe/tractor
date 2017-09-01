@@ -48,4 +48,20 @@ describe('tractor - init/set-up-selenium:', () => {
             tractorLogger.info.restore();
         });
     });
+
+    it('should tell the user if webdriver cannot be updated', () => {
+        sinon.stub(childProcess, 'execAsync').returns(Promise.reject());
+        sinon.stub(tractorLogger, 'error');
+        sinon.stub(tractorLogger, 'info');
+
+        return setUpSelenium()
+        .then(() => {
+            expect(tractorLogger.error).to.have.been.calledWith(`Couldn't update Selenium. Either run "tractor init" again, or install it manually by running "webdriver-manager update"`);
+        })
+        .finally(() => {
+            childProcess.execAsync.restore();
+            tractorLogger.error.restore();
+            tractorLogger.info.restore();
+        });
+    });
 });

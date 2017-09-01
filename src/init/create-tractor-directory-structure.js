@@ -22,26 +22,17 @@ function createAllDirectories (config) {
     let tractorDirectoryPath = config.directory;
 
     return createDir(tractorDirectoryPath)
+    .catch(TractorError, error => warn(`${error.message} Moving on...`))
     .then(() => {
         return Promise.map([
             REPORT_DIRECTORY,
             SUPPORT_DIRECTORY
         ], directory => {
             return createDir(path.join(tractorDirectoryPath, directory))
-        });
-    })
-    .then(() => {
-        return Promise.map([
-            config.features.directory,
-            config.pageObjects.directory,
-            config.stepDefinitions.directory,
-        ], directory => {
-            let relative = path.relative(tractorDirectoryPath, directory);
-            return createDir(path.resolve(tractorDirectoryPath, relative));
+            .catch(TractorError, error => warn(`${error.message} Moving on...`));
         });
     })
     .then(() => info('Directory structure created.'))
-    .catch(TractorError, error => warn(`${error.message} Moving on...`));
 }
 
 function createDir (dir) {

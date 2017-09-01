@@ -16,7 +16,7 @@ chai.use(sinonChai);
 import { createTractorDirectoryStructure } from './create-tractor-directory-structure';
 import { createBaseTractorFiles } from './create-base-tractor-files';
 import { initialisePlugins } from './initialise-plugins';
-import { installTractorDependenciesLocally } from './install-tractor-dependencies-locally';
+import { installTractorLocally } from './install-tractor-locally';
 import { setUpSelenium } from './set-up-selenium';
 import { container } from 'tractor-dependency-injection';
 import * as tractorLogger from 'tractor-logger';
@@ -32,7 +32,7 @@ describe('tractor - init/index:', () => {
         diCall.withArgs(createTractorDirectoryStructure).returns(Promise.resolve());
         diCall.withArgs(createBaseTractorFiles).returns(Promise.resolve());
         diCall.withArgs(initialisePlugins).returns(Promise.resolve());
-        diCall.withArgs(installTractorDependenciesLocally).returns(Promise.resolve());
+        diCall.withArgs(installTractorLocally).returns(Promise.resolve());
         diCall.withArgs(setUpSelenium).returns(Promise.resolve());
         sinon.stub(tractorLogger, 'info');
 
@@ -41,7 +41,7 @@ describe('tractor - init/index:', () => {
             expect(di.call).to.have.been.calledWith(createTractorDirectoryStructure);
             expect(di.call).to.have.been.calledWith(createBaseTractorFiles);
             expect(di.call).to.have.been.calledWith(initialisePlugins);
-            expect(di.call).to.have.been.calledWith(installTractorDependenciesLocally);
+            expect(di.call).to.have.been.calledWith(installTractorLocally);
             expect(di.call).to.have.been.calledWith(setUpSelenium);
         })
         .finally(() => {
@@ -56,7 +56,7 @@ describe('tractor - init/index:', () => {
         diCall.withArgs(createTractorDirectoryStructure).returns(Promise.resolve());
         diCall.withArgs(createBaseTractorFiles).returns(Promise.resolve());
         diCall.withArgs(initialisePlugins).returns(Promise.resolve());
-        diCall.withArgs(installTractorDependenciesLocally).returns(Promise.resolve());
+        diCall.withArgs(installTractorLocally).returns(Promise.resolve());
         diCall.withArgs(setUpSelenium).returns(Promise.resolve());
         sinon.stub(tractorLogger, 'info');
 

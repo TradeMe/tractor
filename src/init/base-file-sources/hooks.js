@@ -45,7 +45,7 @@ function createReporter () {
 
     function getFileName (file, extension) {
         /* eslint-disable prefer-template */
-        return file + new Date().toLocaleString().replace(/[\/\\:]/g, '-') + '.' + extension;
+        return file + new Date().toLocaleString().replace(/[/:]/g, '-') + '.' + extension;
     }
 }
 
