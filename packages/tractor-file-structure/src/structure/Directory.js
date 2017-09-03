@@ -2,7 +2,6 @@
 import Promise from 'bluebird';
 const fs = Promise.promisifyAll(require('fs'));
 import path from 'path';
-import { getFileConstructorFromFilePath } from '../utilities/utilities';
 
 // Dependencies:
 import { File } from './File';
@@ -93,12 +92,6 @@ export class Directory {
         this.allFiles = [];
     }
 
-    getFiles (type) {
-        type = type || File;
-        return this.allFiles
-        .filter(file => file instanceof type || file.type && file.type === type.prototype.type);
-    }
-
     move (update, options = { }) {
         let { isCopy } = options;
         update.oldPath = this.path;
@@ -122,8 +115,15 @@ export class Directory {
     }
 
     refresh () {
+        if (this.refreshing) {
+            return this.refreshing;
+        }
         this.init();
-        return this.read();
+        this.refreshing = this.read();
+        this.refreshing.then(() => {
+            this.refreshing = null;
+        });
+        return this.refreshing;
     }
 
     removeItem (item) {
@@ -180,7 +180,7 @@ function handleItem (itemPath, stat) {
         let directory = new this.constructor(itemPath, this.fileStructure);
         return directory.read();
     } else {
-        let fileConstructor = getFileConstructorFromFilePath(itemPath);
+        let fileConstructor = this.fileStructure.getFileConstructor(itemPath);
         let file = new fileConstructor(itemPath, this.fileStructure);
         if (fileConstructor === File) {
             return file;

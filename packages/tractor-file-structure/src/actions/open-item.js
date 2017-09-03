@@ -16,4 +16,3 @@ export function createOpenItemHandler (fileStructure) {
         response.send(file ? file.serialise() : directory);
     }
 }
-createOpenItemHandler['@Inject'] = ['fileStructure'];

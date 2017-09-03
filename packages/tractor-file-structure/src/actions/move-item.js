@@ -33,4 +33,3 @@ export function createMoveItemHandler (fileStructure) {
         .catch(() => handleError(response, new TractorError(`Could not move "${itemPath}"`)));
     }
 }
-createMoveItemHandler['@Inject'] = ['fileStructure'];

@@ -1,5 +1,6 @@
 // Constants:
-const DOT_FILE_REGEX = /(^|[\/\\])\../;
+const DOT_FILE_REGEX = /(^|[/\\])\../;
+const EXTENSION_MATCH_REGEX = /[^.]*(\..*)?/;
 
 // Utilities:
 import chokidar from 'chokidar';
@@ -9,12 +10,18 @@ import { info } from 'tractor-logger';
 
 // Dependencies:
 import { Directory } from './Directory';
+import { File } from './File';
 
 export class FileStructure {
     constructor (fsPath) {
+        this.fileTypes = {};
         this.path = path.resolve(process.cwd(), fsPath);
 
         this.init();
+    }
+
+    addFileType (fileConstructor) {
+        this.fileTypes[fileConstructor.prototype.extension] = fileConstructor;
     }
 
     addItem (item) {
@@ -22,8 +29,11 @@ export class FileStructure {
         collection[item.path] = item;
     }
 
-    getFiles (type) {
-        return this.structure.getFiles(type);
+    getFileConstructor (filePath) {
+        let fileName = path.basename(filePath);
+        let [, fullExtension] = fileName.match(EXTENSION_MATCH_REGEX);
+        let extension = path.extname(fileName);
+        return this.fileTypes[fullExtension] || this.fileTypes[extension] || File;
     }
 
     init () {

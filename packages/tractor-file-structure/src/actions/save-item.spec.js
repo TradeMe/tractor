@@ -17,7 +17,6 @@ chai.use(sinonChai);
 import { Directory } from '../structure/Directory';
 import { File } from '../structure/File';
 import { FileStructure } from '../structure/FileStructure';
-import { fileExtensions, fileTypes, registerFileType } from '../file-types';
 import { TractorError } from 'tractor-error-handler';
 import * as tractorErrorHandler from 'tractor-error-handler';
 
@@ -30,10 +29,9 @@ describe('tractor-file-structure - actions/save-item:', () => {
             save () { }
         }
         TestFile.prototype.extension = '.ext';
-        TestFile.prototype.type = 'test-file';
-        registerFileType(TestFile);
 
         let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+        fileStructure.addFileType(TestFile);
         let request = {
             body: {
                 data: 'data'
@@ -53,9 +51,6 @@ describe('tractor-file-structure - actions/save-item:', () => {
             expect(TestFile.prototype.save).to.have.been.calledWith('data');
         })
         .finally(() => {
-            delete fileExtensions['test-file'];
-            delete fileTypes['.ext'];
-
             Directory.prototype.save.restore();
         });
     });
@@ -65,10 +60,9 @@ describe('tractor-file-structure - actions/save-item:', () => {
             save () { }
         }
         SpecialTestFile.prototype.extension = '.special.ext';
-        SpecialTestFile.prototype.type = 'special-test-file';
-        registerFileType(SpecialTestFile);
 
         let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+        fileStructure.addFileType(SpecialTestFile);
         let request = {
             body: {
                 data: 'data'
@@ -85,10 +79,6 @@ describe('tractor-file-structure - actions/save-item:', () => {
         return saveItem(request, response)
         .then(() => {
             expect(SpecialTestFile.prototype.save).to.have.been.calledWith('data');
-        })
-        .finally(() => {
-            delete fileExtensions['special-test-file'];
-            delete fileTypes['.special.ext'];
         });
     });
 
@@ -121,10 +111,9 @@ describe('tractor-file-structure - actions/save-item:', () => {
             save () { }
         }
         TestFile.prototype.extension = '.ext';
-        TestFile.prototype.type = 'test-file';
-        registerFileType(TestFile);
 
         let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+        fileStructure.addFileType(TestFile);
         let file = new TestFile(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
         let request = {
             body: {
@@ -144,10 +133,6 @@ describe('tractor-file-structure - actions/save-item:', () => {
         .then(() => {
             expect(file.save).to.not.have.been.called();
             expect(TestFile.prototype.save).to.have.been.calledWith('data');
-        })
-        .finally(() => {
-            delete fileExtensions['test-file'];
-            delete fileTypes['.ext'];
         });
     });
 
@@ -156,10 +141,9 @@ describe('tractor-file-structure - actions/save-item:', () => {
             save () { }
         }
         TestFile.prototype.extension = '.ext';
-        TestFile.prototype.type = 'test-file';
-        registerFileType(TestFile);
 
         let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+        fileStructure.addFileType(TestFile);
         let file = new TestFile(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
         let request = {
             body: {
@@ -178,10 +162,6 @@ describe('tractor-file-structure - actions/save-item:', () => {
         return saveItem(request, response)
         .then(() => {
             expect(TestFile.prototype.save).to.have.been.calledWith('data');
-        })
-        .finally(() => {
-            delete fileExtensions['test-file'];
-            delete fileTypes['.ext'];
         });
     });
 

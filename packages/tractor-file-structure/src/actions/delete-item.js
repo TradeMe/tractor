@@ -33,4 +33,3 @@ export function createDeleteItemHandler (fileStructure) {
         .catch(() => handleError(response, new TractorError(`Could not delete "${itemPath}"`)));
     }
 }
-createDeleteItemHandler['@Inject'] = ['fileStructure'];

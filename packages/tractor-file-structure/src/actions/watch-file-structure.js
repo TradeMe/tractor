@@ -4,11 +4,9 @@ const CHANGE_DEBOUNCE_TIME = 100;
 // Utilities:
 import debounce from 'lodash.debounce'
 
-let watcher;
 export function watchFileStructure (fileStructure, sockets) {
-    watcher = watcher || fileStructure.watch();
-    watcher.on('change', debounce(() => {
+    fileStructure.watcher = fileStructure.watcher || fileStructure.watch();
+    fileStructure.watcher.on('change', debounce(() => {
         sockets.emit('file-structure-change');
     }), CHANGE_DEBOUNCE_TIME);
 }
-watchFileStructure['@Inject'] = ['fileStructure'];

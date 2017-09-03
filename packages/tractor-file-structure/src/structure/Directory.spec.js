@@ -15,7 +15,6 @@ import fs from 'fs';
 import path from 'path';
 import { File } from './File';
 import { FileStructure } from './FileStructure';
-import { fileExtensions, fileTypes, registerFileType } from '../file-types';
 import { TractorError } from 'tractor-error-handler';
 
 // Under test:
@@ -229,11 +228,12 @@ describe('tractor-file-structure - Directory:', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
 
-            sinon.stub(fs, 'rmdirAsync').returns(Promise.reject(new Error('Unexpected error')));
+            let error = new Error('Unexpected error')
+            sinon.stub(fs, 'rmdirAsync').returns(Promise.reject(error));
 
             return directory.cleanup()
             .catch(e => {
-                expect(e).to.deep.equal(new Error('Unexpected error'));
+                expect(e).to.equal(error);
             })
             .finally(() => {
                 fs.rmdirAsync.restore();
@@ -308,48 +308,6 @@ describe('tractor-file-structure - Directory:', () => {
                 fs.rmdirAsync.restore();
             });
         })
-    });
-
-    describe('Directory.getFiles:', () => {
-        it('should return all files within a directory', () => {
-            class TestFile extends File { }
-            TestFile.prototype.extension = '.ext';
-            TestFile.prototype.type = 'test-file';
-            class OtherTestFile extends File { }
-            OtherTestFile.prototype.extension = '.other.ext';
-            OtherTestFile.prototype.type = 'other-test-file';
-
-            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-            let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
-            let file1 = new TestFile(path.join(path.sep, 'file-structure', 'directory', 'file1.ext'), fileStructure);
-            let file2 = new TestFile(path.join(path.sep, 'file-structure', 'directory', 'file2.ext'), fileStructure);
-            let file3 = new OtherTestFile(path.join(path.sep, 'file-structure', 'directory', 'file3.other.ext'), fileStructure);
-
-            let files = directory.getFiles();
-
-            expect(files).to.deep.equal([file1, file2, file3]);
-        });
-
-        it('should return all files of a given Type within a directory', () => {
-            class TestFile extends File { }
-            TestFile.prototype.extension = '.ext';
-            TestFile.prototype.type = 'test-file';
-            class OtherTestFile extends File { }
-            OtherTestFile.prototype.extension = '.other.ext';
-            OtherTestFile.prototype.type = 'other-test-file';
-
-            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-            let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
-            let file1 = new TestFile(path.join(path.sep, 'file-structure', 'directory', 'file1.ext'), fileStructure);
-            let file2 = new TestFile(path.join(path.sep, 'file-structure', 'directory', 'file2.ext'), fileStructure);
-            let file3 = new OtherTestFile(path.join(path.sep, 'file-structure', 'directory', 'file3.other.ext'), fileStructure);
-
-            let files = directory.getFiles(OtherTestFile);
-
-            expect(files.indexOf(file1)).to.equal(-1);
-            expect(files.indexOf(file2)).to.equal(-1);
-            expect(files).to.deep.equal([file3]);
-        });
     });
 
     describe('Directory.move:', () => {
@@ -500,10 +458,9 @@ describe('tractor-file-structure - Directory:', () => {
         it('should create a rich model for files of a known type', () => {
             class TestFile extends File { }
             TestFile.prototype.extension = '.ext';
-            TestFile.prototype.type = 'test-file';
 
-            registerFileType(TestFile);
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            fileStructure.addFileType(TestFile);
             let directory = new Directory(path.join(path.sep, 'file-structure', 'parent-directory', 'directory'), fileStructure);
             let stat = {
                 isDirectory: () => { }
@@ -524,21 +481,17 @@ describe('tractor-file-structure - Directory:', () => {
                 File.prototype.read.restore();
                 fs.readdirAsync.restore();
                 fs.statAsync.restore();
-                delete fileExtensions['test-file'];
-                delete fileTypes['.ext'];
             });
         });
 
         it('should create a rich model for files of a known type with multiple extensions', () => {
             class SpecialTestFile extends File { }
             SpecialTestFile.prototype.extension = '.special.ext';
-            SpecialTestFile.prototype.type = 'special-test-file';
 
             sinon.stub(SpecialTestFile.prototype, 'save').returns(Promise.resolve());
 
-            registerFileType(SpecialTestFile);
-
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            fileStructure.addFileType(SpecialTestFile);
             let directory = new Directory(path.join(path.sep, 'file-structure', 'parent-directory', 'directory'), fileStructure);
             let stat = {
                 isDirectory: () => { }
@@ -559,8 +512,6 @@ describe('tractor-file-structure - Directory:', () => {
                 File.prototype.read.restore();
                 fs.readdirAsync.restore();
                 fs.statAsync.restore();
-                delete fileExtensions['special-test-file'];
-                delete fileTypes['.special.ext'];
             });
         });
     });
@@ -580,6 +531,22 @@ describe('tractor-file-structure - Directory:', () => {
             })
             .finally(() => {
                 Directory.prototype.init.restore();
+                Directory.prototype.read.restore();
+            });
+        });
+
+        it('should should not refresh while the directory is being read', () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
+
+            sinon.stub(Directory.prototype, 'read').returns(Promise.resolve());
+
+            directory.refresh()
+            return directory.refresh()
+            .then(() => {
+                expect(Directory.prototype.read).to.have.been.calledOnce();
+            })
+            .finally(() => {
                 Directory.prototype.read.restore();
             });
         });

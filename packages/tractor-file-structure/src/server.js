@@ -9,15 +9,17 @@ import { createRefactorItemHandler } from './actions/refactor-item';
 import { createSaveItemHandler } from './actions/save-item';
 import { watchFileStructure } from './actions/watch-file-structure';
 
-export function serveFileStructure (application, di, fileStructure, sockets) {
-    application.use('/fs/static/', express.static(fileStructure.path));
+export function serveFileStructure (application, sockets) {
+    return function (fileStructure, prefix) {
+        application.use(`/${prefix}/fs/static/`, express.static(fileStructure.path));
 
-    application.delete('/fs*', di.call(createDeleteItemHandler));
-    application.post('/fs/move*', di.call(createMoveItemHandler));
-    application.get('/fs*', di.call(createOpenItemHandler));
-    application.post('/fs/refactor*', di.call(createRefactorItemHandler));
-    application.put('/fs*', di.call(createSaveItemHandler));
+        application.delete(`/${prefix}/fs*`, createDeleteItemHandler(fileStructure));
+        application.post(`/${prefix}/fs/move*`, createMoveItemHandler(fileStructure));
+        application.get(`/${prefix}/fs*`, createOpenItemHandler(fileStructure));
+        application.post(`/${prefix}/fs/refactor*`, createRefactorItemHandler(fileStructure));
+        application.put(`/${prefix}/fs*`, createSaveItemHandler(fileStructure));
 
-    di.call(watchFileStructure, [sockets.of('/watch-file-structure')]);
+        watchFileStructure(fileStructure, sockets.of('/watch-file-structure'));
+    }
 }
-serveFileStructure['@Inject'] = ['application', 'di', 'fileStructure', 'sockets'];
+serveFileStructure['@Inject'] = ['application', 'sockets'];

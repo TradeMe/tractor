@@ -22,4 +22,3 @@ export function createRefactorItemHandler (fileStructure) {
         .catch(() => handleError(response, new TractorError(`Could not refactor "${itemPath}"`)));
     }
 }
-createRefactorItemHandler['@Inject'] = ['fileStructure'];

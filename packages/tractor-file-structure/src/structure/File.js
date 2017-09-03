@@ -82,7 +82,6 @@ export class File {
         return { basename, extension, path, url };
     }
 }
-File.prototype.type = '';
 
 function setData (data) {
     this.buffer = data;

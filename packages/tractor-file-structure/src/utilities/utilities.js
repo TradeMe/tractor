@@ -1,5 +1,4 @@
 // Constants:
-const EXTENSION_MATCH_REGEX = /[^\.]*(\..*)?/;
 const ITEM_NOT_FOUND_STATUS = 404;
 const OKAY_STATUS = 200;
 
@@ -8,8 +7,6 @@ import path from 'path';
 
 // Dependencies:
 import { Directory } from '../structure/Directory';
-import { File } from '../structure/File';
-import { fileTypes } from '../file-types';
 
 // Errors:
 import { TractorError, handleError } from 'tractor-error-handler';
@@ -18,13 +15,6 @@ export function getCopyPath (item) {
     let isDirectory = item instanceof Directory;
     let collection = isDirectory ? item.directory.directories : item.directory.files;
     return path.join(item.directory.path, getUniqueName(collection, item));
-}
-
-export function getFileConstructorFromFilePath (filePath) {
-    let fileName = path.basename(filePath);
-    let [, fullExtension] = fileName.match(EXTENSION_MATCH_REGEX);
-    let extension = path.extname(fileName);
-    return fileTypes[fullExtension] || fileTypes[extension] || File;
 }
 
 export function getItemPath (fileStructure, itemUrl) {

@@ -51,6 +51,20 @@ describe('tractor-file-structure - FileStructure:', () => {
         });
     });
 
+    describe('FileStructure.addFileType', () => {
+        it('should add a type of file that the FileStructure can create', () => {
+            class TestFile extends File {
+                save () { }
+            }
+            TestFile.prototype.extension = '.ext';
+
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            fileStructure.addFileType(TestFile);
+
+            expect(fileStructure.fileTypes['.ext']).to.equal(TestFile);
+        });
+    });
+
     describe('FileStructure.addItem:', () => {
         it('should add a file to the fileStructure', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
@@ -76,32 +90,6 @@ describe('tractor-file-structure - FileStructure:', () => {
             fileStructure.addItem(directory);
 
             expect(fileStructure.allDirectoriesByPath[path.join(path.sep, 'file-structure', 'directory')]).to.equal(directory);
-        });
-    });
-
-    describe('FileStructure.getFiles', () => {
-        it('should return all files of a specific type', () => {
-            class SomeFile extends File { }
-            SomeFile.prototype.extension = '.some.ext';
-            SomeFile.prototype.type = 'some-file';
-            class SomeOtherFile extends File { }
-            SomeOtherFile.prototype.extension = '.other.ext';
-            SomeOtherFile.prototype.type = 'some-other-file';
-            class FakeOtherFile { }
-            FakeOtherFile.prototype.type = 'some-other-file';
-
-            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-            let file1 = new SomeFile(path.join(path.sep, 'file-structure', 'directory', 'file1.some.ext'), fileStructure);
-            let file2 = new SomeFile(path.join(path.sep, 'file-structure', 'directory', 'file2.some.ext'), fileStructure);
-            let file3 = new SomeOtherFile(path.join(path.sep, 'file-structure', 'directory', 'other-file.other.ext'), fileStructure);
-
-            let files = fileStructure.getFiles(SomeFile);
-            let otherFiles = fileStructure.getFiles(SomeOtherFile);
-            let fakeOtherFiles = fileStructure.getFiles(FakeOtherFile);
-
-            expect(files).to.deep.equal([file1, file2]);
-            expect(otherFiles).to.deep.equal([file3]);
-            expect(fakeOtherFiles).to.deep.equal([file3]);
         });
     });
 

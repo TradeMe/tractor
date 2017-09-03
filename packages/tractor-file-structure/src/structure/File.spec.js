@@ -199,11 +199,12 @@ describe('tractor-file-structure - File:', () => {
           let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
           let file = new File(path.join(path.sep, 'file-structure', 'file.ext'), fileStructure);
 
-          sinon.stub(fs, 'unlinkAsync').returns(Promise.reject(new Error('Unexpected error')));
+          let error = new Error('Unexpected error')
+          sinon.stub(fs, 'unlinkAsync').returns(Promise.reject(error));
 
           return file.cleanup()
           .catch(e => {
-              expect(e).to.deep.equal(new Error('Unexpected error'));
+              expect(e).to.equal(error);
           })
           .finally(() => {
               fs.unlinkAsync.restore();

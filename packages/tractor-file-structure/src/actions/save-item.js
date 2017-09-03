@@ -1,5 +1,5 @@
 // Utilities:
-import { getFileConstructorFromFilePath, getItemPath, getCopyPath, respondOkay } from '../utilities/utilities';
+import { getItemPath, getCopyPath, respondOkay } from '../utilities/utilities';
 
 // Dependencies:
 import { Directory } from '../structure/Directory';
@@ -27,7 +27,7 @@ export function createSaveItemHandler (fileStructure) {
             if (isDirectory) {
                 toSave = new Directory(itemPath, fileStructure);
             } else {
-                let fileConstructor = getFileConstructorFromFilePath(itemPath);
+                let fileConstructor = fileStructure.getFileConstructor(itemPath);
                 toSave = new fileConstructor(itemPath, fileStructure);
             }
         }
@@ -37,4 +37,3 @@ export function createSaveItemHandler (fileStructure) {
         .catch(() => handleError(response, new TractorError(`Could not save "${itemPath}"`)));
     }
 }
-createSaveItemHandler['@Inject'] = ['fileStructure'];
