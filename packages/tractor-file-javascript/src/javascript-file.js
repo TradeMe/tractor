@@ -12,8 +12,8 @@ import { isObject, isString } from 'util';
 // Dependencies:
 import escodegen from 'escodegen';
 import * as esprima from 'esprima';
-import esquery from 'esquery';
 import { File } from 'tractor-file-structure';
+import { JavaScriptFileRefactorer } from './javascript-file-refactorer';
 
 // Errors:
 import { TractorError } from 'tractor-error-handler';
@@ -28,6 +28,18 @@ export class JavaScriptFile extends File {
         .catch(() => {
             throw new TractorError(`Parsing "${this.path}" failed.`, REQUEST_ERROR);
         });
+    }
+
+    refactor (type, data) {
+        // Hack to fix coverage bug: https://github.com/gotwarlost/istanbul/issues/690
+        /* istanbul ignore next */
+        let refactor = super.refactor(type, data);
+
+        return refactor.then(() => {
+            let change = JavaScriptFileRefactorer[type];
+            return change ? change(this, data) : null;
+        })
+        .then(() => this.save(this.ast));
     }
 
     save (javascript) {
@@ -73,36 +85,6 @@ export class JavaScriptFile extends File {
         json.meta = meta;
         return json;
     }
-
-    transformIdentifiers (oldName, newName, context) {
-        let query = `Identifier[name="${oldName}"]`;
-
-        if (context) {
-            query = `${context} > ${query}`;
-        }
-
-        esquery(this.ast, query).forEach(identifier => identifier.name = newName);
-    }
-
-    transformMetadata (oldName, newName, type) {
-        let { comments } = this.ast;
-        if (!comments) {
-            return;
-        }
-
-        let [comment] = comments;
-        if (!comment) {
-            return;
-        }
-
-        let metaData = JSON.parse(comment.value);
-        let item = metaData;
-        if (type) {
-            item = item[type].find(item => item.name === oldName);
-        }
-        item.name = newName;
-        comment.value = JSON.stringify(metaData);
-    }
 }
 
 function rebuildRegExps (object) {
@@ -123,9 +105,8 @@ function rebuildRegExps (object) {
 }
 
 function isRegexLiteral (object) {
-    return object.type === LITERAL
-        && object.raw
-        && REGEXP_CONTENT_REGEX.test(object.raw);
+    let { raw, type } = object;
+    return type === LITERAL && raw && REGEXP_CONTENT_REGEX.test(raw);
 }
 
 function setAST (content) {

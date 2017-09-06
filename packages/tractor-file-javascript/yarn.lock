@@ -937,7 +937,7 @@ check-error@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/check-error/-/check-error-1.0.2.tgz#574d312edd88bb5dd8912e9286dd6c0aed4aac82"
 
-chokidar@^1.4.3, chokidar@^1.6.1:
+chokidar@^1.4.3, chokidar@^1.6.1, chokidar@^1.7.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-1.7.0.tgz#798e689778151c8076b4b360e5edd28cda2bb468"
   dependencies:
@@ -1231,9 +1231,9 @@ eslint-scope@^3.7.1:
     esrecurse "^4.1.0"
     estraverse "^4.1.1"
 
-eslint@^4.5.0:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-4.5.0.tgz#bb75d3b8bde97fb5e13efcd539744677feb019c3"
+eslint@^4.6.1:
+  version "4.6.1"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-4.6.1.tgz#ddc7fc7fd70bf93205b0b3449bb16a1e9e7d4950"
   dependencies:
     ajv "^5.2.0"
     babel-code-frame "^6.22.0"
@@ -1341,7 +1341,7 @@ expand-range@^1.8.1:
   dependencies:
     fill-range "^2.1.0"
 
-express@^4.14.1:
+express@^4.15.4:
   version "4.15.4"
   resolved "https://registry.yarnpkg.com/express/-/express-4.15.4.tgz#032e2253489cf8fce02666beca3d11ed7a2daed1"
   dependencies:
@@ -3137,21 +3137,21 @@ tough-cookie@~2.3.0:
   dependencies:
     punycode "^1.4.1"
 
-tractor-error-handler@^0.2.0, tractor-error-handler@^0.2.1:
+tractor-error-handler@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/tractor-error-handler/-/tractor-error-handler-0.2.1.tgz#b73e518fbdfc92b4cd0e18b0e61b46a43242eec4"
   dependencies:
     tractor-logger "^0.1.0"
 
-tractor-file-structure@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/tractor-file-structure/-/tractor-file-structure-0.2.1.tgz#656b29a75fab687f39e0b63bce90ad9a1678a2bd"
+tractor-file-structure@^0.3.0-beta.0:
+  version "0.3.0-beta.0"
+  resolved "https://registry.yarnpkg.com/tractor-file-structure/-/tractor-file-structure-0.3.0-beta.0.tgz#d58c17150d2ae04edf5c738dd50f62ee93f34fd7"
   dependencies:
     bluebird "^3.4.7"
-    chokidar "^1.6.1"
-    express "^4.14.1"
+    chokidar "^1.7.0"
+    express "^4.15.4"
     lodash.debounce "^4.0.8"
-    tractor-error-handler "^0.2.0"
+    tractor-error-handler "^0.2.1"
     tractor-logger "^0.1.0"
 
 tractor-logger@^0.1.0:
