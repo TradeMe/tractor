@@ -77,7 +77,7 @@ describe('tractor-file-structure - File:', () => {
         });
 
         it('should correctly replace Windows path seperators in the URL', () => {
-            let origPath = {};
+            let origPath = { };
             Object.keys(path.win32).forEach(key => {
                 origPath[key] = path[key];
                 path[key] = path.win32[key];
@@ -241,6 +241,47 @@ describe('tractor-file-structure - File:', () => {
             return file.delete()
             .then(() => {
                 expect(directory.removeItem).to.have.been.calledOnce();
+            })
+            .finally(() => {
+                fs.unlinkAsync.restore();
+            });
+        });
+
+        it(`shouldn't remove the file if it's referenced by another file`, () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
+
+            sinon.stub(directory, 'removeItem');
+            sinon.stub(fs, 'unlinkAsync').returns(Promise.resolve());
+
+            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
+            let otherFile = new File(path.join(path.sep, 'file-structure', 'directory', 'other-file.ext'), fileStructure);
+            fileStructure.references.addReference(file, otherFile);
+
+            return file.delete()
+            .catch(e => {
+                expect(e).to.deep.equal(new TractorError(`Cannot delete ${path.join(path.sep, 'file-structure', 'directory', 'file.ext')} as it is referenced by another file.`));
+            })
+            .then(() => {
+                expect(directory.removeItem).to.not.have.been.called();
+            })
+            .finally(() => {
+                fs.unlinkAsync.restore();
+            });
+        });
+
+        it(`should remove the file if it's being moved`, () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
+
+            sinon.stub(directory, 'removeItem');
+            sinon.stub(fs, 'unlinkAsync').returns(Promise.resolve());
+
+            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
+
+            return file.delete({ isMove: true })
+            .then(() => {
+                expect(directory.removeItem).to.have.been.called();
             })
             .finally(() => {
                 fs.unlinkAsync.restore();

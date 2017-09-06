@@ -23,7 +23,7 @@ describe('tractor-file-structure - actions/watch-file-structure:', () => {
     it('should start watching the file structure', () => {
         let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let sockets = {
-            emit: () => {}
+            emit: () => { }
         };
         let watcher = new EventEmitter();
 

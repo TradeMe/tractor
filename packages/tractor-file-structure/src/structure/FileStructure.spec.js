@@ -18,6 +18,7 @@ import chokidar from 'chokidar';
 import { EventEmitter } from 'events';
 import { Directory } from './Directory';
 import { File } from './File';
+import { References } from './References';
 import * as tractorLogger from 'tractor-logger';
 
 // Under test:
@@ -36,7 +37,6 @@ describe('tractor-file-structure - FileStructure:', () => {
 
             expect(fileStructure.allFilesByPath).to.deep.equal({ });
             expect(Object.keys(fileStructure.allDirectoriesByPath).length).to.equal(1);
-            expect(fileStructure.references).to.deep.equal({ });
         });
 
         it('should create the root directory', () => {
@@ -48,6 +48,12 @@ describe('tractor-file-structure - FileStructure:', () => {
             expect(fileStructure.structure.path).to.equal(path.join(path.sep, 'file-structure'));
 
             process.cwd.restore();
+        });
+
+        it('should create the references store', () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+
+            expect(fileStructure.references).to.be.an.instanceof(References);
         });
     });
 
@@ -146,6 +152,51 @@ describe('tractor-file-structure - FileStructure:', () => {
 
             chokidar.watch.restore();
             tractorLogger.info.restore();
+        });
+
+        it('should refresh the FileStructure when a file within it changes', done => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let file = new File(path.join(path.sep, 'file-structure', 'file.extension'), fileStructure);
+            let eventEmitter = new EventEmitter();
+
+            sinon.stub(fileStructure.structure, 'refresh').returns(Promise.resolve());
+            sinon.stub(tractorLogger, 'info');
+            sinon.stub(chokidar, 'watch').returns(eventEmitter);
+
+            let watcher = fileStructure.watch();
+
+            eventEmitter.emit('all', null, file.path);
+
+            watcher.on('change', () => {
+                expect(fileStructure.structure.refresh).to.have.been.called();
+
+                chokidar.watch.restore();
+                tractorLogger.info.restore();
+
+                done();
+            });
+        });
+
+        it('should refresh the FileStructure when the root changes', done => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let eventEmitter = new EventEmitter();
+
+            sinon.stub(fileStructure.structure, 'refresh').returns(Promise.resolve());
+            sinon.stub(tractorLogger, 'info');
+            sinon.stub(chokidar, 'watch').returns(eventEmitter);
+
+            let watcher = fileStructure.watch();
+
+            eventEmitter.emit('all', null, fileStructure.path);
+
+            watcher.on('change', () => {
+                expect(fileStructure.structure.refresh).to.have.been.called();
+
+                chokidar.watch.restore();
+                tractorLogger.info.restore();
+
+                done();
+            });
         });
     });
 });

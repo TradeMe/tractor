@@ -40,9 +40,19 @@ export class File {
         .then(() => this.directory.cleanup());
     }
 
-    delete () {
+    delete (options = { }) {
+        let { isMove } = options;
+        let { references } = this.fileStructure;
+
+        if (!isMove && references.getReferencesTo(this.path).length) {
+            return Promise.reject(new TractorError(`Cannot delete ${this.path} as it is referenced by another file.`));
+        }
+
         return fs.unlinkAsync(this.path)
-        .then(() => this.directory.removeItem(this));
+        .then(() => {
+            this.directory.removeItem(this);
+            references.clearReferences(this.path);
+        });
     }
 
     move (update, options = { }) {
@@ -52,7 +62,7 @@ export class File {
         options.isMove = true;
         let newFile = new this.constructor(update.newPath, this.fileStructure);
         return newFile.save(this.buffer, options)
-        .then(() => isCopy ? Promise.resolve() : this.delete(options))
+        .then(() => isCopy ? null : this.delete(options))
         .then(() => newFile);
     }
 

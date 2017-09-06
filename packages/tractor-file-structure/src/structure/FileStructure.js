@@ -11,10 +11,11 @@ import { info } from 'tractor-logger';
 // Dependencies:
 import { Directory } from './Directory';
 import { File } from './File';
+import { References } from './References';
 
 export class FileStructure {
     constructor (fsPath) {
-        this.fileTypes = {};
+        this.fileTypes = { };
         this.path = path.resolve(process.cwd(), fsPath);
 
         this.init();
@@ -40,7 +41,7 @@ export class FileStructure {
         this.allFilesByPath = { };
         this.allDirectoriesByPath = { };
         this.structure = new Directory(this.path, this);
-        this.references = { };
+        this.references = new References(this);
     }
 
     read () {
@@ -61,13 +62,16 @@ export class FileStructure {
             awaitWriteFinish: true
         })
         .on('all', (event, itemPath) => {
-            let changeDirectory = this.allDirectoriesByPath[path.dirname(itemPath)];
-            if (changeDirectory) {
-                changeDirectory.refresh()
-                .then(() => {
-                    watcher.emit('change');
-                });
+            let changeDirectory;
+            if (itemPath === this.path) {
+                changeDirectory = this.structure;
+            } else {
+                changeDirectory = this.allDirectoriesByPath[path.dirname(itemPath)];
             }
+            changeDirectory.refresh()
+            .then(() => {
+                watcher.emit('change');
+            });
         });
         return watcher;
     }

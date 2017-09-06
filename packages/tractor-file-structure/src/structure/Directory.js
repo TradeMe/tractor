@@ -105,13 +105,20 @@ export class Directory {
                 return item.move({ newPath }, options);
             });
         })
-        .then(() => isCopy ? Promise.resolve() : this.delete())
+        .then(() => isCopy ? null : this.delete())
         .then(() => newDirectory);
     }
 
     read () {
-        return fs.readdirAsync(this.path)
+        if (this.reading) {
+            return this.reading;
+        }
+        this.reading = fs.readdirAsync(this.path)
         .then(itemPaths => readItems.call(this, itemPaths));
+        this.reading.then(() => {
+            this.reading = null;
+        });
+        return this.reading;
     }
 
     refresh () {

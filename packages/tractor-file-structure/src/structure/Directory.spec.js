@@ -405,6 +405,23 @@ describe('tractor-file-structure - Directory:', () => {
             });
         });
 
+        it('should should not read the directory while it is already being read', () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+
+            sinon.stub(fs, 'readdirAsync').returns(Promise.resolve([]));
+
+            let directory = new Directory(path.join(path.sep, 'file-structure', 'parent-directory', 'directory'), fileStructure);
+
+            directory.read()
+            return directory.read()
+            .then(() => {
+                expect(fs.readdirAsync).to.have.been.calledOnce();
+            })
+            .finally(() => {
+                fs.readdirAsync.restore();
+            });
+        });
+
         it('should read any directories contained within the Directory', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let stat = {
