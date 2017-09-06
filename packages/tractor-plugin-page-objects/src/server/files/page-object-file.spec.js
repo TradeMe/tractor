@@ -10,7 +10,7 @@ import Promise from 'bluebird';
 // Dependencies:
 import { JavaScriptFile } from 'tractor-file-javascript';
 import { TractorError } from 'tractor-error-handler';
-import { File, FileStructure } from 'tractor-file-structure';
+import { FileStructure } from 'tractor-file-structure';
 import { PageObjectFileRefactorer } from './page-object-file-refactorer';
 
 // Under test:
