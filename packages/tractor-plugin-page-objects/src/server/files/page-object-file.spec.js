@@ -135,18 +135,22 @@ describe('tractor-plugin-page-objects: PageObjectFile:', () => {
             let newFilePath = path.join(path.sep, 'file-structure', 'directory', 'new file.po.js');
             let newFile = new PageObjectFile(newFilePath, fileStructure);
 
-            sinon.stub(File.prototype, 'move').returns(Promise.resolve(newFile));
+            sinon.stub(JavaScriptFile.prototype, 'move').returns(Promise.resolve(newFile));
+            sinon.stub(JavaScriptFile.prototype, 'save').returns(Promise.resolve());
             sinon.stub(PageObjectFile.prototype, 'refactor').returns(Promise.resolve());
 
-            let update = {};
+            let update = {
+                newPath: newFile.path
+            };
             let options = {};
 
             return file.move(update, options)
             .then(() => {
-                expect(File.prototype.move).to.have.been.calledWith(update, options);
+                expect(JavaScriptFile.prototype.move).to.have.been.calledWith(update, options);
             })
             .finally(() => {
-                File.prototype.move.restore();
+                JavaScriptFile.prototype.move.restore();
+                JavaScriptFile.prototype.save.restore();
                 PageObjectFile.prototype.refactor.restore();
             });
         });
@@ -161,10 +165,12 @@ describe('tractor-plugin-page-objects: PageObjectFile:', () => {
             let referenceFile = new PageObjectFile(referenceFilePath, fileStructure);
 
             sinon.stub(fileStructure.references, 'getReferencesTo').returns([referenceFile]);
-            sinon.stub(File.prototype, 'move').returns(Promise.resolve(newFile));
+            sinon.stub(JavaScriptFile.prototype, 'move').returns(Promise.resolve(newFile));
             sinon.stub(PageObjectFile.prototype, 'refactor').returns(Promise.resolve());
 
-            let update = {};
+            let update = {
+                newPath: newFile.path
+            };
             let options = {};
 
             return file.move(update, options)
@@ -175,7 +181,7 @@ describe('tractor-plugin-page-objects: PageObjectFile:', () => {
                 });
             })
             .finally(() => {
-                File.prototype.move.restore();
+                JavaScriptFile.prototype.move.restore();
                 PageObjectFile.prototype.refactor.restore();
             });
         });
@@ -190,10 +196,12 @@ describe('tractor-plugin-page-objects: PageObjectFile:', () => {
             let referenceFile = new PageObjectFile(referenceFilePath, fileStructure);
 
             sinon.stub(fileStructure.references, 'getReferencesTo').returns([referenceFile]);
-            sinon.stub(File.prototype, 'move').returns(Promise.resolve(newFile));
+            sinon.stub(JavaScriptFile.prototype, 'move').returns(Promise.resolve(newFile));
             sinon.stub(PageObjectFile.prototype, 'refactor').returns(Promise.resolve());
 
-            let update = {};
+            let update = {
+                newPath: newFile.path
+            };
             let options = {};
 
             return file.move(update, options)
@@ -205,7 +213,7 @@ describe('tractor-plugin-page-objects: PageObjectFile:', () => {
                 });
             })
             .finally(() => {
-                File.prototype.move.restore();
+                JavaScriptFile.prototype.move.restore();
                 PageObjectFile.prototype.refactor.restore();
             });
         });
@@ -217,11 +225,13 @@ describe('tractor-plugin-page-objects: PageObjectFile:', () => {
             let newFilePath = path.join(path.sep, 'file-structure', 'directory', 'new file.po.js');
             let newFile = new PageObjectFile(newFilePath, fileStructure);
 
-            sinon.stub(File.prototype, 'move').returns(Promise.resolve(newFile));
+            sinon.stub(JavaScriptFile.prototype, 'move').returns(Promise.resolve(newFile));
             sinon.stub(PageObjectFile.prototype, 'refactor').returns(Promise.resolve());
             sinon.stub(Promise, 'map').returns(Promise.reject());
 
-            let update = {};
+            let update = {
+                newPath: newFile.path
+            };
             let options = {};
 
             return file.move(update, options)
@@ -229,7 +239,7 @@ describe('tractor-plugin-page-objects: PageObjectFile:', () => {
                 expect(e).to.deep.equal(new TractorError(`Could not update references after moving ${filePath}.`));
             })
             .finally(() => {
-                File.prototype.move.restore();
+                JavaScriptFile.prototype.move.restore();
                 PageObjectFile.prototype.refactor.restore();
                 Promise.map.restore();
             });
