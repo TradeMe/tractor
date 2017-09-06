@@ -1,7 +1,7 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect, sinon } from '../../../tests/setup';
+import { expect, sinon } from '../../../test-setup';
 
 // Utilities:
 import path from 'path';

@@ -1,7 +1,7 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect, ineeda, NOOP, sinon } from '../../tests/setup';
+import { expect, ineeda, NOOP, sinon } from '../../test-setup';
 
 // Dependencies:
 import { FileStructure } from 'tractor-file-structure';

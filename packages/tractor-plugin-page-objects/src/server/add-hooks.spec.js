@@ -1,7 +1,7 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect, ineeda } from '../../tests/setup';
+import { expect, ineeda } from '../../test-setup';
 
 // Under test:
 import addHooks from './add-hooks';

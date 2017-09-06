@@ -1,7 +1,7 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect } from '../../tests/setup';
+import { expect } from '../../test-setup';
 
 // Under test:
 import { getConfig } from './utilities';

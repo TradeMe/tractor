@@ -19,10 +19,10 @@
     "build": "npm run lint && npm run cover && npm run compile && npm run bundle",
     "bundle": "webpack --config webpack.config.js",
     "compile": "babel src/server/ --out-dir dist/server/ --ignore *.spec.js",
-    "cover": "istanbul cover --config .istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ./.mocharc 'src/**/*.spec.js'  'tests/setup.js'",
+    "cover": "istanbul cover --config .istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ./.mocharc 'src/**/*.spec.js'",
     "lint": "eslint src/**/*.js; true",
-    "test": "mocha --opts ./.mocharc 'src/**/*.spec.js' 'tests/setup.js'",
-    "test:debug": "mocha --inspect --debug-brk --opts ./.mocharc 'src/**/*.spec.js' 'tests/setup.js'",
+    "test": "mocha --opts ./.mocharc 'src/**/*.spec.js'",
+    "test:debug": "mocha --inspect --debug-brk --opts ./.mocharc 'src/**/*.spec.js'",
     "watch": "npm-watch"
   },
   "license": "MIT",
