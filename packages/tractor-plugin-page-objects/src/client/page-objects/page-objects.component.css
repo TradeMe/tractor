@@ -1,0 +1,5 @@
+tractor-page-objects,
+tractor-page-objects > div {
+    height: 100%;
+    width: 100%;
+}
