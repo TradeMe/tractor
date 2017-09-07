@@ -18,11 +18,19 @@ require('./Components/LiteralInput/LiteralInputDirective');
 require('./Components/Notifier/NotifierDirective');
 require('./Components/PanelHandle/PanelHandleDirective');
 require('./Components/SelectInput/SelectInputDirective');
-require('./Components/StepInput/StepInputDirective');
 require('./Components/Submit/SubmitDirective');
 require('./Components/TextInput/TextInputDirective');
 require('./Components/VariableInput/VariableInputDirective');
 
-require('./Validators/VariableNameValidator');
+require('./Services/ASTCreatorService');
+require('./Services/ConfirmDialogService');
+require('./Services/FileEditorService');
+require('./Services/FileStructureService');
+require('./Services/HttpResponseInterceptor');
+require('./Services/PersistentStateService');
+require('./Services/RealtimeService');
+require('./Services/StringToLiteralService');
+require('./Services/ValidationService');
+
 require('./Validators/FileNameValidator');
-require('./Validators/ExampleNameValidator');
+require('./Validators/VariableNameValidator');

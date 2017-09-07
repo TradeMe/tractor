@@ -4,11 +4,11 @@
             <form class="control-panel__run-options" name="controlPanelOptions" novalidate
                 ng-submit="controlPanel.runProtractor()">
                 <tractor-select
-                    label="Environment"
+                    label="environment"
                     model="controlPanel">
                 </tractor-select>
                 <tractor-submit
-                    action="Run protractor">
+                    action="run protractor">
                 </tractor-submit>
                 <tractor-select
                     label="tag"
@@ -26,18 +26,6 @@
 
     <nav>
         <ul>
-            <li ui-sref-active="active">
-                <a ui-sref=".components({ file: null })">Components</a>
-            </li>
-            <li ui-sref-active="active">
-                <a ui-sref=".features({ file: null })">Features</a>
-            </li>
-            <li ui-sref-active="active">
-                <a ui-sref=".step-definitions({ file: null })">Step Definitions</a>
-            </li>
-            <li ui-sref-active="active">
-                <a ui-sref=".mock-data({ file: null })">Mock Data</a>
-            </li>
             <li ng-repeat="plugin in controlPanel.plugins">
                 <a ui-sref=".{{ plugin.url }}()">{{ plugin.name }}</a>
             </li>

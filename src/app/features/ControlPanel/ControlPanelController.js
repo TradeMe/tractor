@@ -12,18 +12,20 @@ require('./Services/ServerStatusService');
 
 var ControlPanelController = (function () {
     var ControlPanelController = function ControlPanelController (
+        persistentStateService,
         runnerService,
         serverStatusService,
         config,
         plugins
     ) {
+        this.persistentStateService = persistentStateService;
         this.runnerService = runnerService;
         this.serverStatusService = serverStatusService;
 
-        this.environments = config.environments;
         this.plugins = plugins.filter(function (plugin) {
             return plugin.hasUI;
         });
+        this.environments = config.environments;
         this.tags = getTags(config.tags);
 
         var environment;
@@ -37,12 +39,22 @@ var ControlPanelController = (function () {
                 set: function (newEnv) {
                     environment = newEnv;
                     runnerService.baseUrl = environment;
+                    persistentStateService.set('environment', environment);
+                }
+            },
+            tag: {
+                get: function () {
+                    return tag;
+                },
+                set: function (newTag) {
+                    tag = newTag;
+                    persistentStateService.set('tag', tag.name);
                 }
             }
         });
 
-        this.environment = _.first(this.environments);
-        this.tag = _.first(this.tags);
+        this.environment = getEnvironment.call(this);
+        this.tag = getTag.call(this);
     };
 
     ControlPanelController.prototype.runProtractor = function () {
@@ -75,6 +87,22 @@ function createTagOption (tag) {
         name: tag,
         value: tag
     };
+}
+
+function getEnvironment () {
+    let saved = this.persistentStateService.get('environment');
+    let environment = this.environments.find(function (environment) {
+        return environment === saved;
+    });
+    return environment || _.first(this.environments);
+}
+
+function getTag () {
+    let saved = this.persistentStateService.get('tag');
+    let tag = this.tags.find(function (tag) {
+        return tag.name === saved;
+    });
+    return tag || _.first(this.tags);
 }
 
 ControlPanel.controller('ControlPanelController', ControlPanelController);

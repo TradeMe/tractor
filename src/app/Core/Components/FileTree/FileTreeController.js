@@ -18,10 +18,10 @@ require('../../Services/FileStructureService');
 
 var FileTreeController = (function () {
     var FileTreeController = function FileTreeController (
+        $scope,
         $state,
         $interval,
         $window,
-        fileStructureService,
         notifierService,
         persistentStateService
     ) {
@@ -29,58 +29,60 @@ var FileTreeController = (function () {
         this.$interval = $interval;
         this.$window = $window;
         this.notifierService = notifierService;
-        this.fileStructureService = fileStructureService;
         this.persistentStateService = persistentStateService;
-
-        this.headerName = title(this.type);
-        this.canModify = this.type !== 'step-definitions';
 
         this.moveItem = this.moveItem.bind(this);
 
-        Object.defineProperty(this, 'fileStructure', {
-            get: function () {
-                return updateFileStructure.call(this);
-            }
-        });
+        $scope.$watch(function () {
+            return this.type;
+        }.bind(this), function () {
+            this.headerName = title(this.type.replace(/s$/, ''));
+            this.canModify = this.type !== 'step-definitions';
+        }.bind(this));
+
+        $scope.$watch(function () {
+            return this.fileStructure;
+        }.bind(this), function () {
+            this.fileStructure = updateFileStructure.call(this);
+        }.bind(this));
     };
 
     FileTreeController.prototype.addDirectory = function (directory) {
         var newDirectoryUrl = path.join(directory.url, NEW_DIRECTORY_NAME);
-        this.fileStructureService.saveItem(newDirectoryUrl)
-        .then(updateFileStructure.bind(this));
+        this.create(newDirectoryUrl);
     };
 
     FileTreeController.prototype.openItem = function (file) {
         this.$state.go('tractor.' + this.type, { file: { url: file.url } });
     };
 
-    FileTreeController.prototype.copy = function (item) {
-        this.fileStructureService.moveItem(item.url, {
+    FileTreeController.prototype.copyItem = function (item) {
+        this.move(item.url, {
             copy: true
-        })
-        .then(updateFileStructure.bind(this));
+        });
     };
 
-    FileTreeController.prototype.delete = function (item) {
+    FileTreeController.prototype.deleteItem = function (item) {
         this.hideOptions(item);
 
         var hasChildren = item.files && item.files.length || item.directories && item.directories.length;
 
         if (!hasChildren || this.$window.confirm('All directory contents will be deleted as well. Continue?')){
-            this.fileStructureService.deleteItem(item.url, {
+            this.delete(item.url, {
                 rimraf: true
-            })
-            .then(updateFileStructure.bind(this));
+            });
         }
     };
 
     FileTreeController.prototype.moveItem = function (file, directory) {
         var oldDirectoryUrl = getDirname(file.url);
         if (oldDirectoryUrl !== directory.url) {
-            this.fileStructureService.moveItem(file.url, {
+            if (directory.url !== '/') {
+                directory.url += '/';
+            }
+            this.move(file.url, {
                 newUrl: file.url.replace(oldDirectoryUrl, directory.url)
-            })
-            .then(updateFileStructure.bind(this));
+            });
         }
     };
 
@@ -130,10 +132,9 @@ var FileTreeController = (function () {
             var oldName = item.previousName;
             var newName = item.basename;
 
-            this.fileStructureService.moveItem(item.url, {
+            this.move(item.url, {
                 newUrl: item.url.replace(oldName, newName)
-            })
-            .then(updateFileStructure.bind(this));
+            });
         }
     };
 
@@ -193,14 +194,10 @@ var FileTreeController = (function () {
     }
 
     function updateFileStructure () {
-        var fileStructure = this.fileStructureService.fileStructure;
+        var fileStructure = this.fileStructure;
         if (!fileStructure) {
             return null;
         }
-
-        fileStructure = fileStructure.directories.find(function (directory) {
-            return directory.basename === this.type;
-        }.bind(this));
 
         var openDirectories = getOpenDirectories.call(this);
         fileStructure = restoreOpenDirectories(fileStructure, openDirectories);

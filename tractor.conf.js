@@ -19,6 +19,12 @@ module.exports = {
         'smoke',
         'ignore'
     ],
+    pageObjects: {
+        directory: './src/app'
+    },
+    mockRequests: {
+        port: 5000
+    },
   	beforeProtractor: function () {
         // var fileStructure = require('./server/file-structure');
         //
@@ -29,16 +35,16 @@ module.exports = {
         //     return fileStructure.refresh();
         // }.bind(this));
   	},
-	  afterProtractor: function () {
+    afterProtractor: function () {
         // var fileStructure = require('./server/file-structure');
         //
     		// this.testDirectory = this._testDirectory;
-		    // delete this._testDirectory;
+    	    // delete this._testDirectory;
         // return fileStructure.refresh()
         // .then(function () {
         //     return del(TRACTOR_E2E_TESTS_RUNNING, {
         //         force: true
         //     });
         // }.bind(this));
-	  }
+    }
 };

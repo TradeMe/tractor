@@ -39,10 +39,7 @@ describe('FileStructureService.js:', function () {
             $provide.factory('persistentStateService', function () {
                 return persistentStateService;
             });
-            $provide.factory('ComponentParserService', function () {
-                return {};
-            });
-            $provide.factory('MockDataParserService', function () {
+            $provide.factory('PageObjectParserService', function () {
                 return {};
             });
 
@@ -66,9 +63,9 @@ describe('FileStructureService.js:', function () {
             sinon.stub(httpResponseInterceptor, 'response').returns(fileStructureMock);
             sinon.stub(persistentStateService, 'get').returns({});
 
-            $httpBackend.whenGET('/components/file-structure').respond({});
+            $httpBackend.whenGET('/page-objects/file-structure').respond({});
 
-            fileStructureService.getFileStructure('components')
+            fileStructureService.getFileStructure('page-objects')
             .then(function (fileStructure) {
                 expect(fileStructure).to.equal(fileStructureMock);
                 done();
@@ -95,9 +92,9 @@ describe('FileStructureService.js:', function () {
             sinon.stub(httpResponseInterceptor, 'response').returns(fileStructureMock);
             sinon.stub(persistentStateService, 'get').returns(openDirectories);
 
-            $httpBackend.whenGET('/components/file-structure').respond({});
+            $httpBackend.whenGET('/page-objects/file-structure').respond({});
 
-            fileStructureService.getFileStructure('components')
+            fileStructureService.getFileStructure('page-objects')
             .then(function () {
                 expect(directory.open).to.be.true();
                 done();
@@ -119,9 +116,9 @@ describe('FileStructureService.js:', function () {
             sinon.stub(httpResponseInterceptor, 'response').returns(fileStructureMock);
             sinon.stub(persistentStateService, 'get').returns({});
 
-            $httpBackend.whenPOST('/component/directory').respond({});
+            $httpBackend.whenPOST('/page-objects/directory').respond({});
 
-            fileStructureService.addDirectory('component')
+            fileStructureService.addDirectory('page-objects')
             .then(function (fileStructure) {
                 expect(fileStructure).to.equal(fileStructureMock);
                 done();
@@ -148,9 +145,9 @@ describe('FileStructureService.js:', function () {
             sinon.stub(httpResponseInterceptor, 'response').returns(fileStructureMock);
             sinon.stub(persistentStateService, 'get').returns(openDirectories);
 
-            $httpBackend.whenPOST('/component/directory').respond({});
+            $httpBackend.whenPOST('/page-objects/directory').respond({});
 
-            fileStructureService.addDirectory('component')
+            fileStructureService.addDirectory('page-objects')
             .then(function () {
                 expect(directory.open).to.be.true();
                 done();
@@ -172,9 +169,9 @@ describe('FileStructureService.js:', function () {
             sinon.stub(httpResponseInterceptor, 'response').returns(fileStructureMock);
             sinon.stub(persistentStateService, 'get').returns({});
 
-            $httpBackend.whenPOST('/component/file/copy').respond({});
+            $httpBackend.whenPOST('/page-objects/file/copy').respond({});
 
-            fileStructureService.copyFile('component')
+            fileStructureService.copyFile('page-objects')
             .then(function (fileStructure) {
                 expect(fileStructure).to.equal(fileStructureMock);
                 done();
@@ -201,9 +198,9 @@ describe('FileStructureService.js:', function () {
             sinon.stub(httpResponseInterceptor, 'response').returns(fileStructureMock);
             sinon.stub(persistentStateService, 'get').returns(openDirectories);
 
-            $httpBackend.whenPOST('/component/file/copy').respond({});
+            $httpBackend.whenPOST('/page-objects/file/copy').respond({});
 
-            fileStructureService.copyFile('component')
+            fileStructureService.copyFile('page-objects')
             .then(function () {
                 expect(directory.open).to.be.true();
                 done();
@@ -226,9 +223,9 @@ describe('FileStructureService.js:', function () {
             sinon.stub(httpResponseInterceptor, 'response').returns(fileStructureMock);
             sinon.stub(persistentStateService, 'get').returns({});
 
-            $httpBackend.whenDELETE('/component/directory').respond({});
+            $httpBackend.whenDELETE('/page-objects/directory').respond({});
 
-            fileStructureService.deleteDirectory('component', options)
+            fileStructureService.deleteDirectory('page-objects', options)
             .then(function (fileStructure) {
                 expect(fileStructure).to.equal(fileStructureMock);
                 done();
@@ -256,9 +253,9 @@ describe('FileStructureService.js:', function () {
             sinon.stub(httpResponseInterceptor, 'response').returns(fileStructureMock);
             sinon.stub(persistentStateService, 'get').returns(openDirectories);
 
-            $httpBackend.whenDELETE('/component/directory').respond({});
+            $httpBackend.whenDELETE('/page-objects/directory').respond({});
 
-            fileStructureService.deleteDirectory('component', options)
+            fileStructureService.deleteDirectory('page-objects', options)
             .then(function () {
                 expect(directory.open).to.be.true();
                 done();
@@ -279,9 +276,9 @@ describe('FileStructureService.js:', function () {
             sinon.stub(httpResponseInterceptor, 'response').returns(fileStructureMock);
             sinon.stub(persistentStateService, 'get').returns({});
 
-            $httpBackend.whenDELETE('/component/file').respond({});
+            $httpBackend.whenDELETE('/page-objects/file').respond({});
 
-            fileStructureService.deleteFile('component')
+            fileStructureService.deleteFile('page-objects')
             .then(function (fileStructure) {
                 expect(fileStructure).to.equal(fileStructureMock);
                 done();
@@ -308,9 +305,9 @@ describe('FileStructureService.js:', function () {
             sinon.stub(httpResponseInterceptor, 'response').returns(fileStructureMock);
             sinon.stub(persistentStateService, 'get').returns(openDirectories);
 
-            $httpBackend.whenDELETE('/component/file').respond({});
+            $httpBackend.whenDELETE('/page-objects/file').respond({});
 
-            fileStructureService.deleteFile('component')
+            fileStructureService.deleteFile('page-objects')
             .then(function () {
                 expect(directory.open).to.be.true();
                 done();
@@ -333,9 +330,9 @@ describe('FileStructureService.js:', function () {
     //         sinon.stub(httpResponseInterceptor, 'response').returns(fileStructureMock);
     //         sinon.stub(persistentStateService, 'get').returns({});
     //
-    //         $httpBackend.whenPATCH('/component/directory/path').respond({});
+    //         $httpBackend.whenPATCH('/page-objects/directory/path').respond({});
     //
-    //         fileStructureService.editDirectoryPath('component', options)
+    //         fileStructureService.editDirectoryPath('page-objects', options)
     //         .then(function (fileStructure) {
     //             expect(options.isDirectory).to.be.true();
     //             expect(fileStructure).to.equal(fileStructureMock);
@@ -364,9 +361,9 @@ describe('FileStructureService.js:', function () {
     //         sinon.stub(httpResponseInterceptor, 'response').returns(fileStructureMock);
     //         sinon.stub(persistentStateService, 'get').returns(openDirectories);
     //
-    //         $httpBackend.whenPATCH('/component/directory/path').respond({});
+    //         $httpBackend.whenPATCH('/page-objects/directory/path').respond({});
     //
-    //         fileStructureService.editDirectoryPath('component', options)
+    //         fileStructureService.editDirectoryPath('page-objects', options)
     //         .then(function () {
     //             expect(directory.open).to.be.true();
     //             done();
@@ -388,9 +385,9 @@ describe('FileStructureService.js:', function () {
     //         sinon.stub(httpResponseInterceptor, 'response').returns(fileStructureMock);
     //         sinon.stub(persistentStateService, 'get').returns({});
     //
-    //         $httpBackend.whenPATCH('/component/file/path').respond({});
+    //         $httpBackend.whenPATCH('/page-objects/file/path').respond({});
     //
-    //         fileStructureService.editFilePath('component')
+    //         fileStructureService.editFilePath('page-objects')
     //         .then(function (fileStructure) {
     //             expect(fileStructure).to.equal(fileStructureMock);
     //             done();
@@ -417,9 +414,9 @@ describe('FileStructureService.js:', function () {
     //         sinon.stub(httpResponseInterceptor, 'response').returns(fileStructureMock);
     //         sinon.stub(persistentStateService, 'get').returns(openDirectories);
     //
-    //         $httpBackend.whenPATCH('/component/file/path').respond({});
+    //         $httpBackend.whenPATCH('/page-objects/file/path').respond({});
     //
-    //         fileStructureService.editFilePath('component')
+    //         fileStructureService.editFilePath('page-objects')
     //         .then(function () {
     //             expect(directory.open).to.be.true();
     //             done();
