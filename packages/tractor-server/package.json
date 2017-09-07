@@ -1,6 +1,6 @@
 {
   "name": "tractor-server",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -51,7 +51,7 @@
     "lodash.template": "^4.4.0",
     "socket.io": "^2.0.3",
     "stripcolorcodes": "^0.1.0",
-    "tractor-client": "^0.11.0-beta.0",
+    "tractor-client": "^0.12.0-beta.0",
     "tractor-error-handler": "^0.2.1",
     "tractor-logger": "^0.1.0"
   }
