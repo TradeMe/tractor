@@ -1,12 +1,6 @@
 /* global describe:true, it:true */
 
-// Utilities:
-import chai from 'chai';
-import dirtyChai from 'dirty-chai';
-
-// Test setup:
-const expect = chai.expect;
-chai.use(dirtyChai);
+import { expect } from '../../test-setup';
 
 // Under test:
 import { getConfig } from './utilities';

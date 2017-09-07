@@ -1,6 +1,3 @@
-// Constants:
-const DEFAULT_PORT = 8765;
-
 // Utilities:
 import fs from 'fs';
 import path from 'path';
@@ -14,6 +11,8 @@ import express from 'express';
 import proxy from 'express-http-proxy';
 import http from 'http';
 import zlib from 'zlib';
+import { FileStructure, serveFileStructure } from 'tractor-file-structure';
+import { MockRequestFile } from './mock-request-file';
 
 // Scripts:
 const ADD_MOCKING = fs.readFileSync(path.resolve(__dirname, './scripts/add-mocking.js'), 'utf8');
@@ -22,7 +21,7 @@ const SHIM_FETCH = fs.readFileSync(path.resolve(__dirname, './scripts/shim-fetch
 const SHIM_XHR = fs.readFileSync(path.resolve(__dirname, './scripts/shim-xhr.js'), 'utf8');
 const MOCKS = [];
 
-export default function serve (config) {
+export default function serve (di, config) {
     shimZlib();
 
     config = getConfig(config);
@@ -43,12 +42,20 @@ export default function serve (config) {
         memoizeHost: false
     }));
 
-    let port = config.port || DEFAULT_PORT;
+    let { directory, port } = config;
+
+    let mockRequests = path.resolve(process.cwd(), directory);
+    let mockRequestsFileStructure = new FileStructure(mockRequests);
+    mockRequestsFileStructure.addFileType(MockRequestFile);
+    di.constant({ mockRequestsFileStructure });
+
+    di.call(serveFileStructure)(mockRequestsFileStructure, 'mock-requests');
+
     server.listen(port, () => {
         info(`tractor-mock-requests is proxying at port ${port}`);
     });
 }
-serve['@Inject'] = ['config'];
+serve['@Inject'] = ['di', 'config'];
 
 function addMock (request, response) {
     MOCKS.push(request.body.mock);

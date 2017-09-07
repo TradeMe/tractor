@@ -1,16 +1,10 @@
 /* global describe:true, it:true, Promise:true */
 
-// Utilities:
-import chai from 'chai';
-import dedent from 'dedent';
-import dirtyChai from 'dirty-chai';
-import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
-
 // Test setup:
-const expect = chai.expect;
-chai.use(dirtyChai);
-chai.use(sinonChai);
+import { expect, sinon } from '../../test-setup';
+
+// Utilities:
+import dedent from 'dedent';
 
 // Dependencies:
 import * as utilities from './utilities';
