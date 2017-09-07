@@ -1,0 +1,7 @@
+<input
+    class="file-tree__item-rename"
+    *ngIf="item?.editingName"
+    [(ngModel)]="item.name"
+    (blur)="saveNewName(item)"
+    (keypress)="renameOnEnter($event, item)"
+    tractorFocusOn/>
