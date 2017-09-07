@@ -11,7 +11,6 @@ import express from 'express';
 import http from 'http';
 import template from 'lodash.template';
 import io from 'socket.io';
-import { serveFileStructure } from 'tractor-file-structure';
 
 // Errors:
 import { TractorError } from 'tractor-error-handler';
@@ -21,22 +20,19 @@ import { getConfigHandler } from './api/get-config';
 import { getPluginsHandler } from './api/get-plugins';
 import { socketHandler } from './sockets/connect';
 
-// Files:
-import './files/ComponentFile';
-import './files/FeatureFile';
-import './files/MockDataFile';
-import './files/StepDefinitionFile';
-
 let server;
 
-export function start (config) {
-    let tractor = server.listen(config.port, () => {
-        info(`tractor is running at port ${tractor.address().port}`);
+export function start (config, di, plugins) {
+    return Promise.map(plugins, plugin => di.call(plugin.run))
+    .then(() => {
+        let tractor = server.listen(config.port, () => {
+            info(`tractor is running at port ${tractor.address().port}`);
+        });
     });
 }
-start['@Inject'] = ['config'];
+start['@Inject'] = ['config', 'di', 'plugins'];
 
-export function init (di, plugins) {
+export function init (config, di, plugins) {
     let application = express();
     /* eslint-disable new-cap */
     server = http.Server(application);
@@ -64,7 +60,6 @@ export function init (di, plugins) {
     let renderIndex = injectPlugins(plugins, application, templatePath);
 
     application.get('/', renderIndex);
-
     application.use(express.static(dir));
 
     application.get('/config', di.call(getConfigHandler));
@@ -75,16 +70,13 @@ export function init (di, plugins) {
 
     sockets.of('/server-status');
 
-    return servePlugins(di, plugins)
+    return Promise.map(plugins, plugin => di.call(plugin.serve))
     .then(() => {
-        // Make sure the file structure handlers are added after the plugins:
-        di.call(serveFileStructure);
-
         // Always make sure the '*' handler happens last:
         application.get('*', renderIndex);
     });
 }
-init['@Inject'] = ['di', 'plugins'];
+init['@Inject'] = ['config', 'di', 'plugins'];
 
 function injectPlugins (plugins, application, templatePath) {
     plugins = plugins.filter(plugin => plugin.description.hasUI);
@@ -105,8 +97,4 @@ function injectPlugins (plugins, application, templatePath) {
         response.header('Content-Type', 'text/html');
         response.send(rendered);
     };
-}
-
-function servePlugins (di, plugins) {
-    return Promise.map(plugins, plugin => di.call(plugin.serve));
 }

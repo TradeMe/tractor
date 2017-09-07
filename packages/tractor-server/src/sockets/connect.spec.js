@@ -19,7 +19,7 @@ import * as protractorRunner from './protractor-runner';
 import { socketHandler } from './connect';
 
 describe('server/sockets: connect:', () => {
-    it('should run "Protractor" when a "run" event is recieved:', () => {
+    it(`should run protractor when a 'run' event is recieved:`, () => {
         let config = {};
         let socket = new EventEmitter();
 

@@ -104,7 +104,7 @@ function sendDataToClient (data) {
 
 function formatMessage (message) {
     // If it looks like an error:
-    if (message.match(/Error\:/)) {
+    if (message.match(/Error:/)) {
         return {
             message,
             type: 'error'

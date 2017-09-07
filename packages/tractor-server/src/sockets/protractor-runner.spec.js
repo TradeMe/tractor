@@ -1,4 +1,4 @@
-/* global describe:true, it:true */
+/* global describe:true, it:true, xit:true */
 
 // Constants:
 const MAGIC_TIMEOUT_NUMBER = 10;
@@ -26,7 +26,7 @@ import * as tractorLogger from 'tractor-logger';
 import { run } from './protractor-runner';
 
 describe('server/sockets: protractor-runner:', () => {
-    it('should run "protractor"', () => {
+    it('should run protractor', () => {
         let config = {
             directory: 'tractor',
             beforeProtractor: () => {},
@@ -65,7 +65,7 @@ describe('server/sockets: protractor-runner:', () => {
         });
     });
 
-    it('should run "protractor" for a single feature', () => {
+    it('should run protractor for a single feature', () => {
         let config = {
             directory: 'tractor',
             beforeProtractor: () => {},
@@ -105,7 +105,7 @@ describe('server/sockets: protractor-runner:', () => {
         });
     });
 
-    it('should run "protractor" for features that match a tag', () => {
+    it('should run protractor for features that match a tag', () => {
         let config = {
             directory: 'tractor',
             beforeProtractor: () => {},
@@ -146,7 +146,7 @@ describe('server/sockets: protractor-runner:', () => {
         });
     });
 
-    it('should throw an `Error` if `baseUrl` is not defined:', () => {
+    xit('should throw if `baseUrl` is not defined:', () => {
         let config = {
             directory: 'tractor',
             beforeProtractor: () => {},
@@ -171,7 +171,7 @@ describe('server/sockets: protractor-runner:', () => {
         });
     });
 
-    it(`shouldn't run "protractor" if it is already running`, () => {
+    xit('should throw if protractor is already running', () => {
         let config = {
             directory: 'tractor',
             beforeProtractor: () => {},
@@ -211,7 +211,7 @@ describe('server/sockets: protractor-runner:', () => {
         });
     });
 
-    it('should disconnect the socket when "protractor" finishes', () => {
+    it('should disconnect the socket when protractor finishes', () => {
         let config = {
             directory: 'tractor',
             beforeProtractor: () => {},
@@ -248,7 +248,7 @@ describe('server/sockets: protractor-runner:', () => {
         });
     });
 
-    it('should log any errors that occur while running "protractor"', () => {
+    it('should log any errors that occur while running protractor', () => {
         let config = {
             directory: 'tractor',
             beforeProtractor: () => {},
@@ -287,7 +287,7 @@ describe('server/sockets: protractor-runner:', () => {
         });
     });
 
-    it('should log any errors that cause "protractor" to exit with a bad error code', () => {
+    it('should log any errors that cause protractor to exit with a bad error code', () => {
         let config = {
             directory: 'tractor',
             beforeProtractor: () => {},
@@ -326,7 +326,7 @@ describe('server/sockets: protractor-runner:', () => {
         });
     });
 
-    it('should format messages from "stdout" and send them to the client', () => {
+    it('should format messages from stdout and send them to the client', () => {
         let config = {
             directory: 'tractor',
             beforeProtractor: () => {},
@@ -373,7 +373,7 @@ describe('server/sockets: protractor-runner:', () => {
         });
     });
 
-    it('should format messages from "stderr" and send them to the client', () => {
+    it('should format messages from stderr and send them to the client', () => {
         let config = {
             directory: 'tractor',
             beforeProtractor: () => {},
