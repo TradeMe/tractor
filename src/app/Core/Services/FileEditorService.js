@@ -5,7 +5,9 @@ var _ = require('lodash');
 var path = require('path');
 var Promise = require('bluebird');
 
-var FileEditorController = (function () {
+var Core = require('../../Core/Core');
+
+function fileEditorControllerFactory () {
     var FileEditorController = function FileEditorController (
         $scope,
         $window,
@@ -38,7 +40,6 @@ var FileEditorController = (function () {
 
         Object.defineProperty(this, 'fileStructure', {
             get: function () {
-                debugger;
                 return this.fileStructureService.fileStructure;
             }
         });
@@ -57,7 +58,7 @@ var FileEditorController = (function () {
 
     FileEditorController.prototype.saveFile = function () {
         var fileStructure = this.fileStructureService.fileStructure;
-        var fileUrl = this.fileModel.url || path.join(fileStructure.url, this.type, this.fileModel.name + this.extension);
+        var fileUrl = this.fileModel.url || path.join(fileStructure.url, this.fileModel.name + this.extension);
 
         var exists = this.fileStructureService.checkFileExists(fileStructure, fileUrl);
 
@@ -70,7 +71,7 @@ var FileEditorController = (function () {
             }.bind(this));
         }
 
-        confirm.then(function () {
+        return confirm.then(function () {
             return this.fileStructureService.saveItem(fileUrl, {
                 data: this.fileModel.data,
                 overwrite: exists
@@ -114,21 +115,44 @@ var FileEditorController = (function () {
     }
 
     FileEditorController.prototype.createDirectory = function (newDirectoryUrl) {
-        debugger;
         return this.fileStructureService.saveItem(newDirectoryUrl);
     }
 
     FileEditorController.prototype.move = function (itemUrl, options) {
-        debugger;
         return this.fileStructureService.moveItem(itemUrl, options);
     }
 
     FileEditorController.prototype.delete = function (itemUrl, options) {
-        debugger;
-        return this.fileStructureService.deleteItem(item.url, options);
+        return this.fileStructureService.deleteItem(itemUrl, options);
     }
 
-    return FileEditorController;
-})();
+    return function (
+        $scope,
+        $window,
+        $state,
+        confirmDialogService,
+        fileStructureService,
+        persistentStateService,
+        notifierService,
+        FileModel,
+        file,
+        type,
+        extension
+    ) {
+        return new FileEditorController(
+            $scope,
+            $window,
+            $state,
+            confirmDialogService,
+            fileStructureService,
+            persistentStateService,
+            notifierService,
+            FileModel,
+            file,
+            type,
+            extension
+        )
+    }
+};
 
-module.exports = FileEditorController;
+Core.service('fileEditorControllerFactory', fileEditorControllerFactory);

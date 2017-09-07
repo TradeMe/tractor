@@ -15,12 +15,12 @@
         <tractor-action
             ng-if="fileTree.canModify && !item.isDirectory"
             model="fileTree"
-            action="Copy"
+            action="Copy item"
             argument="item">
         </tractor-action>
         <tractor-action
             model="fileTree"
-            action="Delete"
+            action="Delete item"
             argument="item">
         </tractor-action>
     </div>
@@ -38,29 +38,22 @@
 </script>
 
 <script type="text/ng-template" id="file-structure.html">
-    {{ item | json }}
-    {{ fileTree.fileStructure | json }}
-    {{ item === fileTree.fileStructure }}
-    <div
-        ng-if="item !== fileTree.fileStructure">
-        <div ng-include="'file-options.html'"></div>
+    <div ng-include="'file-options.html'"></div>
 
-        <p
-            class="file-tree__item-name"
-            ng-class="{
-                'file-tree__item--pending': item.isPending
-            }"
-            ng-if="item.basename && !item.editingName"
-            ng-click="fileTree.toggleOpenDirectory(item)"
-            ng-dblclick="fileTree.editName(item)">
-            {{ item.basename }}
-        </p>
-        <div ng-include="'rename-input.html'"></div>
-    </div>
+    <p class="file-tree__item-name"
+        ng-class="{
+            'file-tree__item--pending': item.isPending
+        }"
+        ng-if="item.basename && !item.editingName"
+        ng-click="fileTree.toggleOpenDirectory(item)"
+        ng-dblclick="fileTree.editName(item)">
+        {{ item.basename }}
+    </p>
+    <div ng-include="'rename-input.html'"></div>
 
     <ul
         class="file-tree__file-list"
-        ng-if="item.open || item === fileTree.fileStructure">
+        ng-if="(item || fileTree.fileStructure).open">
         <li class="file-tree__file-list-item file-tree__file-list-item--new-directory">
             <tractor-action
                 model="fileTree"
@@ -71,7 +64,7 @@
 
         <li class="file-tree__file-list-item file-tree__file-list-item--directory"
             ng-class="{
-                'file-tree__file-list-item--open-directory': item.open || item === fileTree.fileStructure
+                'file-tree__file-list-item--open-directory': item.open
             }"
             ng-repeat="item in (item || fileTree.fileStructure).directories"
             ng-include="'file-structure.html'"
@@ -107,11 +100,10 @@
     </h2>
     <div class="file-tree"
         ng-class="{
-            'file-tree--javascript': fileTree.type === 'components' || fileTree.type === 'step-definitions',
+            'file-tree--javascript': fileTree.type === 'page-objects' || fileTree.type === 'step-definitions',
             'file-tree--feature': fileTree.type === 'features',
             'file-tree--json': fileTree.type === 'mock-data'
         }"
-        ng-include="'file-structure.html'"
-        ng-init="item = fileTree.fileStructure">
+        ng-include="'file-structure.html'">
     </div>
 </section>

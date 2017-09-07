@@ -6,12 +6,11 @@ var _ = require('lodash');
 // Module:
 var Core = require('../Core');
 
-var createFileStructureService = function (baseURL) {
-    return function FileStructureService (
-        $http,
-        realTimeService
-    ) {
-        'ngInject';
+function fileStructureServiceFactory (
+    $http,
+    realTimeService
+) {
+    return function (baseURL) {
         var _fileStructure = null;
 
         var service = {
@@ -31,7 +30,7 @@ var createFileStructureService = function (baseURL) {
         });
 
         realTimeService.connect('watch-file-structure', {
-            'file-structure-change': getFileStructure.bind(this)
+            'file-structure-change': getFileStructure
         });
         getFileStructure();
 
@@ -49,7 +48,7 @@ var createFileStructureService = function (baseURL) {
 
         function getFileStructure () {
             return $http.get('/' + baseURL + '/fs/')
-            .then(updateFileStructure.bind(this));
+            .then(updateFileStructure);
         }
 
         function moveItem (itemUrl, options) {
@@ -100,6 +99,4 @@ var createFileStructureService = function (baseURL) {
     };
 };
 
-Core.service('featuresFileStructureService', createFileStructureService('features'));
-Core.service('pageObjectFileStructureService', createFileStructureService('page-objects'));
-Core.service('stepDefinitionFileStructureService', createFileStructureService('step-definitions'));
+Core.service('fileStructureServiceFactory', fileStructureServiceFactory);

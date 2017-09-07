@@ -18,6 +18,7 @@ require('../../Services/FileStructureService');
 
 var FileTreeController = (function () {
     var FileTreeController = function FileTreeController (
+        $scope,
         $state,
         $interval,
         $window,
@@ -30,31 +31,38 @@ var FileTreeController = (function () {
         this.notifierService = notifierService;
         this.persistentStateService = persistentStateService;
 
-        this.headerName = title(this.type);
-        this.canModify = this.type !== 'step-definitions';
-
         this.moveItem = this.moveItem.bind(this);
+
+        $scope.$watch(function () {
+            return this.type;
+        }.bind(this), function () {
+            this.headerName = title(this.type.replace(/s$/, ''));
+            this.canModify = this.type !== 'step-definitions';
+        }.bind(this));
+
+        $scope.$watch(function () {
+            return this.fileStructure;
+        }.bind(this), function () {
+            this.fileStructure = updateFileStructure.call(this);
+        }.bind(this));
     };
 
     FileTreeController.prototype.addDirectory = function (directory) {
         var newDirectoryUrl = path.join(directory.url, NEW_DIRECTORY_NAME);
-        debugger;
         this.create(newDirectoryUrl);
-        // .then(updateFileStructure.bind(this));
     };
 
     FileTreeController.prototype.openItem = function (file) {
         this.$state.go('tractor.' + this.type, { file: { url: file.url } });
     };
 
-    FileTreeController.prototype.copy = function (item) {
+    FileTreeController.prototype.copyItem = function (item) {
         this.move(item.url, {
             copy: true
         });
-        // .then(updateFileStructure.bind(this));
     };
 
-    FileTreeController.prototype.delete = function (item) {
+    FileTreeController.prototype.deleteItem = function (item) {
         this.hideOptions(item);
 
         var hasChildren = item.files && item.files.length || item.directories && item.directories.length;
@@ -63,17 +71,18 @@ var FileTreeController = (function () {
             this.delete(item.url, {
                 rimraf: true
             });
-            // .then(updateFileStructure.bind(this));
         }
     };
 
     FileTreeController.prototype.moveItem = function (file, directory) {
         var oldDirectoryUrl = getDirname(file.url);
         if (oldDirectoryUrl !== directory.url) {
+            if (directory.url !== '/') {
+                directory.url += '/';
+            }
             this.move(file.url, {
                 newUrl: file.url.replace(oldDirectoryUrl, directory.url)
             });
-            // .then(updateFileStructure.bind(this));
         }
     };
 
@@ -126,7 +135,6 @@ var FileTreeController = (function () {
             this.move(item.url, {
                 newUrl: item.url.replace(oldName, newName)
             });
-            // .then(updateFileStructure.bind(this));
         }
     };
 
@@ -185,23 +193,19 @@ var FileTreeController = (function () {
         return directory;
     }
 
-    // function updateFileStructure () {
-    //     var fileStructure = this.fileStructureService.fileStructure;
-    //     if (!fileStructure) {
-    //         return null;
-    //     }
-    //
-    //     fileStructure = fileStructure.directories.find(function (directory) {
-    //         return directory.basename === this.type;
-    //     }.bind(this));
-    //
-    //     var openDirectories = getOpenDirectories.call(this);
-    //     fileStructure = restoreOpenDirectories(fileStructure, openDirectories);
-    //     fileStructure.open = true;
-    //
-    //     fileStructure = filterByExtension(fileStructure, this.extension);
-    //     return fileStructure;
-    // }
+    function updateFileStructure () {
+        var fileStructure = this.fileStructure;
+        if (!fileStructure) {
+            return null;
+        }
+
+        var openDirectories = getOpenDirectories.call(this);
+        fileStructure = restoreOpenDirectories(fileStructure, openDirectories);
+        fileStructure.open = true;
+
+        fileStructure = filterByExtension(fileStructure, this.extension);
+        return fileStructure;
+    }
 
     return FileTreeController;
 })();
