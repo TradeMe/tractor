@@ -1,0 +1,42 @@
+:host {
+    line-height: 3.5rem;
+    height: 4rem;
+    display: block;
+    padding-right: 0.5rem;
+}
+
+label {
+    font-family: "CodePro";
+    font-size: 1rem;
+    line-height: 1rem;
+    display: block;
+    padding: 0.25rem 0;
+}
+
+select {
+    font-family: "Corbert";
+    display: block;
+    border: none;
+    border-bottom: 1px solid rgba(110, 110, 110, 1);
+    background: rgba(255, 255, 255, 1);
+    height: 1.5rem;
+    line-height: 1.5rem;
+    font-size: 1rem;
+    width: 100%;
+    padding-left: 1rem;
+}
+
+select:active,
+select:focus {
+    outline: none;
+}
+
+[ng-messages] {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    float: left;
+}
+
+label[title] {
+    cursor: help;
+}

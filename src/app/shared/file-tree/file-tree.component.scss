@@ -1,0 +1,22 @@
+@import '../../../styles/_constants.scss';
+@import '../../../styles/_fonts.scss';
+
+:host {
+    background: $background-lightest;
+
+    float: left;
+    width: 19.75%;
+    height: 100%;
+
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.file-tree__container {
+    float: left;
+    height: 100%;
+}
+
+.file-tree__header {
+    padding-left: $large-spacing;
+}
