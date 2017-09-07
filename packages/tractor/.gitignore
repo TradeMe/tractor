@@ -1,9 +1,7 @@
+dist
 node_modules
+reports
 npm-debug.log
 npm-debug.log.*
-reports
-*.scssc
 .idea/*
-.sass-cache
-test
 .vscode

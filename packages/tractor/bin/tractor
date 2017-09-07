@@ -2,25 +2,42 @@
 'use strict';
 
 // Dependencies:
-var babel = require('babel/register')({
-    only: /tractor\/server\//
-});
-var tractor = require('commander');
-var log = require('npmlog');
+let tractor = require('commander');
+let info = require('../package.json');
 
-log.level = 'info';
+// Actions:
+let { init } = require('../dist/init');
+let { start } = require('../dist/start');
+
+let { getConfig } = require('tractor-config-loader');
+let { container } = require('tractor-dependency-injection');
+let { getPlugins } = require('tractor-plugin-loader');
+
+let di = container();
 
 tractor
-.version('0.8.5');
+.version(info.version);
 
 tractor
 .command('init')
 .description('initialise tractor in a project')
-.action(require('../server/cli/init/'));
+.action(function () {
+    initDIConstants();
+    return di.call(init);
+});
 
 tractor
 .command('start')
 .description('Start the tractor server')
-.action(require('../server/cli/start/'));
+.action(function () {
+    initDIConstants();
+    return di.call(start);
+});
 
 tractor.parse(process.argv);
+
+function initDIConstants () {
+    let config = getConfig();
+    let plugins = getPlugins();
+    di.constant({ config, plugins });
+}
