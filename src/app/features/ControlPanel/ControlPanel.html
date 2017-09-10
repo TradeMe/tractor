@@ -17,6 +17,22 @@
                     as="name">
                 </tractor-select>
             </form>
+            <div class="control-panel__terminal">
+                <tractor-action
+                    ng-if="!controlPanel.terminalVisible"
+                    model="controlPanel"
+                    action="show terminal">
+                </tractor-action>
+                <tractor-action
+                    ng-if="controlPanel.terminalVisible"
+                    model="controlPanel"
+                    action="hide terminal">
+                </tractor-action>
+                <div
+                    ng-show="controlPanel.terminalVisible"
+                    id="terminal">
+                </div>
+            </div>
         </div>
         <span class="control-panel__server-status"
               ng-class="{ 'control-panel__server-status--running': controlPanel.isServerRunning() }"
