@@ -2,10 +2,10 @@
 import { PageObjectsModule } from '../page-objects.module';
 
 // Dependencies:
-import './argument';
+import './method-argument';
 
 function createMethodModelConstructor (
-    ArgumentModel
+    MethodArgumentModel
 ) {
     let MethodModel = function MethodModel (interaction, method) {
         this.arguments = getArguments.call(this, method);
@@ -42,7 +42,7 @@ function createMethodModelConstructor (
 
     function getArguments (method) {
         let args = method.arguments || [];
-        return args.map(argument => new ArgumentModel(this, argument));
+        return args.map(argument => new MethodArgumentModel(this, argument));
     }
 }
 

@@ -2,17 +2,17 @@
 import { PageObjectsModule } from '../page-objects.module';
 
 // Dependencies:
-import '../models/argument';
+import '../models/method-argument';
 
-function ArgumentParserService (ArgumentModel) {
+function MethodArgumentParserService (MethodArgumentModel) {
     return { parse };
 
     function parse (method, argument, astObject) {
-        argument = new ArgumentModel(method, argument);
+        argument = new MethodArgumentModel(method, argument);
         argument.value = astObject.name || astObject.value;
 
         return argument;
     }
 }
 
-PageObjectsModule.service('argumentParserService', ArgumentParserService);
+PageObjectsModule.service('methodArgumentParserService', MethodArgumentParserService);

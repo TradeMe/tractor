@@ -6,11 +6,11 @@ import { PageObjectsModule } from '../page-objects.module';
 
 // Dependencies:
 import '../models/interaction';
-import './argument-parser.service';
+import './method-argument-parser.service';
 
 function InteractionParserService (
     InteractionModel,
-    argumentParserService
+    methodArgumentParserService
 ) {
     return { parse };
 
@@ -86,7 +86,7 @@ function InteractionParserService (
             });
             assert(interaction.method);
             let args = interactionCallExpression.arguments.map((argument, index) => {
-                let arg = argumentParserService.parse(interaction.methodInstance, interaction.method.arguments[index], argument);
+                let arg = methodArgumentParserService.parse(interaction.methodInstance, interaction.method.arguments[index], argument);
                 assert(arg);
                 let parameter = action.parameters.find(parameter => {
                     return parameter.variableName === arg.value;

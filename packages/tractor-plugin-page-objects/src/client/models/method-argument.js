@@ -1,11 +1,11 @@
 // Module:
 import { PageObjectsModule } from '../page-objects.module';
 
-function createArgumentModelConstructor (
+function createMethodArgumentModelConstructor (
     astCreatorService,
     stringToLiteralService
 ) {
-    let ArgumentModel = function ArgumentModel (method, argument) {
+    let MethodArgumentModel = function MethodArgumentModel (method, argument) {
         Object.defineProperties(this, {
             method: {
                 get () {
@@ -42,7 +42,7 @@ function createArgumentModelConstructor (
         this.value = '';
     };
 
-    return ArgumentModel;
+    return MethodArgumentModel;
 
     function toAST () {
         let ast = astCreatorService;
@@ -78,4 +78,4 @@ function createArgumentModelConstructor (
     }
 }
 
-PageObjectsModule.factory('ArgumentModel', createArgumentModelConstructor);
+PageObjectsModule.factory('MethodArgumentModel', createMethodArgumentModelConstructor);
