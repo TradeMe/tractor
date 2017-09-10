@@ -30,5 +30,5 @@ gulp.task('test', ['lint'], test);
 gulp.task('reload', reload);
 gulp.task('watch', ['reload'], watch);
 
-gulp.task('default', ['fonts', 'images', 'markup', 'styles', 'watch', 'init', 'test']);
-gulp.task('build', ['fonts', 'images', 'markup', 'styles', 'init', 'test']);
+gulp.task('default', ['fonts', 'images', 'markup', 'styles', 'watch', 'init']);
+gulp.task('build', ['fonts', 'images', 'markup', 'styles', 'init']);

@@ -90,16 +90,16 @@ function createTagOption (tag) {
 }
 
 function getEnvironment () {
-    let saved = this.persistentStateService.get('environment');
-    let environment = this.environments.find(function (environment) {
+    var saved = this.persistentStateService.get('environment');
+    var environment = this.environments.find(function (environment) {
         return environment === saved;
     });
     return environment || _.first(this.environments);
 }
 
 function getTag () {
-    let saved = this.persistentStateService.get('tag');
-    let tag = this.tags.find(function (tag) {
+    var saved = this.persistentStateService.get('tag');
+    var tag = this.tags.find(function (tag) {
         return tag.name === saved;
     });
     return tag || _.first(this.tags);
