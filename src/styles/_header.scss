@@ -28,6 +28,22 @@ header {
     }
 }
 
+.control-panel__terminal {
+    float: right;
+    display: inline-block;
+    background: $primary-light;
+    padding: 0 $standard-spacing;
+}
+
+#terminal {
+    position: absolute;
+    top: 52px;
+    right: 16px;
+    height: 800px;
+    width: 1600px;
+    z-index: 1;
+}
+
 .control-panel__top-row tractor-action {
     vertical-align: top;
     margin: 0.625rem 0;
