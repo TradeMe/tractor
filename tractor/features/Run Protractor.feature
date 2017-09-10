@@ -6,4 +6,4 @@ Feature: Run Protractor
   
 Scenario: Run Protractor
     When I open the tractor application
-    When I run protractor with tag="~@smoke" and environment="http://localhost:4000"
+    When I run protractor with tag="All tests" and environment="http://localhost:4000"

@@ -55,6 +55,8 @@ var ControlPanelController = (function () {
 
         this.environment = getEnvironment.call(this);
         this.tag = getTag.call(this);
+
+        this.terminalVisible = false;
     };
 
     ControlPanelController.prototype.runProtractor = function () {
@@ -65,6 +67,14 @@ var ControlPanelController = (function () {
 
     ControlPanelController.prototype.isServerRunning = function () {
         return this.serverStatusService.isServerRunning();
+    };
+
+    ControlPanelController.prototype.showTerminal = function () {
+        this.terminalVisible = true;
+    };
+
+    ControlPanelController.prototype.hideTerminal = function () {
+        this.terminalVisible = false;
     };
 
     return ControlPanelController;
