@@ -1,6 +1,6 @@
 {
   "name": "tractor-server",
-  "version": "0.12.1",
+  "version": "0.12.2",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -38,20 +38,19 @@
     "dirty-chai": "^2.0.1",
     "eslint": "^4.6.1",
     "istanbul": "^1.0.0-alpha.2",
-    "mocha": "^3.2.0",
+    "mocha": "^3.5.2",
     "npm-watch": "^0.2.0",
     "sinon": "^3.2.1",
     "sinon-chai": "^2.8.0"
   },
   "dependencies": {
     "bluebird": "^3.5.0",
-    "body-parser": "^1.16.0",
+    "body-parser": "^1.18.0",
     "cors": "^2.8.1",
     "express": "^4.15.4",
     "lodash.template": "^4.4.0",
     "socket.io": "^2.0.3",
-    "stripcolorcodes": "^0.1.0",
-    "tractor-client": "^0.12.0-beta.0",
+    "tractor-client": "^0.12.0-beta.1",
     "tractor-error-handler": "^0.2.1",
     "tractor-logger": "^0.1.0"
   }

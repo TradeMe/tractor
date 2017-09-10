@@ -7,9 +7,6 @@ import { error, info } from 'tractor-logger';
 // Constants:
 const PROTRACTOR_PATH = path.join('node_modules', 'protractor', 'bin', 'protractor');
 
-// Dependencies:
-import stripcolorcodes from 'stripcolorcodes';
-
 // Errors:
 import { TractorError } from 'tractor-error-handler';
 
@@ -73,7 +70,7 @@ function startProtractor (config, socket, options) {
     let protractor = childProcess.spawn('node', protractorArgs);
 
     protractor.stdout.on('data', sendDataToClient.bind(socket));
-    protractor.stderr.on('data', sendErrorToClient.bind(socket));
+    protractor.stderr.on('data', sendDataToClient.bind(socket));
     protractor.stdout.pipe(process.stdout);
     protractor.stderr.pipe(process.stderr);
 
@@ -92,48 +89,5 @@ function startProtractor (config, socket, options) {
 }
 
 function sendDataToClient (data) {
-    this.lastMessage = data.toString();
-    let messages = data.toString().split(/\r\n|\n/);
-    messages.forEach((message) => {
-        data = formatMessage(stripcolorcodes(message).trim());
-        if (data && data.message.length) {
-            this.emit('protractor-out', data);
-        }
-    });
-}
-
-function formatMessage (message) {
-    // If it looks like an error:
-    if (message.match(/Error:/)) {
-        return {
-            message,
-            type: 'error'
-        };
-    }
-
-    // Remove line numbers from step definitions:
-    message = message.replace(/\s*?# .*/g, '...');
-    // Trim leading whitespace from scenario outlines:
-    message = message.replace(/^\s*/gm, '');
-    // Remove server URL:
-    message = message.replace(/ at http.*/g, '.');
-    // Really shitty match for some Error messages.
-    // I'm not actually sure why these come back on stdout...?
-
-    // If it's not something we care about, ignore it:
-    if (!message.match(/^(Feature|Scenario|Given|Then|When)/)) {
-        return null;
-    }
-
-    return {
-        message,
-        type: 'info'
-    };
-}
-
-function sendErrorToClient () {
-    this.emit('protractor-err', {
-        message: 'Something went really wrong - check the console for details.',
-        type: 'error'
-    });
+    this.emit('protractor-out', data.toString());
 }

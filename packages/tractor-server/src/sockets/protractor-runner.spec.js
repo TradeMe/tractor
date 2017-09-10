@@ -326,7 +326,7 @@ describe('server/sockets: protractor-runner:', () => {
         });
     });
 
-    it('should format messages from stdout and send them to the client', () => {
+    it('should send messages from stdout to the client', () => {
         let config = {
             directory: 'tractor',
             beforeProtractor: () => {},
@@ -353,19 +353,11 @@ describe('server/sockets: protractor-runner:', () => {
         let running = run(config, socket, options);
         setTimeout(() => {
             spawnEmitter.stdout.emit('data', 'Scenario');
-            spawnEmitter.stdout.emit('data', 'Error:');
             spawnEmitter.emit('exit', 0);
         }, MAGIC_TIMEOUT_NUMBER);
 
         return running.then(() => {
-            expect(socket.emit).to.have.been.calledWith('protractor-out', {
-                message: 'Scenario',
-                type: 'info'
-            });
-            expect(socket.emit).to.have.been.calledWith('protractor-out', {
-                message: 'Error:',
-                type: 'error'
-            });
+            expect(socket.emit).to.have.been.calledWith('protractor-out', 'Scenario');
         })
         .finally(() => {
             childProcess.spawn.restore();
@@ -373,7 +365,7 @@ describe('server/sockets: protractor-runner:', () => {
         });
     });
 
-    it('should format messages from stderr and send them to the client', () => {
+    it('should send messages from stderr to the client', () => {
         let config = {
             directory: 'tractor',
             beforeProtractor: () => {},
@@ -404,50 +396,7 @@ describe('server/sockets: protractor-runner:', () => {
         }, MAGIC_TIMEOUT_NUMBER);
 
         return running.then(() => {
-            expect(socket.emit).to.have.been.calledWith('protractor-err', {
-                message: 'Something went really wrong - check the console for details.',
-                type: 'error'
-            });
-        })
-        .finally(() => {
-            childProcess.spawn.restore();
-            tractorLogger.info.restore();
-        });
-    });
-
-    it('should not send irrelevant messages to the client', () => {
-        let config = {
-            directory: 'tractor',
-            beforeProtractor: () => {},
-            afterProtractor: () => {}
-        };
-        let spawnEmitter = new EventEmitter();
-        spawnEmitter.stdout = new EventEmitter();
-        spawnEmitter.stdout.pipe = () => {};
-        spawnEmitter.stderr = new EventEmitter();
-        spawnEmitter.stderr.pipe = () => {};
-        let socket = {
-            emit: () => {},
-            disconnect: () => {}
-        };
-
-        sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
-        sinon.spy(socket, 'emit');
-        sinon.stub(tractorLogger, 'info');
-
-        let options = {
-            baseUrl: 'baseUrl'
-        };
-
-        let running = run(config, socket, options);
-        setTimeout(() => {
-            spawnEmitter.stdout.emit('data', '');
-            spawnEmitter.stdout.emit('data', 'something irrelevant');
-            spawnEmitter.emit('exit', 0);
-        }, MAGIC_TIMEOUT_NUMBER);
-
-        return running.then(() => {
-            expect(socket.emit).to.not.have.been.called();
+            expect(socket.emit).to.have.been.calledWith('protractor-out', 'error');
         })
         .finally(() => {
             childProcess.spawn.restore();
