@@ -31,8 +31,17 @@ const description = {
         }],
         returns: 'promise'
     }, {
+        name: 'getCurrentUrl',
+        description: 'Schedules a command to retrieve the URL of the current page.',
+        returns: 'string',
+        string: {
+            name: 'url',
+            type: 'string',
+            required: true
+        }
+    }, {
         name: 'getLocationAbsUrl',
-        description: 'Returns the current absolute url from AngularJS.',
+        description: 'Deprecated, use "getCurrentUrl" instead.',
         returns: 'string',
         string: {
             name: 'absoluteUrl',
