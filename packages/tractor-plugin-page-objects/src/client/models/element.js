@@ -140,24 +140,6 @@ function createElementModelConstructor (
             required: true
         }
     }, {
-        name: 'getOuterHtml',
-        description: 'Schedules a command to retrieve the outer HTML of this element.',
-        returns: 'promise',
-        promise: {
-            name: 'outerHtml',
-            type: 'string',
-            required: true
-        }
-    }, {
-        name: 'getInnerHtml',
-        description: 'Schedules a command to retrieve the inner HTML of this element.',
-        returns: 'promise',
-        promise: {
-            name: 'innerHtml',
-            type: 'string',
-            required: true
-        }
-    }, {
         name: 'getAttribute',
         description: 'Schedules a command to get attribute of this element.',
         returns: 'promise',
