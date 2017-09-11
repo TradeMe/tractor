@@ -1,6 +1,6 @@
 {
   "name": "tractor-file-javascript",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -32,7 +32,6 @@
     "esprima": "^4.0.0",
     "esquery": "^1.0.0",
     "tractor-error-handler": "^0.2.1",
-    "tractor-file-structure": "^0.3.0-beta.0",
     "tractor-logger": "^0.1.0"
   },
   "devDependencies": {
@@ -50,5 +49,8 @@
     "npm-watch": "^0.2.0",
     "sinon": "^3.2.1",
     "sinon-chai": "^2.13.0"
+  },
+  "peerDependencies": {
+    "tractor-file-structure": "^0.4.0-beta.0"
   }
 }
