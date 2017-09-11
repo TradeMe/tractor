@@ -20,6 +20,10 @@ import { getConfigHandler } from './api/get-config';
 import { getPluginsHandler } from './api/get-plugins';
 import { socketHandler } from './sockets/connect';
 
+// Constants:
+const PARAMETER_LIMIT = 50000;
+const UPLOAD_SIZE_LIMIT = '50mb';
+
 let server;
 
 export function start (config, di, plugins) {
@@ -41,9 +45,14 @@ export function init (config, di, plugins) {
 
     di.constant({ application, sockets });
 
-    application.use(bodyParser.json());
+    // Set some massive file size limit.
+    application.use(bodyParser.json({
+        limit: UPLOAD_SIZE_LIMIT
+    }));
     application.use(bodyParser.urlencoded({
-        extended: false
+        limit: UPLOAD_SIZE_LIMIT,
+        extended: true,
+        parameterLimit: PARAMETER_LIMIT
     }));
 
     application.use(cors());
