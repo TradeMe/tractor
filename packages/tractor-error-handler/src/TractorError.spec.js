@@ -58,11 +58,16 @@ describe('tractor-error-handler: TractorError:', () => {
     });
 
     describe('TractorError.isTractorError:', () => {
-        function OtherTractorError () {
-            this._isTractorError = true;
-        }
+        it('should be `true` for instances of TractorError', () => {
+            expect(TractorError.isTractorError(new TractorError())).to.equal(true);
+        });
 
-        let error = new OtherTractorError();
-        expect(TractorError.isTractorError(error)).to.equal(true);
+        it('should be `true` for TractorError-like objects', () => {
+            expect(TractorError.isTractorError({ _isTractorError: true })).to.equal(true);
+        });
+
+        it('should be `false` for non-TractorError objects', () => {
+            expect(TractorError.isTractorError({})).to.equal(false);
+        });
     });
 });
