@@ -1,6 +1,6 @@
 {
   "name": "tractor-file-structure",
-  "version": "0.4.0-beta.0",
+  "version": "0.4.1-beta.0",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
     "cover": "istanbul cover --config .istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ./.mocharc 'src/**/*.spec.js'",
     "lint": "eslint src/**/*.js; true",
     "test": "mocha --opts ./.mocharc 'src/**/*.spec.js'",
+    "test:debug": "mocha --inspect --debug-brk --opts ./.mocharc 'src/**/*.spec.js'",
     "watch": "npm-watch"
   },
   "license": "MIT",
@@ -38,7 +39,7 @@
     "dirty-chai": "^2.0.1",
     "eslint": "^4.6.1",
     "istanbul": "^1.0.0-alpha.2",
-    "mocha": "^3.5.0",
+    "mocha": "^3.5.3",
     "npm-watch": "^0.2.0",
     "sinon": "^3.2.1",
     "sinon-chai": "^2.13.0"
@@ -47,8 +48,9 @@
     "bluebird": "^3.4.7",
     "chokidar": "^1.7.0",
     "express": "^4.15.4",
+    "graceful-fs": "^4.1.11",
     "lodash.debounce": "^4.0.8",
-    "tractor-error-handler": "^0.2.1",
+    "tractor-error-handler": "^0.2.2",
     "tractor-logger": "^0.1.0"
   }
 }

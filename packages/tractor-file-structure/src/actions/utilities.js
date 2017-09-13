@@ -2,10 +2,8 @@
 const ITEM_NOT_FOUND_STATUS = 404;
 const OKAY_STATUS = 200;
 
-// Utilities:
-import path from 'path';
-
 // Dependencies:
+import path from 'path';
 import { Directory } from '../structure/Directory';
 
 // Errors:

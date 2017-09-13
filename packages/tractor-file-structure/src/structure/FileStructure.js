@@ -2,13 +2,11 @@
 const DOT_FILE_REGEX = /(^|[/\\])\../;
 const EXTENSION_MATCH_REGEX = /[^.]*(\..*)?/;
 
-// Utilities:
+// Dependencies:
 import chokidar from 'chokidar';
 import { EventEmitter } from 'events';
 import path from 'path';
 import { info } from 'tractor-logger';
-
-// Dependencies:
 import { Directory } from './Directory';
 import { File } from './File';
 import { References } from './References';

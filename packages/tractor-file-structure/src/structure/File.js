@@ -1,9 +1,7 @@
-// Utilities:
-import Promise from 'bluebird';
-const fs = Promise.promisifyAll(require('fs'));
-import path from 'path';
-
 // Dependencies:
+import Promise from 'bluebird';
+import fs from 'graceful-fs';
+import path from 'path';
 import { Directory } from './Directory';
 
 // Errors:

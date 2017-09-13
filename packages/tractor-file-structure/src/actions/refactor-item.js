@@ -1,5 +1,5 @@
-// Utilities:
-import { getItemPath, respondOkay, respondItemNotFound } from '../utilities/utilities';
+// Dependencies:
+import { getItemPath, respondOkay, respondItemNotFound } from './utilities';
 
 // Errors:
 import { TractorError, handleError } from 'tractor-error-handler';

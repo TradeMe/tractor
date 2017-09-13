@@ -1,17 +1,10 @@
 /* global describe:true, it:true */
 
-// Utilities:
-import chai from 'chai';
-import dirtyChai from 'dirty-chai';
-import path from 'path';
-import sinonChai from 'sinon-chai';
-
 // Test setup:
-const expect = chai.expect;
-chai.use(dirtyChai);
-chai.use(sinonChai);
+import { expect } from '../../test-setup';
 
 // Dependencies:
+import path from 'path';
 import { File } from './File';
 import { FileStructure } from './FileStructure';
 

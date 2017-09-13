@@ -1,22 +1,15 @@
 /* global describe:true, it:true */
 
-// Utilities:
-import chai from 'chai';
-import dirtyChai from 'dirty-chai';
-import Promise from 'bluebird';
-import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
-
 // Test setup:
-const expect = chai.expect;
-chai.use(dirtyChai);
-chai.use(sinonChai);
+import { expect, Promise, sinon } from '../../test-setup';
 
 // Dependencies:
-import fs from 'fs';
+import fs from 'graceful-fs';
 import path from 'path';
 import { Directory } from './Directory';
 import { FileStructure } from './FileStructure';
+
+// Errors:
 import { TractorError } from 'tractor-error-handler';
 
 // Under test:

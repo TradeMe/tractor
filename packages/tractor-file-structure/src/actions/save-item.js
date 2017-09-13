@@ -1,8 +1,6 @@
-// Utilities:
-import { getItemPath, getCopyPath, respondOkay } from '../utilities/utilities';
-
 // Dependencies:
 import { Directory } from '../structure/Directory';
+import { getItemPath, getCopyPath, respondOkay } from './utilities';
 
 // Errors:
 import { TractorError, handleError } from 'tractor-error-handler';

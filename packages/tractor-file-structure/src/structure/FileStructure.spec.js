@@ -1,21 +1,12 @@
 /* global describe:true, it:true */
 
-// Utilities:
-import chai from 'chai';
-import dirtyChai from 'dirty-chai';
-import path from 'path';
-import Promise from 'bluebird';
-import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
-
 // Test setup:
-const expect = chai.expect;
-chai.use(dirtyChai);
-chai.use(sinonChai);
+import { expect, Promise, sinon } from '../../test-setup';
 
 // Dependencies:
 import chokidar from 'chokidar';
 import { EventEmitter } from 'events';
+import path from 'path';
 import { Directory } from './Directory';
 import { File } from './File';
 import { References } from './References';

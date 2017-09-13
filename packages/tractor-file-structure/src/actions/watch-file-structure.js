@@ -1,7 +1,7 @@
 // Constants:
 const CHANGE_DEBOUNCE_TIME = 100;
 
-// Utilities:
+// Dependencies:
 import debounce from 'lodash.debounce'
 
 export function watchFileStructure (fileStructure, sockets) {

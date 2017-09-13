@@ -1,20 +1,14 @@
 /* global describe:true, it:true */
 
-// Utilities:
-import chai from 'chai';
-import path from 'path';
-import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
-
 // Test setup:
-const expect = chai.expect;
-chai.use(sinonChai);
+import { expect, sinon } from '../../test-setup';
 
 // Dependencies:
+import path from 'path';
 import { Directory } from '../structure/Directory';
 import { File } from '../structure/File';
 import { FileStructure } from '../structure/FileStructure';
-import * as utilities from '../utilities/utilities';
+import * as utilities from './utilities';
 
 // Under test:
 import { createOpenItemHandler } from './open-item';

@@ -1,5 +1,5 @@
-// Utilities:
-import { getItemPath, respondItemNotFound } from '../utilities/utilities';
+// Dependencies:
+import { getItemPath, respondItemNotFound } from './utilities';
 
 export function createOpenItemHandler (fileStructure) {
     return function openItem (request, response) {
