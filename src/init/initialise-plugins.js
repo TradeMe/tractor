@@ -1,7 +1,5 @@
-// Utilities:
-import Promise from 'bluebird';
-
 // Dependencies:
+import Promise from 'bluebird';
 import { info } from 'tractor-logger';
 
 export function initialisePlugins (di, plugins) {

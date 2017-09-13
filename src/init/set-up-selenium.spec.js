@@ -1,14 +1,7 @@
 /* global describe:true, it:true */
 
-// Utilities:
-import chai from 'chai';
-import Promise from 'bluebird';
-import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
-
 // Test setup:
-const expect = chai.expect;
-chai.use(sinonChai);
+import { expect, Promise, sinon } from '../../test-setup';
 
 // Dependencies:
 import childProcess from 'child_process';
@@ -18,7 +11,7 @@ import * as tractorLogger from 'tractor-logger';
 // Under test:
 import { setUpSelenium } from './set-up-selenium';
 
-describe('tractor - init/set-up-selenium:', () => {
+describe('tractor - set-up-selenium:', () => {
     it('should run the "webdriver-manager update" command', () => {
         sinon.stub(childProcess, 'execAsync').returns(Promise.resolve());
         sinon.stub(tractorLogger, 'info');

@@ -1,11 +1,5 @@
-'use strict';
-
-exports.config = {
+let protractorConfig = {
     allScriptsTimeout: 11000,
-
-    specs: [
-        'features/**/*.feature'
-    ],
 
     capabilities: {
         browserName: 'chrome'
@@ -13,13 +7,7 @@ exports.config = {
 
     directConnect: true,
 
-    framework: 'custom',
-    frameworkPath: require.resolve('protractor-cucumber-framework'),
-    cucumberOpts: {
-        require: ['support/**/*.js', 'step-definitions/**/*.js'],
-        format: 'pretty',
-        tags: []
-    },
-
-    params: { debug: false },
+    params: { debug: false }
 };
+
+exports.config = protractorConfig;
