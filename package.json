@@ -55,7 +55,7 @@
     "tractor-dependency-injection": "^0.1.1",
     "tractor-error-handler": "^0.2.1",
     "tractor-logger": "^0.1.0",
-    "tractor-plugin-loader": "^0.5.1",
+    "tractor-plugin-loader": "^0.6.0",
     "tractor-server": "^0.12.2"
   },
   "bin": {
