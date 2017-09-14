@@ -3143,15 +3143,22 @@ tractor-error-handler@^0.2.1:
   dependencies:
     tractor-logger "^0.1.0"
 
-tractor-file-structure@^0.4.0-beta.0:
-  version "0.4.0-beta.0"
-  resolved "https://registry.yarnpkg.com/tractor-file-structure/-/tractor-file-structure-0.4.0-beta.0.tgz#02ea31779fd17f56ff3cf9bfea18f35769e7e1d4"
+tractor-error-handler@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/tractor-error-handler/-/tractor-error-handler-0.2.2.tgz#0dc4190b2531daaf9a3cfee2a53d437777bc6914"
+  dependencies:
+    tractor-logger "^0.1.0"
+
+tractor-file-structure@^0.4.1-beta.0:
+  version "0.4.1-beta.0"
+  resolved "https://registry.yarnpkg.com/tractor-file-structure/-/tractor-file-structure-0.4.1-beta.0.tgz#4b3567b5e5ac02a981311cb293ceb28b54e74200"
   dependencies:
     bluebird "^3.4.7"
     chokidar "^1.7.0"
     express "^4.15.4"
+    graceful-fs "^4.1.11"
     lodash.debounce "^4.0.8"
-    tractor-error-handler "^0.2.1"
+    tractor-error-handler "^0.2.2"
     tractor-logger "^0.1.0"
 
 tractor-logger@^0.1.0:
