@@ -37,11 +37,21 @@ export function loadPlugins () {
             plugin.description.hasUI = false;
         }
 
-        plugin.addHooks = plugin.addHooks || (() => {});
-        plugin.create = plugin.create || (() => {});
-        plugin.init = plugin.init || (() => {});
-        plugin.run = plugin.run || (() => {});
-        plugin.serve = plugin.serve || (() => {});
+        if (!plugin.create) {
+            plugin.create = (() => {})
+        }
+        if (!plugin.init) {
+            plugin.init = (() => {})
+        }
+        if (!plugin.plugin) {
+            plugin.plugin = (() => {})
+        }
+        if (!plugin.run) {
+            plugin.run = (() => {})
+        }
+        if (!plugin.serve) {
+            plugin.serve = (() => {})
+        }
     });
     return plugins;
 }

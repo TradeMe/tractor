@@ -14,7 +14,7 @@ Plugin loader for [**tractor**](https://github.com/TradeMe/tractor) to provide a
 
 ## API:
 
-A **tractor** plugin is just a plain old node module, with a few specially named exports, and maybe some bundled UI code. If you want to see an example of a basic plugin, check out [**tractor-plugin-browser**](https://github.com/phenomnomnominal/tractor-plugin-browser). Each of the following functions will be run using the basic DI provided by [**tractor-dependency-injection**](https://github.com/phenomnomnominal/tractor-dependency-injection).
+A **tractor** plugin is just a plain old node module, with a few specially named exports, and maybe some bundled UI code. If you want to see an example of a basic plugin, check out [**tractor-plugin-browser**](https://github.com/phenomnomnominal/tractor-plugin-browser).
 
 ### `description` (optional)
 
@@ -27,17 +27,12 @@ A **tractor** plugin is just a plain old node module, with a few specially named
 > #### Returns:
 > * `plugin: any`
 
-### `addHooks` (optional):
-
-> Add any Cucumber hooks that the plugin needs, e.g. Before, After.
-
 ### `init` (optional):
 
 > Initialise anything that your plugin needs before it runs. This may be things like creating directories or getting information about the current environment, before **tractor** starts running.
 
 > #### Returns:
 > * `promise?: Promise`
-
 
 ### `run` (optional):
 

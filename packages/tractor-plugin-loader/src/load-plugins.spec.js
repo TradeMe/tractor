@@ -109,25 +109,6 @@ describe('tractor-plugin-loader:', () => {
             tractorLogger.info.restore();
         });
 
-        it('should have a default `addHooks` function that is a noop', () => {
-            let nodeModules = ['tractor-plugin-test'];
-            let pluginModule = {};
-
-            sinon.stub(fs, 'readdirSync').returns(nodeModules);
-            sinon.stub(module, '_load').returns(pluginModule);
-            sinon.stub(tractorLogger, 'info');
-
-            let plugins = loadPlugins();
-            let [test] = plugins;
-            expect(() => {
-                test.addHooks();
-            }).to.not.throw();
-
-            fs.readdirSync.restore();
-            module._load.restore();
-            tractorLogger.info.restore();
-        });
-
         it('should have a default `create` function that is a noop', () => {
             let nodeModules = ['tractor-plugin-test'];
             let pluginModule = {};
@@ -159,6 +140,25 @@ describe('tractor-plugin-loader:', () => {
             let [test] = plugins;
             expect(() => {
                 test.init();
+            }).to.not.throw();
+
+            fs.readdirSync.restore();
+            module._load.restore();
+            tractorLogger.info.restore();
+        });
+
+        it('should have a default `plugin` function that is a noop', () => {
+            let nodeModules = ['tractor-plugin-test'];
+            let pluginModule = {};
+
+            sinon.stub(fs, 'readdirSync').returns(nodeModules);
+            sinon.stub(module, '_load').returns(pluginModule);
+            sinon.stub(tractorLogger, 'info');
+
+            let plugins = loadPlugins();
+            let [test] = plugins;
+            expect(() => {
+                test.plugin();
             }).to.not.throw();
 
             fs.readdirSync.restore();
