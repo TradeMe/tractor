@@ -1,7 +1,5 @@
-// Utilities:
-import Promise from 'bluebird';
-
 // Dependencies:
+import Promise from 'bluebird';
 import { JavaScriptFile } from 'tractor-file-javascript';
 import { PageObjectFileRefactorer } from './page-object-file-refactorer';
 

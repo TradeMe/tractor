@@ -1,5 +1,4 @@
-// Dependencies:
-export default function run (
+export function run (
     pageObjectsFileStructure
 ) {
     return pageObjectsFileStructure.read();

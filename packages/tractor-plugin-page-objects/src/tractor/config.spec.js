@@ -4,20 +4,20 @@
 import { expect } from '../../test-setup';
 
 // Under test:
-import { getConfig } from './utilities';
+import { config } from './config';
 
-describe('tractor-plugin-page-objects - utilities:', () => {
-    describe('getConfig', () => {
-        it('should create the config object', () => {
+describe('tractor-plugin-page-objects - tractor/config:', () => {
+    describe('addConfig', () => {
+        it('should process the config object', () => {
             let pageObjectsConfig = {};
             let tractorConfig = {
                 pageObjects: pageObjectsConfig
             };
 
-            let config = getConfig(tractorConfig);
+            let processed = config(tractorConfig);
 
-            expect(config).to.equal(pageObjectsConfig);
-            expect(config.directory).to.equal('./tractor/page-objects');
+            expect(processed).to.equal(pageObjectsConfig);
+            expect(processed.directory).to.equal('./tractor/page-objects');
         });
 
         it('should allow for a custom directory to be set', () => {
@@ -27,9 +27,9 @@ describe('tractor-plugin-page-objects - utilities:', () => {
                 }
             };
 
-            let config = getConfig(tractorConfig);
+            let processed = config(tractorConfig);
 
-            expect(config.directory).to.equal('./src');
+            expect(processed.directory).to.equal('./src');
         });
     });
 });

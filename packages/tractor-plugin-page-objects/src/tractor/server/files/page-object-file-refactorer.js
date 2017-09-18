@@ -4,7 +4,7 @@ const CLASS_CONSTRUCTOR_DECLARATOR_QUERY = 'VariableDeclarator';
 const CLASS_CONSTRUCTOR_FUNCTION_QUERY = 'FunctionExpression';
 const CLASS_RETURN_QUERY = 'ReturnStatement';
 
-// Utilities:
+// Dependencies:
 import pascalcase from 'pascal-case';
 
 export const PageObjectFileRefactorer = {

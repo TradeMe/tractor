@@ -1,23 +1,19 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect, sinon } from '../../../test-setup';
+import { dedent, expect, Promise, sinon } from '../../../../test-setup';
 
-// Utilities:
-import Promise from 'bluebird';
-import dedent from 'dedent';
+// Dependencies:
 import escodegen from 'escodegen';
 import * as esprima from 'esprima';
 import path from 'path';
-
-// Dependencies:
 import { FileStructure } from 'tractor-file-structure';
 import { PageObjectFile } from './page-object-file';
 
 // Under test:
 import { PageObjectFileRefactorer } from './page-object-file-refactorer';
 
-describe('tractor-plugin-page-objects: PageObjectFileRefactorer:', () => {
+describe('tractor-plugin-page-objects - page-object-file-refactorer:', () => {
     describe('PageObjectFileRefactorer.fileNameChange', () => {
         it('should update the name of the page object in a file', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));

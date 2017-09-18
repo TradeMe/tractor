@@ -1,18 +1,16 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect, sinon } from '../../test-setup';
+import { expect, ineeda, NOOP } from '../../../test-setup';
 
 // Under test:
-import run from './run';
+import { run } from './run';
 
 describe('tractor-plugin-page-objects - run:', () => {
     it('should read the file structure', () => {
-        let pageObjectsFileStructure = {
-            read: () => {}
-        }
-
-        sinon.stub(pageObjectsFileStructure, 'read');
+        let pageObjectsFileStructure = ineeda({
+            read: NOOP
+        });
 
         run(pageObjectsFileStructure);
 

@@ -1,9 +1,9 @@
 // Constants:
 const DEFAULT_DIRECTORY = './tractor/page-objects';
 
-export function getConfig (config) {
-    config.pageObjects = config.pageObjects || {};
-    let { pageObjects } = config;
+export function config (tractorConfig) {
+    tractorConfig.pageObjects = tractorConfig.pageObjects || {};
+    let { pageObjects } = tractorConfig;
     pageObjects.directory = pageObjects.directory || DEFAULT_DIRECTORY;
     return pageObjects;
 }
