@@ -1,3 +1,7 @@
+// Plugins:
+var tractorPluginLoader = require('tractor-plugin-loader');
+var plugins = tractorPluginLoader.getPlugins();
+
 let protractorConfig = {
     allScriptsTimeout: 11000,
 
@@ -9,5 +13,9 @@ let protractorConfig = {
 
     params: { debug: false }
 };
+
+plugins.forEach(function (plugin) {
+    plugin.plugin(protractorConfig);
+});
 
 exports.config = protractorConfig;
