@@ -1,6 +1,6 @@
 {
   "name": "tractor",
-  "version": "0.12.0-beta.3",
+  "version": "0.12.0-beta.4",
   "author": "Craig Spence <craig@trademe.co.nz>",
   "repository": {
     "type": "git",
@@ -15,7 +15,8 @@
   },
   "scripts": {
     "prepublish": "npm run build",
-    "build": "npm run lint && npm run cover && npm run compile",
+    "build": "npm run clean && npm run lint && npm run cover && npm run compile",
+    "clean": "rimraf dist",
     "compile": "babel src/ --out-dir dist --ignore *.spec.js",
     "cover": "istanbul cover --config .istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ./.mocharc 'src/**/*.spec.js'",
     "lint": "eslint src/**/*.js; true",
@@ -41,6 +42,7 @@
     "istanbul": "1.0.0-alpha.2",
     "mocha": "^3.5.3",
     "npm-watch": "^0.2.0",
+    "rimraf": "^2.6.2",
     "sinon": "^3.2.1",
     "sinon-chai": "^2.13.0"
   },
