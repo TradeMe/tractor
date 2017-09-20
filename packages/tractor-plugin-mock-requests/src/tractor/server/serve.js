@@ -1,7 +1,6 @@
 // Utilities:
-import fs from 'fs';
+import fs from 'graceful-fs';
 import path from 'path';
-import { getConfig } from './utilities';
 import { info } from 'tractor-logger';
 
 // Dependencies:
@@ -12,7 +11,7 @@ import proxy from 'express-http-proxy';
 import http from 'http';
 import zlib from 'zlib';
 import { FileStructure, serveFileStructure } from 'tractor-file-structure';
-import { MockRequestFile } from './mock-request-file';
+import { MockRequestFile } from './files/mock-request-file';
 
 // Scripts:
 const ADD_MOCKING = fs.readFileSync(path.resolve(__dirname, './scripts/add-mocking.js'), 'utf8');
@@ -21,10 +20,8 @@ const SHIM_FETCH = fs.readFileSync(path.resolve(__dirname, './scripts/shim-fetch
 const SHIM_XHR = fs.readFileSync(path.resolve(__dirname, './scripts/shim-xhr.js'), 'utf8');
 const MOCKS = [];
 
-export default function serve (di, config) {
+export function serve (di, config) {
     shimZlib();
-
-    config = getConfig(config);
 
     let application = express();
 
@@ -42,7 +39,7 @@ export default function serve (di, config) {
         memoizeHost: false
     }));
 
-    let { directory, port } = config;
+    let { directory, port } = config.mockRequests;
 
     let mockRequests = path.resolve(process.cwd(), directory);
     let mockRequestsFileStructure = new FileStructure(mockRequests);
@@ -68,7 +65,7 @@ function getProxyUrl () {
 }
 
 function createRequestDecorator (config) {
-    let headers = config.headers || {};
+    let headers = config.mockRequests.headers || {};
     return function (requestOptions) {
         Object.keys(headers).forEach(header => {
             if (!requestOptions.headers[header]) {

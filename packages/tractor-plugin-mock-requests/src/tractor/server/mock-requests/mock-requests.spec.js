@@ -1,35 +1,16 @@
 /* global describe:true, it:true, Promise:true */
 
 // Test setup:
-import { expect, sinon } from '../../test-setup';
-
-// Utilities:
-import dedent from 'dedent';
+import { dedent, expect, NOOP, sinon } from '../../../../test-setup';
 
 // Dependencies:
-import * as utilities from './utilities';
+import * as utilities from '../utilities';
 
 // Under test:
 import { MockRequests } from './mock-requests';
 
 describe('tractor-plugin-mock-requests - MockRequests:', () => {
     describe('constructor', () => {
-        it('should create the config object', () => {
-            let browser = {};
-            let mockRequestsConfig = {};
-            let config = {
-                mockRequests: mockRequestsConfig
-            };
-
-            sinon.spy(utilities, 'getConfig');
-
-            new MockRequests(browser, config);
-
-            expect(utilities.getConfig).to.have.been.called();
-
-            utilities.getConfig.restore();
-        });
-
         it('should add specific methods for each method', () => {
             let browser = {};
             let config = {};
@@ -46,7 +27,7 @@ describe('tractor-plugin-mock-requests - MockRequests:', () => {
 
         describe('`browser.get`:', () => {
             it('should be overwritten', () => {
-                let get = () => {};
+                let get = NOOP;
                 let browser = { get };
                 let config = {};
 
@@ -57,7 +38,7 @@ describe('tractor-plugin-mock-requests - MockRequests:', () => {
             });
 
             it('should be overwritten only once', () => {
-                let get = () => {};
+                let get = NOOP;
                 let browser = { get };
                 let config = {};
 
@@ -69,8 +50,9 @@ describe('tractor-plugin-mock-requests - MockRequests:', () => {
             });
 
             it('should set the mockRequests to `initialised`', () => {
-                let get = () => {};
-                let browser = { get };
+                let browser = {
+                    get: NOOP
+                };
                 let config = {};
 
                 let mockRequests = new MockRequests(browser, config);
@@ -86,9 +68,14 @@ describe('tractor-plugin-mock-requests - MockRequests:', () => {
             });
 
             it('should set the base path of the proxy', () => {
-                let get = () => {};
-                let browser = { baseUrl: 'http://tractor.trademe.co.nz', get };
-                let config = {};
+                let browser = {
+                    baseUrl: 'http://tractor.co.nz',
+                    get: NOOP
+                };
+                let config = {
+                    domain: 'localhost',
+                    port: 8765
+                };
 
                 new MockRequests(browser, config);
 
@@ -97,7 +84,7 @@ describe('tractor-plugin-mock-requests - MockRequests:', () => {
                 return browser.get('/')
                 .then(() => {
                     expect(utilities.setProxyConfig).to.have.been.calledWith({
-                        host: 'http://tractor.trademe.co.nz'
+                        host: 'http://tractor.co.nz'
                     }, 'http://localhost:8765/mock-requests/set-host');
 
                     utilities.setProxyConfig.restore();
@@ -105,9 +92,14 @@ describe('tractor-plugin-mock-requests - MockRequests:', () => {
             });
 
             it('should call through to the original `get` function', () => {
-                let get = () => {};
-                let browser = { baseUrl: 'baseUrl', get };
-                let config = {};
+                let browser = {
+                    baseUrl: 'baseUrl',
+                    get: NOOP
+                };
+                let config = {
+                    domain: 'localhost',
+                    port: 8765
+                };
 
                 new MockRequests(browser, config);
 
@@ -126,8 +118,9 @@ describe('tractor-plugin-mock-requests - MockRequests:', () => {
 
     describe('clear:', () => {
         it('should clear out any mock responses', () => {
-            let executeScript = () => {};
-            let browser = { executeScript };
+            let browser = {
+                executeScript: NOOP
+            };
             let config = {};
 
             let mockRequests = new MockRequests(browser, config);
@@ -150,8 +143,9 @@ describe('tractor-plugin-mock-requests - MockRequests:', () => {
 
     describe('when*', () => {
         it('should set default values for the mock', () => {
-            let executeScript = () => {};
-            let browser = { executeScript };
+            let browser = {
+                executeScript: NOOP
+            };
             let config = {};
 
             let mockRequests = new MockRequests(browser, config);
@@ -168,8 +162,9 @@ describe('tractor-plugin-mock-requests - MockRequests:', () => {
         });
 
         it('should set values from the given options', () => {
-            let executeScript = () => {};
-            let browser = { executeScript };
+            let browser = {
+                executeScript: NOOP
+            };
             let config = {};
 
             let mockRequests = new MockRequests(browser, config);
@@ -190,8 +185,9 @@ describe('tractor-plugin-mock-requests - MockRequests:', () => {
         });
 
         it('should set up a pass-through', () => {
-            let executeScript = () => {};
-            let browser = { executeScript };
+            let browser = {
+                executeScript: NOOP
+            };
             let config = {};
 
             sinon.stub(browser, 'executeScript').returns(Promise.resolve());
@@ -210,8 +206,11 @@ describe('tractor-plugin-mock-requests - MockRequests:', () => {
         });
 
         it('should queue a call if the browser has not yet been initialised', () => {
-            let browser = { };
-            let config = {};
+            let browser = {};
+            let config = {
+                domain: 'localhost',
+                port: 8765
+            };
 
             sinon.stub(utilities, 'setProxyConfig').returns(Promise.resolve());
 

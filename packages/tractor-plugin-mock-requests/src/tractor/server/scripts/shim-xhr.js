@@ -14,7 +14,9 @@ window.__tractor__ = (function tractorMockRequests (tractor) {
 
         if (!mock) {
             let message = `Unexpected "${method}" request to "${url}".`;
+            /* eslint-disable no-console */
             console.error(message);
+            /* eslint-enable no-console */
         }
 
         if (!mock || mock && mock.passThrough) {

@@ -1,5 +1,4 @@
-// Dependencies:
-export default function run (
+export function run (
     mockRequestsFileStructure
 ) {
     return mockRequestsFileStructure.read();

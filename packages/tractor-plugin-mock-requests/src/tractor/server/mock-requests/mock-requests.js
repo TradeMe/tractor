@@ -2,12 +2,12 @@
 const METHODS = ['DELETE', 'GET', 'HEAD', 'PATCH', 'POST', 'PUT'];
 
 // Utilities:
-import fs from 'fs';
+import fs from 'graceful-fs';
 import path from 'path';
-import { createProxyUrl, getConfig, setProxyConfig } from './utilities';
+import { setProxyConfig } from '../utilities';
 
 // Scripts:
-const INIT = fs.readFileSync(path.resolve(__dirname, './scripts/init.js'), 'utf8');
+const INIT = fs.readFileSync(path.resolve(__dirname, '../scripts/init.js'), 'utf8');
 
 export class MockRequests {
     constructor (
@@ -15,7 +15,7 @@ export class MockRequests {
         config
     ) {
         this.browser = browser;
-        this.config = getConfig(config);
+        this.config = config;
         this.initialised = false;
 
         addMethods.call(this);
@@ -76,4 +76,9 @@ function when (method, matcher, options = {}) {
 
 function createMockResponseScript (key, response) {
     return `window.__tractor__.mockResponses['${key}'] = ${response};`
+}
+
+export function createProxyUrl (config, url) {
+    let { domain, port } = config;
+    return `http://${domain}:${port}${url}`;
 }

@@ -1,10 +1,10 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect, ineeda, NOOP } from '../../test-setup';
+import { expect, ineeda, NOOP } from '../../../test-setup';
 
 // Under test:
-import run from './run';
+import { run } from './run';
 
 describe('tractor-plugin-mock-requests - run:', () => {
     it('should read the file structure', () => {

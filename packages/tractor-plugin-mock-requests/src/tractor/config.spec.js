@@ -3,20 +3,20 @@
 import { expect } from '../../test-setup';
 
 // Under test:
-import { getConfig } from './utilities';
+import { config } from './config';
 
-describe('tractor-plugin-mock-requests - utilities:', () => {
-    describe('getConfig', () => {
+describe('tractor-plugin-mock-requests - config:', () => {
+    describe('config', () => {
         it('should create the config object', () => {
             let mockRequestsConfig = {};
             let tractorConfig = {
                 mockRequests: mockRequestsConfig
             };
 
-            let config = getConfig(tractorConfig);
+            let processed = config(tractorConfig);
 
-            expect(config).to.equal(mockRequestsConfig);
-            expect(config.port).to.equal(8765);
+            expect(processed).to.equal(mockRequestsConfig);
+            expect(processed.port).to.equal(8765);
         });
 
         it('should allow for a custom domain to be set', () => {
@@ -26,9 +26,9 @@ describe('tractor-plugin-mock-requests - utilities:', () => {
                 }
             };
 
-            let config = getConfig(tractorConfig);
+            let processed = config(tractorConfig);
 
-            expect(config.domain).to.equal('tractor.co.nz');
+            expect(processed.domain).to.equal('tractor.co.nz');
         });
 
         it('should allow for a custom port to be set', () => {
@@ -38,9 +38,9 @@ describe('tractor-plugin-mock-requests - utilities:', () => {
                 }
             };
 
-            let config = getConfig(tractorConfig);
+            let processed = config(tractorConfig);
 
-            expect(config.port).to.equal(1000);
+            expect(processed.port).to.equal(1000);
         });
     });
 });
