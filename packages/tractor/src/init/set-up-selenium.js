@@ -1,7 +1,6 @@
-// Utilities:
+// Dependencies:
+import childProcess from 'child_process';
 import path from 'path';
-import Promise from 'bluebird';
-const childProcess = Promise.promisifyAll(require('child_process'));
 import { error, info } from 'tractor-logger';
 
 // Constants:

@@ -1,6 +1,6 @@
 {
   "name": "tractor",
-  "version": "0.12.0-beta.2",
+  "version": "0.12.0-beta.4",
   "author": "Craig Spence <craig@trademe.co.nz>",
   "repository": {
     "type": "git",
@@ -15,11 +15,13 @@
   },
   "scripts": {
     "prepublish": "npm run build",
-    "build": "npm run lint && npm run cover && npm run compile",
+    "build": "npm run clean && npm run lint && npm run cover && npm run compile",
+    "clean": "rimraf dist",
     "compile": "babel src/ --out-dir dist --ignore *.spec.js",
     "cover": "istanbul cover --config .istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ./.mocharc 'src/**/*.spec.js'",
     "lint": "eslint src/**/*.js; true",
     "test": "mocha --opts ./.mocharc 'src/**/*.spec.js'",
+    "test:debug": "mocha --inspect --debug-brk --opts ./.mocharc 'src/**/*.spec.js'",
     "watch": "npm-watch"
   },
   "license": "MIT",
@@ -29,34 +31,32 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
-    "babel-eslint": "^7.2.3",
+    "babel-eslint": "^8.0.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "babel-register": "^6.26.0",
+    "chai": "^4.1.2",
     "dirty-chai": "^2.0.1",
     "eslint": "^4.6.1",
+    "ineeda": "^0.11.0",
     "istanbul": "1.0.0-alpha.2",
-    "mocha": "^3.5.2",
+    "mocha": "^3.5.3",
     "npm-watch": "^0.2.0",
+    "rimraf": "^2.6.2",
     "sinon": "^3.2.1",
     "sinon-chai": "^2.13.0"
   },
   "dependencies": {
     "bluebird": "^3.5.0",
-    "chai": "^4.1.2",
-    "chai-as-promised": "^7.1.1",
     "commander": "^2.11.0",
-    "cucumber": "1.3.1",
-    "cucumber-html-reporter": "0.3.5",
-    "graceful-fs": "^4.1.11",
     "protractor": "^5.1.2",
-    "protractor-cucumber-framework": "^4.0.4",
     "tractor-config-loader": "^0.4.0",
     "tractor-dependency-injection": "^0.1.1",
-    "tractor-error-handler": "^0.2.1",
+    "tractor-error-handler": "^0.2.2",
+    "tractor-file-structure": "^0.4.1-beta.0",
     "tractor-logger": "^0.1.0",
-    "tractor-plugin-loader": "^0.5.1",
-    "tractor-server": "^0.12.2"
+    "tractor-plugin-loader": "^0.6.0",
+    "tractor-server": "^0.12.3"
   },
   "bin": {
     "tractor": "./bin/tractor"
