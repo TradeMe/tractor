@@ -1,11 +1,9 @@
-'use strict';
+// Plugins:
+var tractorPluginLoader = require('tractor-plugin-loader');
+var plugins = tractorPluginLoader.getPlugins();
 
-exports.config = {
+let protractorConfig = {
     allScriptsTimeout: 11000,
-
-    specs: [
-        'features/**/*.feature'
-    ],
 
     capabilities: {
         browserName: 'chrome'
@@ -13,13 +11,11 @@ exports.config = {
 
     directConnect: true,
 
-    framework: 'custom',
-    frameworkPath: require.resolve('protractor-cucumber-framework'),
-    cucumberOpts: {
-        require: ['support/**/*.js', 'step-definitions/**/*.js'],
-        format: 'pretty',
-        tags: []
-    },
-
-    params: { debug: false },
+    params: { debug: false }
 };
+
+plugins.forEach(function (plugin) {
+    plugin.plugin(protractorConfig);
+});
+
+exports.config = protractorConfig;
