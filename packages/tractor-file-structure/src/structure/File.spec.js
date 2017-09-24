@@ -138,6 +138,19 @@ describe('tractor-file-structure - File:', () => {
         });
     });
 
+    describe('File.addReference', () => {
+        it('should add a reference from one file to the other', () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let file = new File(path.join(path.sep, 'file-structure', 'file.ext'), fileStructure);
+            let otherFile = new File(path.join(path.sep, 'file-structure', 'other file.ext'), fileStructure);
+
+            file.addReference(otherFile);
+
+            expect(file.references).to.deep.equal([otherFile]);
+            expect(otherFile.referencedBy).to.deep.equal([file]);
+        });
+    });
+
     describe('File.cleanup:', () => {
       it('should delete the directory', () => {
           let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
@@ -205,6 +218,24 @@ describe('tractor-file-structure - File:', () => {
       });
     });
 
+    describe('File.clearReferences', () => {
+        it('should clear all references to and from a file', () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let file = new File(path.join(path.sep, 'file-structure', 'file.ext'), fileStructure);
+            let otherFile = new File(path.join(path.sep, 'file-structure', 'other-file.ext'), fileStructure);
+
+            file.addReference(otherFile);
+
+            expect(file.references).to.deep.equal([otherFile]);
+            expect(otherFile.referencedBy).to.deep.equal([file]);
+
+            file.clearReferences();
+
+            expect(file.references).to.deep.equal([]);
+            expect(otherFile.referencedBy).to.deep.equal([]);
+        });
+    });
+
     describe('File.delete:', () => {
         it('should delete the file', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
@@ -249,7 +280,7 @@ describe('tractor-file-structure - File:', () => {
 
             let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
             let otherFile = new File(path.join(path.sep, 'file-structure', 'directory', 'other-file.ext'), fileStructure);
-            fileStructure.references.addReference(file, otherFile);
+            otherFile.addReference(file);
 
             return file.delete()
             .catch(e => {
@@ -449,6 +480,8 @@ describe('tractor-file-structure - File:', () => {
                 basename: 'file',
                 extension: '.ext',
                 path: path.join(path.sep, 'file-structure', 'directory', 'file.ext'),
+                references: [],
+                referencedBy: [],
                 url: '/directory/file.ext'
             });
         });
@@ -465,8 +498,44 @@ describe('tractor-file-structure - File:', () => {
                 basename: 'file',
                 extension: '.ext',
                 path: path.join(path.sep, 'file-structure', 'directory', 'file.ext'),
+                references: [],
+                referencedBy: [],
                 url: '/directory/file.ext'
             });
+        });
+
+        it('should contain the files that the file references', () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
+            let otherFile = new File(path.join(path.sep, 'file-structure', 'directory', 'other-file.ext'), fileStructure);
+
+            file.addReference(otherFile);
+
+            let json = file.toJSON();
+
+            expect(json.references).to.deep.equal([{
+                basename: 'other-file',
+                extension: '.ext',
+                path: path.join(path.sep, 'file-structure', 'directory', 'other-file.ext'),
+                url: '/directory/other-file.ext'
+            }]);
+        });
+
+        it('should contain the files that reference the file', () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
+            let otherFile = new File(path.join(path.sep, 'file-structure', 'directory', 'other-file.ext'), fileStructure);
+
+            otherFile.addReference(file);
+
+            let json = file.toJSON();
+
+            expect(json.referencedBy).to.deep.equal([{
+                basename: 'other-file',
+                extension: '.ext',
+                path: path.join(path.sep, 'file-structure', 'directory', 'other-file.ext'),
+                url: '/directory/other-file.ext'
+            }]);
         });
     });
 });

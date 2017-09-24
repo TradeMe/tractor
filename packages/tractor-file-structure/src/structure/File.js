@@ -33,23 +33,39 @@ export class File {
         this.directory.addItem(this);
     }
 
+    get references () {
+        return this.fileStructure.referenceManager.getReferences(this.path)
+    }
+
+    get referencedBy () {
+        return this.fileStructure.referenceManager.getReferencedBy(this.path)
+    }
+
+    addReference (reference) {
+        this.fileStructure.referenceManager.addReference(this, reference);
+    }
+
     cleanup () {
         return this.delete()
         .then(() => this.directory.cleanup());
     }
 
+    clearReferences () {
+        this.fileStructure.referenceManager.clearReferences(this.path);
+        this.fileStructure.referenceManager.clearReferencedBy(this.path);
+    }
+
     delete (options = { }) {
         let { isMove } = options;
-        let { references } = this.fileStructure;
 
-        if (!isMove && references.getReferencesTo(this.path).length) {
+        if (!isMove && this.referencedBy.length) {
             return Promise.reject(new TractorError(`Cannot delete ${this.path} as it is referenced by another file.`));
         }
 
         return fs.unlinkAsync(this.path)
         .then(() => {
             this.directory.removeItem(this);
-            references.clearReferences(this.path);
+            this.fileStructure.referenceManager.clearReferences(this.path);
         });
     }
 
@@ -86,9 +102,16 @@ export class File {
     }
 
     toJSON () {
-        let { basename, extension, path, url } = this;
-        return { basename, extension, path, url };
+        let references = this.references.map(getFileDetails);
+        let referencedBy = this.referencedBy.map(getFileDetails);
+        let details = getFileDetails(this);
+        return { references, referencedBy, ...details };
     }
+}
+
+function getFileDetails (file) {
+    let { basename, extension, path, url } = file;
+    return { basename, extension, path, url };
 }
 
 function setData (data) {

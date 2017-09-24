@@ -9,7 +9,7 @@ import { EventEmitter } from 'events';
 import path from 'path';
 import { Directory } from './Directory';
 import { File } from './File';
-import { References } from './References';
+import { ReferenceManager } from './ReferenceManager';
 import * as tractorLogger from 'tractor-logger';
 
 // Under test:
@@ -41,10 +41,10 @@ describe('tractor-file-structure - FileStructure:', () => {
             process.cwd.restore();
         });
 
-        it('should create the references store', () => {
+        it('should create the references manager', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
-            expect(fileStructure.references).to.be.an.instanceof(References);
+            expect(fileStructure.referenceManager).to.be.an.instanceof(ReferenceManager);
         });
     });
 

@@ -9,7 +9,7 @@ import path from 'path';
 import { info } from 'tractor-logger';
 import { Directory } from './Directory';
 import { File } from './File';
-import { References } from './References';
+import { ReferenceManager } from './ReferenceManager';
 
 export class FileStructure {
     constructor (fsPath) {
@@ -39,7 +39,7 @@ export class FileStructure {
         this.allFilesByPath = { };
         this.allDirectoriesByPath = { };
         this.structure = new Directory(this.path, this);
-        this.references = new References(this);
+        this.referenceManager = new ReferenceManager(this);
     }
 
     read () {
