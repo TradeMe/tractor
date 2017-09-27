@@ -1,6 +1,10 @@
 'use strict';
 
-exports.config = {
+// Plugins:
+var tractorPluginLoader = require('tractor-plugin-loader');
+var plugins = tractorPluginLoader.getPlugins();
+
+var protractorConfig = {
     allScriptsTimeout: 11000,
 
     capabilities: {
@@ -9,14 +13,11 @@ exports.config = {
 
     directConnect: true,
 
-    params: { debug: false },
-
-    framework: 'custom',
-    frameworkPath: require.resolve('protractor-cucumber-framework'),
-    specs: ['features/**/*.feature'],
-    cucumberOpts: {
-        require: ['support/**/*.js', 'step-definitions/**/*.js'],
-        format: 'pretty',
-        tags: []
-    }
+    params: { debug: false }
 };
+
+plugins.forEach(function (plugin) {
+    plugin.plugin(protractorConfig);
+});
+
+exports.config = protractorConfig;

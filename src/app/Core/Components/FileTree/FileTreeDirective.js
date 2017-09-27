@@ -16,11 +16,12 @@ var FileTreeDirective = function () {
 
         scope: {
             fileStructure: '=',
-            type: '@',
             extension: '@',
             create: '=',
             delete: '=',
-            move: '='
+            move: '=',
+            fileStyle: '=',
+            readonly: '='
         },
 
         /* eslint-disable no-path-concat */
@@ -29,15 +30,8 @@ var FileTreeDirective = function () {
 
         controller: 'FileTreeController',
         controllerAs: 'fileTree',
-        bindToController: true,
-        link: link
+        bindToController: true
     };
-
-    function link ($scope) {
-        if (_.isUndefined($scope.fileTree.type)) {
-            throw new Error('The "tractor-file-tree" directive requires a "type" attribute.');
-        }
-    }
 };
 
 Core.directive('tractorFileTree', FileTreeDirective);

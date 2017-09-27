@@ -7,13 +7,13 @@
          ng-if="item.showOptions"
          ng-mouseleave="fileTree.hideOptions(item)">
         <tractor-action
-            ng-if="fileTree.canModify"
+            ng-if="!fileTree.readonly"
             model="fileTree"
             action="Edit name"
             argument="item">
         </tractor-action>
         <tractor-action
-            ng-if="fileTree.canModify && !item.isDirectory"
+            ng-if="!fileTree.readonly && !item.isDirectory"
             model="fileTree"
             action="Copy item"
             argument="item">
@@ -28,12 +28,12 @@
 
 <script type="text/ng-template" id="rename-input.html">
     <input class="file-tree__item-rename"
-            ng-if="item.editingName"
-            ng-model="item.basename"
-            ng-blur="fileTree.saveNewName(item)"
-            ng-keypress="fileTree.renameOnEnter($event, item)"
-            tractor-give-focus
-            focus-on="item.editingName">
+        ng-if="item.editingName"
+        ng-model="item.basename"
+        ng-blur="fileTree.saveNewName(item)"
+        ng-keypress="fileTree.renameOnEnter($event, item)"
+        tractor-give-focus
+        focus-on="item.editingName">
     </input>
 </script>
 
@@ -41,9 +41,6 @@
     <div ng-include="'file-options.html'"></div>
 
     <p class="file-tree__item-name"
-        ng-class="{
-            'file-tree__item--pending': item.isPending
-        }"
         ng-if="item.basename && !item.editingName"
         ng-click="fileTree.toggleOpenDirectory(item)"
         ng-dblclick="fileTree.editName(item)">
@@ -74,6 +71,7 @@
         </li>
 
         <li class="file-tree__file-list-item"
+            ng-class="{{ fileTree.getFileStyle(item) }}"
             ng-repeat="item in (item || fileTree.fileStructure).files"
             tractor-drag-file>
             <div ng-include="'file-options.html'"></div>
@@ -94,16 +92,8 @@
     tractor-drop-file
     on-drop="fileTree.moveItem"
     drop-directory="fileTree.fileStructure">
-
-    <h2 class="file-tree__header">
-        {{ fileTree.headerName }} files:
-    </h2>
-    <div class="file-tree"
-        ng-class="{
-            'file-tree--javascript': fileTree.type === 'page-objects' || fileTree.type === 'step-definitions',
-            'file-tree--feature': fileTree.type === 'features',
-            'file-tree--json': fileTree.type === 'mock-data'
-        }"
+    <div
+        class="file-tree"
         ng-include="'file-structure.html'">
     </div>
 </section>

@@ -62,6 +62,14 @@ tractor.config(function (
         /* eslint-enable no-path-concat */
         controller: 'ControlPanelController as controlPanel'
     });
+
+    $stateProvider
+    .state('tractor.file', {
+        url: '{file:TractorFile}',
+        onEnter: function (redirectionService, $stateParams) {
+            return redirectionService.goToFile($stateParams.file);
+        }
+    });
 })
 .run(function ($rootScope) {
     Promise.longStackTraces();

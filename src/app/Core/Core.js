@@ -29,6 +29,7 @@ require('./Services/FileStructureService');
 require('./Services/HttpResponseInterceptor');
 require('./Services/PersistentStateService');
 require('./Services/RealtimeService');
+require('./Services/RedirectionService');
 require('./Services/StringToLiteralService');
 require('./Services/ValidationService');
 

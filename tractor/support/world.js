@@ -1,97 +1,50 @@
 'use strict';
 
-/* eslint-disable no-var, prefer-arrow-callback */
+var _bluebird = require('bluebird');
 
-var Promise = require('bluebird');
-var tractorConfigLoader = require('tractor-config-loader');
-var tractorDependencyInjection = require('tractor-dependency-injection');
-var tractorPluginLoader = require('tractor-plugin-loader');
+var _bluebird2 = _interopRequireDefault(_bluebird);
 
-var config = tractorConfigLoader.getConfig();
-var di = tractorDependencyInjection.container();
-var plugins = tractorPluginLoader.getPlugins();
+var _chai = require('chai');
 
-var CustomWorld = function () {
-    var chai = require('chai');
-    var chaiAsPromised = require('chai-as-promised');
+var _chai2 = _interopRequireDefault(_chai);
 
-    var CustomWorld = function CustomWorld() {
-        global.By = global.protractor.By;
-        chai.use(chaiAsPromised);
-        global.expect = chai.expect;
-        global.Promise = Promise;
+var _chaiAsPromised = require('chai-as-promised');
 
-        plugins.map(function (plugin) {
-            global[plugin.description.variableName] = di.call(plugin.create);
-        });
-    };
+var _chaiAsPromised2 = _interopRequireDefault(_chaiAsPromised);
 
-    return CustomWorld;
-}();
+var _tractorDependencyInjection = require('tractor-dependency-injection');
+
+var _tractorPluginLoader = require('tractor-plugin-loader');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } } // Utilities:
+
+
+// Dependencies:
+
+
+var di = (0, _tractorDependencyInjection.container)();
+var plugins = (0, _tractorPluginLoader.getPlugins)();
 
 module.exports = function () {
-    var cucumber = this;
-    var browser = global.browser;
-
-    di.constant({ browser: browser, config: config, cucumber: cucumber });
-
-    plugins.map(function (plugin) {
-        di.call(plugin.addHooks);
-    });
-
     this.World = function () {
         return new CustomWorld();
     };
 
-    /* eslint-disable new-cap */
-    this.StepResult(function (stepResult, callback) {
-        if (browser) {
-            var params = browser.params || {};
-            if (stepResult.getStatus() === 'failed' && params.debug === 'true') {
-                browser.pause();
-            }
-        }
-        callback();
-    });
-
-    /* eslint-disable new-cap */
-    this.After(function (scenario) {
-        /* eslint-enable new-cap */
-        if (browser) {
-            browser.manage().deleteAllCookies();
-            browser.executeScript('try { window.sessionStorage.clear(); } catch (e) { }');
-            browser.executeScript('try { window.localStorage.clear(); } catch (e) { }');
-        }
-
-        if (browser && scenario.isFailed()) {
-            return Promise.all([takeScreenshot(browser, scenario), printBrowserLog(browser)]);
-        } else {
-            return Promise.resolve();
-        }
-    });
-
     return this.World;
 };
 
-function takeScreenshot(browser, scenario) {
-    return browser.takeScreenshot().then(function (base64png) {
-        var decodedImage = new Buffer(base64png, 'base64');
-        scenario.attach(decodedImage, 'image/png');
-    });
-}
+var CustomWorld = function CustomWorld() {
+    _classCallCheck(this, CustomWorld);
 
-function printBrowserLog(browser) {
-    return browser.manage().logs().get('browser').then(function (browserLog) {
-        var severeErrors = browserLog.filter(function (log) {
-            return log.level.name === 'SEVERE';
-        }).map(function (log) {
-            return log.message.substring(log.message.indexOf('Error'), log.message.indexOf('\n'));
-        });
+    _chai2.default.use(_chaiAsPromised2.default);
 
-        if (severeErrors) {
-            severeErrors.forEach(function (message) {
-                console.error(message);
-            });
-        }
+    global.By = global.protractor.By;
+    global.expect = _chai2.default.expect;
+    global.Promise = _bluebird2.default;
+
+    plugins.map(function (plugin) {
+        global[plugin.description.variableName] = di.call(plugin.create);
     });
-}
+};

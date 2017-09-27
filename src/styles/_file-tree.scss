@@ -56,30 +56,6 @@ tractor-file-tree .file-tree__file-list .file-tree__file-list {
     padding-left: $large-spacing;
 }
 
-tractor-file-tree .file-tree--javascript li {
-    background-image: url('./images/js.png');
-
-    &.dragover {
-        background-image: url('./images/move-js-to-directory.png');
-    }
-}
-
-tractor-file-tree .file-tree--feature li {
-    background-image: url('./images/feature.png');
-
-    &.dragover {
-        background-image: url('./images/move-feature-to-directory.png');
-    }
-}
-
-tractor-file-tree .file-tree--json li {
-    background-image: url('./images/json.png');
-
-    &.dragover {
-        background-image: url('./images/move-json-to-directory.png');
-    }
-}
-
 tractor-file-tree .file-tree__file-list-item {
     position: relative;
     list-style: none;

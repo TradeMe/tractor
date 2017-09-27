@@ -34,13 +34,6 @@ var FileTreeController = (function () {
         this.moveItem = this.moveItem.bind(this);
 
         $scope.$watch(function () {
-            return this.type;
-        }.bind(this), function () {
-            this.headerName = title(this.type.replace(/s$/, ''));
-            this.canModify = this.type !== 'step-definitions';
-        }.bind(this));
-
-        $scope.$watch(function () {
             return this.fileStructure;
         }.bind(this), function () {
             this.fileStructure = updateFileStructure.call(this);
@@ -53,7 +46,7 @@ var FileTreeController = (function () {
     };
 
     FileTreeController.prototype.openItem = function (file) {
-        this.$state.go('tractor.' + this.type, { file: { url: file.url } });
+        this.$state.go('tractor.file', { file: { url: file.url } });
     };
 
     FileTreeController.prototype.copyItem = function (item) {
@@ -87,11 +80,15 @@ var FileTreeController = (function () {
     };
 
     FileTreeController.prototype.editName = function (item) {
-        if (this.canModify || item.isDirectory) {
+        if (!this.readonly || item.isDirectory) {
             item.editingName = true;
             item.previousName = item.basename;
             this.hideOptions(item);
         }
+    };
+
+    FileTreeController.prototype.getFileStyle = function (item) {
+        return this.fileStyle ? this.fileStyle(item) : {};
     };
 
     FileTreeController.prototype.hideOptions = function (item) {

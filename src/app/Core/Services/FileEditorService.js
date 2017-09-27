@@ -18,7 +18,6 @@ function fileEditorControllerFactory () {
         notifierService,
         FileModel,
         file,
-        type,
         extension
     ) {
         this.$scope = $scope;
@@ -29,7 +28,6 @@ function fileEditorControllerFactory () {
         this.persistentStateService = persistentStateService;
         this.notifierService = notifierService;
         this.FileModel = FileModel;
-        this.type = type;
         this.extension = extension;
 
         if (file) {
@@ -110,21 +108,17 @@ function fileEditorControllerFactory () {
         this.persistentStateService.set(this.fileModel.name, displayState);
     };
 
-    FileEditorController.prototype.getLink = function (state, file) {
-        return decodeURIComponent(this.$state.href(state, { file: file }));
-    }
-
     FileEditorController.prototype.createDirectory = function (newDirectoryUrl) {
         return this.fileStructureService.saveItem(newDirectoryUrl);
-    }
+    };
 
     FileEditorController.prototype.move = function (itemUrl, options) {
         return this.fileStructureService.moveItem(itemUrl, options);
-    }
+    };
 
     FileEditorController.prototype.delete = function (itemUrl, options) {
         return this.fileStructureService.deleteItem(itemUrl, options);
-    }
+    };
 
     return function (
         $scope,
@@ -136,7 +130,6 @@ function fileEditorControllerFactory () {
         notifierService,
         FileModel,
         file,
-        type,
         extension
     ) {
         return new FileEditorController(
@@ -149,7 +142,6 @@ function fileEditorControllerFactory () {
             notifierService,
             FileModel,
             file,
-            type,
             extension
         )
     }

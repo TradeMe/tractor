@@ -12,7 +12,7 @@ var RunnerService = function RunnerService (
     notifierService,
     realTimeService
 ) {
-    let term = new Terminal({
+    var term = new Terminal({
         tabStopWidth: 4
     });
     term.open(document.getElementById('terminal'), false);
