@@ -5,10 +5,10 @@
     <tractor-file-tree
         extension="{{ $ctrl.extension }}"
         file-structure="$ctrl.fileStructure"
-        type="{{ $ctrl.type }}"
         create="$ctrl.createDirectory"
         delete="$ctrl.delete"
-        move="$ctrl.move">
+        move="$ctrl.move"
+        file-style="$ctrl.fileStyle">
     </tractor-file-tree>
     <tractor-panel-handle panel-name="pageObject-file-tree"></tractor-panel-handle>
     <form class="file" name="$ctrl.fileEditor" novalidate
@@ -243,18 +243,15 @@
 
                 <section
                     class="file-editor__container"
-                    ng-if="$ctrl.fileModel.references.length">
-                    <h2>Used by Step Definitions:</h2>
+                    ng-if="$ctrl.fileModel.file.referencedBy.length">
+                    <h2>Used by:</h2>
 
                     <ul
                         class="file-editor__list-item">
                         <li
-                            ng-repeat="reference in $ctrl.fileModel.references">
-                            {{ reference.name }}
+                            ng-repeat="file in $ctrl.fileModel.file.referencedBy">
                             <a
-                                class="file-editor__list-item-reference"
-                                title="Edit the step definition"
-                                ui-sref="tractor.step-definitions({ file: reference })">
+                                ui-sref="tractor.file({ file: file })">{{ file.basename }}
                             </a>
                         </li>
                     </ul>

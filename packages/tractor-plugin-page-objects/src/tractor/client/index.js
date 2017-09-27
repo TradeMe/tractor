@@ -12,8 +12,11 @@ var tractor = angular.module('tractor');
 tractor.requires.push(PageObjectsModule.name);
 
 tractor.config((
+    redirectionServiceProvider,
     $stateProvider
 ) => {
+    redirectionServiceProvider.addFileType('.po.js', 'page-objects');
+
     $stateProvider
     .state('tractor.page-objects', {
         url: 'page-objects{file:TractorFile}',
@@ -25,7 +28,7 @@ tractor.config((
                     return null;
                 }
                 return pageObjectFileStructureService.openItem(pageObjectUrl)
-                .then(file => pageObjectParserService.parse(file));
+                .then(pageObjectFile => pageObjectParserService.parse(pageObjectFile));
             }
         }
     })

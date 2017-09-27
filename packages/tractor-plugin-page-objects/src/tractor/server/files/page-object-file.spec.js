@@ -161,7 +161,7 @@ describe('tractor-plugin-page-objects - page-object-file:', () => {
             let referenceFilePath = path.join(path.sep, 'file-structure', 'directory', 'reference file.po.js');
             let referenceFile = new PageObjectFile(referenceFilePath, fileStructure);
 
-            sinon.stub(fileStructure.references, 'getReferencesTo').returns([referenceFile]);
+            sinon.stub(fileStructure.referenceManager, 'getReferencedBy').returns([referenceFile]);
             sinon.stub(JavaScriptFile.prototype, 'move').returns(Promise.resolve(newFile));
             sinon.stub(PageObjectFile.prototype, 'refactor').returns(Promise.resolve());
 
@@ -192,7 +192,7 @@ describe('tractor-plugin-page-objects - page-object-file:', () => {
             let referenceFilePath = path.join(path.sep, 'file-structure', 'directory', 'reference file.po.js');
             let referenceFile = new PageObjectFile(referenceFilePath, fileStructure);
 
-            sinon.stub(fileStructure.references, 'getReferencesTo').returns([referenceFile]);
+            sinon.stub(fileStructure.referenceManager, 'getReferencedBy').returns([referenceFile]);
             sinon.stub(JavaScriptFile.prototype, 'move').returns(Promise.resolve(newFile));
             sinon.stub(PageObjectFile.prototype, 'refactor').returns(Promise.resolve());
 

@@ -33,13 +33,19 @@ function  PageObjectsController (
         notifierService,
         PageObjectModel,
         pageObject,
-        'page-objects',
         '.po.js'
     );
     controller.style = $sce.trustAsHtml(style.toString());
 
+    controller.fileStyle = function (item) {
+        return {
+            'file-tree__item--page-object': true,
+            'file-tree--item--unused': item.referencedBy.length === 0
+        };
+    };
+
     return controller;
-};
+}
 
 PageObjectsModule.component('tractorPageObjects', {
     controller: PageObjectsController,

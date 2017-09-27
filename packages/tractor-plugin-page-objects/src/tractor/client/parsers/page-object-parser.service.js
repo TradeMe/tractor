@@ -25,7 +25,7 @@ function PageObjectParserService (
 
             let pageObject = new PageObjectModel({
                 isSaved: true,
-                url: pageObjectFile.url
+                file: pageObjectFile
             });
             pageObject.name = meta.name;
             let state = persistentStateService.get(pageObject.name);

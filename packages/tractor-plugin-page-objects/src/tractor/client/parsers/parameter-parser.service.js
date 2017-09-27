@@ -10,6 +10,6 @@ function ParameterParserService (ParameterModel) {
     function parse (action) {
        return new ParameterModel(action);
     }
-};
+}
 
 PageObjectsModule.service('parameterParserService', ParameterParserService);

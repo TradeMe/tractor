@@ -3,3 +3,16 @@ tractor-page-objects > div {
     height: 100%;
     width: 100%;
 }
+
+.file-tree--item--unused p::before {
+    content: "⚠️ unused";
+    color: rgba(255, 10, 10, 1);
+}
+
+.file-tree__item--page-object {
+    background-image: url('./page-object.png');
+
+    &.dragover {
+        background-image: url('./move-page-object-to-directory.png');
+    }
+}

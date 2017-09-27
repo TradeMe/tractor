@@ -20,7 +20,7 @@ export class PageObjectFile extends JavaScriptFile {
     }
 
     move (update, options) {
-        let references = this.fileStructure.references.getReferencesTo(this.path);
+        let { referencedBy } = this;
 
         // Hack to fix coverage bug: https://github.com/gotwarlost/istanbul/issues/690
         /* istanbul ignore next */
@@ -34,8 +34,8 @@ export class PageObjectFile extends JavaScriptFile {
 
             return newFile.refactor('fileNameChange', nameChange)
             .then(() => {
-                return Promise.map(references, reference => {
-                    this.fileStructure.references.addReference(newFile, reference);
+                return Promise.map(referencedBy, reference => {
+                    reference.addReference(newFile);
                     return reference.refactor('pageObjectFileNameChange', nameChange)
                     .then(() => reference.refactor('referencePathChange', {
                         fromPath: reference.path,
@@ -43,7 +43,8 @@ export class PageObjectFile extends JavaScriptFile {
                         newToPath: newFile.path
                     }));
                 })
-                .catch(() => {
+                .catch((e) => {
+                    console.log(e);
                     throw new TractorError(`Could not update references after moving ${this.path}.`);
                 });
             });
