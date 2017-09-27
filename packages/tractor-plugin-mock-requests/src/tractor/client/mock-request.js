@@ -13,9 +13,9 @@ var createMockRequestConstructor = function () {
                     return !!(options && options.isSaved);
                 }
             },
-            url: {
+            file: {
                 get: function () {
-                    return options && options.url;
+                    return options && options.file;
                 }
             },
             json: {

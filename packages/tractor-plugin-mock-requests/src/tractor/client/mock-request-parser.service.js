@@ -10,11 +10,11 @@ function MockRequestParserService (
     return { parse };
 
     function parse (mockRequestFile) {
-        let { basename, content, url } = mockRequestFile;
+        let { basename, content } = mockRequestFile;
         try {
             var mockRequest = new MockRequest(content, {
                 isSaved: true,
-                url
+                file: mockRequestFile
             });
             mockRequest.name = basename;
             return mockRequest;

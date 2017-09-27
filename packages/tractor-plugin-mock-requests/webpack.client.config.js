@@ -20,6 +20,7 @@ module.exports = {
                     }
                 }]
             },
+            { test: /\.(png|jpg)$/, loader: 'url-loader' },
             { test: /\.css$/, use: 'css-loader' },
             { test: /\.html$/, use: 'html-loader' }
         ]

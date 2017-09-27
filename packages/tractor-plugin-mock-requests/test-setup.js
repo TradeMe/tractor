@@ -6,6 +6,7 @@ import sinonChai from 'sinon-chai';
 
 export const NOOP = () => {}
 
+export Promise from 'bluebird';
 export dedent from 'dedent';
 export { expect } from 'chai';
 export { ineeda } from 'ineeda';

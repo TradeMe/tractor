@@ -34,10 +34,18 @@ function MockRequestsController (
         notifierService,
         MockRequest,
         mockRequest,
-        'mock-requests',
         '.mock.json'
     );
+
     controller.style = $sce.trustAsHtml(style.toString());
+
+    controller.fileStyle = function (item) {
+        return {
+            'file-tree__item--mock-request': true,
+            'file-tree--item--unused': item.referencedBy.length === 0
+        };
+    };
+
     return controller;
 }
 

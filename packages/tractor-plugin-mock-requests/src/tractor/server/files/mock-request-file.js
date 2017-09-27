@@ -1,7 +1,5 @@
-// Utilities:
-import Promise from 'bluebird';
-
 // Dependencies:
+import Promise from 'bluebird';
 import { File } from 'tractor-file-structure';
 
 // Errors:
@@ -9,7 +7,7 @@ import { TractorError } from 'tractor-error-handler';
 
 export class MockRequestFile extends File {
     move (update, options) {
-        let references = this.fileStructure.references.getReferencesTo(this.path);
+        let { referencedBy } = this;
 
         // Hack to fix coverage bug: https://github.com/gotwarlost/istanbul/issues/690
         /* istanbul ignore next */
@@ -23,8 +21,8 @@ export class MockRequestFile extends File {
 
             return newFile.refactor('fileNameChange', nameChange)
             .then(() => {
-                return Promise.map(references, reference => {
-                    this.fileStructure.references.addReference(newFile, reference);
+                return Promise.map(referencedBy, reference => {
+                    reference.addReference(newFile);
                     return reference.refactor('mockRequestFileNameChange', nameChange)
                     .then(() => reference.refactor('referencePathChange', {
                         fromPath: reference.path,

@@ -12,8 +12,11 @@ var tractor = angular.module('tractor');
 tractor.requires.push(MockRequestsModule.name);
 
 tractor.config((
+    redirectionServiceProvider,
     $stateProvider
 ) => {
+    redirectionServiceProvider.addFileType('.mock.json', 'mock-requests');
+
     $stateProvider
     .state('tractor.mock-requests', {
         url: 'mock-requests{file:TractorFile}',
@@ -25,7 +28,7 @@ tractor.config((
                     return null;
                 }
                 return mockRequestFileStructureService.openItem(mockRequestUrl)
-                .then(file => mockRequestParserService.parse(file));
+                .then(mockRequestFile => mockRequestParserService.parse(mockRequestFile));
             }
         }
     })
