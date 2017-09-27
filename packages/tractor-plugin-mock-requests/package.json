@@ -1,6 +1,6 @@
 {
   "name": "tractor-plugin-mock-requests",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -76,6 +76,7 @@
     "tractor-logger": "^0.1.0"
   },
   "peerDependencies": {
+    "tractor-client": "^0.12.0",
     "tractor-config-loader": "^0.4.0",
     "tractor-file-structure": "^0.4.1-beta.0"
   }
