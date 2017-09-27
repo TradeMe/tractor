@@ -28,6 +28,7 @@ function InteractionParserService (
             parse(action, {
                 argument: astObject.argument.callee.object
             });
+        // eslint-disable-next-line no-empty
         } catch (e) { }
 
         let interactionCallExpression;
@@ -103,6 +104,7 @@ function InteractionParserService (
         }
 
         if (notFirstWrappedPromiseInteraction && notFirstOwnPromiseInteraction && notWrappedPromiseInteraction && notOwnPromiseInteraction && notValidInteraction) {
+            // eslint-disable-next-line no-console
             console.log(astObject);
         }
     }

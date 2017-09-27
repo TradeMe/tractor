@@ -49,6 +49,7 @@ function ActionParserService (
             }
 
             if (notSelf && notInteraction) {
+                // eslint-disable-next-line no-console
                 console.log(statement, index);
             }
         });

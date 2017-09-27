@@ -37,6 +37,7 @@ function PageObjectParserService (
                 try {
                     assert(statement.argument.name);
                     return;
+                // eslint-disable-next-line no-empty
                 } catch (e) { }
 
                 try {
@@ -51,6 +52,7 @@ function PageObjectParserService (
                         pageObject.domElements.push(domElement);
                     });
                     return;
+                // eslint-disable-next-line no-empty
                 } catch (e) { }
 
                 try {
@@ -61,8 +63,10 @@ function PageObjectParserService (
                     action.minimised = !!state[action.name];
                     pageObject.actions.push(action);
                     return;
+                // eslint-disable-next-line no-empty
                 } catch (e) { }
 
+                // eslint-disable-next-line no-console
                 console.warn('Invalid Page Object:', statement, index);
             });
 

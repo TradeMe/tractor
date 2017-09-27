@@ -67,6 +67,7 @@ function FilterParserService (FilterModel) {
         }
 
         if (notModelBindingCSSOptionsRepeater && notText && notAllIndex && notAllString) {
+            // eslint-disable-next-line no-console
             console.log(astObject);
         }
 

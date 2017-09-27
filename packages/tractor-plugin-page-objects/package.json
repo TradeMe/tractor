@@ -1,6 +1,6 @@
 {
   "name": "tractor-plugin-page-objects",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -21,7 +21,7 @@
     "clean": "rimraf dist",
     "compile": "babel src/ --out-dir dist/ --ignore *.spec.js,src/tractor/client",
     "cover": "istanbul cover --config .istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ./.mocharc 'src/**/*.spec.js'",
-    "lint": "eslint src/**/*.js; true",
+    "lint": "eslint src",
     "test": "mocha --opts ./.mocharc 'src/**/*.spec.js'",
     "test:debug": "mocha --inspect --debug-brk --opts ./.mocharc 'src/**/*.spec.js'",
     "watch": "npm-watch"

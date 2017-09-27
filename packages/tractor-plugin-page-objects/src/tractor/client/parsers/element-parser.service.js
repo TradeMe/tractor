@@ -28,6 +28,7 @@ function ElementParserService (
                 assert(elementCallExpressionCallee.object.callee.property.name === 'filter');
                 elementCallExpressionCallee = elementCallExpressionCallee.object.callee;
                 elementCallExpression = elementCallExpression.callee.object;
+            // eslint-disable-next-line no-empty
             } catch (e) { }
 
             parse(pageObject, {
@@ -35,6 +36,7 @@ function ElementParserService (
                     right: elementCallExpressionCallee.object
                 }
             }, element);
+        // eslint-disable-next-line no-empty
         } catch (e) { }
 
         let notFirstElementBy = false;
@@ -110,6 +112,7 @@ function ElementParserService (
         }
 
         if (notFirstElementBy && notFirstElementAllBy && notElementBy && notElementAllBy && notElementFilter && notElementGet) {
+            // eslint-disable-next-line no-console
             console.log(astObject);
         }
 

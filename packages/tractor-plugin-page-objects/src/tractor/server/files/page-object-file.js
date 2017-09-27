@@ -43,8 +43,7 @@ export class PageObjectFile extends JavaScriptFile {
                         newToPath: newFile.path
                     }));
                 })
-                .catch((e) => {
-                    console.log(e);
+                .catch(() => {
                     throw new TractorError(`Could not update references after moving ${this.path}.`);
                 });
             });
