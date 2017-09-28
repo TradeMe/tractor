@@ -1,6 +1,6 @@
 {
   "name": "tractor",
-  "version": "0.12.0-beta.5",
+  "version": "0.12.0-beta.6",
   "author": "Craig Spence <craig@trademe.co.nz>",
   "repository": {
     "type": "git",
@@ -53,10 +53,10 @@
     "tractor-config-loader": "^0.4.0",
     "tractor-dependency-injection": "^0.1.1",
     "tractor-error-handler": "^0.2.2",
-    "tractor-file-structure": "^0.5.0",
+    "tractor-file-structure": "^0.5.1",
     "tractor-logger": "^0.1.0",
     "tractor-plugin-loader": "^0.6.0",
-    "tractor-server": "^0.12.3"
+    "tractor-server": "^0.12.4"
   },
   "bin": {
     "tractor": "./bin/tractor"
