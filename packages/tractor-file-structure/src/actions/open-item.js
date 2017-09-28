@@ -9,10 +9,12 @@ export function createOpenItemHandler (fileStructure) {
         let file = fileStructure.allFilesByPath[itemPath];
         let directory = fileStructure.allDirectoriesByPath[itemPath];
 
-        if (!file && !directory) {
+        let item = file || directory;
+
+        if (!item) {
             return respondItemNotFound(itemPath, response);
         }
 
-        response.send(file ? file.serialise() : directory);
+        response.send(item.serialise());
     }
 }

@@ -40,6 +40,7 @@ describe('tractor-file-structure - actions/open-item:', () => {
     it('should open a directory', () => {
         let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
+        let serialised = { };
         let request = {
             params: [directory.url]
         };
@@ -47,12 +48,16 @@ describe('tractor-file-structure - actions/open-item:', () => {
             send: () => { }
         };
 
+        sinon.stub(Directory.prototype, 'serialise').returns(serialised)
         sinon.stub(response, 'send');
 
         let openItem = createOpenItemHandler(fileStructure);
         openItem(request, response);
 
-        expect(response.send).to.have.been.calledWith(directory);
+        expect(Directory.prototype.serialise).to.have.been.called();
+        expect(response.send).to.have.been.calledWith(serialised);
+
+        Directory.prototype.serialise.restore();
     });
 
     it(`should throw an error if it can't find the file to open`, () => {

@@ -745,8 +745,8 @@ describe('tractor-file-structure - Directory:', () => {
 
             expect(directory.toJSON()).to.deep.equal({
                 basename: 'directory',
-                directories: [subdirectory],
-                files: [file],
+                directories: [subdirectory.serialise()],
+                files: [file.serialise()],
                 isDirectory: true,
                 path: path.join(path.sep, 'file-structure', 'directory'),
                 url: '/directory'
@@ -763,7 +763,7 @@ describe('tractor-file-structure - Directory:', () => {
 
             expect(directory.toJSON()).to.deep.equal({
                 basename: 'directory',
-                directories: [subdirectory2, subdirectory4, subdirectory3, subdirectory1],
+                directories: [subdirectory2.serialise(), subdirectory4.serialise(), subdirectory3.serialise(), subdirectory1.serialise()],
                 files: [],
                 isDirectory: true,
                 path: path.join(path.sep, 'file-structure', 'directory'),
@@ -782,7 +782,7 @@ describe('tractor-file-structure - Directory:', () => {
             expect(directory.toJSON()).to.deep.equal({
                 basename: 'directory',
                 directories: [],
-                files: [file2, file4, file3, file1],
+                files: [file2.serialise(), file4.serialise(), file3.serialise(), file1.serialise()],
                 isDirectory: true,
                 path: path.join(path.sep, 'file-structure', 'directory'),
                 url: '/directory'

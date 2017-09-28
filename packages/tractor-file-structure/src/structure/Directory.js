@@ -167,10 +167,14 @@ export class Directory {
         });
     }
 
+    serialise () {
+        return this.toJSON();
+    }
+
     toJSON () {
         let { basename, directories, files, path, url } = this;
-        directories = directories.sort(sortNames);
-        files = files.sort(sortNames);
+        directories = directories.sort(sortNames).map(directory => directory.serialise());
+        files = files.sort(sortNames).map(file => file.serialise());
         return { basename, directories, files, isDirectory: true, path, url };
     }
 }
