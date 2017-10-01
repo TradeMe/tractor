@@ -19,10 +19,16 @@ export class ReferenceManager {
 
     addReference (from, to) {
         this.references[from.path] = this.references[from.path] || [];
-        this.references[from.path].push(to);
+        let references = this.references[from.path];
+        if (!references.includes(to) && !hasFileByPath(references, to.path)) {
+            references.push(to);
+        }
 
         this.referencedBy[to.path] = this.referencedBy[to.path] || [];
-        this.referencedBy[to.path].push(from);
+        let referencedBy = this.referencedBy[to.path];
+        if (!referencedBy.includes(from) && !hasFileByPath(referencedBy, from.path)) {
+            referencedBy.push(from);
+        }
     }
 
     getReference (path) {
@@ -56,12 +62,7 @@ export class ReferenceManager {
         .forEach(fileStructure => {
             let { references, referencedBy } = fileStructure.referenceManager;
             references[path] = [];
-            Object.keys(referencedBy).forEach(referencePath => {
-                let index = referencedBy[referencePath].findIndex(reference => reference.path === path);
-                if (index >= 0) {
-                    referencedBy[referencePath].splice(index, 1);
-                }
-            });
+            removeFileByPath(referencedBy, path);
         });
     }
 
@@ -70,12 +71,20 @@ export class ReferenceManager {
         .forEach(fileStructure => {
             let { references, referencedBy } = fileStructure.referenceManager;
             referencedBy[path] = [];
-            Object.keys(references).forEach(referencePath => {
-                let index = references[referencePath].findIndex(reference => reference.path === path);
-                if (index >= 0) {
-                    references[referencePath].splice(index, 1);
-                }
-            });
+            removeFileByPath(references, path);
         });
     }
+}
+
+function hasFileByPath (references, path) {
+    return !!references.find(file => file.path === path);
+}
+
+function removeFileByPath (references, path) {
+    Object.keys(references).forEach(referencePath => {
+        let index = references[referencePath].findIndex(reference => reference.path === path);
+        if (index >= 0) {
+            references[referencePath].splice(index, 1);
+        }
+    });
 }
