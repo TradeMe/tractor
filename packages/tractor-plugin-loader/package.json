@@ -1,6 +1,6 @@
 {
   "name": "tractor-plugin-loader",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -42,8 +42,8 @@
     "npm-watch": "^0.3.0",
     "sinon": "^4.0.0",
     "sinon-chai": "^2.14.0",
-    "tractor-error-handler": "^0.2.3",
-    "tractor-logger": "^0.1.0"
+    "tractor-error-handler": "^0.2.4",
+    "tractor-logger": "^0.1.1"
   },
   "dependencies": {
     "camel-case": "^3.0.0",
@@ -51,7 +51,6 @@
     "title-case": "^2.1.1"
   },
   "peerDependencies": {
-    "tractor-error-handler": "^0.2.3",
-    "tractor-logger": "^0.1.0"
+    "tractor": "^0.12.1"
   }
 }
