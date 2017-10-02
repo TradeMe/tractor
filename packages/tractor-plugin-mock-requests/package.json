@@ -1,6 +1,6 @@
 {
   "name": "tractor-plugin-mock-requests",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -42,42 +42,40 @@
     "chai": "^4.1.2",
     "css-loader": "^0.28.7",
     "dirty-chai": "^2.0.1",
-    "eslint": "^4.7.2",
+    "eslint": "^4.8.0",
     "html-loader": "^0.5.1",
     "ineeda": "^0.11.0",
     "istanbul": "1.0.0-alpha.2",
     "mkdirp": "^0.5.1",
     "mocha": "^3.5.3",
     "ng-annotate-loader": "^0.6.1",
-    "npm-watch": "^0.2.0",
+    "npm-watch": "^0.3.0",
     "rimraf": "^2.6.2",
     "sinon": "^4.0.0",
-    "sinon-chai": "^2.13.0",
-    "tractor-config-loader": "^0.4.0",
-    "tractor-file-structure": "^0.5.0",
+    "sinon-chai": "^2.14.0",
+    "tractor-config-loader": "^0.4.3",
+    "tractor-error-handler": "^0.2.3",
+    "tractor-file-structure": "^0.5.3",
+    "tractor-logger": "^0.1.0",
     "url-loader": "^0.5.9",
     "webpack": "^3.6.0"
   },
   "dependencies": {
     "bluebird": "^3.5.0",
-    "body-parser": "^1.17.2",
+    "body-parser": "^1.18.2",
     "camel-case": "^3.0.0",
-    "cheerio": "^0.22.0",
+    "cheerio": "^1.0.0-rc.2",
     "dedent": "^0.7.0",
-    "express": "^4.15.4",
-    "express-http-proxy": "^1.0.6",
+    "express": "^4.16.1",
+    "express-http-proxy": "^1.0.7",
     "fake-xml-http-request": "^1.6.0",
     "fetch-mock": "^5.12.2",
     "pascal-case": "^2.0.1",
-    "pem": "^1.10.0",
-    "request": "^2.81.0",
-    "request-promise-native": "^1.0.4",
-    "tractor-error-handler": "^0.2.2",
-    "tractor-logger": "^0.1.0"
+    "pem": "^1.12.0",
+    "request": "^2.83.0",
+    "request-promise-native": "^1.0.5"
   },
   "peerDependencies": {
-    "tractor-client": "^0.12.0",
-    "tractor-config-loader": "^0.4.0",
-    "tractor-file-structure": "^0.4.1-beta.0"
+    "tractor": "^0.12.1"
   }
 }
