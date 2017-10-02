@@ -1861,7 +1861,7 @@ functional-red-black-tree@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/functional-red-black-tree/-/functional-red-black-tree-1.0.1.tgz#1b0ab3bd553b2a0d6399d29c0e3ea0b252078327"
 
-gauge@~2.7.1, gauge@~2.7.3:
+gauge@~2.7.3:
   version "2.7.4"
   resolved "https://registry.yarnpkg.com/gauge/-/gauge-2.7.4.tgz#2c03405c7538c39d7eb37b317022e325fb018bf7"
   dependencies:
@@ -2843,16 +2843,7 @@ npm-watch@^0.3.0:
     nodemon "^1.12.1"
     through2 "^2.0.0"
 
-npmlog@4.0.2:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/npmlog/-/npmlog-4.0.2.tgz#d03950e0e78ce1527ba26d2a7592e9348ac3e75f"
-  dependencies:
-    are-we-there-yet "~1.1.2"
-    console-control-strings "~1.1.0"
-    gauge "~2.7.1"
-    set-blocking "~2.0.0"
-
-npmlog@^4.0.2:
+npmlog@^4.0.2, npmlog@^4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/npmlog/-/npmlog-4.1.2.tgz#08a7f2a8bf734604779a9efa4ad5cc717abb954b"
   dependencies:
@@ -3808,24 +3799,24 @@ tractor-client@^0.12.0:
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/tractor-client/-/tractor-client-0.12.0.tgz#3680ebede65b02094fad62771d6ef163076d9fd0"
 
-tractor-config-loader@^0.4.3:
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/tractor-config-loader/-/tractor-config-loader-0.4.3.tgz#d15724e0c7f444986b3d018a59a4ee0f7f8365d4"
+tractor-config-loader@^0.4.4:
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/tractor-config-loader/-/tractor-config-loader-0.4.4.tgz#82ebd2e3d7eb8b1a877345768ca57fcf43b401a4"
   dependencies:
     lodash.defaults "^4.2.0"
     minimist "^1.2.0"
 
-tractor-dependency-injection@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/tractor-dependency-injection/-/tractor-dependency-injection-0.1.2.tgz#07a0a3c91aee822e5c5629c79d89a95f576a1d04"
+tractor-dependency-injection@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/tractor-dependency-injection/-/tractor-dependency-injection-0.1.3.tgz#5314500ff28743d34574cbe29d1ee9f91cf37358"
 
-tractor-error-handler@^0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/tractor-error-handler/-/tractor-error-handler-0.2.3.tgz#fe2174936931a0b122165d8fa180ff308450ee25"
+tractor-error-handler@^0.2.4:
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/tractor-error-handler/-/tractor-error-handler-0.2.4.tgz#2696bd6748e012b9f35827cd3645894d4dd4a1b1"
 
-tractor-file-structure@^0.5.3:
-  version "0.5.3"
-  resolved "https://registry.yarnpkg.com/tractor-file-structure/-/tractor-file-structure-0.5.3.tgz#42311e7fb44b647639a12a8124d17e8d58a6ac41"
+tractor-file-structure@^0.5.4:
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/tractor-file-structure/-/tractor-file-structure-0.5.4.tgz#e32152a74ddf077c346a8a8b5d7ad751db9cdb60"
   dependencies:
     bluebird "^3.4.7"
     chokidar "^1.7.0"
@@ -3833,23 +3824,23 @@ tractor-file-structure@^0.5.3:
     graceful-fs "^4.1.11"
     lodash.debounce "^4.0.8"
 
-tractor-logger@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/tractor-logger/-/tractor-logger-0.1.0.tgz#8d0215c7dd238abc6f8d87303952444c74e3785b"
+tractor-logger@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/tractor-logger/-/tractor-logger-0.1.1.tgz#168ae2190a56c8c7d196d79f38f8e8303a9a08aa"
   dependencies:
-    npmlog "4.0.2"
+    npmlog "^4.1.2"
 
-tractor-plugin-loader@^0.6.1:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/tractor-plugin-loader/-/tractor-plugin-loader-0.6.1.tgz#850a6825d26c606fadf128f6c5959927da9e6214"
+tractor-plugin-loader@^0.6.2:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/tractor-plugin-loader/-/tractor-plugin-loader-0.6.2.tgz#e7de7a4e470d059141f51cf1680598b5aad72efa"
   dependencies:
     camel-case "^3.0.0"
     param-case "^2.1.1"
     title-case "^2.1.1"
 
-tractor-server@^0.12.5:
-  version "0.12.5"
-  resolved "https://registry.yarnpkg.com/tractor-server/-/tractor-server-0.12.5.tgz#105613774a0b284e841d2750fc02e4b1323b2966"
+tractor-server@^0.12.6:
+  version "0.12.6"
+  resolved "https://registry.yarnpkg.com/tractor-server/-/tractor-server-0.12.6.tgz#e73543662211694c4cf65789a39f5b978aa0ad07"
   dependencies:
     bluebird "^3.5.0"
     body-parser "^1.18.2"
