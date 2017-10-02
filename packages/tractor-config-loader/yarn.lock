@@ -56,7 +56,7 @@ ansi-escapes@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ansi-escapes/-/ansi-escapes-2.0.0.tgz#5bae52be424878dd9783e8910e3fc2922e83c81b"
 
-ansi-regex@^2.0.0, ansi-regex@^2.1.1:
+ansi-regex@^2.0.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-2.1.1.tgz#c3b33ab5ee360d86e0e628f0468ae7ef27d654df"
 
@@ -1054,17 +1054,6 @@ circular-json@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/circular-json/-/circular-json-0.3.1.tgz#be8b36aefccde8b3ca7aa2d6afc07a37242c0d2d"
 
-cli-color@^1.1.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/cli-color/-/cli-color-1.2.0.tgz#3a5ae74fd76b6267af666e69e2afbbd01def34d1"
-  dependencies:
-    ansi-regex "^2.1.1"
-    d "1"
-    es5-ext "^0.10.12"
-    es6-iterator "2"
-    memoizee "^0.4.3"
-    timers-ext "0.1"
-
 cli-cursor@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/cli-cursor/-/cli-cursor-2.1.0.tgz#b35dac376479facc3e94747d41d0d0f5238ffcb5"
@@ -1113,7 +1102,7 @@ commander@2.9.0:
   dependencies:
     graceful-readlink ">= 1.0.0"
 
-commander@^2.11.0, commander@^2.9.0:
+commander@^2.11.0:
   version "2.11.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.11.0.tgz#157152fd1e7a6c8d98a5b715cf376df928004563"
 
@@ -1175,12 +1164,6 @@ cryptiles@2.x.x:
   resolved "https://registry.yarnpkg.com/cryptiles/-/cryptiles-2.0.5.tgz#3bdfecdc608147c1c67202fa291e7dca59eaa3b8"
   dependencies:
     boom "2.x.x"
-
-d@1:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/d/-/d-1.0.0.tgz#754bb5bfe55451da69a58b94d45f4c5b0462d58f"
-  dependencies:
-    es5-ext "^0.10.9"
 
 dashdash@^1.12.0:
   version "1.14.1"
@@ -1286,40 +1269,9 @@ end-of-stream@1.0.0:
   dependencies:
     once "~1.3.0"
 
-es5-ext@^0.10.12, es5-ext@^0.10.14, es5-ext@^0.10.30, es5-ext@^0.10.9, es5-ext@~0.10.14, es5-ext@~0.10.2:
-  version "0.10.30"
-  resolved "https://registry.yarnpkg.com/es5-ext/-/es5-ext-0.10.30.tgz#7141a16836697dbabfaaaeee41495ce29f52c939"
-  dependencies:
-    es6-iterator "2"
-    es6-symbol "~3.1"
-
-es6-iterator@2, es6-iterator@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/es6-iterator/-/es6-iterator-2.0.1.tgz#8e319c9f0453bf575d374940a655920e59ca5512"
-  dependencies:
-    d "1"
-    es5-ext "^0.10.14"
-    es6-symbol "^3.1"
-
 es6-promise@^3.0.2:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/es6-promise/-/es6-promise-3.3.1.tgz#a08cdde84ccdbf34d027a1451bc91d4bcd28a613"
-
-es6-symbol@^3.1, es6-symbol@^3.1.1, es6-symbol@~3.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/es6-symbol/-/es6-symbol-3.1.1.tgz#bf00ef4fdab6ba1b46ecb7b629b4c7ed5715cc77"
-  dependencies:
-    d "1"
-    es5-ext "~0.10.14"
-
-es6-weak-map@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/es6-weak-map/-/es6-weak-map-2.0.2.tgz#5e3ab32251ffd1538a1f8e5ffa1357772f92d96f"
-  dependencies:
-    d "1"
-    es5-ext "^0.10.14"
-    es6-iterator "^2.0.1"
-    es6-symbol "^3.1.1"
 
 escape-string-regexp@1.0.5, escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.5:
   version "1.0.5"
@@ -1417,13 +1369,6 @@ estraverse@~4.1.0:
 esutils@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/esutils/-/esutils-2.0.2.tgz#0abf4f1caa5bcb1f7a9d8acc6dea4faaa04bac9b"
-
-event-emitter@^0.3.5:
-  version "0.3.5"
-  resolved "https://registry.yarnpkg.com/event-emitter/-/event-emitter-0.3.5.tgz#df8c69eef1647923c7157b9ce83840610b02cc39"
-  dependencies:
-    d "1"
-    es5-ext "~0.10.14"
 
 event-stream@~3.3.0:
   version "3.3.4"
@@ -1733,10 +1678,6 @@ has-unicode@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/has-unicode/-/has-unicode-2.0.1.tgz#e0e6fe6a28cf51138855e086d1691e771de2a8b9"
 
-has-yarn@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/has-yarn/-/has-yarn-1.0.0.tgz#89e25db604b725c8f5976fff0addc921b828a5a7"
-
 hawk@~3.1.3:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/hawk/-/hawk-3.1.3.tgz#078444bd7c1640b0fe540d2c9b73d59678e8e1c4"
@@ -1818,15 +1759,6 @@ inquirer@^3.0.6:
     string-width "^2.1.0"
     strip-ansi "^4.0.0"
     through "^2.3.6"
-
-install-peerdeps@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/install-peerdeps/-/install-peerdeps-1.2.0.tgz#d1e67dcf938eedea3aa5a509c64f0bede7456085"
-  dependencies:
-    cli-color "^1.1.0"
-    commander "^2.9.0"
-    has-yarn "^1.0.0"
-    promptly "^2.1.0"
 
 invariant@^2.2.0, invariant@^2.2.2:
   version "2.2.2"
@@ -1918,7 +1850,7 @@ is-primitive@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/is-primitive/-/is-primitive-2.0.0.tgz#207bab91638499c07b2adf240a41a87210034575"
 
-is-promise@^2.1, is-promise@^2.1.0:
+is-promise@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/is-promise/-/is-promise-2.1.0.tgz#79a2a9ece7f096e80f36d2b2f3bc16c1ff4bf3fa"
 
@@ -2273,28 +2205,9 @@ lru-cache@^4.0.1:
     pseudomap "^1.0.2"
     yallist "^2.1.2"
 
-lru-queue@0.1:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/lru-queue/-/lru-queue-0.1.0.tgz#2738bd9f0d3cf4f84490c5736c48699ac632cda3"
-  dependencies:
-    es5-ext "~0.10.2"
-
 map-stream@~0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/map-stream/-/map-stream-0.1.0.tgz#e56aa94c4c8055a16404a0674b78f215f7c8e194"
-
-memoizee@^0.4.3:
-  version "0.4.11"
-  resolved "https://registry.yarnpkg.com/memoizee/-/memoizee-0.4.11.tgz#bde9817663c9e40fdb2a4ea1c367296087ae8c8f"
-  dependencies:
-    d "1"
-    es5-ext "^0.10.30"
-    es6-weak-map "^2.0.2"
-    event-emitter "^0.3.5"
-    is-promise "^2.1"
-    lru-queue "0.1"
-    next-tick "1"
-    timers-ext "^0.1.2"
 
 micromatch@^2.1.5:
   version "2.3.11"
@@ -2378,7 +2291,7 @@ ms@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
 
-mute-stream@0.0.7, mute-stream@~0.0.4:
+mute-stream@0.0.7:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
 
@@ -2399,10 +2312,6 @@ nested-error-stacks@^1.0.0:
   resolved "https://registry.yarnpkg.com/nested-error-stacks/-/nested-error-stacks-1.0.2.tgz#19f619591519f096769a5ba9a86e6eeec823c3cf"
   dependencies:
     inherits "~2.0.1"
-
-next-tick@1:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
 
 nise@^1.0.1:
   version "1.0.1"
@@ -2655,12 +2564,6 @@ progress@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.0.tgz#8a1be366bf8fc23db2bd23f10c6fe920b4389d1f"
 
-promptly@^2.1.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/promptly/-/promptly-2.2.0.tgz#2a13fa063688a2a5983b161fff0108a07d26fc74"
-  dependencies:
-    read "^1.0.4"
-
 ps-tree@^1.0.1:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/ps-tree/-/ps-tree-1.1.0.tgz#b421b24140d6203f1ed3c76996b4427b08e8c014"
@@ -2701,12 +2604,6 @@ read-all-stream@^3.0.0:
   dependencies:
     pinkie-promise "^2.0.0"
     readable-stream "^2.0.0"
-
-read@^1.0.4:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/read/-/read-1.0.7.tgz#b3da19bd052431a97671d44a42634adf710b40c4"
-  dependencies:
-    mute-stream "~0.0.4"
 
 readable-stream@^2.0.0, "readable-stream@^2.0.0 || ^1.1.13", readable-stream@^2.0.2, readable-stream@^2.1.4, readable-stream@^2.1.5, readable-stream@^2.2.2:
   version "2.2.6"
@@ -3136,13 +3033,6 @@ through@2, through@^2.3.6, through@~2.3, through@~2.3.1:
 timed-out@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/timed-out/-/timed-out-2.0.0.tgz#f38b0ae81d3747d628001f41dafc652ace671c0a"
-
-timers-ext@0.1, timers-ext@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/timers-ext/-/timers-ext-0.1.2.tgz#61cc47a76c1abd3195f14527f978d58ae94c5204"
-  dependencies:
-    es5-ext "~0.10.14"
-    next-tick "1"
 
 tmp@^0.0.31:
   version "0.0.31"

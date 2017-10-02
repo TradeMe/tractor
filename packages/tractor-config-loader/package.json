@@ -1,6 +1,6 @@
 {
   "name": "tractor-config-loader",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -20,7 +20,6 @@
     "compile": "babel src/ --out-dir dist --ignore *.spec.js",
     "cover": "istanbul cover --config .istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ./.mocharc src/*.spec.js",
     "lint": "eslint src/**/*.js; true",
-    "peers": "install-peerdeps tractor-config-loader --only-peers --yarn",
     "test": "mocha --opts ./.mocharc src/*.spec.js",
     "watch": "npm-watch"
   },
@@ -37,16 +36,17 @@
     "babel-register": "^6.26.0",
     "chai": "^4.1.1",
     "eslint": "^4.5.0",
-    "install-peerdeps": "^1.2.0",
     "istanbul": "^1.0.0-alpha.2",
     "mocha": "^3.5.0",
     "npm-watch": "^0.2.0",
     "sinon": "^3.2.1",
-    "sinon-chai": "^2.13.0"
+    "sinon-chai": "^2.13.0",
+    "tractor-logger": "^0.1.0"
   },
   "dependencies": {
     "lodash.defaults": "^4.2.0",
-    "minimist": "^1.2.0"
+    "minimist": "^1.2.0",
+    "tractor-logger": "^0.1.0"
   },
   "peerDependencies": {
     "tractor-logger": "^0.1.0"
