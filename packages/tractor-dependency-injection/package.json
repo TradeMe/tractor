@@ -1,6 +1,6 @@
 {
   "name": "tractor-dependency-injection",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -27,23 +27,24 @@
   "engines": {
     "node": ">=0.10"
   },
-  "dependencies": {
-    "tractor-error-handler": "^0.2.1"
-  },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
-    "babel-eslint": "^7.2.3",
+    "babel-eslint": "^8.0.1",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "babel-register": "^6.26.0",
-    "chai": "^4.1.1",
+    "chai": "^4.1.2",
     "dirty-chai": "^2.0.1",
-    "eslint": "^4.5.0",
+    "eslint": "^4.8.0",
     "istanbul": "^1.0.0-alpha.2",
-    "mocha": "^3.5.0",
-    "npm-watch": "^0.2.0",
-    "sinon": "^3.2.1",
-    "sinon-chai": "^2.13.0"
+    "mocha": "^3.5.3",
+    "npm-watch": "^0.3.0",
+    "sinon": "^4.0.0",
+    "sinon-chai": "^2.14.0",
+    "tractor-error-handler": "^0.2.2"
+  },
+  "peerDependencies": {
+    "tractor-error-handler": "^0.2.2"
   }
 }
