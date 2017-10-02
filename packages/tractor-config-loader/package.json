@@ -1,6 +1,6 @@
 {
   "name": "tractor-config-loader",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -41,13 +41,13 @@
     "npm-watch": "^0.3.0",
     "sinon": "^4.0.0",
     "sinon-chai": "^2.14.0",
-    "tractor-logger": "^0.1.0"
+    "tractor-logger": "^0.1.1"
   },
   "dependencies": {
     "lodash.defaults": "^4.2.0",
     "minimist": "^1.2.0"
   },
   "peerDependencies": {
-    "tractor-logger": "^0.1.0"
+    "tractor": "^0.12.1"
   }
 }
