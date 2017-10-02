@@ -40,8 +40,8 @@
     "eslint": "^4.7.2",
     "istanbul": "^1.0.0-alpha.2",
     "mocha": "^3.5.3",
-    "npm-watch": "^0.2.0",
-    "sinon": "^3.3.0",
+    "npm-watch": "^0.3.0",
+    "sinon": "^4.0.0",
     "sinon-chai": "^2.13.0",
     "tractor-error-handler": "^0.2.3",
     "tractor-logger": "^0.1.0"
