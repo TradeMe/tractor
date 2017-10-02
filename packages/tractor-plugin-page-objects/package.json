@@ -1,6 +1,6 @@
 {
   "name": "tractor-plugin-page-objects",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -58,7 +58,6 @@
     "sinon-chai": "^2.14.0",
     "tractor-config-loader": "^0.4.3",
     "tractor-error-handler": "^0.2.3",
-    "tractor-file-javascript": "^0.2.3",
     "tractor-file-structure": "^0.5.3",
     "tractor-logger": "^0.1.0",
     "url-loader": "^0.5.9",
@@ -68,6 +67,7 @@
     "bluebird": "^3.5.0",
     "graceful-fs": "^4.1.11",
     "pascal-case": "^2.0.1",
+    "tractor-file-javascript": "^0.2.3",
     "tractor-plugin-browser": "^0.1.3"
   },
   "peerDependencies": {
