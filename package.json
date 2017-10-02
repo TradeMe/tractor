@@ -1,6 +1,6 @@
 {
   "name": "tractor",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "author": "Craig Spence <craig@trademe.co.nz>",
   "repository": {
     "type": "git",
@@ -37,27 +37,27 @@
     "babel-register": "^6.26.0",
     "chai": "^4.1.2",
     "dirty-chai": "^2.0.1",
-    "eslint": "^4.7.2",
+    "eslint": "^4.8.0",
     "ineeda": "^0.11.0",
     "istanbul": "1.0.0-alpha.2",
     "mocha": "^3.5.3",
-    "npm-watch": "^0.2.0",
+    "npm-watch": "^0.3.0",
     "rimraf": "^2.6.2",
     "sinon": "^4.0.0",
-    "sinon-chai": "^2.13.0"
+    "sinon-chai": "^2.14.0"
   },
   "dependencies": {
     "bluebird": "^3.5.0",
     "commander": "^2.11.0",
     "protractor": "^5.1.2",
     "tractor-client": "^0.12.0",
-    "tractor-config-loader": "^0.4.0",
-    "tractor-dependency-injection": "^0.1.1",
-    "tractor-error-handler": "^0.2.2",
-    "tractor-file-structure": "^0.5.1",
+    "tractor-config-loader": "^0.4.3",
+    "tractor-dependency-injection": "^0.1.2",
+    "tractor-error-handler": "^0.2.3",
+    "tractor-file-structure": "^0.5.3",
     "tractor-logger": "^0.1.0",
-    "tractor-plugin-loader": "^0.6.0",
-    "tractor-server": "^0.12.4"
+    "tractor-plugin-loader": "^0.6.1",
+    "tractor-server": "^0.12.5"
   },
   "bin": {
     "tractor": "./bin/tractor"
