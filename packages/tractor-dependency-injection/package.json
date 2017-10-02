@@ -42,9 +42,9 @@
     "npm-watch": "^0.3.0",
     "sinon": "^4.0.0",
     "sinon-chai": "^2.14.0",
-    "tractor-error-handler": "^0.2.2"
+    "tractor-error-handler": "^0.2.3"
   },
   "peerDependencies": {
-    "tractor-error-handler": "^0.2.2"
+    "tractor-error-handler": "^0.2.3"
   }
 }
