@@ -51,13 +51,13 @@
 
             <section
                 class="file-editor__container"
-                ng-if="$ctrl.mockRequest.file.referencedBy.length">
+                ng-if="$ctrl.fileModel.file.referencedBy.length">
                 <h2>Used by:</h2>
 
                 <ul
                     class="file-editor__list-item">
                     <li
-                        ng-repeat="file in $ctrl.mockRequest.file.referencedBy">
+                        ng-repeat="file in $ctrl.fileModel.file.referencedBy">
                         <a
                             ui-sref="tractor.file({ file: file })">{{ file.basename }}
                         </a>

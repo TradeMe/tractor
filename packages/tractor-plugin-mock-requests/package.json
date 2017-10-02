@@ -1,6 +1,6 @@
 {
   "name": "tractor-plugin-mock-requests",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
