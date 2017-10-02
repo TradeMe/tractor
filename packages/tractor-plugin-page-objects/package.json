@@ -1,6 +1,6 @@
 {
   "name": "tractor-plugin-page-objects",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -44,7 +44,7 @@
     "dedent": "^0.7.0",
     "dirty-chai": "^2.0.1",
     "escodegen": "^1.9.0",
-    "eslint": "^4.7.2",
+    "eslint": "^4.8.0",
     "esprima": "^4.0.0",
     "html-loader": "^0.5.1",
     "ineeda": "^0.11.0",
@@ -52,12 +52,15 @@
     "mkdirp": "^0.5.1",
     "mocha": "^3.5.3",
     "ng-annotate-loader": "^0.6.1",
-    "npm-watch": "^0.2.0",
+    "npm-watch": "^0.3.0",
     "rimraf": "^2.6.2",
     "sinon": "^4.0.0",
-    "sinon-chai": "^2.12.0",
-    "tractor-config-loader": "^0.4.0",
-    "tractor-file-structure": "^0.5.0",
+    "sinon-chai": "^2.14.0",
+    "tractor-config-loader": "^0.4.3",
+    "tractor-error-handler": "^0.2.3",
+    "tractor-file-javascript": "^0.2.3",
+    "tractor-file-structure": "^0.5.3",
+    "tractor-logger": "^0.1.0",
     "url-loader": "^0.5.9",
     "webpack": "^3.6.0"
   },
@@ -65,14 +68,9 @@
     "bluebird": "^3.5.0",
     "graceful-fs": "^4.1.11",
     "pascal-case": "^2.0.1",
-    "tractor-error-handler": "^0.2.2",
-    "tractor-file-javascript": "^0.2.2",
-    "tractor-logger": "^0.1.0",
-    "tractor-plugin-browser": "^0.1.1"
+    "tractor-plugin-browser": "^0.1.3"
   },
   "peerDependencies": {
-    "tractor-client": "^0.12.0",
-    "tractor-config-loader": "^0.4.0",
-    "tractor-file-structure": "^0.5.0"
+    "tractor": "^0.12.1"
   }
 }
