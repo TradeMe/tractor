@@ -1,6 +1,6 @@
 {
   "name": "tractor-client",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -65,10 +65,10 @@
     "sinon": "1.17.2",
     "sinon-chai": "2.8.0",
     "socket.io-client": "^2.0.3",
-    "tractor": "^0.12.0-beta.4",
-    "tractor-plugin-cucumber": "^0.3.1",
-    "tractor-plugin-mock-requests": "^0.3.0",
-    "tractor-plugin-page-objects": "^0.4.0",
+    "tractor": "^0.12.2",
+    "tractor-plugin-cucumber": "^0.3.6",
+    "tractor-plugin-mock-requests": "^0.3.4",
+    "tractor-plugin-page-objects": "^0.4.4",
     "vinyl-buffer": "1.0.0",
     "vinyl-source-stream": "1.1.0",
     "xterm": "^2.9.2"

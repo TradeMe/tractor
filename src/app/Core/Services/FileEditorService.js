@@ -56,7 +56,7 @@ function fileEditorControllerFactory () {
 
     FileEditorController.prototype.saveFile = function () {
         var fileStructure = this.fileStructureService.fileStructure;
-        var fileUrl = this.fileModel.url || path.join(fileStructure.url, this.fileModel.name + this.extension);
+        var fileUrl = this.fileModel.file.url || path.join(fileStructure.url, this.fileModel.name + this.extension);
 
         var exists = this.fileStructureService.checkFileExists(fileStructure, fileUrl);
 
