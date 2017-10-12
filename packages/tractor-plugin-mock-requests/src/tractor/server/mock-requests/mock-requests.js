@@ -7,7 +7,7 @@ import path from 'path';
 import { setProxyConfig } from '../utilities';
 
 // Scripts:
-const INIT = fs.readFileSync(path.resolve(__dirname, '../scripts/init.js'), 'utf8');
+const INIT = fs.readFileSync(path.resolve(__dirname, '../../../scripts/init.js'), 'utf8');
 
 export class MockRequests {
     constructor (
@@ -45,10 +45,7 @@ function monkeypatchGet () {
 
     browser.get = function (destination, timeout) {
         mockRequests.initialised = true;
-
-        let host = browser.baseUrl;
-        return setProxyConfig({ host }, createProxyUrl(config, '/mock-requests/set-host'))
-        .then(() => browser.originalGet.call(browser, createProxyUrl(config, destination), timeout));
+        return browser.originalGet.call(browser, createProxyUrl(config, destination), timeout);
     };
 }
 

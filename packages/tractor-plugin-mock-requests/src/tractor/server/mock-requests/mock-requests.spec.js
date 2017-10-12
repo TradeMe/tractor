@@ -51,50 +51,22 @@ describe('tractor-plugin-mock-requests - MockRequests:', () => {
 
             it('should set the mockRequests to `initialised`', () => {
                 let browser = {
-                    get: NOOP
+                    get: () => Promise.resolve()
                 };
                 let config = {};
 
                 let mockRequests = new MockRequests(browser, config);
 
-                sinon.stub(utilities, 'setProxyConfig').returns(Promise.resolve());
-
                 return browser.get('/')
                 .then(() => {
                     expect(mockRequests.initialised).to.be.true();
-
-                    utilities.setProxyConfig.restore();
-                });
-            });
-
-            it('should set the base path of the proxy', () => {
-                let browser = {
-                    baseUrl: 'http://tractor.co.nz',
-                    get: NOOP
-                };
-                let config = {
-                    domain: 'localhost',
-                    port: 8765
-                };
-
-                new MockRequests(browser, config);
-
-                sinon.stub(utilities, 'setProxyConfig').returns(Promise.resolve());
-
-                return browser.get('/')
-                .then(() => {
-                    expect(utilities.setProxyConfig).to.have.been.calledWith({
-                        host: 'http://tractor.co.nz'
-                    }, 'http://localhost:8765/mock-requests/set-host');
-
-                    utilities.setProxyConfig.restore();
                 });
             });
 
             it('should call through to the original `get` function', () => {
                 let browser = {
                     baseUrl: 'baseUrl',
-                    get: NOOP
+                    get: () => Promise.resolve()
                 };
                 let config = {
                     domain: 'localhost',
@@ -104,13 +76,10 @@ describe('tractor-plugin-mock-requests - MockRequests:', () => {
                 new MockRequests(browser, config);
 
                 sinon.stub(browser, 'originalGet').returns(Promise.resolve());
-                sinon.stub(utilities, 'setProxyConfig').returns(Promise.resolve());
 
                 return browser.get('/', 1000)
                 .then(() => {
                     expect(browser.originalGet).to.have.been.calledWith('http://localhost:8765/', 1000);
-
-                    utilities.setProxyConfig.restore();
                 });
             })
         });
