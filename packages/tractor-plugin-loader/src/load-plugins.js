@@ -66,7 +66,11 @@ function requirePlugins () {
             let modulePath = path.resolve(process.cwd(), path.join('node_modules', pluginName));
             plugin = module._load(modulePath);
             plugin = plugin.default ? plugin.default : plugin;
-            plugin.description = plugin.description || {};
+
+            if (!plugin.description) {
+                plugin.description = {};
+            }
+
             plugin.fullName = pluginName;
             let [, name] = plugin.fullName.match(TRACTOR_PLUGIN_NAME_REGEX);
             plugin.name = name;
