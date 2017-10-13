@@ -529,6 +529,10 @@ bluebird@^3.3.1, bluebird@^3.4.7, bluebird@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.0.tgz#791420d7f551eea2897453a8a77653f96606d67c"
 
+bluebird@^3.5.1:
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.1.tgz#d9551f9de98f1fcda1e683d17ee91a0602ee2eb9"
+
 bn.js@^4.0.0, bn.js@^4.1.0, bn.js@^4.1.1, bn.js@^4.4.0:
   version "4.11.8"
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-4.11.8.tgz#2cde09eb5ee341f484746bb0309b3253b1b1442f"
@@ -2627,6 +2631,41 @@ express@^4.16.1:
     utils-merge "1.0.1"
     vary "~1.1.2"
 
+express@^4.16.2:
+  version "4.16.2"
+  resolved "https://registry.yarnpkg.com/express/-/express-4.16.2.tgz#e35c6dfe2d64b7dca0a5cd4f21781be3299e076c"
+  dependencies:
+    accepts "~1.3.4"
+    array-flatten "1.1.1"
+    body-parser "1.18.2"
+    content-disposition "0.5.2"
+    content-type "~1.0.4"
+    cookie "0.3.1"
+    cookie-signature "1.0.6"
+    debug "2.6.9"
+    depd "~1.1.1"
+    encodeurl "~1.0.1"
+    escape-html "~1.0.3"
+    etag "~1.8.1"
+    finalhandler "1.1.0"
+    fresh "0.5.2"
+    merge-descriptors "1.0.1"
+    methods "~1.1.2"
+    on-finished "~2.3.0"
+    parseurl "~1.3.2"
+    path-to-regexp "0.1.7"
+    proxy-addr "~2.0.2"
+    qs "6.5.1"
+    range-parser "~1.2.0"
+    safe-buffer "5.1.1"
+    send "0.16.1"
+    serve-static "1.13.1"
+    setprototypeof "1.1.0"
+    statuses "~1.3.1"
+    type-is "~1.6.15"
+    utils-merge "1.0.1"
+    vary "~1.1.2"
+
 extend@3, extend@^3.0.0, extend@~3.0.0, extend@~3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/extend/-/extend-3.0.1.tgz#a755ea7bc1adfcc5a31ce7e762dbaadc5e636444"
@@ -2688,9 +2727,9 @@ fd-slicer@~1.0.1:
   dependencies:
     pend "~1.2.0"
 
-fetch-mock@^5.12.2:
-  version "5.12.2"
-  resolved "https://registry.yarnpkg.com/fetch-mock/-/fetch-mock-5.12.2.tgz#07fde6b71f718328b4ce9b81c82a7c11c05d9748"
+fetch-mock@^5.13.1:
+  version "5.13.1"
+  resolved "https://registry.yarnpkg.com/fetch-mock/-/fetch-mock-5.13.1.tgz#955794a77f3d972f1644b9ace65a0fdfd60f1df7"
   dependencies:
     glob-to-regexp "^0.3.0"
     node-fetch "^1.3.3"
@@ -5959,9 +5998,9 @@ peakle@0.0.x:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/peakle/-/peakle-0.0.1.tgz#286445d6a7733f17dc273501e2e0399f41b890e0"
 
-pem@^1.12.0:
-  version "1.12.0"
-  resolved "https://registry.yarnpkg.com/pem/-/pem-1.12.0.tgz#603d8207b9b5f83225e37ffcc36268c3aa3fecf3"
+pem@^1.12.3:
+  version "1.12.3"
+  resolved "https://registry.yarnpkg.com/pem/-/pem-1.12.3.tgz#b1fb5c8b79da8d18146c27fee79b0d4ddf9905b3"
   dependencies:
     md5 "^2.2.1"
     os-tmpdir "^1.0.1"
@@ -7631,9 +7670,9 @@ tough-cookie@~2.3.0:
   dependencies:
     punycode "^1.4.1"
 
-tractor-client@^0.12.0:
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/tractor-client/-/tractor-client-0.12.0.tgz#3680ebede65b02094fad62771d6ef163076d9fd0"
+tractor-client@^0.12.2:
+  version "0.12.2"
+  resolved "https://registry.yarnpkg.com/tractor-client/-/tractor-client-0.12.2.tgz#463eae26ea9b94eb3f7353a789ecac314bec6e51"
 
 tractor-config-loader@^0.4.4:
   version "0.4.4"
@@ -7678,29 +7717,29 @@ tractor-plugin-browser@^0.1.3:
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/tractor-plugin-browser/-/tractor-plugin-browser-0.1.3.tgz#4ce47c6951e77149d5cb71660d5b718ba1dd1478"
 
-tractor-plugin-cucumber@^0.3.6:
-  version "0.3.6"
-  resolved "https://registry.yarnpkg.com/tractor-plugin-cucumber/-/tractor-plugin-cucumber-0.3.6.tgz#66fe101bf55da5341215aca676e322f351219cf8"
+tractor-plugin-cucumber@^0.3.8:
+  version "0.3.8"
+  resolved "https://registry.yarnpkg.com/tractor-plugin-cucumber/-/tractor-plugin-cucumber-0.3.8.tgz#76a70e2d0b5dbd6e32c66edda229a7b46b0d8d5a"
   dependencies:
-    bluebird "^3.5.0"
+    bluebird "^3.5.1"
     chai-as-promised "^7.1.1"
     cucumber "1.3.1"
     cucumber-html-reporter "0.3.5"
     graceful-fs "^4.1.11"
     protractor-cucumber-framework "^4.0.8"
-    tractor-plugin-features "^0.2.7"
-    tractor-plugin-step-definitions "^0.2.10"
+    tractor-plugin-features "^0.2.8"
+    tractor-plugin-step-definitions "^0.2.11"
 
-tractor-plugin-features@^0.2.7:
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/tractor-plugin-features/-/tractor-plugin-features-0.2.7.tgz#47ff0e4eaa775a84f4ca56ef93e93d02d23e6e62"
+tractor-plugin-features@^0.2.8:
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/tractor-plugin-features/-/tractor-plugin-features-0.2.8.tgz#7eaf3abdce15c07e046bfe5a07daee44e63b9d2a"
   dependencies:
     esprima "^4.0.0"
     estemplate "^0.5.1"
     gherkin "2.12.2"
     lodash.escaperegexp "^4.1.2"
     stripcolorcodes "^0.1.0"
-    tractor-plugin-step-definitions "^0.2.9"
+    tractor-plugin-step-definitions "^0.2.11"
 
 tractor-plugin-loader@^0.6.2:
   version "0.6.2"
@@ -7710,27 +7749,27 @@ tractor-plugin-loader@^0.6.2:
     param-case "^2.1.1"
     title-case "^2.1.1"
 
-tractor-plugin-mock-requests@^0.3.4:
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/tractor-plugin-mock-requests/-/tractor-plugin-mock-requests-0.3.4.tgz#0ec35ed668e94931e52e988824cbced181d30b2a"
+tractor-plugin-mock-requests@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/tractor-plugin-mock-requests/-/tractor-plugin-mock-requests-0.4.0.tgz#354f5887f4a98fbba9d89e51f05e8007b6d06b59"
   dependencies:
-    bluebird "^3.5.0"
+    bluebird "^3.5.1"
     body-parser "^1.18.2"
     camel-case "^3.0.0"
     cheerio "^1.0.0-rc.2"
     dedent "^0.7.0"
-    express "^4.16.1"
+    express "^4.16.2"
     express-http-proxy "^1.0.7"
     fake-xml-http-request "^1.6.0"
-    fetch-mock "^5.12.2"
+    fetch-mock "^5.13.1"
     pascal-case "^2.0.1"
-    pem "^1.12.0"
+    pem "^1.12.3"
     request "^2.83.0"
     request-promise-native "^1.0.5"
 
-tractor-plugin-page-objects@^0.4.4:
-  version "0.4.4"
-  resolved "https://registry.yarnpkg.com/tractor-plugin-page-objects/-/tractor-plugin-page-objects-0.4.4.tgz#dcfb0e589164d8f4a864a09f59d2f8b97b09b52a"
+tractor-plugin-page-objects@^0.4.5:
+  version "0.4.5"
+  resolved "https://registry.yarnpkg.com/tractor-plugin-page-objects/-/tractor-plugin-page-objects-0.4.5.tgz#12f6fd63cbd7ddc890b151fa6de89db42346747a"
   dependencies:
     bluebird "^3.5.0"
     graceful-fs "^4.1.11"
@@ -7738,9 +7777,9 @@ tractor-plugin-page-objects@^0.4.4:
     tractor-file-javascript "^0.2.3"
     tractor-plugin-browser "^0.1.3"
 
-tractor-plugin-step-definitions@^0.2.10, tractor-plugin-step-definitions@^0.2.9:
-  version "0.2.10"
-  resolved "https://registry.yarnpkg.com/tractor-plugin-step-definitions/-/tractor-plugin-step-definitions-0.2.10.tgz#b5c35995106fbe4b76c725cd6d97dd0f10d0f9f1"
+tractor-plugin-step-definitions@^0.2.11:
+  version "0.2.11"
+  resolved "https://registry.yarnpkg.com/tractor-plugin-step-definitions/-/tractor-plugin-step-definitions-0.2.11.tgz#4796ac685007cdf9187ef89b34261eef0ab7e122"
   dependencies:
     bluebird "^3.5.0"
     change-case "^3.0.1"
@@ -7759,14 +7798,14 @@ tractor-server@^0.12.6:
     lodash.template "^4.4.0"
     socket.io "^2.0.3"
 
-tractor@^0.12.2:
-  version "0.12.2"
-  resolved "https://registry.yarnpkg.com/tractor/-/tractor-0.12.2.tgz#6c01acfc414c1c3399cad56c9ec2dbd199303286"
+tractor@^0.12.4:
+  version "0.12.4"
+  resolved "https://registry.yarnpkg.com/tractor/-/tractor-0.12.4.tgz#08bc2f41e72dd62f195ec1530e65c5d9d031a276"
   dependencies:
     bluebird "^3.5.0"
     commander "^2.11.0"
     protractor "^5.1.2"
-    tractor-client "^0.12.0"
+    tractor-client "^0.12.2"
     tractor-config-loader "^0.4.4"
     tractor-dependency-injection "^0.1.3"
     tractor-error-handler "^0.2.4"
