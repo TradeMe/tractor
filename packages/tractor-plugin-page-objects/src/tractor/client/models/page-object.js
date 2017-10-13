@@ -15,7 +15,7 @@ function createPageObjectModelConstructor (
     plugins,
 ) {
     let PageObjectModel = function PageObjectModel (options) {
-        let elements = plugins.slice(0);
+        let elements = getPluginsWithMethods(plugins);
         let domElements = [];
         let actions = [];
 
@@ -139,6 +139,12 @@ function createPageObjectModelConstructor (
             actions
         }), this.meta);
     }
+}
+
+function getPluginsWithMethods (plugins) {
+    return plugins.slice(0).filter(function (plugin) {
+        return plugin.methods && plugin.methods.length;
+    });
 }
 
 PageObjectsModule.factory('PageObjectModel', createPageObjectModelConstructor);
