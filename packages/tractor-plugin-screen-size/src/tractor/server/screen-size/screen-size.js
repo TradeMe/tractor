@@ -1,18 +1,14 @@
+// Dependencies:
+import Promise from 'bluebird';
+import { TractorError } from 'tractor-error-handler';
+
 // Constants:
 const DEFAULT_HEIGHT = 1000;
-
-// Utilities:
-import Promise from 'bluebird';
-
-// Dependencies:
-import { TractorError } from 'tractor-error-handler';
 
 export class ScreenSize {
     constructor (browser, config) {
         this.browser = browser;
         this.config = config;
-
-        this.config.screenSizes = this.config.screenSizes || {};
     }
 
     setSize (size) {
@@ -25,7 +21,7 @@ export class ScreenSize {
         let { height, width } = dimensions;
 
         if (!width) {
-            width = this.config.screenSizes[size];
+            width = dimensions;
         }
 
         if (!height) {

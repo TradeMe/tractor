@@ -1,4 +1,4 @@
-const description = {
+export const description = {
     methods: [{
         name: 'setSize',
         description: 'Set the size of the viewport',
@@ -10,5 +10,3 @@ const description = {
         }]
     }]
 };
-
-export default description;

@@ -1,14 +1,7 @@
 /* global describe:true, it:true */
 
-// Utilities:
-import Promise from 'bluebird';
-import chai from 'chai';
-import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
-
 // Test setup:
-const expect = chai.expect;
-chai.use(sinonChai);
+import { expect, Promise, sinon } from '../../../../test-setup.js';
 
 // Dependencies:
 import { TractorError } from 'tractor-error-handler';
@@ -98,7 +91,9 @@ describe('tractor-plugin-screen-size - ScreenSize:', () => {
 
         it(`should throw an error if dimensions aren't given for a size`, () => {
             let browser = {};
-            let config = {};
+            let config = {
+                screenSizes: {}
+            };
             let screenSize = new ScreenSize(browser, config);
 
             return screenSize.setSize('sm')

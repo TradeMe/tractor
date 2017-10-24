@@ -1,15 +1,10 @@
 /* global describe:true, it:true */
 
-// Utilities:
-import chai from 'chai';
-import dirtyChai from 'dirty-chai';
-
 // Test setup:
-const expect = chai.expect;
-chai.use(dirtyChai);
+import { expect } from '../../../test-setup.js';
 
 // Under test:
-import description from './description';
+import { description } from './description';
 
 describe('tractor-plugin-screen-size - description:', () => {
     it('should have the `setSize` method', () => {

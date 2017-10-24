@@ -1,17 +1,16 @@
 /* global describe:true, it:true */
 
-// Utilities:
-import chai from 'chai';
-
 // Test setup:
-const expect = chai.expect;
+import { expect } from '../../../test-setup.js';
 
 // Under test:
-import serve from './serve';
+import { serve } from './serve';
 
 describe('tractor-plugin-screen-size - serve:', () => {
     it('should do nothing if there is no config', () => {
-        let config = {};
+        let config = {
+            screenSizes: {}
+        };
 
         expect(() => {
             serve(config);
