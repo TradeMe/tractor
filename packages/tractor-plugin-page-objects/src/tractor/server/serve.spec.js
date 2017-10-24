@@ -62,5 +62,7 @@ describe('tractor-plugin-page-objects - serve:', () => {
         serve(config, di);
 
         expect(FileStructure.prototype.addFileType).to.have.been.calledWith(PageObjectFile);
+
+        FileStructure.prototype.addFileType.restore();
     });
 });

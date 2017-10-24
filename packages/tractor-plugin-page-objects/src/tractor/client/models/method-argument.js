@@ -50,18 +50,37 @@ function createMethodArgumentModelConstructor (
         let literal = stringToLiteralService.toLiteral(this.value);
         let parameter = findParameter.call(this);
         let result = findResult.call(this);
+        let element = findElement.call(this);
 
         if (literal !== undefined && literal !== this.value) {
             return ast.literal(literal);
+
+        // The following ordering matters to the variable scoping
+        // of the generated JS.
+
+        // Try to find a matching parameter first:
         } else if (parameter) {
             return ast.identifier(parameter.variableName);
+        // A result could have the same name as a parameter, but would
+        // exist in a wrapping scope, so we check that next:
         } else if (result) {
             return ast.identifier(this.value);
+        // An element could have the same name as a parameter or a result
+        // but would be in a scope even further up, so we check that last:
+        } else if (element) {
+            return ast.memberExpression(ast.identifier('self'), ast.identifier(element.variableName));
+
         } else if (this.value) {
             return ast.literal(this.value);
         } else {
             return ast.literal(null);
         }
+    }
+
+    function findElement () {
+        return this.method && this.method.interaction.action.pageObject.domElements.find(element => {
+            return element.name === this.value;
+        });
     }
 
     function findParameter () {

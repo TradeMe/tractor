@@ -9,7 +9,7 @@ function MethodArgumentParserService (MethodArgumentModel) {
 
     function parse (method, argument, astObject) {
         argument = new MethodArgumentModel(method, argument);
-        argument.value = astObject.name || astObject.value;
+        argument.value = astObject.name || astObject.value || astObject.property.name;
 
         return argument;
     }

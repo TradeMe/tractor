@@ -92,8 +92,14 @@ function InteractionParserService (
                 let parameter = action.parameters.find(parameter => {
                     return parameter.variableName === arg.value;
                 });
+                let element = action.pageObject.domElements.find(element => {
+                    return element.variableName === arg.value;
+                });
                 if (parameter) {
                     arg.value = parameter.name;
+                }
+                if (element) {
+                    arg.value = element.name;
                 }
                 return arg;
             });
