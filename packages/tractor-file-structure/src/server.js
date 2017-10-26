@@ -19,7 +19,7 @@ export function serveFileStructure (application, sockets) {
         application.post(`/${prefix}/fs/refactor*`, createRefactorItemHandler(fileStructure));
         application.put(`/${prefix}/fs*`, createSaveItemHandler(fileStructure));
 
-        watchFileStructure(fileStructure, sockets.of('/watch-file-structure'));
+        watchFileStructure(fileStructure, sockets.of(`/${prefix}/watch-file-structure`));
     }
 }
 serveFileStructure['@Inject'] = ['application', 'sockets'];

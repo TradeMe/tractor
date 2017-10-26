@@ -1,6 +1,6 @@
 {
   "name": "tractor-file-structure",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -16,10 +16,11 @@
   },
   "scripts": {
     "prepublish": "npm run build",
-    "build": "npm run lint && npm run cover && npm run compile",
+    "build": "npm run clean && npm run lint && npm run cover && npm run compile",
+    "clean": "rimraf dist",
     "compile": "babel src/ --out-dir dist --ignore *.spec.js",
     "cover": "istanbul cover --config .istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ./.mocharc 'src/**/*.spec.js'",
-    "lint": "eslint src/**/*.js; true",
+    "lint": "eslint src",
     "test": "mocha --opts ./.mocharc 'src/**/*.spec.js'",
     "test:debug": "mocha --inspect --debug-brk --opts ./.mocharc 'src/**/*.spec.js'",
     "watch": "npm-watch"
@@ -39,17 +40,18 @@
     "dirty-chai": "^2.0.1",
     "eslint": "^4.7.2",
     "istanbul": "^1.0.0-alpha.2",
-    "mocha": "^3.5.3",
+    "mocha": "^4.0.1",
     "npm-watch": "^0.3.0",
-    "sinon": "^4.0.0",
+    "rimraf": "^2.6.2",
+    "sinon": "^4.0.1",
     "sinon-chai": "^2.13.0",
     "tractor-error-handler": "^0.2.4",
     "tractor-logger": "^0.1.1"
   },
   "dependencies": {
-    "bluebird": "^3.4.7",
+    "bluebird": "^3.5.1",
     "chokidar": "^1.7.0",
-    "express": "^4.15.4",
+    "express": "^4.16.2",
     "graceful-fs": "^4.1.11",
     "lodash.debounce": "^4.0.8"
   },
