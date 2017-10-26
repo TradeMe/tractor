@@ -29,7 +29,7 @@ function fileStructureServiceFactory (
             }
         });
 
-        realTimeService.connect('watch-file-structure', {
+        realTimeService.connect(baseURL + '/watch-file-structure', {
             'file-structure-change': getFileStructure
         });
         getFileStructure();
