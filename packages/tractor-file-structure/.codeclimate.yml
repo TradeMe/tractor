@@ -4,6 +4,9 @@ plugins:
     enabled: true
     exclude_patterns:
     - "**.spec.js"
+    config:
+      languages:
+      - javascript
   eslint:
     enabled: true
   fixme:
