@@ -3,7 +3,7 @@ plugins:
   duplication:
     enabled: true
     exclude_patterns:
-    - "**.spec.js"
+    - "**/*.spec.js"
     config:
       languages:
       - javascript
