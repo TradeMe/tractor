@@ -3805,10 +3805,11 @@ tractor-logger@^0.1.1:
   dependencies:
     npmlog "^4.1.2"
 
-tractor-plugin-loader@^0.6.3:
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/tractor-plugin-loader/-/tractor-plugin-loader-0.6.3.tgz#7adefdb2504caf3fcd9687c86197ba93183f1061"
+tractor-plugin-loader@^0.6.4:
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/tractor-plugin-loader/-/tractor-plugin-loader-0.6.4.tgz#d420ac16339a006d851efabd2a74fde8d909e921"
   dependencies:
+    babel-polyfill "^6.26.0"
     camel-case "^3.0.0"
     param-case "^2.1.1"
     title-case "^2.1.1"
