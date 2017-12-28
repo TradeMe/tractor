@@ -1,3 +1,10 @@
+// Polyfill:
+// Ignoring polyfill from coverage as it should hopefully go away soon:
+/* istanbul ignore next */
+if (!global._babelPolyfill) {
+    require('babel-polyfill');
+}
+
 // Dependencies:
 import { loadPlugins } from './load-plugins';
 

@@ -38,19 +38,22 @@ export function loadPlugins () {
         }
 
         if (!plugin.create) {
-            plugin.create = (() => {})
+            plugin.create = (() => {});
         }
         if (!plugin.init) {
-            plugin.init = (() => {})
+            plugin.init = (() => {});
         }
         if (!plugin.plugin) {
-            plugin.plugin = (() => {})
+            plugin.plugin = (() => {});
         }
         if (!plugin.run) {
-            plugin.run = (() => {})
+            plugin.run = (() => {});
         }
         if (!plugin.serve) {
-            plugin.serve = (() => {})
+            plugin.serve = (() => {});
+        }
+        if (!plugin.upgrade) {
+            plugin.upgrade = (() => {});
         }
     });
     return plugins;
@@ -70,6 +73,8 @@ function requirePlugins () {
             if (!plugin.description) {
                 plugin.description = {};
             }
+            let packagePath = path.join(modulePath, 'package.json');
+            plugin.description.version = module._load(packagePath).version;
 
             plugin.fullName = pluginName;
             let [, name] = plugin.fullName.match(TRACTOR_PLUGIN_NAME_REGEX);

@@ -1,6 +1,6 @@
 {
   "name": "tractor-plugin-loader",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -46,6 +46,7 @@
     "tractor-logger": "^0.1.1"
   },
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
     "camel-case": "^3.0.0",
     "param-case": "^2.1.1",
     "title-case": "^2.1.1"

@@ -1,13 +1,7 @@
 /* global describe:true, it:true */
 
-// Utilities:
-import chai from 'chai';
-import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
-
 // Test setup:
-const expect = chai.expect;
-chai.use(sinonChai);
+import { expect, NOOP, sinon } from '../test-setup';
 
 // Dependencies:
 import fs from 'fs';
@@ -109,6 +103,51 @@ describe('tractor-plugin-loader:', () => {
             tractorLogger.info.restore();
         });
 
+        it('should not overwrite an existing `description`', () => {
+            let nodeModules = ['tractor-plugin-test-plugin'];
+            let pluginModule = {
+                description: {}
+            };
+
+            sinon.stub(fs, 'readdirSync').returns(nodeModules);
+            sinon.stub(module, '_load').returns(pluginModule);
+            sinon.stub(tractorLogger, 'info');
+
+            let plugins = loadPlugins();
+            let [test] = plugins;
+
+            expect(test.description).to.equal(pluginModule.description);
+
+            fs.readdirSync.restore();
+            module._load.restore();
+            tractorLogger.info.restore();
+        });
+
+        it('should decorate the `description` with the version', () => {
+            let nodeModules = ['tractor-plugin-test-plugin'];
+            let pluginModule = {};
+            let pluginPackage = {
+                version: '0.1.0'
+            };
+
+            sinon.stub(process, 'cwd').returns('');
+            sinon.stub(fs, 'readdirSync').returns(nodeModules);
+            sinon.stub(module, '_load')
+                .withArgs('node_modules/tractor-plugin-test-plugin').returns(pluginModule)
+                .withArgs('node_modules/tractor-plugin-test-plugin/package.json').returns(pluginPackage);
+            sinon.stub(tractorLogger, 'info');
+
+            let plugins = loadPlugins();
+            let [test] = plugins;
+
+            expect(test.description.version).to.equal('0.1.0');
+
+            process.cwd.restore();
+            fs.readdirSync.restore();
+            module._load.restore();
+            tractorLogger.info.restore();
+        });
+
         it('should have a default `create` function that is a noop', () => {
             let nodeModules = ['tractor-plugin-test'];
             let pluginModule = {};
@@ -122,6 +161,28 @@ describe('tractor-plugin-loader:', () => {
             expect(() => {
                 test.create();
             }).to.not.throw();
+
+            fs.readdirSync.restore();
+            module._load.restore();
+            tractorLogger.info.restore();
+        });
+
+        it('should not overwrite an existing `create` function', () => {
+            let nodeModules = ['tractor-plugin-test'];
+            let pluginModule = {
+                create: NOOP
+            };
+
+            sinon.stub(fs, 'readdirSync').returns(nodeModules);
+            sinon.stub(module, '_load').returns(pluginModule);
+            sinon.stub(pluginModule, 'create');
+            sinon.stub(tractorLogger, 'info');
+
+            let plugins = loadPlugins();
+            let [test] = plugins;
+            test.create();
+
+            expect(pluginModule.create).to.have.been.called();
 
             fs.readdirSync.restore();
             module._load.restore();
@@ -147,6 +208,28 @@ describe('tractor-plugin-loader:', () => {
             tractorLogger.info.restore();
         });
 
+        it('should not overwrite an existing `init` function', () => {
+            let nodeModules = ['tractor-plugin-test'];
+            let pluginModule = {
+                init: NOOP
+            };
+
+            sinon.stub(fs, 'readdirSync').returns(nodeModules);
+            sinon.stub(module, '_load').returns(pluginModule);
+            sinon.stub(pluginModule, 'init');
+            sinon.stub(tractorLogger, 'info');
+
+            let plugins = loadPlugins();
+            let [test] = plugins;
+            test.init();
+
+            expect(pluginModule.init).to.have.been.called();
+
+            fs.readdirSync.restore();
+            module._load.restore();
+            tractorLogger.info.restore();
+        });
+
         it('should have a default `plugin` function that is a noop', () => {
             let nodeModules = ['tractor-plugin-test'];
             let pluginModule = {};
@@ -160,6 +243,28 @@ describe('tractor-plugin-loader:', () => {
             expect(() => {
                 test.plugin();
             }).to.not.throw();
+
+            fs.readdirSync.restore();
+            module._load.restore();
+            tractorLogger.info.restore();
+        });
+
+        it('should not overwrite an existing `plugin` function', () => {
+            let nodeModules = ['tractor-plugin-test'];
+            let pluginModule = {
+                plugin: NOOP
+            };
+
+            sinon.stub(fs, 'readdirSync').returns(nodeModules);
+            sinon.stub(module, '_load').returns(pluginModule);
+            sinon.stub(pluginModule, 'plugin');
+            sinon.stub(tractorLogger, 'info');
+
+            let plugins = loadPlugins();
+            let [test] = plugins;
+            test.plugin();
+
+            expect(pluginModule.plugin).to.have.been.called();
 
             fs.readdirSync.restore();
             module._load.restore();
@@ -185,6 +290,28 @@ describe('tractor-plugin-loader:', () => {
             tractorLogger.info.restore();
         });
 
+        it('should not overwrite an existing `run` function', () => {
+            let nodeModules = ['tractor-plugin-test'];
+            let pluginModule = {
+                run: NOOP
+            };
+
+            sinon.stub(fs, 'readdirSync').returns(nodeModules);
+            sinon.stub(module, '_load').returns(pluginModule);
+            sinon.stub(pluginModule, 'run');
+            sinon.stub(tractorLogger, 'info');
+
+            let plugins = loadPlugins();
+            let [test] = plugins;
+            test.run();
+
+            expect(pluginModule.run).to.have.been.called();
+
+            fs.readdirSync.restore();
+            module._load.restore();
+            tractorLogger.info.restore();
+        });
+
         it('should have a default `serve` function that is a noop', () => {
             let nodeModules = ['tractor-plugin-test'];
             let pluginModule = {};
@@ -198,6 +325,69 @@ describe('tractor-plugin-loader:', () => {
             expect(() => {
                 test.serve();
             }).to.not.throw();
+
+            fs.readdirSync.restore();
+            module._load.restore();
+            tractorLogger.info.restore();
+        });
+
+        it('should not overwrite an existing `serve` function', () => {
+            let nodeModules = ['tractor-plugin-test'];
+            let pluginModule = {
+                serve: NOOP
+            };
+
+            sinon.stub(fs, 'readdirSync').returns(nodeModules);
+            sinon.stub(module, '_load').returns(pluginModule);
+            sinon.stub(pluginModule, 'serve');
+            sinon.stub(tractorLogger, 'info');
+
+            let plugins = loadPlugins();
+            let [test] = plugins;
+            test.serve();
+
+            expect(pluginModule.serve).to.have.been.called();
+
+            fs.readdirSync.restore();
+            module._load.restore();
+            tractorLogger.info.restore();
+        });
+
+        it('should have a default `upgrade` function that is a noop', () => {
+            let nodeModules = ['tractor-plugin-test'];
+            let pluginModule = {};
+
+            sinon.stub(fs, 'readdirSync').returns(nodeModules);
+            sinon.stub(module, '_load').returns(pluginModule);
+            sinon.stub(tractorLogger, 'info');
+
+            let plugins = loadPlugins();
+            let [test] = plugins;
+            expect(() => {
+                test.upgrade();
+            }).to.not.throw();
+
+            fs.readdirSync.restore();
+            module._load.restore();
+            tractorLogger.info.restore();
+        });
+
+        it('should not overwrite an existing `upgrade` function', () => {
+            let nodeModules = ['tractor-plugin-test'];
+            let pluginModule = {
+                upgrade: NOOP
+            };
+
+            sinon.stub(fs, 'readdirSync').returns(nodeModules);
+            sinon.stub(module, '_load').returns(pluginModule);
+            sinon.stub(pluginModule, 'upgrade');
+            sinon.stub(tractorLogger, 'info');
+
+            let plugins = loadPlugins();
+            let [test] = plugins;
+            test.upgrade();
+
+            expect(pluginModule.upgrade).to.have.been.called();
 
             fs.readdirSync.restore();
             module._load.restore();
