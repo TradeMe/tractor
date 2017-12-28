@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 'use strict';
 
+// Polyfill:
+require('babel-polyfill');
+
 // Dependencies:
 let tractor = require('commander');
 let info = require('../package.json');
@@ -8,6 +11,7 @@ let info = require('../package.json');
 // Actions:
 let { init } = require('../dist/init');
 let { start } = require('../dist/start');
+let { upgrade } = require('../dist/upgrade');
 
 let { getConfig } = require('tractor-config-loader');
 let { container } = require('tractor-dependency-injection');
@@ -32,6 +36,14 @@ tractor
 .action(function () {
     initDIConstants();
     return di.call(start);
+});
+
+tractor
+.command('upgrade')
+.description('Upgrade tractor plugin files')
+.action(function () {
+    initDIConstants();
+    return di.call(upgrade);
 });
 
 tractor.parse(process.argv);

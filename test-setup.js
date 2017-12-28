@@ -1,6 +1,7 @@
 import chai from 'chai';
 import dirtyChai from 'dirty-chai';
 import { ineeda } from 'ineeda';
+import Promise from 'bluebird';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 
@@ -10,6 +11,8 @@ export Promise from 'bluebird';
 export { expect } from 'chai';
 export { ineeda } from 'ineeda';
 export sinon from 'sinon';
+
+global.Promise = Promise;
 
 // Test setup:
 chai.use(dirtyChai);

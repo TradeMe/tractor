@@ -1,7 +1,7 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect, Promise, sinon } from '../../test-setup';
+import { expect, sinon } from '../../test-setup';
 
 // Dependencies:
 import childProcess from 'child_process';
@@ -13,7 +13,7 @@ import { setUpSelenium } from './set-up-selenium';
 
 describe('tractor - set-up-selenium:', () => {
     it('should run the "webdriver-manager update" command', () => {
-        sinon.stub(childProcess, 'execAsync').returns(Promise.resolve());
+        sinon.stub(childProcess, 'execAsync').resolves();
         sinon.stub(tractorLogger, 'info');
 
         return setUpSelenium()
@@ -28,7 +28,7 @@ describe('tractor - set-up-selenium:', () => {
     });
 
     it('should tell the user what it is doing', () => {
-        sinon.stub(childProcess, 'execAsync').returns(Promise.resolve());
+        sinon.stub(childProcess, 'execAsync').resolves();
         sinon.stub(tractorLogger, 'info');
 
         return setUpSelenium()
@@ -43,7 +43,7 @@ describe('tractor - set-up-selenium:', () => {
     });
 
     it('should tell the user if webdriver cannot be updated', () => {
-        sinon.stub(childProcess, 'execAsync').returns(Promise.reject());
+        sinon.stub(childProcess, 'execAsync').rejects();
         sinon.stub(tractorLogger, 'error');
         sinon.stub(tractorLogger, 'info');
 
