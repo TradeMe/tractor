@@ -46,6 +46,6 @@ function getRemoteTractorVersion () {
 function installTractor () {
     info('Installing "tractor"...');
     return childProcess.execAsync(INSTALL_DEPENDENCIES_COMMAND)
-    .then(() => info('Installed "tractor".'))
-    .catch(() => error(`Couldn't install "tractor". Either run "tractor init" again, or install it manually by running "npm install tractor@latest --save-dev"`));
+    .catch(() => error(`Couldn't install "tractor". Either run "tractor init" again, or install it manually by running "npm install tractor@latest --save-dev"`))
+    .then(() => info('Installed "tractor".'));
 }
