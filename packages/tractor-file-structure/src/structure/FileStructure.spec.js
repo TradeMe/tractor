@@ -1,7 +1,7 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect, Promise, sinon } from '../../test-setup';
+import { expect, sinon } from '../../test-setup';
 
 // Dependencies:
 import chokidar from 'chokidar';
@@ -92,7 +92,7 @@ describe('tractor-file-structure - FileStructure:', () => {
 
     describe('FileStructure.read', () => {
         it('should read the entire file structure', () => {
-            sinon.stub(Directory.prototype, 'read').returns(Promise.resolve());
+            sinon.stub(Directory.prototype, 'read').resolves();
 
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
@@ -150,7 +150,7 @@ describe('tractor-file-structure - FileStructure:', () => {
             let file = new File(path.join(path.sep, 'file-structure', 'file.extension'), fileStructure);
             let eventEmitter = new EventEmitter();
 
-            sinon.stub(fileStructure.structure, 'refresh').returns(Promise.resolve());
+            sinon.stub(fileStructure.structure, 'refresh').resolves();
             sinon.stub(tractorLogger, 'info');
             sinon.stub(chokidar, 'watch').returns(eventEmitter);
 
@@ -172,7 +172,7 @@ describe('tractor-file-structure - FileStructure:', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let eventEmitter = new EventEmitter();
 
-            sinon.stub(fileStructure.structure, 'refresh').returns(Promise.resolve());
+            sinon.stub(fileStructure.structure, 'refresh').resolves();
             sinon.stub(tractorLogger, 'info');
             sinon.stub(chokidar, 'watch').returns(eventEmitter);
 

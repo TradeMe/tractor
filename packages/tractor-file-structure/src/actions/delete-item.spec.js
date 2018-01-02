@@ -1,7 +1,7 @@
 /* global describe:true, it:true, xit:true */
 
 // Test setup:
-import { expect, Promise, sinon } from '../../test-setup';
+import { expect, sinon } from '../../test-setup';
 
 // Dependencies:
 import path from 'path';
@@ -30,7 +30,7 @@ describe('tractor-file-structure - actions/delete-item:', () => {
             sendStatus: () => { }
         };
 
-        sinon.stub(File.prototype, 'delete').returns(Promise.resolve());
+        sinon.stub(File.prototype, 'delete').resolves();
 
         let deleteItem = createDeleteItemHandler(fileStructure);
         return deleteItem(request, response)
@@ -54,7 +54,7 @@ describe('tractor-file-structure - actions/delete-item:', () => {
             sendStatus: () => { }
         };
 
-        sinon.stub(Directory.prototype, 'delete').returns(Promise.resolve());
+        sinon.stub(Directory.prototype, 'delete').resolves();
 
         let deleteItem = createDeleteItemHandler(fileStructure);
         return deleteItem(request, response)
@@ -101,7 +101,7 @@ describe('tractor-file-structure - actions/delete-item:', () => {
             sendStatus: () => { }
         };
 
-        sinon.stub(Directory.prototype, 'rimraf').returns(Promise.resolve());
+        sinon.stub(Directory.prototype, 'rimraf').resolves();
 
         let deleteItem = createDeleteItemHandler(fileStructure);
         return deleteItem(request, response)
@@ -125,7 +125,7 @@ describe('tractor-file-structure - actions/delete-item:', () => {
             sendStatus: () => { }
         };
 
-        sinon.stub(File.prototype, 'delete').returns(Promise.resolve());
+        sinon.stub(File.prototype, 'delete').resolves();
         sinon.stub(response, 'sendStatus');
 
         let deleteItem = createDeleteItemHandler(fileStructure);
@@ -152,7 +152,7 @@ describe('tractor-file-structure - actions/delete-item:', () => {
             sendStatus: () => { }
         };
 
-        sinon.stub(File.prototype, 'delete').returns(Promise.resolve());
+        sinon.stub(File.prototype, 'delete').resolves();
 
         let deleteItem = createDeleteItemHandler(fileStructure);
         return deleteItem(request, response)
@@ -178,7 +178,7 @@ describe('tractor-file-structure - actions/delete-item:', () => {
             sendStatus: () => { }
         };
 
-        sinon.stub(File.prototype, 'cleanup').returns(Promise.resolve());
+        sinon.stub(File.prototype, 'cleanup').resolves();
 
         let deleteItem = createDeleteItemHandler(fileStructure);
         return deleteItem(request, response)
@@ -204,7 +204,7 @@ describe('tractor-file-structure - actions/delete-item:', () => {
             sendStatus: () => { }
         };
 
-        sinon.stub(Directory.prototype, 'cleanup').returns(Promise.resolve());
+        sinon.stub(Directory.prototype, 'cleanup').resolves();
 
         let deleteItem = createDeleteItemHandler(fileStructure);
         return deleteItem(request, response)
@@ -228,7 +228,7 @@ describe('tractor-file-structure - actions/delete-item:', () => {
         };
         let error = new TractorError();
 
-        sinon.stub(File.prototype, 'delete').returns(Promise.reject(error));
+        sinon.stub(File.prototype, 'delete').rejects(error);
         sinon.stub(tractorErrorHandler, 'handleError');
 
         let deleteItem = createDeleteItemHandler(fileStructure);
@@ -254,7 +254,7 @@ describe('tractor-file-structure - actions/delete-item:', () => {
             sendStatus: () => { }
         };
 
-        sinon.stub(File.prototype, 'delete').returns(Promise.reject(new Error()));
+        sinon.stub(File.prototype, 'delete').rejects();
         sinon.stub(tractorErrorHandler, 'handleError');
 
         let deleteItem = createDeleteItemHandler(fileStructure);

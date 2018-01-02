@@ -13,4 +13,5 @@ export sinon from 'sinon';
 chai.use(dirtyChai);
 chai.use(sinonChai);
 
+global.Promise = Promise;
 Promise.promisifyAll(require('graceful-fs'));

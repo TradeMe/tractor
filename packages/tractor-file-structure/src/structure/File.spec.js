@@ -8,6 +8,7 @@ import fs from 'graceful-fs';
 import path from 'path';
 import { Directory } from './Directory';
 import { FileStructure } from './FileStructure';
+import { ReferenceManager } from './ReferenceManager';
 
 // Errors:
 import { TractorError } from 'tractor-error-handler';
@@ -156,8 +157,8 @@ describe('tractor-file-structure - File:', () => {
           let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
           let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
 
-          sinon.stub(directory, 'delete').returns(Promise.resolve());
-          sinon.stub(directory.directory, 'cleanup').returns(Promise.resolve());
+          sinon.stub(directory, 'delete').resolves();
+          sinon.stub(directory.directory, 'cleanup').resolves();
 
           return directory.cleanup()
           .then(() => {
@@ -169,8 +170,8 @@ describe('tractor-file-structure - File:', () => {
           let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
           let file = new File(path.join(path.sep, 'file-structure', 'file.ext'), fileStructure);
 
-          sinon.stub(file, 'delete').returns(Promise.resolve());
-          sinon.stub(file.directory, 'cleanup').returns(Promise.resolve());
+          sinon.stub(file, 'delete').resolves();
+          sinon.stub(file.directory, 'cleanup').resolves();
 
           return file.cleanup()
           .then(() => {
@@ -184,7 +185,7 @@ describe('tractor-file-structure - File:', () => {
           let file1 = new File(path.join(path.sep, 'file-structure', 'directory', 'file-1.ext'), fileStructure);
           let file2 = new File(path.join(path.sep, 'file-structure', 'directory', 'file-2.ext'), fileStructure);
 
-          sinon.stub(fs, 'unlinkAsync').returns(Promise.resolve());
+          sinon.stub(fs, 'unlinkAsync').resolves();
           sinon.spy(directory, 'delete');
           sinon.spy(file1, 'delete');
           sinon.spy(file2, 'delete');
@@ -206,7 +207,7 @@ describe('tractor-file-structure - File:', () => {
           let file = new File(path.join(path.sep, 'file-structure', 'file.ext'), fileStructure);
 
           let error = new Error('Unexpected error')
-          sinon.stub(fs, 'unlinkAsync').returns(Promise.reject(error));
+          sinon.stub(fs, 'unlinkAsync').rejects(error);
 
           return file.cleanup()
           .catch(e => {
@@ -240,7 +241,7 @@ describe('tractor-file-structure - File:', () => {
         it('should delete the file', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
-            sinon.stub(fs, 'unlinkAsync').returns(Promise.resolve());
+            sinon.stub(fs, 'unlinkAsync').resolves();
 
             let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
@@ -258,7 +259,7 @@ describe('tractor-file-structure - File:', () => {
             let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
 
             sinon.stub(directory, 'removeItem');
-            sinon.stub(fs, 'unlinkAsync').returns(Promise.resolve());
+            sinon.stub(fs, 'unlinkAsync').resolves();
 
             let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
@@ -276,7 +277,7 @@ describe('tractor-file-structure - File:', () => {
             let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
 
             sinon.stub(directory, 'removeItem');
-            sinon.stub(fs, 'unlinkAsync').returns(Promise.resolve());
+            sinon.stub(fs, 'unlinkAsync').resolves();
 
             let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
             let otherFile = new File(path.join(path.sep, 'file-structure', 'directory', 'other-file.ext'), fileStructure);
@@ -299,7 +300,7 @@ describe('tractor-file-structure - File:', () => {
             let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
 
             sinon.stub(directory, 'removeItem');
-            sinon.stub(fs, 'unlinkAsync').returns(Promise.resolve());
+            sinon.stub(fs, 'unlinkAsync').resolves();
 
             let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
@@ -318,8 +319,8 @@ describe('tractor-file-structure - File:', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
             sinon.spy(File.prototype, 'constructor');
-            sinon.stub(File.prototype, 'delete').returns(Promise.resolve());
-            sinon.stub(File.prototype, 'save').returns(Promise.resolve());
+            sinon.stub(File.prototype, 'delete').resolves();
+            sinon.stub(File.prototype, 'save').resolves();
 
             let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
@@ -342,8 +343,8 @@ describe('tractor-file-structure - File:', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
             sinon.spy(File.prototype, 'constructor');
-            sinon.stub(File.prototype, 'delete').returns(Promise.resolve());
-            sinon.stub(File.prototype, 'save').returns(Promise.resolve());
+            sinon.stub(File.prototype, 'delete').resolves();
+            sinon.stub(File.prototype, 'save').resolves();
 
             let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
             let buffer = new Buffer('data');
@@ -368,8 +369,8 @@ describe('tractor-file-structure - File:', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
             sinon.spy(File.prototype, 'constructor');
-            sinon.stub(File.prototype, 'save').returns(Promise.resolve());
-            sinon.stub(File.prototype, 'delete').returns(Promise.resolve());
+            sinon.stub(File.prototype, 'save').resolves();
+            sinon.stub(File.prototype, 'delete').resolves();
 
             let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
@@ -389,13 +390,219 @@ describe('tractor-file-structure - File:', () => {
                 File.prototype.save.restore();
             });
         });
+
+        it('should clear all the references', () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
+
+            sinon.spy(File.prototype, 'constructor');
+            sinon.stub(File.prototype, 'clearReferences');
+            sinon.stub(File.prototype, 'delete').resolves();
+            sinon.stub(File.prototype, 'save').resolves();
+
+            return file.move({
+                newPath: path.join(path.sep, 'file-structure', 'other-directory', 'renamed.ext')
+            })
+            .then(() => {
+                expect(file.clearReferences).to.have.been.called();
+            })
+            .finally(() => {
+                File.prototype.constructor.restore();
+                File.prototype.clearReferences.restore();
+                File.prototype.delete.restore();
+                File.prototype.save.restore();
+            });
+        });
+
+        it('should add the reference back', () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
+            let reference = new File(path.join(path.sep, 'file-structure', 'directory', 'other-file.ext'), fileStructure)
+
+            sinon.spy(File.prototype, 'constructor');
+            sinon.stub(File.prototype, 'save').resolves();
+            sinon.stub(File.prototype, 'delete').resolves();
+            sinon.stub(ReferenceManager.prototype, 'getReferencedBy').returns([reference]);
+            sinon.stub(reference, 'addReference');
+            sinon.stub(reference, 'refactor').resolves();
+
+            return file.move({
+                newPath: path.join(path.sep, 'file-structure', 'other-directory', 'renamed.ext')
+            })
+            .then(() => {
+                expect(reference.addReference).to.have.been.called();
+            })
+            .finally(() => {
+                File.prototype.constructor.restore();
+                File.prototype.delete.restore();
+                File.prototype.save.restore();
+                ReferenceManager.prototype.getReferencedBy.restore();
+            });
+        });
+
+        it(`shouldn't clear all the references if it is a copy`, () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
+
+            sinon.spy(File.prototype, 'constructor');
+            sinon.stub(File.prototype, 'clearReferences');
+            sinon.stub(File.prototype, 'delete').resolves();
+            sinon.stub(File.prototype, 'save').resolves();
+
+            return file.move({
+                newPath: path.join(path.sep, 'file-structure', 'other-directory', 'renamed.ext')
+            }, {
+                isCopy: true
+            })
+            .then(() => {
+                expect(file.clearReferences).to.not.have.been.called();
+            })
+            .finally(() => {
+                File.prototype.constructor.restore();
+                File.prototype.clearReferences.restore();
+                File.prototype.delete.restore();
+                File.prototype.save.restore();
+            });
+        });
+
+        it('should call `refactor` on any files that it is reference by', () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
+            let reference = new File(path.join(path.sep, 'file-structure', 'directory', 'other-file.ext'), fileStructure)
+
+            sinon.spy(File.prototype, 'constructor');
+            sinon.stub(File.prototype, 'save').resolves();
+            sinon.stub(File.prototype, 'delete').resolves();
+            sinon.stub(ReferenceManager.prototype, 'getReferencedBy').returns([reference]);
+            sinon.stub(reference, 'refactor').resolves();
+
+            return file.move({
+                newPath: path.join(path.sep, 'file-structure', 'other-directory', 'renamed.ext')
+            })
+            .then(() => {
+                expect(reference.refactor).to.have.been.calledWith('referenceNameChange', {
+                    oldName: 'file',
+                    newName: 'renamed',
+                    extension: '.ext'
+                });
+                expect(reference.refactor).to.have.been.calledWith('referencePathChange', {
+                    fromPath: path.join(path.sep, 'file-structure', 'directory', 'other-file.ext'),
+                    oldToPath: path.join(path.sep, 'file-structure', 'directory', 'file.ext'),
+                    newToPath: path.join(path.sep, 'file-structure', 'other-directory', 'renamed.ext')
+                });
+            })
+            .finally(() => {
+                File.prototype.constructor.restore();
+                File.prototype.delete.restore();
+                File.prototype.save.restore();
+                ReferenceManager.prototype.getReferencedBy.restore();
+            });
+        });
+
+        it('should call `refactor` on the new file', () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
+
+            sinon.spy(File.prototype, 'constructor');
+            sinon.stub(File.prototype, 'delete').resolves();
+            sinon.stub(File.prototype, 'refactor').resolves();
+            sinon.stub(File.prototype, 'save').resolves();
+
+            return file.move({
+                newPath: path.join(path.sep, 'file-structure', 'other-directory', 'renamed.ext')
+            })
+            .then(() => {
+                expect(File.prototype.refactor).to.have.been.calledWith('fileNameChange', {
+                    oldName: 'file',
+                    newName: 'renamed',
+                    extension: '.ext'
+                });
+            })
+            .finally(() => {
+                File.prototype.constructor.restore();
+                File.prototype.delete.restore();
+                File.prototype.refactor.restore();
+                File.prototype.save.restore();
+            });
+        });
+
+        it('should call `refactor` on any files that it is reference by', () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
+            let reference = new File(path.join(path.sep, 'file-structure', 'directory', 'other-file.ext'), fileStructure)
+
+            sinon.spy(File.prototype, 'constructor');
+            sinon.stub(File.prototype, 'save').resolves();
+            sinon.stub(File.prototype, 'delete').resolves();
+            sinon.stub(ReferenceManager.prototype, 'getReferencedBy').returns([reference]);
+            sinon.stub(reference, 'refactor').resolves();
+
+            return file.move({
+                newPath: path.join(path.sep, 'file-structure', 'other-directory', 'renamed.ext')
+            })
+            .then(() => {
+                expect(reference.refactor).to.have.been.calledWith('referenceNameChange', {
+                    oldName: 'file',
+                    newName: 'renamed',
+                    extension: '.ext'
+                });
+                expect(reference.refactor).to.have.been.calledWith('referencePathChange', {
+                    fromPath: path.join(path.sep, 'file-structure', 'directory', 'other-file.ext'),
+                    oldToPath: path.join(path.sep, 'file-structure', 'directory', 'file.ext'),
+                    newToPath: path.join(path.sep, 'file-structure', 'other-directory', 'renamed.ext')
+                });
+            })
+            .finally(() => {
+                File.prototype.constructor.restore();
+                File.prototype.delete.restore();
+                File.prototype.save.restore();
+                ReferenceManager.prototype.getReferencedBy.restore();
+            });
+        });
+
+        it(`should throw an error if it can't refactor the reference`, () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
+            let reference = new File(path.join(path.sep, 'file-structure', 'directory', 'other-file.ext'), fileStructure)
+
+            sinon.spy(File.prototype, 'constructor');
+            sinon.stub(File.prototype, 'save').resolves();
+            sinon.stub(File.prototype, 'delete').resolves();
+            sinon.stub(ReferenceManager.prototype, 'getReferencedBy').returns([reference]);
+            sinon.stub(reference, 'refactor').rejects();
+
+            return file.move({
+                newPath: path.join(path.sep, 'file-structure', 'other-directory', 'renamed.ext')
+            })
+            .then(() => {
+                expect(reference.refactor).to.have.been.calledWith('referenceNameChange', {
+                    oldName: 'file',
+                    newName: 'renamed',
+                    extension: '.ext'
+                });
+                expect(reference.refactor).to.have.been.calledWith('referencePathChange', {
+                    fromPath: path.join(path.sep, 'file-structure', 'directory', 'other-file.ext'),
+                    oldToPath: path.join(path.sep, 'file-structure', 'directory', 'file.ext'),
+                    newToPath: path.join(path.sep, 'file-structure', 'other-directory', 'renamed.ext')
+                });
+            })
+            .catch(e => {
+                expect(e).to.deep.equal(new TractorError(`Could not update references after moving ${path.join(path.sep, 'file-structure', 'directory', 'file.ext')}.`));
+            })
+            .finally(() => {
+                File.prototype.constructor.restore();
+                File.prototype.delete.restore();
+                File.prototype.save.restore();
+                ReferenceManager.prototype.getReferencedBy.restore();
+            });
+        });
     });
 
     describe('File.read:', () => {
         it('should read the file', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
-            sinon.stub(fs, 'readFileAsync').returns(Promise.resolve(new Buffer('content')));
+            sinon.stub(fs, 'readFileAsync').resolves(new Buffer('content'));
 
             let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
@@ -433,8 +640,8 @@ describe('tractor-file-structure - File:', () => {
         it('should save the file', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
-            sinon.stub(fs, 'mkdirAsync').returns(Promise.resolve());
-            sinon.stub(fs, 'writeFileAsync').returns(Promise.resolve());
+            sinon.stub(fs, 'mkdirAsync').resolves();
+            sinon.stub(fs, 'writeFileAsync').resolves();
 
             let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
@@ -453,8 +660,8 @@ describe('tractor-file-structure - File:', () => {
         it('should make sure the parent directory is saved', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
-            sinon.stub(Directory.prototype, 'save').returns(Promise.resolve());
-            sinon.stub(fs, 'writeFileAsync').returns(Promise.resolve());
+            sinon.stub(Directory.prototype, 'save').resolves();
+            sinon.stub(fs, 'writeFileAsync').resolves();
 
             let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 

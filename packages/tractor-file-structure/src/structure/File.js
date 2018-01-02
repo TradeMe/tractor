@@ -73,11 +73,39 @@ export class File {
         let { isCopy } = options;
         update.oldPath = this.path;
 
-        options.isMove = true;
         let newFile = new this.constructor(update.newPath, this.fileStructure);
-        return newFile.save(this.buffer, options)
-        .then(() => isCopy ? null : this.delete(options))
-        .then(() => newFile);
+
+        options.isMove = true;
+        let save = newFile.save(this.buffer, options);
+
+        if (isCopy) {
+            return save;
+        }
+
+        let { referencedBy } = this;
+        this.clearReferences();
+
+        let nameChange = {
+            oldName: this.basename,
+            newName: newFile.basename,
+            extension: this.extension
+        };
+        return save.then(() => this.delete(options))
+        .then(() => newFile.refactor('fileNameChange', nameChange))
+        .then(() => {
+            return Promise.map(referencedBy, reference => {
+                reference.addReference(newFile);
+                return reference.refactor('referenceNameChange', nameChange)
+                .then(() => reference.refactor('referencePathChange', {
+                    fromPath: reference.path,
+                    oldToPath: this.path,
+                    newToPath: newFile.path
+                }));
+            })
+            .catch(() => {
+                throw new TractorError(`Could not update references after moving ${this.path}.`);
+            });
+        });
     }
 
     read () {

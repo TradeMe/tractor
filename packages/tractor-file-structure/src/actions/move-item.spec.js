@@ -1,7 +1,7 @@
 /* global describe:true, it:true, xit:true */
 
 // Test setup:
-import { expect, Promise, sinon } from '../../test-setup';
+import { expect, sinon } from '../../test-setup';
 
 // Dependencies:
 import path from 'path';
@@ -31,7 +31,7 @@ describe('tractor-file-structure - actions/move-item:', () => {
             sendStatus: () => { }
         };
 
-        sinon.stub(File.prototype, 'move').returns(Promise.resolve());
+        sinon.stub(File.prototype, 'move').resolves();
 
         let moveItem = createMoveItemHandler(fileStructure);
         return moveItem(request, response)
@@ -58,7 +58,7 @@ describe('tractor-file-structure - actions/move-item:', () => {
             sendStatus: () => { }
         };
 
-        sinon.stub(File.prototype, 'move').returns(Promise.resolve());
+        sinon.stub(File.prototype, 'move').resolves();
 
         let moveItem = createMoveItemHandler(fileStructure);
         return moveItem(request, response)
@@ -86,7 +86,7 @@ describe('tractor-file-structure - actions/move-item:', () => {
             sendStatus: () => { }
         };
 
-        sinon.stub(Directory.prototype, 'move').returns(Promise.resolve());
+        sinon.stub(Directory.prototype, 'move').resolves();
 
         let moveItem = createMoveItemHandler(fileStructure);
         return moveItem(request, response)
@@ -114,7 +114,7 @@ describe('tractor-file-structure - actions/move-item:', () => {
             sendStatus: () => { }
         };
 
-        sinon.stub(Directory.prototype, 'move').returns(Promise.resolve());
+        sinon.stub(Directory.prototype, 'move').resolves();
 
         let moveItem = createMoveItemHandler(fileStructure);
         return moveItem(request, response)
@@ -141,7 +141,7 @@ describe('tractor-file-structure - actions/move-item:', () => {
             sendStatus: () => { }
         };
 
-        sinon.stub(File.prototype, 'move').returns(Promise.resolve());
+        sinon.stub(File.prototype, 'move').resolves();
         sinon.stub(response, 'sendStatus');
 
         let moveItem = createMoveItemHandler(fileStructure);
@@ -190,7 +190,7 @@ describe('tractor-file-structure - actions/move-item:', () => {
         };
         let error = new TractorError();
 
-        sinon.stub(File.prototype, 'move').returns(Promise.reject(error));
+        sinon.stub(File.prototype, 'move').rejects(error);
         sinon.stub(tractorErrorHandler, 'handleError');
 
         let moveItem = createMoveItemHandler(fileStructure);
@@ -217,7 +217,7 @@ describe('tractor-file-structure - actions/move-item:', () => {
             sendStatus: () => { }
         };
 
-        sinon.stub(File.prototype, 'move').returns(Promise.reject(new Error()));
+        sinon.stub(File.prototype, 'move').rejects();
         sinon.stub(tractorErrorHandler, 'handleError');
 
         let moveItem = createMoveItemHandler(fileStructure);

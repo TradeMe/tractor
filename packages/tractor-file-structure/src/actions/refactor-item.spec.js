@@ -1,7 +1,7 @@
 /* global describe:true, it:true, xit:true */
 
 // Test setup:
-import { expect, Promise, sinon } from '../../test-setup';
+import { expect, sinon } from '../../test-setup';
 
 // Dependencies:
 import path from 'path';
@@ -29,7 +29,7 @@ describe('tractor-file-structure - actions/refactor-item:', () => {
             sendStatus: () => { }
         };
 
-        sinon.stub(File.prototype, 'refactor').returns(Promise.resolve());
+        sinon.stub(File.prototype, 'refactor').resolves();
 
         let refactorItem = createRefactorItemHandler(fileStructure);
         return refactorItem(request, response)
@@ -73,7 +73,7 @@ describe('tractor-file-structure - actions/refactor-item:', () => {
             sendStatus: () => { }
         };
 
-        sinon.stub(File.prototype, 'refactor').returns(Promise.resolve());
+        sinon.stub(File.prototype, 'refactor').resolves();
         sinon.stub(response, 'sendStatus');
 
         let refactorItem = createRefactorItemHandler(fileStructure);
@@ -98,7 +98,7 @@ describe('tractor-file-structure - actions/refactor-item:', () => {
         };
         let error = new TractorError();
 
-        sinon.stub(File.prototype, 'refactor').returns(Promise.reject(error));
+        sinon.stub(File.prototype, 'refactor').rejects(error);
         sinon.stub(tractorErrorHandler, 'handleError');
 
         let refactorItem = createRefactorItemHandler(fileStructure);
@@ -124,7 +124,7 @@ describe('tractor-file-structure - actions/refactor-item:', () => {
             sendStatus: () => { }
         };
 
-        sinon.stub(File.prototype, 'refactor').returns(Promise.reject(new Error()));
+        sinon.stub(File.prototype, 'refactor').rejects();
         sinon.stub(tractorErrorHandler, 'handleError');
 
         let refactorItem = createRefactorItemHandler(fileStructure);

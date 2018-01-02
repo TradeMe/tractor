@@ -1,7 +1,7 @@
 /* global describe:true, it:true, xit:trie */
 
 // Test setup:
-import { expect, Promise, sinon } from '../../test-setup';
+import { expect, sinon } from '../../test-setup';
 
 // Dependencies:
 import path from 'path';
@@ -35,8 +35,8 @@ describe('tractor-file-structure - actions/save-item:', () => {
             sendStatus: () => { }
         };
 
-        sinon.stub(Directory.prototype, 'save').returns(Promise.resolve());
-        sinon.stub(TestFile.prototype, 'save').returns(Promise.resolve());
+        sinon.stub(Directory.prototype, 'save').resolves();
+        sinon.stub(TestFile.prototype, 'save').resolves();
 
         let saveItem = createSaveItemHandler(fileStructure);
         return saveItem(request, response)
@@ -66,7 +66,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
             sendStatus: () => { }
         };
 
-        sinon.stub(SpecialTestFile.prototype, 'save').returns(Promise.resolve());
+        sinon.stub(SpecialTestFile.prototype, 'save').resolves();
 
         let saveItem = createSaveItemHandler(fileStructure);
         return saveItem(request, response)
@@ -87,7 +87,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
             sendStatus: () => { }
         };
 
-        sinon.stub(File.prototype, 'save').returns(Promise.resolve());
+        sinon.stub(File.prototype, 'save').resolves();
 
         let saveItem = createSaveItemHandler(fileStructure);
         return saveItem(request, response)
@@ -119,7 +119,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
         };
 
         sinon.spy(file, 'save');
-        sinon.stub(TestFile.prototype, 'save').returns(Promise.resolve());
+        sinon.stub(TestFile.prototype, 'save').resolves();
 
         let saveItem = createSaveItemHandler(fileStructure);
         return saveItem(request, response)
@@ -149,7 +149,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
             sendStatus: () => { }
         };
 
-        sinon.stub(TestFile.prototype, 'save').returns(Promise.resolve());
+        sinon.stub(TestFile.prototype, 'save').resolves();
 
         let saveItem = createSaveItemHandler(fileStructure);
         return saveItem(request, response)
@@ -168,7 +168,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
             sendStatus: () => { }
         };
 
-        sinon.stub(Directory.prototype, 'save').returns(Promise.resolve());
+        sinon.stub(Directory.prototype, 'save').resolves();
 
         let saveItem = createSaveItemHandler(fileStructure);
         return saveItem(request, response)
@@ -192,7 +192,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
         };
 
         sinon.spy(directory, 'save');
-        sinon.stub(Directory.prototype, 'save').returns(Promise.resolve());
+        sinon.stub(Directory.prototype, 'save').resolves();
 
         let saveItem = createSaveItemHandler(fileStructure);
         return saveItem(request, response)
@@ -218,7 +218,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
             sendStatus: () => { }
         };
 
-        sinon.stub(Directory.prototype, 'save').returns(Promise.resolve());
+        sinon.stub(Directory.prototype, 'save').resolves();
 
         let saveItem = createSaveItemHandler(fileStructure);
         return saveItem(request, response)
@@ -243,7 +243,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
             sendStatus: () => { }
         };
 
-        sinon.stub(File.prototype, 'save').returns(Promise.reject(error));
+        sinon.stub(File.prototype, 'save').rejects();
         sinon.stub(tractorErrorHandler, 'handleError');
 
         let saveItem = createSaveItemHandler(fileStructure);
@@ -269,7 +269,7 @@ describe('tractor-file-structure - actions/save-item:', () => {
             sendStatus: () => { }
         };
 
-        sinon.stub(File.prototype, 'save').returns(Promise.reject(new Error()));
+        sinon.stub(File.prototype, 'save').rejects();
         sinon.stub(tractorErrorHandler, 'handleError');
 
         let saveItem = createSaveItemHandler(fileStructure);

@@ -1,7 +1,7 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect, Promise, sinon } from '../../test-setup';
+import { expect, sinon } from '../../test-setup';
 
 // Dependencies:
 import fs from 'graceful-fs';
@@ -156,8 +156,8 @@ describe('tractor-file-structure - Directory:', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
 
-            sinon.stub(directory, 'delete').returns(Promise.resolve());
-            sinon.stub(directory.directory, 'cleanup').returns(Promise.resolve());
+            sinon.stub(directory, 'delete').resolves();
+            sinon.stub(directory.directory, 'cleanup').resolves();
 
             return directory.cleanup()
             .then(() => {
@@ -169,8 +169,8 @@ describe('tractor-file-structure - Directory:', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
 
-            sinon.stub(directory, 'delete').returns(Promise.resolve());
-            sinon.stub(directory.directory, 'cleanup').returns(Promise.resolve());
+            sinon.stub(directory, 'delete').resolves();
+            sinon.stub(directory.directory, 'cleanup').resolves();
 
             return directory.cleanup()
             .then(() => {
@@ -182,7 +182,7 @@ describe('tractor-file-structure - Directory:', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
 
-            sinon.stub(fs, 'rmdirAsync').returns(Promise.resolve());
+            sinon.stub(fs, 'rmdirAsync').resolves();
             sinon.spy(directory, 'delete');
             sinon.spy(directory.directory, 'delete');
 
@@ -202,7 +202,7 @@ describe('tractor-file-structure - Directory:', () => {
             let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
             let subdirectory = new Directory(path.join(path.sep, 'file-structure', 'directory', 'sub-directory'), fileStructure);
 
-            sinon.stub(fs, 'rmdirAsync').returns(Promise.resolve());
+            sinon.stub(fs, 'rmdirAsync').resolves();
             sinon.spy(directory, 'delete');
             sinon.spy(file, 'delete');
             sinon.spy(subdirectory, 'delete');
@@ -224,7 +224,7 @@ describe('tractor-file-structure - Directory:', () => {
             let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
 
             let error = new Error('Unexpected error')
-            sinon.stub(fs, 'rmdirAsync').returns(Promise.reject(error));
+            sinon.stub(fs, 'rmdirAsync').rejects(error);
 
             return directory.cleanup()
             .catch(e => {
@@ -241,7 +241,7 @@ describe('tractor-file-structure - Directory:', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
 
-            sinon.stub(fs, 'rmdirAsync').returns(Promise.resolve());
+            sinon.stub(fs, 'rmdirAsync').resolves();
 
             return directory.delete()
             .then(() => {
@@ -256,7 +256,7 @@ describe('tractor-file-structure - Directory:', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
 
-            sinon.stub(fs, 'rmdirAsync').returns(Promise.resolve());
+            sinon.stub(fs, 'rmdirAsync').resolves();
             sinon.stub(fileStructure.structure, 'removeItem');
 
             return directory.delete()
@@ -271,7 +271,7 @@ describe('tractor-file-structure - Directory:', () => {
         it('should remove itself from the FileStructure if it is the root directory', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
-            sinon.stub(fs, 'rmdirAsync').returns(Promise.resolve());
+            sinon.stub(fs, 'rmdirAsync').resolves();
             sinon.stub(fileStructure, 'removeItem');
 
             return fileStructure.structure.delete()
@@ -289,7 +289,7 @@ describe('tractor-file-structure - Directory:', () => {
             let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
             let subdirectory = new Directory(path.join(path.sep, 'file-structure', 'directory', 'sub-directory'), fileStructure);
 
-            sinon.stub(fs, 'rmdirAsync').returns(Promise.resolve());
+            sinon.stub(fs, 'rmdirAsync').resolves();
             sinon.spy(file, 'delete');
             sinon.spy(subdirectory, 'delete');
 
@@ -310,8 +310,8 @@ describe('tractor-file-structure - Directory:', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
             sinon.spy(Directory.prototype, 'constructor');
-            sinon.stub(Directory.prototype, 'delete').returns(Promise.resolve());
-            sinon.stub(Directory.prototype, 'save').returns(Promise.resolve());
+            sinon.stub(Directory.prototype, 'delete').resolves();
+            sinon.stub(Directory.prototype, 'save').resolves();
 
             let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
 
@@ -334,8 +334,8 @@ describe('tractor-file-structure - Directory:', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
             sinon.spy(Directory.prototype, 'constructor');
-            sinon.stub(Directory.prototype, 'delete').returns(Promise.resolve());
-            sinon.stub(Directory.prototype, 'save').returns(Promise.resolve());
+            sinon.stub(Directory.prototype, 'delete').resolves();
+            sinon.stub(Directory.prototype, 'save').resolves();
 
             let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
 
@@ -359,15 +359,15 @@ describe('tractor-file-structure - Directory:', () => {
         it('should move all the children items', () => {
           let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
-          sinon.stub(Directory.prototype, 'delete').returns(Promise.resolve());
-          sinon.stub(Directory.prototype, 'save').returns(Promise.resolve());
+          sinon.stub(Directory.prototype, 'delete').resolves();
+          sinon.stub(Directory.prototype, 'save').resolves();
 
           let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
           let subDirectory1 = new Directory(path.join(path.sep, 'file-structure', 'directory', 'sub-directory-1'), fileStructure);
           let subDirectory2 = new Directory(path.join(path.sep, 'file-structure', 'directory', 'sub-directory-2'), fileStructure);
 
-          sinon.stub(subDirectory1, 'move').returns(Promise.resolve());
-          sinon.stub(subDirectory2, 'move').returns(Promise.resolve());
+          sinon.stub(subDirectory1, 'move').resolves();
+          sinon.stub(subDirectory2, 'move').resolves();
 
           return directory.move({
               newPath: path.join(path.sep, 'file-structure', 'other-directory')
@@ -387,7 +387,7 @@ describe('tractor-file-structure - Directory:', () => {
         it('should read the directory', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
-            sinon.stub(fs, 'readdirAsync').returns(Promise.resolve([]));
+            sinon.stub(fs, 'readdirAsync').resolves([]);
 
             let directory = new Directory(path.join(path.sep, 'file-structure', 'parent-directory', 'directory'), fileStructure);
 
@@ -403,7 +403,7 @@ describe('tractor-file-structure - Directory:', () => {
         it('should should not read the directory while it is already being read', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
-            sinon.stub(fs, 'readdirAsync').returns(Promise.resolve([]));
+            sinon.stub(fs, 'readdirAsync').resolves([]);
 
             let directory = new Directory(path.join(path.sep, 'file-structure', 'parent-directory', 'directory'), fileStructure);
 
@@ -425,9 +425,9 @@ describe('tractor-file-structure - Directory:', () => {
 
             sinon.spy(Directory.prototype, 'read');
             let readdirAsync = sinon.stub(fs, 'readdirAsync');
-            readdirAsync.onCall(0).returns(Promise.resolve(['directory']));
-            readdirAsync.onCall(1).returns(Promise.resolve([]));
-            sinon.stub(fs, 'statAsync').returns(Promise.resolve(stat));
+            readdirAsync.onCall(0).resolves(['directory']);
+            readdirAsync.onCall(1).resolves([]);
+            sinon.stub(fs, 'statAsync').resolves(stat);
             sinon.stub(stat, 'isDirectory').returns(true);
 
             let directory = new Directory(path.join(path.sep, 'file-structure', 'parent-directory', 'directory'), fileStructure);
@@ -450,8 +450,8 @@ describe('tractor-file-structure - Directory:', () => {
                 isDirectory: () => { }
             };
 
-            sinon.stub(fs, 'readdirAsync').returns(Promise.resolve(['file.ext']));
-            sinon.stub(fs, 'statAsync').returns(Promise.resolve(stat));
+            sinon.stub(fs, 'readdirAsync').resolves(['file.ext']);
+            sinon.stub(fs, 'statAsync').resolves(stat);
             sinon.stub(stat, 'isDirectory').returns(false);
 
             let directory = new Directory(path.join(path.sep, 'file-structure', 'parent-directory', 'directory'), fileStructure);
@@ -479,8 +479,8 @@ describe('tractor-file-structure - Directory:', () => {
             };
 
             sinon.stub(File.prototype, 'read');
-            sinon.stub(fs, 'readdirAsync').returns(Promise.resolve(['file.ext']));
-            sinon.stub(fs, 'statAsync').returns(Promise.resolve(stat));
+            sinon.stub(fs, 'readdirAsync').resolves(['file.ext']);
+            sinon.stub(fs, 'statAsync').resolves(stat);
             sinon.stub(stat, 'isDirectory').returns(false);
 
             return directory.read()
@@ -500,7 +500,7 @@ describe('tractor-file-structure - Directory:', () => {
             class SpecialTestFile extends File { }
             SpecialTestFile.prototype.extension = '.special.ext';
 
-            sinon.stub(SpecialTestFile.prototype, 'save').returns(Promise.resolve());
+            sinon.stub(SpecialTestFile.prototype, 'save').resolves();
 
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             fileStructure.addFileType(SpecialTestFile);
@@ -510,8 +510,8 @@ describe('tractor-file-structure - Directory:', () => {
             };
 
             sinon.stub(File.prototype, 'read');
-            sinon.stub(fs, 'readdirAsync').returns(Promise.resolve(['file.special.ext']));
-            sinon.stub(fs, 'statAsync').returns(Promise.resolve(stat));
+            sinon.stub(fs, 'readdirAsync').resolves(['file.special.ext']);
+            sinon.stub(fs, 'statAsync').resolves(stat);
             sinon.stub(stat, 'isDirectory').returns(false);
 
             return directory.read()
@@ -534,7 +534,7 @@ describe('tractor-file-structure - Directory:', () => {
             let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
 
             sinon.stub(Directory.prototype, 'init');
-            sinon.stub(Directory.prototype, 'read').returns(Promise.resolve());
+            sinon.stub(Directory.prototype, 'read').resolves();
 
             return directory.refresh()
             .then(() => {
@@ -551,7 +551,7 @@ describe('tractor-file-structure - Directory:', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
 
-            sinon.stub(Directory.prototype, 'read').returns(Promise.resolve());
+            sinon.stub(Directory.prototype, 'read').resolves();
 
             directory.refresh()
             return directory.refresh()
@@ -619,7 +619,7 @@ describe('tractor-file-structure - Directory:', () => {
         it('should delete the directory', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
-            sinon.stub(fs, 'rmdirAsync').returns(Promise.resolve());
+            sinon.stub(fs, 'rmdirAsync').resolves();
 
             let directory = new Directory(path.join(path.sep, 'file-structure', 'parent-directory', 'directory'), fileStructure);
 
@@ -636,7 +636,7 @@ describe('tractor-file-structure - Directory:', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let parent = new Directory(path.join(path.sep, 'file-structure', 'parent-directory'), fileStructure);
 
-            sinon.stub(fs, 'rmdirAsync').returns(Promise.resolve());
+            sinon.stub(fs, 'rmdirAsync').resolves();
             sinon.stub(parent, 'removeItem');
 
             let directory = new Directory(path.join(path.sep, 'file-structure', 'parent-directory', 'directory'), fileStructure);
@@ -653,7 +653,7 @@ describe('tractor-file-structure - Directory:', () => {
         it('should remove itself from the FileStructure if it is the root direction', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
-            sinon.stub(fs, 'rmdirAsync').returns(Promise.resolve());
+            sinon.stub(fs, 'rmdirAsync').resolves();
             sinon.stub(fileStructure, 'removeItem');
 
             return fileStructure.structure.rimraf()
@@ -670,7 +670,7 @@ describe('tractor-file-structure - Directory:', () => {
             let directory = new Directory(path.join(path.sep, 'file-structure', 'parent-directory', 'directory'), fileStructure);
             let subdirectory = new Directory(path.join(path.sep, 'file-structure', 'parent-directory', 'directory', 'sub-directory'), fileStructure);
 
-            sinon.stub(fs, 'rmdirAsync').returns(Promise.resolve());
+            sinon.stub(fs, 'rmdirAsync').resolves();
             sinon.stub(subdirectory, 'rimraf');
 
             return directory.rimraf()
@@ -687,7 +687,7 @@ describe('tractor-file-structure - Directory:', () => {
             let directory = new Directory(path.join(path.sep, 'file-structure', 'parent-directory', 'directory'), fileStructure);
             let file = new File(path.join(path.sep, 'file-structure', 'parent-directory', 'directory', 'file.ext'), fileStructure);
 
-            sinon.stub(fs, 'rmdirAsync').returns(Promise.resolve());
+            sinon.stub(fs, 'rmdirAsync').resolves();
             sinon.stub(file, 'delete');
 
             return directory.rimraf()
@@ -705,7 +705,7 @@ describe('tractor-file-structure - Directory:', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let directory = new Directory(path.join(path.sep, 'file-structure', 'parent-directory', 'directory'), fileStructure);
 
-            sinon.stub(fs, 'statAsync').returns(Promise.resolve());
+            sinon.stub(fs, 'statAsync').resolves();
             sinon.spy(fs, 'mkdirAsync')
 
             return directory.save()
@@ -723,8 +723,8 @@ describe('tractor-file-structure - Directory:', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let directory = new Directory(path.join(path.sep, 'file-structure', 'parent-directory', 'directory'), fileStructure);
 
-            sinon.stub(fs, 'statAsync').returns(Promise.reject(new Error()));
-            sinon.stub(fs, 'mkdirAsync').returns(Promise.resolve());
+            sinon.stub(fs, 'statAsync').rejects();
+            sinon.stub(fs, 'mkdirAsync').resolves();
 
             return directory.save()
             .then(() => {
