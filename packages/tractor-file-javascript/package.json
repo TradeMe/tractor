@@ -1,6 +1,6 @@
 {
   "name": "tractor-file-javascript",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "repository": {
     "type": "git",
@@ -19,7 +19,7 @@
     "build": "npm run lint && npm run cover && npm run compile",
     "compile": "babel src/ --out-dir dist --ignore *.spec.js",
     "cover": "istanbul cover --config .istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ./.mocharc src/*.spec.js",
-    "lint": "eslint src/**/*.js; true",
+    "lint": "eslint src",
     "test": "mocha --opts ./.mocharc src/*.spec.js",
     "watch": "npm-watch"
   },
@@ -30,20 +30,21 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
-    "babel-eslint": "^8.0.1",
+    "babel-eslint": "^8.1.2",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "babel-register": "^6.26.0",
     "chai": "^4.1.1",
     "dirty-chai": "^2.0.1",
-    "eslint": "^4.8.0",
+    "eslint": "^4.14.0",
     "istanbul": "^1.0.0-alpha.2",
     "mocha": "^3.5.3",
     "npm-watch": "^0.3.0",
-    "sinon": "^4.0.0",
+    "sinon": "^4.1.3",
     "sinon-chai": "^2.14.0",
+    "tractor": "^0.12.1",
     "tractor-error-handler": "^0.2.4",
-    "tractor-file-structure": "^0.5.4",
+    "tractor-file-structure": "^0.5.5",
     "tractor-logger": "^0.1.1"
   },
   "dependencies": {
@@ -53,8 +54,8 @@
   },
   "peerDependencies": {
     "tractor": "^0.12.1",
-    "tractor-error-handler": "^0.2.3",
-    "tractor-file-structure": "^0.5.3",
-    "tractor-logger": "^0.1.0"
+    "tractor-error-handler": "^0.2.4",
+    "tractor-file-structure": "^0.5.5",
+    "tractor-logger": "^0.1.1"
   }
 }

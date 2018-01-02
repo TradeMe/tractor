@@ -3,24 +3,15 @@
 // Constants:
 const REQUEST_ERROR = 400;
 
-// Utilities:
-import chai from 'chai';
-import dirtyChai from 'dirty-chai';
-import Promise from 'bluebird';
-import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
-
 // Test setup:
-const expect = chai.expect;
-chai.use(dirtyChai);
-chai.use(sinonChai);
+import { expect, sinon } from '../test-setup';
 
 // Dependencies:
 import escodegen from 'escodegen';
 import * as esprima from 'esprima';
 import path from 'path';
 import { TractorError } from 'tractor-error-handler';
-import { File, FileStructure } from 'tractor-file-structure';
+import { File, FileStructure, ReferenceManager } from 'tractor-file-structure';
 import { JavaScriptFileRefactorer } from './javascript-file-refactorer';
 
 // Under test:
@@ -53,7 +44,7 @@ describe('tractor-file-javascript: JavaScriptFile:', () => {
             let filePath = path.join(path.sep, 'file-structure', 'directory', 'file');
 
             sinon.stub(esprima, 'parseScript');
-            sinon.stub(File.prototype, 'read').returns(Promise.resolve());
+            sinon.stub(File.prototype, 'read').resolves();
 
             let file = new JavaScriptFile(filePath, fileStructure);
 
@@ -70,20 +61,75 @@ describe('tractor-file-javascript: JavaScriptFile:', () => {
         it('should parse the contents', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let filePath = path.join(path.sep, 'file-structure', 'directory', 'file');
-            let ast = {};
 
-            sinon.stub(esprima, 'parseScript').returns(ast);
-            sinon.stub(File.prototype, 'read').returns(Promise.resolve());
+            sinon.stub(File.prototype, 'read').resolves('');
 
             let file = new JavaScriptFile(filePath, fileStructure);
 
             return file.read()
             .then(() => {
-                expect(file.ast).to.equal(ast);
+                expect(file.ast).to.deep.equal({
+                    body: [],
+                    comments: [],
+                    sourceType: 'script',
+                    type: 'Program'
+                });
             })
             .finally(() => {
-                esprima.parseScript.restore();
                 File.prototype.read.restore();
+            });
+        });
+
+        it('should update the references between files', () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let file = new JavaScriptFile(path.join(path.sep, 'file-structure', 'directory', 'file'), fileStructure);
+            let otherFile = new JavaScriptFile(path.join(path.sep, 'file-structure', 'directory', 'other-file'), fileStructure);
+
+            sinon.stub(File.prototype, 'read').resolves(`var someReference = require('./other-file');`);
+
+            return file.read()
+            .then(() => {
+                expect(file.references).to.deep.equal([otherFile]);
+                expect(otherFile.referencedBy).to.deep.equal([file]);
+            })
+            .finally(() => {
+                File.prototype.read.restore();
+            });
+        });
+
+        it(`shouldn't clear the references on first load`, () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let file = new JavaScriptFile(path.join(path.sep, 'file-structure', 'directory', 'file'), fileStructure);
+
+            sinon.stub(File.prototype, 'read').resolves(`var someReference = require('./other-file');`);
+            sinon.stub(ReferenceManager.prototype, 'clearReferences');
+
+            return file.read()
+            .then(() => {
+                expect(ReferenceManager.prototype.clearReferences).to.not.have.been.called();
+            })
+            .finally(() => {
+                File.prototype.read.restore();
+                ReferenceManager.prototype.clearReferences.restore();
+            });
+        });
+
+        it('should clear the references on subsequent reads', () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let file = new JavaScriptFile(path.join(path.sep, 'file-structure', 'directory', 'file'), fileStructure);
+
+            sinon.stub(File.prototype, 'read').resolves(`var someReference = require('./other-file');`);
+            sinon.stub(ReferenceManager.prototype, 'clearReferences');
+
+            file.initialised = true;
+
+            return file.read()
+            .then(() => {
+                expect(ReferenceManager.prototype.clearReferences).to.have.been.called();
+            })
+            .finally(() => {
+                File.prototype.read.restore();
+                ReferenceManager.prototype.clearReferences.restore();
             });
         });
 
@@ -92,7 +138,7 @@ describe('tractor-file-javascript: JavaScriptFile:', () => {
             let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
 
             sinon.stub(esprima, 'parseScript');
-            sinon.stub(File.prototype, 'read').returns(Promise.reject(new Error()));
+            sinon.stub(File.prototype, 'read').rejects();
 
             let file = new JavaScriptFile(filePath, fileStructure);
 
@@ -114,8 +160,8 @@ describe('tractor-file-javascript: JavaScriptFile:', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
 
-            sinon.stub(File.prototype, 'refactor').returns(Promise.resolve());
-            sinon.stub(JavaScriptFile.prototype, 'save').returns(Promise.resolve());
+            sinon.stub(File.prototype, 'refactor').resolves();
+            sinon.stub(JavaScriptFile.prototype, 'save').resolves();
 
             let file = new JavaScriptFile(filePath, fileStructure);
 
@@ -133,8 +179,8 @@ describe('tractor-file-javascript: JavaScriptFile:', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
 
-            sinon.stub(File.prototype, 'refactor').returns(Promise.resolve());
-            sinon.stub(JavaScriptFile.prototype, 'save').returns(Promise.resolve());
+            sinon.stub(File.prototype, 'refactor').resolves();
+            sinon.stub(JavaScriptFile.prototype, 'save').resolves();
             sinon.stub(JavaScriptFileRefactorer, 'identifierChange');
 
             let file = new JavaScriptFile(filePath, fileStructure);
@@ -155,8 +201,8 @@ describe('tractor-file-javascript: JavaScriptFile:', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
 
-            sinon.stub(File.prototype, 'refactor').returns(Promise.resolve());
-            sinon.stub(JavaScriptFile.prototype, 'save').returns(Promise.resolve());
+            sinon.stub(File.prototype, 'refactor').resolves();
+            sinon.stub(JavaScriptFile.prototype, 'save').resolves();
 
             let file = new JavaScriptFile(filePath, fileStructure);
             let data = {};
@@ -174,8 +220,8 @@ describe('tractor-file-javascript: JavaScriptFile:', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
 
-            sinon.stub(File.prototype, 'refactor').returns(Promise.resolve());
-            sinon.stub(JavaScriptFile.prototype, 'save').returns(Promise.resolve());
+            sinon.stub(File.prototype, 'refactor').resolves();
+            sinon.stub(JavaScriptFile.prototype, 'save').resolves();
 
             let file = new JavaScriptFile(filePath, fileStructure)
 
@@ -197,7 +243,7 @@ describe('tractor-file-javascript: JavaScriptFile:', () => {
             let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
 
             sinon.stub(esprima, 'parseScript');
-            sinon.stub(File.prototype, 'save').returns(Promise.resolve());
+            sinon.stub(File.prototype, 'save').resolves();
 
             let file = new JavaScriptFile(filePath, fileStructure);
 
@@ -220,7 +266,7 @@ describe('tractor-file-javascript: JavaScriptFile:', () => {
 
             sinon.stub(escodegen, 'generate');
             sinon.stub(esprima, 'parseScript');
-            sinon.stub(File.prototype, 'save').returns(Promise.resolve());
+            sinon.stub(File.prototype, 'save').resolves();
 
             let file = new JavaScriptFile(filePath, fileStructure);
 
@@ -242,7 +288,7 @@ describe('tractor-file-javascript: JavaScriptFile:', () => {
 
             sinon.stub(escodegen, 'generate');
             sinon.stub(esprima, 'parseScript');
-            sinon.stub(File.prototype, 'save').returns(Promise.resolve());
+            sinon.stub(File.prototype, 'save').resolves();
 
             let file = new JavaScriptFile(filePath, fileStructure);
 
@@ -270,7 +316,7 @@ describe('tractor-file-javascript: JavaScriptFile:', () => {
 
             sinon.stub(escodegen, 'generate');
             sinon.stub(esprima, 'parseScript');
-            sinon.stub(File.prototype, 'save').returns(Promise.resolve());
+            sinon.stub(File.prototype, 'save').resolves();
 
             let file = new JavaScriptFile(filePath, fileStructure);
 
@@ -299,7 +345,7 @@ describe('tractor-file-javascript: JavaScriptFile:', () => {
             let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
 
             sinon.stub(escodegen, 'generate');
-            sinon.stub(File.prototype, 'save').returns(Promise.reject());
+            sinon.stub(File.prototype, 'save').rejects();
 
             let file = new JavaScriptFile(filePath, fileStructure);
 
