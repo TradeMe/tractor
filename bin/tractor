@@ -20,13 +20,14 @@ let { getPlugins } = require('tractor-plugin-loader');
 let di = container();
 
 tractor
-.version(info.version);
+.version(info.version)
+.option('-c, --config [value]', 'Path to configuration file (defaults to ./tractor.conf.js)')
 
 tractor
 .command('init')
 .description('initialise tractor in a project')
 .action(function () {
-    initDIConstants();
+    initDIConstants(tractor.config);
     return di.call(init);
 });
 
@@ -34,7 +35,7 @@ tractor
 .command('start')
 .description('Start the tractor server')
 .action(function () {
-    initDIConstants();
+    initDIConstants(tractor.config);
     return di.call(start);
 });
 
@@ -42,14 +43,14 @@ tractor
 .command('upgrade')
 .description('Upgrade tractor plugin files')
 .action(function () {
-    initDIConstants();
+    initDIConstants(tractor.config);
     return di.call(upgrade);
 });
 
 tractor.parse(process.argv);
 
-function initDIConstants () {
-    let config = getConfig();
+function initDIConstants (configPath) {
+    let config = getConfig(configPath);
     let plugins = getPlugins();
     di.constant({ config, plugins });
 }
