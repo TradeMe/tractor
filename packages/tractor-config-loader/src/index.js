@@ -9,18 +9,16 @@ import { info } from 'tractor-logger';
 
 // Dependencies:
 import defaults from 'lodash.defaults';
-import minimist from 'minimist';
 
 let config;
-export function getConfig () {
-    config = config || loadConfig();
+export function getConfig (configPath) {
+    config = config || loadConfig(configPath);
     return config;
 }
 
-export function loadConfig () {
+export function loadConfig (configPath = CONFIG_FILE_NAME) {
     info('Loading config...');
-    let args = minimist(process.argv.slice(2));
-    let configPath = path.resolve(process.cwd(), args.config || CONFIG_FILE_NAME);
+    configPath = path.resolve(process.cwd(), configPath);
 
     let config;
     try {

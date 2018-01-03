@@ -11,7 +11,7 @@ A configuration loader utility for [**tractor**](https://github.com/TradeMe/trac
 
 ### `getConfig`:
 
-> Loads a **tractor** configuration file, first from a passed in `--config` flag, then in a *tractor.conf.js* file in the current working directory, before falling back to the default configuration
+> Tries to load a **tractor** configuration file from a given path (defaults to *./tractor.conf.js*), before falling back to the default configuration
 
 > #### Returns:
 > * `config:` [TractorConfig](https://github.com/TradeMe/tractor#config),
@@ -20,5 +20,5 @@ A configuration loader utility for [**tractor**](https://github.com/TradeMe/trac
 > ```javascript
 > import { getConfig } from 'tractor-config-loader';
 >
-> const config = getConfig();
+> const config = getConfig('./my.tractor.conf.js');
 > ```

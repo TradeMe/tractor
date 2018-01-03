@@ -31,19 +31,15 @@ describe('tractor-config-loader:', () => {
     });
 
     describe('loadConfig:', () => {
-        it('should use the value from argv to load the config', () => {
-            process.argv.push('--config');
-            process.argv.push('./my.conf.js');
+        it('should use the passed in path to load the config', () => {
             sinon.stub(process, 'cwd').returns('.');
             sinon.spy(path, 'resolve');
             sinon.stub(tractorLogger, 'info');
 
-            loadConfig();
+            loadConfig('./my.conf.js');
 
             expect(path.resolve).to.have.been.calledWith('.', './my.conf.js');
 
-            process.argv.pop();
-            process.argv.pop();
             process.cwd.restore();
             path.resolve.restore();
             tractorLogger.info.restore();
@@ -64,35 +60,23 @@ describe('tractor-config-loader:', () => {
         });
 
         it('should load config values from a file', () => {
-            process.argv.push('--config');
-            process.argv.push('./assets/test.conf.js');
-
             sinon.stub(tractorLogger, 'info');
 
-            let config = loadConfig();
+            let config = loadConfig('./assets/test.conf.js');
 
             expect(config.port).to.equal(5000);
             expect(config.directory).to.equal('./tests/e2e');
-
-            process.argv.pop();
-            process.argv.pop();
 
             tractorLogger.info.restore();
         });
 
         it('should load config values from an ES2015 module', () => {
-            process.argv.push('--config');
-            process.argv.push('./assets/test.esm.conf.js');
-
             sinon.stub(tractorLogger, 'info');
 
-            let config = loadConfig();
+            let config = loadConfig('./assets/test.esm.conf.js');
 
             expect(config.port).to.equal(5000);
             expect(config.directory).to.equal('./tests/e2e');
-
-            process.argv.pop();
-            process.argv.pop();
 
             tractorLogger.info.restore();
         });
@@ -111,17 +95,11 @@ describe('tractor-config-loader:', () => {
         });
 
         it('should make the empty tag the first tag', () => {
-            process.argv.push('--config');
-            process.argv.push('./assets/test.tags.conf.js');
-
             sinon.stub(tractorLogger, 'info');
 
-            let config = loadConfig();
+            let config = loadConfig('./assets/test.tags.conf.js');
 
             expect(config.tags).to.deep.equal(['', '@foo', '@bar']);
-
-            process.argv.pop();
-            process.argv.pop();
 
             tractorLogger.info.restore();
         });
