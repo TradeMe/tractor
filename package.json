@@ -52,7 +52,7 @@
     "commander": "^2.12.2",
     "protractor": "^5.2.2",
     "tractor-client": "^0.12.3",
-    "tractor-config-loader": "^0.4.4",
+    "tractor-config-loader": "^0.5.0",
     "tractor-dependency-injection": "^0.1.3",
     "tractor-error-handler": "^0.2.4",
     "tractor-file-structure": "^0.5.5",
