@@ -3774,12 +3774,11 @@ tractor-client@^0.12.3:
   version "0.12.3"
   resolved "https://registry.yarnpkg.com/tractor-client/-/tractor-client-0.12.3.tgz#0491aab4a368449c501a1e958f703fb781726799"
 
-tractor-config-loader@^0.4.4:
-  version "0.4.4"
-  resolved "https://registry.yarnpkg.com/tractor-config-loader/-/tractor-config-loader-0.4.4.tgz#82ebd2e3d7eb8b1a877345768ca57fcf43b401a4"
+tractor-config-loader@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/tractor-config-loader/-/tractor-config-loader-0.5.0.tgz#4a7ea138909b77721ed218d7e62993c86365b07b"
   dependencies:
     lodash.defaults "^4.2.0"
-    minimist "^1.2.0"
 
 tractor-dependency-injection@^0.1.3:
   version "0.1.3"
