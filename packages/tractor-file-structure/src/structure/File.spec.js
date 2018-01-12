@@ -514,8 +514,7 @@ describe('tractor-file-structure - File:', () => {
             .then(() => {
                 expect(File.prototype.refactor).to.have.been.calledWith('fileNameChange', {
                     oldName: 'file',
-                    newName: 'renamed',
-                    extension: '.ext'
+                    newName: 'renamed'
                 });
             })
             .finally(() => {
@@ -529,7 +528,7 @@ describe('tractor-file-structure - File:', () => {
         it('should call `refactor` on any files that it is reference by', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
-            let reference = new File(path.join(path.sep, 'file-structure', 'directory', 'other-file.ext'), fileStructure)
+            let reference = new File(path.join(path.sep, 'file-structure', 'directory', 'other-file.ref'), fileStructure)
 
             sinon.spy(File.prototype, 'constructor');
             sinon.stub(File.prototype, 'save').resolves();
@@ -544,10 +543,10 @@ describe('tractor-file-structure - File:', () => {
                 expect(reference.refactor).to.have.been.calledWith('referenceNameChange', {
                     oldName: 'file',
                     newName: 'renamed',
-                    extension: '.ext'
+                    extension: '.ref'
                 });
                 expect(reference.refactor).to.have.been.calledWith('referencePathChange', {
-                    fromPath: path.join(path.sep, 'file-structure', 'directory', 'other-file.ext'),
+                    fromPath: path.join(path.sep, 'file-structure', 'directory', 'other-file.ref'),
                     oldToPath: path.join(path.sep, 'file-structure', 'directory', 'file.ext'),
                     newToPath: path.join(path.sep, 'file-structure', 'other-directory', 'renamed.ext')
                 });

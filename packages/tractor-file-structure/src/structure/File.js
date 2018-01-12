@@ -87,20 +87,25 @@ export class File {
 
         let nameChange = {
             oldName: this.basename,
-            newName: newFile.basename,
-            extension: this.extension
+            newName: newFile.basename
         };
         return save.then(() => this.delete(options))
         .then(() => newFile.refactor('fileNameChange', nameChange))
         .then(() => {
             return Promise.map(referencedBy, reference => {
-                reference.addReference(newFile);
-                return reference.refactor('referenceNameChange', nameChange)
-                .then(() => reference.refactor('referencePathChange', {
+                let { extension } = reference;
+                let referenceNameChange = {
+                    ...nameChange,
+                    extension
+                };
+                let referencePathChange = {
                     fromPath: reference.path,
                     oldToPath: this.path,
                     newToPath: newFile.path
-                }));
+                };
+                reference.addReference(newFile);
+                return reference.refactor('referenceNameChange', referenceNameChange)
+                .then(() => reference.refactor('referencePathChange', referencePathChange));
             })
             .catch(() => {
                 throw new TractorError(`Could not update references after moving ${this.path}.`);
