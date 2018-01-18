@@ -18,7 +18,7 @@ A **tractor** plugin is just a plain old node module, with a few specially named
 
 ### `description` (optional)
 
-> The `description` of any actions that the plugin provides to **tractor**. It should be an object with a single property, `methods: Array`[`<Method>`](https://github.com/phenomnomnominal/tractor-plugin-loader#method).
+> The `description` of any actions that the plugin provides to **tractor**. It should be an object with a single property, `actions: Array`[`<Action>`](https://github.com/phenomnomnominal/tractor-plugin-loader#action).
 
 ### `create` (optional):
 
@@ -54,24 +54,25 @@ A **tractor** plugin is just a plain old node module, with a few specially named
 
 ## Interfaces:
 
-### `Method`:
+### `Action`:
 
 ```javascript
-interface Method {
+interface Action {
     name: string;
     description: string;
-    arguments: Array<Argument>;
-    returns?: 'promise' | 'boolean' | 'number' | 'string';
+    parameters: Array<Value>;
+    returns?: 'promise' | 'boolean' | 'number' | 'string' | 'element' | Value;
 }
 ```
 
-### `Argument`:
+### `Value`:
 
 ```javascript
-interface Argument {
+interface Value {
     name: string;
-    description: string;
-    type: 'boolean' | 'number' | 'string';
+    description?: string;
+    type: 'promise' | 'boolean' | 'number' | 'string' | 'element';
     required?: boolean;
+    resolves?: 'boolean' | 'number' | 'string' | 'element';
 }
 ```
