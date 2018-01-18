@@ -1,8 +1,8 @@
 export const description = {
-    methods: [{
-        name: 'ignoreElement',
+    actions: [{
+        name: 'ignore element',
         description: 'Declare an element that will be ignored in the next screenshot.',
-        arguments: [{
+        parameters: [{
             name: 'element',
             description: 'The element that will be ignored.',
             type: 'element',
@@ -10,9 +10,9 @@ export const description = {
         }],
         returns: 'promise'
     }, {
-        name: 'includeElement',
+        name: 'include element',
         description: 'Declare an element that will be included in the next screenshot.',
-        arguments: [{
+        parameters: [{
             name: 'element',
             description: 'The element that will be included.',
             type: 'element',
@@ -20,9 +20,9 @@ export const description = {
         }],
         returns: 'promise'
     }, {
-        name: 'takeScreenshot',
+        name: 'take screenshot',
         description: 'Take a screenshot of the current included elements.',
-        arguments: [{
+        parameters: [{
             name: 'name',
             description: 'The name of the screenshot.',
             type: 'string',

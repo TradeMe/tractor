@@ -41,7 +41,7 @@ export class VisualRegression {
 
         let imageName = `${platform} - ${browser} @ ${width}x${height}`;
 
-        let filePath = createFilePath(path.join(name, description, imageName));
+        let filePath = this._createFilePath(path.join(name, description, imageName));
         let baselineFilePath = getBaselinePath(this.config, filePath);
         let changesFilePath =  getChangesPath(this.config, filePath);
 
@@ -67,17 +67,17 @@ export class VisualRegression {
         } catch (error) {
             return error.message;
         }
-    }}
+    }
 
-    function _checkForBaseline (baselineFilePath) {
+    _checkForBaseline (baselineFilePath) {
         return !!fileStructure.allFilesByPath[baselineFilePath];
     }
 
-    function _createFilePath (filePath) {
+    _createFilePath (filePath) {
         return `${filePath}${PNGFile.prototype.extension}`;
     }
 
-    function _createFileStructure (visualRegressionPath) {
+    async _createFileStructure (visualRegressionPath) {
         if (fileStructure) {
             return fileStructure;
         }
@@ -88,7 +88,7 @@ export class VisualRegression {
         return fileStructure;
     }
 
-    async function _getElementSize (element) {
+    async _getElementSize (element) {
         let location = await element.getLocation();
         let left = location.x;
         let top = location.y;
@@ -98,7 +98,7 @@ export class VisualRegression {
         return { left, top, right, bottom };
     }
 
-    function _saveScreenshot (savePath, png) {
+    _saveScreenshot (savePath, png) {
         let pngFile = new PNGFile(savePath, fileStructure);
         return pngFile.save(png);
     }
