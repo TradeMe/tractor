@@ -6,7 +6,6 @@ import { expect, Promise, sinon } from '../../../../test-setup';
 // Dependencies:
 import path from 'path';
 import { JavaScriptFile } from 'tractor-file-javascript';
-import { TractorError } from 'tractor-error-handler';
 import { FileStructure } from 'tractor-file-structure';
 import { PageObjectFileRefactorer } from './page-object-file-refactorer';
 
@@ -120,125 +119,6 @@ describe('tractor-plugin-page-objects - page-object-file:', () => {
             .finally(() => {
                 JavaScriptFile.prototype.refactor.restore();
                 PageObjectFile.prototype.save.restore();
-            });
-        });
-    });
-
-    describe('PageObjectFile.move:', () => {
-        it('should move the file', () => {
-            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.po.js');
-            let file = new PageObjectFile(filePath, fileStructure);
-            let newFilePath = path.join(path.sep, 'file-structure', 'directory', 'new file.po.js');
-            let newFile = new PageObjectFile(newFilePath, fileStructure);
-
-            sinon.stub(JavaScriptFile.prototype, 'move').returns(Promise.resolve(newFile));
-            sinon.stub(JavaScriptFile.prototype, 'save').returns(Promise.resolve());
-            sinon.stub(PageObjectFile.prototype, 'refactor').returns(Promise.resolve());
-
-            let update = {
-                newPath: newFile.path
-            };
-            let options = {};
-
-            return file.move(update, options)
-            .then(() => {
-                expect(JavaScriptFile.prototype.move).to.have.been.calledWith(update, options);
-            })
-            .finally(() => {
-                JavaScriptFile.prototype.move.restore();
-                JavaScriptFile.prototype.save.restore();
-                PageObjectFile.prototype.refactor.restore();
-            });
-        });
-
-        it('should update the name of the page object in files that reference it', () => {
-            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.po.js');
-            let file = new PageObjectFile(filePath, fileStructure);
-            let newFilePath = path.join(path.sep, 'file-structure', 'directory', 'new file.po.js');
-            let newFile = new PageObjectFile(newFilePath, fileStructure);
-            let referenceFilePath = path.join(path.sep, 'file-structure', 'directory', 'reference file.po.js');
-            let referenceFile = new PageObjectFile(referenceFilePath, fileStructure);
-
-            sinon.stub(fileStructure.referenceManager, 'getReferencedBy').returns([referenceFile]);
-            sinon.stub(JavaScriptFile.prototype, 'move').returns(Promise.resolve(newFile));
-            sinon.stub(PageObjectFile.prototype, 'refactor').returns(Promise.resolve());
-
-            let update = {
-                newPath: newFile.path
-            };
-            let options = {};
-
-            return file.move(update, options)
-            .then(() => {
-                expect(referenceFile.refactor).to.have.been.calledWith('pageObjectFileNameChange', {
-                    oldName: 'file',
-                    newName: 'new file'
-                });
-            })
-            .finally(() => {
-                JavaScriptFile.prototype.move.restore();
-                PageObjectFile.prototype.refactor.restore();
-            });
-        });
-
-        it('should update the require path to the page object in files that reference it', () => {
-            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.po.js');
-            let file = new PageObjectFile(filePath, fileStructure);
-            let newFilePath = path.join(path.sep, 'file-structure', 'directory', 'new file.po.js');
-            let newFile = new PageObjectFile(newFilePath, fileStructure);
-            let referenceFilePath = path.join(path.sep, 'file-structure', 'directory', 'reference file.po.js');
-            let referenceFile = new PageObjectFile(referenceFilePath, fileStructure);
-
-            sinon.stub(fileStructure.referenceManager, 'getReferencedBy').returns([referenceFile]);
-            sinon.stub(JavaScriptFile.prototype, 'move').returns(Promise.resolve(newFile));
-            sinon.stub(PageObjectFile.prototype, 'refactor').returns(Promise.resolve());
-
-            let update = {
-                newPath: newFile.path
-            };
-            let options = {};
-
-            return file.move(update, options)
-            .then(() => {
-                expect(referenceFile.refactor).to.have.been.calledWith('referencePathChange', {
-                    fromPath: referenceFilePath,
-                    oldToPath: filePath,
-                    newToPath: newFilePath
-                });
-            })
-            .finally(() => {
-                JavaScriptFile.prototype.move.restore();
-                PageObjectFile.prototype.refactor.restore();
-            });
-        });
-
-        it('should throw if updating references fails', () => {
-            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.po.js');
-            let file = new PageObjectFile(filePath, fileStructure);
-            let newFilePath = path.join(path.sep, 'file-structure', 'directory', 'new file.po.js');
-            let newFile = new PageObjectFile(newFilePath, fileStructure);
-
-            sinon.stub(JavaScriptFile.prototype, 'move').returns(Promise.resolve(newFile));
-            sinon.stub(PageObjectFile.prototype, 'refactor').returns(Promise.resolve());
-            sinon.stub(Promise, 'map').returns(Promise.reject());
-
-            let update = {
-                newPath: newFile.path
-            };
-            let options = {};
-
-            return file.move(update, options)
-            .catch(e => {
-                expect(e).to.deep.equal(new TractorError(`Could not update references after moving ${filePath}.`));
-            })
-            .finally(() => {
-                JavaScriptFile.prototype.move.restore();
-                PageObjectFile.prototype.refactor.restore();
-                Promise.map.restore();
             });
         });
     });

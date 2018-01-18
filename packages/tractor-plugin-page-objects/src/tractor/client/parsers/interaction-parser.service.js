@@ -1,118 +1,104 @@
-// Utilities:
-import assert from 'assert';
-
 // Module:
 import { PageObjectsModule } from '../page-objects.module';
 
+// Queries:
+const ACTION_MEMBER_EXPRESSION_QUERY = 'MemberExpression[object.name!="self"][property.type="Identifier"]';
+const ELEMENT_MEMBER_EXPRESSION_QUERY = 'MemberExpression > MemberExpression[object.type="Identifier"][property.type="Identifier"]';
+const ELEMENT_GROUP_MEMBER_EXPRESSION_QUERY = 'MemberExpression > CallExpression > MemberExpression[object.type="Identifier"][property.type="Identifier"]';
+const ELEMENT_GROUP_SELECTOR_QUERY = 'CallExpression > MemberExpression > CallExpression';
+const FIRST_ACTION_QUERY = 'CallExpression[callee.object.name!="result"][callee.name!="resolve"]';
+const FIRST_ACTION_WRAPPED_QUERY = 'NewExpression > FunctionExpression > BlockStatement > ExpressionStatement > CallExpression > CallExpression';
+const PLUGIN_MEMBER_EXPRESSION_QUERY = 'MemberExpression[object.type="Identifier"][property.type="Identifier"]';
+const SUBSEQUENT_ACTION_QUERY = 'CallExpression[callee.object.name="result"] > FunctionExpression > BlockStatement > ReturnStatement';
+
+// Constants:
+import { ELEMENT_GROUP_SELECTOR_ARGUMENT } from '../models/meta/element-group-selector-argument';
+
 // Dependencies:
+import assert from 'assert';
+import esquery from 'esquery';
 import '../models/interaction';
-import './method-argument-parser.service';
+import './argument-parser.service';
 
 function InteractionParserService (
     InteractionModel,
-    methodArgumentParserService
+    poargumentParserService
 ) {
+    const QUERIES = {
+        [FIRST_ACTION_QUERY]: _interactionParser,
+        [FIRST_ACTION_WRAPPED_QUERY]: _interactionParser,
+        [SUBSEQUENT_ACTION_QUERY]: _interactionParser
+    };
+
     return { parse };
 
     function parse (action, astObject) {
-        let interaction = new InteractionModel(action);
+        let interaction = new InteractionModel(action, action.lastInteraction);
 
-        let notFirstWrappedPromiseInteraction = false;
-        let notFirstOwnPromiseInteraction = false;
-        let notWrappedPromiseInteraction = false;
-        let notOwnPromiseInteraction = false;
-        let notValidInteraction = false;
-
-        try {
-            assert(astObject.argument.callee.object.callee);
-            parse(action, {
-                argument: astObject.argument.callee.object
-            });
-        // eslint-disable-next-line no-empty
-        } catch (e) { }
-
-        let interactionCallExpression;
-
-        try {
-            let [wrappedThenFunctionExpression] = astObject.argument.arguments;
-            let [interactionResolveExpressionStatement] = wrappedThenFunctionExpression.body.body;
-            [interactionCallExpression] = interactionResolveExpressionStatement.expression.arguments;
-        } catch (e) {
-            notFirstWrappedPromiseInteraction = true;
-        }
-
-        try {
-            if (notFirstWrappedPromiseInteraction) {
-                interactionCallExpression = astObject.argument;
-                assert(!interactionCallExpression.callee.object.callee);
+        let match = Object.keys(QUERIES).find(query => {
+            let [result] = esquery(astObject, query);
+            if (result) {
+                QUERIES[query](interaction, result);
+                return interaction;
             }
-        } catch (e) {
-            notFirstOwnPromiseInteraction = true;
-        }
+        });
 
-        try {
-            if (notFirstOwnPromiseInteraction) {
-                let [wrappedThenFunctionExpression] = astObject.argument.arguments;
-                interaction.resultFunctionExpression = wrappedThenFunctionExpression;
-                let [wrappedNewPromiseReturnStatement] = wrappedThenFunctionExpression.body.body;
-                let [wrappedResolveFunctionExpression] = wrappedNewPromiseReturnStatement.argument.arguments;
-                let [interactionResolveExpressionStatement] = wrappedResolveFunctionExpression.body.body;
-                [interactionCallExpression] = interactionResolveExpressionStatement.expression.arguments;
-            }
-        } catch (e) {
-            notWrappedPromiseInteraction = true;
+        if (match) {
+            return interaction;
         }
+    }
 
-        try {
-            if (notWrappedPromiseInteraction) {
-                let [wrappedThenFunctionExpression] = astObject.argument.arguments;
-                interaction.resultFunctionExpression = wrappedThenFunctionExpression;
-                let [interactionReturnStatement] = wrappedThenFunctionExpression.body.body;
-                interactionCallExpression = interactionReturnStatement.argument;
-            }
-        } catch (e) {
-            notOwnPromiseInteraction = true;
-        }
+    function _actionParser (pageObject, astObject) {
+        let { actions } = pageObject;
+        let [actionMemberExpression] = esquery(astObject, ACTION_MEMBER_EXPRESSION_QUERY);
+        return actionMemberExpression && actions.find(action => action.variableName === actionMemberExpression.property.name);
+    }
 
-        try {
-            let pluginElement = action.pageObject.elements.find(element => {
-                return element.variableName === interactionCallExpression.callee.object.name;
-            });
-            interaction.element = pluginElement || action.pageObject.elements.find(element => {
-                return element.variableName === interactionCallExpression.callee.object.property.name;
-            });
-            assert(interaction.element);
-            interaction.method = interaction.element.methods.find(elementAction => {
-                return elementAction.name === interactionCallExpression.callee.property.name;
-            });
-            assert(interaction.method);
-            let args = interactionCallExpression.arguments.map((argument, index) => {
-                let arg = methodArgumentParserService.parse(interaction.methodInstance, interaction.method.arguments[index], argument);
-                assert(arg);
-                let parameter = action.parameters.find(parameter => {
-                    return parameter.variableName === arg.value;
-                });
-                let element = action.pageObject.domElements.find(element => {
-                    return element.variableName === arg.value;
-                });
-                if (parameter) {
-                    arg.value = parameter.name;
-                }
-                if (element) {
-                    arg.value = element.name;
-                }
-                return arg;
-            });
-            interaction.methodInstance.arguments = args;
-            action.interactions.push(interaction);
-        } catch (e) {
-            notValidInteraction = true;
-        }
+    function _elementParser (pageObject, astObject) {
+        let { elements } = pageObject;
+        let [elementMemberExpression] = esquery(astObject, ELEMENT_MEMBER_EXPRESSION_QUERY);
+        return elementMemberExpression && elements.find(element => element.variableName === elementMemberExpression.property.name);
+    }
 
-        if (notFirstWrappedPromiseInteraction && notFirstOwnPromiseInteraction && notWrappedPromiseInteraction && notOwnPromiseInteraction && notValidInteraction) {
-            // eslint-disable-next-line no-console
-            console.log(astObject);
+    function _elementGroupParser (pageObject, astObject) {
+        let { elements } = pageObject;
+        let [elementGroupMemberExpression] = esquery(astObject, ELEMENT_GROUP_MEMBER_EXPRESSION_QUERY);
+        return elementGroupMemberExpression && elements.find(element => element.variableName === elementGroupMemberExpression.property.name);
+    }
+
+    function _interactionParser (interaction, astObject) {
+        let { pageObject } = interaction.containingAction;
+
+        let plugin = _pluginParser(pageObject, astObject);
+        let element = plugin || _elementParser(pageObject, astObject);
+        if (!element) {
+            element = _elementGroupParser(pageObject, astObject)
+            interaction.selector = _selectorParser(interaction, astObject);
         }
+        interaction.element = element;
+        assert(interaction.element);
+
+        interaction.action = _actionParser(interaction.element, astObject);
+        assert(interaction.action);
+
+        let { parameters } = interaction.action;
+        interaction.actionInstance.arguments = astObject.arguments.map((argument, index) => {
+            let arg = poargumentParserService.parse(interaction, parameters[index], argument);
+            assert(arg);
+            return arg;
+        });
+    }
+
+    function _pluginParser (pageObject, astObject) {
+        let { plugins } = pageObject;
+        let [pluginMemberExpression] = esquery(astObject, PLUGIN_MEMBER_EXPRESSION_QUERY);
+        return pluginMemberExpression && plugins.find(plugin => plugin.variableName === pluginMemberExpression.object.name);
+    }
+
+    function _selectorParser (interaction, astObject) {
+        let [selectorCallExpression] = esquery(astObject, ELEMENT_GROUP_SELECTOR_QUERY);
+        let [argument] = selectorCallExpression.arguments;
+        return poargumentParserService.parse(interaction, ELEMENT_GROUP_SELECTOR_ARGUMENT, argument);
     }
 }
 

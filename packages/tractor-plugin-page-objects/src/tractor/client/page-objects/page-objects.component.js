@@ -23,6 +23,7 @@ function  PageObjectsController (
     PageObjectModel
 ) {
     let { pageObject } = $scope.$parent.$resolve;
+
     let controller = new fileEditorControllerFactory(
         $scope,
         $window,
@@ -43,6 +44,18 @@ function  PageObjectsController (
             'file-tree--item--unused': item.referencedBy.length === 0
         };
     };
+
+    controller.getAllVariableNames = function  (pageObject, currentObject) {
+        return [pageObject].concat(pageObject.elements, pageObject.actions)
+        .filter(object => object !== currentObject)
+        .map(object => object.variableName)
+        .filter(Boolean);
+    };
+    controller.getAllParameterNames = function (action, currentParameter) {
+        return action.parameters.filter(parameter => parameter !== currentParameter)
+        .map(parameter => parameter.name)
+        .filter(Boolean);
+    }
 
     return controller;
 }

@@ -17,12 +17,13 @@
             <h1 class="file-options__name">{{ $ctrl.fileModel.name }}</h1>
             <div>
                 <tractor-variable-input class="file-options__name-input"
-                    ng-if="!$ctrl.fileModel.isSaved"
+                    ng-if="!$ctrl.fileModel.file"
                     form="file-editor"
                     label="Name"
                     model="$ctrl.fileModel"
                     example="Page Object"
-                    is-class>
+                    is-class
+                    all-variable-names="$ctrl.getAllVariableNames($ctrl.fileModel, $ctrl.fileModel)">
                 </tractor-variable-input>
             </div>
             <div class="file-options__file-actions">
@@ -66,55 +67,110 @@
                                     icon="collapse">
                                 </tractor-action>
 
-                                <tractor-variable-input
-                                    form="file-editor"
-                                    label="Name"
-                                    model="domElement"
-                                    example="element">
-                                </tractor-variable-input>
-                                <tractor-select
-                                    label="Type"
-                                    model="domElement.selector">
-                                </tractor-select>
-                                <tractor-text-input
-                                    form="file-editor"
-                                    label="Locator"
-                                    model="domElement.selector"
-                                    example="someController.someModel">
-                                </tractor-text-input>
+                                <section
+                                    class="file-editor__list-item--deprecated"
+                                    ng-if="domElement.isDeprecated">
+                                    <h3>The old way of selecting and filtering elements is deprecated.</h3>
+                                    <h3>You need to re-create this element using CSS selectors.</h3>
+                                    <br>
+                                    <br>
+                                    <tractor-variable-input
+                                        form="file-editor"
+                                        label="Name"
+                                        model="domElement"
+                                        example="element"
+                                        all-variable-names="$ctrl.getAllVariableNames($ctrl.fileModel, domElement)">
+                                    </tractor-variable-input>
+                                    <tractor-select
+                                        label="Selector"
+                                        model="domElement.selector"
+                                        required>
+                                    </tractor-select>
+                                    <tractor-text-input
+                                        form="file-editor"
+                                        label="Locator"
+                                        model="domElement.selector"
+                                        example="someController.someModel">
+                                    </tractor-text-input>
 
-                                <section>
-                                    <h3>Filters:</h3>
+                                    <section>
+                                        <h3>Filters:</h3>
 
-                                    <ol ng-if="domElement.filters.length > 1" as-sortable ng-model="domElement.sortableFilters" is-disabled="domElement.filters.length < 3">
-                                        <li class="file-editor__list-item" ng-repeat="filter in domElement.sortableFilters" as-sortable-item>
-                                            <tractor-action
+                                        <ol ng-if="domElement.filters.length > 1" as-sortable ng-model="domElement.sortableFilters" is-disabled="domElement.filters.length < 3">
+                                            <li class="file-editor__list-item" ng-repeat="filter in domElement.sortableFilters" as-sortable-item>
+                                                <tractor-action
                                                     model="domElement"
                                                     action="Remove filter"
                                                     argument="filter"
                                                     icon="remove">
-                                            </tractor-action>
-                                            <div class="file-editor__list-item-sort-handle" title="Drag to sort"
-                                                 ng-if="domElement.filters.length > 2"
-                                                 as-sortable-item-handle>
-                                            </div>
+                                                </tractor-action>
+                                                <div class="file-editor__list-item-sort-handle" title="Drag to sort"
+                                                     ng-if="domElement.filters.length > 2"
+                                                     as-sortable-item-handle>
+                                                </div>
 
-                                            <tractor-select ng-if="!domElement.filters[$index].isGroup"
-                                                            label="Type"
-                                                            model="filter">
-                                            </tractor-select>
-                                            <tractor-text-input
+                                                <tractor-select
+                                                    ng-if="!domElement.filters[$index].isGroup"
+                                                    label="selector"
+                                                    model="filter"
+                                                    required>
+                                                </tractor-select>
+                                                <tractor-text-input
                                                     form="file-editor"
                                                     label="Locator"
                                                     model="filter"
                                                     example="someController.someModel">
-                                            </tractor-text-input>
-                                        </li>
-                                    </ol>
+                                                </tractor-text-input>
+                                            </li>
+                                        </ol>
 
-                                    <tractor-action
+                                        <tractor-action
+                                            model="domElement"
+                                            action="Add filter">
+                                        </tractor-action>
+                                    </section>
+                                </section>
+
+                                <section
+                                    ng-if="!domElement.isDeprecated">
+                                    <tractor-variable-input
+                                        form="file-editor"
+                                        label="Name"
                                         model="domElement"
-                                        action="Add filter">
+                                        example="element"
+                                        all-variable-names="$ctrl.getAllVariableNames($ctrl.fileModel, domElement)">
+                                    </tractor-variable-input>
+                                    <tractor-text-input
+                                        form="file-editor"
+                                        label="selector"
+                                        model="domElement"
+                                        example="someController.someModel">
+                                    </tractor-text-input>
+                                    <tractor-checkbox
+                                        label="Is Multiple"
+                                        model="domElement">
+                                    </tractor-checkbox>
+
+                                    <section>
+                                        <tractor-select
+                                            ng-if="domElement.type"
+                                            label="Type"
+                                            as="name"
+                                            options="domElement.pageObject.availablePageObjects"
+                                            model="domElement"
+                                            required>
+                                        </tractor-select>
+
+                                        <tractor-action
+                                            ng-if="!domElement.type"
+                                            model="domElement"
+                                            action="Add type">
+                                        </tractor-action>
+                                    </section>
+                                    <tractor-action
+                                        ng-if="domElement.type"
+                                        model="domElement"
+                                        action="Remove type">
                                     </tractor-action>
                                 </section>
                             </li>
@@ -156,7 +212,8 @@
                                     form="file-editor"
                                     label="Name"
                                     model="action"
-                                    example="action">
+                                    example="action"
+                                    all-variable-names="$ctrl.getAllVariableNames($ctrl.fileModel, action)">
                                 </tractor-variable-input>
 
                                 <section>
@@ -176,7 +233,8 @@
                                                 form="file-editor"
                                                 label="Name"
                                                 model="parameter"
-                                                example="parameter">
+                                                example="parameter"
+                                                all-variable-names="$ctrl.getAllParameterNames(action, parameter)">
                                             </tractor-variable-input>
                                         </li>
                                     </ol>
@@ -204,16 +262,27 @@
                                                 label="Element"
                                                 model="interaction"
                                                 options="$ctrl.fileModel.elements"
-                                                as="name">
+                                                as="name"
+                                                required>
                                             </tractor-select>
+                                            <tractor-literal-input
+                                                ng-if="interaction.element.isMultiple"
+                                                form="file-editor"
+                                                name="interaction.selector.name"
+                                                model="interaction.selector"
+                                                description="interaction.selector.description"
+                                                required="interaction.selector.required"
+                                                type="interaction.selector.type">
+                                            </tractor-literal-input>
                                             <tractor-select
-                                                label="Method"
+                                                label="Action"
                                                 model="interaction"
-                                                options="interaction.element.methods"
-                                                as="name">
+                                                options="interaction.element.actions"
+                                                as="name"
+                                                required>
                                             </tractor-select>
 
-                                            <div ng-repeat="argument in interaction.arguments">
+                                            <div ng-repeat="argument in interaction.actionInstance.arguments">
                                                 <tractor-literal-input
                                                     form="file-editor"
                                                     name="argument.name"

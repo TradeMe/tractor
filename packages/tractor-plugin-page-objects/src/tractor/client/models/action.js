@@ -1,144 +1,89 @@
-// Utilities:
-import camelcase from 'camel-case';
-
 // Module:
 import { PageObjectsModule } from '../page-objects.module';
 
 // Dependencies:
+import camelcase from 'camel-case';
 import './interaction';
-import './parameter';
+import './value';
 
 function createActionModelConstructor (
+    astCreatorService,
     InteractionModel,
-    ParameterModel,
-    astCreatorService
+    ValueModel
 ) {
     let ast = astCreatorService;
 
-    let ActionModel = function ActionModel (pageObject) {
-        let interactions = [];
-        let parameters = [];
-
-        Object.defineProperties(this, {
-            pageObject: {
-                get () {
-                    return pageObject;
-                }
-            },
-            interactions: {
-                get () {
-                    return interactions;
-                }
-            },
-            parameters: {
-                get () {
-                    return parameters;
-                }
-            },
-            variableName: {
-                get () {
-                    return camelcase(this.name);
-                }
-            },
-            meta: {
-                get () {
-                    return {
-                        name: this.name,
-                        parameters: this.parameters.map(parameter => parameter.meta)
-                    };
-                }
-            },
-            ast: {
-                get () {
-                    return toAST.call(this);
-                }
-            }
-        });
-
-        this.name = '';
-    };
-
-    ActionModel.prototype.addParameter = function () {
-        this.parameters.push(new ParameterModel(this));
-    };
-
-    ActionModel.prototype.removeParameter = function (toRemove) {
-        if (this.parameters.includes(toRemove)) {
-            this.parameters.splice(this.parameters.indexOf(toRemove), 1);
+    return class ActionModel {
+        constructor (pageObject) {
+            this.pageObject = pageObject;
+            this.interactions = [];
+            this.parameters = [];
+            this.name = '';
         }
-    };
 
-    ActionModel.prototype.addInteraction = function () {
-        let interaction = new InteractionModel(this);
-        interaction.element = this.pageObject.plugins.find(plugin => plugin.name === 'Browser');
-        this.interactions.push(interaction);
-    };
-
-    ActionModel.prototype.removeInteraction = function (toRemove) {
-        if (this.interactions.includes(toRemove)) {
-            this.interactions.splice(this.interactions.indexOf(toRemove), 1);
+        get ast () {
+            return this._toAST();
         }
-    };
 
-    ActionModel.prototype.getAllVariableNames = function () {
-        return this.pageObject.getAllVariableNames(this);
-    };
-
-    return ActionModel;
-
-    function toAST () {
-        let pageObject = ast.identifier(this.pageObject.variableName);
-        let action = ast.identifier(this.variableName);
-        let parameters = this.parameters.map(parameter => parameter.ast);
-        let interactions = interactionsAST.call(this);
-
-        let template = '<%= pageObject %>.prototype.<%= action %> = function (%= parameters %) {';
-        if (interactions) {
-            template += 'var self = this;';
-            template += 'return <%= interactions %>;';
+        get meta () {
+            return this._toMeta();
         }
-        template += '};';
 
-        return ast.expression(template, {
-            pageObject,
-            action,
-            parameters,
-            interactions
-        });
-    }
+        get variableName () {
+            return camelcase(this.name);
+        }
 
-    function interactionsAST () {
-        let template = '';
-        let fragments = {};
-        this.interactions.reduce((previousInteraction, interaction, index) => {
-            let interactionTemplate = '<%= interaction' + index + ' %>';
+        get lastInteraction () {
+            return this.interactions[this.interactions.length - 1]
+        }
 
-            if (!template.length) {
-                template += interactionTemplate;
-            } else {
-                template += '.then(function (%= parameter' + index + '%) {';
-                template += '    return ' + interactionTemplate + ';';
-                template += '})';
+        addParameter () {
+            this.parameters.push(new ValueModel({ name: '' }));
+        }
+
+        removeParameter (toRemove) {
+            if (this.parameters.includes(toRemove)) {
+                this.parameters.splice(this.parameters.indexOf(toRemove), 1);
             }
+        }
 
-            fragments['interaction' + index] = interaction.ast;
-            fragments['parameter' + index] = [];
+        addInteraction () {
+            let interaction = new InteractionModel(this, this.lastInteraction);
+            interaction.element = this.pageObject.browser;
+            this.interactions.push(interaction);
+        }
 
-            let previousResult = previousInteractionResult(previousInteraction);
-            if (previousResult) {
-                fragments['parameter' + index].push(ast.identifier(previousResult));
+        removeInteraction (toRemove) {
+            if (this.interactions.includes(toRemove)) {
+                this.interactions.splice(this.interactions.indexOf(toRemove), 1);
             }
+        }
 
-            return interaction;
-        }, {});
+        _toAST () {
+            let action = ast.identifier(this.variableName);
+            let interactions = this.interactions.map(interaction => interaction.ast);
+            let pageObject = ast.identifier(this.pageObject.variableName);
+            let parameters = this.parameters.map(parameter => parameter.ast);
 
-        return ast.expression(template, fragments);
-    }
+            let template = '<%= pageObject %>.prototype.<%= action %> = function (%= parameters %) {';
+            if (interactions.length) {
+                template += `
+                    var self = this;
+                    var result;
+                    %= interactions %;
+                    return result;
+                `;
+            }
+            template += '};';
 
-    function previousInteractionResult (previous) {
-        var returns = previous && previous.method && previous.method.returns;
-        if (returns && previous.method[returns]) {
-            return previous.method[returns].name;
+            return ast.expression(template, { action, interactions, pageObject, parameters });
+        }
+
+        _toMeta () {
+            return {
+                name: this.name,
+                parameters: this.parameters.map(parameter => parameter.meta)
+            };
         }
     }
 }

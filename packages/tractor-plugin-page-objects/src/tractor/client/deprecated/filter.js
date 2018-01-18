@@ -1,31 +1,29 @@
 // Module:
 import { PageObjectsModule } from '../page-objects.module';
 
-function createFilterModelConstructor (
+function createDeprecatedFilterModelConstructor (
     astCreatorService,
     stringToLiteralService
 ) {
     let ast = astCreatorService;
 
-    let FilterModel = function FilterModel (element) {
+    let DeprecatedFilterModel = function DeprecatedFilterModel (element) {
         Object.defineProperties(this, {
             element: {
                 get () {
                     return element;
                 }
             },
-
             isGroup: {
                 get () {
-                    return this.type === 'options' || this.type === 'repeater';
+                    return this.selector === 'options' || this.selector === 'repeater';
                 }
             },
             isText: {
                 get () {
-                    return this.type === 'text';
+                    return this.selector === 'text';
                 }
             },
-
             ast: {
                 get () {
                     return toAST.call(this);
@@ -33,16 +31,16 @@ function createFilterModelConstructor (
             }
         });
 
-        [this.type] = this.types;
+        [this.selector] = this.selectors;
         this.locator = '';
     };
 
     // TODO: I don't like that the user has to know to use
     // 'buttonText' or 'linkText'. We should infer it from
     // the CSS selector.
-    FilterModel.prototype.types = ['model', 'binding', 'text', 'css', 'options', 'repeater', 'buttonText', 'linkText'];
+    DeprecatedFilterModel.prototype.selectors = ['model', 'binding', 'css', 'text', 'options', 'repeater', 'buttonText', 'linkText'];
 
-    return FilterModel;
+    return DeprecatedFilterModel;
 
     function toAST () {
         if (this.isNested) {
@@ -76,9 +74,9 @@ function createFilterModelConstructor (
 
         if (!this.isText) {
             let locatorLiteral = ast.literal(this.locator);
-            template += 'by.<%= type %>(<%= locator %>)';
+            template += 'by.<%= selector %>(<%= locator %>)';
             return ast.expression(template, {
-                type: ast.identifier(this.type),
+                selector: ast.identifier(this.selector),
                 locator: locatorLiteral
             });
         } else {
@@ -97,4 +95,4 @@ function createFilterModelConstructor (
     }
 }
 
-PageObjectsModule.factory('FilterModel', createFilterModelConstructor);
+PageObjectsModule.factory('DeprecatedFilterModel', createDeprecatedFilterModelConstructor);

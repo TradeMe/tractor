@@ -1,11 +1,15 @@
 export function addSelectHelpers () {
     let { by, ElementFinder } = global.protractor;
 
-    ElementFinder.prototype.selectOptionText = function (text) {
-        return this.all(by.cssContainingText('option', text)).get(0).click();
+    ElementFinder.prototype.selectOptionByText = function (text) {
+        return this.all(by.cssContainingText('option', text)).first().click();
     };
 
-    ElementFinder.prototype.selectOptionIndex = function (index) {
+    ElementFinder.prototype.selectOptionByIndex = function (index) {
         return this.all(by.tagName('option')).then(options => options[index].click());
+    };
+
+    ElementFinder.prototype.getSelectedOptionText = function () {
+        return this.element(by.css('option:checked')).getText();
     };
 }

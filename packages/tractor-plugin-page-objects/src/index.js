@@ -10,3 +10,4 @@ export { plugin } from './protractor/plugin';
 export { init } from './tractor/server/init';
 export { run } from './tractor/server/run';
 export { serve } from './tractor/server/serve';
+export { upgrade } from './upgrade';

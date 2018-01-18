@@ -1,17 +1,17 @@
-// Utilities:
-import assert from 'assert';
-
 // Module:
 import { PageObjectsModule } from '../page-objects.module';
 
 // Dependencies:
-import '../models/filter';
+import assert from 'assert';
+import './filter';
 
-function FilterParserService (FilterModel) {
+function DeprecatedFilterParserService (
+    DeprecatedFilterModel
+) {
     return { parse };
 
     function parse (element, astObject) {
-        let filter = new FilterModel(element);
+        let filter = new DeprecatedFilterModel(element);
 
         let notModelBindingCSSOptionsRepeater = false;
         let notText = false;
@@ -22,7 +22,7 @@ function FilterParserService (FilterModel) {
             assert(astObject.callee.property.name !== 'cssContainingText');
             let [locatorLiteral] = astObject.arguments;
             filter.locator = locatorLiteral.value;
-            filter.type = astObject.callee.property.name;
+            filter.selector = astObject.callee.property.name;
         } catch (e) {
             notModelBindingCSSOptionsRepeater = true;
         }
@@ -37,7 +37,7 @@ function FilterParserService (FilterModel) {
                 assert(searchString);
                 let locatorLiteral = cssSelector + ',' +  searchString;
                 filter.locator = locatorLiteral;
-                filter.type = 'text';
+                filter.selector = 'text';
             }
         } catch (e) {
             notText = true;
@@ -47,7 +47,7 @@ function FilterParserService (FilterModel) {
             if (notText) {
                 assert(typeof astObject.value === 'number');
                 filter.locator = '' + astObject.value;
-                filter.type = 'text';
+                filter.selector = 'text';
             }
         } catch (e) {
             notAllIndex = true;
@@ -60,7 +60,7 @@ function FilterParserService (FilterModel) {
                 let [checkFoundTextReturnStatement] = checkFoundTextFunctionExpression.body.body;
                 let [locatorLiteral] = checkFoundTextReturnStatement.argument.left.arguments;
                 filter.locator = locatorLiteral.value;
-                filter.type = 'text';
+                filter.selector = 'text';
             }
         } catch (e) {
             notAllString = true;
@@ -75,4 +75,4 @@ function FilterParserService (FilterModel) {
     }
 }
 
-PageObjectsModule.service('filterParserService', FilterParserService);
+PageObjectsModule.service('deprecatedFilterParserService', DeprecatedFilterParserService);

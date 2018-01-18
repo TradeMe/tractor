@@ -16,3 +16,8 @@ tractor-page-objects > div {
         background-image: url('./move-page-object-to-directory.png');
     }
 }
+
+.file-editor__list-item--deprecated {
+    background: rgba(255, 10, 10, 1);
+    padding: 0 0.5rem;
+}

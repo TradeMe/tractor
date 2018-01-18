@@ -1,122 +1,76 @@
-// Utilities:
-import assert from 'assert';
-
 // Module:
 import { PageObjectsModule } from '../page-objects.module';
 
+// Queries:
+const SELECTOR_QUERY = 'CallExpression[callee.object.name="by"][callee.property.name="css"] > Literal';
+const ELEMENT_QUERY = `AssignmentExpression > CallExpression[callee.name="find"]`;
+const ELEMENT_MULTIPLE_QUERY = 'AssignmentExpression > FunctionExpression ReturnStatement > CallExpression[callee.object.callee.object.name="find"][callee.object.callee.property.name="all"]';
+const PAGE_OBJECT_QUERY = 'AssignmentExpression > NewExpression[arguments.0.callee.name="find"]';
+const PAGE_OBJECT_MULTIPLE_QUERY = 'AssignmentExpression > FunctionExpression ReturnStatement > NewExpression';
+
 // Dependencies:
+import esquery from 'esquery';
+import '../deprecated/element-parser.service';
 import '../models/element';
-import './filter-parser.service';
 
 function ElementParserService (
     ElementModel,
-    filterParserService
+    deprecatedElementParserService
 ) {
+    const QUERIES = {
+        [ELEMENT_QUERY]: _elementParser,
+        [ELEMENT_MULTIPLE_QUERY]: _elementMultipleParser,
+        [PAGE_OBJECT_QUERY]: _pageObjectParser,
+        [PAGE_OBJECT_MULTIPLE_QUERY]: _pageObjectMultipleParser,
+    };
+
     return { parse };
 
-    function parse (pageObject, astObject, element) {
-        if (!element) {
-            element = new ElementModel(pageObject);
-        }
+    function parse (pageObject, astObject, meta) {
+        let element = new ElementModel(pageObject);
+        element.name = meta.name;
 
-        let elementCallExpression = astObject.expression.right;
-        let elementCallExpressionCallee = elementCallExpression.callee;
-
-        try {
-            assert(elementCallExpressionCallee.object.callee);
-            try {
-                assert(elementCallExpressionCallee.object.callee.property.name === 'filter');
-                elementCallExpressionCallee = elementCallExpressionCallee.object.callee;
-                elementCallExpression = elementCallExpression.callee.object;
-            // eslint-disable-next-line no-empty
-            } catch (e) { }
-
-            parse(pageObject, {
-                expression: {
-                    right: elementCallExpressionCallee.object
-                }
-            }, element);
-        // eslint-disable-next-line no-empty
-        } catch (e) { }
-
-        let notFirstElementBy = false;
-        let notFirstElementAllBy = false;
-        let notElementBy = false;
-        let notElementAllBy = false;
-        let notElementFilter = false;
-        let notElementGet = false;
-
-        try {
-            assert(elementCallExpressionCallee.name === 'element');
-            let [filterAST] = elementCallExpression.arguments;
-            let filter = filterParserService.parse(element, filterAST);
-            element.addFilter(filter);
-        } catch (e) {
-            notFirstElementBy = true;
-        }
-
-        try {
-            if (notFirstElementBy) {
-                assert(elementCallExpressionCallee.object.name === 'element');
-                assert(elementCallExpressionCallee.property.name === 'all');
-                let [filterAllAST] = elementCallExpression.arguments;
-                let filter = filterParserService.parse(element, filterAllAST);
-                element.addFilter(filter);
+        let match = Object.keys(QUERIES).find(query => {
+            let [result] = esquery(astObject, query);
+            if (result) {
+                QUERIES[query](element, result);
+                return element;
             }
-        } catch (e) {
-            notFirstElementAllBy = true;
-        }
+        });
 
-        try {
-            if (notFirstElementAllBy) {
-                assert(elementCallExpressionCallee.property.name === 'element');
-                let [filterAST] = elementCallExpression.arguments;
-                let filter = filterParserService.parse(element, filterAST);
-                element.addFilter(filter);
-            }
-        } catch (e) {
-            notElementBy = true;
+        if (match) {
+            return element;
         }
+        return deprecatedElementParserService.parse(pageObject, astObject, meta);
+    }
 
-        try {
-            if (notElementBy) {
-                assert(elementCallExpressionCallee.property.name === 'all');
-                let [filterAllAST] = elementCallExpression.arguments;
-                let filter = filterParserService.parse(element, filterAllAST);
-                element.addFilter(filter);
-            }
-        } catch (e) {
-            notElementAllBy = true;
-        }
+    function _selectorParser (element, astObject) {
+        element.selector = astObject.value;
+    }
 
-        try {
-            if (notElementAllBy) {
-                assert(elementCallExpressionCallee.property.name === 'filter');
-                let [filterAST] = elementCallExpression.arguments;
-                let filter = filterParserService.parse(element, filterAST);
-                element.addFilter(filter);
-            }
-        } catch (e) {
-            notElementFilter = true;
-        }
+    function _elementParser (element, astObject) {
+        let [selector] = esquery(astObject, SELECTOR_QUERY);
+        _selectorParser(element, selector);
+    }
 
-        try {
-            if (notElementFilter) {
-                assert(elementCallExpressionCallee.property.name === 'get');
-                let [filterAST] = elementCallExpression.arguments;
-                let filter = filterParserService.parse(element, filterAST);
-                element.addFilter(filter);
-            }
-        } catch (e) {
-            notElementGet = true;
-        }
+    function _elementMultipleParser (element, astObject) {
+        element.isMultiple = true;
+        _elementParser(element, astObject);
+    }
 
-        if (notFirstElementBy && notFirstElementAllBy && notElementBy && notElementAllBy && notElementFilter && notElementGet) {
-            // eslint-disable-next-line no-console
-            console.log(astObject);
-        }
+    function _pageObjectParser (element, astObject) {
+        let [selector] = esquery(astObject, SELECTOR_QUERY);
+        _selectorParser(element, selector);
 
-        return element;
+        element.type = element.pageObject.availablePageObjects.find(pageObject => {
+            return pageObject.variableName === astObject.callee.name
+        });
+        element.actions = element.type.actions;
+    }
+
+    function _pageObjectMultipleParser (element, astObject) {
+        element.isMultiple = true;
+        _pageObjectParser(element, astObject);
     }
 }
 
