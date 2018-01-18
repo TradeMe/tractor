@@ -18,7 +18,8 @@ var VariableInputDirective = function () {
         scope: {
             model: '=',
             label: '@',
-            example: '@'
+            example: '@',
+            allVariableNames: '&'
         },
 
         /* eslint-disable no-path-concat */

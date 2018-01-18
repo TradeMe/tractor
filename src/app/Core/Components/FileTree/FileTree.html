@@ -41,10 +41,10 @@
     <div ng-include="'file-options.html'"></div>
 
     <p class="file-tree__item-name"
-        ng-if="item.basename && !item.editingName"
+        ng-show="!item.editingName"
         ng-click="fileTree.toggleOpenDirectory(item)"
         ng-dblclick="fileTree.editName(item)">
-        {{ item.basename }}
+        {{ item.editingName ? item.previousName : item.basename }}
     </p>
     <div ng-include="'rename-input.html'"></div>
 
@@ -77,10 +77,10 @@
             <div ng-include="'file-options.html'"></div>
 
             <p class="file-tree__item-name"
-                ng-if="item.basename && !item.editingName"
+                ng-show="!item.editingName"
                 ng-click="fileTree.openItem(item)"
                 ng-dblclick="fileTree.editName(item)">
-                {{ item.basename }}
+                {{ item.editingName ? item.previousName : item.basename }}
             </p>
             <div ng-include="'rename-input.html'"></div>
         </li>

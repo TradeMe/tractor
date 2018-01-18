@@ -1,14 +1,12 @@
 'use strict';
 
 module.exports = function () {
-    this.StepResult(function (stepResult, callback) {
-        var browser = global.browser;
-        if (browser) {
-            var params = browser.params || {};
-            if (stepResult.getStatus() === 'failed' && params.debug === 'true') {
-                browser.pause();
-                browser.explore();
-            }
+    this.StepResult(function (step, callback) {
+        var browser = global.browser || {};
+        var params = browser.params || {};
+        if (params.debug === 'true' && step.getStatus() === 'failed') {
+            browser.pause();
+            browser.explore();
         }
         callback();
     });

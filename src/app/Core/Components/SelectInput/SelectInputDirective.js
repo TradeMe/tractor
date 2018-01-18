@@ -18,6 +18,7 @@ var SelectInputDirective = function () {
             model: '=',
             label: '@',
             options: '=',
+            required: '=',
             as: '@'
         },
 
@@ -28,7 +29,7 @@ var SelectInputDirective = function () {
         link: link
     };
 
-    function link ($scope) {
+    function link ($scope, $element, $attrs) {
         if (_.isUndefined($scope.model)) {
             throw new Error('The "tractor-select" directive requires a "model" attribute.');
         }
@@ -47,6 +48,9 @@ var SelectInputDirective = function () {
         $scope.$watchCollection('options', function () {
             $scope.selectOptions = $scope.options || getOptionsFromProperty($scope);
         });
+
+        $scope.form = $scope.$parent[$attrs.form];
+        $scope.id = Math.floor(Math.random() * Date.now());
     }
 
     function getOptionsFromProperty ($scope) {

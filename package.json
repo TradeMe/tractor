@@ -16,7 +16,8 @@
   },
   "scripts": {
     "prepublish": "gulp build",
-    "tractor": "tractor start"
+    "tractor": "tractor start",
+    "tractor:init": "tractor init"
   },
   "main": "dist/index.html",
   "devDependencies": {
@@ -65,9 +66,8 @@
     "sinon": "1.17.2",
     "sinon-chai": "2.8.0",
     "socket.io-client": "^2.0.3",
-    "tractor": "^0.12.4",
+    "tractor": "^0.12.8",
     "tractor-plugin-cucumber": "^0.3.8",
-    "tractor-plugin-mock-requests": "^0.4.0",
     "tractor-plugin-page-objects": "^0.4.5",
     "vinyl-buffer": "1.0.0",
     "vinyl-source-stream": "1.1.0",

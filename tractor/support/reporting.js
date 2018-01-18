@@ -12,22 +12,14 @@ var _cucumber = require('cucumber');
 
 var _tractorConfigLoader = require('tractor-config-loader');
 
-var _tractorPluginCucumber = require('tractor-plugin-cucumber');
-
-var tractorCucumber = _interopRequireWildcard(_tractorPluginCucumber);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// Dependencies:
+// Utilities:
 module.exports = function () {
     var tmpReportsDirPath = getTmpReportsDirPath();
     this.registerListener(createReporter(tmpReportsDirPath));
 };
-
-// Dependencies:
-// Utilities:
-
 
 function createReporter(tmpReportsDirPath) {
     var jsonFormatter = _cucumber.Listener.JsonFormatter();
@@ -54,7 +46,6 @@ function createReporter(tmpReportsDirPath) {
 
 function getTmpReportsDirPath() {
     var tractorConfig = (0, _tractorConfigLoader.getConfig)();
-    var cucumberConfig = tractorCucumber.tractor.config(tractorConfig);
-    var reportsDirPath = _path2.default.join(process.cwd(), cucumberConfig.reportDirectory);
+    var reportsDirPath = _path2.default.join(process.cwd(), tractorConfig.cucumber.reportsDirectory);
     return _path2.default.join(reportsDirPath, 'tmp-json-reports');
 }

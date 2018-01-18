@@ -12,6 +12,8 @@ var _chaiAsPromised = require('chai-as-promised');
 
 var _chaiAsPromised2 = _interopRequireDefault(_chaiAsPromised);
 
+var _tractorConfigLoader = require('tractor-config-loader');
+
 var _tractorDependencyInjection = require('tractor-dependency-injection');
 
 var _tractorPluginLoader = require('tractor-plugin-loader');
@@ -26,8 +28,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var di = (0, _tractorDependencyInjection.container)();
 var plugins = (0, _tractorPluginLoader.getPlugins)();
+var config = (0, _tractorConfigLoader.getConfig)();
 
 module.exports = function () {
+    var _global = global,
+        browser = _global.browser;
+
+
+    di.constant({ browser: browser, config: config });
+
     this.World = function () {
         return new CustomWorld();
     };
