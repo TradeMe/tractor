@@ -14,6 +14,6 @@ browser methods.
 * [`browser.get`](http://www.protractortest.org/#/api?view=ProtractorBrowser.prototype.get)
 * [`browser.refresh`](http://www.protractortest.org/#/api?view=ProtractorBrowser.prototype.refresh)
 * [`browser.setLocation`](http://www.protractortest.org/#/api?view=ProtractorBrowser.prototype.setLocation)
-* [`browser.getLocationAbsUrl`](http://www.protractortest.org/#/api?view=ProtractorBrowser.prototype.getLocationAbsUrl)
+* [`browser.getCurrentUrl`](http://www.protractortest.org/#/api?view=ProtractorBrowser.prototype.getCurrentUrl)
 * [`browser.waitForAngular`](http://www.protractortest.org/#/api?view=ProtractorBrowser.prototype.waitForAngular)
 * [`browser.pause`](http://www.protractortest.org/#/api?view=ProtractorBrowser.prototype.pause)

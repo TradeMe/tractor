@@ -1,8 +1,8 @@
-const description = {
-    methods: [{
+export const description = {
+    actions: [{
         name: 'get',
         description: 'Navigate to the given destination and loads mock modules before Angular.',
-        arguments: [{
+        parameters: [{
             name: 'destination',
             description: 'Destination URL',
             type: 'string',
@@ -11,19 +11,21 @@ const description = {
             name: 'timeout',
             description: 'Number of milliseconds to wait for Angular to start.',
             type: 'number'
-        }]
+        }],
+        returns: 'promise'
     }, {
         name: 'refresh',
         description: 'Makes a full reload of the current page and loads mock modules before Angular. Assumes that the page being loaded uses Angular.',
-        arguments: [{
+        parameters: [{
             name: 'timeout',
             description: 'Number of seconds to wait for Angular to start.',
             type: 'number'
-        }]
+        }],
+        returns: 'promise'
     }, {
-        name: 'setLocation',
+        name: 'set location',
         description: 'Browse to another page using in-page navigation.',
-        arguments: [{
+        parameters: [{
             name: 'url',
             description: 'In page URL using the same syntax as $location.url()',
             type: 'string',
@@ -31,36 +33,43 @@ const description = {
         }],
         returns: 'promise'
     }, {
-        name: 'getCurrentUrl',
+        name: 'get current URL',
         description: 'Schedules a command to retrieve the URL of the current page.',
-        returns: 'string',
-        string: {
+        returns: {
             name: 'url',
-            type: 'string',
-            required: true
+            type: 'promise',
+            required: true,
+            resolves: 'string'
         }
     }, {
-        name: 'getLocationAbsUrl',
-        description: 'Deprecated, use "getCurrentUrl" instead.',
-        returns: 'string',
-        string: {
-            name: 'absoluteUrl',
-            type: 'string',
-            required: true
-        }
-    }, {
-        name: 'waitForAngular',
+        name: 'wait for Angular',
         description: 'Instruct webdriver to wait until Angular has finished rendering and has no outstanding $http calls before continuing.',
+        returns: 'promise'
+    }, {
+        name: 'sleep',
+        description: `Schedules a command to make the driver sleep for the given amount of time. If you're resorting to using a sleep you probably should have tried every other option first!`,
+        parameters: [{
+            name: 'milliseconds',
+            description: 'The amount of time, in milliseconds, to sleep.',
+            type: 'number'
+        }],
         returns: 'promise'
     }, {
         name: 'pause',
         description: 'Beta (unstable) pause function for debugging webdriver tests.',
-        arguments: [{
+        parameters: [{
             name: 'debugPort',
             description: 'Optional port to use for the debugging process',
             type: 'number'
-        }]
+        }],
+        returns: 'promise'
+    }, {
+        name: 'send Delete key',
+        description: '(tractor) Schedules a command to press the Delete key.',
+        returns: 'promise'
+    }, {
+        name: 'send Enter key',
+        description: '(tractor) Schedules a command to press the Enter key.',
+        returns: 'promise'
     }]
 };
-
-export default description;

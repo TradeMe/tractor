@@ -1,13 +1,10 @@
 /* global describe:true, it:true */
 
-// Utilities:
-import chai from 'chai';
-
 // Test setup:
-const expect = chai.expect;
+import { expect } from '../../../test-setup';
 
 // Under test:
-import create from './create';
+import { create } from './create';
 
 describe('tractor-plugin-browser - create:', () => {
     it('should return the `browser`', () => {
