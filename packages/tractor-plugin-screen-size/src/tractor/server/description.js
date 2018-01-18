@@ -1,12 +1,13 @@
 export const description = {
-    methods: [{
-        name: 'setSize',
+    actions: [{
+        name: 'set size',
         description: 'Set the size of the viewport',
-        arguments: [{
+        parameters: [{
             name: 'size',
             description: 'The name of the screen size configuration',
             type: 'string',
             required: true
-        }]
+        }],
+        returns: 'promise'
     }]
 };
