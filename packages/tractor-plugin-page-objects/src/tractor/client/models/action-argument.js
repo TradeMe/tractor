@@ -4,11 +4,11 @@ import { PageObjectsModule } from '../page-objects.module';
 // Dependencies:
 import camelcase from 'camel-case';
 
-function createPOArgumentModelConstructor (
+function createActionArgumentModelConstructor (
     astCreatorService,
     stringToLiteralService
 ) {
-    return class POArgumentModel {
+    return class ActionArgumentModel {
         constructor (interaction, argument) {
             this.interaction = interaction;
 
@@ -23,7 +23,7 @@ function createPOArgumentModelConstructor (
         }
 
         get ast () {
-            return this._toAST();
+            return this.unparseable || this._toAST();
         }
 
         get variableName () {
@@ -89,4 +89,4 @@ function createPOArgumentModelConstructor (
     }
 }
 
-PageObjectsModule.factory('POArgumentModel', createPOArgumentModelConstructor);
+PageObjectsModule.factory('ActionArgumentModel', createActionArgumentModelConstructor);

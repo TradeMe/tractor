@@ -4,13 +4,13 @@ import { PageObjectsModule } from '../page-objects.module';
 // Dependencies:
 import { ELEMENT_GROUP_SELECTOR_ARGUMENT } from './meta/element-group-selector-argument';
 import './action-instance';
-import './argument';
+import './action-argument';
 
 function createInteractionModelConstructor (
     astCreatorService,
     stringToLiteralService,
     ActionInstanceModel,
-    POArgumentModel
+    ActionArgumentModel
 ) {
     let ast = astCreatorService;
 
@@ -19,9 +19,8 @@ function createInteractionModelConstructor (
             // This is very awkwardly named:
             this.containingAction = containingAction;
             this.previousInteraction = previousInteraction;
-            this.isFirst = !this.previousInteraction;
 
-            this.selector = new POArgumentModel(this, ELEMENT_GROUP_SELECTOR_ARGUMENT);
+            this.selector = new ActionArgumentModel(this, ELEMENT_GROUP_SELECTOR_ARGUMENT);
         }
 
         get element () {
@@ -50,40 +49,25 @@ function createInteractionModelConstructor (
         }
 
         get ast () {
-            return this._toAST();
+            return this.unparseable || this._toAST();
         }
 
         _toAST () {
-            let returnsPromise = this._checkReturnsPromise();
             let previousResult = this._getPreviousInteractionResult();
 
             let template;
-            if (this.isFirst) {
-                if (returnsPromise) {
-                    template = `
-                        result = <%= interaction %>;
-                    `;
-                } else {
-                    template = `
-                        result = new Promise(function (resolve) {
-                            resolve(%= interaction %);
-                        });
-                    `;
-                }
+            if (previousResult) {
+                template = `
+                    result = result.then(function (%= previousResult %) {
+                        return <%= interaction %>;
+                    });
+                `;
             } else {
-                if (previousResult) {
-                    template = `
-                        result = result.then(function (%= previousResult %) {
-                            return <%= interaction %>;
-                        });
-                    `;
-                } else {
-                    template = `
-                        result = result.then(function () {
-                            return <%= interaction %>;
-                        });
-                    `;
-                }
+                template = `
+                    result = result.then(function () {
+                        return <%= interaction %>;
+                    });
+                `;
             }
 
             let interaction = this._interactionAST();
@@ -98,7 +82,7 @@ function createInteractionModelConstructor (
             if (this.element.pageObject) {
                 template = `self.${template}`;
             }
-            if (this.element.isMultiple) {
+            if (this.element.isGroup) {
                 template += '(<%= selector %>)';
             }
             template += '.<%= action %>(%= argumentValues %);';
@@ -114,11 +98,6 @@ function createInteractionModelConstructor (
                 element,
                 selector
             });
-        }
-
-        _checkReturnsPromise () {
-            let { returns } = this.action;
-            return returns && (returns === 'promise' || returns.type === 'promise')
         }
 
         _getPreviousInteractionResult () {

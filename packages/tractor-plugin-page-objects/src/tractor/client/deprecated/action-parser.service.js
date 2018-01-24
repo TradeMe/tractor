@@ -6,7 +6,6 @@ const ACTION_FUNCTION_QUERY = 'FunctionExpression[params]';
 const INTERACTION_QUERY = 'FunctionExpression > BlockStatement > ReturnStatement';
 
 // Dependencies:
-import assert from 'assert';
 import esquery from 'esquery';
 import '../models/action';
 import '../models/value';
@@ -15,6 +14,7 @@ import './interaction-parser.service';
 function DeprecatedActionParserService (
     ActionModel,
     ValueModel,
+    astCompareService,
     deprecatedInteractionParserService
 ) {
     return { parse };
@@ -26,18 +26,20 @@ function DeprecatedActionParserService (
         let [actionFunction] = esquery(astObject, ACTION_FUNCTION_QUERY);
         actionFunction.params.forEach(param => {
             let parameterMeta = meta.parameters[action.parameters.length];
-            assert(parameterMeta.name, `
-                Could not find meta-data for parameter "${param.name}" of action "${action.name}".
-            `);
             let parameter = new ValueModel(parameterMeta);
+            if (!parameterMeta) {
+                parameter.unparseable = param;
+            }
             action.parameters.push(parameter);
         });
 
         let [interaction] = esquery(astObject, INTERACTION_QUERY);
-        assert(interaction, `
-            Could not find interaction for action "${action.name}".
-        `);
         deprecatedInteractionParserService.parse(action, interaction);
+
+        let parsedCorrectly = astCompareService.compare(astObject, action.ast);
+        if (!parsedCorrectly) {
+            action.unparseable = astObject;
+        }
 
         return action;
     }

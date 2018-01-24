@@ -11,5 +11,23 @@ export function serve (config, di) {
 
     di.constant({ pageObjectsFileStructure });
     di.call(serveFileStructure)(pageObjectsFileStructure, 'page-objects');
+
+    serveIncludes(config, di);
 }
 serve['@Inject'] = ['config', 'di'];
+
+function serveIncludes (config, di) {
+    let { include } = config.pageObjects;
+    let includeFileStructures = Object.keys(include).map((includeName) => {
+        let includePath = include[includeName];
+        let includeDirectoryPath = path.resolve(process.cwd(), includePath);
+
+        let includeFileStructure = new FileStructure(includeDirectoryPath);
+        includeFileStructure.addFileType(PageObjectFile);
+
+        di.call(serveFileStructure)(includeFileStructure, `page-objects/${includeName}`);
+
+        return includeFileStructure;
+    });
+    di.constant({ includeFileStructures });
+}

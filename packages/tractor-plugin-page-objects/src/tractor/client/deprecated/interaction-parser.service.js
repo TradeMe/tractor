@@ -3,21 +3,19 @@ import { PageObjectsModule } from '../page-objects.module';
 
 // Dependencies:
 import assert from 'assert';
-import '../parsers/argument-parser.service';
+import '../parsers/action-argument-parser.service';
 import '../models/interaction';
 
 function DeprecatedInteractionParserService (
     InteractionModel,
-    poargumentParserService
+    actionArgumentParserService
 ) {
     return { parse };
 
     function parse (action, astObject, previousInteraction) {
         let interaction = new InteractionModel(action);
-        interaction.isFirst = true;
         if (previousInteraction) {
             previousInteraction.lastInteraction = interaction;
-            previousInteraction.isFirst = false;
         }
 
         let notFirstWrappedPromiseInteraction = false;
@@ -88,7 +86,7 @@ function DeprecatedInteractionParserService (
             });
             assert(interaction.action);
             let args = interactionCallExpression.arguments.map((argument, index) => {
-                let arg = poargumentParserService.parse(interaction, interaction.action.parameters[index], argument);
+                let arg = actionArgumentParserService.parse(interaction, interaction.action.parameters[index], argument);
                 assert(arg);
                 return arg;
             });
@@ -99,8 +97,7 @@ function DeprecatedInteractionParserService (
         }
 
         if (notFirstWrappedPromiseInteraction && notFirstOwnPromiseInteraction && notWrappedPromiseInteraction && notOwnPromiseInteraction && notValidInteraction) {
-            // eslint-disable-next-line no-console
-            console.log(astObject);
+            interaction.unparseable = astObject;
         }
     }
 }

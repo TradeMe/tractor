@@ -22,11 +22,11 @@ function createActionModelConstructor (
         }
 
         get ast () {
-            return this._toAST();
+            return this.unparseable || this._toAST();
         }
 
         get meta () {
-            return this._toMeta();
+            return this.name ? this._toMeta() : null;
         }
 
         get variableName () {
@@ -69,7 +69,7 @@ function createActionModelConstructor (
             if (interactions.length) {
                 template += `
                     var self = this;
-                    var result;
+                    var result = Promise.resolve();
                     %= interactions %;
                     return result;
                 `;
@@ -82,7 +82,9 @@ function createActionModelConstructor (
         _toMeta () {
             return {
                 name: this.name,
-                parameters: this.parameters.map(parameter => parameter.meta)
+                parameters: this.parameters
+                    .map(parameter => parameter.meta)
+                    .filter(Boolean)
             };
         }
     }

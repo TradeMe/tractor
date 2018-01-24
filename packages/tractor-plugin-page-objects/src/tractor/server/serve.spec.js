@@ -15,13 +15,14 @@ describe('tractor-plugin-page-objects - serve:', () => {
         let pageObjectsFileStructure = null;
         let config = {
             pageObjects: {
-                directory: './tractor/page-objects'
+                directory: './tractor/page-objects',
+                include: []
             }
         };
         let di = ineeda({
             call: () => NOOP,
             constant: constants => {
-                pageObjectsFileStructure = constants.pageObjectsFileStructure;
+                pageObjectsFileStructure = pageObjectsFileStructure || constants.pageObjectsFileStructure;
             }
         });
 
@@ -33,7 +34,8 @@ describe('tractor-plugin-page-objects - serve:', () => {
     it('should add the FileStructure to the DI container', () => {
         let config = {
             pageObjects: {
-                directory: './tractor/page-objects'
+                directory: './tractor/page-objects',
+                include: []
             }
         };
         let di = ineeda({
@@ -49,7 +51,8 @@ describe('tractor-plugin-page-objects - serve:', () => {
     it('should add the PageObjectFile type to the FileStructure', () => {
         let config = {
             pageObjects: {
-                directory: './tractor/page-objects'
+                directory: './tractor/page-objects',
+                include: []
             }
         };
         let di = ineeda({

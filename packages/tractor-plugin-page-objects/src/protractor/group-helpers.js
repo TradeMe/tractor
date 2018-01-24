@@ -1,15 +1,20 @@
+// Dependencies:
+import { parseOrdinal } from './ordinals';
+
 export function addGroupHelpers () {
     let { ElementArrayFinder } = global.protractor;
 
     ElementArrayFinder.prototype.getFromGroup = function (groupSelector) {
-        let isFirst = groupSelector === 'first';
         let isLast = groupSelector === 'last';
-        if (isFirst) {
-            return this.first();
-        }
         if (isLast) {
             return this.last();
         }
+
+        let index = parseOrdinal(groupSelector);
+        if (index) {
+            return this.get(index - 1);
+        }
+
         return this.filter((element, index) => {
             let content;
             return element.getText()

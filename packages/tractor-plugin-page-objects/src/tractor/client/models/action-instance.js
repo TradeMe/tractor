@@ -3,11 +3,11 @@ import { PageObjectsModule } from '../page-objects.module';
 
 // Dependencies:
 import camelcase from 'camel-case';
-import './argument';
+import './action-argument';
 import './value';
 
 function createActionInstanceModelConstructor (
-    POArgumentModel,
+    ActionArgumentModel,
     ValueModel
 ) {
     return class ActionInstanceModel {
@@ -32,7 +32,7 @@ function createActionInstanceModelConstructor (
 
         _getArguments (parameters) {
             parameters = parameters || [];
-            return parameters.map(parameter => new POArgumentModel(this.interaction, parameter));
+            return parameters.map(parameter => new ActionArgumentModel(this.interaction, parameter));
         }
     }
 }

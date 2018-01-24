@@ -18,7 +18,11 @@ function DeprecatedElementParserService (
             element.name = meta.name;
         }
 
-        let elementCallExpression = astObject.expression.right;
+        let elementCallExpression;
+        try {
+            elementCallExpression = astObject.expression.right;
+        // eslint-disable-next-line no-empty
+        } catch (e) { }
 
         try {
             let newExpression = astObject.expression.right;
@@ -31,7 +35,11 @@ function DeprecatedElementParserService (
         // eslint-disable-next-line no-empty
         } catch (e) { }
 
-        let elementCallExpressionCallee = elementCallExpression.callee;
+        let elementCallExpressionCallee;
+        try {
+            elementCallExpressionCallee = elementCallExpression.callee;
+        // eslint-disable-next-line no-empty
+        } catch (e) { }
 
         try {
             assert(elementCallExpressionCallee.object.callee);
@@ -123,8 +131,7 @@ function DeprecatedElementParserService (
         }
 
         if (notFirstElementBy && notFirstElementAllBy && notElementBy && notElementAllBy && notElementFilter && notElementGet) {
-            // eslint-disable-next-line no-console
-            console.log(astObject);
+            element.unparseable = astObject;
         }
 
         return element;

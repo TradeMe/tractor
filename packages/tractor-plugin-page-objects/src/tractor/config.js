@@ -5,5 +5,6 @@ export function config (tractorConfig) {
     tractorConfig.pageObjects = tractorConfig.pageObjects || {};
     let { pageObjects } = tractorConfig;
     pageObjects.directory = pageObjects.directory || DEFAULT_DIRECTORY;
+    pageObjects.include = pageObjects.include || {};
     return pageObjects;
 }

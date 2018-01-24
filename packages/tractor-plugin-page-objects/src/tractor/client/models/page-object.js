@@ -14,6 +14,7 @@ function createPageObjectModelConstructor (
     ElementModel,
     PageObjectMetaModel,
     astCreatorService,
+    pageObjectsService,
     config,
     plugins
 ) {
@@ -21,7 +22,7 @@ function createPageObjectModelConstructor (
         constructor (file) {
             this.file = file;
 
-            this.plugins = this._getPluginsWithActions(plugins);
+            this.plugins = pageObjectsService.getPluginPageObjects();
             this.elements = this.plugins;
             this.browser = this._getBrowser(this.elements);
 
@@ -32,7 +33,7 @@ function createPageObjectModelConstructor (
         }
 
         get ast () {
-            return this._toAST();
+            return this.unparseable || this._toAST();
         }
 
         get data () {
@@ -40,7 +41,7 @@ function createPageObjectModelConstructor (
         }
 
         get meta () {
-            return this._toMeta();
+            return this.name ? this._toMeta() : null;
         }
 
         get variableName () {
@@ -77,8 +78,12 @@ function createPageObjectModelConstructor (
         _toMeta () {
             return JSON.stringify({
                 name: this.name,
-                elements: this.domElements.map(element => element.meta),
-                actions: this.actions.map(action => action.meta),
+                elements: this.domElements
+                    .map(element => element.meta)
+                    .filter(Boolean),
+                actions: this.actions
+                    .map(action => action.meta)
+                    .filter(Boolean),
                 version: this._getPageObjectsVersion(plugins)
             });
         }
@@ -96,6 +101,9 @@ function createPageObjectModelConstructor (
 
             let pageObject = ast.identifier(this.variableName);
             let elements = this.domElements.map(element => ast.expressionStatement(element.ast));
+            let hasElements = this.domElements.find(element => !element.isGroup);
+            let hasElementGroups = this.domElements.find(element => element.isGroup);
+
             let actions = this.actions.map(action => ast.expressionStatement(action.ast));
 
             let template = `
@@ -105,7 +113,18 @@ function createPageObjectModelConstructor (
             if (elements.length) {
                 template += `
                     var <%= pageObject %> = function <%= pageObject %> (parent) {
+                `;
+                if (hasElements) {
+                    template += `
                         var find = parent ? parent.element.bind(parent) : element;
+                    `;
+                }
+                if (hasElementGroups) {
+                    template += `
+                        var findAll = parent ? parent.all.bind(parent) : element.all;
+                    `;
+                }
+                template += `
                         %= elements %;
                     };
                 `;
@@ -124,9 +143,7 @@ function createPageObjectModelConstructor (
         }
 
         _getRelativePath (pageObject) {
-            let pageObjectsDirectory = config.pageObjects.directory;
-            let pageObjectPath = path.join(pageObjectsDirectory, pageObject.url);
-            let relative = path.relative(path.dirname(path.join(pageObjectsDirectory, this.file.url)), pageObjectPath);
+            let relative = path.relative(path.dirname(this.file.path), pageObject.path);
             if (!relative.match(/^\./)) {
                 relative = `./${relative}`;
             }
@@ -135,18 +152,6 @@ function createPageObjectModelConstructor (
 
         _getPageObjectsVersion (plugins) {
             return plugins.find(plugin => plugin.name === 'Page Objects').version;
-        }
-
-        _getPluginsWithActions (plugins) {
-            return plugins.slice(0)
-            .filter(plugin => {
-                return plugin.actions && plugin.actions.length;
-            })
-            .map(plugin => {
-                let { actions, name } = plugin;
-                plugin.meta = { actions, elements: [], name };
-                return new PageObjectMetaModel(plugin);
-            });
         }
 
         _getBrowser (elements) {

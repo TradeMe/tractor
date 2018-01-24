@@ -2,50 +2,40 @@
 import { PageObjectsModule } from '../page-objects.module';
 
 // Queries:
+const ACTION_CALL_EXPRESSION_QUERY = 'CallExpression[callee.object.name="result"] > FunctionExpression > BlockStatement > ReturnStatement > CallExpression';
 const ACTION_MEMBER_EXPRESSION_QUERY = 'MemberExpression[object.name!="self"][property.type="Identifier"]';
 const ELEMENT_MEMBER_EXPRESSION_QUERY = 'MemberExpression > MemberExpression[object.type="Identifier"][property.type="Identifier"]';
 const ELEMENT_GROUP_MEMBER_EXPRESSION_QUERY = 'MemberExpression > CallExpression > MemberExpression[object.type="Identifier"][property.type="Identifier"]';
 const ELEMENT_GROUP_SELECTOR_QUERY = 'CallExpression > MemberExpression > CallExpression';
-const FIRST_ACTION_QUERY = 'CallExpression[callee.object.name!="result"][callee.name!="resolve"]';
-const FIRST_ACTION_WRAPPED_QUERY = 'NewExpression > FunctionExpression > BlockStatement > ExpressionStatement > CallExpression > CallExpression';
 const PLUGIN_MEMBER_EXPRESSION_QUERY = 'MemberExpression[object.type="Identifier"][property.type="Identifier"]';
-const SUBSEQUENT_ACTION_QUERY = 'CallExpression[callee.object.name="result"] > FunctionExpression > BlockStatement > ReturnStatement';
 
 // Constants:
 import { ELEMENT_GROUP_SELECTOR_ARGUMENT } from '../models/meta/element-group-selector-argument';
 
 // Dependencies:
-import assert from 'assert';
 import esquery from 'esquery';
 import '../models/interaction';
-import './argument-parser.service';
+import './action-argument-parser.service';
 
 function InteractionParserService (
     InteractionModel,
-    poargumentParserService
+    astCompareService,
+    actionArgumentParserService
 ) {
-    const QUERIES = {
-        [FIRST_ACTION_QUERY]: _interactionParser,
-        [FIRST_ACTION_WRAPPED_QUERY]: _interactionParser,
-        [SUBSEQUENT_ACTION_QUERY]: _interactionParser
-    };
-
     return { parse };
 
     function parse (action, astObject) {
-        let interaction = new InteractionModel(action, action.lastInteraction);
+        let interaction = new InteractionModel(action);
 
-        let match = Object.keys(QUERIES).find(query => {
-            let [result] = esquery(astObject, query);
-            if (result) {
-                QUERIES[query](interaction, result);
-                return interaction;
-            }
-        });
+        let [actionCallExpression] = esquery(astObject, ACTION_CALL_EXPRESSION_QUERY);
+        _interactionParser(interaction, actionCallExpression);
 
-        if (match) {
-            return interaction;
+        let parsedCorrectly = astCompareService.compare(astObject, interaction.ast);
+        if (!parsedCorrectly) {
+            interaction.unparseable = astObject;
         }
+
+        return interaction;
     }
 
     function _actionParser (pageObject, astObject) {
@@ -76,16 +66,12 @@ function InteractionParserService (
             interaction.selector = _selectorParser(interaction, astObject);
         }
         interaction.element = element;
-        assert(interaction.element);
 
         interaction.action = _actionParser(interaction.element, astObject);
-        assert(interaction.action);
 
         let { parameters } = interaction.action;
         interaction.actionInstance.arguments = astObject.arguments.map((argument, index) => {
-            let arg = poargumentParserService.parse(interaction, parameters[index], argument);
-            assert(arg);
-            return arg;
+            return actionArgumentParserService.parse(interaction, parameters[index], argument);
         });
     }
 
@@ -98,7 +84,7 @@ function InteractionParserService (
     function _selectorParser (interaction, astObject) {
         let [selectorCallExpression] = esquery(astObject, ELEMENT_GROUP_SELECTOR_QUERY);
         let [argument] = selectorCallExpression.arguments;
-        return poargumentParserService.parse(interaction, ELEMENT_GROUP_SELECTOR_ARGUMENT, argument);
+        return actionArgumentParserService.parse(interaction, ELEMENT_GROUP_SELECTOR_ARGUMENT, argument);
     }
 }
 

@@ -11,8 +11,11 @@ describe('tractor-plugin-page-objects - run:', () => {
         let pageObjectsFileStructure = ineeda({
             read: NOOP
         });
+        let includeFileStructures = [ineeda({
+            read: NOOP
+        })];
 
-        run(pageObjectsFileStructure);
+        run(pageObjectsFileStructure, includeFileStructures);
 
         expect(pageObjectsFileStructure.read).to.have.been.called();
     });

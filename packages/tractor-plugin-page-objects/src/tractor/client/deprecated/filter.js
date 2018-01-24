@@ -26,7 +26,7 @@ function createDeprecatedFilterModelConstructor (
             },
             ast: {
                 get () {
-                    return toAST.call(this);
+                    return this.unparseable || toAST.call(this);
                 }
             }
         });

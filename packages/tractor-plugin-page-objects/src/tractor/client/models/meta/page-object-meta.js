@@ -11,8 +11,8 @@ function createPageObjectMetaModelConstructor (
     ValueModel
 ) {
     return class PageObjectMetaModel {
-        constructor (pageObject) {
-            let { meta, url } = pageObject;
+        constructor (pageObject, includeName) {
+            let { meta, path } = pageObject;
 
             this.actions = meta.actions.map(action => new ActionMetaModel({
                 ...action,
@@ -21,8 +21,11 @@ function createPageObjectMetaModelConstructor (
             this.elements = meta.elements.map(element => new ValueModel(element));
 
             this.name = meta.name;
-            this.url = url;
+            this.path = path;
             this.variableName = pascalcase(this.name);
+
+            this.isIncluded = !!includeName;
+            this.displayName = this.isIncluded ? `${includeName} - ${this.name}` : this.name;
         }
     }
 }

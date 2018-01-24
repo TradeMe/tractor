@@ -8,6 +8,7 @@ import './models/meta/page-object-meta';
 import './page-objects/page-objects.component';
 import './parsers/page-object-parser.service';
 import './page-objects-file-structure.service';
+import './page-objects.service';
 
 var tractor = angular.module('tractor');
 tractor.requires.push(PageObjectsModule.name);
@@ -23,20 +24,11 @@ tractor.config((
         url: 'page-objects{file:TractorFile}',
         component: 'tractorPageObjects',
         resolve: {
-            availablePageObjects ($injector) {
-                if (!$injector.has('pageObjectFileStructureService')) {
-                    return [];
-                }
-                let pageObjectFileStructureService = $injector.get('pageObjectFileStructureService');
-                let PageObjectMetaModel = $injector.get('PageObjectMetaModel');
-                return pageObjectFileStructureService.getFileStructure()
-                .then(() => pageObjectFileStructureService.fileStructure.allFiles.filter(file => {
-                    return file.extension === '.po.js';
-                })
-                .map(file => new PageObjectMetaModel(file)));
+            availablePageObjects (pageObjectsService) {
+                return pageObjectsService.getAvailablePageObjects();
             },
             pageObject ($stateParams, pageObjectFileStructureService, pageObjectParserService, availablePageObjects) {
-                var pageObjectUrl = $stateParams.file && $stateParams.file.url;
+                let pageObjectUrl = $stateParams.file && $stateParams.file.url;
                 if (!pageObjectUrl) {
                     return null;
                 }

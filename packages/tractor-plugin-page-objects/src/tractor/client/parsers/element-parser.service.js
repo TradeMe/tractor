@@ -4,7 +4,7 @@ import { PageObjectsModule } from '../page-objects.module';
 // Queries:
 const SELECTOR_QUERY = 'CallExpression[callee.object.name="by"][callee.property.name="css"] > Literal';
 const ELEMENT_QUERY = `AssignmentExpression > CallExpression[callee.name="find"]`;
-const ELEMENT_MULTIPLE_QUERY = 'AssignmentExpression > FunctionExpression ReturnStatement > CallExpression[callee.object.callee.object.name="find"][callee.object.callee.property.name="all"]';
+const ELEMENT_MULTIPLE_QUERY = 'AssignmentExpression > FunctionExpression ReturnStatement > CallExpression[callee.object.callee.name="findAll"]';
 const PAGE_OBJECT_QUERY = 'AssignmentExpression > NewExpression[arguments.0.callee.name="find"]';
 const PAGE_OBJECT_MULTIPLE_QUERY = 'AssignmentExpression > FunctionExpression ReturnStatement > NewExpression';
 
@@ -15,6 +15,7 @@ import '../models/element';
 
 function ElementParserService (
     ElementModel,
+    astCompareService,
     deprecatedElementParserService
 ) {
     const QUERIES = {
@@ -26,11 +27,11 @@ function ElementParserService (
 
     return { parse };
 
-    function parse (pageObject, astObject, meta) {
+    function parse (pageObject, astObject, meta = {}) {
         let element = new ElementModel(pageObject);
         element.name = meta.name;
 
-        let match = Object.keys(QUERIES).find(query => {
+        Object.keys(QUERIES).find(query => {
             let [result] = esquery(astObject, query);
             if (result) {
                 QUERIES[query](element, result);
@@ -38,9 +39,16 @@ function ElementParserService (
             }
         });
 
-        if (match) {
+        // Here we return if we parsed correctly, otherwise attempt to use the
+        // deprecatedElementParserService.
+        //
+        // If the deprecatedElementParserService also fails, the action will be marked
+        // as unparseable.
+        let parsedCorrectly = astCompareService.compare(astObject, element.ast);
+        if (parsedCorrectly) {
             return element;
         }
+
         return deprecatedElementParserService.parse(pageObject, astObject, meta);
     }
 
@@ -54,7 +62,7 @@ function ElementParserService (
     }
 
     function _elementMultipleParser (element, astObject) {
-        element.isMultiple = true;
+        element.isGroup = true;
         _elementParser(element, astObject);
     }
 
@@ -69,7 +77,7 @@ function ElementParserService (
     }
 
     function _pageObjectMultipleParser (element, astObject) {
-        element.isMultiple = true;
+        element.isGroup = true;
         _pageObjectParser(element, astObject);
     }
 }

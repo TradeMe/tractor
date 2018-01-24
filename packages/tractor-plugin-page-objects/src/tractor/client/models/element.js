@@ -13,7 +13,7 @@ function createElementModelConstructor (
         constructor (pageObject) {
             this.pageObject = pageObject;
 
-            this.isMultiple = false;
+            this.isGroup = false;
             this.name = '';
             this.selector = '';
 
@@ -21,11 +21,11 @@ function createElementModelConstructor (
         }
 
         get ast () {
-            return this._toAST();
+            return this.unparseable || this._toAST();
         }
 
         get meta () {
-            return this._toMeta();
+            return this.name ? this._toMeta() : null;
         }
 
         get variableName () {
@@ -52,10 +52,10 @@ function createElementModelConstructor (
             if (this.type) {
                 type = ast.identifier(this.type.variableName);
 
-                if (this.isMultiple) {
+                if (this.isGroup) {
                     template = `
                         this.<%= element %> = function (groupSelector) {
-                            return new <%= type %>(find.all(by.css(<%= selector %>)).getFromGroup(groupSelector));
+                            return new <%= type %>(findAll(by.css(<%= selector %>)).getFromGroup(groupSelector));
                         };
                     `;
                 } else {
@@ -64,10 +64,10 @@ function createElementModelConstructor (
                     `;
                 }
             } else {
-                if (this.isMultiple) {
+                if (this.isGroup) {
                     template = `
                         this.<%= element %> = function (groupSelector) {
-                            return find.all(by.css(<%= selector %>)).getFromGroup(groupSelector);
+                            return findAll(by.css(<%= selector %>)).getFromGroup(groupSelector);
                         };
                     `;
                 } else {
@@ -80,13 +80,9 @@ function createElementModelConstructor (
         }
 
         _toMeta () {
-            let meta = {
+            return {
                 name: this.name
             };
-            if (this.type) {
-                meta.type = this.type.name;
-            }
-            return meta;
         }
     }
 }

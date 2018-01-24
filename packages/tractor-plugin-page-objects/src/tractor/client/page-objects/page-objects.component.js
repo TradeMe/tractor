@@ -36,6 +36,9 @@ function  PageObjectsController (
         pageObject,
         '.po.js'
     );
+    // LOL, fix this:
+    controller.fileModel.availablePageObjects = $scope.$parent.$resolve.availablePageObjects;
+
     controller.style = $sce.trustAsHtml(style.toString());
 
     controller.fileStyle = function (item) {

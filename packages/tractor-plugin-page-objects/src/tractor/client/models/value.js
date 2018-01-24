@@ -8,7 +8,7 @@ function createValueModelConstructor (
     astCreatorService
 ) {
     return class ValueModel {
-        constructor (value) {
+        constructor (value = {}) {
             let { description, name, required, resolves, type } = value;
 
             this.description = description;
@@ -19,11 +19,11 @@ function createValueModelConstructor (
         }
 
         get ast () {
-            return this._toAST();
+            return this.unparseable || this._toAST();
         }
 
         get meta () {
-            return this._toMeta();
+            return this.name ? this._toMeta() : null;
         }
 
         get variableName () {

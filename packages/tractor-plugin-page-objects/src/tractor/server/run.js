@@ -1,6 +1,15 @@
+// Dependencies:
+import Promise from 'bluebird';
+
 export function run (
-    pageObjectsFileStructure
+    pageObjectsFileStructure,
+    includeFileStructures
 ) {
-    return pageObjectsFileStructure.read();
+    // eslint-disable-next-line
+    debugger;
+    return Promise.all([
+        pageObjectsFileStructure.read(),
+        Promise.map(includeFileStructures, includeFileStructure => includeFileStructure.read())
+    ]);
 }
-run['@Inject'] = ['pageObjectsFileStructure'];
+run['@Inject'] = ['pageObjectsFileStructure', 'includeFileStructures'];
