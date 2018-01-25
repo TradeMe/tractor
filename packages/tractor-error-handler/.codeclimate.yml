@@ -1,8 +1,9 @@
-engines:
+version: "2"
+plugins:
   duplication:
     enabled: true
-    exclude_paths:
-    - "**.spec.js"
+    exclude_patterns:
+    - "**/*.spec.js"
     config:
       languages:
       - javascript
@@ -10,6 +11,5 @@ engines:
     enabled: true
   fixme:
     enabled: true
-ratings:
-  paths:
-  - "**.js"
+  nodesecurity:
+    enabled: true
