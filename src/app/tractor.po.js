@@ -4,9 +4,11 @@ module.exports = function () {
     };
     Tractor.prototype.goHome = function () {
         var self = this;
-        return new Promise(function (resolve) {
-            resolve(browser.get('/', null));
+        var result = Promise.resolve();
+        result = result.then(function () {
+            return browser.get('/', null);
         });
+        return result;
     };
     return Tractor;
 }();

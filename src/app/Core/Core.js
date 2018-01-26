@@ -22,6 +22,7 @@ require('./Components/Submit/SubmitDirective');
 require('./Components/TextInput/TextInputDirective');
 require('./Components/VariableInput/VariableInputDirective');
 
+require('./Services/ASTCompareService');
 require('./Services/ASTCreatorService');
 require('./Services/ConfirmDialogService');
 require('./Services/FileEditorService');

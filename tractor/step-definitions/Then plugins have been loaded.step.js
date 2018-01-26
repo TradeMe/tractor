@@ -2,7 +2,7 @@
 module.exports = function () {
     var ControlPanel = require('../../src/app/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
     this.Then(/^plugins have been loaded$/, function (done) {
-        Promise.all([expect(controlPanel.pluginIsLoaded()).to.eventually.equal(true)]).spread(function () {
+        Promise.all([expect(controlPanel.pluginIsLoaded('Features')).to.eventually.equal(true)]).spread(function () {
             done();
         }).catch(done.fail);
     });

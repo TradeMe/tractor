@@ -70,7 +70,7 @@
             drop-directory="item">
         </li>
 
-        <li class="file-tree__file-list-item"
+        <li class="file-tree__file-list-item file-tree__file-list-item--file"
             ng-class="{{ fileTree.getFileStyle(item) }}"
             ng-repeat="item in (item || fileTree.fileStructure).files"
             tractor-drag-file>

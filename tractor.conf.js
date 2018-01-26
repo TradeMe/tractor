@@ -1,9 +1,9 @@
 'use strict';
 
 module.exports = {
+    port: 4444,
     environments: [
-        'http://localhost:3000',
-        'http://localhost:4000'
+        'http://localhost:4444'
     ],
     pageObjects: {
         directory: './src/app'
