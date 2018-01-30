@@ -2,7 +2,7 @@
 import { MockRequestsModule } from '../mock-requests.module';
 
 // Dependencies:
-import '../mock-request';
+import '../models/mock-data';
 import '../mock-request-file-structure.service';
 
 // Template:
@@ -21,7 +21,7 @@ function MockRequestsController (
     mockRequestFileStructureService,
     persistentStateService,
     notifierService,
-    MockRequest
+    MockDataModel
 ) {
     let { mockRequest } = $scope.$parent.$resolve;
     let controller = new fileEditorControllerFactory(
@@ -32,7 +32,7 @@ function MockRequestsController (
         mockRequestFileStructureService,
         persistentStateService,
         notifierService,
-        MockRequest,
+        MockDataModel,
         mockRequest,
         '.mock.json'
     );

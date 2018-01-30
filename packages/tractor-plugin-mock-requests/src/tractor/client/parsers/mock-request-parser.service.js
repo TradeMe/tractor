@@ -1,25 +1,25 @@
 // Module:
-import { MockRequestsModule } from './mock-requests.module';
+import { MockRequestsModule } from '../mock-requests.module';
 
 // Dependencies:
-import './mock-request';
+import '../models/mock-data';
 
 function MockRequestParserService (
-    MockRequest
+    MockDataModel
 ) {
     return { parse };
 
     function parse (mockRequestFile) {
         let { basename, content } = mockRequestFile;
         try {
-            var mockRequest = new MockRequest(content, {
+            var mockRequest = new MockDataModel(content, {
                 isSaved: true,
                 file: mockRequestFile
             });
             mockRequest.name = basename;
             return mockRequest;
         } catch (e) {
-            return new MockRequest();
+            return new MockDataModel();
         }
     }
 }

@@ -1,8 +1,8 @@
 // Module:
-import { MockRequestsModule } from './mock-requests.module';
+import { MockRequestsModule } from '../mock-requests.module';
 
 var createMockRequestConstructor = function () {
-    var MockRequest = function MockRequest (json, options) {
+    var MockDataModel = function MockDataModel (json, options) {
         json = json || '{}';
 
         this.name = '';
@@ -40,7 +40,7 @@ var createMockRequestConstructor = function () {
         });
     };
 
-    return MockRequest;
+    return MockDataModel;
 };
 
-MockRequestsModule.factory('MockRequest', createMockRequestConstructor);
+MockRequestsModule.factory('MockDataModel', createMockRequestConstructor);
