@@ -19,7 +19,7 @@ var ASTCompareService = function () {
         downgradeFunctionExpressions(a);
         downgradeFunctionExpressions(b);
         downgradeStringLiterals(a);
-        downgradeStringLiterals(a);
+        downgradeStringLiterals(b);
 
         return deepEqual(a, b);
     }
@@ -39,7 +39,7 @@ var ASTCompareService = function () {
     }
 
     function downgradeStringLiterals (ast) {
-        esquery(ast, 'Literal[raw=/^\'.*\'|null$/]').forEach(stringLiteral => {
+        esquery(ast, 'Literal[raw]').forEach(stringLiteral => {
             delete stringLiteral.raw;
         });
     }
