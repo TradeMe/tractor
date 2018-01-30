@@ -17,19 +17,19 @@ describe('tractor-plugin-page-objects - tractor/config:', () => {
             let processed = config(tractorConfig);
 
             expect(processed).to.equal(pageObjectsConfig);
-            expect(processed.directory).to.equal('./tractor/page-objects');
+            expect(processed.directory).to.equal('./tractor/page-objects/');
         });
 
         it('should allow for a custom directory to be set', () => {
             let tractorConfig = {
                 pageObjects: {
-                    directory: './src'
+                    directory: './src/'
                 }
             };
 
             let processed = config(tractorConfig);
 
-            expect(processed.directory).to.equal('./src');
+            expect(processed.directory).to.equal('./src/');
         });
     });
 });

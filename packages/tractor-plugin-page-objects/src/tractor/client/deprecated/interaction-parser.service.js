@@ -97,7 +97,7 @@ function DeprecatedInteractionParserService (
         }
 
         if (notFirstWrappedPromiseInteraction && notFirstOwnPromiseInteraction && notWrappedPromiseInteraction && notOwnPromiseInteraction && notValidInteraction) {
-            interaction.unparseable = astObject;
+            interaction.isUnparseable = astObject;
         }
     }
 }

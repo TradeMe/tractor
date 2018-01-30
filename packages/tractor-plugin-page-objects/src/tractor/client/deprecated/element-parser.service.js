@@ -15,28 +15,14 @@ function DeprecatedElementParserService (
     function parse (pageObject, astObject, meta, element) {
         if (!element) {
             element = new DeprecatedElementModel(pageObject);
+            element.isDeprecated = true;
             element.name = meta.name;
         }
 
         let elementCallExpression;
-        try {
-            elementCallExpression = astObject.expression.right;
-        // eslint-disable-next-line no-empty
-        } catch (e) { }
-
-        try {
-            let newExpression = astObject.expression.right;
-            assert(newExpression.type === 'NewExpression');
-            elementCallExpression = newExpression.arguments[0];
-            element.type = pageObject.availablePageObjects.find(pageObject => {
-                return pageObject.variableName === newExpression.callee.name
-            });
-            element.actions = element.type.actions;
-        // eslint-disable-next-line no-empty
-        } catch (e) { }
-
         let elementCallExpressionCallee;
         try {
+            elementCallExpression = astObject.right;
             elementCallExpressionCallee = elementCallExpression.callee;
         // eslint-disable-next-line no-empty
         } catch (e) { }
@@ -51,9 +37,7 @@ function DeprecatedElementParserService (
             } catch (e) { }
 
             parse(pageObject, {
-                expression: {
-                    right: elementCallExpressionCallee.object
-                }
+                right: elementCallExpressionCallee.object
             }, meta, element);
         // eslint-disable-next-line no-empty
         } catch (e) { }
@@ -66,7 +50,7 @@ function DeprecatedElementParserService (
         let notElementGet = false;
 
         try {
-            assert(elementCallExpressionCallee.name === 'find');
+            assert(elementCallExpressionCallee.name === 'element');
             let [filterAST] = elementCallExpression.arguments;
             let filter = deprecatedFilterParserService.parse(element, filterAST);
             element.addFilter(filter);
@@ -76,7 +60,7 @@ function DeprecatedElementParserService (
 
         try {
             if (notFirstElementBy) {
-                assert(elementCallExpressionCallee.object.name === 'find');
+                assert(elementCallExpressionCallee.object.name === 'element');
                 assert(elementCallExpressionCallee.property.name === 'all');
                 let [filterAllAST] = elementCallExpression.arguments;
                 let filter = deprecatedFilterParserService.parse(element, filterAllAST);
@@ -131,7 +115,7 @@ function DeprecatedElementParserService (
         }
 
         if (notFirstElementBy && notFirstElementAllBy && notElementBy && notElementAllBy && notElementFilter && notElementGet) {
-            element.unparseable = astObject;
+            element.isUnparseable = astObject;
         }
 
         return element;

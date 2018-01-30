@@ -5,7 +5,7 @@ module.exports = {
     pageObjects: {
         directory: './src/tractor/client/',
         include: {
-            tractor: './node_modules/tractor-client/dist/page-objects'
+            tractor: './node_modules/tractor-client/dist/page-objects/'
         }
     },
     cucumber: {

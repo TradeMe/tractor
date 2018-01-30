@@ -40,12 +40,11 @@ function createDeprecatedElementModelConstructor (
             },
             ast: {
                 get () {
-                    return this.unparseable || toAST.call(this);
+                    return this.isUnparseable || toAST.call(this);
                 }
             }
         });
 
-        this.isDeprecated = true;
         this.actions = ELEMENT_ACTIONS;
         this.name = '';
         this.filters = [];
@@ -85,10 +84,6 @@ function createDeprecatedElementModelConstructor (
         let element = ast.identifier(this.variableName);
         let filters = filtersAST.call(this);
 
-        if (this.type) {
-            let type = ast.identifier(this.type.variableName);
-            return ast.expression('this.<%= element %> = new <%= type %>(<%= filters %>);', { element, filters, type });
-        }
         return ast.expression('this.<%= element %> = <%= filters %>;', { element, filters });
     }
 
@@ -113,9 +108,9 @@ function createDeprecatedElementModelConstructor (
 
     function filterAST (filter, filterTemplate) {
         if (filter.isGroup) {
-            return 'find.all(' + filterTemplate + ')';
+            return 'element.all(' + filterTemplate + ')';
         } else {
-            return 'find(' + filterTemplate + ')';
+            return 'element(' + filterTemplate + ')';
         }
     }
 

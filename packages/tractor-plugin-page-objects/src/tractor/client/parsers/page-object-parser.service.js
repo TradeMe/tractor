@@ -33,11 +33,12 @@ function PageObjectParserService (
             meta = JSON.parse(metaComment.value);
         } catch (e) {
             // If we can't parse the meta comment, we just bail straight away:
-            pageObject.unparseable = astObject;
+            pageObject.isUnparseable = astObject;
             return pageObject;
         }
 
         pageObject.name = meta.name;
+        pageObject.version = meta.version;
         pageObject.availablePageObjects = availablePageObjects.filter(availablePageObject => {
             return availablePageObject.name !== pageObject.name;
         });
@@ -63,7 +64,10 @@ function PageObjectParserService (
 
         let parsedCorrectly = astCompareService.compare(astObject, pageObject.ast);
         if (!parsedCorrectly) {
-            pageObject.unparseable = astObject;
+            pageObject.isUnparseable = astObject;
+            if (meta.version !== pageObject.version) {
+                pageObject.outdated = true;
+            }
         }
 
         return pageObject;

@@ -1,12 +1,8 @@
 // Module:
 import { PageObjectsModule } from '../page-objects.module';
 
-// Queries:
-const ACTION_FUNCTION_QUERY = 'FunctionExpression[params]';
-const INTERACTION_QUERY = 'FunctionExpression > BlockStatement > ReturnStatement';
-
 // Dependencies:
-import esquery from 'esquery';
+import assert from 'assert';
 import '../models/action';
 import '../models/value';
 import './interaction-parser.service';
@@ -21,24 +17,47 @@ function DeprecatedActionParserService (
 
     function parse (pageObject, astObject, meta) {
         let action = new ActionModel(pageObject);
+        action.isDeprecated = true;
         action.name = meta.name;
 
-        let [actionFunction] = esquery(astObject, ACTION_FUNCTION_QUERY);
-        actionFunction.params.forEach(param => {
+        let actionFunctionExpression = astObject.right;
+        let actionBody = actionFunctionExpression.body.body;
+
+        actionFunctionExpression.params.forEach(param => {
             let parameterMeta = meta.parameters[action.parameters.length];
             let parameter = new ValueModel(parameterMeta);
             if (!parameterMeta) {
-                parameter.unparseable = param;
+                parameter.isUnparseable = param;
             }
             action.parameters.push(parameter);
         });
 
-        let [interaction] = esquery(astObject, INTERACTION_QUERY);
-        deprecatedInteractionParserService.parse(action, interaction);
+        actionBody.forEach((statement) => {
+            let notSelf = false;
+            let notInteraction = false;
 
-        let parsedCorrectly = astCompareService.compare(astObject, action.ast);
-        if (!parsedCorrectly) {
-            action.unparseable = astObject;
+            try {
+                let [selfVariableDeclarator] = statement.declarations;
+                assert(selfVariableDeclarator.id.name === 'self');
+            } catch (e) {
+                notSelf = true;
+            }
+
+            try {
+                if (notSelf) {
+                    deprecatedInteractionParserService.parse(action, statement);
+                }
+            } catch (e) {
+                notInteraction = true;
+            }
+
+            if (notSelf && notInteraction) {
+                action.isUnparseable = astObject;
+            }
+        });
+
+        if (!action.isUnparseable) {
+            astObject.right = action.ast.right;
         }
 
         return action;

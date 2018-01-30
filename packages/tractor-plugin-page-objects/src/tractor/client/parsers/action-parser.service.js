@@ -29,7 +29,7 @@ function ActionParserService (
             let parameterMeta = meta.parameters[action.parameters.length];
             let parameter = new ValueModel(parameterMeta);
             if (!parameterMeta) {
-                parameter.unparseable = param;
+                parameter.isUnparseable = param;
             }
             action.parameters.push(parameter);
         });

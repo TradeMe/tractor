@@ -21,7 +21,7 @@ function createElementModelConstructor (
         }
 
         get ast () {
-            return this.unparseable || this._toAST();
+            return this.isUnparseable || this._toAST();
         }
 
         get meta () {

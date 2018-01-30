@@ -9,7 +9,7 @@ export function addSelectHelpers () {
     };
 
     ElementFinder.prototype.selectOptionByIndex = function (index) {
-        index = parseOrdinal(index) || index;
+        index = parseOrdinal(index) - 1 || index;
         return this.all(by.tagName('option')).then(options => options[index].click());
     };
 

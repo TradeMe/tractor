@@ -67,7 +67,7 @@ function DeprecatedFilterParserService (
         }
 
         if (notModelBindingCSSOptionsRepeater && notText && notAllIndex && notAllString) {
-            filter.unparseable = astObject;
+            filter.isUnparseable = astObject;
         }
 
         return filter;

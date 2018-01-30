@@ -33,7 +33,7 @@ function createPageObjectModelConstructor (
         }
 
         get ast () {
-            return this.unparseable || this._toAST();
+            return this.isUnparseable || this._toAST();
         }
 
         get data () {
@@ -102,6 +102,7 @@ function createPageObjectModelConstructor (
             let pageObject = ast.identifier(this.variableName);
             let elements = this.domElements.map(element => ast.expressionStatement(element.ast));
             let hasElements = this.domElements.find(element => !element.isGroup);
+            let hasOnlyDeprecatedElements = this.domElements.filter(element => element.isDeprecated).length === this.domElements.length;
             let hasElementGroups = this.domElements.find(element => element.isGroup);
 
             let actions = this.actions.map(action => ast.expressionStatement(action.ast));
@@ -111,10 +112,17 @@ function createPageObjectModelConstructor (
                     %= imports %
             `
             if (elements.length) {
-                template += `
-                    var <%= pageObject %> = function <%= pageObject %> (parent) {
-                `;
-                if (hasElements) {
+                if (hasOnlyDeprecatedElements) {
+                    template += `
+                        var <%= pageObject %> = function <%= pageObject %> () {
+                    `;
+                } else {
+                    template += `
+                        var <%= pageObject %> = function <%= pageObject %> (parent) {
+                    `;
+                }
+
+                if (hasElements && !hasOnlyDeprecatedElements) {
                     template += `
                         var find = parent ? parent.element.bind(parent) : element;
                     `;
@@ -151,7 +159,7 @@ function createPageObjectModelConstructor (
         }
 
         _getPageObjectsVersion (plugins) {
-            return plugins.find(plugin => plugin.name === 'Page Objects').version;
+            return this.version || plugins.find(plugin => plugin.name === 'Page Objects').version;
         }
 
         _getBrowser (elements) {

@@ -32,7 +32,7 @@ function InteractionParserService (
 
         let parsedCorrectly = astCompareService.compare(astObject, interaction.ast);
         if (!parsedCorrectly) {
-            interaction.unparseable = astObject;
+            interaction.isUnparseable = astObject;
         }
 
         return interaction;

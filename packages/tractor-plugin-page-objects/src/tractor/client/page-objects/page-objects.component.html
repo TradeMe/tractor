@@ -43,12 +43,23 @@
 
         <section class="file-editor">
             <div
-                ng-if="$ctrl.fileModel.unparseable">
-                Could not parse.
+                class="unparseable"
+                ng-if="$ctrl.fileModel.isUnparseable">
+                <p>
+                    Could not parse this Page Object. The underlying JavaScript may have been modified.
+                </p>
+                <p
+                    ng-if="$ctrl.fileModel.version">
+                    This Page Object was created with version {{ $ctrl.fileModel.version }}
+                </p>
+                <p
+                    ng-if="$ctrl.fileModel.outdated">
+                    Try running <span><code>tractor upgrade</code></span> to automatically upgrade this file.
+                <p>
             </div>
 
             <div
-                ng-if="!$ctrl.fileModel.unparseable">
+                ng-if="!$ctrl.fileModel.isUnparseable">
                 <section ng-show="$ctrl.fileModel.name">
                     <section class="file-editor__container">
                         <h2>Elements:</h2>
@@ -89,18 +100,21 @@
                                     </div>
 
                                     <div
-                                        ng-if="domElement.unparseable">
-                                        Could not parse.
+                                        class="unparseable"
+                                        ng-if="domElement.isUnparseable">
+                                        Could not parse this element. The underlying JavaScript has been modified.
                                     </div>
 
                                     <div
-                                        ng-if="!domElement.unparseable">
+                                        ng-if="!domElement.isUnparseable">
                                         <section
-                                            class="file-editor__list-item--deprecated"
+                                            class="file-editor__list-item"
                                             ng-if="domElement.isDeprecated">
-                                            <h3>The old way of selecting and filtering elements is deprecated.</h3>
-                                            <h3>You need to re-create this element using CSS selectors.</h3>
-                                            <br>
+                                            <div
+                                                class="deprecated">
+                                                <p>The old way of selecting and filtering elements is deprecated.</p>
+                                                <p>You need to re-create this element using CSS selectors.</p>
+                                            </div>
                                             <tractor-variable-input
                                                 form="file-editor"
                                                 label="Name"
@@ -137,12 +151,13 @@
                                                         </div>
 
                                                         <div
-                                                            ng-if="filter.unparseable">
-                                                            Could not parse.
+                                                            class="unparseable"
+                                                            ng-if="filter.isUnparseable">
+                                                            Could not parse this filter. The underlying JavaScript has been modified.
                                                         </div>
 
                                                         <div
-                                                            ng-if="!filter.unparseable">
+                                                            ng-if="!filter.isUnparseable">
                                                             <tractor-select
                                                                 ng-if="!domElement.filters[$index].isGroup"
                                                                 label="selector"
@@ -250,12 +265,13 @@
                                     </div>
 
                                     <div
-                                        ng-if="action.unparseable">
-                                        Could not parse.
+                                        class="unparseable"
+                                        ng-if="action.isUnparseable">
+                                        Could not parse this action. The underlying JavaScript has been modified.
                                     </div>
 
                                     <div
-                                        ng-if="!action.unparseable">
+                                        ng-if="!action.isUnparseable">
                                         <tractor-action
                                             model="$ctrl"
                                             action="minimise"
@@ -291,12 +307,13 @@
                                                     </div>
 
                                                     <div
-                                                        ng-if="parameter.unparseable">
-                                                        Could not parse.
+                                                        class="unparseable"
+                                                        ng-if="parameter.isUnparseable">
+                                                        Could not parse this parameter. The underlying JavaScript has been modified.
                                                     </div>
 
                                                     <section
-                                                        ng-if="!parameter.unparseable">
+                                                        ng-if="!parameter.isUnparseable">
                                                         <tractor-variable-input
                                                             form="file-editor"
                                                             label="Name"
@@ -338,12 +355,13 @@
                                                     </div>
 
                                                     <div
-                                                        ng-if="interaction.unparseable">
-                                                        Could not parse.
+                                                        class="unparseable"
+                                                        ng-if="interaction.isUnparseable">
+                                                        Could not parse this interaction. The underlying JavaScript has been modified.
                                                     </div>
 
                                                     <section
-                                                        ng-if="!interaction.unparseable">
+                                                        ng-if="!interaction.isUnparseable">
                                                         <tractor-select
                                                             label="Element"
                                                             model="interaction"
@@ -370,11 +388,12 @@
 
                                                         <div ng-repeat="argument in interaction.actionInstance.arguments">
                                                             <div
-                                                                ng-if="argument.unparseable">
-                                                                Could not parse.
+                                                                class="unparseable"
+                                                                ng-if="argument.isUnparseable">
+                                                                Could not parse this argument. The underlying JavaScript has been modified.
                                                             </div>
                                                             <tractor-literal-input
-                                                                ng-if="!argument.unparseable"
+                                                                ng-if="!argument.isUnparseable"
                                                                 form="file-editor"
                                                                 name="argument.name"
                                                                 model="argument"

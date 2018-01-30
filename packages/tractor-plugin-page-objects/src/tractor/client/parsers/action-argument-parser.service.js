@@ -34,7 +34,7 @@ function ActionArgumentParserService (
 
         let parsedCorrectly = astCompareService.compare(astObject, argument.ast);
         if (!parsedCorrectly) {
-            argument.unparseable = astObject;
+            argument.isUnparseable = astObject;
         }
 
         return argument;

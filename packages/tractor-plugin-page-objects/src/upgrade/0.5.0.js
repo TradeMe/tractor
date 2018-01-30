@@ -1,8 +1,7 @@
 // Queries:
-const CONSTRUCTOR_FUNCTION = 'AssignmentExpression > CallExpression > FunctionExpression > BlockStatement > VariableDeclaration FunctionExpression';
+const CONSTRUCTOR_FUNCTION = 'AssignmentExpression > CallExpression > FunctionExpression > BlockStatement > VariableDeclaration > VariableDeclarator > FunctionExpression';
 const ELEMENT_ASSIGNMENT = 'FunctionExpression[id.name] > BlockStatement > ExpressionStatement > AssignmentExpression';
-const ELEMENT_CALL_EXPRESSION = 'CallExpression[callee.name="element"]';
-const ELEMENT_ALL_MEMBER_EXPRESSION = 'MemberExpression[object.name="element"][property.name="all"]';
+const ELEMENT_BY_CSS_CALL_EXPRESSION = 'AssignmentExpression > CallExpression[callee.name="element"] > CallExpression > MemberExpression[object.name="by"][property.name="css"]';
 
 // Code:
 const FIND_EQUALS_CODE = 'var find = parent ? parent.element.bind(parent) : element;';
@@ -29,16 +28,19 @@ function upgrade (file) {
     };
     const [FIND_EQUALS_DECLARATION] = esprima.parse(FIND_EQUALS_CODE).body;
 
-    esquery(file.ast, CONSTRUCTOR_FUNCTION).forEach(func => {
-        func.params.push(PARENT);
-        func.body.body.unshift(FIND_EQUALS_DECLARATION);
-    });
+    let hasElementByCss = false;
     esquery(file.ast, ELEMENT_ASSIGNMENT).forEach(assignment => {
-        esquery(assignment, ELEMENT_CALL_EXPRESSION).forEach(expression => {
-            expression.callee = FIND;
-        });
-        esquery(assignment, ELEMENT_ALL_MEMBER_EXPRESSION).forEach(expression => {
-            expression.object = FIND;
-        });
+        let [elementByCss] = esquery(assignment, ELEMENT_BY_CSS_CALL_EXPRESSION);
+        if (elementByCss) {
+            hasElementByCss = true
+            assignment.right.callee = FIND;
+        }
+    });
+
+    esquery(file.ast, CONSTRUCTOR_FUNCTION).forEach(func => {
+        if (hasElementByCss) {
+            func.params.push(PARENT);
+            func.body.body.unshift(FIND_EQUALS_DECLARATION);
+        }
     });
 }
