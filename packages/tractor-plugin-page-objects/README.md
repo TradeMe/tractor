@@ -11,7 +11,9 @@ Plugin for [**tractor**](https://github.com/TradeMe/tractor) for creating [**Pag
 # How to install:
 
 `npm install tractor-plugin-page-objects --dev`
+
 or
+
 `yan add tractor-plugin-page-objects --dev`
 
 # Config:
@@ -30,7 +32,7 @@ module.exports = {
 };
 ```
 
-For more information see [the wiki](https://github.com/phenomnomnominal/tractor-plugin-page-objects/wiki/Page-Objects-plugin-configuration).
+For more information [see here](https://github.com/phenomnomnominal/tractor-plugin-page-objects/tree/master/docs/configuration.md)
 
 # What does this plugin do?
 
@@ -40,7 +42,7 @@ A **Page Object** is composed of **Elements** and **Actions**. An **Element** is
 
 This plugin provides a UI for describing **Page Object** classes with **Elements** and **Actions** and generates the corresponding JavaScript code for that class. As an example, the following is generated JavaScript that describes following piece of UI:
 
-![tractor-page-objects action parameter](https://github.com/phenomnomnominal/tractor-plugin-page-objects/tree/master/docs/configuration.md)
+![tractor-page-objects action parameter](https://github.com/phenomnomnominal/tractor-plugin-page-objects/tree/master/docs/assets/tractor-page-objects action parameter.png)
 
 ```
 /*{"name":"tractor-page-objects action parameter","elements":[{"name":"name input"},{"name":"remove parameter button"}],"actions":[{"name":"add parameter","parameters":[{"name":"name"}]},{"name":"remove parameter","parameters":[]}],"version":"0.5.0"}*/
@@ -69,3 +71,31 @@ module.exports = function () {
     return TractorPageObjectsActionParameter;
 }();
 ```
+
+# Development:
+
+To set up development:
+
+```
+yarn // install dependencies
+yarn link "tractor-plugin-page-objects" // link plugin to use itself
+tractor init
+```
+
+To run plugin...
+
+```
+mkdir test
+yarn tractor:test // in one tab
+yarn tractor // in another tab
+```
+
+To run tests...
+
+```
+mkdir test
+yarn tractor:test // in one tab
+yarn test:e2e // in another tab
+```
+
+If you care, check out the [design decisions document](https://github.com/phenomnomnominal/tractor-plugin-page-objects/tree/master/docs/design decisions.md)
