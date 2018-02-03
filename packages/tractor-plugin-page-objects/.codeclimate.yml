@@ -4,6 +4,8 @@ plugins:
     enabled: true
     exclude_patterns:
     - "**/*.spec.js"
+    - "**/*.po.js"
+    - "**/*.step.js"
     config:
       languages:
       - javascript
