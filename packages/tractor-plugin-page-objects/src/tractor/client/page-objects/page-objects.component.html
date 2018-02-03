@@ -19,7 +19,7 @@
             <div>
                 <tractor-variable-input class="file-options__name-input"
                     ng-if="!$ctrl.fileModel.file"
-                    form="file-editor"
+                    form="fileEditor"
                     label="Name"
                     model="$ctrl.fileModel"
                     example="Page Object"
@@ -116,19 +116,20 @@
                                                 <p>You need to re-create this element using CSS selectors.</p>
                                             </div>
                                             <tractor-variable-input
-                                                form="file-editor"
+                                                form="fileEditor"
                                                 label="Name"
                                                 model="domElement"
                                                 example="element"
                                                 all-variable-names="$ctrl.getAllVariableNames($ctrl.fileModel, domElement)">
                                             </tractor-variable-input>
                                             <tractor-select
+                                                form="fileEditor"
                                                 label="Selector"
                                                 model="domElement.selector"
                                                 required>
                                             </tractor-select>
                                             <tractor-text-input
-                                                form="file-editor"
+                                                form="fileEditor"
                                                 label="Locator"
                                                 model="domElement.selector"
                                                 example="someController.someModel">
@@ -160,12 +161,13 @@
                                                             ng-if="!filter.isUnparseable">
                                                             <tractor-select
                                                                 ng-if="!domElement.filters[$index].isGroup"
+                                                                form="fileEditor"
                                                                 label="selector"
                                                                 model="filter"
                                                                 required>
                                                             </tractor-select>
                                                             <tractor-text-input
-                                                                form="file-editor"
+                                                                form="fileEditor"
                                                                 label="Locator"
                                                                 model="filter"
                                                                 example="someController.someModel">
@@ -184,14 +186,14 @@
                                         <section
                                             ng-if="!domElement.isDeprecated">
                                             <tractor-variable-input
-                                                form="file-editor"
+                                                form="fileEditor"
                                                 label="Name"
                                                 model="domElement"
                                                 example="element"
                                                 all-variable-names="$ctrl.getAllVariableNames($ctrl.fileModel, domElement)">
                                             </tractor-variable-input>
                                             <tractor-text-input
-                                                form="file-editor"
+                                                form="fileEditor"
                                                 label="selector"
                                                 model="domElement"
                                                 example="someController.someModel">
@@ -204,6 +206,7 @@
                                             <section>
                                                 <tractor-select
                                                     ng-if="domElement.type"
+                                                    form="fileEditor"
                                                     label="Type"
                                                     as="displayName"
                                                     options="domElement.pageObject.availablePageObjects"
@@ -280,7 +283,7 @@
                                         </tractor-action>
 
                                         <tractor-variable-input
-                                            form="file-editor"
+                                            form="fileEditor"
                                             label="Name"
                                             model="action"
                                             example="action"
@@ -315,7 +318,7 @@
                                                     <section
                                                         ng-if="!parameter.isUnparseable">
                                                         <tractor-variable-input
-                                                            form="file-editor"
+                                                            form="fileEditor"
                                                             label="Name"
                                                             model="parameter"
                                                             example="parameter"
@@ -363,6 +366,7 @@
                                                     <section
                                                         ng-if="!interaction.isUnparseable">
                                                         <tractor-select
+                                                            form="fileEditor"
                                                             label="Element"
                                                             model="interaction"
                                                             options="$ctrl.fileModel.elements"
@@ -371,7 +375,7 @@
                                                         </tractor-select>
                                                         <tractor-literal-input
                                                             ng-if="interaction.element.isGroup"
-                                                            form="file-editor"
+                                                            form="fileEditor"
                                                             name="interaction.selector.name"
                                                             model="interaction.selector"
                                                             description="interaction.selector.description"
@@ -379,12 +383,17 @@
                                                             type="interaction.selector.type">
                                                         </tractor-literal-input>
                                                         <tractor-select
+                                                            form="fileEditor"
                                                             label="Action"
                                                             model="interaction"
                                                             options="interaction.element.actions"
                                                             as="name"
                                                             required>
                                                         </tractor-select>
+                                                        <tractor-checkbox
+                                                            label="Is Optional"
+                                                            model="interaction">
+                                                        </tractor-checkbox>
 
                                                         <div ng-repeat="argument in interaction.actionInstance.arguments">
                                                             <div
@@ -394,7 +403,7 @@
                                                             </div>
                                                             <tractor-literal-input
                                                                 ng-if="!argument.isUnparseable"
-                                                                form="file-editor"
+                                                                form="fileEditor"
                                                                 name="argument.name"
                                                                 model="argument"
                                                                 description="argument.description"

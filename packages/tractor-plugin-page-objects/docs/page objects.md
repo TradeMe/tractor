@@ -4,7 +4,7 @@ A **Page Object** is a class that describes the behaviour of a part of a applica
 
 A **Page Object** is composed of **Elements** and **Actions**. An **Element** is a reference to a DOM element, or group of DOM elements, and an **Action** is a set of **Interactions** on those elements.
 
-Let's dive a bit deeper and explore how to create robust **Page Objects**!
+Let's dive a bit deeper and explore how to create robust, extensible **Page Objects**!
 
 ## Composition:
 
@@ -40,6 +40,10 @@ Once you have marked an **Element** as a group, you will then be able to select 
 
 If you hard-code a value to an **Action** within a **Page Object** it instantly becomes less reusable. Use a parameter so that you can pass a value in from your actual test.
 
+**Use Optional Actions to reduce duplication**
+
+If you have an **Action** where one of the Interactions does not always happen, for example, a "confirm" dialog, you can mark the **Action** as "optional". Instead of throwing an error, the interaction will just be ignored.
+
 **Describe *what* the Page Object does, not *how*.**
 
 It can be tempting to have a 1-1 mapping from **Element** action to **Page Object** action, but this is often not what you want to do. As an example, let's look at a "Log in" component.
@@ -52,6 +56,6 @@ That said, there are definitely cases where a 1-1 mapping is appropriate, such a
 
 ### Other advice:
 
-**Keep naming consistent.**
+**Keep naming consistent**
 
-**Re-order your element and actions sensibly.**
+**Re-order your element and actions sensibly**

@@ -1,4 +1,4 @@
-/*{"name":"tractor-page-objects action","elements":[{"name":"name input"},{"name":"remove action button"},{"name":"add parameter button"},{"name":"parameters"},{"name":"add interaction button"},{"name":"interactions"}],"actions":[{"name":"add action","parameters":[{"name":"name"}]},{"name":"add parameter","parameters":[{"name":"name"}]},{"name":"add interaction","parameters":[{"name":"element"},{"name":"action"}]},{"name":"add argument","parameters":[{"name":"name"},{"name":"value"}]},{"name":"get name","parameters":[]},{"name":"get interaction element","parameters":[]},{"name":"get interaction action","parameters":[]},{"name":"get interaction argument name","parameters":[{"name":"name"}]},{"name":"get interaction argument value","parameters":[{"name":"name"}]},{"name":"select interaction element","parameters":[{"name":"element"}]},{"name":"select interaction action","parameters":[{"name":"action"}]}],"version":"0.5.0"}*/
+/*{"name":"tractor-page-objects action","elements":[{"name":"name input"},{"name":"name validation"},{"name":"remove action button"},{"name":"add parameter button"},{"name":"parameters"},{"name":"add interaction button"},{"name":"interactions"}],"actions":[{"name":"add action","parameters":[{"name":"name"}]},{"name":"add parameter","parameters":[{"name":"name"}]},{"name":"add interaction","parameters":[{"name":"element"},{"name":"action"}]},{"name":"add argument","parameters":[{"name":"name"},{"name":"value"}]},{"name":"get name","parameters":[]},{"name":"get name validation","parameters":[]},{"name":"get parameter name","parameters":[]},{"name":"get parameter name validation","parameters":[]},{"name":"get interaction element","parameters":[]},{"name":"get interaction action","parameters":[]},{"name":"get interaction argument name","parameters":[{"name":"name"}]},{"name":"get interaction argument value","parameters":[{"name":"name"}]},{"name":"get interaction argument validation","parameters":[{"name":"name"}]},{"name":"select interaction element","parameters":[{"name":"element"}]},{"name":"select interaction action","parameters":[{"name":"action"}]}],"version":"0.5.0"}*/
 module.exports = function () {
     var TractorPageObjectsActionParameter = require('./tractor-page-objects action parameter.po.js');
     var TractorPageObjectsActionInteraction = require('./tractor-page-objects action interaction.po.js');
@@ -6,6 +6,7 @@ module.exports = function () {
         var find = parent ? parent.element.bind(parent) : element;
         var findAll = parent ? parent.all.bind(parent) : element.all;
         this.nameInput = find(by.css('tractor-variable-input[label="Name"] input'));
+        this.nameValidation = find(by.css('tractor-variable-input[label="Name"] ng-message'));
         this.removeActionButton = find(by.css('tractor-action[action="Remove action"] button'));
         this.addParameterButton = find(by.css('tractor-action[action="Add parameter"] button'));
         this.parameters = function (groupSelector) {
@@ -59,6 +60,30 @@ module.exports = function () {
         });
         return result;
     };
+    TractorPageObjectsAction.prototype.getNameValidation = function () {
+        var self = this;
+        var result = Promise.resolve();
+        result = result.then(function () {
+            return self.nameValidation.getText();
+        });
+        return result;
+    };
+    TractorPageObjectsAction.prototype.getParameterName = function () {
+        var self = this;
+        var result = Promise.resolve();
+        result = result.then(function () {
+            return self.parameters('last').getName();
+        });
+        return result;
+    };
+    TractorPageObjectsAction.prototype.getParameterNameValidation = function () {
+        var self = this;
+        var result = Promise.resolve();
+        result = result.then(function () {
+            return self.parameters('last').getNameValidation();
+        });
+        return result;
+    };
     TractorPageObjectsAction.prototype.getInteractionElement = function () {
         var self = this;
         var result = Promise.resolve();
@@ -88,6 +113,14 @@ module.exports = function () {
         var result = Promise.resolve();
         result = result.then(function () {
             return self.interactions('last').getArgumentValue(name);
+        });
+        return result;
+    };
+    TractorPageObjectsAction.prototype.getInteractionArgumentValidation = function (name) {
+        var self = this;
+        var result = Promise.resolve();
+        result = result.then(function () {
+            return self.interactions('last').getArgumentValidation(name);
         });
         return result;
     };

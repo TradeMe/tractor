@@ -1,4 +1,4 @@
-/*{"name":"tractor-page-objects action interaction","elements":[{"name":"element select"},{"name":"group selector"},{"name":"action select"},{"name":"arguments"}],"actions":[{"name":"add interaction","parameters":[{"name":"element"},{"name":"action"}]},{"name":"select element","parameters":[{"name":"element"}]},{"name":"select action","parameters":[{"name":"action"}]},{"name":"add argument","parameters":[{"name":"name"},{"name":"value"}]},{"name":"get element","parameters":[]},{"name":"get action","parameters":[]},{"name":"get argument name","parameters":[{"name":"name"}]},{"name":"get argument value","parameters":[{"name":"name"}]}],"version":"0.5.0"}*/
+/*{"name":"tractor-page-objects action interaction","elements":[{"name":"element select"},{"name":"group selector"},{"name":"action select"},{"name":"arguments"}],"actions":[{"name":"add interaction","parameters":[{"name":"element"},{"name":"action"}]},{"name":"select element","parameters":[{"name":"element"}]},{"name":"select action","parameters":[{"name":"action"}]},{"name":"add argument","parameters":[{"name":"name"},{"name":"value"}]},{"name":"get element","parameters":[]},{"name":"get action","parameters":[]},{"name":"get argument name","parameters":[{"name":"name"}]},{"name":"get argument value","parameters":[{"name":"name"}]},{"name":"get argument validation","parameters":[{"name":"name"}]}],"version":"0.5.0"}*/
 module.exports = function () {
     var TractorPageObjectsActionInteractionArgument = require('./tractor-page-objects action interaction argument.po.js');
     var TractorPageObjectsActionInteraction = function TractorPageObjectsActionInteraction(parent) {
@@ -75,6 +75,14 @@ module.exports = function () {
         var result = Promise.resolve();
         result = result.then(function () {
             return self.arguments(name).getValue();
+        });
+        return result;
+    };
+    TractorPageObjectsActionInteraction.prototype.getArgumentValidation = function (name) {
+        var self = this;
+        var result = Promise.resolve();
+        result = result.then(function () {
+            return self.arguments(name).getValidation();
         });
         return result;
     };

@@ -1,4 +1,4 @@
-/*{"name":"tractor-page-objects","elements":[{"name":"name"},{"name":"name input"},{"name":"save button"},{"name":"confirm save dialog"},{"name":"new file button"},{"name":"add element button"},{"name":"elements"},{"name":"add action button"},{"name":"actions"}],"actions":[{"name":"create and save page object","parameters":[{"name":"name"}]},{"name":"save page object file","parameters":[]},{"name":"add element","parameters":[{"name":"name"},{"name":"selector"}]},{"name":"add element type","parameters":[{"name":"type"}]},{"name":"toggle element is group","parameters":[]},{"name":"add action","parameters":[{"name":"name"}]},{"name":"add action parameter","parameters":[{"name":"name"}]},{"name":"add action argument","parameters":[{"name":"name"},{"name":"value"}]},{"name":"get name","parameters":[]},{"name":"get element name","parameters":[]},{"name":"get element selector","parameters":[]},{"name":"get element type","parameters":[]},{"name":"get element is group","parameters":[]},{"name":"get action name","parameters":[]},{"name":"get interaction element","parameters":[]},{"name":"get interaction action","parameters":[]},{"name":"get interaction argument name","parameters":[{"name":"name"}]},{"name":"get interaction argument value","parameters":[{"name":"name"}]},{"name":"select interaction element","parameters":[{"name":"element"}]},{"name":"select interaction action","parameters":[{"name":"action"}]}],"version":"0.5.0"}*/
+/*{"name":"tractor-page-objects","elements":[{"name":"name"},{"name":"name input"},{"name":"name validation"},{"name":"save button"},{"name":"confirm save dialog"},{"name":"new file button"},{"name":"add element button"},{"name":"elements"},{"name":"add action button"},{"name":"actions"}],"actions":[{"name":"create and save page object","parameters":[{"name":"name"}]},{"name":"save page object file","parameters":[]},{"name":"add element","parameters":[{"name":"name"},{"name":"selector"}]},{"name":"add element type","parameters":[{"name":"type"}]},{"name":"toggle element is group","parameters":[]},{"name":"add action","parameters":[{"name":"name"}]},{"name":"add action parameter","parameters":[{"name":"name"}]},{"name":"add action argument","parameters":[{"name":"name"},{"name":"value"}]},{"name":"get name","parameters":[]},{"name":"get name validation","parameters":[]},{"name":"get element name","parameters":[]},{"name":"get element name validation","parameters":[]},{"name":"get element selector","parameters":[]},{"name":"get element selector validation","parameters":[]},{"name":"get element type","parameters":[]},{"name":"get element is group","parameters":[]},{"name":"get action name","parameters":[]},{"name":"get action name validation","parameters":[]},{"name":"get action parameter name","parameters":[]},{"name":"get action parameter name validation","parameters":[]},{"name":"get interaction element","parameters":[]},{"name":"get interaction action","parameters":[]},{"name":"get interaction argument name","parameters":[{"name":"name"}]},{"name":"get interaction argument value","parameters":[{"name":"name"}]},{"name":"select interaction element","parameters":[{"name":"element"}]},{"name":"select interaction action","parameters":[{"name":"action"}]},{"name":"get interaction argument validation","parameters":[{"name":"name"}]}],"version":"0.5.0"}*/
 module.exports = function () {
     var TractorConfirmDialog = require('../../../node_modules/tractor-client/dist/page-objects/Core/Components/ConfirmDialog/tractor-confirm-dialog.po.js');
     var TractorPageObjectsElement = require('./tractor-page-objects element.po.js');
@@ -8,6 +8,7 @@ module.exports = function () {
         var findAll = parent ? parent.all.bind(parent) : element.all;
         this.name = find(by.css('tractor-page-objects .file-options__name'));
         this.nameInput = find(by.css('tractor-page-objects form tractor-variable-input[label="Name"] input'));
+        this.nameValidation = find(by.css('tractor-page-objects tractor-variable-input[label="Name"] ng-message'));
         this.saveButton = find(by.css('tractor-submit[action="Save page object file"] button'));
         this.confirmSaveDialog = new TractorConfirmDialog(find(by.css('tractor-confirm-dialog')));
         this.newFileButton = find(by.css('tractor-action[action="New file"] button'));
@@ -41,7 +42,8 @@ module.exports = function () {
             return self.saveButton.click();
         });
         result = result.then(function () {
-            return self.confirmSaveDialog.ok();
+            return self.confirmSaveDialog.ok().catch(function () {
+            });
         });
         return result;
     };
@@ -107,6 +109,14 @@ module.exports = function () {
         });
         return result;
     };
+    TractorPageObjects.prototype.getNameValidation = function () {
+        var self = this;
+        var result = Promise.resolve();
+        result = result.then(function () {
+            return self.nameValidation.getText();
+        });
+        return result;
+    };
     TractorPageObjects.prototype.getElementName = function () {
         var self = this;
         var result = Promise.resolve();
@@ -115,11 +125,27 @@ module.exports = function () {
         });
         return result;
     };
+    TractorPageObjects.prototype.getElementNameValidation = function () {
+        var self = this;
+        var result = Promise.resolve();
+        result = result.then(function () {
+            return self.elements('last').getNameValidation();
+        });
+        return result;
+    };
     TractorPageObjects.prototype.getElementSelector = function () {
         var self = this;
         var result = Promise.resolve();
         result = result.then(function () {
             return self.elements('last').getSelector();
+        });
+        return result;
+    };
+    TractorPageObjects.prototype.getElementSelectorValidation = function () {
+        var self = this;
+        var result = Promise.resolve();
+        result = result.then(function () {
+            return self.elements('last').getSelectorValidation();
         });
         return result;
     };
@@ -144,6 +170,30 @@ module.exports = function () {
         var result = Promise.resolve();
         result = result.then(function () {
             return self.actions('last').getName();
+        });
+        return result;
+    };
+    TractorPageObjects.prototype.getActionNameValidation = function () {
+        var self = this;
+        var result = Promise.resolve();
+        result = result.then(function () {
+            return self.actions('last').getNameValidation();
+        });
+        return result;
+    };
+    TractorPageObjects.prototype.getActionParameterName = function () {
+        var self = this;
+        var result = Promise.resolve();
+        result = result.then(function () {
+            return self.actions('last').getParameterName();
+        });
+        return result;
+    };
+    TractorPageObjects.prototype.getActionParameterNameValidation = function () {
+        var self = this;
+        var result = Promise.resolve();
+        result = result.then(function () {
+            return self.actions('last').getParameterNameValidation();
         });
         return result;
     };
@@ -192,6 +242,14 @@ module.exports = function () {
         var result = Promise.resolve();
         result = result.then(function () {
             return self.actions('last').selectInteractionAction(action);
+        });
+        return result;
+    };
+    TractorPageObjects.prototype.getInteractionArgumentValidation = function (name) {
+        var self = this;
+        var result = Promise.resolve();
+        result = result.then(function () {
+            return self.actions(name).getInteractionArgumentValidation(name);
         });
         return result;
     };

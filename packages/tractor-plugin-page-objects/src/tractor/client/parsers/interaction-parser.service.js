@@ -2,7 +2,9 @@
 import { PageObjectsModule } from '../page-objects.module';
 
 // Queries:
-const ACTION_CALL_EXPRESSION_QUERY = 'CallExpression[callee.object.name="result"] > FunctionExpression > BlockStatement > ReturnStatement > CallExpression';
+const ACTION_CALL_EXPRESSION_QUERY = 'CallExpression[callee.object.name="result"] > FunctionExpression > BlockStatement > ReturnStatement >';
+const ACTION_CALL_EXPRESSION_NOT_OPTIONAL_QUERY = `${ACTION_CALL_EXPRESSION_QUERY} CallExpression[callee.property.name!="catch"]`
+const ACTION_CALL_EXPRESSION_OPTIONAL_QUERY = `${ACTION_CALL_EXPRESSION_QUERY} CallExpression[callee.property.name="catch"]`
 const ACTION_MEMBER_EXPRESSION_QUERY = 'MemberExpression[object.name!="self"][property.type="Identifier"]';
 const ELEMENT_MEMBER_EXPRESSION_QUERY = 'MemberExpression > MemberExpression[object.type="Identifier"][property.type="Identifier"]';
 const ELEMENT_GROUP_MEMBER_EXPRESSION_QUERY = 'MemberExpression > CallExpression > MemberExpression[object.type="Identifier"][property.type="Identifier"]';
@@ -22,13 +24,23 @@ function InteractionParserService (
     astCompareService,
     actionArgumentParserService
 ) {
+    const QUERIES = {
+        [ACTION_CALL_EXPRESSION_NOT_OPTIONAL_QUERY]: _interactionParser,
+        [ACTION_CALL_EXPRESSION_OPTIONAL_QUERY]: _optionalInteractionParser
+    };
+
     return { parse };
 
     function parse (action, astObject) {
         let interaction = new InteractionModel(action);
 
-        let [actionCallExpression] = esquery(astObject, ACTION_CALL_EXPRESSION_QUERY);
-        _interactionParser(interaction, actionCallExpression);
+        Object.keys(QUERIES).find(query => {
+            let [result] = esquery(astObject, query);
+            if (result) {
+                QUERIES[query](interaction, result);
+                return interaction;
+            }
+        });
 
         let parsedCorrectly = astCompareService.compare(astObject, interaction.ast);
         if (!parsedCorrectly) {
@@ -73,6 +85,11 @@ function InteractionParserService (
         interaction.actionInstance.arguments = astObject.arguments.map((argument, index) => {
             return actionArgumentParserService.parse(interaction, parameters[index], argument);
         });
+    }
+
+    function _optionalInteractionParser (interaction, astObject) {
+        interaction.isOptional = true;
+        _interactionParser(interaction, astObject.callee.object);
     }
 
     function _pluginParser (pageObject, astObject) {

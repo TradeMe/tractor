@@ -24,10 +24,13 @@
     "lint": "eslint src",
     "test": "mocha --opts ./.mocharc 'src/**/*.spec.js'",
     "test:debug": "mocha --inspect --debug-brk --opts ./.mocharc 'src/**/*.spec.js'",
+    "pretest:e2e": "npm run webdriver && npm run tractor:test",
+    "test:e2e": "protractor ./tractor/protractor.conf.js --baseUrl=\"http://localhost:4321\"",
     "tractor": "tractor start",
     "tractor:init": "tractor init",
-    "tractor:test": "tractor start --config=\"./test.tractor.conf.js\"",
-    "watch": "npm-watch"
+    "tractor:test": "tractor start --config=\"./test.tractor.conf.js\" &",
+    "watch": "npm-watch",
+    "webdriver": "webdriver-manager update"
   },
   "license": "MIT",
   "engines": {

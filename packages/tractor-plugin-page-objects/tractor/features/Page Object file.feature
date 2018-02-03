@@ -21,3 +21,15 @@ Scenario: Rename Page Object file
     Then the file tree should have a file with name="Changed"
     When I open the Page Object with name="Changed"
     Then the Page Object should have name="Changed"
+
+Scenario: Invalid name - required
+    When I open the tractor application
+    When I navigate to the Page Objects plugin
+    When I create and save a new Page Object with name=""
+    Then the Page Object name has an error="Required"
+
+Scenario: Invalid name - valid identifier
+    When I open the tractor application
+    When I navigate to the Page Objects plugin
+    When I create and save a new Page Object with name="1"
+    Then the Page Object name has an error="That is not a valid name"

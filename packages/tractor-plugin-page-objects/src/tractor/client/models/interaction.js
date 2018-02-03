@@ -85,7 +85,12 @@ function createInteractionModelConstructor (
             if (this.element.isGroup) {
                 template += '(<%= selector %>)';
             }
-            template += '.<%= action %>(%= argumentValues %);';
+            template += '.<%= action %>(%= argumentValues %)';
+
+            if (this.isOptional) {
+                template += '.catch(function () {})';
+            }
+            template += '';
 
             let action = ast.identifier(this.actionInstance.variableName);
             let argumentValues = this.actionInstance.arguments.map(argument => argument.ast);

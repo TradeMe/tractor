@@ -56,7 +56,7 @@ function  PageObjectsController (
     };
     controller.getAllParameterNames = function (action, currentParameter) {
         return action.parameters.filter(parameter => parameter !== currentParameter)
-        .map(parameter => parameter.name)
+        .map(parameter => parameter.variableName)
         .filter(Boolean);
     }
 
