@@ -32,7 +32,7 @@ module.exports = {
 };
 ```
 
-For more information [see here](https://github.com/phenomnomnominal/tractor-plugin-page-objects/tree/master/docs/configuration.md)
+For more information [see here](./docs/configuration.md)
 
 # What does this plugin do?
 
@@ -42,7 +42,7 @@ A **Page Object** is composed of **Elements** and **Actions**. An **Element** is
 
 This plugin provides a UI for describing **Page Object** classes with **Elements** and **Actions** and generates the corresponding JavaScript code for that class. As an example, the following is generated JavaScript that describes following piece of UI:
 
-![tractor-page-objects action parameter](https://github.com/phenomnomnominal/tractor-plugin-page-objects/tree/master/docs/assets/tractor-page-objects%20action%20parameter.png)
+![tractor-page-objects action parameter](./docs/assets/tractor-page-objects%20action%20parameter.png)
 
 ```
 /*{"name":"tractor-page-objects action parameter","elements":[{"name":"name input"},{"name":"remove parameter button"}],"actions":[{"name":"add parameter","parameters":[{"name":"name"}]},{"name":"remove parameter","parameters":[]}],"version":"0.5.0"}*/
@@ -98,4 +98,4 @@ yarn tractor:test // in one tab
 yarn test:e2e // in another tab
 ```
 
-If you care, check out the [design decisions document](https://github.com/phenomnomnominal/tractor-plugin-page-objects/tree/master/docs/design%20decisions.md)
+If you care, check out the [design decisions document](./docs/design%20decisions.md)
