@@ -20,6 +20,7 @@
     ng-required="required">
 </select>
 <div
+    ng-if="form['select-' + id].$touched"
     ng-messages="form['select-' + id].$error">
     <ng-message
         when="required">Required

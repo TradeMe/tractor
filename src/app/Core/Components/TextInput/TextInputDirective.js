@@ -40,10 +40,10 @@ var TextInputDirective = function () {
             throw new Error('The "tractor-text-input" directive requires a "form" attribute.');
         }
 
-        $scope.form = $scope.$parent[$attrs.form];
+        $scope.form = $scope.$parent[$attrs.form] || $scope.$parent.$ctrl[$attrs.form];
         $scope.id = Math.floor(Math.random() * Date.now());
-        $scope.validateFileName = Object.prototype.hasOwnProperty.call($attrs, 'validateFileName');
 
+        $scope.validateFileName = Object.prototype.hasOwnProperty.call($attrs, 'validateFileName');
         $scope.property = camelcase($scope.label);
     }
 };

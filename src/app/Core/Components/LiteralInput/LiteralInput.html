@@ -11,7 +11,8 @@
     ng-model="model.value"
     ng-model-options="{ allowInvalid: true }"
     placeholder="({{ type ? type + ' - ' : '' }}optional)" />
-
-<div ng-messages="form['literal-required-' + id].$error">
+<div
+    ng-if="form['literal-required-' + id].$touched"
+    ng-messages="form['literal-required-' + id].$error">
     <ng-message when="required">Required</ng-message>
 </div>

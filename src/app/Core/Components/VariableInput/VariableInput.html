@@ -7,7 +7,9 @@
     file-name
     variable-name
     all-variable-names="allVariableNames()"/>
-<div ng-messages="form['variable-input-' + id].$error">
+<div
+    ng-if="form['variable-input-' + id].$touched"
+    ng-messages="form['variable-input-' + id].$error">
     <ng-message when="required">Required</ng-message>
     <ng-message when="fileName">That is not a valid name</ng-message>
     <ng-message when="variableNameValid">That is not a valid name</ng-message>

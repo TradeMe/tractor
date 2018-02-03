@@ -39,7 +39,7 @@ var LiteralInputDirective = function () {
             throw new Error('The "tractor-literal-input" directive requires a "form" attribute.');
         }
 
-        $scope.form = $scope.$parent[$attrs.form];
+        $scope.form = $scope.$parent[$attrs.form] || $scope.$parent.$ctrl[$attrs.form];
         $scope.id = Math.floor(Math.random() * Date.now());
     }
 };

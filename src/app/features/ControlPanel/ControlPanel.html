@@ -4,6 +4,7 @@
             <form class="control-panel__run-options" name="controlPanelOptions" novalidate
                 ng-submit="controlPanel.runProtractor()">
                 <tractor-select
+                    form="controlPanelOptions"
                     label="environment"
                     model="controlPanel">
                 </tractor-select>
@@ -11,6 +12,7 @@
                     action="run protractor">
                 </tractor-submit>
                 <tractor-select
+                    form="controlPanelOptions"
                     label="tag"
                     model="controlPanel"
                     options="controlPanel.tags"

@@ -10,7 +10,9 @@
     ng-model-options="{ allowInvalid: true }"
     file-name
     required />
-<div ng-messages="form['text-' + id].$error">
+<div
+    ng-if="form['text-' + id].$touched"
+    ng-messages="form['text-' + id].$error">
     <ng-message when="fileName">That is not a valid input</ng-message>
     <ng-message when="required">Required</ng-message>
 </div>

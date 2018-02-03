@@ -49,7 +49,7 @@ var SelectInputDirective = function () {
             $scope.selectOptions = $scope.options || getOptionsFromProperty($scope);
         });
 
-        $scope.form = $scope.$parent[$attrs.form];
+        $scope.form = $scope.$parent[$attrs.form] || $scope.$parent.$ctrl[$attrs.form];
         $scope.id = Math.floor(Math.random() * Date.now());
     }
 
