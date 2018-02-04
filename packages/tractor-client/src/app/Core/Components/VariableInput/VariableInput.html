@@ -1,0 +1,17 @@
+<label>{{ label }}: </label>
+<input name="variable-input-{{ id }}" type="text" placeholder="e.g. {{ example }}"
+    ng-model="model[property]"
+    ng-model-options="{ allowInvalid: true }"
+    ng-blur="blur(model[property])"
+    required
+    file-name
+    variable-name
+    all-variable-names="allVariableNames()"/>
+<div
+    ng-if="form['variable-input-' + id].$touched"
+    ng-messages="form['variable-input-' + id].$error">
+    <ng-message when="required">Required</ng-message>
+    <ng-message when="fileName">That is not a valid name</ng-message>
+    <ng-message when="variableNameValid">That is not a valid name</ng-message>
+    <ng-message when="variableNameUnique">There is something else with the same name</ng-message>
+</div>

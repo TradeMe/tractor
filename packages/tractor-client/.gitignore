@@ -1,0 +1,12 @@
+dist
+node_modules
+reports
+tractor/report
+
+npm-debug.log
+npm-debug.log.*
+.idea/*
+.sass-cache
+.vscode
+.DS_Store
+yarn-error.log
