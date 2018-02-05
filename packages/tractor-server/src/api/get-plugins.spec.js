@@ -1,13 +1,7 @@
 /* global describe:true, it:true */
 
-// Utilities:
-import chai from 'chai';
-import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
-
 // Test setup:
-const expect = chai.expect;
-chai.use(sinonChai);
+import { expect, sinon } from 'tractor-unit-test';
 
 // Under test:
 import { getPluginsHandler } from './get-plugins';

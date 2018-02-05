@@ -1,4 +1,4 @@
-# tractor
+# tractor-cli
 
 A UI around [Protractor](http://angular.github.io/protractor/) to help write E2E tests for [Angular](https://angularjs.org/) applications without needing to know JavaScript
 

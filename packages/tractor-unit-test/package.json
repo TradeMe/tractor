@@ -1,0 +1,34 @@
+{
+  "name": "tractor-unit-test",
+  "version": "0.0.1",
+  "description": "unit test utilities for the tractor monorepo",
+  "author": "Craig Spence <craigspence0@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/phenomnomnominal/tractor-unit-test.git"
+  },
+  "bugs": {
+    "url": "https://github.com/phenomnomnominal/tractor-unit-test/issues",
+    "email": "craigspence0@gmail.com"
+  },
+  "main": "dist/index.js",
+  "watch": {
+    "build": "src/**/*.js"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "npm run clean && npm run lint && npm run compile",
+    "clean": "rimraf dist",
+    "compile": "babel src/ --out-dir dist --ignore *.spec.js",
+    "lint": "eslint src",
+    "watch": "npm-watch"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "chai": "^4.1.2",
+    "dirty-chai": "^2.0.1",
+    "ineeda": "^0.11.1",
+    "sinon": "^4.2.2",
+    "sinon-chai": "^2.14.0"
+  }
+}

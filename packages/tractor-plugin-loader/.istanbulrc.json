@@ -1,8 +1,0 @@
-{
-  "instrumentation": {
-    "excludes": ["*.spec.js", "test-setup.js"]
-  },
-  "reporting": {
-    "dir": "./reports/coverage"
-  }
-}

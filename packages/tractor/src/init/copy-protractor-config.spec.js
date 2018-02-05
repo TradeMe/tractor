@@ -1,7 +1,7 @@
 /* global describe:true, xit:true */
 
 // Test setup:
-import { expect, sinon } from '../../test-setup';
+import { expect, sinon } from 'tractor-unit-test';
 
 // Dependencies:
 import path from 'path';
@@ -32,7 +32,7 @@ describe('tractor - copy-protractor-config:', () => {
     });
 
     xit('should tell the user if "protractor.conf.js" already exists', () => {
-        sinon.stub(tractorFileStructure, 'copyFile').rejects((new TractorError('"protractor.conf.js" already exists.')));
+        sinon.stub(tractorFileStructure, 'copyFile').rejects(new TractorError('"protractor.conf.js" already exists.'));
         sinon.stub(tractorLogger, 'warn');
 
         return copyProtractorConfig({

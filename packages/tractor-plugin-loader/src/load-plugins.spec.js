@@ -1,7 +1,7 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect, NOOP, sinon } from '../test-setup';
+import { expect, NOOP, sinon } from 'tractor-unit-test';
 
 // Dependencies:
 import fs from 'fs';

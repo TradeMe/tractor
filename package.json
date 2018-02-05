@@ -1,5 +1,32 @@
 {
-	"devDependencies": {
-		"lerna": "^2.8.0"
-	}
+  "name": "tractor",
+  "version": "0.13.0",
+  "author": "Craig Spence <craig@trademe.co.nz>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TradeMe/tractor.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TradeMe/tractor/issues",
+    "email": "craig@trademe.co.nz"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.0.0-beta.39",
+    "@babel/core": "^7.0.0-beta.39",
+    "@babel/plugin-proposal-export-default-from": "^7.0.0-beta.39",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.39",
+    "@babel/preset-env": "^7.0.0-beta.39",
+    "@babel/register": "^7.0.0-beta.39",
+    "babel-eslint": "^8.2.1",
+    "eslint": "^4.17.0",
+    "istanbul": "^1.1.0-alpha.1",
+    "lerna": "^2.8.0",
+    "mocha": "^5.0.0",
+    "npm-watch": "^0.3.0",
+    "rimraf": "^2.6.2",
+    "tractor": "^0.12.10",
+    "tractor-unit-test": "0.0.1"
+  },
+  "dependencies": {}
 }

@@ -1,5 +1,7 @@
 {
   "lerna": "2.8.0",
+  "hoist": true,
+  "nohoist": "tractor-client",
   "packages": [
     "packages/*"
   ],

@@ -1,2 +1,7 @@
-
+dist
+node_modules
+reports
+npm-debug.log
 lerna-debug.log
+.idea/*
+.vscode

@@ -4,7 +4,7 @@
 const REQUEST_ERROR = 400;
 
 // Test setup:
-import { expect, sinon } from '../test-setup';
+import { expect, sinon } from 'tractor-unit-test';
 
 // Dependencies:
 import escodegen from 'escodegen';

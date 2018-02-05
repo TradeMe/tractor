@@ -3,17 +3,8 @@
 // Constants:
 const MAGIC_TIMEOUT_NUMBER = 10;
 
-// Utilities:
-import chai from 'chai';
-import dirtyChai from 'dirty-chai';
-import Promise from 'bluebird';
-import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
-
 // Test setup:
-const expect = chai.expect;
-chai.use(dirtyChai);
-chai.use(sinonChai);
+import { expect, Promise, sinon } from 'tractor-unit-test';
 
 // Dependencies:
 import childProcess from 'child_process';

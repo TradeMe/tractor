@@ -1,7 +1,7 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect, sinon } from '../test-setup';
+import { expect, sinon } from 'tractor-unit-test';
 
 // Dependencies:
 import * as loadPlugins from './load-plugins';

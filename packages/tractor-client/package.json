@@ -11,9 +11,6 @@
     "email": "craigspence0@gmail.com"
   },
   "license": "MIT",
-  "engines": {
-    "node": ">=0.10"
-  },
   "scripts": {
     "prepublish": "gulp build",
     "tractor": "tractor start",

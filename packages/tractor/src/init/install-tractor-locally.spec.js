@@ -1,7 +1,7 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect, sinon } from '../../test-setup';
+import { expect, sinon } from 'tractor-unit-test';
 
 // Dependencies:
 import childProcess from 'child_process';
@@ -99,13 +99,13 @@ describe('tractor - install-tractor-locally:', () => {
 
         it('should tell the user what it is doing', () => {
             let exec = sinon.stub(childProcess, 'execAsync');
-            exec.withArgs('npm --json list tractor').resolves((JSON.stringify({
+            exec.withArgs('npm --json list tractor').resolves(JSON.stringify({
                 dependencies: {
                     tractor: {
                         version: '1.0.0'
                     }
                 }
-            })));
+            }));
             exec.withArgs('npm --json info tractor versions').resolves(JSON.stringify(['2.0.0']));
             exec.withArgs('npm install --save-dev tractor@latest').resolves();
             sinon.stub(tractorLogger, 'info');

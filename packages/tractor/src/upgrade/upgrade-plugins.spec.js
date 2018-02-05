@@ -1,7 +1,7 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect, ineeda, NOOP, Promise, sinon } from '../../test-setup';
+import { expect, ineeda, NOOP, Promise, sinon } from 'tractor-unit-test';
 
 // Dependencies:
 import * as tractorLogger from 'tractor-logger';

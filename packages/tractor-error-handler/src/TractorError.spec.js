@@ -3,16 +3,8 @@
 // Constants:
 import { SERVER_ERROR } from './constants';
 
-// Utilities:
-import chai from 'chai';
-import dirtyChai from 'dirty-chai';
-import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
-
 // Test setup:
-const expect = chai.expect;
-chai.use(dirtyChai);
-chai.use(sinonChai);
+import { expect, sinon } from 'tractor-unit-test';
 
 // Under test:
 import { TractorError } from './TractorError';

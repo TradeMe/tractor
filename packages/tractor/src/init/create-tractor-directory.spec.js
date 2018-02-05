@@ -1,7 +1,7 @@
 /* global describe:true, xit:true */
 
 // Test setup:
-import { expect, sinon } from '../../test-setup';
+import { expect, sinon } from 'tractor-unit-test';
 
 // Dependencies:
 import * as tractorFileStructure from 'tractor-file-structure';
@@ -29,7 +29,7 @@ describe('tractor - create-tractor-directory:', () => {
     });
 
     xit('should tell the user if the directory already exists', () => {
-        sinon.stub(tractorFileStructure, 'createDir').rejects((new TractorError('"directory" already exists.')));
+        sinon.stub(tractorFileStructure, 'createDir').rejects(new TractorError('"directory" already exists.'));
         sinon.stub(tractorLogger, 'warn');
 
         return createTractorDirectory({
