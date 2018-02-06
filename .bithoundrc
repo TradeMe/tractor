@@ -1,5 +1,5 @@
 {
   "test": [
-    "src/**/*.spec.js"
+    "packages/**/src/**/*.spec.js"
   ]
 }

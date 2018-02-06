@@ -1,15 +1,19 @@
 {
   "name": "tractor",
   "version": "1.0.0-alpha.5",
-  "author": "Craig Spence <craig@trademe.co.nz>",
+  "description": "A UI around Protractor to help write E2E tests for Angular applications without needing to know JavaScript",
+  "author": "Craig Spence <craigspence0@gmail.com>",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/TradeMe/tractor.git"
   },
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/TradeMe/tractor/issues",
-    "email": "craig@trademe.co.nz"
+    "email": "craigspence0@gmail.com"
+  },
+  "scripts": {
+    "build": "lerna bootstrap && lerna run build"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.39",
