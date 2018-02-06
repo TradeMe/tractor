@@ -1,0 +1,99 @@
+<script type="text/ng-template" id="file-options.html">
+    <div class="file-tree__item-options"
+         ng-class="{ 'file-tree__item-active-options': item.showOptions }"
+         ng-click="fileTree.showOptions(item)">
+    </div>
+    <div class="file-tree__item-options-panel"
+         ng-if="item.showOptions"
+         ng-mouseleave="fileTree.hideOptions(item)">
+        <tractor-action
+            ng-if="!fileTree.readonly"
+            model="fileTree"
+            action="Edit name"
+            argument="item">
+        </tractor-action>
+        <tractor-action
+            ng-if="!fileTree.readonly && !item.isDirectory"
+            model="fileTree"
+            action="Copy item"
+            argument="item">
+        </tractor-action>
+        <tractor-action
+            model="fileTree"
+            action="Delete item"
+            argument="item">
+        </tractor-action>
+    </div>
+</script>
+
+<script type="text/ng-template" id="rename-input.html">
+    <input class="file-tree__item-rename"
+        ng-if="item.editingName"
+        ng-model="item.basename"
+        ng-blur="fileTree.saveNewName(item)"
+        ng-keypress="fileTree.renameOnEnter($event, item)"
+        tractor-give-focus
+        focus-on="item.editingName">
+    </input>
+</script>
+
+<script type="text/ng-template" id="file-structure.html">
+    <div ng-include="'file-options.html'"></div>
+
+    <p class="file-tree__item-name"
+        ng-show="!item.editingName"
+        ng-click="fileTree.toggleOpenDirectory(item)"
+        ng-dblclick="fileTree.editName(item)">
+        {{ item.editingName ? item.previousName : item.basename }}
+    </p>
+    <div ng-include="'rename-input.html'"></div>
+
+    <ul
+        class="file-tree__file-list"
+        ng-if="(item || fileTree.fileStructure).open">
+        <li class="file-tree__file-list-item file-tree__file-list-item--new-directory">
+            <tractor-action
+                model="fileTree"
+                action="Add directory"
+                argument="item || fileTree.fileStructure">
+            </tractor-action>
+        </li>
+
+        <li class="file-tree__file-list-item file-tree__file-list-item--directory"
+            ng-class="{
+                'file-tree__file-list-item--open-directory': item.open
+            }"
+            ng-repeat="item in (item || fileTree.fileStructure).directories"
+            ng-include="'file-structure.html'"
+            tractor-drop-file
+            on-drop="fileTree.moveItem"
+            drop-directory="item">
+        </li>
+
+        <li class="file-tree__file-list-item file-tree__file-list-item--file"
+            ng-class="{{ fileTree.getFileStyle(item) }}"
+            ng-repeat="item in (item || fileTree.fileStructure).files"
+            tractor-drag-file>
+            <div ng-include="'file-options.html'"></div>
+
+            <p class="file-tree__item-name"
+                ng-show="!item.editingName"
+                ng-click="fileTree.openItem(item)"
+                ng-dblclick="fileTree.editName(item)">
+                {{ item.editingName ? item.previousName : item.basename }}
+            </p>
+            <div ng-include="'rename-input.html'"></div>
+        </li>
+    </ul>
+</script>
+
+<section class="file-tree__container"
+    ng-if="fileTree.fileStructure"
+    tractor-drop-file
+    on-drop="fileTree.moveItem"
+    drop-directory="fileTree.fileStructure">
+    <div
+        class="file-tree"
+        ng-include="'file-structure.html'">
+    </div>
+</section>

@@ -1,0 +1,18 @@
+<label ng-if="description" title="{{ description }}">{{ name }}: </label>
+<label ng-if="!description">{{ name }}: </label>
+<input name="literal-required-{{ id }}" type="text"
+    ng-if="required"
+    ng-model="model.value"
+    ng-model-options="{ allowInvalid: true }"
+    placeholder="({{ type ? type + ' - ' : '' }}required)"
+    required />
+<input name="literal-optional-{{ id }}" type="text"
+    ng-if="!required"
+    ng-model="model.value"
+    ng-model-options="{ allowInvalid: true }"
+    placeholder="({{ type ? type + ' - ' : '' }}optional)" />
+<div
+    ng-if="form['literal-required-' + id].$touched"
+    ng-messages="form['literal-required-' + id].$error">
+    <ng-message when="required">Required</ng-message>
+</div>

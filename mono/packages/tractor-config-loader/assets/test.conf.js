@@ -1,0 +1,4 @@
+module.exports = {
+    directory: './tests/e2e',
+    port: 5000
+};

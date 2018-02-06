@@ -1,0 +1,28 @@
+<label
+    ng-if="model[property].description"
+    title="{{ model[property].description }}">{{ label }}:
+</label>
+<label
+    ng-if="!model[property].description">{{ label }}:
+</label>
+<select
+    name="select-{{ id }}"
+    ng-if="as"
+    ng-model="model[property]"
+    ng-options="option as option[as] for option in selectOptions"
+    ng-required="required">
+</select>
+<select
+    name="select-{{ id }}"
+    ng-if="!as"
+    ng-model="model[property]"
+    ng-options="option for option in selectOptions"
+    ng-required="required">
+</select>
+<div
+    ng-if="form['select-' + id].$touched"
+    ng-messages="form['select-' + id].$error">
+    <ng-message
+        when="required">Required
+    </ng-message>
+</div>

@@ -1,0 +1,41 @@
+{
+  "name": "@tractor/config-loader",
+  "version": "1.0.0-alpha.5",
+  "description": "Config loader for tractor",
+  "author": "Craig Spence <craigspence0@gmail.com>",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TradeMe/tractor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TradeMe/tractor/issues",
+    "email": "craigspence0@gmail.com"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "prepare": "npm run build",
+    "build": "npm run clean && npm run lint && npm run cover && npm run compile",
+    "clean": "rimraf dist && rimraf reports",
+    "compile": "babel src/ --out-dir dist --ignore *.spec.js",
+    "cover": "istanbul cover --config ../../.istanbulrc.json ../../node_modules/.bin/_mocha -- --opts ../../.mocharc 'src/**/*.spec.js'",
+    "lint": "eslint src",
+    "test": "mocha --opts ../../.mocharc 'src/**/*.spec.js'",
+    "watch": "npm-watch"
+  },
+  "watch": {
+    "build": "src/**/*.js"
+  },
+  "devDependencies": {
+    "@tractor/logger": "^1.0.0-alpha.5"
+  },
+  "dependencies": {
+    "lodash.defaults": "^4.2.0"
+  },
+  "peerDependencies": {
+    "@tractor/core": "^1.0.0-alpha.4"
+  }
+}

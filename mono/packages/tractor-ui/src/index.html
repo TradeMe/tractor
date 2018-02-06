@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>tractor</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/style.css">
+	<link rel="icon" href="/images/favicon.png">
+    <base href="/">
+  </head>
+  <body class="fill">
+    <div ui-view class="fill"></div>
+    <script src="/tractor.bundle.js"></script>
+
+    <!-- START PLUGIN SCRIPTS: -->
+    <% scripts.forEach(function (script) { %>
+    <script src="<%- script %>"></script>
+    <% }); %>
+    <!-- END PLUGIN SCRIPTS -->
+
+    <script src="/init.js"></script>
+  </body>
+</html>

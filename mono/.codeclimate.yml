@@ -1,0 +1,15 @@
+version: "2"
+plugins:
+  duplication:
+    enabled: true
+    exclude_patterns:
+    - "**/*.spec.js"
+    config:
+      languages:
+      - javascript
+  eslint:
+    enabled: true
+  fixme:
+    enabled: true
+  nodesecurity:
+    enabled: true
