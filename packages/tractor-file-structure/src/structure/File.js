@@ -5,7 +5,7 @@ import path from 'path';
 import { Directory } from './Directory';
 
 // Errors:
-import { TractorError } from 'tractor-error-handler';
+import { TractorError } from '@tractor/error-handler';
 
 export class File {
     constructor (filePath, fileStructure) {

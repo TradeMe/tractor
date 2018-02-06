@@ -11,13 +11,13 @@ import { FileStructure } from '../structure/FileStructure';
 import * as utilities from './utilities';
 
 // Dependencies:
-import { TractorError } from 'tractor-error-handler';
-import * as tractorErrorHandler from 'tractor-error-handler';
+import { TractorError } from '@tractor/error-handler';
+import * as tractorErrorHandler from '@tractor/error-handler';
 
 // Under test:
 import { createMoveItemHandler } from './move-item';
 
-describe('tractor-file-structure - actions/move-item:', () => {
+describe('@tractor/file-structure - actions/move-item:', () => {
     it('should move a file', () => {
         let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);

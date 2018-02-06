@@ -7,7 +7,7 @@ import path from 'path';
 import { Directory } from '../structure/Directory';
 
 // Errors:
-import { TractorError, handleError } from 'tractor-error-handler';
+import { TractorError, handleError } from '@tractor/error-handler';
 
 export function getCopyPath (item) {
     let isDirectory = item instanceof Directory;

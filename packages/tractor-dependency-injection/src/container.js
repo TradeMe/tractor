@@ -2,7 +2,7 @@
 import { isFunction } from 'util';
 
 // Errors:
-import { TractorError } from 'tractor-error-handler';
+import { TractorError } from '@tractor/error-handler';
 
 export class Container {
     constructor () {

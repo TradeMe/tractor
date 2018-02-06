@@ -4,12 +4,12 @@
 import { SERVER_ERROR } from './constants';
 
 // Test setup:
-import { expect, sinon } from 'tractor-unit-test';
+import { expect, sinon } from '@tractor/unit-test';
 
 // Under test:
 import { TractorError } from './TractorError';
 
-describe('tractor-error-handler: TractorError:', () => {
+describe('@tractor/error-handler: TractorError:', () => {
     describe('TractorError constructor:', () => {
         it('should create a new TractorError', () => {
             let error = new TractorError();

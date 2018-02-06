@@ -1,27 +1,30 @@
 {
-  "name": "tractor-unit-test",
-  "version": "0.0.1",
-  "description": "unit test utilities for the tractor monorepo",
+  "name": "@tractor/unit-test",
+  "version": "1.0.0-alpha.3",
+  "description": "Unit test utilities for the tractor monorepo",
   "author": "Craig Spence <craigspence0@gmail.com>",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/phenomnomnominal/tractor-unit-test.git"
+    "url": "https://github.com/TradeMe/tractor.git"
   },
   "bugs": {
-    "url": "https://github.com/phenomnomnominal/tractor-unit-test/issues",
+    "url": "https://github.com/TradeMe/tractor/issues",
     "email": "craigspence0@gmail.com"
   },
   "main": "dist/index.js",
-  "watch": {
-    "build": "src/**/*.js"
-  },
-  "license": "MIT",
   "scripts": {
     "build": "npm run clean && npm run lint && npm run compile",
     "clean": "rimraf dist",
     "compile": "babel src/ --out-dir dist --ignore *.spec.js",
     "lint": "eslint src",
     "watch": "npm-watch"
+  },
+  "watch": {
+    "build": "src/**/*.js"
   },
   "dependencies": {
     "bluebird": "^3.5.1",

@@ -1,17 +1,23 @@
 {
-  "name": "tractor-file-javascript",
-  "version": "0.2.6",
+  "name": "@tractor/file-javascript",
+  "version": "1.0.0-alpha.3",
+  "description": "JavaScript file handler for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/phenomnomnominal/tractor-file-javascript.git"
+    "url": "https://github.com/TradeMe/tractor.git"
   },
   "bugs": {
-    "url": "https://github.com/phenomnomnominal/tractor-file-javascript/issues",
+    "url": "https://github.com/TradeMe/tractor/issues",
     "email": "craigspence0@gmail.com"
   },
   "main": "dist/index.js",
   "scripts": {
+    "prepare": "npm run build",
     "build": "npm run clean && npm run lint && npm run cover && npm run compile",
     "clean": "rimraf dist && rimraf reports",
     "compile": "babel src/ --out-dir dist --ignore *.spec.js",
@@ -20,12 +26,13 @@
     "test": "mocha --opts ../../.mocharc 'src/**/*.spec.js'",
     "watch": "npm-watch"
   },
-  "license": "MIT",
+  "watch": {
+    "build": "src/**/*.js"
+  },
   "devDependencies": {
-    "tractor": "^0.12.9",
-    "tractor-error-handler": "^0.2.4",
-    "tractor-file-structure": "^0.5.7",
-    "tractor-logger": "^0.1.1"
+    "@tractor/error-handler": "^1.0.0-alpha.3",
+    "@tractor/file-structure": "^1.0.0-alpha.3",
+    "@tractor/logger": "^1.0.0-alpha.3"
   },
   "dependencies": {
     "escodegen": "^1.9.0",
@@ -33,6 +40,6 @@
     "esquery": "^1.0.0"
   },
   "peerDependencies": {
-    "tractor": "^0.12.1"
+    "@tractor/core": "^1.0.0-alpha.3"
   }
 }

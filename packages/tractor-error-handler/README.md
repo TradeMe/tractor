@@ -1,4 +1,4 @@
-# tractor-error-handler
+# @tractor/error-handler
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/phenomnomnominal/tractor-error-handler.svg)](https://greenkeeper.io/)
 [![npm version](https://img.shields.io/npm/v/tractor-error-handler.svg)](https://www.npmjs.com/package/tractor-error-handler)
@@ -46,7 +46,7 @@ A general HTTP request error handler for [**tractor**](https://github.com/TradeM
 
 > #### Usage:
 > ```javascript
-> import { TractorError, handleError } from 'tractor-error-handler';
+> import { TractorError, handleError } from '@tractor/error-handler';
 >
 > export function myApiEndpoint (request, response) {
 >     if (somethingBad) {

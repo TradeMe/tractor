@@ -11,7 +11,7 @@ import { FileStructure } from './FileStructure';
 // Under test:
 import { ReferenceManager } from './ReferenceManager';
 
-describe('tractor-file-structure - ReferenceManager:', () => {
+describe('@tractor/file-structure - ReferenceManager:', () => {
     describe('ReferenceManager constructor:', () => {
         it('should create a new ReferenceManager', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));

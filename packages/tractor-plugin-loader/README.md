@@ -1,4 +1,4 @@
-# tractor-plugin-loader
+# @tractor/plugin-loader
 
 Plugin loader for [**tractor**](https://github.com/TradeMe/tractor) to provide additional UI testing capabilities.
 
@@ -10,7 +10,7 @@ Plugin loader for [**tractor**](https://github.com/TradeMe/tractor) to provide a
 
 ## How it works:
 
-**tractor-plugin-loader** is automatically installed whenever you run `tractor init` in a project. Then, whenever `tractor start` is run on that project, the loader looks through your installed node modules, and finds any that are called **tractor-plugin-whatever**. Those plugins could provide new actions for Page Objects, new report generators, or entirely new bits of UI/Functionality for the [**tractor-client**](https://github.com/phenomnomnominal/tractor-client) application, all depending on what the plugin exports.
+**@tractor/plugin-loader** is automatically installed whenever you run `tractor init` in a project. Then, whenever `tractor start` is run on that project, the loader looks through your installed node modules, and finds any that are called **tractor-plugin-whatever**. Those plugins could provide new actions for Page Objects, new report generators, or entirely new bits of UI/Functionality for the [**tractor-client**](https://github.com/phenomnomnominal/tractor-client) application, all depending on what the plugin exports.
 
 ## API:
 
@@ -43,7 +43,7 @@ A **tractor** plugin is just a plain old node module, with a few specially named
 
 ### `serve` (optional):
 
-> Define any new endpoints that you want to attach to the [**tractor-server**](https://github.com/phenomnomnominal/tractor-server), typically for consuming from the [**tractor-client**](https://github.com/phenomnomnominal/tractor-client).
+> Define any new endpoints that you want to attach to the [**@tractor/server**](https://github.com/phenomnomnominal/tractor-server), typically for consuming from the [**tractor-client**](https://github.com/phenomnomnominal/tractor-client).
 
 > #### Returns:
 > * `promise?: Promise`

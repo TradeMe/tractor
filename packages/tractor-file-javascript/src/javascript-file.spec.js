@@ -4,20 +4,20 @@
 const REQUEST_ERROR = 400;
 
 // Test setup:
-import { expect, sinon } from 'tractor-unit-test';
+import { expect, sinon } from '@tractor/unit-test';
 
 // Dependencies:
 import escodegen from 'escodegen';
 import * as esprima from 'esprima';
 import path from 'path';
-import { TractorError } from 'tractor-error-handler';
-import { File, FileStructure, ReferenceManager } from 'tractor-file-structure';
+import { TractorError } from '@tractor/error-handler';
+import { File, FileStructure, ReferenceManager } from '@tractor/file-structure';
 import { JavaScriptFileRefactorer } from './javascript-file-refactorer';
 
 // Under test:
 import { JavaScriptFile } from './javascript-file';
 
-describe('tractor-file-javascript: JavaScriptFile:', () => {
+describe('@tractor/file-javascript: JavaScriptFile:', () => {
     describe('JavaScriptFile constructor:', () => {
         it('should create a new JavaScriptFile', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));

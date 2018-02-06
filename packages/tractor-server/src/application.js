@@ -2,7 +2,7 @@
 import Promise from 'bluebird';
 import fs from 'fs';
 import path from 'path';
-import { info } from 'tractor-logger';
+import { info } from '@tractor/logger';
 
 // Dependencies:
 import bodyParser from 'body-parser';
@@ -13,7 +13,7 @@ import template from 'lodash.template';
 import io from 'socket.io';
 
 // Errors:
-import { TractorError } from 'tractor-error-handler';
+import { TractorError } from '@tractor/error-handler';
 
 // Endpoints:
 import { getConfigHandler } from './api/get-config';

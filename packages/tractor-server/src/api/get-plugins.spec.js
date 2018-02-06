@@ -1,7 +1,7 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect, sinon } from 'tractor-unit-test';
+import { expect, sinon } from '@tractor/unit-test';
 
 // Under test:
 import { getPluginsHandler } from './get-plugins';

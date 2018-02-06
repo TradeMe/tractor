@@ -6,7 +6,7 @@ const EXTENSION_MATCH_REGEX = /[^.]*(\..*)?/;
 import chokidar from 'chokidar';
 import { EventEmitter } from 'events';
 import path from 'path';
-import { info } from 'tractor-logger';
+import { info } from '@tractor/logger';
 import { Directory } from './Directory';
 import { File } from './File';
 import { ReferenceManager } from './ReferenceManager';

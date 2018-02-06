@@ -1,5 +1,5 @@
 // Constants:
-const TRACTOR_PLUGIN_LOADER = 'tractor-plugin-loader';
+const TRACTOR_PLUGIN_LOADER = '@tractor/plugin-loader';
 const TRACTOR_PLUGIN_MODULE_NAME_REGEX = /(tractor-plugin-.*$)/;
 const TRACTOR_PLUGIN_NAME_REGEX = /tractor-plugin-(.*)/;
 
@@ -7,7 +7,7 @@ const TRACTOR_PLUGIN_NAME_REGEX = /tractor-plugin-(.*)/;
 import fs from 'fs';
 import module from 'module';
 import path from 'path';
-import { info } from 'tractor-logger';
+import { info } from '@tractor/logger';
 
 // Dependencies:
 import camelCase from 'camel-case';
@@ -15,7 +15,7 @@ import paramCase from 'param-case';
 import titleCase from 'title-case';
 
 // Errors:
-import { TractorError } from 'tractor-error-handler';
+import { TractorError } from '@tractor/error-handler';
 
 export function loadPlugins () {
     info('Loading plugins...');

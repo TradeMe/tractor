@@ -1,4 +1,4 @@
-# tractor-file-structure
+# @tractor/file-structure
 
 A bunch of file structure representation/manipulation utilities for [**tractor**](https://github.com/TradeMe/tractor).
 

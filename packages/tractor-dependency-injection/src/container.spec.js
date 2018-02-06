@@ -1,15 +1,15 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect, sinon } from 'tractor-unit-test';
+import { expect, sinon } from '@tractor/unit-test';
 
 // Dependencies:
-import { TractorError } from 'tractor-error-handler';
+import { TractorError } from '@tractor/error-handler';
 
 // Under test:
 import { Container } from './container';
 
-describe('tractor-dependency-injection - Container:', () => {
+describe('@tractor/dependency-injection - Container:', () => {
     describe('constant:', () => {
         it('should throw an error if something has already been registered by the given name', () => {
             let container = new Container();

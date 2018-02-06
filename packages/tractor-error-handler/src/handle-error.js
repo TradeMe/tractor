@@ -2,7 +2,7 @@
 import { SERVER_ERROR } from './constants';
 
 // Dependencies:
-import { error } from 'tractor-logger';
+import { error } from '@tractor/logger';
 
 export function handleError (response, err, message) {
     error(message || err.message);

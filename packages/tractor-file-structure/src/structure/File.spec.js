@@ -11,12 +11,12 @@ import { FileStructure } from './FileStructure';
 import { ReferenceManager } from './ReferenceManager';
 
 // Errors:
-import { TractorError } from 'tractor-error-handler';
+import { TractorError } from '@tractor/error-handler';
 
 // Under test:
 import { File } from './File';
 
-describe('tractor-file-structure - File:', () => {
+describe('@tractor/file-structure - File:', () => {
     describe('File constructor:', () => {
         it('should create a new File', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));

@@ -13,7 +13,7 @@ import * as utilities from './utilities';
 // Under test:
 import { createOpenItemHandler } from './open-item';
 
-describe('tractor-file-structure - actions/open-item:', () => {
+describe('@tractor/file-structure - actions/open-item:', () => {
     it('should open a file', () => {
         let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let file = new File(path.join(path.sep, 'file-structure', 'file.ext'), fileStructure);

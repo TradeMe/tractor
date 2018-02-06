@@ -1,4 +1,4 @@
-# tractor-server
+# @tractor/server
 
 The server for [**tractor**](https://github.com/TradeMe/tractor).
 

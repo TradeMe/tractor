@@ -1,4 +1,4 @@
-# tractor-config-loader
+# @tractor/config-loader
 
 A configuration loader utility for [**tractor**](https://github.com/TradeMe/tractor).
 
@@ -18,7 +18,7 @@ A configuration loader utility for [**tractor**](https://github.com/TradeMe/trac
 
 > #### Usage:
 > ```javascript
-> import { getConfig } from 'tractor-config-loader';
+> import { getConfig } from '@tractor/config-loader';
 >
 > const config = getConfig('./my.tractor.conf.js');
 > ```

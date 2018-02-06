@@ -5,7 +5,7 @@ const EMPTY_TAG = '';
 
 // Utilites:
 import path from 'path';
-import { info } from 'tractor-logger';
+import { info } from '@trademe/logger';
 
 // Dependencies:
 import defaults from 'lodash.defaults';

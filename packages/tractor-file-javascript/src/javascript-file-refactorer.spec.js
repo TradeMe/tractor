@@ -1,19 +1,19 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect, sinon } from 'tractor-unit-test';
+import { expect, sinon } from '@tractor/unit-test';
 
 // Dependencies:
 import * as esprima from 'esprima';
 import esquery from 'esquery';
 import path from 'path';
-import { FileStructure } from 'tractor-file-structure';
+import { FileStructure } from '@tractor/file-structure';
 import { JavaScriptFile } from './javascript-file';
 
 // Under test:
 import { JavaScriptFileRefactorer } from './javascript-file-refactorer';
 
-describe('tractor-file-javascript: JavaScriptFileRefactorer:', () => {
+describe('@tractor/file-javascript: JavaScriptFileRefactorer:', () => {
     describe('JavaScriptFileRefactorer.identifierChange:', () => {
         it(`should update an identifier in a file's AST`, () => {
             let ast = esprima.parseScript('var oldName');

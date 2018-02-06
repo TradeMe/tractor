@@ -1,16 +1,16 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect, sinon } from 'tractor-unit-test';
+import { expect, sinon } from '@tractor/unit-test';
 
 // Dependencies:
 import path from 'path';
-import * as tractorLogger from 'tractor-logger';
+import * as tractorLogger from '@trademe/logger';
 
 // Under test:
 import { getConfig, loadConfig } from './index';
 
-describe('tractor-config-loader:', () => {
+describe('@tractor/config-loader:', () => {
     describe('getConfig:', () => {
         it('should re-use the config if it has already been loaded', () => {
             sinon.stub(tractorLogger, 'info');

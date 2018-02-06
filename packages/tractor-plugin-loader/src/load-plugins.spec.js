@@ -1,19 +1,19 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect, NOOP, sinon } from 'tractor-unit-test';
+import { expect, NOOP, sinon } from '@tractor/unit-test';
 
 // Dependencies:
 import fs from 'fs';
 import module from 'module';
 import path from 'path';
-import * as tractorLogger from 'tractor-logger';
-import { TractorError } from 'tractor-error-handler';
+import * as tractorLogger from '@tractor/logger';
+import { TractorError } from '@tractor/error-handler';
 
 // Under test:
 import { loadPlugins } from './load-plugins';
 
-describe('tractor-plugin-loader:', () => {
+describe('@tractor/plugin-loader:', () => {
     describe('load-plugins:', () => {
         it('should do nothing if there is not any installed plugins', () => {
             let nodeModules = [];

@@ -1,7 +1,7 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect, sinon } from 'tractor-unit-test';
+import { expect, sinon } from '@tractor/unit-test';
 
 // Dependencies:
 import npmlog from 'npmlog';
@@ -9,12 +9,12 @@ import npmlog from 'npmlog';
 // Under test:
 import { error, info, warn } from './index';
 
-describe('tractor-logger:', () => {
+describe('@tractor/logger:', () => {
     it('should have the correct heading', () => {
         expect(npmlog.heading).to.equal('🚜  tractor');
     });
 
-    describe('tractor-logger: error:', () => {
+    describe('@tractor/logger: error:', () => {
         it('should pass through to npmlog', () => {
             sinon.stub(npmlog, 'error');
 
@@ -26,7 +26,7 @@ describe('tractor-logger:', () => {
         });
     });
 
-    describe('tractor-logger: info:', () => {
+    describe('@tractor/logger: info:', () => {
         it('should pass through to npmlog', () => {
             sinon.stub(npmlog, 'info');
 
@@ -38,7 +38,7 @@ describe('tractor-logger:', () => {
         });
     });
 
-    describe('tractor-logger: warn:', () => {
+    describe('@tractor/logger: warn:', () => {
         it('should pass through to npmlog', () => {
             sinon.stub(npmlog, 'warn');
 

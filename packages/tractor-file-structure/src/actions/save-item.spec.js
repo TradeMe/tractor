@@ -10,13 +10,13 @@ import { File } from '../structure/File';
 import { FileStructure } from '../structure/FileStructure';
 
 // Errors:
-import { TractorError } from 'tractor-error-handler';
-import * as tractorErrorHandler from 'tractor-error-handler';
+import { TractorError } from '@tractor/error-handler';
+import * as tractorErrorHandler from '@tractor/error-handler';
 
 // Under test:
 import { createSaveItemHandler } from './save-item';
 
-describe('tractor-file-structure - actions/save-item:', () => {
+describe('@tractor/file-structure - actions/save-item:', () => {
     it('should save a file', () => {
         class TestFile extends File {
             save () { }

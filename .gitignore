@@ -3,5 +3,7 @@ node_modules
 reports
 npm-debug.log
 lerna-debug.log
+.sass-cache
 .idea/*
 .vscode
+.DS_Store

@@ -1,4 +1,4 @@
-# tractor-logger
+# @tractor/logger
 
 A general logger for [**tractor**](https://github.com/TradeMe/tractor).
 
@@ -16,7 +16,7 @@ A general logger for [**tractor**](https://github.com/TradeMe/tractor).
 
 > #### Usage:
 > ```javascript
-> import { error } from 'tractor-logger';
+> import { error } from '@tractor/logger';
 > error('error'); // 🚜 tractor ERR! error
 > ```
 
@@ -26,7 +26,7 @@ A general logger for [**tractor**](https://github.com/TradeMe/tractor).
 
 > #### Usage:
 > ```javascript
-> import { info } from 'tractor-logger';
+> import { info } from '@tractor/logger';
 > info('info'); // 🚜 tractor info info;
 > ```
 
@@ -36,6 +36,6 @@ A general logger for [**tractor**](https://github.com/TradeMe/tractor).
 
 > #### Usage:
 > ```javascript
-> import { warn } from 'tractor-logger';
+> import { warn } from '@tractor/logger';
 > warn('warn'); // 🚜 tractor WARN warn;
 > ```

@@ -2,13 +2,13 @@
 import Promise from 'bluebird';
 import childProcess from 'child_process';
 import path from 'path';
-import { error, info } from 'tractor-logger';
+import { error, info } from '@tractor/logger';
 
 // Constants:
 const PROTRACTOR_PATH = path.join('node_modules', 'protractor', 'bin', 'protractor');
 
 // Errors:
-import { TractorError } from 'tractor-error-handler';
+import { TractorError } from '@tractor/error-handler';
 
 export function run (config, socket, runOptions) {
     if (module.exports.running) {

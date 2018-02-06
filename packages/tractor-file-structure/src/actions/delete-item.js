@@ -3,7 +3,7 @@ import { Directory } from '../structure/Directory';
 import { getItemPath, respondOkay, respondItemNotFound } from './utilities';
 
 // Errors:
-import { TractorError, handleError } from 'tractor-error-handler';
+import { TractorError, handleError } from '@tractor/error-handler';
 
 export function createDeleteItemHandler (fileStructure) {
     return function deleteItem (request, response) {

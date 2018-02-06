@@ -2,7 +2,7 @@
 import { getCopyPath, getItemPath, respondOkay, respondItemNotFound } from './utilities';
 
 // Errors:
-import { TractorError, handleError } from 'tractor-error-handler';
+import { TractorError, handleError } from '@tractor/error-handler';
 
 export function createMoveItemHandler (fileStructure) {
     return function moveItem (request, response) {

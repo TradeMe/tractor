@@ -15,11 +15,11 @@ import escodegen from 'escodegen';
 import * as esprima from 'esprima';
 import esquery from 'esquery';
 import path from 'path';
-import { File } from 'tractor-file-structure';
+import { File } from '@tractor/file-structure';
 import { JavaScriptFileRefactorer } from './javascript-file-refactorer';
 
 // Errors:
-import { TractorError } from 'tractor-error-handler';
+import { TractorError } from '@tractor/error-handler';
 
 export class JavaScriptFile extends File {
     read () {

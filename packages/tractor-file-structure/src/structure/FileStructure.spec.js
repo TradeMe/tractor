@@ -10,12 +10,12 @@ import path from 'path';
 import { Directory } from './Directory';
 import { File } from './File';
 import { ReferenceManager } from './ReferenceManager';
-import * as tractorLogger from 'tractor-logger';
+import * as tractorLogger from '@tractor/logger';
 
 // Under test:
 import { FileStructure } from './FileStructure';
 
-describe('tractor-file-structure - FileStructure:', () => {
+describe('@tractor/file-structure - FileStructure:', () => {
     describe('FileStructure constructor:', () => {
         it('should create a new FileStructure', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));

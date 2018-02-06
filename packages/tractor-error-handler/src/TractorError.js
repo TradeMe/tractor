@@ -18,6 +18,6 @@ TractorError.prototype._isTractorError = true;
 
 // NOTE -
 // When error instances are shared between modules that use
-// 'tractor-error-handler', they may not actually be instances
+// @tractor/error-handler, they may not actually be instances
 // of the same TractorError constructor.
 TractorError.isTractorError = e => !!e._isTractorError;

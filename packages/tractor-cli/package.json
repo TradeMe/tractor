@@ -1,0 +1,47 @@
+{
+  "name": "@tractor/cli",
+  "version": "1.0.0-alpha.3",
+  "description": "CLI for tractor",
+  "author": "Craig Spence <craigspence0@gmail.com>",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TradeMe/tractor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TradeMe/tractor/issues",
+    "email": "craigspence0@gmail.com"
+  },
+  "bin": {
+    "tractor": "./bin/tractor"
+  },
+  "scripts": {
+    "prepare": "npm run build",
+    "build": "npm run clean && npm run lint && npm run cover && npm run compile",
+    "clean": "rimraf dist && rimraf reports",
+    "compile": "babel src/ --out-dir dist --ignore *.spec.js",
+    "cover": "istanbul cover --config ../../.istanbulrc.json ../../node_modules/.bin/_mocha -- --opts ../../.mocharc 'src/**/*.spec.js'",
+    "lint": "eslint src",
+    "test": "mocha --opts ../../.mocharc 'src/**/*.spec.js'",
+    "watch": "npm-watch"
+  },
+  "watch": {
+    "build": "src/**/*.js"
+  },
+  "dependencies": {
+    "@tractor/config-loader": "^1.0.0-alpha.3",
+    "@tractor/dependency-injection": "^1.0.0-alpha.3",
+    "@tractor/error-handler": "^1.0.0-alpha.3",
+    "@tractor/file-structure": "^1.0.0-alpha.3",
+    "@trademe/logger": "^1.0.0-alpha.3",
+    "@tractor/plugin-loader": "^1.0.0-alpha.3",
+    "@tractor/server": "^1.0.0-alpha.3",
+    "babel-polyfill": "^6.26.0",
+    "bluebird": "^3.5.1",
+    "commander": "^2.13.0",
+    "protractor": "^5.3.0"
+  }
+}

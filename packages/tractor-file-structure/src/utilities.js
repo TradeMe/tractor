@@ -5,10 +5,10 @@ const DOESNT_EXIST = 'ENOENT';
 // Dependencies:
 import Promise from 'bluebird';
 import fs from 'graceful-fs';
-import { info } from 'tractor-logger';
+import { info } from '@tractor/logger';
 
 // Errors:
-import { TractorError } from 'tractor-error-handler';
+import { TractorError } from '@tractor/error-handler';
 
 export function copyFile (readPath, writePath) {
     return fs.readFileAsync(writePath)

@@ -4,15 +4,15 @@
 import { SERVER_ERROR } from './constants';
 
 // Test setup:
-import { expect, sinon } from 'tractor-unit-test';
+import { expect, sinon } from '@tractor/unit-test';
 
 // Dependencies:
-import * as tractorLogger from 'tractor-logger';
+import * as tractorLogger from '@tractor/logger';
 
 // Under test:
 import { handleError } from './handle-error';
 
-describe('tractor-error-handler: handle-error:', () => {
+describe('@tractor/error-handler: handle-error:', () => {
     it('should log the error to the console', () => {
         sinon.stub(tractorLogger, 'error');
         let response = {

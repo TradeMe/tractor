@@ -1,7 +1,7 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect, sinon } from 'tractor-unit-test';
+import { expect, sinon } from '@tractor/unit-test';
 
 // Dependencies:
 import { Container } from './container';
@@ -9,7 +9,7 @@ import { Container } from './container';
 // Under test:
 import { container, DI } from './index';
 
-describe('tractor-dependency-injection:', () => {
+describe('@tractor/dependency-injection:', () => {
     describe('container:', () => {
         it('should return a new DI container', () => {
             expect(container()).to.be.an.instanceof(Container);

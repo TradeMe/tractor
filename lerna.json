@@ -1,9 +1,13 @@
 {
   "lerna": "2.8.0",
   "hoist": true,
-  "nohoist": "tractor-client",
+  "commands": {
+    "bootstrap": {
+      "nohoist": "tractor-client"
+    }
+  },
   "packages": [
     "packages/*"
   ],
-  "version": "0.0.0"
+  "version": "1.0.0-alpha.3"
 }

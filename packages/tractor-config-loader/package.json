@@ -1,20 +1,23 @@
 {
-  "name": "tractor-config-loader",
-  "version": "0.5.0",
+  "name": "@tractor/config-loader",
+  "version": "1.0.0-alpha.3",
+  "description": "Config loader for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/phenomnomnominal/tractor-config-loader.git"
+    "url": "https://github.com/TradeMe/tractor.git"
   },
   "bugs": {
-    "url": "https://github.com/phenomnomnominal/tractor-config-loader/issues",
+    "url": "https://github.com/TradeMe/tractor/issues",
     "email": "craigspence0@gmail.com"
   },
   "main": "dist/index.js",
-  "watch": {
-    "build": "src/**/*.js"
-  },
   "scripts": {
+    "prepare": "npm run build",
     "build": "npm run clean && npm run lint && npm run cover && npm run compile",
     "clean": "rimraf dist && rimraf reports",
     "compile": "babel src/ --out-dir dist --ignore *.spec.js",
@@ -23,14 +26,16 @@
     "test": "mocha --opts ../../.mocharc 'src/**/*.spec.js'",
     "watch": "npm-watch"
   },
-  "license": "MIT",
+  "watch": {
+    "build": "src/**/*.js"
+  },
   "devDependencies": {
-    "tractor-logger": "^0.1.1"
+    "@tractor/logger": "^1.0.0-alpha.3"
   },
   "dependencies": {
     "lodash.defaults": "^4.2.0"
   },
   "peerDependencies": {
-    "tractor": "^0.12.1"
+    "@tractor/core": "^1.0.0-alpha.3"
   }
 }

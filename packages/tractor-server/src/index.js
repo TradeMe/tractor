@@ -1,5 +1,5 @@
 // Utilities:
-import { info } from 'tractor-logger';
+import { info } from '@tractor/logger';
 
 // Dependencies:
 import { init, start } from './application';

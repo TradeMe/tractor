@@ -4,14 +4,14 @@
 const MAGIC_TIMEOUT_NUMBER = 10;
 
 // Test setup:
-import { expect, Promise, sinon } from 'tractor-unit-test';
+import { expect, Promise, sinon } from '@tractor/unit-test';
 
 // Dependencies:
 import childProcess from 'child_process';
 import { EventEmitter } from 'events';
 import path from 'path';
-import { TractorError } from 'tractor-error-handler';
-import * as tractorLogger from 'tractor-logger';
+import { TractorError } from '@tractor/error-handler';
+import * as tractorLogger from '@tractor/logger';
 
 // Under test:
 import { run } from './protractor-runner';

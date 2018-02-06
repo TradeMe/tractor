@@ -10,12 +10,12 @@ import { File } from './File';
 import { FileStructure } from './FileStructure';
 
 // Errors:
-import { TractorError } from 'tractor-error-handler';
+import { TractorError } from '@tractor/error-handler';
 
 // Under test:
 import { Directory } from './Directory';
 
-describe('tractor-file-structure - Directory:', () => {
+describe('@tractor/file-structure - Directory:', () => {
     describe('Directory constructor:', () => {
         it('should create a new Directory', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));

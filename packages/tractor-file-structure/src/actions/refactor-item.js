@@ -2,7 +2,7 @@
 import { getItemPath, respondOkay, respondItemNotFound } from './utilities';
 
 // Errors:
-import { TractorError, handleError } from 'tractor-error-handler';
+import { TractorError, handleError } from '@tractor/error-handler';
 
 export function createRefactorItemHandler (fileStructure) {
     return function refactorItem (request, response) {

@@ -1,4 +1,4 @@
-# tractor-dependency-injection
+# @tractor/dependency-injection
 
 Dependency Injection container for [**tractor**](https://github.com/TradeMe/tractor).
 
@@ -16,7 +16,7 @@ Dependency Injection container for [**tractor**](https://github.com/TradeMe/trac
 
 > #### Usage:
 > ```javascript
-> import { DI } from 'tractor-dependency-injection';
+> import { DI } from '@tractor/dependency-injection';
 >
 > DI.constant({ config: { my: 'config' }});
 > ```
@@ -27,7 +27,7 @@ Dependency Injection container for [**tractor**](https://github.com/TradeMe/trac
 
 > #### Usage:
 > ```javascript
-> import { DI } from 'tractor-dependency-injection';
+> import { DI } from '@tractor/dependency-injection';
 >
 > DI.factory(function myFunction () {});
 > ```
@@ -38,7 +38,7 @@ Dependency Injection container for [**tractor**](https://github.com/TradeMe/trac
 
 > #### Usage:
 > ```javascript
-> import { DI } from 'tractor-dependency-injection';
+> import { DI } from '@tractor/dependency-injection';
 >
 > let config = {};
 > DI.constant({ config });
@@ -56,7 +56,7 @@ Dependency Injection container for [**tractor**](https://github.com/TradeMe/trac
 
 > #### Usage:
 > ```javascript
-> import { DI } from 'tractor-dependency-injection';
+> import { DI } from '@tractor/dependency-injection';
 >
 > let config = {};
 > DI.constant({ config });
