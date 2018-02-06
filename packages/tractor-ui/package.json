@@ -1,6 +1,6 @@
 {
   "name": "@tractor/ui",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.5",
   "description": "UI for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -17,7 +17,7 @@
   },
   "main": "dist/index.html",
   "scripts": {
-    "prepublish": "gulp build",
+    "prepare": "gulp build",
     "clean": "rimraf dist && rimraf reports",
     "tractor": "tractor start",
     "tractor:init": "tractor init"
@@ -42,6 +42,7 @@
     "cucumber-html-report": "0.2.5",
     "deep-equal": "^1.0.1",
     "dirty-chai": "1.2.2",
+    "esquery": "^1.0.0",
     "estemplate": "0.4.0",
     "gulp": "3.9.1",
     "gulp-autoprefixer": "3.1.0",

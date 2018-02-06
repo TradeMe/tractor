@@ -1,6 +1,6 @@
 {
   "name": "@tractor/unit-test",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.5",
   "description": "Unit test utilities for the tractor monorepo",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -17,6 +17,7 @@
   },
   "main": "dist/index.js",
   "scripts": {
+    "prepare": "npm run build",
     "build": "npm run clean && npm run lint && npm run compile",
     "clean": "rimraf dist",
     "compile": "babel src/ --out-dir dist --ignore *.spec.js",

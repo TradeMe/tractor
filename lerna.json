@@ -3,11 +3,11 @@
   "hoist": true,
   "commands": {
     "bootstrap": {
-      "nohoist": "tractor-client"
+      "nohoist": "@tractor/ui"
     }
   },
   "packages": [
     "packages/*"
   ],
-  "version": "1.0.0-alpha.3"
+  "version": "1.0.0-alpha.5"
 }
