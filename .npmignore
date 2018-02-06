@@ -1,8 +1,0 @@
-node_modules/
-reports/
-src/
-.babelrc
-.eslintrc.json
-.istanbulrc.json
-.mocharc
-npm-debug.log
