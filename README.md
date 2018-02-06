@@ -1,6 +1,6 @@
 # tractor-cli
 
-A UI around [Protractor](http://angular.github.io/protractor/) to help write E2E tests for [Angular](https://angularjs.org/) applications without needing to know JavaScript
+A UI around [Protractor](http://angular.github.io/protractor/) to help write E2E tests for [Angular](https://angular.io/) applications without needing to know JavaScript
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/TradeMe/tractor.svg)](https://greenkeeper.io/)
 [![npm version](https://img.shields.io/npm/v/tractor.svg)](https://www.npmjs.com/package/tractor)
@@ -13,7 +13,7 @@ A UI around [Protractor](http://angular.github.io/protractor/) to help write E2E
 To install the cli, run the following:
 
 ```
-npm install -g tractor
+npm install -g @tractor/cli
 ```
 
 That will install the global binary, which will allow you to run the `tractor` command from anywhere.
@@ -44,8 +44,6 @@ module.exports = {
     directory: './path/to/test/directory', // defaults to root/tractor
     port: number,                          // defaults to 4000
     environments: Array<string>,           // a list of URLs for the environments to run the tests in
-    tags: Array<string>,                   // a list of tags for Cucumber
-    beforeProtractor: Function,            // a function to run before protractor runs
-    afterProtractor: Function              // a function to run after protractor runs
+    tags: Array<string>                    // a list of tags for Cucumber
 };
 ```

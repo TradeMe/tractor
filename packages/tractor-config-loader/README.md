@@ -2,10 +2,7 @@
 
 A configuration loader utility for [**tractor**](https://github.com/TradeMe/tractor).
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/phenomnomnominal/tractor-config-loader.svg)](https://greenkeeper.io/)
-[![npm version](https://img.shields.io/npm/v/tractor-config-loader.svg)](https://www.npmjs.com/package/tractor-config-loader)
-[![Code Climate](https://codeclimate.com/github/phenomnomnominal/tractor-config-loader/badges/gpa.svg)](https://codeclimate.com/github/phenomnomnominal/tractor-config-loader)
-[![Test Coverage](https://codeclimate.com/github/phenomnomnominal/tractor-config-loader/badges/coverage.svg)](https://codeclimate.com/github/phenomnomnominal/tractor-config-loader/coverage)
+[![npm version](https://img.shields.io/npm/v/@tractor/config-loader.svg)](https://www.npmjs.com/package/@tractor/config-loader)
 
 ## API:
 

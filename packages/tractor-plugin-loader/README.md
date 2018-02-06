@@ -2,11 +2,7 @@
 
 Plugin loader for [**tractor**](https://github.com/TradeMe/tractor) to provide additional UI testing capabilities.
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/phenomnomnominal/tractor-plugin-loader.svg)](https://greenkeeper.io/)
-[![npm version](https://img.shields.io/npm/v/tractor-plugin-loader.svg)](https://www.npmjs.com/package/tractor-plugin-loader)
-[![bitHound Overall Score](https://www.bithound.io/github/phenomnomnominal/tractor-plugin-loader/badges/score.svg)](https://www.bithound.io/github/phenomnomnominal/tractor-plugin-loader)
-[![Code Climate](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-loader/badges/gpa.svg)](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-loader)
-[![Test Coverage](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-loader/badges/coverage.svg)](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-loader/coverage)
+[![npm version](https://img.shields.io/npm/v/@tractor/plugin-loader.svg)](https://www.npmjs.com/package/@tractor/plugin-loader)
 
 ## How it works:
 

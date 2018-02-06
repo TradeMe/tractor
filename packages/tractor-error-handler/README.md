@@ -1,12 +1,8 @@
 # @tractor/error-handler
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/phenomnomnominal/tractor-error-handler.svg)](https://greenkeeper.io/)
-[![npm version](https://img.shields.io/npm/v/tractor-error-handler.svg)](https://www.npmjs.com/package/tractor-error-handler)
-[![bitHound Overall Score](https://www.bithound.io/github/phenomnomnominal/tractor-error-handler/badges/score.svg)](https://www.bithound.io/github/phenomnomnominal/tractor-error-handler)
-[![Code Climate](https://codeclimate.com/github/phenomnomnominal/tractor-error-handler/badges/gpa.svg)](https://codeclimate.com/github/phenomnomnominal/tractor-error-handler)
-[![Test Coverage](https://codeclimate.com/github/phenomnomnominal/tractor-error-handler/badges/coverage.svg)](https://codeclimate.com/github/phenomnomnominal/tractor-error-handler/coverage)
-
 A general HTTP request error handler for [**tractor**](https://github.com/TradeMe/tractor).
+
+[![npm version](https://img.shields.io/npm/v/@tractor/error-handler.svg)](https://www.npmjs.com/package/@tractor/error-handler)
 
 ## API:
 
