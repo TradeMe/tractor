@@ -38,22 +38,22 @@ export function loadPlugins () {
         }
 
         if (!plugin.create) {
-            plugin.create = (() => {});
+            plugin.create = () => {};
         }
         if (!plugin.init) {
-            plugin.init = (() => {});
+            plugin.init = () => {};
         }
         if (!plugin.plugin) {
-            plugin.plugin = (() => {});
+            plugin.plugin = () => {};
         }
         if (!plugin.run) {
-            plugin.run = (() => {});
+            plugin.run = () => {};
         }
         if (!plugin.serve) {
-            plugin.serve = (() => {});
+            plugin.serve = () => {};
         }
         if (!plugin.upgrade) {
-            plugin.upgrade = (() => {});
+            plugin.upgrade = () => {};
         }
     });
     return plugins;

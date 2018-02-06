@@ -3,7 +3,7 @@ import Promise from 'bluebird';
 Promise.promisifyAll(require('child_process'));
 
 // Dependencies:
-import { error, info } from '@trademe/logger';
+import { error, info } from '@tractor/logger';
 import { copyProtractorConfig } from './copy-protractor-config';
 import { createTractorDirectory } from './create-tractor-directory';
 import { initialisePlugins } from './initialise-plugins';

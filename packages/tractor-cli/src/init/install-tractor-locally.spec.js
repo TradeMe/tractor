@@ -5,7 +5,7 @@ import { expect, sinon } from '@tractor/unit-test';
 
 // Dependencies:
 import childProcess from 'child_process';
-import * as tractorLogger from '@trademe/logger';
+import * as tractorLogger from '@tractor/logger';
 
 // Under test:
 import { installTractorLocally } from './install-tractor-locally';

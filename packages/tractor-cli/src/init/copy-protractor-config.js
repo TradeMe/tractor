@@ -5,7 +5,7 @@ const PROTRACTOR_CONF_FILE_NAME = 'protractor.conf.js';
 // Dependencies:
 import path from 'path';
 import { copyFile } from '@tractor/file-structure';
-import { warn } from '@trademe/logger';
+import { warn } from '@tractor/logger';
 
 // Errors:
 import { TractorError } from '@tractor/error-handler';

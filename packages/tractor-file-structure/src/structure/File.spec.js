@@ -1,9 +1,10 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect, Promise, sinon } from '../../test-setup';
+import { expect, sinon } from '../../test-setup';
 
 // Dependencies:
+import Promise from 'bluebird';
 import fs from 'graceful-fs';
 import path from 'path';
 import { Directory } from './Directory';

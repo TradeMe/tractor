@@ -1,6 +1,6 @@
 // Dependencies:
 import Promise from 'bluebird';
-import { info } from '@trademe/logger';
+import { info } from '@tractor/logger';
 
 export function upgradePlugins (di, plugins) {
     return Promise.map(plugins, plugin => {

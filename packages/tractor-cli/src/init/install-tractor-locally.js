@@ -6,7 +6,7 @@ const REMOTE_TRACTOR_VERSIONS_COMMAND = 'npm --json info tractor versions';
 // Dependencies:
 import Promise from 'bluebird';
 import childProcess from 'child_process';
-import { error, info } from '@trademe/logger';
+import { error, info } from '@tractor/logger';
 
 export function installTractorLocally () {
     return Promise.all([

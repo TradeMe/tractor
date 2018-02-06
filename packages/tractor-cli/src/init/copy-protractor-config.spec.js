@@ -6,7 +6,7 @@ import { expect, sinon } from '@tractor/unit-test';
 // Dependencies:
 import path from 'path';
 import * as tractorFileStructure from '@tractor/file-structure';
-import * as tractorLogger from '@trademe/logger';
+import * as tractorLogger from '@tractor/logger';
 
 // Errors:
 import { TractorError } from '@tractor/error-handler';

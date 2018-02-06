@@ -4,7 +4,7 @@
 import { expect, ineeda, NOOP, Promise, sinon } from '@tractor/unit-test';
 
 // Dependencies:
-import * as tractorLogger from '@trademe/logger';
+import * as tractorLogger from '@tractor/logger';
 
 // Under test:
 import { upgradePlugins } from './upgrade-plugins';

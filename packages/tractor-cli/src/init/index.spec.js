@@ -4,7 +4,7 @@
 import { expect, ineeda, NOOP, Promise, sinon } from '@tractor/unit-test';
 
 // Dependencies:
-import * as tractorLogger from '@trademe/logger';
+import * as tractorLogger from '@tractor/logger';
 import { copyProtractorConfig } from './copy-protractor-config';
 import { createTractorDirectory } from './create-tractor-directory';
 import { initialisePlugins } from './initialise-plugins';

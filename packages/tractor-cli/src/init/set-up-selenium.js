@@ -1,7 +1,7 @@
 // Dependencies:
 import childProcess from 'child_process';
 import path from 'path';
-import { error, info } from '@trademe/logger';
+import { error, info } from '@tractor/logger';
 
 // Constants:
 const SELENIUM_UPDATE_COMMAND = `node ${path.join('node_modules', 'protractor', 'bin', 'webdriver-manager')} update`;

@@ -5,7 +5,7 @@ import { expect, sinon } from '@tractor/unit-test';
 
 // Dependencies:
 import path from 'path';
-import * as tractorLogger from '@trademe/logger';
+import * as tractorLogger from '@tractor/logger';
 
 // Under test:
 import { getConfig, loadConfig } from './index';
