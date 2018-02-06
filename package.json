@@ -13,7 +13,9 @@
     "email": "craigspence0@gmail.com"
   },
   "scripts": {
-    "build": "lerna bootstrap && lerna run build"
+    "clean": "rimraf reports",
+    "build": "npm run clean && lerna bootstrap && lerna run build && npm run cover",
+    "cover": "istanbul cover --config .istanbulrc.json node_modules/.bin/_mocha -- --opts .mocharc 'packages/**/src/**/*.spec.js'"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.39",

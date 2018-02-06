@@ -56,7 +56,7 @@ describe('@tractor/config-loader:', () => {
         it('should load config values from a file', () => {
             sinon.stub(tractorLogger, 'info');
 
-            let config = loadConfig('./assets/test.conf.js');
+            let config = loadConfig(path.resolve(__dirname, '../assets/test.conf.js'));
 
             expect(config.port).to.equal(5000);
             expect(config.directory).to.equal('./tests/e2e');
@@ -67,7 +67,7 @@ describe('@tractor/config-loader:', () => {
         it('should load config values from an ES2015 module', () => {
             sinon.stub(tractorLogger, 'info');
 
-            let config = loadConfig('./assets/test.esm.conf.js');
+            let config = loadConfig(path.resolve(__dirname, '../assets/test.esm.conf.js'));
 
             expect(config.port).to.equal(5000);
             expect(config.directory).to.equal('./tests/e2e');
@@ -78,7 +78,7 @@ describe('@tractor/config-loader:', () => {
         it('should load any missing values from the default config', () => {
             sinon.stub(tractorLogger, 'info');
 
-            let config = loadConfig();
+            let config = loadConfig(path.resolve(__dirname, '../assets/empty.conf.js'));
 
             expect(config.port).to.equal(4000);
             expect(config.directory).to.equal('./tractor');
@@ -91,7 +91,7 @@ describe('@tractor/config-loader:', () => {
         it('should make the empty tag the first tag', () => {
             sinon.stub(tractorLogger, 'info');
 
-            let config = loadConfig('./assets/test.tags.conf.js');
+            let config = loadConfig(path.resolve(__dirname, '../assets/test.tags.conf.js'));
 
             expect(config.tags).to.deep.equal(['', '@foo', '@bar']);
 
