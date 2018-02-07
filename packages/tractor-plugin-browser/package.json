@@ -1,6 +1,6 @@
 {
   "name": "@tractor-plugins/browser",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "tractor plugin wrapping the Protractor `browser` object",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
