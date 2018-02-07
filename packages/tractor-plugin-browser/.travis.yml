@@ -8,4 +8,3 @@ script: yarn run build
 after_success:
   - npm install -g codeclimate-test-reporter
   - codeclimate-test-reporter < ./reports/coverage/lcov.info
-  - bash travis-after-build.sh

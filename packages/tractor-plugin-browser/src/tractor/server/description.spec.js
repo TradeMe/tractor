@@ -1,7 +1,7 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect } from '../../../test-setup';
+import { expect } from '@tractor/unit-test';
 
 // Under test:
 import { description } from './description';

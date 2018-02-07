@@ -1,7 +1,12 @@
 {
-  "name": "tractor-plugin-browser",
-  "version": "0.2.0",
+  "name": "@tractor-plugins/browser",
+  "version": "0.1.0",
+  "description": "tractor plugin wrapping the Protractor `browser` object",
   "author": "Craig Spence <craigspence0@gmail.com>",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/phenomnomnominal/tractor-plugin-browser.git"
@@ -11,41 +16,34 @@
     "email": "craigspence0@gmail.com"
   },
   "main": "dist/index.js",
-  "watch": {
-    "build": "src/**/*.js"
-  },
   "scripts": {
     "prepublish": "npm run build",
     "build": "npm run clean && npm run lint && npm run cover && npm run compile",
-    "clean": "rimraf dist",
+    "clean": "rimraf dist && rimraf reports",
     "compile": "babel src/ --out-dir dist --ignore *.spec.js",
     "cover": "istanbul cover --config .istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ./.mocharc 'src/**/*.spec.js'",
     "lint": "eslint src",
     "test": "mocha --opts ./.mocharc 'src/**/*.spec.js'",
-    "test:debug": "mocha --inspect --debug-brk --opts ./.mocharc 'src/**/*.spec.js'",
     "watch": "npm-watch"
   },
-  "license": "MIT",
-  "engines": {
-    "node": ">=0.10"
+  "watch": {
+    "build": "src/**/*.js"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
+    "@babel/cli": "^7.0.0-beta.39",
+    "@babel/core": "^7.0.0-beta.39",
+    "@babel/plugin-proposal-export-default-from": "^7.0.0-beta.39",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.39",
+    "@babel/preset-env": "^7.0.0-beta.39",
+    "@babel/register": "^7.0.0-beta.39",
+    "@tractor/unit-test": "^1.0.0-alpha.5",
     "babel-eslint": "^8.2.1",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-stage-0": "^6.24.1",
-    "babel-register": "^6.26.0",
-    "chai": "^4.1.2",
-    "dirty-chai": "^2.0.1",
-    "eslint": "^4.16.0",
+    "eslint": "^4.17.0",
     "istanbul": "^1.1.0-alpha.1",
     "mocha": "^5.0.0",
-    "npm-watch": "^0.3.0",
-    "sinon": "^4.2.1",
-    "sinon-chai": "^2.14.0"
+    "npm-watch": "^0.3.0"
   },
   "peerDependencies": {
-    "tractor": "^0.12.1"
+    "@tractor/core": "^1.0.0-alpha.5"
   }
 }

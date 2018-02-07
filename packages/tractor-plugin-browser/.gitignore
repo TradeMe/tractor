@@ -2,6 +2,6 @@ dist
 node_modules
 reports
 npm-debug.log
-npm-debug.log.*
 .idea/*
 .vscode
+.DS_Store

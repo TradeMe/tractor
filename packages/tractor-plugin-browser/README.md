@@ -1,4 +1,4 @@
-# tractor-plugin-browser
+# @tractor-plugins/browser
 
 Plugin for [tractor](http://github.com/TradeMe/tractor) that contains a subset of [Protractor](http://www.protractortest.org/#/api)
 browser methods.

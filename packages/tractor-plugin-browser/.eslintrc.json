@@ -4,15 +4,9 @@
     },
     "extends": "eslint:recommended",
     "parser": "babel-eslint",
-    "parserOptions": {
-        "ecmaVersion": 6,
-        "sourceType": "module",
-        "ecmaFeatures": {
-            "impliedStrict": true,
-            "experimentalObjectRestSpread": true
-        }
-    },
     "rules": {
-        "no-console": ["error", { "allow": ["error"] }]
+        "no-extra-parens": 2,
+        "no-prototype-builtins": 2,
+        "no-template-curly-in-string": 2
     }
 }
