@@ -1,7 +1,7 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect } from '../../../test-setup.js';
+import { expect } from '@tractor/unit-test';
 
 // Dependencies:
 import { ScreenSize } from './screen-size/screen-size';

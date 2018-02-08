@@ -1,6 +1,6 @@
 // Dependencies:
-import { getConfig } from 'tractor-config-loader';
-import { ScreenSize, createTag } from 'tractor-plugin-screen-size';
+import { getConfig } from '@tractor/config-loader';
+import { ScreenSize, createTag } from '@tractor-plugins/screen-size';
 
 module.exports = function () {
     let browser = global.browser;

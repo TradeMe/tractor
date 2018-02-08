@@ -1,12 +1,10 @@
 // Dependencies:
+import { TractorError } from '@tractor/error-handler';
+import { copyFile, createDir } from '@tractor/file-structure';
+import { warn } from '@tractor/logger';
 import Promise from 'bluebird';
 import fs from 'graceful-fs';
 import path from 'path';
-import { warn } from 'tractor-logger';
-import { copyFile, createDir } from 'tractor-file-structure';
-
-// Errors:
-import { TractorError } from 'tractor-error-handler';
 
 export function init (config) {
     let cucumberSupportDirectoryPath = path.resolve(process.cwd(), config.cucumber.supportDirectory);

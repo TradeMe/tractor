@@ -1,6 +1,6 @@
 // Dependencies:
+import { TractorError } from '@tractor/error-handler';
 import Promise from 'bluebird';
-import { TractorError } from 'tractor-error-handler';
 
 // Constants:
 const DEFAULT_HEIGHT = 1000;

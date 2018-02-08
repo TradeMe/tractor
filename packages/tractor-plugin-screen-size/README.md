@@ -1,9 +1,9 @@
-# tractor-plugin-screen-size
+# @tractor-plugins/screen-size
 
 Plugin for [tractor](http://github.com/TradeMe/tractor) for running tests at different screen sizes.
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/phenomnomnominal/tractor-plugin-screen-size.svg)](https://greenkeeper.io/)
-[![npm version](https://img.shields.io/npm/v/tractor-plugin-screen-size.svg)](https://www.npmjs.com/package/tractor-plugin-screen-size)
+[![npm version](https://img.shields.io/npm/v/@tractor-plugins/screen-size.svg)](https://www.npmjs.com/package/@tractor-plugins/screen-size)
 [![bitHound Overall Score](https://www.bithound.io/github/phenomnomnominal/tractor-plugin-screen-size/badges/score.svg)](https://www.bithound.io/github/phenomnomnominal/tractor-plugin-screen-size)
 [![Code Climate](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-screen-size/badges/gpa.svg)](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-screen-size)
 [![Test Coverage](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-screen-size/coverage.svg)](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-screen-size/coverage)

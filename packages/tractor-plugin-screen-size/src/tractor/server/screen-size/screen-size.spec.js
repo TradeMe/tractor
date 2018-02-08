@@ -1,10 +1,10 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect, Promise, sinon } from '../../../../test-setup.js';
+import { expect, Promise, sinon } from '@tractor/unit-test';
 
 // Dependencies:
-import { TractorError } from 'tractor-error-handler';
+import { TractorError } from '@tractor/error-handler';
 
 // Under test:
 import { ScreenSize } from './screen-size';
