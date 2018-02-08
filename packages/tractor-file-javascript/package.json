@@ -1,6 +1,6 @@
 {
   "name": "@tractor/file-javascript",
-  "version": "1.0.0-alpha.8",
+  "version": "1.0.0-alpha.9",
   "description": "JavaScript file handler for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -35,11 +35,11 @@
     "esquery": "^1.0.0"
   },
   "devDependencies": {
-    "@tractor/error-handler": "^1.0.0-alpha.8",
-    "@tractor/file-structure": "^1.0.0-alpha.8",
-    "@tractor/logger": "^1.0.0-alpha.8"
+    "@tractor/error-handler": "^1.0.0-alpha.9",
+    "@tractor/file-structure": "^1.0.0-alpha.9",
+    "@tractor/logger": "^1.0.0-alpha.9"
   },
   "peerDependencies": {
-    "@tractor/core": "^1.0.0-alpha.7"
+    "@tractor/core": "^1.0.0-alpha.9"
   }
 }
