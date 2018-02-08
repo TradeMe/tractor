@@ -1,7 +1,5 @@
 // Constants:
-const TRACTOR_PLUGIN_LOADER = '@tractor/plugin-loader';
-const TRACTOR_PLUGIN_MODULE_NAME_REGEX = /(tractor-plugin-.*$)/;
-const TRACTOR_PLUGIN_NAME_REGEX = /tractor-plugin-(.*)/;
+const TRACTOR_PLUGINS_SCOPE = '@tractor-plugins';
 
 // Utilities:
 import fs from 'fs';
@@ -65,8 +63,9 @@ function requirePlugins () {
     return pluginNames
     .map(pluginName => {
         let plugin;
+        let fullName = `${TRACTOR_PLUGINS_SCOPE}/${pluginName}`;
         try {
-            let modulePath = path.resolve(process.cwd(), path.join('node_modules', pluginName));
+            let modulePath = path.resolve(process.cwd(), path.join('node_modules', TRACTOR_PLUGINS_SCOPE, pluginName));
             plugin = module._load(modulePath);
             plugin = plugin.default ? plugin.default : plugin;
 
@@ -76,24 +75,15 @@ function requirePlugins () {
             let packagePath = path.join(modulePath, 'package.json');
             plugin.description.version = module._load(packagePath).version;
 
-            plugin.fullName = pluginName;
-            let [, name] = plugin.fullName.match(TRACTOR_PLUGIN_NAME_REGEX);
-            plugin.name = name;
+            plugin.fullName = fullName;
+            plugin.name = pluginName;
             return plugin;
         } catch (e) {
-            throw new TractorError(`could not require '${pluginName}'`);
+            throw new TractorError(`could not require '${fullName}'`);
         }
     });
 }
 
 function getInstalledPluginNames () {
-    let pluginNames = fs.readdirSync(path.resolve(process.cwd(), 'node_modules'))
-    .filter(dependency => dependency.match(TRACTOR_PLUGIN_MODULE_NAME_REGEX))
-    .map(dependency => {
-        let [, dependencyName] = dependency.match(TRACTOR_PLUGIN_MODULE_NAME_REGEX);
-        return dependencyName;
-    })
-    .filter(dependencyName => dependencyName !== TRACTOR_PLUGIN_LOADER);
-
-    return pluginNames;
+    return fs.readdirSync(path.resolve(process.cwd(), 'node_modules', TRACTOR_PLUGINS_SCOPE));
 }

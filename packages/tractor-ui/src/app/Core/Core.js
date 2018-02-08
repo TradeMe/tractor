@@ -1,7 +1,7 @@
 'use strict';
 
 // Utilities:
-var angular = require('angular');
+var angular = window.angular;
 
 var Core = angular.module('Core', []);
 

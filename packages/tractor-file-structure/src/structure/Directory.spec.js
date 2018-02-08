@@ -1,7 +1,7 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect, sinon } from '../../test-setup';
+import { expect, Promise, sinon } from '@tractor/unit-test';
 
 // Dependencies:
 import fs from 'graceful-fs';
@@ -11,6 +11,9 @@ import { FileStructure } from './FileStructure';
 
 // Errors:
 import { TractorError } from '@tractor/error-handler';
+
+// Promisify:
+Promise.promisifyAll(fs);
 
 // Under test:
 import { Directory } from './Directory';

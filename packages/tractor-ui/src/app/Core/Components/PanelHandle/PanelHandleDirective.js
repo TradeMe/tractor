@@ -2,7 +2,7 @@
 
 // Utilities:
 var _ = require('lodash');
-var angular = require('angular');
+var angular = window.angular;
 
 // Module:
 var Core = require('../../Core');

@@ -1,6 +1,6 @@
 {
   "name": "@tractor/ui",
-  "version": "1.0.0-alpha.9",
+  "version": "1.0.0-alpha.6",
   "description": "UI for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -62,7 +62,7 @@
     "xterm": "^2.9.2"
   },
   "peerDependencies": {
-    "@tractor/core": "^1.0.0-alpha.9"
+    "@tractor/core": "^1.0.0-alpha.6"
   },
   "browserify": {},
   "browser": {

@@ -1,6 +1,6 @@
 {
   "name": "tractor",
-  "version": "1.0.0-alpha.5",
+  "version": "1.0.0-alpha.7",
   "description": "A UI around Protractor to help write E2E tests for Angular applications without needing to know JavaScript",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -15,7 +15,9 @@
   "scripts": {
     "clean": "rimraf reports",
     "build": "npm run clean && lerna bootstrap && lerna run build && npm run cover",
-    "cover": "istanbul cover --config .istanbulrc.json node_modules/.bin/_mocha -- --opts .mocharc 'packages/**/src/**/*.spec.js'"
+    "cover": "istanbul cover --config .istanbulrc.json node_modules/.bin/_mocha -- --opts .mocharc 'packages/**/src/**/*.spec.js'",
+    "tractor": "tractor start",
+    "tractor:init": "tractor init"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.39",
@@ -24,7 +26,10 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.39",
     "@babel/preset-env": "^7.0.0-beta.39",
     "@babel/register": "^7.0.0-beta.39",
-    "@tractor/unit-test": "^1.0.0-alpha.5",
+    "@tractor-plugins/cucumber": "^0.4.0",
+    "@tractor-plugins/page-objects": "^0.5.0",
+    "@tractor/cli": "^1.0.0-alpha.6",
+    "@tractor/unit-test": "^1.0.0-alpha.6",
     "babel-eslint": "^8.2.1",
     "eslint": "^4.17.0",
     "istanbul": "^1.1.0-alpha.1",

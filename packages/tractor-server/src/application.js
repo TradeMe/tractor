@@ -60,10 +60,10 @@ export function init (config, di, plugins) {
     let templatePath;
     let dir;
     try {
-        templatePath = require.resolve('tractor-client');
+        templatePath = require.resolve('@tractor/ui');
         dir = path.dirname(templatePath);
     } catch (e) {
-        throw new TractorError('"tractor-client" is not installed.');
+        throw new TractorError('"@tractor/ui" is not installed.');
     }
 
     let renderIndex = injectPlugins(plugins, application, templatePath);

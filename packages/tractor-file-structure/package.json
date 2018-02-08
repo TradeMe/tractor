@@ -1,6 +1,6 @@
 {
   "name": "@tractor/file-structure",
-  "version": "1.0.0-alpha.9",
+  "version": "1.0.0-alpha.6",
   "description": "File structure handler for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -37,10 +37,10 @@
     "lodash.debounce": "^4.0.8"
   },
   "devDependencies": {
-    "@tractor/error-handler": "^1.0.0-alpha.9",
-    "@tractor/logger": "^1.0.0-alpha.9"
+    "@tractor/error-handler": "^1.0.0-alpha.6",
+    "@tractor/logger": "^1.0.0-alpha.6"
   },
   "peerDependencies": {
-    "@tractor/core": "^1.0.0-alpha.9"
+    "@tractor/core": "^1.0.0-alpha.6"
   }
 }

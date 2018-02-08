@@ -1,7 +1,7 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect, sinon } from '../../test-setup';
+import { expect, sinon } from '@tractor/unit-test';
 
 // Dependencies:
 import Promise from 'bluebird';
@@ -13,6 +13,9 @@ import { ReferenceManager } from './ReferenceManager';
 
 // Errors:
 import { TractorError } from '@tractor/error-handler';
+
+// Promisify:
+Promise.promisifyAll(fs);
 
 // Under test:
 import { File } from './File';

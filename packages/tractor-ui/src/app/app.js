@@ -5,13 +5,15 @@ var fs = require('fs');
 var Promise = require('bluebird');
 
 // Dependencies:
-var angular = require('angular');
+require('angular');
 require('angular-sanitize');
 require('angular-messages');
 require('angular-mocks');
 require('@uirouter/angularjs');
 require('angular-sortable');
 require('angular-local-storage');
+
+var angular = window.angular;
 
 require('./features/ControlPanel/ControlPanel');
 require('./features/ControlPanel/ControlPanelController');

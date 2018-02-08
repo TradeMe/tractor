@@ -9,6 +9,7 @@ export const NOOP = () => {};
 
 export Promise from 'bluebird';
 export { expect } from 'chai';
+export dedent from 'dedent';
 export { ineeda } from 'ineeda';
 export sinon from 'sinon';
 
