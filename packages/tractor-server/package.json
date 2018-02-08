@@ -1,6 +1,6 @@
 {
   "name": "@tractor/server",
-  "version": "1.0.0-alpha.7",
+  "version": "1.0.0-alpha.8",
   "description": "Server for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -38,11 +38,11 @@
     "socket.io": "^2.0.4"
   },
   "devDependencies": {
-    "@tractor/error-handler": "^1.0.0-alpha.7",
-    "@tractor/logger": "^1.0.0-alpha.7",
-    "@tractor/ui": "^1.0.0-alpha.7"
+    "@tractor/error-handler": "^1.0.0-alpha.8",
+    "@tractor/logger": "^1.0.0-alpha.8",
+    "@tractor/ui": "^1.0.0-alpha.8"
   },
   "peerDependencies": {
-    "@tractor/core": "^1.0.0-alpha.6"
+    "@tractor/core": "^1.0.0-alpha.7"
   }
 }
