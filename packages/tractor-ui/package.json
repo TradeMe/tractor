@@ -1,6 +1,6 @@
 {
   "name": "@tractor/ui",
-  "version": "1.0.0-alpha.5",
+  "version": "1.0.0-alpha.6",
   "description": "UI for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -18,9 +18,12 @@
   "main": "dist/index.html",
   "scripts": {
     "prepare": "gulp build",
+    "build": "npm run clean && gulp build",
     "clean": "rimraf dist && rimraf reports",
-    "tractor": "tractor start",
-    "tractor:init": "tractor init"
+    "watch": "npm-watch"
+  },
+  "watch": {
+    "build": "src/**/*.js"
   },
   "devDependencies": {
     "@uirouter/angularjs": "1.0.3",
@@ -33,15 +36,10 @@
     "brfs": "1.4.1",
     "browser-sync": "2.9.11",
     "browserify": "11.2.0",
-    "browserify-istanbul": "0.2.1",
     "browserify-shim": "3.8.10",
-    "chai": "2.3.0",
     "change-case": "2.3.0",
     "charfunk": "1.1.2",
-    "cucumber": "1.3.1",
-    "cucumber-html-report": "0.2.5",
     "deep-equal": "^1.0.1",
-    "dirty-chai": "1.2.2",
     "esquery": "^1.0.0",
     "estemplate": "0.4.0",
     "gulp": "3.9.1",
@@ -54,34 +52,22 @@
     "gulp-notify": "2.2.0",
     "gulp-ruby-sass": "2.0.5",
     "gulp-sourcemaps": "1.6.0",
-    "karma": "0.13.11",
-    "karma-browserify": "4.4.0",
-    "karma-chai": "0.1.0",
-    "karma-chrome-launcher": "0.2.1",
-    "karma-coverage": "0.5.3",
-    "karma-dirty-chai": "1.0.1",
-    "karma-mocha": "0.2.0",
-    "karma-sinon-chai": "1.1.0",
     "lodash": "3.10.1",
     "moment": "2.14.1",
     "ng-sortable": "1.2.2",
     "normalize.css": "3.0.3",
-    "npmlog": "4.0.0",
-    "sinon": "1.17.2",
-    "sinon-chai": "2.8.0",
     "socket.io-client": "^2.0.3",
     "vinyl-buffer": "1.0.0",
     "vinyl-source-stream": "1.1.0",
     "xterm": "^2.9.2"
   },
-  "browserify": {
-    "transform": [
-      "browserify-shim"
-    ]
+  "peerDependencies": {
+    "@tractor/core": "^1.0.0-alpha.5"
   },
+  "browserify": {},
   "browser": {
-    "angular": "./node_modules/angular/angular.js",
-    "angular-sortable": "./node_modules/ng-sortable/dist/ng-sortable.js"
+    "angular": "../../node_modules/angular/angular.js",
+    "angular-sortable": "../../node_modules/ng-sortable/dist/ng-sortable.js"
   },
   "browserify-shim": {
     "angular": "angular"

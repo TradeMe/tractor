@@ -1,6 +1,6 @@
 {
   "name": "@tractor/server",
-  "version": "1.0.0-alpha.5",
+  "version": "1.0.0-alpha.6",
   "description": "Server for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -29,11 +29,6 @@
   "watch": {
     "build": "src/**/*.js"
   },
-  "devDependencies": {
-    "@tractor/error-handler": "^1.0.0-alpha.5",
-    "@tractor/logger": "^1.0.0-alpha.5",
-    "@tractor/ui": "^1.0.0-alpha.5"
-  },
   "dependencies": {
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.2",
@@ -42,7 +37,12 @@
     "lodash.template": "^4.4.0",
     "socket.io": "^2.0.4"
   },
+  "devDependencies": {
+    "@tractor/error-handler": "^1.0.0-alpha.6",
+    "@tractor/logger": "^1.0.0-alpha.6",
+    "@tractor/ui": "^1.0.0-alpha.6"
+  },
   "peerDependencies": {
-    "@tractor/core": "^1.0.0-alpha.4"
+    "@tractor/core": "^1.0.0-alpha.5"
   }
 }

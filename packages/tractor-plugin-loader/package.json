@@ -1,6 +1,6 @@
 {
   "name": "@tractor/plugin-loader",
-  "version": "1.0.0-alpha.5",
+  "version": "1.0.0-alpha.6",
   "description": "File structure handler for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -29,17 +29,17 @@
   "watch": {
     "build": "src/**/*.js"
   },
-  "devDependencies": {
-    "@tractor/error-handler": "^1.0.0-alpha.5",
-    "@tractor/logger": "^1.0.0-alpha.5"
-  },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
     "camel-case": "^3.0.0",
     "param-case": "^2.1.1",
     "title-case": "^2.1.1"
   },
+  "devDependencies": {
+    "@tractor/error-handler": "^1.0.0-alpha.6",
+    "@tractor/logger": "^1.0.0-alpha.6"
+  },
   "peerDependencies": {
-    "@tractor/core": "^1.0.0-alpha.4"
+    "@tractor/core": "^1.0.0-alpha.5"
   }
 }
