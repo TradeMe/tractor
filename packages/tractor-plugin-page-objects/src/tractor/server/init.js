@@ -1,10 +1,8 @@
 // Dependencies:
+import { TractorError } from '@tractor/error-handler';
+import { createDir } from '@tractor/file-structure';
+import { warn } from '@tractor/logger';
 import path from 'path';
-import { createDir } from 'tractor-file-structure';
-import { warn } from 'tractor-logger';
-
-// Errors:
-import { TractorError } from 'tractor-error-handler';
 
 export function init (config) {
     let pageObjectsDirectoryPath = path.resolve(process.cwd(), config.pageObjects.directory);

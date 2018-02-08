@@ -1,16 +1,16 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect, ineeda, NOOP, sinon } from '../../../test-setup';
+import { expect, ineeda, NOOP, sinon } from '@tractor/unit-test';
 
 // Dependencies:
-import { FileStructure } from 'tractor-file-structure';
+import { FileStructure } from '@tractor/file-structure';
 import { PageObjectFile } from './files/page-object-file';
 
 // Under test:
 import { serve } from './serve';
 
-describe('tractor-plugin-page-objects - serve:', () => {
+describe('@tractor-plugin/page-objects - serve:', () => {
     it('should create a new FileStructure', () => {
         let pageObjectsFileStructure = null;
         let config = {

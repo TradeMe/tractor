@@ -1,12 +1,12 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect } from '../../test-setup';
+import { expect } from '@tractor/unit-test';
 
 // Under test:
 import { config } from './config';
 
-describe('tractor-plugin-page-objects - tractor/config:', () => {
+describe('@tractor-plugin/page-objects - tractor/config:', () => {
     describe('addConfig', () => {
         it('should process the config object', () => {
             let pageObjectsConfig = {};

@@ -1,7 +1,7 @@
 // Dependencies:
+import { getConfig } from '@tractor/config-loader';
+import { FileStructure } from '@tractor/file-structure';
 import path from 'path';
-import { getConfig } from 'tractor-config-loader';
-import { FileStructure } from 'tractor-file-structure';
 import { PageObjectFile } from '../tractor/server/files/page-object-file';
 import { PageObjectFileRefactorer } from '../tractor/server/files/page-object-file-refactorer';
 

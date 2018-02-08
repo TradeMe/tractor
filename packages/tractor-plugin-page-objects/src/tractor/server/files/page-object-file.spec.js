@@ -1,18 +1,18 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect, Promise, sinon } from '../../../../test-setup';
+import { expect, Promise, sinon } from '@tractor/unit-test';
 
 // Dependencies:
+import { JavaScriptFile } from '@tractor/file-javascript';
+import { FileStructure } from '@tractor/file-structure';
 import path from 'path';
-import { JavaScriptFile } from 'tractor-file-javascript';
-import { FileStructure } from 'tractor-file-structure';
 import { PageObjectFileRefactorer } from './page-object-file-refactorer';
 
 // Under test:
 import { PageObjectFile } from './page-object-file';
 
-describe('tractor-plugin-page-objects - page-object-file:', () => {
+describe('@tractor-plugin/page-objects - page-object-file:', () => {
     describe('PageObjectFile constructor:', () => {
         it('should create a new PageObjectFile', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));

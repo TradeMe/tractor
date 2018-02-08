@@ -4,7 +4,7 @@ var _bluebird = require('bluebird');
 
 var _bluebird2 = _interopRequireDefault(_bluebird);
 
-var _tractorLogger = require('tractor-logger');
+var _tractorLogger = require('@tractor/logger');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 

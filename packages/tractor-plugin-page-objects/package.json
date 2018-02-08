@@ -1,7 +1,12 @@
 {
-  "name": "tractor-plugin-page-objects",
+  "name": "@tractor-plugins/page-objects",
   "version": "0.5.0",
+  "description": "tractor plugin for manipulating Page Objecs",
   "author": "Craig Spence <craigspence0@gmail.com>",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/phenomnomnominal/tractor-plugin-page-objects.git"
@@ -11,19 +16,15 @@
     "email": "craigspence0@gmail.com"
   },
   "main": "dist/index.js",
-  "watch": {
-    "build": "src/**/*.js"
-  },
   "scripts": {
-    "prepublish": "npm run build",
+    "prepare": "npm run build",
     "build": "npm run clean && npm run lint && npm run cover && npm run compile && npm run bundle",
     "bundle": "webpack --config webpack.config.js",
-    "clean": "rimraf dist",
+    "clean": "rimraf dist && rimraf reports",
     "compile": "babel src/ --out-dir dist/ --ignore *.spec.js,src/tractor/client",
     "cover": "istanbul cover --config .istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ./.mocharc 'src/**/*.spec.js'",
     "lint": "eslint src",
     "test": "mocha --opts ./.mocharc 'src/**/*.spec.js'",
-    "test:debug": "mocha --inspect --debug-brk --opts ./.mocharc 'src/**/*.spec.js'",
     "pretest:e2e": "npm run webdriver",
     "test:e2e": "protractor ./tractor/protractor.conf.js --baseUrl=\"http://localhost:4321\"",
     "tractor": "tractor start",
@@ -32,56 +33,46 @@
     "watch": "npm-watch",
     "webdriver": "webdriver-manager update"
   },
-  "license": "MIT",
-  "engines": {
-    "node": ">=0.10"
+  "watch": {
+    "build": "src/**/*.js"
   },
   "devDependencies": {
-    "babel-cli": "^6.24.1",
-    "babel-core": "^6.25.0",
+    "@babel/cli": "^7.0.0-beta.39",
+    "@babel/core": "^7.0.0-beta.39",
+    "@babel/plugin-proposal-export-default-from": "^7.0.0-beta.39",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.39",
+    "@babel/preset-env": "^7.0.0-beta.39",
+    "@babel/register": "^7.0.0-beta.39",
+    "@tractor-plugins/cucumber": "^0.4.0",
+    "@tractor/cli": "^1.0.0-alpha.6",
+    "@tractor/core": "^1.0.0-alpha.6",
+    "@tractor/unit-test": "^1.0.0-alpha.6",
     "babel-eslint": "^8.2.1",
-    "babel-loader": "^7.1.1",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-es2017": "^6.24.1",
-    "babel-preset-stage-0": "^6.24.1",
-    "babel-register": "^6.24.1",
+    "babel-loader": "^8.0.0-beta.0",
     "camel-case": "^3.0.0",
-    "chai": "^4.1.0",
     "css-loader": "^0.28.9",
-    "dedent": "^0.7.0",
-    "dirty-chai": "^2.0.1",
     "escodegen": "^1.9.0",
-    "eslint": "^4.16.0",
+    "eslint": "^4.17.0",
     "html-loader": "^0.5.5",
-    "ineeda": "^0.11.0",
     "istanbul": "1.1.0-alpha.1",
     "mocha": "^5.0.0",
     "ng-annotate-loader": "^0.6.1",
     "npm-watch": "^0.3.0",
     "rimraf": "^2.6.2",
-    "sinon": "^4.2.1",
-    "sinon-chai": "^2.14.0",
-    "tractor": "^0.12.9",
-    "tractor-config-loader": "^0.5.0",
-    "tractor-error-handler": "^0.2.3",
-    "tractor-file-structure": "^0.5.7",
-    "tractor-logger": "^0.1.0",
-    "tractor-plugin-cucumber": "^0.4.0",
     "url-loader": "^0.6.2",
     "webpack": "^3.6.0"
   },
   "dependencies": {
+    "@tractor-plugins/browser": "^0.2.0",
     "babel-polyfill": "^6.26.0",
     "bluebird": "^3.5.0",
     "esprima": "^4.0.0",
     "esquery": "^1.0.0",
     "glob": "^7.1.2",
     "graceful-fs": "^4.1.11",
-    "pascal-case": "^2.0.1",
-    "tractor-file-javascript": "^0.2.3",
-    "tractor-plugin-browser": "^0.2.0"
+    "pascal-case": "^2.0.1"
   },
   "peerDependencies": {
-    "tractor": "^0.12.1"
+    "@tractor/core": "^1.0.0-alpha.6"
   }
 }

@@ -14,10 +14,7 @@ module.exports = {
                 use: [{
                     loader: 'ng-annotate-loader'
                 }, {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: [['es2015', { modules: false }]]
-                    }
+                    loader: 'babel-loader'
                 }]
             },
             { test: /\.(png|jpg)$/, loader: 'url-loader' },
@@ -26,21 +23,21 @@ module.exports = {
         ]
     },
     plugins: [
-        // new webpack.LoaderOptionsPlugin({
-        //     minimize: true,
-        //     debug: false
-        // }),
-        // new webpack.optimize.UglifyJsPlugin({
-        //     mangle: {
-        //         screw_ie8: true,
-        //         keep_fnames: true
-        //     },
-        //     compress: {
-        //         screw_ie8: true,
-        //         unsafe: true
-        //     },
-        //     comments: false
-        // })
+        new webpack.LoaderOptionsPlugin({
+            minimize: true,
+            debug: false
+        }),
+        new webpack.optimize.UglifyJsPlugin({
+            mangle: {
+                screw_ie8: true,
+                keep_fnames: true
+            },
+            compress: {
+                screw_ie8: true,
+                unsafe: true
+            },
+            comments: false
+        })
     ],
     node: { Buffer: 'mock' }
 };

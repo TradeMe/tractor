@@ -12,11 +12,11 @@ var _chaiAsPromised = require('chai-as-promised');
 
 var _chaiAsPromised2 = _interopRequireDefault(_chaiAsPromised);
 
-var _tractorConfigLoader = require('tractor-config-loader');
+var _tractorConfigLoader = require('@tractor/config-loader');
 
-var _tractorDependencyInjection = require('tractor-dependency-injection');
+var _tractorDependencyInjection = require('@tractor/dependency-injection');
 
-var _tractorPluginLoader = require('tractor-plugin-loader');
+var _tractorPluginLoader = require('@tractor/plugin-loader');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 

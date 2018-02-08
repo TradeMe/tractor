@@ -8,7 +8,7 @@ Let's dive a bit deeper and explore how to create robust, extensible **Page Obje
 
 ## Composition:
 
-The first, and most important thing when creating **Page Objects** is to consider how they will be [*composed*](https://en.wikipedia.org/wiki/Object_composition). Ideally, this will have already been considered when building the application, and in general it is useful to align your **Page Objects** with the existing structure of your application. All **Page Objects** made by **tractor-plugin-page-objects** are composable by default. Work out your deepest, most fundamental units of UI, and start building **PageObjects** from there up to the root of your application.
+The first, and most important thing when creating **Page Objects** is to consider how they will be [*composed*](https://en.wikipedia.org/wiki/Object_composition). Ideally, this will have already been considered when building the application, and in general it is useful to align your **Page Objects** with the existing structure of your application. All **Page Objects** made by **@tractor-plugins/page-objects** are composable by default. Work out your deepest, most fundamental units of UI, and start building **PageObjects** from there up to the root of your application.
 
 ## Elements:
 
@@ -18,7 +18,7 @@ An **Element** is the basic building block of a **Page Object**. It describes a 
 
 **Try to keep selectors as simple as possible.**
 
-**tractor-plugin-page-objects** enforces the use of CSS selectors. This is because they are powerful, flexible, well-documented, and well-understood. They will also work across different frameworks.
+**@tractor-plugins/page-objects** enforces the use of CSS selectors. This is because they are powerful, flexible, well-documented, and well-understood. They will also work across different frameworks.
 
 If you find yourself writing overly complex CSS selectors, have a look at your component structure. Complex selectors usually mean poor composition.
 

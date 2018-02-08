@@ -6,7 +6,7 @@ let mkdir = promisify(require('fs').mkdir);
 let rimraf = promisify(require('rimraf'));
 
 // Plugins:
-var tractorPluginLoader = require('tractor-plugin-loader');
+var tractorPluginLoader = require('@tractor/plugin-loader');
 var plugins = tractorPluginLoader.getPlugins();
 
 // Constants:

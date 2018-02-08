@@ -10,7 +10,7 @@ var _path2 = _interopRequireDefault(_path);
 
 var _cucumber = require('cucumber');
 
-var _tractorConfigLoader = require('tractor-config-loader');
+var _tractorConfigLoader = require('@tractor/config-loader');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 

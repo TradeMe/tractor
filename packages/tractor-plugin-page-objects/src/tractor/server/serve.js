@@ -1,6 +1,6 @@
 // Dependencies:
+import { FileStructure, serveFileStructure } from '@tractor/file-structure';
 import path from 'path';
-import { FileStructure, serveFileStructure } from 'tractor-file-structure';
 import { PageObjectFile } from './files/page-object-file';
 
 export function serve (config, di) {

@@ -1,6 +1,6 @@
 // Dependencies:
+import { JavaScriptFile } from '@tractor/file-javascript';
 import Promise from 'bluebird';
-import { JavaScriptFile } from 'tractor-file-javascript';
 import { PageObjectFileRefactorer } from './page-object-file-refactorer';
 
 export class PageObjectFile extends JavaScriptFile {

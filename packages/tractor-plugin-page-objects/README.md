@@ -1,20 +1,16 @@
-# tractor-plugin-page-objects
+# @tractor-plugins/page-objects
 
 Plugin for [**tractor**](https://github.com/TradeMe/tractor) for creating [**Page Objects**](https://github.com/SeleniumHQ/selenium/wiki/PageObjects).
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/phenomnomnominal/tractor-plugin-page-objects.svg)](https://greenkeeper.io/)
-[![npm version](https://img.shields.io/npm/v/tractor-plugin-page-objects.svg)](https://www.npmjs.com/package/tractor-plugin-page-objects)
+[![npm version](https://img.shields.io/npm/v/@tractor-plugins/page-objects.svg)](https://www.npmjs.com/package/@tractor-plugins/page-objects)
 [![bitHound Overall Score](https://www.bithound.io/github/phenomnomnominal/tractor-plugin-page-objects/badges/score.svg)](https://www.bithound.io/github/phenomnomnominal/tractor-plugin-page-objects)
 [![Code Climate](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-page-objects/badges/gpa.svg)](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-page-objects)
 [![Test Coverage](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-page-objects/coverage.svg)](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-page-objects/coverage)
 
 # How to install:
 
-`npm install tractor-plugin-page-objects --dev`
-
-or
-
-`yan add tractor-plugin-page-objects --dev`
+`npm install @tractor-plugins/page-objects --dev`
 
 # Config:
 
@@ -77,8 +73,8 @@ module.exports = function () {
 To set up development:
 
 ```
-yarn // install dependencies
-yarn link "tractor-plugin-page-objects" // link plugin to use itself
+npm install // install dependencies
+npm link "@tractor-plugin/page-objects" // link plugin to use itself
 tractor init
 ```
 
@@ -86,16 +82,16 @@ To run plugin...
 
 ```
 mkdir test
-yarn tractor:test // in one tab
-yarn tractor // in another tab
+npm run tractor:test // in one tab
+npm run tractor // in another tab
 ```
 
 To run tests...
 
 ```
 mkdir test
-yarn tractor:test // in one tab
-yarn test:e2e // in another tab
+npm run tractor:test // in one tab
+npm run test:e2e // in another tab
 ```
 
 If you care, check out the [design decisions document](./docs/design%20decisions.md)
