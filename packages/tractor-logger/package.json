@@ -1,6 +1,6 @@
 {
   "name": "@tractor/logger",
-  "version": "1.0.0-alpha.11",
+  "version": "1.0.0-alpha.12",
   "description": "File structure handler for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
