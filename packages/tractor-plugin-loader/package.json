@@ -1,6 +1,6 @@
 {
   "name": "@tractor/plugin-loader",
-  "version": "1.0.0-alpha.13",
+  "version": "1.0.0-alpha.14",
   "description": "File structure handler for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -36,8 +36,8 @@
     "title-case": "^2.1.1"
   },
   "devDependencies": {
-    "@tractor/error-handler": "^1.0.0-alpha.13",
-    "@tractor/logger": "^1.0.0-alpha.13"
+    "@tractor/error-handler": "^1.0.0-alpha.14",
+    "@tractor/logger": "^1.0.0-alpha.14"
   },
   "peerDependencies": {
     "@tractor/core": "^1.0.0-alpha.11"
