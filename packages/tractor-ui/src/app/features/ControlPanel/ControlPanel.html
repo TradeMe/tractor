@@ -1,7 +1,10 @@
 <header>
     <section class="control-panel__top-row">
         <div>
-            <form class="control-panel__run-options" name="controlPanelOptions" novalidate
+            <form
+                class="control-panel__run-options"
+                name="controlPanelOptions"
+                novalidate
                 ng-submit="controlPanel.runProtractor()">
                 <tractor-select
                     form="controlPanelOptions"
@@ -19,7 +22,11 @@
                     as="name">
                 </tractor-select>
             </form>
-            <div class="control-panel__terminal">
+            <div class="control-panel__buttons">
+                <tractor-action
+                    model="controlPanel"
+                    action="show search">
+                </tractor-action>
                 <tractor-action
                     ng-if="!controlPanel.terminalVisible"
                     model="controlPanel"
@@ -50,6 +57,10 @@
         </ul>
     </nav>
 </header>
+
+<tractor-search
+    show="controlPanel.searchVisible">
+</tractor-search>
 
 <main ui-view></main>
 

@@ -13,7 +13,9 @@ var protractorConfig = {
 
     directConnect: true,
 
-    params: { debug: false }
+    params: {
+        debug: false
+    }
 };
 
 plugins.forEach(function (plugin) {

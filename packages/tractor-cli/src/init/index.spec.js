@@ -8,8 +8,6 @@ import * as tractorLogger from '@tractor/logger';
 import { copyProtractorConfig } from './copy-protractor-config';
 import { createTractorDirectory } from './create-tractor-directory';
 import { initialisePlugins } from './initialise-plugins';
-import { installTractorLocally } from './install-tractor-locally';
-import { setUpSelenium } from './set-up-selenium';
 
 // Under test:
 import { init } from './index';
@@ -27,8 +25,6 @@ describe('tractor - init:', () => {
             expect(di.call).to.have.been.calledWith(createTractorDirectory);
             expect(di.call).to.have.been.calledWith(copyProtractorConfig);
             expect(di.call).to.have.been.calledWith(initialisePlugins);
-            expect(di.call).to.have.been.calledWith(installTractorLocally);
-            expect(di.call).to.have.been.calledWith(setUpSelenium);
         })
         .finally(() => {
             tractorLogger.info.restore();

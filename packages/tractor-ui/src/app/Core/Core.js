@@ -7,6 +7,8 @@ var Core = angular.module('Core', []);
 
 module.exports = Core;
 
+require('./Directives/KeyboardEvents');
+
 require('./Components/Action/ActionDirective');
 require('./Components/Checkbox/CheckboxDirective');
 require('./Components/ConfirmDialog/ConfirmDialogDirective');
@@ -31,6 +33,7 @@ require('./Services/HttpResponseInterceptor');
 require('./Services/PersistentStateService');
 require('./Services/RealtimeService');
 require('./Services/RedirectionService');
+require('./Services/SearchService');
 require('./Services/StringToLiteralService');
 require('./Services/ValidationService');
 

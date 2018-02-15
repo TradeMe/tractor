@@ -31,7 +31,7 @@ function bundle () {
         add: true,
         single_quotes: true
     }))
-    .pipe(gulp.dest('./dist/'))
+    .pipe(gulp.dest('./dist/app/'))
     .pipe(browserSync.reload({
         stream: true
     }));
@@ -39,5 +39,5 @@ function bundle () {
 
 function init () {
     return gulp.src('./src/app/init.js')
-    .pipe(gulp.dest('./dist/'));
+    .pipe(gulp.dest('./dist/app/'));
 }

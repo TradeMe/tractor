@@ -34,7 +34,7 @@ function styles () {
     }))
     .pipe(cssFilter.restore)
     .pipe(cssimport())
-    .pipe(gulp.dest('./dist/'))
+    .pipe(gulp.dest('./dist/app/'))
     .pipe(browserSync.reload({
         stream: true
     }));

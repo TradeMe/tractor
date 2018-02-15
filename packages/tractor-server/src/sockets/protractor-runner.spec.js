@@ -16,7 +16,7 @@ import * as tractorLogger from '@tractor/logger';
 // Under test:
 import { run } from './protractor-runner';
 
-describe('server/sockets: protractor-runner:', () => {
+describe('@tractor/server - sockets: protractor-runner:', () => {
     it('should run protractor', () => {
         let config = {
             directory: 'tractor',

@@ -1,5 +1,5 @@
 
-Feature: Run Protractor
+Feature: Protractor
   In order to perform UI tests on an application without using the CLI
   As a anyone
   I want to be able to run Protractor from tractor

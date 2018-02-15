@@ -6,7 +6,7 @@ import { expect, sinon } from '@tractor/unit-test';
 // Under test:
 import { getPluginsHandler } from './get-plugins';
 
-describe('server/api: get-plugins', () => {
+describe('@tractor/server - api: get-plugins', () => {
     it('should respond with the descriptions of all installed plugins', () => {
         let plugins = [{
             description: 'foo'

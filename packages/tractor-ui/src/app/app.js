@@ -15,10 +15,11 @@ require('angular-local-storage');
 
 var angular = window.angular;
 
+require('./Core/Core');
+
 require('./features/ControlPanel/ControlPanel');
 require('./features/ControlPanel/ControlPanelController');
-
-require('./Core/Core');
+require('./features/Search/SearchController');
 
 // Application Init:
 var tractor = angular.module('tractor', [

@@ -1,23 +1,20 @@
-// Utilities:
-import Promise from 'bluebird';
-import fs from 'fs';
-import path from 'path';
-import { info } from '@tractor/logger';
-
 // Dependencies:
+import { TractorError } from '@tractor/error-handler';
+import { info } from '@tractor/logger';
+import Promise from 'bluebird';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import express from 'express';
+import fs from 'fs';
 import http from 'http';
 import template from 'lodash.template';
+import path from 'path';
 import io from 'socket.io';
-
-// Errors:
-import { TractorError } from '@tractor/error-handler';
 
 // Endpoints:
 import { getConfigHandler } from './api/get-config';
 import { getPluginsHandler } from './api/get-plugins';
+import { searchHandler } from './api/search';
 import { socketHandler } from './sockets/connect';
 
 // Constants:
@@ -73,6 +70,7 @@ export function init (config, di, plugins) {
 
     application.get('/config', di.call(getConfigHandler));
     application.get('/plugins', di.call(getPluginsHandler));
+    application.get('/search', di.call(searchHandler));
 
     sockets.of('/run-protractor')
     .on('connection', di.call(socketHandler));

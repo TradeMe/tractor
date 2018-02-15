@@ -11,8 +11,8 @@ module.exports = images;
 
 function images () {
     return gulp.src('./src/images/*')
-    .pipe(changed('./dist/images/'))
-    .pipe(gulp.dest('./dist/images/'))
+    .pipe(changed('./dist/app/images/'))
+    .pipe(gulp.dest('./dist/app/images/'))
     .pipe(browserSync.reload({
         stream: true
     }));

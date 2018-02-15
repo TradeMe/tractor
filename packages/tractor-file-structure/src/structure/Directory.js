@@ -174,7 +174,7 @@ export class Directory {
     toJSON () {
         let { basename, directories, files, path, url } = this;
         directories = directories.sort(sortNames).map(directory => directory.serialise());
-        files = files.sort(sortNames).map(file => file.serialise());
+        files = files.sort(sortNames).map(file => file.toJSON());
         return { basename, directories, files, isDirectory: true, path, url };
     }
 }

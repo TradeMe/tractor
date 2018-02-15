@@ -1,0 +1,40 @@
+<style
+    ng-bind-html="$ctrl.style">
+</style>
+<div
+    class="dialog__wrapper"
+    ng-if="$ctrl.show"
+    ng-click="$ctrl.hideSearch()">
+    <div
+        class="dialog__outer">
+        <div
+            class="dialog__inner search__inner">
+            <div
+                class="dialog__content"
+                ng-click="$ctrl.swallowClick($event)">
+                <form
+                    name="search">
+                    <input
+                        class="search__input"
+                        ng-change="$ctrl.doSearch()"
+                        ng-model="$ctrl.searchString"
+                        tractor-give-focus
+                        focus-on="$ctrl.show">
+                </form>
+                <ul
+                    class="search__results">
+                    <li
+                        class="search__result"
+                        ng-repeat="result in $ctrl.searchResults track by result.path">
+                        <a
+                            class="search__link"
+                            title="{{ result.url }}"
+                            ui-sref="tractor.file({ file: result })">
+                            {{ result.meta ? result.meta.name : result.basename }}{{ result.extension }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

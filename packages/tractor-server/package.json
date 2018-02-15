@@ -34,7 +34,11 @@
     "body-parser": "^1.18.2",
     "cors": "^2.8.1",
     "express": "^4.16.2",
+    "js-search": "^1.4.2",
+    "lodash.debounce": "^4.0.8",
     "lodash.template": "^4.4.0",
+    "monkeypatch": "^1.0.0",
+    "porter-stemmer": "^0.9.1",
     "socket.io": "^2.0.4"
   },
   "devDependencies": {

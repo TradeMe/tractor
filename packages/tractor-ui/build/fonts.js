@@ -10,5 +10,5 @@ module.exports = fonts;
 
 function fonts () {
     return gulp.src('./src/fonts/*')
-    .pipe(gulp.dest('./dist/fonts/'));
+    .pipe(gulp.dest('./dist/app/fonts/'));
 }

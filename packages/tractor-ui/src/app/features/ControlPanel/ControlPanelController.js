@@ -12,6 +12,7 @@ require('./Services/ServerStatusService');
 
 var ControlPanelController = (function () {
     var ControlPanelController = function ControlPanelController (
+        $scope,
         persistentStateService,
         runnerService,
         serverStatusService,
@@ -57,6 +58,18 @@ var ControlPanelController = (function () {
         this.tag = getTag.call(this);
 
         this.terminalVisible = false;
+
+        $scope.$on('keyboard:KeyF', function (event, keyboardEvent) {
+            if (keyboardEvent.shiftKey && keyboardEvent.metaKey || keyboardEvent.ctrlKey) {
+                this.showSearch();
+                $scope.$digest();
+            }
+        }.bind(this));
+
+        $scope.$on('keyboard:Escape', function () {
+            this.hideSearch();
+            $scope.$digest();
+        }.bind(this));
     };
 
     ControlPanelController.prototype.runProtractor = function () {
@@ -67,6 +80,14 @@ var ControlPanelController = (function () {
 
     ControlPanelController.prototype.isServerRunning = function () {
         return this.serverStatusService.isServerRunning();
+    };
+
+    ControlPanelController.prototype.showSearch = function () {
+        this.searchVisible = true;
+    };
+
+    ControlPanelController.prototype.hideSearch = function () {
+        this.searchVisible = false;
     };
 
     ControlPanelController.prototype.showTerminal = function () {
