@@ -20,7 +20,6 @@ export function searchHandler () {
     monkeypatchFile('read', function (original, ...args) {
         return original.apply(this, args)
         .then(result => {
-            console.log(this.basename);
             FILES.push(this);
             indexFiles();
             return result;
@@ -47,7 +46,6 @@ export function searchHandler () {
     });
 
     return function (request, response) {
-        console.log(search);
         let results = search ? search.search(request.query.searchString) : [];
         results = results.map(result => result.toJSON());
         response.send({ results });
