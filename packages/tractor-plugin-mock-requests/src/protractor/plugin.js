@@ -1,5 +1,5 @@
 // Dependencies:
-import { getConfig } from 'tractor-config-loader';
+import { getConfig } from '@tractor/config-loader';
 import { serve, close } from './server';
 
 export function plugin (protractorConfig) {

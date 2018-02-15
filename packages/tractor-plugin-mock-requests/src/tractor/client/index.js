@@ -5,7 +5,7 @@ import { MockRequestsModule } from './mock-requests.module';
 
 // Dependencies:
 import './mock-requests/mock-requests.component';
-import './models/mock-data-meta';
+import './models/meta/mock-data-meta';
 import './parsers/mock-request-parser.service';
 import './mock-request-file-structure.service';
 

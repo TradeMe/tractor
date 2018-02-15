@@ -2,45 +2,45 @@
 import { MockRequestsModule } from '../mock-requests.module';
 
 var createMockRequestConstructor = function () {
-    var MockDataModel = function MockDataModel (json, options) {
-        json = json || '{}';
+    return class MockDataModel {
+        constructor (file) {
+            this.file = file;
 
-        this.name = '';
+            this.json = '{}';
+            this.name = '';
+        }
 
-        Object.defineProperties(this, {
-            isSaved: {
-                get: function () {
-                    return !!(options && options.isSaved);
-                }
-            },
-            file: {
-                get: function () {
-                    return options && options.file;
-                }
-            },
-            json: {
-                get: function () {
-                    var formatted;
-                    try {
-                        formatted = JSON.stringify(JSON.parse(json), null, '    ');
-                    } catch (e) {
-                        formatted = json;
-                    }
-                    return formatted;
-                },
-                set: function (newVal) {
-                    json = newVal;
-                }
-            },
-            data: {
-                get: function () {
-                    return this.json;
-                }
+        get json () {
+            return this.isUnparseable || this._json;
+        }
+
+        set json (newValue) {
+            this._json = this._toJSON(newValue);
+        }
+
+        get data () {
+            return this.json;
+        }
+
+        get meta () {
+            return this.name ? this._toMeta() : null;
+        }
+
+        _toJSON (json) {
+            this.isUnparseable = null;
+            try {
+                return JSON.stringify(JSON.parse(json), null, '    ');
+            } catch (e) {
+                this.isUnparseable = json;
             }
-        });
-    };
+        }
 
-    return MockDataModel;
+        _toMeta () {
+            return JSON.stringify({
+                name: this.name
+            });
+        }
+    }
 };
 
 MockRequestsModule.factory('MockDataModel', createMockRequestConstructor);

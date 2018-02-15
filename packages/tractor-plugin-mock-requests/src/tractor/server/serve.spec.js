@@ -1,16 +1,16 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect, ineeda, NOOP, sinon } from '../../../test-setup';
+import { expect, ineeda, NOOP, sinon } from '@tractor/unit-test';
 
 // Dependencies:
-import { FileStructure } from 'tractor-file-structure';
+import { FileStructure } from '@tractor/file-structure';
 import { MockRequestFile } from './files/mock-request-file';
 
 // Under test:
 import { serve } from './serve';
 
-describe('tractor-plugin-mock-requests - serve:', () => {
+describe('@tractor-plugins/mock-requests - serve:', () => {
     it('should create a new FileStructure', () => {
         let mockRequestsFileStructure = null;
         let config = {

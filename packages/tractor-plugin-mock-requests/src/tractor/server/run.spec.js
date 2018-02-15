@@ -1,12 +1,12 @@
 /* global describe:true, it:true */
 
 // Test setup:
-import { expect, ineeda, NOOP } from '../../../test-setup';
+import { expect, ineeda, NOOP } from '@tractor/unit-test';
 
 // Under test:
 import { run } from './run';
 
-describe('tractor-plugin-mock-requests - run:', () => {
+describe('@tractor-plugins/mock-requests - run:', () => {
     it('should read the file structure', () => {
         let mockRequestsFileStructure = ineeda({
             read: NOOP

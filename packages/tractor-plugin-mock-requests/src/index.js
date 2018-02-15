@@ -1,5 +1,5 @@
 // Config:
-import { getConfig } from 'tractor-config-loader';
+import { getConfig } from '@tractor/config-loader';
 import { config } from './tractor/config';
 
 config(getConfig());

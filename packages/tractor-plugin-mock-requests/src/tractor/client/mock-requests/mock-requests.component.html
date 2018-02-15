@@ -18,8 +18,8 @@
             <h1 class="file-options__name">{{ $ctrl.fileModel.name }}</h1>
             <div>
                 <tractor-text-input class="file-options__name-input"
-                    ng-if="!$ctrl.fileModel.isSaved"
-                    form="file-editor"
+                    ng-if="!$ctrl.fileModel.file"
+                    form="fileEditor"
                     label="Name"
                     model="$ctrl.fileModel"
                     example="Data"
@@ -41,6 +41,14 @@
         </section>
 
         <section class="file-editor">
+            <div
+                class="unparseable"
+                ng-if="$ctrl.fileModel.isUnparseable">
+                <p>
+                    Could not parse this Mock Data. The underlying JSON file may have been modified.
+                </p>
+            </div>
+
             <section class="file-editor__container">
                 <h2>JSON data:</h2>
                 <textarea

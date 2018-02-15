@@ -1,7 +1,7 @@
 /* global describe:true, it:true, Promise:true */
 
 // Test setup:
-import { dedent, expect, NOOP, sinon } from '../../../../test-setup';
+import { dedent, expect, NOOP, sinon } from '@tractor/unit-test';
 
 // Dependencies:
 import * as utilities from '../utilities';
@@ -9,7 +9,7 @@ import * as utilities from '../utilities';
 // Under test:
 import { MockRequests } from './mock-requests';
 
-describe('tractor-plugin-mock-requests - MockRequests:', () => {
+describe('@tractor-plugins/mock-requests - MockRequests:', () => {
     describe('constructor', () => {
         it('should add specific methods for each method', () => {
             let browser = {};

@@ -1,8 +1,6 @@
-// Utilities:
-import path from 'path';
-
 // Dependencies:
-import { FileStructure, serveFileStructure } from 'tractor-file-structure';
+import { FileStructure, serveFileStructure } from '@tractor/file-structure';
+import path from 'path';
 import { MockRequestFile } from './files/mock-request-file';
 
 export function serve (config, di) {

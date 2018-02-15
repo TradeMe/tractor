@@ -1,15 +1,13 @@
-// Utilities:
-import fs from 'graceful-fs';
-import path from 'path';
-import { info } from 'tractor-logger';
-
 // Dependencies:
+import { info } from '@tractor/logger';
 import Promise from 'bluebird';
 import bodyParser from 'body-parser';
 import cheerio from 'cheerio';
 import express from 'express';
 import proxy from 'express-http-proxy';
+import fs from 'graceful-fs';
 import http from 'http';
+import path from 'path';
 import zlib from 'zlib';
 
 // Scripts:
@@ -42,7 +40,7 @@ export function serve (baseUrl, mockRequestsConfig) {
 
     return new Promise(resolve => {
         server.listen(port, () => {
-            info(`tractor-mock-requests is proxying at port ${port}`);
+            info(`@tractor-plugins/mock-requests is proxying at port ${port}`);
             resolve();
         });
     });
@@ -60,7 +58,7 @@ function addMock (request, response) {
 }
 
 function createRequestDecorator (host, mockRequestsConfig) {
-    let headers = mockRequestsConfig.headers || {};
+    let { headers } = mockRequestsConfig;
     return function (requestOptions) {
         Object.keys(headers).forEach(header => {
             if (!requestOptions.headers[header]) {

@@ -16,3 +16,10 @@ tractor-mock-requests > div {
         background-image: url('./move-mock-request-to-directory.png');
     }
 }
+
+.unparseable {
+    background: rgba(255, 255, 20, 1);
+    padding: .5rem;
+    display: inline-block;
+    margin-bottom: .5rem;
+}

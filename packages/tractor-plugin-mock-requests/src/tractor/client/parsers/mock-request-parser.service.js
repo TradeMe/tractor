@@ -11,16 +11,11 @@ function MockRequestParserService (
 
     function parse (mockRequestFile) {
         let { basename, content } = mockRequestFile;
-        try {
-            var mockRequest = new MockDataModel(content, {
-                isSaved: true,
-                file: mockRequestFile
-            });
-            mockRequest.name = basename;
-            return mockRequest;
-        } catch (e) {
-            return new MockDataModel();
-        }
+
+        var mockRequest = new MockDataModel(mockRequestFile);
+        mockRequest.name = basename;
+        mockRequest.json = content;
+        return mockRequest;
     }
 }
 

@@ -1,11 +1,11 @@
 /* global describe:true, it:true */
 
-import { expect } from '../../test-setup';
+import { expect } from '@tractor/unit-test';
 
 // Under test:
 import { config } from './config';
 
-describe('tractor-plugin-mock-requests - config:', () => {
+describe('@tractor-plugins/mock-requests - config:', () => {
     describe('config', () => {
         it('should create the config object', () => {
             let mockRequestsConfig = {};
