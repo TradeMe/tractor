@@ -1,6 +1,6 @@
 {
   "name": "@tractor-plugins/page-objects",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "tractor plugin for manipulating Page Objects",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -45,6 +45,7 @@
     "@babel/register": "^7.0.0-beta.39",
     "@tractor-plugins/cucumber": "^0.4.0",
     "@tractor/cli": "^1.0.0-alpha.15",
+    "@tractor/core": "^1.0.0-alpha.15",
     "@tractor/unit-test": "^1.0.0-alpha.15",
     "babel-eslint": "^8.2.1",
     "babel-loader": "^8.0.0-beta.0",
