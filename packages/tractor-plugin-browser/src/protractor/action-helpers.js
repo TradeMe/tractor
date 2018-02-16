@@ -2,10 +2,14 @@ export function addActionHelpers () {
     let { browser, Key } = global.protractor;
 
     browser.sendDeleteKey = function () {
-        return browser.actions().sendKeys(Key.DELETE).perform();
+        return sendKeyAction(Key.DELETE);
     }
 
     browser.sendEnterKey = function () {
-        return browser.actions().sendKeys(Key.ENTER).perform();
+        return sendKeyAction(Key.ENTER);
+    }
+
+    function sendKeyAction (key) {
+        return browser.actions().sendKeys(key).perform();
     }
 }
