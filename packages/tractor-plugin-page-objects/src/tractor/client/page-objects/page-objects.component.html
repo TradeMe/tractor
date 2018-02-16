@@ -1,7 +1,8 @@
 <style
     ng-bind-html="$ctrl.style">
 </style>
-<div ng-if="$ctrl.fileModel">
+<div
+    ng-if="$ctrl.fileModel">
     <tractor-file-tree
         extension="{{ $ctrl.extension }}"
         file-structure="$ctrl.fileStructure"
