@@ -11,7 +11,7 @@ import * as tractorLogger from '@tractor/logger';
 // Under test:
 import { init } from './init';
 
-describe('@tractor-plugin/page-objects - init:', () => {
+describe('@tractor-plugins/page-objects - init:', () => {
     xit('should create the page-objects directory', () => {
         sinon.stub(tractorFileStructure, 'createDir').returns(Promise.resolve());
 

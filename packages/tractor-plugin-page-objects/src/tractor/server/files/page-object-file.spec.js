@@ -12,7 +12,7 @@ import { PageObjectFileRefactorer } from './page-object-file-refactorer';
 // Under test:
 import { PageObjectFile } from './page-object-file';
 
-describe('@tractor-plugin/page-objects - page-object-file:', () => {
+describe('@tractor-plugins/page-objects - page-object-file:', () => {
     describe('PageObjectFile constructor:', () => {
         it('should create a new PageObjectFile', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));

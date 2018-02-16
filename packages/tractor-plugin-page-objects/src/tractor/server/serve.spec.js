@@ -10,7 +10,7 @@ import { PageObjectFile } from './files/page-object-file';
 // Under test:
 import { serve } from './serve';
 
-describe('@tractor-plugin/page-objects - serve:', () => {
+describe('@tractor-plugins/page-objects - serve:', () => {
     it('should create a new FileStructure', () => {
         let pageObjectsFileStructure = null;
         let config = {

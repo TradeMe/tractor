@@ -6,7 +6,7 @@ import { expect } from '@tractor/unit-test';
 // Under test:
 import { config } from './config';
 
-describe('@tractor-plugin/page-objects - tractor/config:', () => {
+describe('@tractor-plugins/page-objects - tractor/config:', () => {
     describe('addConfig', () => {
         it('should process the config object', () => {
             let pageObjectsConfig = {};

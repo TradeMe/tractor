@@ -13,7 +13,7 @@ import { PageObjectFile } from './page-object-file';
 // Under test:
 import { PageObjectFileRefactorer } from './page-object-file-refactorer';
 
-describe('@tractor-plugin/page-objects - page-object-file-refactorer:', () => {
+describe('@tractor-plugins/page-objects - page-object-file-refactorer:', () => {
     describe('PageObjectFileRefactorer.fileNameChange', () => {
         it('should update the name of the page object in a file', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));

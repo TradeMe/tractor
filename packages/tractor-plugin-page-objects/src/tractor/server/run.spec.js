@@ -6,7 +6,7 @@ import { expect, ineeda, NOOP } from '@tractor/unit-test';
 // Under test:
 import { run } from './run';
 
-describe('@tractor-plugin/page-objects - run:', () => {
+describe('@tractor-plugins/page-objects - run:', () => {
     it('should read the file structure', () => {
         let pageObjectsFileStructure = ineeda({
             read: NOOP
