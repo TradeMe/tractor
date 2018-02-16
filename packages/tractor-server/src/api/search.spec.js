@@ -22,6 +22,7 @@ describe('@tractor/server - api: search', () => {
         searchHandler()(request, response);
 
         expect(response.send).to.have.been.calledWith({
+            count: 0,
             results: []
         });
     });
@@ -48,6 +49,7 @@ describe('@tractor/server - api: search', () => {
         .then(() => {
             handler(request, response);
             expect(response.send).to.have.been.calledWith({
+                count: 1,
                 results: [file.toJSON()]
             });
 

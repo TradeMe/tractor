@@ -15,9 +15,6 @@ var SearchService = function (
             params: {
                 searchString: searchString
             }
-        })
-        .then(function (response) {
-            return response.results;
         });
     }
 };

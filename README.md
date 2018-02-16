@@ -7,6 +7,7 @@ A UI around [Protractor](http://angular.github.io/protractor/) to help write E2E
 [![bitHound Overall Score](https://www.bithound.io/github/TradeMe/tractor/badges/score.svg)](https://www.bithound.io/github/TradeMe/tractor)
 [![Code Climate](https://codeclimate.com/github/TradeMe/tractor/badges/gpa.svg)](https://codeclimate.com/github/TradeMe/tractor)
 [![Test Coverage](https://codeclimate.com/github/TradeMe/tractor/coverage.svg)](https://codeclimate.com/github/TradeMe/tractor/coverage)
+[![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://github.com/TradeMe/tractor)
 
 ## Install:
 

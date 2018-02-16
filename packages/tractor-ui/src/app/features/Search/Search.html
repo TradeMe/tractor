@@ -25,7 +25,7 @@
                     class="search__results">
                     <li
                         class="search__result"
-                        ng-repeat="result in $ctrl.searchResults track by result.path">
+                        ng-repeat="result in $ctrl.results track by result.path">
                         <a
                             class="search__link"
                             title="{{ result.url }}"
@@ -34,6 +34,10 @@
                         </a>
                     </li>
                 </ul>
+                <p
+                    ng-if="$ctrl.count > 20">
+                    Showing top 20 results out of {{ $ctrl.count }}.
+                </p>
             </div>
         </div>
     </div>

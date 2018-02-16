@@ -7,6 +7,7 @@ import { stemmer } from 'porter-stemmer';
 
 // Constants:
 const INDEX_DEBOUNCE_TIME = 1000;
+const SEARCH_RESULTS = 20;
 
 // TODO: This could be rethought... It isn't a particularly elegant method of
 // hooking into the file structure, but it is quite effective? It is proving
@@ -47,8 +48,9 @@ export function searchHandler () {
 
     return function (request, response) {
         let results = search ? search.search(request.query.searchString) : [];
-        results = results.map(result => result.toJSON());
-        response.send({ results });
+        let count = results.length;
+        results = results.splice(0, SEARCH_RESULTS).map(result => result.toJSON());
+        response.send({ count, results });
     }
 }
 

@@ -18,15 +18,15 @@ var SearchController = (function () {
         this.style = $sce.trustAsHtml(style);
         this.searchService = searchService;
 
-
         this.searchString = '';
-        this.searchResults = [];
+        this.results = [];
     };
 
     SearchController.prototype.doSearch = function () {
         this.searchService.search(this.searchString)
-        .then(function (results) {
-            this.searchResults = results;
+        .then(function (search) {
+            this.results = search.results;
+            this.count = search.count;
         }.bind(this));
     };
 
