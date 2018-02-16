@@ -4,11 +4,14 @@ plugins:
     enabled: true
     exclude_patterns:
     - "**/*.spec.js"
+    - "**/*.po.js"
     config:
       languages:
       - javascript
   eslint:
     enabled: true
+    exclude_patterns:
+    - "**/*.po.js"
   fixme:
     enabled: true
   nodesecurity:
