@@ -1,7 +1,7 @@
 {
   "name": "@tractor-plugins/page-objects",
-  "version": "0.5.0",
-  "description": "tractor plugin for manipulating Page Objecs",
+  "version": "0.5.1",
+  "description": "tractor plugin for manipulating Page Objects",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
   "publishConfig": {
@@ -44,9 +44,8 @@
     "@babel/preset-env": "^7.0.0-beta.39",
     "@babel/register": "^7.0.0-beta.39",
     "@tractor-plugins/cucumber": "^0.4.0",
-    "@tractor/cli": "^1.0.0-alpha.6",
-    "@tractor/core": "^1.0.0-alpha.6",
-    "@tractor/unit-test": "^1.0.0-alpha.6",
+    "@tractor/cli": "^1.0.0-alpha.15",
+    "@tractor/unit-test": "^1.0.0-alpha.15",
     "babel-eslint": "^8.2.1",
     "babel-loader": "^8.0.0-beta.0",
     "camel-case": "^3.0.0",
@@ -55,15 +54,15 @@
     "eslint": "^4.17.0",
     "html-loader": "^0.5.5",
     "istanbul": "1.1.0-alpha.1",
-    "mocha": "^5.0.0",
+    "mocha": "^5.0.1",
     "ng-annotate-loader": "^0.6.1",
     "npm-watch": "^0.3.0",
     "rimraf": "^2.6.2",
     "url-loader": "^0.6.2",
-    "webpack": "^3.6.0"
+    "webpack": "^3.11.0"
   },
   "dependencies": {
-    "@tractor-plugins/browser": "^0.2.0",
+    "@tractor-plugins/browser": "^0.2.2",
     "babel-polyfill": "^6.26.0",
     "bluebird": "^3.5.0",
     "esprima": "^4.0.0",
@@ -73,6 +72,6 @@
     "pascal-case": "^2.0.1"
   },
   "peerDependencies": {
-    "@tractor/core": "^1.0.0-alpha.6"
+    "@tractor/core": "^1.0.0-alpha.15"
   }
 }
