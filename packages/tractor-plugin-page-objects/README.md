@@ -74,11 +74,11 @@ To set up development:
 
 ```
 npm install // install dependencies
-npm link "@tractor-plugin/page-objects" // link plugin to use itself
+npm link "@tractor-plugins/page-objects" // link plugin to use itself
 tractor init
 ```
 
-To run plugin...
+To run plugin:
 
 ```
 mkdir test
@@ -86,7 +86,7 @@ npm run tractor:test // in one tab
 npm run tractor // in another tab
 ```
 
-To run tests...
+To run tests:
 
 ```
 mkdir test
