@@ -27,6 +27,7 @@
     "@babel/core": "^7.0.0-beta.39",
     "@babel/plugin-proposal-export-default-from": "^7.0.0-beta.39",
     "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.39",
+    "@babel/polyfill": "^7.0.0-beta.39",
     "@babel/preset-env": "^7.0.0-beta.39",
     "@babel/register": "^7.0.0-beta.39",
     "@tractor-plugins/cucumber": "^0.4.0",
