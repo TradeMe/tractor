@@ -1,5 +1,3 @@
-/* global describe:true, it:true */
-
 // Constants:
 import { SERVER_ERROR } from './constants';
 

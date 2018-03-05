@@ -1,5 +1,3 @@
-/* global describe:true, it:true, xit:true */
-
 // Test setup:
 import { expect, sinon } from '@tractor/unit-test';
 
@@ -29,7 +27,7 @@ describe('@tractor/server - api: search', () => {
 
     // TODO: These tests are impossible to right because of the current DI setup...
     // debounce needs to be an injectable thing.
-    xit('should return search results after some Files hav been processed', () => {
+    it.skip('should return search results after some Files hav been processed', () => {
         let request = {
             query: 'file'
         };

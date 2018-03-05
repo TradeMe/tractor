@@ -91,7 +91,7 @@ function injectPlugins (plugins, application, templatePath) {
     const UP_TO_NODE_MODULE = '../../../../';
 
     plugins.forEach(plugin => {
-        application.use(express.static(path.resolve(plugin.script, UP_TO_NODE_MODULE)))
+        application.use(express.static(path.resolve(plugin.script, UP_TO_NODE_MODULE)));
     });
 
     return (request, response) => {

@@ -51,7 +51,7 @@ export function searchHandler () {
         let count = results.length;
         results = results.splice(0, SEARCH_RESULTS).map(result => result.toJSON());
         response.send({ count, results });
-    }
+    };
 }
 
 function createSearchIndex (files) {

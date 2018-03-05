@@ -1,5 +1,3 @@
-/* global describe:true, it:true */
-
 // Test setup:
 import { expect, sinon } from '@tractor/unit-test';
 
@@ -25,7 +23,7 @@ describe('@tractor/file-structure - actions/open-item:', () => {
             send: () => { }
         };
 
-        sinon.stub(File.prototype, 'serialise').returns(serialised)
+        sinon.stub(File.prototype, 'serialise').returns(serialised);
         sinon.stub(response, 'send');
 
         let openItem = createOpenItemHandler(fileStructure);
@@ -48,7 +46,7 @@ describe('@tractor/file-structure - actions/open-item:', () => {
             send: () => { }
         };
 
-        sinon.stub(Directory.prototype, 'serialise').returns(serialised)
+        sinon.stub(Directory.prototype, 'serialise').returns(serialised);
         sinon.stub(response, 'send');
 
         let openItem = createOpenItemHandler(fileStructure);

@@ -1,5 +1,3 @@
-/* global describe:true, it:true */
-
 // Test setup:
 import { expect, NOOP, sinon } from '@tractor/unit-test';
 

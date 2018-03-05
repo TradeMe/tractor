@@ -1,5 +1,3 @@
-/* global describe:true, it:true */
-
 // Test setup:
 import { expect, sinon } from '@tractor/unit-test';
 
@@ -70,7 +68,7 @@ describe('@tractor/file-javascript: JavaScriptFileRefactorer:', () => {
             });
 
             let [comment] = file.ast.comments;
-            let name = JSON.parse(comment.value).name
+            let name = JSON.parse(comment.value).name;
 
             expect(name).to.equal('new name');
         });
@@ -136,7 +134,7 @@ describe('@tractor/file-javascript: JavaScriptFileRefactorer:', () => {
                 toPath: '/file-structure/directory/reference.js'
             });
 
-            let [requirePath] = esquery(ast, 'CallExpression[callee.name="require"] Literal')
+            let [requirePath] = esquery(ast, 'CallExpression[callee.name="require"] Literal');
             expect(requirePath.value).to.equal('../reference.js');
         });
 
@@ -153,7 +151,7 @@ describe('@tractor/file-javascript: JavaScriptFileRefactorer:', () => {
                 newToPath: '/file-structure/directory/newName.js'
             });
 
-            let [requirePath] = esquery(ast, 'CallExpression[callee.name="require"] Literal')
+            let [requirePath] = esquery(ast, 'CallExpression[callee.name="require"] Literal');
             expect(requirePath.value).to.equal('./newName.js');
         });
 
@@ -170,7 +168,7 @@ describe('@tractor/file-javascript: JavaScriptFileRefactorer:', () => {
                 newToPath: '/file-structure/directory/new/reference/file.js'
             });
 
-            let [requirePath] = esquery(ast, 'CallExpression[callee.name="require"] Literal')
+            let [requirePath] = esquery(ast, 'CallExpression[callee.name="require"] Literal');
             expect(requirePath.value).to.equal('../new/reference/file.js');
         });
 
@@ -192,7 +190,7 @@ describe('@tractor/file-javascript: JavaScriptFileRefactorer:', () => {
                 newToPath: '/file-structure/directory/new/reference/file.js'
             });
 
-            let [requirePath] = esquery(ast, 'CallExpression[callee.name="require"] Literal')
+            let [requirePath] = esquery(ast, 'CallExpression[callee.name="require"] Literal');
             expect(requirePath.value).to.equal('./new/reference/file.js');
 
             path.relative.restore();

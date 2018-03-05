@@ -1,5 +1,3 @@
-/* global describe:true, it:true */
-
 // Constants:
 const REQUEST_ERROR = 400;
 
@@ -223,7 +221,7 @@ describe('@tractor/file-javascript: JavaScriptFile:', () => {
             sinon.stub(File.prototype, 'refactor').resolves();
             sinon.stub(JavaScriptFile.prototype, 'save').resolves();
 
-            let file = new JavaScriptFile(filePath, fileStructure)
+            let file = new JavaScriptFile(filePath, fileStructure);
 
             return file.refactor('refactor')
             .then(() => {

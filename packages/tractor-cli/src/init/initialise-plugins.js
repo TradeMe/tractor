@@ -8,4 +8,4 @@ export function initialisePlugins (di, plugins) {
         return di.call(plugin.init);
     });
 }
-initialisePlugins['@Inject'] = ['di', 'plugins']
+initialisePlugins['@Inject'] = ['di', 'plugins'];

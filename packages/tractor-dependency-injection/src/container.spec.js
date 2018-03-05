@@ -1,5 +1,3 @@
-/* global describe:true, it:true */
-
 // Test setup:
 import { expect, sinon } from '@tractor/unit-test';
 
@@ -137,7 +135,7 @@ describe('@tractor/dependency-injection - Container:', () => {
             let container = new Container();
 
             function Kitchen () {}
-            Kitchen['@Inject'] = ['Sink']
+            Kitchen['@Inject'] = ['Sink'];
             container.factory(Kitchen);
 
             expect(() => {

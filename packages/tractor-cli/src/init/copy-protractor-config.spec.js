@@ -1,5 +1,3 @@
-/* global describe:true, xit:true */
-
 // Test setup:
 import { expect, sinon } from '@tractor/unit-test';
 
@@ -15,7 +13,7 @@ import { TractorError } from '@tractor/error-handler';
 import { copyProtractorConfig } from './copy-protractor-config';
 
 describe('tractor - copy-protractor-config:', () => {
-    xit('should copy the "protractor.conf.js" file to the users specified directory', () => {
+    it.skip('should copy the "protractor.conf.js" file to the users specified directory', () => {
         sinon.stub(tractorFileStructure, 'copyFile').resolves();
 
         return copyProtractorConfig({
@@ -31,7 +29,7 @@ describe('tractor - copy-protractor-config:', () => {
         });
     });
 
-    xit('should tell the user if "protractor.conf.js" already exists', () => {
+    it.skip('should tell the user if "protractor.conf.js" already exists', () => {
         sinon.stub(tractorFileStructure, 'copyFile').rejects(new TractorError('"protractor.conf.js" already exists.'));
         sinon.stub(tractorLogger, 'warn');
 
