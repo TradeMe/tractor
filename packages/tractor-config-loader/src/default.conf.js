@@ -4,7 +4,6 @@ export const DEFAULT_CONFIG = {
     environments: [
         'http://localhost:8080'
     ],
-    tags: [],
     beforeProtractor: () => {},
     afterProtractor: () => {}
 };

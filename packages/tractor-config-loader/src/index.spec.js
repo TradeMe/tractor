@@ -1,5 +1,3 @@
-/* global describe:true, it:true */
-
 // Test setup:
 import { expect, sinon } from '@tractor/unit-test';
 
@@ -83,17 +81,6 @@ describe('@tractor/config-loader:', () => {
             expect(config.port).to.equal(4000);
             expect(config.directory).to.equal('./tractor');
             expect(config.environments).to.deep.equal(['http://localhost:8080']);
-            expect(config.tags).to.deep.equal(['']);
-
-            tractorLogger.info.restore();
-        });
-
-        it('should make the empty tag the first tag', () => {
-            sinon.stub(tractorLogger, 'info');
-
-            let config = loadConfig(path.resolve(__dirname, '../assets/test.tags.conf.js'));
-
-            expect(config.tags).to.deep.equal(['', '@foo', '@bar']);
 
             tractorLogger.info.restore();
         });
