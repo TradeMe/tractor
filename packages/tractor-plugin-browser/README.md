@@ -5,7 +5,6 @@ browser methods.
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/phenomnomnominal/tractor-plugin-browser.svg)](https://greenkeeper.io/)
 [![npm version](https://img.shields.io/npm/v/@tractor-plugins/browser.svg)](https://www.npmjs.com/package/@tractor-plugins/browser)
-[![bitHound Overall Score](https://www.bithound.io/github/phenomnomnominal/tractor-plugin-browser/badges/score.svg)](https://www.bithound.io/github/phenomnomnominal/tractor-plugin-browser)
 [![Code Climate](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-browser/badges/gpa.svg)](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-browser)
 [![Test Coverage](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-browser/badges/coverage.svg)](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-browser/coverage)
 
