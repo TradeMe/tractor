@@ -34,7 +34,7 @@ function createActionInstanceModelConstructor (
             parameters = parameters || [];
             return parameters.map(parameter => new ActionArgumentModel(this.interaction, parameter));
         }
-    }
+    };
 }
 
 PageObjectsModule.factory('ActionInstanceModel', createActionInstanceModelConstructor);

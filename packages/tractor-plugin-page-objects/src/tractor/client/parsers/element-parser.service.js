@@ -71,7 +71,7 @@ function ElementParserService (
         _selectorParser(element, selector);
 
         element.type = element.pageObject.availablePageObjects.find(pageObject => {
-            return pageObject.variableName === astObject.callee.name
+            return pageObject.variableName === astObject.callee.name;
         });
         element.actions = element.type.actions;
     }

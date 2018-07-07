@@ -34,7 +34,7 @@ function createActionModelConstructor (
         }
 
         get lastInteraction () {
-            return this.interactions[this.interactions.length - 1]
+            return this.interactions[this.interactions.length - 1];
         }
 
         addParameter () {
@@ -87,7 +87,7 @@ function createActionModelConstructor (
                     .filter(Boolean)
             };
         }
-    }
+    };
 }
 
 PageObjectsModule.factory('ActionModel', createActionModelConstructor);

@@ -96,7 +96,7 @@ function createPageObjectModelConstructor (
             let imports = types.map(type => {
                 let variableName = ast.identifier(type.variableName);
                 let url = ast.literal(this._getRelativePath(type));
-                return ast.expression(importTemplate, { variableName, url })
+                return ast.expression(importTemplate, { variableName, url });
             });
 
             let pageObject = ast.identifier(this.variableName);
@@ -110,7 +110,7 @@ function createPageObjectModelConstructor (
             let template = `
                 module.exports = (function () {
                     %= imports %
-            `
+            `;
             if (elements.length) {
                 if (hasOnlyDeprecatedElements) {
                     template += `
@@ -167,7 +167,7 @@ function createPageObjectModelConstructor (
             browser.variableName = 'browser';
             return browser;
         }
-    }
+    };
 }
 
 PageObjectsModule.factory('PageObjectModel', createPageObjectModelConstructor);

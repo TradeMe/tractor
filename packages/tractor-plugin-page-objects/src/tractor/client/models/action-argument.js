@@ -47,10 +47,12 @@ function createActionArgumentModelConstructor (
             // Try to find a matching parameter first:
             } else if (parameter) {
                 return ast.identifier(parameter.variableName);
+
             // A result could have the same name as a parameter, but could
             // exist in a wrapping scope, so we check that next:
             } else if (result) {
                 return ast.identifier(result.variableName);
+
             // An element could have the same name as a parameter or a result
             // but would be in a scope even further up, so we check that last:
             } else if (element) {
@@ -86,7 +88,7 @@ function createActionArgumentModelConstructor (
             }
             return returns.name === this.value ? returns : null;
         }
-    }
+    };
 }
 
 PageObjectsModule.factory('ActionArgumentModel', createActionArgumentModelConstructor);

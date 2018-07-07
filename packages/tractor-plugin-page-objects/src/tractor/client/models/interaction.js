@@ -110,7 +110,7 @@ function createInteractionModelConstructor (
             let returns = previous && previous.action && previous.action.returns;
             return returns && returns.variableName;
         }
-    }
+    };
 }
 
 PageObjectsModule.factory('InteractionModel', createInteractionModelConstructor);

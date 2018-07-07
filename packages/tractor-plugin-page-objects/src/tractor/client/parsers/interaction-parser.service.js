@@ -3,8 +3,8 @@ import { PageObjectsModule } from '../page-objects.module';
 
 // Queries:
 const ACTION_CALL_EXPRESSION_QUERY = 'CallExpression[callee.object.name="result"] > FunctionExpression > BlockStatement > ReturnStatement >';
-const ACTION_CALL_EXPRESSION_NOT_OPTIONAL_QUERY = `${ACTION_CALL_EXPRESSION_QUERY} CallExpression[callee.property.name!="catch"]`
-const ACTION_CALL_EXPRESSION_OPTIONAL_QUERY = `${ACTION_CALL_EXPRESSION_QUERY} CallExpression[callee.property.name="catch"]`
+const ACTION_CALL_EXPRESSION_NOT_OPTIONAL_QUERY = `${ACTION_CALL_EXPRESSION_QUERY} CallExpression[callee.property.name!="catch"]`;
+const ACTION_CALL_EXPRESSION_OPTIONAL_QUERY = `${ACTION_CALL_EXPRESSION_QUERY} CallExpression[callee.property.name="catch"]`;
 const ACTION_MEMBER_EXPRESSION_QUERY = 'MemberExpression[object.name!="self"][property.type="Identifier"]';
 const ELEMENT_MEMBER_EXPRESSION_QUERY = 'MemberExpression > MemberExpression[object.type="Identifier"][property.type="Identifier"]';
 const ELEMENT_GROUP_MEMBER_EXPRESSION_QUERY = 'MemberExpression > CallExpression > MemberExpression[object.type="Identifier"][property.type="Identifier"]';
@@ -74,7 +74,7 @@ function InteractionParserService (
         let plugin = _pluginParser(pageObject, astObject);
         let element = plugin || _elementParser(pageObject, astObject);
         if (!element) {
-            element = _elementGroupParser(pageObject, astObject)
+            element = _elementGroupParser(pageObject, astObject);
             interaction.selector = _selectorParser(interaction, astObject);
         }
         interaction.element = element;

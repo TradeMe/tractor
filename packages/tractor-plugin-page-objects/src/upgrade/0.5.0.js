@@ -32,7 +32,7 @@ function upgrade (file) {
     esquery(file.ast, ELEMENT_ASSIGNMENT).forEach(assignment => {
         let [elementByCss] = esquery(assignment, ELEMENT_BY_CSS_CALL_EXPRESSION);
         if (elementByCss) {
-            hasElementByCss = true
+            hasElementByCss = true;
             assignment.right.callee = FIND;
         }
     });

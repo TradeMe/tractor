@@ -30,7 +30,7 @@ function createActionMetaModelConstructor (
             parameters = parameters || [];
             return parameters.map(parameter => new ValueModel(parameter));
         }
-    }
+    };
 }
 
 PageObjectsModule.factory('ActionMetaModel', createActionMetaModelConstructor);

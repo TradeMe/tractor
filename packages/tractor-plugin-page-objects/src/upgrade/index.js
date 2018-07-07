@@ -43,4 +43,4 @@ PageObjectFileRefactorer.upgradeMetadataVersion = function upgradeMetadataVersio
     let metaData = JSON.parse(comment.value);
     metaData.version = upgradeVersion;
     comment.value = JSON.stringify(metaData);
-}
+};

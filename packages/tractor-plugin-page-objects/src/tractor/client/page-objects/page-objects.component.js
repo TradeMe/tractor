@@ -58,7 +58,7 @@ function  PageObjectsController (
         return action.parameters.filter(parameter => parameter !== currentParameter)
         .map(parameter => parameter.variableName)
         .filter(Boolean);
-    }
+    };
 
     return controller;
 }

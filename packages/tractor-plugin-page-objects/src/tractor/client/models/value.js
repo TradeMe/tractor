@@ -44,7 +44,7 @@ function createValueModelConstructor (
                 type: this.type
             };
         }
-    }
+    };
 }
 
 PageObjectsModule.factory('ValueModel', createValueModelConstructor);

@@ -84,7 +84,7 @@ function createElementModelConstructor (
                 name: this.name
             };
         }
-    }
+    };
 }
 
 PageObjectsModule.factory('ElementModel', createElementModelConstructor);
