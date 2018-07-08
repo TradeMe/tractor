@@ -4,9 +4,18 @@
     },
     "extends": "eslint:recommended",
     "parser": "babel-eslint",
+    "globals": {
+        "Promise": true,
+
+        "describe": true,
+        "it": true,
+        "expect": true,
+        "browser": true
+    },
     "rules": {
         "no-extra-parens": 2,
         "no-prototype-builtins": 2,
-        "no-template-curly-in-string": 2
+        "no-template-curly-in-string": 2,
+        "semi": [2, "always"]
     }
 }
