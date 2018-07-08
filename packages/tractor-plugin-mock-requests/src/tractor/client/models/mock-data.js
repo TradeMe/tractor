@@ -40,7 +40,7 @@ var createMockRequestConstructor = function () {
                 name: this.name
             });
         }
-    }
+    };
 };
 
 MockRequestsModule.factory('MockDataModel', createMockRequestConstructor);

@@ -16,9 +16,9 @@ function createMockDataMetaModelConstructor () {
             this.path = path;
             this.variableName = pascalcase(this.name);
 
-            this.actions = ACTIONS
+            this.actions = ACTIONS;
         }
-    }
+    };
 }
 
 MockRequestsModule.factory('MockDataMetaModel', createMockDataMetaModelConstructor);

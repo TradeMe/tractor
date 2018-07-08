@@ -19,5 +19,5 @@ window.__tractor__ = window.__tractor__ || {};
             let [response] = possibleResponses;
             return tractor.mockResponses[response];
         }
-    }
+    };
 })(window.__tractor__);

@@ -33,7 +33,7 @@ window.__tractor__ = (function tractorMockRequests (tractor) {
             fake.send.apply(fake, arguments);
             FakeXMLHttpRequest.prototype.respond.call(this, mock.status, mock.headers, mock.body);
             fake.respond.apply(fake, arguments);
-        }
+        };
 
         copyEvents(real, fake);
         FakeXMLHttpRequest.prototype.open.apply(this, arguments);

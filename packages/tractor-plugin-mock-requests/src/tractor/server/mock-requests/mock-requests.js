@@ -72,7 +72,7 @@ function when (method, matcher, options = {}) {
 }
 
 function createMockResponseScript (key, response) {
-    return `window.__tractor__.mockResponses['${key}'] = ${response};`
+    return `window.__tractor__.mockResponses['${key}'] = ${response};`;
 }
 
 export function createProxyUrl (config, url) {

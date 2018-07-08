@@ -81,7 +81,7 @@ describe('@tractor-plugins/mock-requests - MockRequests:', () => {
                 .then(() => {
                     expect(browser.originalGet).to.have.been.calledWith('http://localhost:8765/', 1000);
                 });
-            })
+            });
         });
     });
 
