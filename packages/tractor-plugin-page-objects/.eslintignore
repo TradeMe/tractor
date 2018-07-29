@@ -1,2 +1,2 @@
 *.po.js
-*.step.js
+*.e2e-spec.js

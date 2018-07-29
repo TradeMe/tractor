@@ -3,6 +3,9 @@ module.exports = {
     environments: [
         'http://localhost:4321'
     ],
+    mochaSpecs: {
+        directory: './test'
+    },
     pageObjects: {
         directory: './test'
     }

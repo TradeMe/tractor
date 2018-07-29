@@ -1,9 +1,6 @@
 // Module:
 import { PageObjectsModule } from './page-objects.module';
 
-// Dependencies:
-import Promise from 'bluebird';
-
 PageObjectsModule.factory('pageObjectsService', (
     config,
     plugins,
@@ -12,20 +9,17 @@ PageObjectsModule.factory('pageObjectsService', (
     PageObjectMetaModel
 ) => {
     let includePageObjectsFileStructureServices = {};
-    Object.keys(config.pageObjects.include).forEach(include => {
-        includePageObjectsFileStructureServices[include] = fileStructureServiceFactory(`page-objects/${include}`);
+    Object.keys(config.pageObjects.include).forEach(includeName => {
+        let fileStructureService = fileStructureServiceFactory(`included-page-objects/${includeName}`);
+        fileStructureService.isIncluded = true;
+        includePageObjectsFileStructureServices[includeName] = fileStructureService;
     });
 
     return {
-        createPageObjectMetaModels,
         getAvailablePageObjects,
-        getPluginPageObjects
+        getPluginPageObjects,
+        getPageObjectFileStructureService
     };
-
-    function createPageObjectMetaModels (fileStructure, includeName) {
-        return fileStructure.fileStructure.allFiles.filter(file =>  file.extension === '.po.js')
-        .map(file => new PageObjectMetaModel(file, includeName));
-    }
 
     function getAvailablePageObjects () {
         return Promise.all([
@@ -41,26 +35,39 @@ PageObjectsModule.factory('pageObjectsService', (
         .map(plugin => {
             let { actions, name } = plugin;
             plugin.meta = { actions, elements: [], name };
-            return new PageObjectMetaModel(plugin);
+            return new PageObjectMetaModel(plugin, { isPlugin: true });
         });
+    }
+
+    function getPageObjectFileStructureService (file) {
+        let includeName = Object.keys(config.pageObjects.include).find(includeName => {
+            return file.url.startsWith(`/included-page-objects/${includeName}`);
+        });
+        return includeName ? includePageObjectsFileStructureServices[includeName] : pageObjectFileStructureService;
+    }
+
+    function _createPageObjectMetaModels (fileStructure, includeName) {
+        return fileStructure.fileStructure.allFiles.filter(file =>  file.extension === '.po.js')
+        .map(file => new PageObjectMetaModel(file, { includeName }));
     }
 
     function _getLocalPageObjects () {
         return pageObjectFileStructureService.getFileStructure()
-        .then(() => createPageObjectMetaModels(pageObjectFileStructureService));
+        .then(() => _createPageObjectMetaModels(pageObjectFileStructureService));
     }
 
     function _getIncludedPageObjects () {
         let includeNames = Object.keys(includePageObjectsFileStructureServices);
-        return Promise.map(includeNames, includeName => {
+        return Promise.all(includeNames.map(includeName => {
             return includePageObjectsFileStructureServices[includeName].getFileStructure();
-        })
+        }))
         .then(() => {
             return includeNames.map(includeName => {
                 let fileStructureService = includePageObjectsFileStructureServices[includeName];
-                return createPageObjectMetaModels(fileStructureService, includeName);
+                return _createPageObjectMetaModels(fileStructureService, includeName);
+            })
             // Flatten:
-            }).reduce((p, n) => p.concat(n), []);
+            .reduce((p, n) => p.concat(n), []);
         });
     }
 });
