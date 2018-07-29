@@ -49,7 +49,6 @@ function createActionModelConstructor (
 
         addInteraction () {
             let interaction = new InteractionModel(this, this.lastInteraction);
-            interaction.element = this.pageObject.browser;
             this.interactions.push(interaction);
         }
 

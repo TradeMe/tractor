@@ -69,22 +69,38 @@ function InteractionParserService (
     }
 
     function _interactionParser (interaction, astObject) {
-        let { pageObject } = interaction.containingAction;
+        const { pageObject } = interaction.containingAction;
 
-        let plugin = _pluginParser(pageObject, astObject);
-        let element = plugin || _elementParser(pageObject, astObject);
-        if (!element) {
-            element = _elementGroupParser(pageObject, astObject);
-            interaction.selector = _selectorParser(interaction, astObject);
+        const plugin = _pluginParser(pageObject, astObject);
+        if (plugin) {
+            interaction.element = plugin;
         }
-        interaction.element = element;
 
-        interaction.action = _actionParser(interaction.element, astObject);
+        if (!plugin) {
+            let element = _elementParser(pageObject, astObject);
+            if (!element) {
+                element = _elementGroupParser(pageObject, astObject);
+            }
+            if (element) {
+                interaction.element = element;
+            }
 
-        let { parameters } = interaction.action;
-        interaction.actionInstance.arguments = astObject.arguments.map((argument, index) => {
-            return actionArgumentParserService.parse(interaction, parameters[index], argument);
-        });
+            const selector = _selectorParser(interaction, astObject);
+            if (selector) {
+                interaction.selector = selector;
+            }
+        }
+
+        if (interaction.element) {
+            interaction.action = _actionParser(interaction.element, astObject);
+        }
+
+        if (interaction.action) {
+            let { parameters } = interaction.action;
+            interaction.actionInstance.arguments = astObject.arguments.map((argument, index) => {
+                return actionArgumentParserService.parse(interaction, parameters[index], argument);
+            });    
+        }
     }
 
     function _optionalInteractionParser (interaction, astObject) {
@@ -95,13 +111,17 @@ function InteractionParserService (
     function _pluginParser (pageObject, astObject) {
         let { plugins } = pageObject;
         let [pluginMemberExpression] = esquery(astObject, PLUGIN_MEMBER_EXPRESSION_QUERY);
-        return pluginMemberExpression && plugins.find(plugin => plugin.variableName === pluginMemberExpression.object.name);
+        if (pluginMemberExpression) {
+            return pluginMemberExpression && plugins.find(plugin => plugin.instanceName === pluginMemberExpression.object.name);
+        }
     }
 
     function _selectorParser (interaction, astObject) {
         let [selectorCallExpression] = esquery(astObject, ELEMENT_GROUP_SELECTOR_QUERY);
-        let [argument] = selectorCallExpression.arguments;
-        return actionArgumentParserService.parse(interaction, ELEMENT_GROUP_SELECTOR_ARGUMENT, argument);
+        if (selectorCallExpression) {
+            let [argument] = selectorCallExpression.arguments;
+            return actionArgumentParserService.parse(interaction, ELEMENT_GROUP_SELECTOR_ARGUMENT, argument);    
+        }
     }
 }
 

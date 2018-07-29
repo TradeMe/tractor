@@ -17,8 +17,26 @@ tractor-page-objects > div {
     }
 }
 
+.file-editor__list-item-reference--element-type {
+    width: 1rem;
+    height: 4rem;
+    display: inline-block;
+    cursor: pointer;
+    float: none;
+    vertical-align: middle;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
 .deprecated {
     background: rgba(255, 60, 60, 1);
+    padding: 0.5rem;
+    color: white;
+    margin-bottom: .5rem;
+}
+
+.included {
+    background: rgba(60, 60, 60, 1);
     padding: 0.5rem;
     color: white;
     margin-bottom: .5rem;

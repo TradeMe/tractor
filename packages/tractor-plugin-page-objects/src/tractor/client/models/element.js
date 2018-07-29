@@ -80,9 +80,11 @@ function createElementModelConstructor (
         }
 
         _toMeta () {
-            return {
-                name: this.name
-            };
+            const meta = { name: this.name }
+            if (this.isGroup) {
+                meta.type = this.type && this.type.name || true;
+            }
+            return meta;
         }
     };
 }

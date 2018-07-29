@@ -4,30 +4,27 @@ import { FileStructure } from '@tractor/file-structure';
 import path from 'path';
 import { PageObjectFile } from '../tractor/server/files/page-object-file';
 import { PageObjectFileRefactorer } from '../tractor/server/files/page-object-file-refactorer';
+import { getMeta, getMetaToken } from './get-meta';
 
 // Versions:
-const VERSIONS = ['0.5.0'];
+const VERSIONS = ['0.5.0', '0.5.2'];
 
 export async function upgrade () {
-    let config = getConfig();
-    let pageObjectsDirectoryPath = path.resolve(process.cwd(), config.pageObjects.directory);
-    let pageObjectsFileStructure = new FileStructure(pageObjectsDirectoryPath);
+    const config = getConfig();
+    const pageObjectsDirectoryPath = path.resolve(process.cwd(), config.pageObjects.directory);
+    const pageObjectsFileStructure = new FileStructure(pageObjectsDirectoryPath);
     pageObjectsFileStructure.addFileType(PageObjectFile);
 
     await pageObjectsFileStructure.read();
 
-    let files = Object.keys(pageObjectsFileStructure.allFilesByPath)
+    const files = Object.keys(pageObjectsFileStructure.allFilesByPath)
     .filter(key => pageObjectsFileStructure.allFilesByPath[key] instanceof PageObjectFile)
     .map(key => pageObjectsFileStructure.allFilesByPath[key]);
 
     return await files.reduce(async (p, file) => {
         await p;
-        let ast = file.ast;
-        let [firstComment] = ast.comments;
-        var meta = JSON.parse(firstComment.value);
-
-        let version = meta.version;
-        let upgradeVersions = VERSIONS.slice(VERSIONS.indexOf(version) + 1);
+        const { version } = getMeta(file);
+        const upgradeVersions = VERSIONS.slice(VERSIONS.indexOf(version) + 1);
 
         return await upgradeVersions.reduce(async (p, upgradeVersion) => {
             await p;
@@ -38,9 +35,8 @@ export async function upgrade () {
 }
 
 PageObjectFileRefactorer.upgradeMetadataVersion = function upgradeMetadataVersion (file, upgradeVersion) {
-    let { comments } = file.ast;
-    let [comment] = comments;
-    let metaData = JSON.parse(comment.value);
+    const metaToken = getMetaToken(file);
+    const metaData = JSON.parse(metaToken.value);
     metaData.version = upgradeVersion;
-    comment.value = JSON.stringify(metaData);
+    metaToken.value = JSON.stringify(metaData);
 };

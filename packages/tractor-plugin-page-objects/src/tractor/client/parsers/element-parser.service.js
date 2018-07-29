@@ -58,7 +58,9 @@ function ElementParserService (
 
     function _elementParser (element, astObject) {
         let [selector] = esquery(astObject, SELECTOR_QUERY);
-        _selectorParser(element, selector);
+        if (selector) {
+            _selectorParser(element, selector);
+        }
     }
 
     function _elementMultipleParser (element, astObject) {
@@ -68,12 +70,16 @@ function ElementParserService (
 
     function _pageObjectParser (element, astObject) {
         let [selector] = esquery(astObject, SELECTOR_QUERY);
-        _selectorParser(element, selector);
+        if (selector) {
+            _selectorParser(element, selector);
+        }
 
         element.type = element.pageObject.availablePageObjects.find(pageObject => {
             return pageObject.variableName === astObject.callee.name;
         });
-        element.actions = element.type.actions;
+        if (element.type) {
+            element.actions = element.type.actions;
+        }
     }
 
     function _pageObjectMultipleParser (element, astObject) {

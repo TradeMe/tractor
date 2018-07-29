@@ -12,10 +12,8 @@ import '../models/element';
 function createPageObjectModelConstructor (
     ActionModel,
     ElementModel,
-    PageObjectMetaModel,
     astCreatorService,
     pageObjectsService,
-    config,
     plugins
 ) {
     return class PageObjectModel {
@@ -23,7 +21,7 @@ function createPageObjectModelConstructor (
             this.file = file;
 
             this.plugins = pageObjectsService.getPluginPageObjects();
-            this.elements = this.plugins;
+            this.elements = [...this.plugins];
             this.browser = this._getBrowser(this.elements);
 
             this.domElements = [];
@@ -129,7 +127,7 @@ function createPageObjectModelConstructor (
                 }
                 if (hasElementGroups) {
                     template += `
-                        var findAll = parent ? parent.all.bind(parent) : element.all;
+                        var findAll = parent ? parent.all.bind(parent) : element.all.bind(element);
                     `;
                 }
                 template += `
@@ -163,9 +161,7 @@ function createPageObjectModelConstructor (
         }
 
         _getBrowser (elements) {
-            let browser = elements.find(element => element.name === 'Browser');
-            browser.variableName = 'browser';
-            return browser;
+            return elements.find(element => element.name === 'Browser');
         }
     };
 }

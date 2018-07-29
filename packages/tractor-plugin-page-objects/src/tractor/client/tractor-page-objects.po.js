@@ -1,11 +1,11 @@
-/*{"name":"tractor-page-objects","elements":[{"name":"name"},{"name":"name input"},{"name":"name validation"},{"name":"save button"},{"name":"confirm save dialog"},{"name":"new file button"},{"name":"add element button"},{"name":"elements"},{"name":"add action button"},{"name":"actions"}],"actions":[{"name":"create and save page object","parameters":[{"name":"name"}]},{"name":"save page object file","parameters":[]},{"name":"add element","parameters":[{"name":"name"},{"name":"selector"}]},{"name":"add element type","parameters":[{"name":"type"}]},{"name":"toggle element is group","parameters":[]},{"name":"add action","parameters":[{"name":"name"}]},{"name":"add action parameter","parameters":[{"name":"name"}]},{"name":"add action argument","parameters":[{"name":"name"},{"name":"value"}]},{"name":"get name","parameters":[]},{"name":"get name validation","parameters":[]},{"name":"get element name","parameters":[]},{"name":"get element name validation","parameters":[]},{"name":"get element selector","parameters":[]},{"name":"get element selector validation","parameters":[]},{"name":"get element type","parameters":[]},{"name":"get element is group","parameters":[]},{"name":"get action name","parameters":[]},{"name":"get action name validation","parameters":[]},{"name":"get action parameter name","parameters":[]},{"name":"get action parameter name validation","parameters":[]},{"name":"get interaction element","parameters":[]},{"name":"get interaction action","parameters":[]},{"name":"get interaction argument name","parameters":[{"name":"name"}]},{"name":"get interaction argument value","parameters":[{"name":"name"}]},{"name":"select interaction element","parameters":[{"name":"element"}]},{"name":"select interaction action","parameters":[{"name":"action"}]},{"name":"get interaction argument validation","parameters":[{"name":"name"}]}],"version":"0.5.0"}*/
+/*{"name":"tractor-page-objects","elements":[{"name":"name"},{"name":"name input"},{"name":"name validation"},{"name":"save button"},{"name":"confirm save dialog"},{"name":"new file button"},{"name":"add element button"},{"name":"elements","type":"tractor-page-objects element"},{"name":"add action button"},{"name":"actions","type":"tractor-page-objects action"}],"actions":[{"name":"create and save page object","parameters":[{"name":"name"}]},{"name":"save page object file","parameters":[]},{"name":"add element","parameters":[{"name":"name"},{"name":"selector"}]},{"name":"add action","parameters":[{"name":"name"}]},{"name":"get name","parameters":[]},{"name":"get name validation","parameters":[]}],"version":"0.5.2"}*/
 module.exports = function () {
     var TractorConfirmDialog = require('../../../node_modules/@tractor/ui/dist/page-objects/Core/Components/ConfirmDialog/tractor-confirm-dialog.po.js');
     var TractorPageObjectsElement = require('./tractor-page-objects element.po.js');
     var TractorPageObjectsAction = require('./tractor-page-objects action.po.js');
     var TractorPageObjects = function TractorPageObjects(parent) {
         var find = parent ? parent.element.bind(parent) : element;
-        var findAll = parent ? parent.all.bind(parent) : element.all;
+        var findAll = parent ? parent.all.bind(parent) : element.all.bind(element);
         this.name = find(by.css('tractor-page-objects .file-options__name'));
         this.nameInput = find(by.css('tractor-page-objects form tractor-variable-input[label="Name"] input'));
         this.nameValidation = find(by.css('tractor-page-objects tractor-variable-input[label="Name"] ng-message'));
@@ -58,22 +58,6 @@ module.exports = function () {
         });
         return result;
     };
-    TractorPageObjects.prototype.addElementType = function (type) {
-        var self = this;
-        var result = Promise.resolve();
-        result = result.then(function () {
-            return self.elements('last').addType(type);
-        });
-        return result;
-    };
-    TractorPageObjects.prototype.toggleElementIsGroup = function () {
-        var self = this;
-        var result = Promise.resolve();
-        result = result.then(function () {
-            return self.elements('last').toggleIsGroup();
-        });
-        return result;
-    };
     TractorPageObjects.prototype.addAction = function (name) {
         var self = this;
         var result = Promise.resolve();
@@ -82,22 +66,6 @@ module.exports = function () {
         });
         result = result.then(function () {
             return self.actions('last').addAction(name);
-        });
-        return result;
-    };
-    TractorPageObjects.prototype.addActionParameter = function (name) {
-        var self = this;
-        var result = Promise.resolve();
-        result = result.then(function () {
-            return self.actions('last').addParameter(name);
-        });
-        return result;
-    };
-    TractorPageObjects.prototype.addActionArgument = function (name, value) {
-        var self = this;
-        var result = Promise.resolve();
-        result = result.then(function () {
-            return self.actions('last').addArgument(name, value);
         });
         return result;
     };
@@ -114,142 +82,6 @@ module.exports = function () {
         var result = Promise.resolve();
         result = result.then(function () {
             return self.nameValidation.getText();
-        });
-        return result;
-    };
-    TractorPageObjects.prototype.getElementName = function () {
-        var self = this;
-        var result = Promise.resolve();
-        result = result.then(function () {
-            return self.elements('last').getName();
-        });
-        return result;
-    };
-    TractorPageObjects.prototype.getElementNameValidation = function () {
-        var self = this;
-        var result = Promise.resolve();
-        result = result.then(function () {
-            return self.elements('last').getNameValidation();
-        });
-        return result;
-    };
-    TractorPageObjects.prototype.getElementSelector = function () {
-        var self = this;
-        var result = Promise.resolve();
-        result = result.then(function () {
-            return self.elements('last').getSelector();
-        });
-        return result;
-    };
-    TractorPageObjects.prototype.getElementSelectorValidation = function () {
-        var self = this;
-        var result = Promise.resolve();
-        result = result.then(function () {
-            return self.elements('last').getSelectorValidation();
-        });
-        return result;
-    };
-    TractorPageObjects.prototype.getElementType = function () {
-        var self = this;
-        var result = Promise.resolve();
-        result = result.then(function () {
-            return self.elements('last').getType();
-        });
-        return result;
-    };
-    TractorPageObjects.prototype.getElementIsGroup = function () {
-        var self = this;
-        var result = Promise.resolve();
-        result = result.then(function () {
-            return self.elements('last').getIsGroup();
-        });
-        return result;
-    };
-    TractorPageObjects.prototype.getActionName = function () {
-        var self = this;
-        var result = Promise.resolve();
-        result = result.then(function () {
-            return self.actions('last').getName();
-        });
-        return result;
-    };
-    TractorPageObjects.prototype.getActionNameValidation = function () {
-        var self = this;
-        var result = Promise.resolve();
-        result = result.then(function () {
-            return self.actions('last').getNameValidation();
-        });
-        return result;
-    };
-    TractorPageObjects.prototype.getActionParameterName = function () {
-        var self = this;
-        var result = Promise.resolve();
-        result = result.then(function () {
-            return self.actions('last').getParameterName();
-        });
-        return result;
-    };
-    TractorPageObjects.prototype.getActionParameterNameValidation = function () {
-        var self = this;
-        var result = Promise.resolve();
-        result = result.then(function () {
-            return self.actions('last').getParameterNameValidation();
-        });
-        return result;
-    };
-    TractorPageObjects.prototype.getInteractionElement = function () {
-        var self = this;
-        var result = Promise.resolve();
-        result = result.then(function () {
-            return self.actions('last').getInteractionElement();
-        });
-        return result;
-    };
-    TractorPageObjects.prototype.getInteractionAction = function () {
-        var self = this;
-        var result = Promise.resolve();
-        result = result.then(function () {
-            return self.actions('last').getInteractionAction();
-        });
-        return result;
-    };
-    TractorPageObjects.prototype.getInteractionArgumentName = function (name) {
-        var self = this;
-        var result = Promise.resolve();
-        result = result.then(function () {
-            return self.actions('last').getInteractionArgumentName(name);
-        });
-        return result;
-    };
-    TractorPageObjects.prototype.getInteractionArgumentValue = function (name) {
-        var self = this;
-        var result = Promise.resolve();
-        result = result.then(function () {
-            return self.actions('last').getInteractionArgumentValue(name);
-        });
-        return result;
-    };
-    TractorPageObjects.prototype.selectInteractionElement = function (element) {
-        var self = this;
-        var result = Promise.resolve();
-        result = result.then(function () {
-            return self.actions('last').selectInteractionElement(element);
-        });
-        return result;
-    };
-    TractorPageObjects.prototype.selectInteractionAction = function (action) {
-        var self = this;
-        var result = Promise.resolve();
-        result = result.then(function () {
-            return self.actions('last').selectInteractionAction(action);
-        });
-        return result;
-    };
-    TractorPageObjects.prototype.getInteractionArgumentValidation = function (name) {
-        var self = this;
-        var result = Promise.resolve();
-        result = result.then(function () {
-            return self.actions(name).getInteractionArgumentValidation(name);
         });
         return result;
     };

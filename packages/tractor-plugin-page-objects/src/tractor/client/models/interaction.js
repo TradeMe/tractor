@@ -8,7 +8,6 @@ import './action-argument';
 
 function createInteractionModelConstructor (
     astCreatorService,
-    stringToLiteralService,
     ActionInstanceModel,
     ActionArgumentModel
 ) {
@@ -20,6 +19,7 @@ function createInteractionModelConstructor (
             this.containingAction = containingAction;
             this.previousInteraction = previousInteraction;
 
+            this.element = this.containingAction.pageObject.browser;
             this.selector = new ActionArgumentModel(this, ELEMENT_GROUP_SELECTOR_ARGUMENT);
         }
 
@@ -77,11 +77,8 @@ function createInteractionModelConstructor (
         }
 
         _interactionAST () {
-            let template = '<%= element %>';
+            let template = !this.element.pageObject ? '<%= plugin %>' : 'self.<%= element %>';
 
-            if (this.element.pageObject) {
-                template = `self.${template}`;
-            }
             if (this.element.isGroup) {
                 template += '(<%= selector %>)';
             }
@@ -95,12 +92,14 @@ function createInteractionModelConstructor (
             let action = ast.identifier(this.actionInstance.variableName);
             let argumentValues = this.actionInstance.arguments.map(argument => argument.ast);
             let element = ast.identifier(this.element.variableName);
+            let plugin = ast.identifier(this.element.instanceName);
             let selector = this.selector.ast;
 
             return ast.expression(template, {
                 action,
                 argumentValues,
                 element,
+                plugin,
                 selector
             });
         }

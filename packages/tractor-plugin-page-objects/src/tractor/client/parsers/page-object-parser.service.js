@@ -21,9 +21,10 @@ function PageObjectParserService (
 ) {
     return { parse };
 
-    function parse (pageObjectFile, availablePageObjects) {
+    function parse (pageObjectFile, availablePageObjects, isIncluded) {
         let pageObject = new PageObjectModel(pageObjectFile);
         pageObject.name = pageObjectFile.name;
+        pageObject.isIncluded = isIncluded;
 
         let astObject = pageObjectFile.ast;
 

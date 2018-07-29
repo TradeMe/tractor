@@ -56,8 +56,9 @@ function DeprecatedActionParserService (
             }
         });
 
-        if (!action.isUnparseable) {
-            astObject.right = action.ast.right;
+        let parsedCorrectly = astCompareService.compare(astObject, action.ast);
+        if (!parsedCorrectly) {
+            action.isUnparseable = astObject;
         }
 
         return action;

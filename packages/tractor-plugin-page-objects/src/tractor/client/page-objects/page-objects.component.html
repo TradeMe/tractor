@@ -32,7 +32,9 @@
                 <tractor-confirm-dialog trigger="$ctrl.confirmOverWrite">
                     <p>This will overwrite "{{ $ctrl.fileModel.name }}". Continue?</p>
                 </tractor-confirm-dialog>
-                <tractor-submit class="file-options__save-file"
+                <tractor-submit
+                    ng-if="!$ctrl.fileModel.isIncluded"
+                    class="file-options__save-file"
                     action="Save page object file">
                 </tractor-submit>
                 <tractor-action class="file-options__new-file"
@@ -44,6 +46,13 @@
 
         <section class="file-editor">
             <div
+                class="included"
+                ng-if="$ctrl.fileModel.isIncluded">
+                <p>
+                    This Page Object has been included from an external source. It cannot be modified.
+                </p>
+            </div>
+            <div
                 class="unparseable"
                 ng-if="$ctrl.fileModel.isUnparseable">
                 <p>
@@ -51,7 +60,7 @@
                 </p>
                 <p
                     ng-if="$ctrl.fileModel.version">
-                    This Page Object was created with version {{ $ctrl.fileModel.version }}
+                    This Page Object was created with plugin version {{ $ctrl.fileModel.version }}
                 </p>
                 <p
                     ng-if="$ctrl.fileModel.outdated">
@@ -96,7 +105,7 @@
                                     <div
                                         class="file-editor__list-item-sort-handle"
                                         title="Drag to sort"
-                                        ng-if="$ctrl.fileModel.domElements.length > 2"
+                                        ng-if="$ctrl.fileModel.domElements.length >= 2"
                                         as-sortable-item-handle>
                                     </div>
 
@@ -148,7 +157,7 @@
                                                             icon="remove">
                                                         </tractor-action>
                                                         <div class="file-editor__list-item-sort-handle" title="Drag to sort"
-                                                             ng-if="domElement.filters.length > 2"
+                                                             ng-if="domElement.filters.length >= 2"
                                                              as-sortable-item-handle>
                                                         </div>
 
@@ -197,16 +206,16 @@
                                                 form="fileEditor"
                                                 label="selector"
                                                 model="domElement"
-                                                example="someController.someModel">
+                                                example="some.css[selector]">
                                             </tractor-text-input>
                                             <tractor-checkbox
                                                 label="Is Group"
                                                 model="domElement">
                                             </tractor-checkbox>
 
-                                            <section>
+                                            <section
+                                                ng-if="domElement.type">
                                                 <tractor-select
-                                                    ng-if="domElement.type"
                                                     form="fileEditor"
                                                     label="Type"
                                                     as="displayName"
@@ -214,18 +223,24 @@
                                                     model="domElement"
                                                     required>
                                                 </tractor-select>
-
+                                                <a
+                                                    class="file-editor__list-item-reference file-editor__list-item-reference--element-type"
+                                                    title="{{ domElement.type.name }}"
+                                                    ui-sref="tractor.file({ file: domElement.type })">
+                                                </a>
+                                            </section>
+                                            <section>
                                                 <tractor-action
                                                     ng-if="!domElement.type"
                                                     model="domElement"
                                                     action="Add type">
                                                 </tractor-action>
+                                                <tractor-action
+                                                    ng-if="domElement.type"
+                                                    model="domElement"
+                                                    action="Remove type">
+                                                </tractor-action>
                                             </section>
-                                            <tractor-action
-                                                ng-if="domElement.type"
-                                                model="domElement"
-                                                action="Remove type">
-                                            </tractor-action>
                                         </section>
                                     </div>
                                 </li>
@@ -264,7 +279,7 @@
                                     <div
                                         class="file-editor__list-item-sort-handle"
                                         title="Drag to sort"
-                                        ng-if="$ctrl.fileModel.actions.length > 2"
+                                        ng-if="$ctrl.fileModel.actions.length >= 2"
                                         as-sortable-item-handle>
                                     </div>
 
