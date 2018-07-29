@@ -1,7 +1,5 @@
-/* global describe:true, it:true */
-
 // Test setup:
-import { dedent, expect, Promise, sinon } from '@tractor/unit-test';
+import { dedent, expect, sinon } from '@tractor/unit-test';
 
 // Dependencies:
 import { FileStructure } from '@tractor/file-structure';
@@ -15,11 +13,11 @@ import { PageObjectFileRefactorer } from './page-object-file-refactorer';
 
 describe('@tractor-plugins/page-objects - page-object-file-refactorer:', () => {
     describe('PageObjectFileRefactorer.fileNameChange', () => {
-        it('should update the name of the page object in a file', () => {
+        it('should update the name of the page object in a file', async () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let file = new PageObjectFile(path.join(path.sep, 'file-structure', 'directory', 'file.po.js'), fileStructure);
 
-            sinon.stub(PageObjectFile.prototype, 'save').returns(Promise.resolve());
+            sinon.stub(PageObjectFile.prototype, 'save').resolves();
 
             file.ast = esprima.parseScript(`
                 /*{"name":"foo","elements":[],"actions":[{"name":"baz","parameters":[]}]}*/
@@ -32,30 +30,28 @@ describe('@tractor-plugins/page-objects - page-object-file-refactorer:', () => {
                 comment: true
             });
 
-            return PageObjectFileRefactorer.fileNameChange(file, {
+            await PageObjectFileRefactorer.fileNameChange(file, {
                 oldName: 'foo',
                 newName: 'bar'
-            })
-            .then(() => {
-                file.ast.leadingComments = file.ast.comments;
-                let po = escodegen.generate(file.ast, {
-                    comment: true
-                });
-
-                expect(po).to.equal(dedent(`
-                    /*{"name":"bar","elements":[],"actions":[{"name":"baz","parameters":[]}]}*/
-                    module.exports = function () {
-                        var Bar = function Bar() {
-                        };
-                        Bar.prototype.baz = function () {
-                        };
-                        return Bar;
-                    }();
-                `));
-            })
-            .finally(() => {
-                PageObjectFile.prototype.save.restore();
             });
+
+            file.ast.leadingComments = file.ast.comments;
+            let po = escodegen.generate(file.ast, {
+                comment: true
+            });
+
+            expect(po).to.equal(dedent(`
+                /*{"name":"bar","elements":[],"actions":[{"name":"baz","parameters":[]}]}*/
+                module.exports = function () {
+                    var Bar = function Bar() {
+                    };
+                    Bar.prototype.baz = function () {
+                    };
+                    return Bar;
+                }();
+            `));
+
+            PageObjectFile.prototype.save.restore();
         });
     });
 });
