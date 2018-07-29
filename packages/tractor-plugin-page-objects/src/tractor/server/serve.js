@@ -1,16 +1,13 @@
 // Dependencies:
 import { FileStructure, serveFileStructure } from '@tractor/file-structure';
-import path from 'path';
 import { PageObjectFile } from './files/page-object-file';
 
 export function serve (config, di) {
-    let pageObjectsDirectoryPath = path.resolve(process.cwd(), config.pageObjects.directory);
-
-    let pageObjectsFileStructure = new FileStructure(pageObjectsDirectoryPath);
+    let pageObjectsFileStructure = new FileStructure(config.pageObjects.directory, 'page-objects');
     pageObjectsFileStructure.addFileType(PageObjectFile);
 
     di.constant({ pageObjectsFileStructure });
-    di.call(serveFileStructure)(pageObjectsFileStructure, 'page-objects');
+    di.call(serveFileStructure)(pageObjectsFileStructure);
 
     serveIncludes(config, di);
 }
@@ -19,13 +16,10 @@ serve['@Inject'] = ['config', 'di'];
 function serveIncludes (config, di) {
     let { include } = config.pageObjects;
     let includeFileStructures = Object.keys(include).map((includeName) => {
-        let includePath = include[includeName];
-        let includeDirectoryPath = path.resolve(process.cwd(), includePath);
-
-        let includeFileStructure = new FileStructure(includeDirectoryPath);
+        let includeFileStructure = new FileStructure(include[includeName], `included-page-objects/${includeName}`);
         includeFileStructure.addFileType(PageObjectFile);
 
-        di.call(serveFileStructure)(includeFileStructure, `page-objects/${includeName}`);
+        di.call(serveFileStructure)(includeFileStructure);
 
         return includeFileStructure;
     });

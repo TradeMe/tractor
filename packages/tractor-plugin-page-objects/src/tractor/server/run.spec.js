@@ -1,22 +1,22 @@
-/* global describe:true, it:true */
-
 // Test setup:
-import { expect, ineeda, NOOP } from '@tractor/unit-test';
+import { expect, ineeda } from '@tractor/unit-test';
 
 // Under test:
 import { run } from './run';
 
 describe('@tractor-plugins/page-objects - run:', () => {
-    it('should read the file structure', () => {
+    it('should read the file structure', async () => {
         let pageObjectsFileStructure = ineeda({
-            read: NOOP
+            referenceManager: ineeda()
         });
-        let includeFileStructures = [ineeda({
-            read: NOOP
-        })];
+        let includeFileStructure1 = ineeda();
+        let includeFileStructure2 = ineeda();
+        let includeFileStructures = [includeFileStructure1, includeFileStructure2];
 
-        run(pageObjectsFileStructure, includeFileStructures);
+        await run(pageObjectsFileStructure, includeFileStructures);
 
+        expect(includeFileStructure1.read).to.have.been.called();
+        expect(includeFileStructure2.read).to.have.been.called();
         expect(pageObjectsFileStructure.read).to.have.been.called();
     });
 });

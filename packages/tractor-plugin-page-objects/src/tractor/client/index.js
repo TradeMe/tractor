@@ -27,14 +27,16 @@ tractor.config((
             availablePageObjects (pageObjectsService) {
                 return pageObjectsService.getAvailablePageObjects();
             },
-            pageObject ($stateParams, pageObjectFileStructureService, pageObjectParserService, availablePageObjects) {
-                let pageObjectUrl = $stateParams.file && $stateParams.file.url;
+            pageObject ($stateParams, pageObjectsService, pageObjectParserService, availablePageObjects) {
+                let { file } = $stateParams;
+                let pageObjectUrl = file && file.url;
                 if (!pageObjectUrl) {
                     return null;
                 }
-                return pageObjectFileStructureService.openItem(pageObjectUrl)
-                .then(pageObjectFile => pageObjectParserService.parse(pageObjectFile, availablePageObjects));
+                let fileStructureService = pageObjectsService.getPageObjectFileStructureService(file);
+                return fileStructureService.openItem(pageObjectUrl)
+                .then(pageObjectFile => pageObjectParserService.parse(pageObjectFile, availablePageObjects, fileStructureService.isIncluded));
             }
         }
-    })
+    });
 });

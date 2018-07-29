@@ -1,7 +1,5 @@
-/* global describe:true, xit:true */
-
 // Test setup:
-import { expect, Promise, sinon } from '@tractor/unit-test';
+import { expect, sinon } from '@tractor/unit-test';
 
 // Dependencies:
 import { TractorError } from '@tractor/error-handler';
@@ -12,8 +10,8 @@ import * as tractorLogger from '@tractor/logger';
 import { init } from './init';
 
 describe('@tractor-plugins/page-objects - init:', () => {
-    xit('should create the page-objects directory', () => {
-        sinon.stub(tractorFileStructure, 'createDir').returns(Promise.resolve());
+    it.skip('should create the page-objects directory', () => {
+        sinon.stub(tractorFileStructure, 'createDirIfMissing').resolves();
 
         return init({
             directory: './tractor',
@@ -29,8 +27,8 @@ describe('@tractor-plugins/page-objects - init:', () => {
         });
     });
 
-    xit('should tell the user if the directory already exists', () => {
-        sinon.stub(tractorFileStructure, 'createDir').returns(Promise.reject(new TractorError('"/tractor/page-objects" already exists.')));
+    it.skip('should tell the user if the directory already exists', () => {
+        sinon.stub(tractorFileStructure, 'createDirIfMissing').rejects(new TractorError('"/tractor/page-objects" already exists.'));
         sinon.stub(tractorLogger, 'warn');
 
         return init({
