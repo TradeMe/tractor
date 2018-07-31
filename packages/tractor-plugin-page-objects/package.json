@@ -42,7 +42,7 @@
   "dependencies": {
     "@tractor-plugins/browser": "^0.2.4",
     "babel-polyfill": "^6.26.0",
-    "esprima": "^4.0.0",
+    "esprima": "^4.0.1",
     "esquery": "^1.0.1",
     "pascal-case": "^2.0.1"
   },
@@ -60,12 +60,12 @@
     "@tractor/cli": "^1.0.0-alpha.15",
     "@tractor/core": "^1.0.0-alpha.15",
     "@tractor/unit-test": "^1.0.0-alpha.15",
-    "babel-eslint": "^8.2.5",
-    "babel-loader": "^8.0.0-beta.0",
+    "babel-eslint": "^8.2.6",
+    "babel-loader": "8.0.0-beta.2",
     "camel-case": "^3.0.0",
     "css-loader": "^1.0.0",
-    "escodegen": "^1.10.0",
-    "eslint": "^5.0.1",
+    "escodegen": "^1.11.0",
+    "eslint": "^5.2.0",
     "html-loader": "^0.5.5",
     "istanbul": "1.1.0-alpha.1",
     "mkdirp": "^0.5.1",
@@ -74,7 +74,7 @@
     "npm-watch": "^0.3.0",
     "rimraf": "^2.6.2",
     "url-loader": "^1.0.1",
-    "webpack": "^4.15.1",
-    "webpack-cli": "^3.0.8"
+    "webpack": "^4.16.3",
+    "webpack-cli": "^3.1.0"
   }
 }
