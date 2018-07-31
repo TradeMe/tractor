@@ -13,10 +13,9 @@ export function serialiseCommands () {
                 return result;
             })
             .catch(error => {
-                console.error('Webdriver error:', command, description, error);
                 throw error;
             })
         );
         return currentCommand;
-    }
+    };
 }

@@ -80,7 +80,7 @@ function createElementModelConstructor (
         }
 
         _toMeta () {
-            const meta = { name: this.name }
+            const meta = { name: this.name };
             if (this.isGroup) {
                 meta.type = this.type && this.type.name || true;
             }
