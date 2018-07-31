@@ -1,0 +1,434 @@
+<style
+    ng-bind-html="$ctrl.style">
+</style>
+<div
+    ng-if="$ctrl.fileModel">
+    <tractor-file-tree
+        extension="{{ $ctrl.extension }}"
+        file-structure="$ctrl.fileStructure"
+        create="$ctrl.createDirectory"
+        delete="$ctrl.delete"
+        move="$ctrl.move"
+        file-style="$ctrl.fileStyle">
+    </tractor-file-tree>
+    <tractor-panel-handle
+        panel-name="spec-file-tree">
+    </tractor-panel-handle>
+    <form
+        class="file"
+        name="$ctrl.fileEditor"
+        novalidate
+        ng-submit="$ctrl.showErrors() && $ctrl.saveFile()">
+        <section
+            class="file-options">
+            <h1
+                class="file-options__name">
+                {{ $ctrl.fileModel.name }}
+            </h1>
+            <div>
+                <tractor-text-input
+                    class="file-options__name-input"
+                    ng-if="!$ctrl.fileModel.file"
+                    form="fileEditor"
+                    label="Name"
+                    model="$ctrl.fileModel"
+                    example="Spec">
+                </tractor-text-input>
+            </div>
+            <div
+                class="file-options__file-actions">
+                <tractor-confirm-dialog
+                    trigger="$ctrl.confirmOverWrite">
+                    <p>
+                        This will overwrite "{{ $ctrl.fileModel.name }}". Continue?
+                    </p>
+                </tractor-confirm-dialog>
+                <tractor-checkbox
+                    ng-show="$ctrl.fileModel.name"
+                    class="file-options__save-file"
+                    label="debug"
+                    model="$ctrl"
+                    ng-if="$ctrl.fileModel.name">
+                </tractor-checkbox>
+                <tractor-action
+                    ng-if="$ctrl.fileModel.name"
+                    class="file-options__save-file"
+                    action="Save and Run spec"
+                    model="$ctrl"
+                    argument="$ctrl.fileModel.file.path">
+                </tractor-action>
+                <tractor-submit class="file-options__save-file"
+                    action="Save spec file">
+                </tractor-submit>
+                <tractor-action class="file-options__save-file"
+                    model="$ctrl"
+                    action="New file">
+                </tractor-action>
+            </div>
+        </section>
+
+        <section
+            class="file-editor">
+            <div
+                class="unparseable"
+                ng-if="$ctrl.fileModel.isUnparseable">
+                <p>
+                    Could not parse this Spec. The underlying JavaScript may have been modified.
+                </p>
+                <p
+                    ng-if="$ctrl.fileModel.version">
+                    This Spec was created with plugin version {{ $ctrl.fileModel.version }}
+                </p>
+                <p
+                    ng-if="$ctrl.fileModel.outdated">
+                    Try running <span><code>tractor upgrade</code></span> to automatically upgrade this file.
+                <p>
+            </div>
+            <section
+                ng-if="!$ctrl.fileModel.isUnparseable && $ctrl.fileModel.name"
+                <section
+                    class="file-editor__container">
+                    <h2>
+                        Tests:
+                    </h2>
+
+                    <ul
+                        ng-if="$ctrl.fileModel.tests.length">
+                        <li
+                            class="file-editor__list-item"
+                            ng-repeat="test in $ctrl.fileModel.tests"
+                            ng-class="{
+                                'file-editor__list-item--minimised': test.minimised
+                            }">
+
+                            <h3
+                                class="file-editor__list-item-name">
+                                {{ test.name }}
+                            </h3>
+
+                            <tractor-action
+                                model="$ctrl.fileModel"
+                                action="Remove test"
+                                argument="test"
+                                icon="remove">
+                            </tractor-action>
+
+                            <tractor-action
+                                model="$ctrl"
+                                action="minimise"
+                                argument="test"
+                                icon="collapse">
+                            </tractor-action>
+
+                            <div
+                                class="unparseable"
+                                ng-if="test.isUnparseable">
+                                Could not parse this test. The underlying JavaScript has been modified.
+                            </div>
+
+                            <section
+                                ng-if="!test.isUnparseable">
+
+                                <tractor-text-input
+                                    form="fileEditor"
+                                    label="Name"
+                                    model="test"
+                                    example="Test">
+                                </tractor-text-input>
+
+                                <tractor-checkbox
+                                    ng-if="!test.skip"
+                                    form="fileEditor"
+                                    label="only"
+                                    model="test">
+                                </tractor-checkbox>
+                                <tractor-checkbox
+                                    ng-if="!test.only"
+                                    form="fileEditor"
+                                    label="skip"
+                                    model="test">
+                                </tractor-checkbox>
+                                <tractor-text-input
+                                    ng-if="test.skip"
+                                    form="fileEditor"
+                                    label="reason"
+                                    model="test"
+                                    example="This test is skipped because...">
+                                </tractor-text-input>
+                            </section>
+                            <section
+                                ng-if="!test.isUnparseable">
+
+                                <h3>
+                                    Steps:
+                                </h3>
+
+                                <ol
+                                    ng-if="test.steps.length"
+                                    ng-model="test.steps"
+                                    as-sortable
+                                    is-disabled="test.steps.length < 2">
+                                    <li
+                                        class="file-editor__list-item"
+                                        ng-repeat="step in test.steps"
+                                        as-sortable-item>
+                                        <tractor-action
+                                            model="test"
+                                            action="Remove step"
+                                            argument="step"
+                                            icon="remove">
+                                        </tractor-action>
+                                        <div
+                                            class="file-editor__list-item-sort-handle"
+                                            ng-if="test.steps.length > 1"
+                                            as-sortable-item-handle
+                                            title="Drag to sort">
+                                        </div>
+
+                                        <div
+                                            class="unparseable"
+                                            ng-if="step.isUnparseable">
+                                            Could not parse this step. The underlying JavaScript has been modified.
+                                        </div>
+
+                                        <section
+                                            ng-if="!step.isUnparseable && step.isMockRequest">
+                                            <a
+                                                class="file-editor__list-item-reference"
+                                                title="{{ step.data.name }}"
+                                                ui-sref="tractor.file({ file: step.data })">
+                                            </a>
+                                            <section>
+                                                <tractor-text-input
+                                                    form="fileEditor"
+                                                    label="URL"
+                                                    model="step"
+                                                    example="http://example.com/api/endpoint.json">
+                                                </tractor-text-input>
+                                                <tractor-select
+                                                    form="fileEditor"
+                                                    label="Action"
+                                                    model="step">
+                                                </tractor-select>
+
+                                                <tractor-checkbox
+                                                    form="fileEditor"
+                                                    label="Pass through"
+                                                    model="step">
+                                                </tractor-checkbox>
+                                            </section>
+                                            <section
+                                                ng-if="!step.passThrough">
+                                                <tractor-select
+                                                    form="fileEditor"
+                                                    label="Data"
+                                                    model="step"
+                                                    options="$ctrl.fileModel.availableMockRequests"
+                                                    as="name">
+                                                </tractor-select>
+                                                <tractor-text-input
+                                                    form="fileEditor"
+                                                    label="Status"
+                                                    model="step"
+                                                    example="200">
+                                                </tractor-text-input>
+                                            </section>
+
+                                            <section class="file-editor__container"
+                                                ng-if="!step.passThrough">
+                                                <h2>Headers:</h2>
+                                                <ul>
+                                                    <li ng-repeat="header in step.headers">
+                                                        <tractor-action
+                                                            model="step"
+                                                            action="Remove header"
+                                                            argument="header"
+                                                            icon="remove">
+                                                        </tractor-action>
+                                                        <tractor-text-input
+                                                            form="fileEditor"
+                                                            label="key"
+                                                            model="header"
+                                                            example="content-type">
+                                                        </tractor-text-input>
+                                                        <tractor-text-input
+                                                            form="fileEditor"
+                                                            label="value"
+                                                            model="header"
+                                                            example="application/json">
+                                                        </tractor-text-input>
+                                                    </li>
+                                                </ul>
+
+                                                <tractor-action
+                                                    model="step"
+                                                    action="Add header">
+                                                </tractor-action>
+                                            </section>
+                                        </section>
+
+                                        <section
+                                            ng-if="!step.isUnparseable && step.isInteraction">
+                                            <div
+                                                ng-if="$ctrl.fileModel.test.step.length > 1"
+                                                class="file-editor__list-item-sort-handle"
+                                                as-sortable-item-handle
+                                                title="Drag to sort">
+                                            </div>
+
+                                            <tractor-select
+                                                form="fileEditor"
+                                                label="Page Object"
+                                                model="step"
+                                                options="$ctrl.fileModel.availablePageObjects"
+                                                as="displayName">
+                                            </tractor-select>
+                                            <div
+                                                ng-repeat="selector in step.selectors">
+                                                <tractor-select
+                                                    form="fileEditor"
+                                                    label="Element Group"
+                                                    model="selector"
+                                                    options="selector.parentElementType.elementGroups"
+                                                    as="name">
+                                                </tractor-select>
+                                                <tractor-literal-input
+                                                    form="fileEditor"
+                                                    name="'Selector'"
+                                                    model="selector"
+                                                    type="'string'"
+                                                    required="true">
+                                                </tractor-literal-input>
+                                                <tractor-action
+                                                    model="step"
+                                                    argument="selector"
+                                                    action="Remove selector">
+                                                </tractor-action>
+                                            </div>
+                                            <tractor-action
+                                                ng-if="step.elementType.elementGroups.length > 0"
+                                                model="step"
+                                                action="Add selector">
+                                            </tractor-action>
+                                            <br>
+                                            <tractor-select
+                                                form="fileEditor"
+                                                label="Action"
+                                                model="step"
+                                                options="step.elementType.actions"
+                                                as="name">
+                                            </tractor-select>
+                                            <div ng-repeat="argument in step.arguments">
+                                                <tractor-literal-input
+                                                    form="fileEditor"
+                                                    name="argument.name"
+                                                    model="argument"
+                                                    required="argument.required">
+                                                </tractor-literal-input>
+                                            </div>
+                                        </section>
+
+                                        <section
+                                            ng-if="!step.isUnparseable && step.isAssertion">
+                                            <div
+                                                ng-if="$ctrl.fileModel.test.step.length > 1"
+                                                class="file-editor__list-item-sort-handle"
+                                                as-sortable-item-handle
+                                                title="Drag to sort">
+                                            </div>
+
+                                            <tractor-select
+                                                form="fileEditor"
+                                                label="Page Object"
+                                                model="step"
+                                                options="$ctrl.fileModel.availablePageObjects"
+                                                as="displayName">
+                                            </tractor-select>
+                                            <div
+                                                ng-repeat="selector in step.selectors">
+                                                <tractor-select
+                                                    form="fileEditor"
+                                                    label="Element Group"
+                                                    model="selector"
+                                                    options="selector.parentElementType.elementGroups"
+                                                    as="name">
+                                                </tractor-select>
+                                                <tractor-literal-input
+                                                    form="fileEditor"
+                                                    name="'Selector'"
+                                                    model="selector"
+                                                    type="'string'"
+                                                    required="true">
+                                                </tractor-literal-input>
+                                                <tractor-action
+                                                    model="step"
+                                                    argument="selector"
+                                                    action="Remove selector">
+                                                </tractor-action>
+                                            </div>
+                                            <tractor-action
+                                                ng-if="step.elementType.elementGroups.length > 0"
+                                                model="step"
+                                                action="Add selector">
+                                            </tractor-action>
+                                            <br>
+                                            <tractor-select
+                                                form="fileEditor"
+                                                label="Action"
+                                                model="step"
+                                                options="step.elementType.actions"
+                                                as="name">
+                                            </tractor-select>
+                                            <section>
+                                                <tractor-select
+                                                    form="fileEditor"
+                                                    label="condition"
+                                                    model="step"
+                                                    options="step.conditions">
+                                                </tractor-select>
+                                            </section>
+                                            <div ng-repeat="argument in step.arguments">
+                                                <tractor-literal-input
+                                                    form="fileEditor"
+                                                    name="argument.name"
+                                                    model="argument"
+                                                    type="argument.type"
+                                                    required="argument.required">
+                                                </tractor-literal-input>
+                                            </div>
+                                            <tractor-literal-input
+                                                form="fileEditor"
+                                                name="step.expectedResult.name"
+                                                model="step.expectedResult"
+                                                required="true">
+                                            </tractor-literal-input>
+                                        </section>
+                                    </li>
+                                </ol>
+
+                                <tractor-action
+                                    ng-if="$ctrl.fileModel.availableMockRequests.length"
+                                    model="test"
+                                    action="Add mocked request">
+                                </tractor-action>
+                                <tractor-action
+                                    model="test"
+                                    action="Add interaction">
+                                </tractor-action>
+                                <tractor-action
+                                    model="test"
+                                    action="Add assertion">
+                                </tractor-action>
+                            </section>
+                        </li>
+                    </ul>
+
+                    <tractor-action
+                        model="$ctrl.fileModel"
+                        action="Add test">
+                    </tractor-action>
+                </section>
+            </section>
+        </section>
+    </form>
+</div>

@@ -1,0 +1,85 @@
+{
+  "name": "@tractor-plugins/mocha-specs",
+  "version": "0.1.0",
+  "description": "tractor plugin for creating tests with Mocha",
+  "author": "Craig Spence <craigspence0@gmail.com>",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/phenomnomnominal/tractor-plugin-mocha-specs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/phenomnomnominal/tractor-plugin-mocha-specs/issues",
+    "email": "craigspence0@gmail.com"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "prepare": "npm run build",
+    "build": "npm run clean && npm run lint && npm run cover && npm run compile && npm run bundle",
+    "bundle": "webpack --config webpack.config.js",
+    "clean": "rimraf dist && rimraf reports",
+    "compile": "babel src/ --out-dir dist/ --ignore *.spec.js,src/tractor/client",
+    "cover": "istanbul cover --config .istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ./.mocharc 'src/**/*.spec.js'",
+    "dev": "npm link && npm link \"@tractor-plugins/mock-requests\"",
+    "lint": "eslint src",
+    "test": "mocha --opts ./.mocharc 'src/**/*.spec.js'",
+    "pretest:e2e": "npm run test:setup",
+    "test:e2e": "protractor ./tractor/protractor.conf.js --baseUrl=\"http://localhost:4321\"",
+    "test:e2e:debug": "node --inspect-brk node_modules/.bin/protractor ./tractor/protractor.conf.js --baseUrl=\"http://localhost:4321\"",
+    "test:setup": "rimraf test && mkdirp test && npm run webdriver",
+    "tractor": "tractor start",
+    "tractor:init": "tractor init",
+    "pretractor:test": "npm run test:setup",
+    "tractor:test": "tractor start --config=\"./test.tractor.conf.js\"",
+    "watch": "npm-watch",
+    "webdriver": "webdriver-manager update"
+  },
+  "watch": {
+    "build": "src/**/*.js"
+  },
+  "dependencies": {
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "mocha": "^5.2.0",
+    "mochawesome": "^3.0.2",
+    "optimist": "^0.6.1",
+    "pascal-case": "^2.0.1"
+  },
+  "peerDependencies": {
+    "@tractor/core": "^1.0.0-alpha.15",
+    "@tractor-plugins/page-objects": "^0.5.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.0.0-beta.39",
+    "@babel/core": "^7.0.0-beta.39",
+    "@babel/plugin-proposal-export-default-from": "^7.0.0-beta.39",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.39",
+    "@babel/plugin-proposal-optional-catch-binding": "^7.0.0-beta.40",
+    "@babel/polyfill": "^7.0.0-beta.39",
+    "@babel/preset-env": "^7.0.0-beta.39",
+    "@babel/register": "^7.0.0-beta.39",
+    "@tractor-plugins/mock-requests": "^0.4.1",
+    "@tractor-plugins/page-objects": "^0.5.2",
+    "@tractor/cli": "^1.0.0-alpha.15",
+    "@tractor/core": "^1.0.0-alpha.15",
+    "@tractor/unit-test": "^1.0.0-alpha.15",
+    "babel-eslint": "^8.2.5",
+    "babel-loader": "^8.0.0-beta.0",
+    "camel-case": "^3.0.0",
+    "css-loader": "^1.0.0",
+    "escodegen": "^1.10.0",
+    "eslint": "^5.0.1",
+    "html-loader": "^0.5.5",
+    "istanbul": "1.1.0-alpha.1",
+    "mkdirp": "^0.5.1",
+    "ng-annotate-loader": "^0.6.1",
+    "npm-watch": "^0.3.0",
+    "rimraf": "^2.6.2",
+    "url-loader": "^1.0.1",
+    "webpack": "^4.15.1",
+    "webpack-cli": "^3.0.8"
+  }
+}

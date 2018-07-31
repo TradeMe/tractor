@@ -1,0 +1,31 @@
+tractor-mocha-specs,
+tractor-mocha-specs > div {
+    height: 100%;
+    width: 100%;
+}
+
+.file-tree__item--mocha-spec {
+    background-image: url('./mocha-spec.png');
+}
+
+.file-tree__item--mocha-spec.dragover {
+    background-image: url('./move-mocha-spec-to-directory.png');
+}
+
+.file-editor__list-item-reference--page-object {
+    width: 1rem;
+    height: 4rem;
+    display: inline-block;
+    cursor: pointer;
+    float: none;
+    vertical-align: middle;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.unparseable {
+    background: rgba(255, 255, 20, 1);
+    padding: .5rem;
+    display: inline-block;
+    margin-bottom: .5rem;
+}
