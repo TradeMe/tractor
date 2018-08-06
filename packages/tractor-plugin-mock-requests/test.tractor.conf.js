@@ -3,10 +3,13 @@ module.exports = {
     environments: [
         'http://localhost:4321'
     ],
-    pageObjects: {
+    mochaSpecs: {
         directory: './test'
     },
     mockRequests: {
+        directory: './test'
+    },
+    pageObjects: {
         directory: './test'
     }
 };

@@ -8,7 +8,6 @@ config(getConfig());
 export { plugin } from './protractor/plugin';
 
 export { create } from './tractor/server/create';
-export { init } from './tractor/server/init';
 export { run } from './tractor/server/run';
 export { serve } from './tractor/server/serve';
 

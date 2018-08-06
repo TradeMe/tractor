@@ -44,13 +44,13 @@ To set up development:
 
 ```
 npm install // install dependencies
+npm run dev // link dependencies
 tractor init
 ```
 
 To run plugin...
 
 ```
-mkdir test
 npm run tractor:test // in one tab
 npm run tractor // in another tab
 ```
@@ -58,7 +58,6 @@ npm run tractor // in another tab
 To run tests...
 
 ```
-mkdir test
 npm run tractor:test // in one tab
 npm run test:e2e // in another tab
 ```

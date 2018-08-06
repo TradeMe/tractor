@@ -1,16 +1,8 @@
 'use strict';
 
-// Dependencies:
-let { promisify } = require('bluebird');
-let mkdir = promisify(require('fs').mkdir);
-let rimraf = promisify(require('rimraf'));
-
 // Plugins:
 let tractorPluginLoader = require('@tractor/plugin-loader');
 let plugins = tractorPluginLoader.getPlugins();
-
-// Constants:
-const TEST_DIRECTORY = './test';
 
 let protractorConfig = {
     allScriptsTimeout: 11000,
@@ -25,14 +17,11 @@ let protractorConfig = {
         debug: false
     },
 
-    plugins: [{
-        inline: {
-            onPrepare () {
-                return rimraf(TEST_DIRECTORY)
-                .then(() => mkdir(TEST_DIRECTORY));
-            }
-        }
-    }]
+    mochaOpts: {
+        timeout: 30000
+    },
+
+    SELENIUM_PROMISE_MANAGER: false
 };
 
 plugins.forEach(plugin => plugin.plugin(protractorConfig));
