@@ -33,7 +33,7 @@
     "@tractor-plugins/page-objects": "^0.5.0",
     "@tractor/cli": "^1.0.0-alpha.10",
     "@tractor/unit-test": "^1.0.0-alpha.10",
-    "babel-eslint": "^8.2.1",
+    "babel-eslint": "^9.0.0",
     "eslint": "^4.17.0",
     "istanbul": "^1.1.0-alpha.1",
     "lerna": "^2.8.0",
