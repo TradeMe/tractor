@@ -1,5 +1,3 @@
-/* global describe:true, xit:true */
-
 // Test setup:
 import { expect, Promise, sinon } from '@tractor/unit-test';
 

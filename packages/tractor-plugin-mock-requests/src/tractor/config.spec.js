@@ -1,5 +1,3 @@
-/* global describe:true, it:true */
-
 import { expect } from '@tractor/unit-test';
 
 // Under test:

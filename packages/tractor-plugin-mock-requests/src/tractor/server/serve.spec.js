@@ -1,5 +1,3 @@
-/* global describe:true, it:true */
-
 // Test setup:
 import { expect, ineeda, NOOP, sinon } from '@tractor/unit-test';
 
@@ -11,36 +9,6 @@ import { MockRequestFile } from './files/mock-request-file';
 import { serve } from './serve';
 
 describe('@tractor-plugins/mock-requests - serve:', () => {
-    xit('should create the mock-requests directory', () => {
-        sinon.stub(tractorFileStructure, 'createDir').returns(Promise.resolve());
-
-        return serve({
-            directory: './tractor'
-        })
-        .then(() => {
-            expect(tractorFileStructure.createDir).to.have.been.calledWith('/tractor/mock-requests');
-        })
-        .finally(() => {
-            tractorFileStructure.createDir.restore();
-        });
-    });
-
-    xit('should tell the user if the directory already exists', () => {
-        sinon.stub(tractorFileStructure, 'createDir').returns(Promise.reject(new TractorError('"/tractor/mock-requests" already exists.')));
-        sinon.stub(tractorLogger, 'warn');
-
-        return serve({
-            directory: './tractor'
-        })
-        .then(() => {
-            expect(tractorLogger.warn).to.have.been.calledWith('"/tractor/mock-requests" already exists. Moving on...');
-        })
-        .finally(() => {
-            tractorFileStructure.createDir.restore();
-            tractorLogger.warn.restore();
-        });
-    });
-
     it('should create a new FileStructure', () => {
         let mockRequestsFileStructure = null;
         let config = {
