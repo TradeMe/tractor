@@ -68,6 +68,7 @@
     "@babel/preset-env": "^7.0.0-beta.39",
     "@babel/register": "^7.0.0-beta.39",
     "@tractor-plugins/page-objects": "^0.5.2",
+    "@tractor-plugins/mocha-specs": "^0.1.0",
     "@tractor/cli": "^1.0.0-alpha.6",
     "@tractor/unit-test": "^1.0.0-alpha.6",
     "babel-eslint": "^8.2.5",
