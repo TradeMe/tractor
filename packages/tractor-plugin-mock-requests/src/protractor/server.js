@@ -33,7 +33,7 @@ export function serve (baseUrl, mockRequestsConfig) {
 
     application.use(proxy(host, {
         proxyReqOptDecorator: createRequestDecorator(host, mockRequestsConfig),
-        userResDecorator
+        userResDecorator: createResponseDecorator(host)
     }));
 
     let { port } = mockRequestsConfig;
@@ -72,30 +72,34 @@ function createRequestDecorator (host, mockRequestsConfig) {
     };
 }
 
-function userResDecorator (proxyResponse, data, request, response) {
-    let result = data;
-    let status = `${proxyResponse.statusCode}`;
-    if (isHTML(proxyResponse) && status.startsWith(2)) {
-        clearResponseCacheHeaders(response);
 
-        let $ = cheerio.load(data.toString());
-        let $head = $('head');
-        if ($head.length) {
-            $head.prepend(`
-                <script>
-                    ${INIT}
-                    ${SHIM_FETCH}
-                    ${SHIM_XHR}
-                    ${ADD_MOCKING}
-                    ${MOCKS.join('\n\n')}
-                </script>
-            `);
-            MOCKS.length = 0;
+function createResponseDecorator (host) {
+    return function (proxyResponse, data, request, response) {
+        let result = data;
+        let status = `${proxyResponse.statusCode}`;
+        if (isHTML(proxyResponse) && status.startsWith(2)) {
+            clearResponseCacheHeaders(response);
 
-            result = $.html();
+            let $ = cheerio.load(data.toString());
+            let $head = $('head');
+            if ($head.length) {
+                $head.prepend(`
+                    <script>
+                        ${INIT}
+                        ${SHIM_FETCH}
+                        ${SHIM_XHR}
+                        ${ADD_MOCKING}
+                        ${MOCKS.join('\n\n')}
+                        window.__tractor__.baseUrl = '${host}';
+                    </script>
+                `);
+                MOCKS.length = 0;
+
+                result = $.html();
+            }
         }
-    }
-    return result;
+        return result;
+    };
 }
 
 function clearRequestCacheHeaders (request) {
