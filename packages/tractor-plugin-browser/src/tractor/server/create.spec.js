@@ -1,5 +1,3 @@
-/* global describe:true, it:true */
-
 // Test setup:
 import { expect } from '@tractor/unit-test';
 
@@ -12,5 +10,5 @@ describe('tractor-plugin-browser - create:', () => {
 
         let plugin = create(browser);
         expect(plugin).to.equal(browser);
-    })
+    });
 });
