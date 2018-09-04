@@ -4,37 +4,44 @@
 // Polyfill:
 require('babel-polyfill');
 
+// Promisify:
+const { promisifyAll } = require('bluebird');
+promisifyAll(require('fs'));
+
 // Dependencies:
-let tractor = require('commander');
-let info = require('../package.json');
+const tractor = require('commander');
+const { version } = require('../package.json');
 
 // Actions:
-let { init } = require('../dist/init');
-let { start } = require('../dist/start');
-let { upgrade } = require('../dist/upgrade');
+const { init, patch, start, upgrade } = require('../dist');
 
-let { getConfig } = require('@tractor/config-loader');
-let { container } = require('@tractor/dependency-injection');
-let { getPlugins } = require('@tractor/plugin-loader');
+const { getConfig } = require('@tractor/config-loader');
+const { container } = require('@tractor/dependency-injection');
+const { getPlugins } = require('@tractor/plugin-loader');
 
-let di = container();
+const di = container();
 
 tractor
-.version(info.version)
+.version(version)
 .option('-c, --config [value]', 'Path to configuration file (defaults to ./tractor.conf.js)')
 
 tractor
 .command('init')
 .description('initialise tractor in a project')
-.action(function () {
+.action(() => {
     initDIConstants(tractor.config);
     return di.call(init);
 });
 
 tractor
-.command('start')
+.command('patch')
+.description('Patch protractor/selenium to resolve issues')
+.action(patch);
+
+tractor
+.command('start', { isDefault: true })
 .description('Start the tractor server')
-.action(function () {
+.action(() => {
     initDIConstants(tractor.config);
     return di.call(start);
 });
@@ -42,7 +49,7 @@ tractor
 tractor
 .command('upgrade')
 .description('Upgrade tractor plugin files')
-.action(function () {
+.action(() => {
     initDIConstants(tractor.config);
     return di.call(upgrade);
 });
@@ -50,7 +57,7 @@ tractor
 tractor.parse(process.argv);
 
 function initDIConstants (configPath) {
-    let config = getConfig(configPath);
-    let plugins = getPlugins();
+    const config = getConfig(configPath);
+    const plugins = getPlugins();
     di.constant({ config, plugins });
 }
