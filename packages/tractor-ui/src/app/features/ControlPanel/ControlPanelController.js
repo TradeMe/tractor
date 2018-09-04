@@ -27,7 +27,6 @@ var ControlPanelController = (function () {
             return plugin.hasUI;
         });
         this.environments = config.environments;
-        this.tags = getTags(config.tags);
 
         var environment;
         var tag;
@@ -49,7 +48,7 @@ var ControlPanelController = (function () {
                 },
                 set: function (newTag) {
                     tag = newTag;
-                    persistentStateService.set('tag', tag.name);
+                    persistentStateService.set('tag', { tag: tag });
                 }
             }
         });
@@ -73,9 +72,13 @@ var ControlPanelController = (function () {
     };
 
     ControlPanelController.prototype.runProtractor = function () {
-        this.runnerService.runProtractor({
-            tag: this.tag.value
-        });
+        let options = {};
+        if (this.tag) {
+            options.params = {
+                tag: this.tag
+            };
+        }
+        this.runnerService.runProtractor(options);
     };
 
     ControlPanelController.prototype.isServerRunning = function () {
@@ -101,25 +104,6 @@ var ControlPanelController = (function () {
     return ControlPanelController;
 })();
 
-function getTags (tags) {
-    var allTags = [{
-        name: 'All tests',
-        value: ''
-    }];
-    tags.forEach(function (tag) {
-        allTags.push(createTagOption(tag));
-        allTags.push(createTagOption('~' + tag));
-    });
-    return allTags;
-}
-
-function createTagOption (tag) {
-    return {
-        name: tag,
-        value: tag
-    };
-}
-
 function getEnvironment () {
     var saved = this.persistentStateService.get('environment');
     var environment = this.environments.find(function (environment) {
@@ -129,11 +113,7 @@ function getEnvironment () {
 }
 
 function getTag () {
-    var saved = this.persistentStateService.get('tag');
-    var tag = this.tags.find(function (tag) {
-        return tag.name === saved;
-    });
-    return tag || _.first(this.tags);
+    return this.persistentStateService.get('tag').tag || '';
 }
 
 ControlPanel.controller('ControlPanelController', ControlPanelController);

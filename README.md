@@ -4,7 +4,6 @@ A UI around [Protractor](http://angular.github.io/protractor/) to help write E2E
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/TradeMe/tractor.svg)](https://greenkeeper.io/)
 [![npm version](https://img.shields.io/npm/v/tractor.svg)](https://www.npmjs.com/package/tractor)
-[![bitHound Overall Score](https://www.bithound.io/github/TradeMe/tractor/badges/score.svg)](https://www.bithound.io/github/TradeMe/tractor)
 [![Code Climate](https://codeclimate.com/github/TradeMe/tractor/badges/gpa.svg)](https://codeclimate.com/github/TradeMe/tractor)
 [![Test Coverage](https://codeclimate.com/github/TradeMe/tractor/coverage.svg)](https://codeclimate.com/github/TradeMe/tractor/coverage)
 [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://github.com/TradeMe/tractor)
@@ -44,7 +43,6 @@ If you want to change the port that `tractor` runs at, or the file where it stor
 module.exports = {
     directory: './path/to/test/directory', // defaults to root/tractor
     port: number,                          // defaults to 4000
-    environments: Array<string>,           // a list of URLs for the environments to run the tests in
-    tags: Array<string>                    // a list of tags for Cucumber
+    environments: Array<string>            // a list of URLs for the environments to run the tests in
 };
 ```

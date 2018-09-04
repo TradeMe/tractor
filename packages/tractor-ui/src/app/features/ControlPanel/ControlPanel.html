@@ -14,13 +14,13 @@
                 <tractor-submit
                     action="run protractor">
                 </tractor-submit>
-                <tractor-select
+                <tractor-text-input
                     form="controlPanelOptions"
                     label="tag"
                     model="controlPanel"
-                    options="controlPanel.tags"
-                    as="name">
-                </tractor-select>
+                    example="#tag"
+                    required="false">
+                </tractor-text-input>
             </form>
             <div class="control-panel__buttons">
                 <tractor-action
