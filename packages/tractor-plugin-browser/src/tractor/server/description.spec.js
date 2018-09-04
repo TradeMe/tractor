@@ -34,4 +34,19 @@ describe('@tractor-plugins/browser - description:', () => {
         let pause = description.actions.find(action => action.name === 'pause');
         expect(pause).to.not.be.undefined();
     });
+
+    it('should have the `sleep` action', () => {
+        let sleep = description.actions.find(action => action.name === 'sleep');
+        expect(sleep).to.not.be.undefined();
+    });
+
+    it('should have the `send Delete key` action', () => {
+        let sendDeleteKey = description.actions.find(action => action.name === 'send Delete key');
+        expect(sendDeleteKey).to.not.be.undefined();
+    });
+
+    it('should have the `send Enter key` action', () => {
+        let sendEnterKey = description.actions.find(action => action.name === 'send Enter key');
+        expect(sendEnterKey).to.not.be.undefined();
+    });
 });
