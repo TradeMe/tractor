@@ -4,7 +4,7 @@ import { expect } from '@tractor/unit-test';
 // Under test:
 import { description } from './description';
 
-describe('tractor-plugin-browser - description:', () => {
+describe('@tractor-plugins/browser - description:', () => {
     it('should have the `get` action', () => {
         let get = description.actions.find(action => action.name === 'get');
         expect(get).to.not.be.undefined();
