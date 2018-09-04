@@ -1,5 +1,5 @@
 // Dependencies:
-import { addActionHelpers } from './action-helpers';
+import { addKeyboardHelpers } from './helpers/keyboard-helpers';
 
 export function plugin (protractorConfig) {
     protractorConfig.plugins = protractorConfig.plugins || [];
@@ -7,7 +7,8 @@ export function plugin (protractorConfig) {
     protractorConfig.plugins.push({
         inline: {
             onPrepare () {
-                addActionHelpers();
+                const { browser, Key } = global.protractor;
+                addKeyboardHelpers(browser, Key);
             }
         }
     });
