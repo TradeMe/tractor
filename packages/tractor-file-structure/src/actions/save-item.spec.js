@@ -1,5 +1,3 @@
-/* global describe:true, it:true, xit:trie */
-
 // Test setup:
 import { expect, sinon } from '@tractor/unit-test';
 

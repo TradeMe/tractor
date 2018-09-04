@@ -1,5 +1,3 @@
-/* global describe:true, it:true, xit:true */
-
 // Constants:
 const MAGIC_TIMEOUT_NUMBER = 10;
 
