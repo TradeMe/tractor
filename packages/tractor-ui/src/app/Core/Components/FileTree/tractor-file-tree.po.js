@@ -2,7 +2,7 @@
 module.exports = function () {
     var TractorFileTreeItem = require('./tractor-file-tree item.po.js');
     var TractorFileTree = function TractorFileTree(parent) {
-        var findAll = parent ? parent.all.bind(parent) : element.all;
+        var findAll = parent ? parent.all.bind(parent) : element.all.bind(element);
         this.pageObjectFile = function (groupSelector) {
             return new TractorFileTreeItem(findAll(by.css('.file-tree__file-list-item--file')).getFromGroup(groupSelector));
         };

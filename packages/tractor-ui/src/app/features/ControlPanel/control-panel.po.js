@@ -2,7 +2,7 @@
 module.exports = function () {
     var ControlPanel = function ControlPanel(parent) {
         var find = parent ? parent.element.bind(parent) : element;
-        var findAll = parent ? parent.all.bind(parent) : element.all;
+        var findAll = parent ? parent.all.bind(parent) : element.all.bind(element);
         this.environmentSelect = find(by.css('.control-panel__run-options tractor-select[label="environment"] select'));
         this.runProtractorButton = find(by.css('.control-panel__run-options tractor-submit[action="run protractor"] button'));
         this.tagSelect = find(by.css('.control-panel__run-options tractor-select[label="tag"] select'));

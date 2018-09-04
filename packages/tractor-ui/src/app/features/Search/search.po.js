@@ -3,7 +3,7 @@ module.exports = function () {
     var SearchResult = require('./search result.po.js');
     var Search = function Search(parent) {
         var find = parent ? parent.element.bind(parent) : element;
-        var findAll = parent ? parent.all.bind(parent) : element.all;
+        var findAll = parent ? parent.all.bind(parent) : element.all.bind(element);
         this.searchInput = find(by.css('tractor-search form[name="search"] input'));
         this.searchResults = function (groupSelector) {
             return new SearchResult(findAll(by.css('tractor-search ul li')).getFromGroup(groupSelector));
