@@ -30,7 +30,6 @@
     "build": "src/**/*.js"
   },
   "dependencies": {
-    "bluebird": "^3.5.1",
     "body-parser": "^1.18.2",
     "cors": "^2.8.1",
     "express": "^4.16.2",
@@ -41,12 +40,12 @@
     "porter-stemmer": "^0.9.1",
     "socket.io": "^2.0.4"
   },
+  "peerDependencies": {
+    "@tractor/core": "^1.0.0-alpha.15"
+  },
   "devDependencies": {
     "@tractor/error-handler": "^1.0.0-alpha.15",
     "@tractor/logger": "^1.0.0-alpha.15",
     "@tractor/ui": "^1.0.0-alpha.15"
-  },
-  "peerDependencies": {
-    "@tractor/core": "^1.0.0-alpha.11"
   }
 }

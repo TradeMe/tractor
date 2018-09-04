@@ -32,10 +32,10 @@
   "dependencies": {
     "lodash.defaults": "^4.2.0"
   },
+  "peerDependencies": {
+    "@tractor/core": "^1.0.0-alpha.15"
+  },
   "devDependencies": {
     "@tractor/logger": "^1.0.0-alpha.15"
-  },
-  "peerDependencies": {
-    "@tractor/core": "^1.0.0-alpha.11"
   }
 }

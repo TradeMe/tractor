@@ -34,12 +34,12 @@
     "esprima": "^4.0.0",
     "esquery": "^1.0.0"
   },
+  "peerDependencies": {
+    "@tractor/core": "^1.0.0-alpha.15"
+  },
   "devDependencies": {
     "@tractor/error-handler": "^1.0.0-alpha.15",
     "@tractor/file-structure": "^1.0.0-alpha.15",
     "@tractor/logger": "^1.0.0-alpha.15"
-  },
-  "peerDependencies": {
-    "@tractor/core": "^1.0.0-alpha.11"
   }
 }

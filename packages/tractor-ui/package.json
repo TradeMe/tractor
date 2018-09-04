@@ -25,6 +25,9 @@
   "watch": {
     "build": "src/**/*.js"
   },
+  "peerDependencies": {
+    "@tractor/core": "^1.0.0-alpha.15"
+  },
   "devDependencies": {
     "@uirouter/angularjs": "1.0.3",
     "angular": "1.6.6",
@@ -60,9 +63,6 @@
     "vinyl-buffer": "1.0.0",
     "vinyl-source-stream": "1.1.0",
     "xterm": "^2.9.2"
-  },
-  "peerDependencies": {
-    "@tractor/core": "^1.0.0-alpha.11"
   },
   "browserify": {},
   "browser": {
