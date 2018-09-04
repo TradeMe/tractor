@@ -18,32 +18,26 @@ export function searchHandler () {
     let search = null;
     let indexFiles = debounce(() => search = createSearchIndex(FILES), INDEX_DEBOUNCE_TIME);
 
-    monkeypatchFile('read', function (original, ...args) {
-        return original.apply(this, args)
-        .then(result => {
-            FILES.push(this);
-            indexFiles();
-            return result;
-        });
+    monkeypatchFile('read', async function (original, ...args) {
+        const result = await original.apply(this, args);
+        FILES.push(this);
+        indexFiles();
+        return result;
     });
 
-    monkeypatchFile('delete', function (original, ...args) {
-        return original.apply(this, args)
-        .then(result => {
-            if (FILES.includes(this)) {
-                FILES.splice(FILES.indexOf(this), 1);
-            }
-            indexFiles();
-            return result;
-        });
+    monkeypatchFile('delete', async function (original, ...args) {
+        const result = await original.apply(this, args);
+        if (FILES.includes(this)) {
+            FILES.splice(FILES.indexOf(this), 1);
+        }
+        indexFiles();
+        return result;
     });
 
-    monkeypatchFile('save', function (original, ...args) {
-        return original.apply(this, args)
-        .then(result => {
-            indexFiles();
-            return result;
-        });
+    monkeypatchFile('save', async function (original, ...args) {
+        const result = await original.apply(this, args);
+        indexFiles();
+        return result;
     });
 
     return function (request, response) {

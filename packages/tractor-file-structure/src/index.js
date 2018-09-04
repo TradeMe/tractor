@@ -1,6 +1,6 @@
 // Promisify:
-import Promise from 'bluebird';
-Promise.promisifyAll(require('graceful-fs'));
+import { promisifyAll } from 'bluebird';
+promisifyAll(require('graceful-fs'));
 
 export * from './structure/Directory';
 export * from './structure/File';

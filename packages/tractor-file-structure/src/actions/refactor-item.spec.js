@@ -17,7 +17,7 @@ import * as tractorErrorHandler from '@tractor/error-handler';
 import { createRefactorItemHandler } from './refactor-item';
 
 describe('@tractor/file-structure - actions/refactor-item:', () => {
-    it('should refactor a file', () => {
+    it('should refactor a file', async () => {
         let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
@@ -32,13 +32,11 @@ describe('@tractor/file-structure - actions/refactor-item:', () => {
         sinon.stub(File.prototype, 'refactor').resolves();
 
         let refactorItem = createRefactorItemHandler(fileStructure);
-        return refactorItem(request, response)
-        .then(() => {
-            expect(File.prototype.refactor).to.have.been.called();
-        })
-        .finally(() => {
-            File.prototype.refactor.restore();
-        });
+        await refactorItem(request, response);
+
+        expect(File.prototype.refactor).to.have.been.called();
+
+        File.prototype.refactor.restore();
     });
 
     it(`should throw an error if it can't find the file to refactor`, () => {
@@ -61,7 +59,7 @@ describe('@tractor/file-structure - actions/refactor-item:', () => {
         utilities.respondItemNotFound.restore();
     });
 
-    it(`should respond with OK`, () => {
+    it(`should respond with OK`, async () => {
         let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
@@ -77,16 +75,14 @@ describe('@tractor/file-structure - actions/refactor-item:', () => {
         sinon.stub(response, 'sendStatus');
 
         let refactorItem = createRefactorItemHandler(fileStructure);
-        return refactorItem(request, response)
-        .then(() => {
-            expect(response.sendStatus).to.have.been.calledWith(200);
-        })
-        .finally(() => {
-            File.prototype.refactor.restore();
-        });
+        await refactorItem(request, response);
+
+        expect(response.sendStatus).to.have.been.calledWith(200);
+
+        File.prototype.refactor.restore();
     });
 
-    xit('should handle known TractorErrors', () => {
+    it.skip('should handle known TractorErrors', async () => {
         let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
         let request = {
@@ -102,18 +98,16 @@ describe('@tractor/file-structure - actions/refactor-item:', () => {
         sinon.stub(tractorErrorHandler, 'handleError');
 
         let refactorItem = createRefactorItemHandler(fileStructure);
-        return refactorItem(request, response)
-        .then(() => {
-            expect(File.prototype.refactor).to.have.been.called();
-            expect(tractorErrorHandler.handleError).to.have.been.calledWith(response, error);
-        })
-        .finally(() => {
-            File.prototype.refactor.restore();
-            tractorErrorHandler.handleError.restore();
-        });
+        await refactorItem(request, response);
+
+        expect(File.prototype.refactor).to.have.been.called();
+        expect(tractorErrorHandler.handleError).to.have.been.calledWith(response, error);
+
+        File.prototype.refactor.restore();
+        tractorErrorHandler.handleError.restore();
     });
 
-    xit('should handle unknown errors', () => {
+    it.skip('should handle unknown errors', async () => {
         let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
         let request = {
@@ -128,13 +122,11 @@ describe('@tractor/file-structure - actions/refactor-item:', () => {
         sinon.stub(tractorErrorHandler, 'handleError');
 
         let refactorItem = createRefactorItemHandler(fileStructure);
-        return refactorItem(request, response)
-        .then(() => {
-            expect(tractorErrorHandler.handleError).to.have.been.calledWith(response, new TractorError(`Could not refactor "${path.join(path.sep, 'file-structure', 'directory', 'file.ext')}"`));
-        })
-        .finally(() => {
-            File.prototype.refactor.restore();
-            tractorErrorHandler.handleError.restore();
-        });
+        await refactorItem(request, response);
+
+        expect(tractorErrorHandler.handleError).to.have.been.calledWith(response, new TractorError(`Could not refactor "${path.join(path.sep, 'file-structure', 'directory', 'file.ext')}"`));
+
+        File.prototype.refactor.restore();
+        tractorErrorHandler.handleError.restore();
     });
 });

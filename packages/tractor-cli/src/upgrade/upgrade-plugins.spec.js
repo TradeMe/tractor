@@ -8,7 +8,7 @@ import * as tractorLogger from '@tractor/logger';
 import { upgradePlugins } from './upgrade-plugins';
 
 describe('tractor - upgrade-plugins:', () => {
-    it('should upgrade all the installed plugins', () => {
+    it('should upgrade all the installed plugins', async () => {
         let di = ineeda({
             call: () => Promise.resolve()
         });
@@ -19,16 +19,15 @@ describe('tractor - upgrade-plugins:', () => {
 
         sinon.stub(tractorLogger, 'info');
 
-        return upgradePlugins(di, plugins)
-        .then(() => {
+        try {
+            await upgradePlugins(di, plugins);
             expect(di.call).to.have.been.calledWith(plugin.upgrade);
-        })
-        .finally(() => {
+        } finally {
             tractorLogger.info.restore();
-        });
+        }
     });
 
-    it('should tell the user what it is doing', () => {
+    it('should tell the user what it is doing', async () => {
         let di = ineeda({
             call: () => Promise.resolve()
         });
@@ -40,12 +39,11 @@ describe('tractor - upgrade-plugins:', () => {
 
         sinon.stub(tractorLogger, 'info');
 
-        return upgradePlugins(di, plugins)
-        .then(() => {
+        try {
+            await upgradePlugins(di, plugins);
             expect(tractorLogger.info).to.have.been.calledWith('Upgrading tractor-plugin-test-plugin files...');
-        })
-        .finally(() => {
+        } finally {
             tractorLogger.info.restore();
-        });
+        }
     });
 });

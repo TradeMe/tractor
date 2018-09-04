@@ -22,35 +22,46 @@ import { JavaScriptFileRefactorer } from './javascript-file-refactorer';
 import { TractorError } from '@tractor/error-handler';
 
 export class JavaScriptFile extends File {
-    read () {
+    async meta () {
+        const metaToken = await getMetaToken.call(this);
+        if (!metaToken || !metaToken.value) {
+            return null;
+        }
+        return JSON.parse(metaToken.value);
+    }
+
+    async read () {
         // Hack to fix coverage bug: https://github.com/gotwarlost/istanbul/issues/690
         /* istanbul ignore next */
-        let read = super.read();
+        const read = super.read();
 
-        return read
-        .then(content => setAST.call(this, content))
-        .then(() => getReferences.call(this))
-        .then(() => this.content)
-        .catch(() => {
+        try {
+            const content = await read;
+            setAST.call(this, content);
+            getReferences.call(this);
+            return this.content;    
+        } catch {
             throw new TractorError(`Parsing "${this.path}" failed.`, REQUEST_ERROR);
-        });
+        }
     }
 
-    refactor (type, data) {
+    async refactor (type, data) {
         // Hack to fix coverage bug: https://github.com/gotwarlost/istanbul/issues/690
         /* istanbul ignore next */
-        let refactor = super.refactor(type, data);
+        const refactor = super.refactor(type, data);
 
-        return refactor.then(() => {
-            let change = JavaScriptFileRefactorer[type];
-            return change ? change(this, data) : null;
-        })
-        .then(() => this.save(this.ast));
+        await refactor;
+        const change = JavaScriptFileRefactorer[type];
+        if (!change) {
+            return;
+        }
+        await change(this, data);
+        await this.save(this.ast);
     }
 
-    save (javascript) {
+    async save (javascript) {
         if (!isString(javascript) && !Buffer.isBuffer(javascript)) {
-            let ast = javascript;
+            const ast = javascript;
             ast.leadingComments = ast.comments;
             javascript = escodegen.generate(rebuildRegExps(ast), {
                 comment: true
@@ -59,15 +70,16 @@ export class JavaScriptFile extends File {
 
         // Hack to fix coverage bug: https://github.com/gotwarlost/istanbul/issues/690
         /* istanbul ignore next */
-        let save = super.save(javascript);
+        const save = super.save(javascript);
 
-        return save
-        .then(content => setAST.call(this, content))
-        .then(() => getReferences.call(this))
-        .then(() => this.content)
-        .catch(() => {
+        try {
+            const content = await save;
+            setAST.call(this, content);
+            getReferences.call(this);
+            return this.content;
+        } catch  {
             throw new TractorError(`Saving "${this.path}" failed.`, REQUEST_ERROR);
-        });
+        }
     }
 
     serialise () {

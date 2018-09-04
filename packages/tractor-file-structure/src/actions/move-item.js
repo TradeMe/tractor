@@ -5,7 +5,7 @@ import { getCopyPath, getItemPath, respondOkay, respondItemNotFound } from './ut
 import { TractorError, handleError } from '@tractor/error-handler';
 
 export function createMoveItemHandler (fileStructure) {
-    return function moveItem (request, response) {
+    return async function moveItem (request, response) {
         let { copy, newUrl } = request.body;
         let itemUrl = request.params[0];
         let itemPath = getItemPath(fileStructure, itemUrl);
@@ -27,9 +27,11 @@ export function createMoveItemHandler (fileStructure) {
             newPath = getItemPath(fileStructure, newUrl);
         }
 
-        return toMove.move({ newPath }, { isCopy: copy })
-        .then(() => respondOkay(response))
-        .catch(TractorError.isTractorError, error => handleError(response, error))
-        .catch(() => handleError(response, new TractorError(`Could not move "${itemPath}"`)));
-    }
+        try {
+            await toMove.move({ newPath }, { isCopy: copy });
+            respondOkay(response);
+        } catch (error) {
+            handleError(response, TractorError.isTractorError(error) ? error : new TractorError(`Could not move "${itemPath}"`));
+        }
+    };
 }

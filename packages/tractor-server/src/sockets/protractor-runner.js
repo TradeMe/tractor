@@ -1,5 +1,4 @@
 // Utilities:
-import Promise from 'bluebird';
 import childProcess from 'child_process';
 import path from 'path';
 import { error, info } from '@tractor/logger';
@@ -10,44 +9,38 @@ const PROTRACTOR_PATH = path.join('node_modules', 'protractor', 'bin', 'protract
 // Errors:
 import { TractorError } from '@tractor/error-handler';
 
-export function run (config, socket, runOptions) {
+export async function run (config, socket, runOptions) {
     if (module.exports.running) {
         info('Protractor already running.');
-        return Promise.reject(new TractorError('Protractor already running.'));
+        throw new TractorError('Protractor already running.');
     } else {
         module.exports.running = true;
 
-        return Promise.resolve(config.beforeProtractor())
-        .then(() => {
+        try {
+            await config.beforeProtractor();
             info('Starting Protractor...');
-            return startProtractor(config, socket, runOptions);
-        })
-        .catch(e => {
+            await startProtractor(config, socket, runOptions);    
+        } catch (e) {
             socket.lastMessage = socket.lastMessage || '';
             let [lastMessage] = socket.lastMessage.split(/\r\n|\n/);
             error(`${e.message}${lastMessage}`);
-        })
-        .finally(() => {
+        } finally {
             socket.disconnect();
-            return Promise.resolve(config.afterProtractor())
-            .then(() => {
-                module.exports.running = false;
-                info('Protractor finished.');
-            });
-        });
+            await config.afterProtractor();
+            module.exports.running = false;
+            info('Protractor finished.');
+        }
     }
 }
 
-function startProtractor (config, socket, options) {
     let protractorConfigPath = path.join(config.directory, 'protractor.conf.js');
     let protractorArgs = [PROTRACTOR_PATH, protractorConfigPath];
 
     let { baseUrl, debug, feature, tag } = options;
 
+async function startProtractor (config, socket, options) {
     if (!baseUrl) {
-        return Promise.reject(new TractorError('`baseUrl` must be defined.'));
-    } else {
-        protractorArgs = protractorArgs.concat(['--baseUrl', baseUrl]);
+        throw new TractorError('`baseUrl` must be defined.');
     }
 
     if (feature) {

@@ -17,7 +17,7 @@ import * as tractorErrorHandler from '@tractor/error-handler';
 import { createSaveItemHandler } from './save-item';
 
 describe('@tractor/file-structure - actions/save-item:', () => {
-    it('should save a file', () => {
+    it('should save a file', async () => {
         class TestFile extends File {
             save () { }
         }
@@ -39,16 +39,14 @@ describe('@tractor/file-structure - actions/save-item:', () => {
         sinon.stub(TestFile.prototype, 'save').resolves();
 
         let saveItem = createSaveItemHandler(fileStructure);
-        return saveItem(request, response)
-        .then(() => {
-            expect(TestFile.prototype.save).to.have.been.calledWith('data');
-        })
-        .finally(() => {
-            Directory.prototype.save.restore();
-        });
+        await saveItem(request, response);
+
+        expect(TestFile.prototype.save).to.have.been.calledWith('data');
+
+        Directory.prototype.save.restore();
     });
 
-    it('should save a new file with multiple extensions', () => {
+    it('should save a new file with multiple extensions', async () => {
         class SpecialTestFile extends File {
             save () { }
         }
@@ -69,13 +67,12 @@ describe('@tractor/file-structure - actions/save-item:', () => {
         sinon.stub(SpecialTestFile.prototype, 'save').resolves();
 
         let saveItem = createSaveItemHandler(fileStructure);
-        return saveItem(request, response)
-        .then(() => {
-            expect(SpecialTestFile.prototype.save).to.have.been.calledWith('data');
-        });
+        await saveItem(request, response);
+
+        expect(SpecialTestFile.prototype.save).to.have.been.calledWith('data');
     });
 
-    it('should fall back to the default File', () => {
+    it('should fall back to the default File', async () => {
         let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let request = {
             body: {
@@ -90,16 +87,14 @@ describe('@tractor/file-structure - actions/save-item:', () => {
         sinon.stub(File.prototype, 'save').resolves();
 
         let saveItem = createSaveItemHandler(fileStructure);
-        return saveItem(request, response)
-        .then(() => {
-            expect(File.prototype.save).to.have.been.calledWith('data');
-        })
-        .finally(() => {
-            File.prototype.save.restore();
-        });
+        await saveItem(request, response);
+
+        expect(File.prototype.save).to.have.been.calledWith('data');
+
+        File.prototype.save.restore();
     });
 
-    it('should save a copy of a file if it already exists', () => {
+    it('should save a copy of a file if it already exists', async () => {
         class TestFile extends File {
             save () { }
         }
@@ -122,14 +117,13 @@ describe('@tractor/file-structure - actions/save-item:', () => {
         sinon.stub(TestFile.prototype, 'save').resolves();
 
         let saveItem = createSaveItemHandler(fileStructure);
-        return saveItem(request, response)
-        .then(() => {
-            expect(file.save).to.not.have.been.called();
-            expect(TestFile.prototype.save).to.have.been.calledWith('data');
-        });
+        await saveItem(request, response);
+
+        expect(file.save).to.not.have.been.called();
+        expect(TestFile.prototype.save).to.have.been.calledWith('data');
     });
 
-    it('should overwrite an existing file', () => {
+    it('should overwrite an existing file', async () => {
         class TestFile extends File {
             save () { }
         }
@@ -152,13 +146,12 @@ describe('@tractor/file-structure - actions/save-item:', () => {
         sinon.stub(TestFile.prototype, 'save').resolves();
 
         let saveItem = createSaveItemHandler(fileStructure);
-        return saveItem(request, response)
-        .then(() => {
-            expect(TestFile.prototype.save).to.have.been.calledWith('data');
-        });
+        await saveItem(request, response);
+
+        expect(TestFile.prototype.save).to.have.been.calledWith('data');
     });
 
-    it('should save a directory', () => {
+    it('should save a directory', async () => {
         let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let request = {
             body: { },
@@ -171,16 +164,14 @@ describe('@tractor/file-structure - actions/save-item:', () => {
         sinon.stub(Directory.prototype, 'save').resolves();
 
         let saveItem = createSaveItemHandler(fileStructure);
-        return saveItem(request, response)
-        .then(() => {
-            expect(Directory.prototype.save).to.have.been.called();
-        })
-        .finally(() => {
-            Directory.prototype.save.restore();
-        });
+        await saveItem(request, response);
+
+        expect(Directory.prototype.save).to.have.been.called();
+
+        Directory.prototype.save.restore();
     });
 
-    it('should save a copy of a directory if it already exists', () => {
+    it('should save a copy of a directory if it already exists', async () => {
         let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
         let request = {
@@ -195,17 +186,15 @@ describe('@tractor/file-structure - actions/save-item:', () => {
         sinon.stub(Directory.prototype, 'save').resolves();
 
         let saveItem = createSaveItemHandler(fileStructure);
-        return saveItem(request, response)
-        .then(() => {
-            expect(directory.save).to.not.have.been.called();
-            expect(Directory.prototype.save).to.have.been.called();
-        })
-        .finally(() => {
-            Directory.prototype.save.restore();
-        });
+        await saveItem(request, response);
+
+        expect(directory.save).to.not.have.been.called();
+        expect(Directory.prototype.save).to.have.been.called();
+
+        Directory.prototype.save.restore();
     });
 
-    it('should overwrite an existing directory', () => {
+    it('should overwrite an existing directory', async () => {
         let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
         let request = {
@@ -221,16 +210,14 @@ describe('@tractor/file-structure - actions/save-item:', () => {
         sinon.stub(Directory.prototype, 'save').resolves();
 
         let saveItem = createSaveItemHandler(fileStructure);
-        return saveItem(request, response)
-        .then(() => {
-            expect(Directory.prototype.save).to.have.been.called();
-        })
-        .finally(() => {
-            Directory.prototype.save.restore();
-        });
+        await saveItem(request, response);
+
+        expect(Directory.prototype.save).to.have.been.called();
+
+        Directory.prototype.save.restore();
     });
 
-    xit('should handle known TractorErrors', () => {
+    it.skip('should handle known TractorErrors', async () => {
         let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let error = new TractorError();
         let request = {
@@ -247,17 +234,15 @@ describe('@tractor/file-structure - actions/save-item:', () => {
         sinon.stub(tractorErrorHandler, 'handleError');
 
         let saveItem = createSaveItemHandler(fileStructure);
-        return saveItem(request, response)
-        .then(() => {
-            expect(tractorErrorHandler.handleError).to.have.been.calledWith(response, error);
-        })
-        .finally(() => {
-            File.prototype.save.restore();
-            tractorErrorHandler.handleError.restore();
-        });
+        await saveItem(request, response);
+
+        expect(tractorErrorHandler.handleError).to.have.been.calledWith(response, error);
+
+        File.prototype.save.restore();
+        tractorErrorHandler.handleError.restore();
     });
 
-    xit('should handle unknown errors', () => {
+    it.skip('should handle unknown errors', async () => {
         let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let request = {
             body: {
@@ -273,13 +258,11 @@ describe('@tractor/file-structure - actions/save-item:', () => {
         sinon.stub(tractorErrorHandler, 'handleError');
 
         let saveItem = createSaveItemHandler(fileStructure);
-        return saveItem(request, response)
-        .then(() => {
-            expect(tractorErrorHandler.handleError).to.have.been.calledWith(response, new TractorError(`Could not save "${path.join(path.sep, 'file-structure', 'directory', 'file.ext')}"`));
-        })
-        .finally(() => {
-            File.prototype.save.restore();
-            tractorErrorHandler.handleError.restore();
-        });
+        await saveItem(request, response);
+
+        expect(tractorErrorHandler.handleError).to.have.been.calledWith(response, new TractorError(`Could not save "${path.join(path.sep, 'file-structure', 'directory', 'file.ext')}"`));
+
+        File.prototype.save.restore();
+        tractorErrorHandler.handleError.restore();
     });
 });

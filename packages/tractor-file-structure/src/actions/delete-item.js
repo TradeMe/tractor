@@ -6,7 +6,7 @@ import { getItemPath, respondOkay, respondItemNotFound } from './utilities';
 import { TractorError, handleError } from '@tractor/error-handler';
 
 export function createDeleteItemHandler (fileStructure) {
-    return function deleteItem (request, response) {
+    return async function deleteItem (request, response) {
         let { cleanup, rimraf } = request.query;
         let itemUrl = request.params[0];
         let itemPath = getItemPath(fileStructure, itemUrl);
@@ -25,9 +25,11 @@ export function createDeleteItemHandler (fileStructure) {
             operation = toDelete.delete();
         }
 
-        return operation
-        .then(() => respondOkay(response))
-        .catch(TractorError.isTractorError, error => handleError(response, error))
-        .catch(() => handleError(response, new TractorError(`Could not delete "${itemPath}"`)));
-    }
+        try {
+            await operation;
+            respondOkay(response);
+        } catch (error) {
+            handleError(response, TractorError.isTractorError(error) ? error : new TractorError(`Could not delete "${itemPath}"`));
+        }
+    };
 }

@@ -1,5 +1,4 @@
 // Dependencies:
-import Promise from 'bluebird';
 import fs from 'graceful-fs';
 import path from 'path';
 import { File } from './File';
@@ -56,30 +55,30 @@ export class Directory {
         this.parent.addItem(item);
     }
 
-    cleanup () {
-        return this.delete()
-        .then(() => {
+    async cleanup () {
+        try {
+            await this.delete();
             if (this.directory) {
                 return this.directory.cleanup();
             }
-            return Promise.resolve();
-        })
-        .catch(e => {
-            if (e instanceof TractorError) {
+        } catch (error) {
+            if (TractorError.isTractorError(error)) {
                 return;
             }
-            throw e;
-        });
+            throw error;
+        }
     }
 
-    delete () {
+    async delete () {
         if (!this.directories.length && !this.files.length) {
-            return fs.rmdirAsync(this.path)
-            .then(() => {
+            try {
+                await fs.rmdirAsync(this.path);
                 this.parent.removeItem(this);
-            });
+            } catch {
+                throw new TractorError(`Cannot delete "${this.path}". Something went wrong.`);
+            }
         } else {
-            return Promise.reject(new TractorError(`Cannot delete "${this.path}" because it is not empty`));
+            throw new TractorError(`Cannot delete "${this.path}" because it is not empty`);
         }
     }
 
@@ -90,45 +89,36 @@ export class Directory {
         this.allFiles = [];
     }
 
-    move (update, options = { }) {
+    async move (update, options = { }) {
         let { isCopy } = options;
         update.oldPath = this.path;
 
         let newDirectory = new this.constructor(update.newPath, this.fileStructure);
-        return newDirectory.save()
-        .then(() => {
-            let items = this.directories.concat(this.files);
-            return Promise.map(items, item => {
-                let newPath = item.path.replace(update.oldPath, update.newPath);
-                return item.move({ newPath }, options);
-            });
-        })
-        .then(() => isCopy ? null : this.delete())
-        .then(() => newDirectory);
+        await newDirectory.save();
+
+        let items = this.directories.concat(this.files);
+        await Promise.all(items.map(item => {
+            let newPath = item.path.replace(update.oldPath, update.newPath);
+            return item.move({ newPath }, options);
+        }));
+        await isCopy ? null : this.delete();
+        return newDirectory;
     }
 
-    read () {
+    async read () {
         if (this.reading) {
             return this.reading;
         }
-        this.reading = fs.readdirAsync(this.path)
-        .then(itemPaths => readItems.call(this, itemPaths));
-        this.reading.then(() => {
-            this.reading = null;
-        });
-        return this.reading;
-    }
-
-    refresh () {
-        if (this.refreshing) {
-            return this.refreshing;
-        }
         this.init();
-        this.refreshing = this.read();
-        this.refreshing.then(() => {
-            this.refreshing = null;
-        });
-        return this.refreshing;
+        try {
+            this.reading = fs.readdirAsync(this.path);
+            let itemPaths = await this.reading;
+            await readItems.call(this, itemPaths);
+        } catch {
+            throw new TractorError(`Cannot read "${this.path}". Something went wrong.`);
+        } finally {
+            this.reading = null;
+        }
     }
 
     removeItem (item) {
@@ -146,25 +136,28 @@ export class Directory {
         this.parent.removeItem(item);
     }
 
-    rimraf () {
-        return Promise.map(this.directories, directory => directory.rimraf())
-        .then(() => Promise.map(this.files, file => file.delete()))
-        .then(() => fs.rmdirAsync(this.path))
-        .then(() => {
-            this.parent.removeItem(this);
-        });
+    async rimraf () {
+        await Promise.all(this.directories.map(directory => directory.rimraf()));
+        await Promise.all(this.files.map(file => file.delete()));
+        await fs.rmdirAsync(this.path);
+        this.parent.removeItem(this);
     }
 
-    save () {
-        return fs.statAsync(this.path)
-        .then(() => Promise.resolve())
-        .catch(() => {
+    async save () {
+        try {
+            await fs.statAsync(this.path);
+        } catch (error) {
             if (this.directory) {
-                return this.directory.save()
-                .then(() => fs.mkdirAsync(this.path));
+                await this.directory.save();
+                try {
+                    await fs.mkdirAsync(this.path);
+                } catch (e) {
+                    if (e.code != ALREADY_EXISTS) {
+                        throw new TractorError(`Cannot save "${this.path}". Something went wrong.`);
+                    }
+                }
             }
-            return Promise.resolve();
-        });
+        }
     }
 
     serialise () {
@@ -179,9 +172,9 @@ export class Directory {
     }
 }
 
-function getItemInfo (itemPath) {
-    return fs.statAsync(itemPath)
-    .then(stat => handleItem.call(this, itemPath, stat));
+async function getItemInfo (itemPath) {
+    let stat = await fs.statAsync(itemPath);
+    return handleItem.call(this, itemPath, stat);
 }
 
 function handleItem (itemPath, stat) {
@@ -200,9 +193,12 @@ function handleItem (itemPath, stat) {
 }
 
 function readItems (itemPaths) {
-    return Promise.map(itemPaths, itemPath => {
+    return Promise.all(itemPaths.filter(itemPath => {
+        const [, fullExtension] = itemPath.match(EXTENSION_MATCH_REGEX);
+        return !fullExtension || !!this.fileStructure.fileTypes[fullExtension];
+    }).map(itemPath => {
         return getItemInfo.call(this, path.join(this.path, itemPath));
-    });
+    }));
 }
 
 function sortNames (a, b) {

@@ -91,18 +91,15 @@ describe('@tractor/file-structure - FileStructure:', () => {
     });
 
     describe('FileStructure.read', () => {
-        it('should read the entire file structure', () => {
+        it('should read the entire file structure', async () => {
             sinon.stub(Directory.prototype, 'read').resolves();
 
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
-            return fileStructure.read()
-            .then(() => {
-                expect(Directory.prototype.read).to.have.been.called();
-            })
-            .finally(() => {
-                Directory.prototype.read.restore();
-            });
+            await fileStructure.read();
+            expect(Directory.prototype.read).to.have.been.called();
+
+            Directory.prototype.read.restore();
         });
     });
 

@@ -1,5 +1,4 @@
 // Dependencies:
-import Promise from 'bluebird';
 import fs from 'graceful-fs';
 import path from 'path';
 import { Directory } from './Directory';
@@ -45,9 +44,9 @@ export class File {
         this.fileStructure.referenceManager.addReference(this, reference);
     }
 
-    cleanup () {
-        return this.delete()
-        .then(() => this.directory.cleanup());
+    async cleanup () {
+        await this.delete();
+        return this.directory.cleanup();
     }
 
     clearReferences () {
@@ -55,21 +54,23 @@ export class File {
         this.fileStructure.referenceManager.clearReferencedBy(this.path);
     }
 
-    delete (options = { }) {
+    async delete (options = { }) {
         let { isMove } = options;
 
         if (!isMove && this.referencedBy.length) {
-            return Promise.reject(new TractorError(`Cannot delete ${this.path} as it is referenced by another file.`));
+            throw new TractorError(`Cannot delete ${this.path} as it is referenced by another file.`);
         }
 
-        return fs.unlinkAsync(this.path)
-        .then(() => {
+        try {
+            await fs.unlinkAsync(this.path);
             this.directory.removeItem(this);
-            this.fileStructure.referenceManager.clearReferences(this.path);
-        });
+            this.fileStructure.referenceManager.clearReferences(this.path);    
+        } catch {
+            throw new TractorError(`Cannot delete ${this.path}. Something went wrong.`);
+        }
     }
 
-    move (update, options = { }) {
+    async move (update, options = { }) {
         let { isCopy } = options;
         update.oldPath = this.path;
 
@@ -82,17 +83,19 @@ export class File {
             return save;
         }
 
-        let { referencedBy } = this;
+        let { referencedBy, references } = this;
         this.clearReferences();
 
         let nameChange = {
             oldName: this.basename,
             newName: newFile.basename
         };
-        return save.then(() => this.delete(options))
-        .then(() => newFile.refactor('fileNameChange', nameChange))
-        .then(() => {
-            return Promise.map(referencedBy, reference => {
+
+        await save;
+        await this.delete(options);
+        await newFile.refactor('fileNameChange', nameChange);
+        try {
+            await Promise.all(referencedBy.map(async reference => {
                 let { extension } = reference;
                 let referenceNameChange = {
                     ...nameChange,
@@ -104,30 +107,46 @@ export class File {
                     newToPath: newFile.path
                 };
                 reference.addReference(newFile);
-                return reference.refactor('referenceNameChange', referenceNameChange)
-                .then(() => reference.refactor('referencePathChange', referencePathChange));
-            })
-            .catch(() => {
-                throw new TractorError(`Could not update references after moving ${this.path}.`);
-            });
-        });
+                await reference.refactor('referenceNameChange', referenceNameChange);
+                return reference.refactor('referencePathChange', referencePathChange);
+            }));
+            await Promise.all(references.map(async reference => {
+                let referencePathChange = {
+                    toPath: reference.path,
+                    oldFromPath: this.path,
+                    newFromPath: newFile.path
+                };
+                newFile.addReference(reference);
+                return newFile.refactor('referencePathChange', referencePathChange);
+            }));
+        } catch {
+            throw new TractorError(`Could not update references after moving ${this.path}.`);
+        }
     }
 
-    read () {
-        return fs.readFileAsync(this.path)
-        .then(buffer => setData.call(this, buffer))
-        .then(() => this.content);
+    async read () {
+        try {
+            let buffer = await fs.readFileAsync(this.path);
+            setData.call(this, buffer);
+            return this.content;    
+        } catch {
+            throw new TractorError(`Cannot read ${this.path}. Something went wrong.`);
+        }
     }
 
-    refactor () {
+    async refactor () {
         return Promise.resolve();
     }
 
-    save (data) {
-        return this.directory.save()
-        .then(() => fs.writeFileAsync(this.path, data))
-        .then(() => setData.call(this, new Buffer(data)))
-        .then(() => this.content);
+    async save (data) {
+        await this.directory.save();
+        try {
+            await fs.writeFileAsync(this.path, data);
+            setData.call(this, new Buffer(data));
+            return this.content;
+        } catch {
+            throw new TractorError(`Cannot save ${this.path}. Something went wrong.`);
+        }
     }
 
     serialise () {

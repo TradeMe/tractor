@@ -1,7 +1,6 @@
 // Dependencies:
 import { TractorError } from '@tractor/error-handler';
 import { info } from '@tractor/logger';
-import Promise from 'bluebird';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import express from 'express';
@@ -23,17 +22,15 @@ const UPLOAD_SIZE_LIMIT = '50mb';
 
 let server;
 
-export function start (config, di, plugins) {
-    return Promise.map(plugins, plugin => di.call(plugin.run))
-    .then(() => {
-        let tractor = server.listen(config.port, () => {
-            info(`tractor is running at port ${tractor.address().port}`);
-        });
+export async function start (config, di, plugins) {
+    await Promise.all(plugins.map(plugin => di.call(plugin.run)));
+    let tractor = server.listen(config.port, () => {
+        info(`tractor is running at port ${tractor.address().port}`);
     });
 }
 start['@Inject'] = ['config', 'di', 'plugins'];
 
-export function init (config, di, plugins) {
+export async function init (config, di, plugins) {
     let application = express();
     /* eslint-disable new-cap */
     server = http.Server(application);
@@ -77,11 +74,10 @@ export function init (config, di, plugins) {
 
     sockets.of('/server-status');
 
-    return Promise.map(plugins, plugin => di.call(plugin.serve))
-    .then(() => {
-        // Always make sure the '*' handler happens last:
-        application.get('*', renderIndex);
-    });
+    await Promise.all(plugins.map(plugin => di.call(plugin.serve)));
+
+    // Always make sure the '*' handler happens last:
+    application.get('*', renderIndex);
 }
 init['@Inject'] = ['config', 'di', 'plugins'];
 

@@ -27,7 +27,7 @@ describe('@tractor/server - api: search', () => {
 
     // TODO: These tests are impossible to right because of the current DI setup...
     // debounce needs to be an injectable thing.
-    it.skip('should return search results after some Files hav been processed', () => {
+    it.skip('should return search results after some Files have been processed', async () => {
         let request = {
             query: 'file'
         };
@@ -43,16 +43,14 @@ describe('@tractor/server - api: search', () => {
 
         let handler = searchHandler();
 
-        return file.read()
-        .then(() => {
-            handler(request, response);
-            expect(response.send).to.have.been.calledWith({
-                count: 1,
-                results: [file.toJSON()]
-            });
-
-            File.prototype.read.restore();
+        await file.read();
+        handler(request, response);
+        expect(response.send).to.have.been.calledWith({
+            count: 1,
+            results: [file.toJSON()]
         });
+
+        File.prototype.read.restore();
     });
 
     it('should reindex whenever a File is saved');

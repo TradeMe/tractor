@@ -5,7 +5,7 @@ import { getItemPath, respondOkay, respondItemNotFound } from './utilities';
 import { TractorError, handleError } from '@tractor/error-handler';
 
 export function createRefactorItemHandler (fileStructure) {
-    return function refactorItem (request, response) {
+    return async function refactorItem (request, response) {
         let { update } = request.body;
         let itemUrl = request.params[0];
         let itemPath = getItemPath(fileStructure, itemUrl);
@@ -16,9 +16,11 @@ export function createRefactorItemHandler (fileStructure) {
             return respondItemNotFound(itemPath, response);
         }
 
-        return toRefactor.refactor(update)
-        .then(() => respondOkay(response))
-        .catch(TractorError.isTractorError, error => handleError(response, error))
-        .catch(() => handleError(response, new TractorError(`Could not refactor "${itemPath}"`)));
-    }
+        try {
+            await toRefactor.refactor(update);
+            respondOkay(response);
+        } catch (error) {
+            handleError(response, TractorError.isTractorError(error) ? error : new TractorError(`Could not refactor "${itemPath}"`));
+        }
+    };
 }

@@ -18,7 +18,7 @@ import * as tractorErrorHandler from '@tractor/error-handler';
 import { createDeleteItemHandler } from './delete-item';
 
 describe('@tractor/file-structure - actions/delete-item:', () => {
-    it('should delete a file', () => {
+    it('should delete a file', async () => {
         let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
@@ -33,16 +33,14 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
         sinon.stub(File.prototype, 'delete').resolves();
 
         let deleteItem = createDeleteItemHandler(fileStructure);
-        return deleteItem(request, response)
-        .then(() => {
-            expect(File.prototype.delete).to.have.been.called();
-        })
-        .finally(() => {
-            File.prototype.delete.restore();
-        });
+        await deleteItem(request, response);
+
+        expect(File.prototype.delete).to.have.been.called();
+
+        File.prototype.delete.restore();
     });
 
-    it('should delete a directory', () => {
+    it('should delete a directory', async () => {
         let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
 
@@ -57,13 +55,11 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
         sinon.stub(Directory.prototype, 'delete').resolves();
 
         let deleteItem = createDeleteItemHandler(fileStructure);
-        return deleteItem(request, response)
-        .then(() => {
-            expect(Directory.prototype.delete).to.have.been.called();
-        })
-        .finally(() => {
-            Directory.prototype.delete.restore();
-        });
+        await deleteItem(request, response);
+
+        expect(Directory.prototype.delete).to.have.been.called();
+
+        Directory.prototype.delete.restore();
     });
 
     it(`should throw an error if it can't find the item to delete`, () => {
@@ -87,7 +83,7 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
         utilities.respondItemNotFound.restore();
     });
 
-    it('should rimraf a directory', () => {
+    it('should rimraf a directory', async () => {
         let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
 
@@ -104,16 +100,14 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
         sinon.stub(Directory.prototype, 'rimraf').resolves();
 
         let deleteItem = createDeleteItemHandler(fileStructure);
-        return deleteItem(request, response)
-        .then(() => {
-            expect(Directory.prototype.rimraf).to.have.been.called();
-        })
-        .finally(() => {
-            Directory.prototype.rimraf.restore();
-        });
+        await deleteItem(request, response);
+
+        expect(Directory.prototype.rimraf).to.have.been.called();
+
+        Directory.prototype.rimraf.restore();
     });
 
-    it(`should respond with OK`, () => {
+    it(`should respond with OK`, async () => {
         let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
@@ -129,16 +123,14 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
         sinon.stub(response, 'sendStatus');
 
         let deleteItem = createDeleteItemHandler(fileStructure);
-        return deleteItem(request, response)
-        .then(() => {
-            expect(response.sendStatus).to.have.been.calledWith(200);
-        })
-        .finally(() => {
-            File.prototype.delete.restore();
-        });
+        await deleteItem(request, response);
+
+        expect(response.sendStatus).to.have.been.calledWith(200);
+
+        File.prototype.delete.restore();
     });
 
-    it('should fall back to delete if `rimraf` is passed but the item is not a directory', () => {
+    it('should fall back to delete if `rimraf` is passed but the item is not a directory', async () => {
         let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
@@ -155,16 +147,14 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
         sinon.stub(File.prototype, 'delete').resolves();
 
         let deleteItem = createDeleteItemHandler(fileStructure);
-        return deleteItem(request, response)
-        .then(() => {
-            expect(File.prototype.delete).to.have.been.called();
-        })
-        .finally(() => {
-            File.prototype.delete.restore();
-        });
+        await deleteItem(request, response);
+
+        expect(File.prototype.delete).to.have.been.called();
+
+        File.prototype.delete.restore();
     });
 
-    it('should cleanup a file', () => {
+    it('should cleanup a file', async () => {
         let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
@@ -181,16 +171,14 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
         sinon.stub(File.prototype, 'cleanup').resolves();
 
         let deleteItem = createDeleteItemHandler(fileStructure);
-        return deleteItem(request, response)
-        .then(() => {
-            expect(File.prototype.cleanup).to.have.been.called();
-        })
-        .finally(() => {
-            File.prototype.cleanup.restore();
-        });
+        await deleteItem(request, response);
+
+        expect(File.prototype.cleanup).to.have.been.called();
+
+        File.prototype.cleanup.restore();
     });
 
-    it('should cleanup a directory', () => {
+    it('should cleanup a directory', async () => {
         let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
 
@@ -207,16 +195,14 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
         sinon.stub(Directory.prototype, 'cleanup').resolves();
 
         let deleteItem = createDeleteItemHandler(fileStructure);
-        return deleteItem(request, response)
-        .then(() => {
-            expect(Directory.prototype.cleanup).to.have.been.called();
-        })
-        .finally(() => {
-            Directory.prototype.cleanup.restore();
-        });
+        await deleteItem(request, response);
+
+        expect(Directory.prototype.cleanup).to.have.been.called();
+
+        Directory.prototype.cleanup.restore();
     });
 
-    xit('should handle known TractorErrors', () => {
+    it.skip('should handle known TractorErrors', async () => {
         let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
         let request = {
@@ -232,18 +218,16 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
         sinon.stub(tractorErrorHandler, 'handleError');
 
         let deleteItem = createDeleteItemHandler(fileStructure);
-        return deleteItem(request, response)
-        .then(() => {
-            expect(File.prototype.delete).to.have.been.called();
-            expect(tractorErrorHandler.handleError).to.have.been.calledWith(response, error);
-        })
-        .finally(() => {
-            File.prototype.delete.restore();
-            tractorErrorHandler.handleError.restore();
-        });
+        await deleteItem(request, response);
+
+        expect(File.prototype.delete).to.have.been.called();
+        expect(tractorErrorHandler.handleError).to.have.been.calledWith(response, error);
+
+        File.prototype.delete.restore();
+        tractorErrorHandler.handleError.restore();
     });
 
-    xit('should handle unknown errors', () => {
+    it.skip('should handle unknown errors', async () => {
         let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
         let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
         let request = {
@@ -258,13 +242,11 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
         sinon.stub(tractorErrorHandler, 'handleError');
 
         let deleteItem = createDeleteItemHandler(fileStructure);
-        return deleteItem(request, response)
-        .then(() => {
-            expect(tractorErrorHandler.handleError).to.have.been.calledWith(response, new TractorError(`Could not delete "${path.join(path.sep, 'file-structure', 'directory', 'file.ext')}"`));
-        })
-        .finally(() => {
-            File.prototype.delete.restore();
-            tractorErrorHandler.handleError.restore();
-        });
+        await deleteItem(request, response);
+
+        expect(tractorErrorHandler.handleError).to.have.been.calledWith(response, new TractorError(`Could not delete "${path.join(path.sep, 'file-structure', 'directory', 'file.ext')}"`));
+
+        File.prototype.delete.restore();
+        tractorErrorHandler.handleError.restore();
     });
 });

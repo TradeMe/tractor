@@ -6,7 +6,7 @@ import { getItemPath, getCopyPath, respondOkay } from './utilities';
 import { TractorError, handleError } from '@tractor/error-handler';
 
 export function createSaveItemHandler (fileStructure) {
-    return function saveItem (request, response) {
+    return async function saveItem (request, response) {
         let { data, overwrite } = request.body;
         let itemUrl = request.params[0];
         let itemPath = getItemPath(fileStructure, itemUrl);
@@ -29,9 +29,11 @@ export function createSaveItemHandler (fileStructure) {
                 toSave = new fileConstructor(itemPath, fileStructure);
             }
         }
-        return toSave.save(data)
-        .then(() => respondOkay(response))
-        .catch(TractorError.isTractorError, error => handleError(response, error))
-        .catch(() => handleError(response, new TractorError(`Could not save "${itemPath}"`)));
-    }
+        try {
+            await toSave.save(data);
+            respondOkay(response);
+        } catch (error) {
+            handleError(response, TractorError.isTractorError(error) ? error : new TractorError(`Could not save "${itemPath}"`));
+        }
+    };
 }

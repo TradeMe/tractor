@@ -8,7 +8,7 @@ import * as tractorLogger from '@tractor/logger';
 import { initialisePlugins } from './initialise-plugins';
 
 describe('tractor - initialise-plugins:', () => {
-    it('should initialise all the installed plugins', () => {
+    it('should initialise all the installed plugins', async () => {
         let di = ineeda({
             call: () => Promise.resolve()
         });
@@ -19,16 +19,15 @@ describe('tractor - initialise-plugins:', () => {
 
         sinon.stub(tractorLogger, 'info');
 
-        return initialisePlugins(di, plugins)
-        .then(() => {
+        try {
+            await initialisePlugins(di, plugins);
             expect(di.call).to.have.been.calledWith(plugin.init);
-        })
-        .finally(() => {
+        } finally {
             tractorLogger.info.restore();
-        });
+        }
     });
 
-    it('should tell the user what it is doing', () => {
+    it('should tell the user what it is doing', async () => {
         let di = ineeda({
             call: () => Promise.resolve()
         });
@@ -40,12 +39,11 @@ describe('tractor - initialise-plugins:', () => {
 
         sinon.stub(tractorLogger, 'info');
 
-        return initialisePlugins(di, plugins)
-        .then(() => {
+        try {
+            await initialisePlugins(di, plugins);
             expect(tractorLogger.info).to.have.been.calledWith('Initialising tractor-plugin-test-plugin...');
-        })
-        .finally(() => {
+        } finally {
             tractorLogger.info.restore();
-        });
+        }
     });
 });
