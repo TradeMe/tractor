@@ -30,15 +30,15 @@
     "build": "src/**/*.js"
   },
   "devDependencies": {
-    "@babel/cli": "^7.0.0-beta.52",
-    "@babel/core": "^7.0.0-beta.52",
-    "@babel/plugin-proposal-export-default-from": "^7.0.0-beta.52",
-    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.52",
-    "@babel/preset-env": "^7.0.0-beta.52",
-    "@babel/register": "^7.0.0-beta.52",
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-proposal-export-default-from": "^7.0.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/register": "^7.0.0",
     "@tractor/unit-test": "^1.0.0-alpha.15",
-    "babel-eslint": "^8.2.5",
-    "eslint": "^5.0.1",
+    "babel-eslint": "^9.0.0",
+    "eslint": "^5.5.0",
     "istanbul": "^1.1.0-alpha.1",
     "mocha": "^5.2.0",
     "npm-watch": "^0.3.0"
