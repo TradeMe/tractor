@@ -1,6 +1,6 @@
 {
   "instrumentation": {
-    "excludes": ["*.spec.js"]
+    "excludes": ["*.spec.js", "**/dist/**"]
   },
   "reporting": {
     "dir": "./reports/coverage"
