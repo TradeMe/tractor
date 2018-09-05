@@ -1,6 +1,6 @@
 {
   "name": "@tractor/cli",
-  "version": "1.0.1-beta.1",
+  "version": "1.0.1-beta.2",
   "description": "CLI for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -32,19 +32,19 @@
     "build": "src/**/*.js"
   },
   "dependencies": {
-    "@tractor/core": "^1.0.1-beta.1",
+    "@tractor/core": "^1.0.1-beta.2",
     "babel-polyfill": "^6.26.0",
     "bluebird": "^3.5.1",
     "commander": "^2.13.0",
     "protractor": "^5.3.0"
   },
   "devDependencies": {
-    "@tractor/config-loader": "^1.0.1-beta.1",
-    "@tractor/dependency-injection": "^1.0.1-beta.1",
-    "@tractor/error-handler": "^1.0.1-beta.1",
-    "@tractor/file-structure": "^1.0.1-beta.1",
-    "@tractor/logger": "^1.0.1-beta.1",
-    "@tractor/plugin-loader": "^1.0.1-beta.1",
-    "@tractor/server": "^1.0.1-beta.1"
+    "@tractor/config-loader": "^1.0.1-beta.2",
+    "@tractor/dependency-injection": "^1.0.1-beta.2",
+    "@tractor/error-handler": "^1.0.1-beta.2",
+    "@tractor/file-structure": "^1.0.1-beta.2",
+    "@tractor/logger": "^1.0.1-beta.2",
+    "@tractor/plugin-loader": "^1.0.1-beta.2",
+    "@tractor/server": "^1.0.1-beta.2"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@tractor/dependency-injection",
-  "version": "1.0.1-beta.1",
+  "version": "1.0.1-beta.2",
   "description": "DI container for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -30,10 +30,10 @@
     "build": "src/**/*.js"
   },
   "peerDependencies": {
-    "@tractor/core": "^1.0.0-alpha.15"
+    "@tractor/core": "^1.0.1-beta.2"
   },
   "devDependencies": {
-    "@tractor/error-handler": "^1.0.1-beta.1",
-    "@tractor/logger": "^1.0.1-beta.1"
+    "@tractor/error-handler": "^1.0.1-beta.2",
+    "@tractor/logger": "^1.0.1-beta.2"
   }
 }
