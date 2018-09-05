@@ -58,7 +58,12 @@ export function loadPlugins () {
 }
 
 function requirePlugins () {
-    let pluginNames = getInstalledPluginNames();
+    let pluginNames = [];
+    try {
+        pluginNames = getInstalledPluginNames();
+    } catch {
+        return pluginNames;
+    }
 
     return pluginNames
     .map(pluginName => {
