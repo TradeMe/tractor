@@ -45,6 +45,7 @@
   },
   "devDependencies": {
     "@tractor/error-handler": "^1.0.0-alpha.15",
+    "@tractor/file-structure": "^1.0.0-alpha.15",
     "@tractor/logger": "^1.0.0-alpha.15",
     "@tractor/ui": "^1.0.0-alpha.15"
   }

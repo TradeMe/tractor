@@ -34,5 +34,8 @@
   },
   "dependencies": {
     "npmlog": "^4.1.2"
+  },
+  "devDependencies": {
+    "@tractor/unit-test": "^1.0.0-alpha.15"
   }
 }
