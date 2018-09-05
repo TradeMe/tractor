@@ -15,7 +15,9 @@ var protractorConfig = {
 
     params: {
         debug: false
-    }
+    },
+
+    SELENIUM_PROMISE_MANAGER: false
 };
 
 plugins.forEach(function (plugin) {

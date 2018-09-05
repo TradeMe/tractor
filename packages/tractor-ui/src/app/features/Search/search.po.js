@@ -1,4 +1,4 @@
-/*{"name":"search","elements":[{"name":"search input"},{"name":"search results"},{"name":"overlay"}],"actions":[{"name":"search","parameters":[{"name":"searchString"}]},{"name":"go to result","parameters":[{"name":"name"}]}],"version":"0.5.0"}*/
+/*{"name":"search","elements":[{"name":"search input"},{"name":"search results","type":"search result"},{"name":"overlay"}],"actions":[{"name":"search","parameters":[{"name":"searchString"}]},{"name":"go to result","parameters":[{"name":"name"}]}],"version":"0.5.2"}*/
 module.exports = function () {
     var SearchResult = require('./search result.po.js');
     var Search = function Search(parent) {

@@ -1,4 +1,4 @@
-/*{"name":"file","elements":[{"name":"name"}],"actions":[{"name":"get name","parameters":[]}],"version":"0.5.0"}*/
+/*{"name":"file","elements":[{"name":"name"}],"actions":[{"name":"get name","parameters":[]}],"version":"0.5.2"}*/
 module.exports = function () {
     var File = function File(parent) {
         var find = parent ? parent.element.bind(parent) : element;

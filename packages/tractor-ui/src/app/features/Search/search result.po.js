@@ -1,4 +1,4 @@
-/*{"name":"search result","elements":[{"name":"link"}],"actions":[{"name":"go to result","parameters":[]}],"version":"0.5.0"}*/
+/*{"name":"search result","elements":[{"name":"link"}],"actions":[{"name":"go to result","parameters":[]}],"version":"0.5.2"}*/
 module.exports = function () {
     var SearchResult = function SearchResult(parent) {
         var find = parent ? parent.element.bind(parent) : element;
