@@ -6,7 +6,6 @@ function RedirectionService ($state, fileTypes) {
     this.fileTypes = fileTypes;
 }
 RedirectionService.prototype.goToFile = function (file) {
-    file.url = '/' + file.url;
     var fileType = this.fileTypes.find(function (fileType) {
         return file.url.endsWith(fileType.extension);
     });
