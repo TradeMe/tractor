@@ -19,7 +19,7 @@ var ServerStatusService = function ServerStatusService (
         isServerRunning: isServerRunning
     };
 
-    function monitorServerStatus (options) {
+    function monitorServerStatus () {
         realTimeService.connect('server-status', {
             'connect': onConnect,
             'disconnect': onDisconnect

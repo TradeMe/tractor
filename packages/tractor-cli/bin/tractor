@@ -23,7 +23,7 @@ const di = container();
 
 tractor
 .version(version)
-.option('-c, --config [value]', 'Path to configuration file (defaults to ./tractor.conf.js)')
+.option('-c, --config [value]', 'Path to configuration file (defaults to ./tractor.conf.js)');
 
 tractor
 .command('init')
