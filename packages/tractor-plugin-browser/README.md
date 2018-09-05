@@ -8,7 +8,7 @@ browser methods.
 [![Code Climate](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-browser/badges/gpa.svg)](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-browser)
 [![Test Coverage](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-browser/badges/coverage.svg)](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-browser/coverage)
 
-## Currently implemented methods:
+## Currently implemented methods
 
 * [`browser.get`](http://www.protractortest.org/#/api?view=ProtractorBrowser.prototype.get)
 * [`browser.refresh`](http://www.protractortest.org/#/api?view=ProtractorBrowser.prototype.refresh)
@@ -16,3 +16,8 @@ browser methods.
 * [`browser.getCurrentUrl`](http://www.protractortest.org/#/api?view=ProtractorBrowser.prototype.getCurrentUrl)
 * [`browser.waitForAngular`](http://www.protractortest.org/#/api?view=ProtractorBrowser.prototype.waitForAngular)
 * [`browser.pause`](http://www.protractortest.org/#/api?view=ProtractorBrowser.prototype.pause)
+
+## Custom helper methods
+
+* `browser.sendEnterKey`
+* `browser.sendDeleteKey`
