@@ -1,6 +1,6 @@
 {
   "name": "@tractor-plugins/browser",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "tractor plugin wrapping the Protractor `browser` object",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -36,7 +36,7 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
     "@babel/register": "^7.0.0",
-    "@tractor/unit-test": "^1.0.0-alpha.15",
+    "@tractor/unit-test": "^1.0.1-beta.2",
     "babel-eslint": "^9.0.0",
     "eslint": "^5.5.0",
     "istanbul": "^1.1.0-alpha.1",
@@ -44,6 +44,6 @@
     "npm-watch": "^0.3.0"
   },
   "peerDependencies": {
-    "@tractor/core": "^1.0.0-alpha.15"
+    "@tractor/core": "^1.0.1-beta.2"
   }
 }
