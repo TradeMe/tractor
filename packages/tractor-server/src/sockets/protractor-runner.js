@@ -4,7 +4,10 @@ import path from 'path';
 import { error, info } from '@tractor/logger';
 
 // Constants:
+const PROTRACTOR_CONFIG_FILE = 'protractor.conf.js';
 const PROTRACTOR_PATH = path.join('node_modules', 'protractor', 'bin', 'protractor');
+const ENABLE_DEBUGGER = '--inspect-brk';
+const NODE_COMMAND = 'node';
 
 // Errors:
 import { TractorError } from '@tractor/error-handler';
@@ -33,34 +36,19 @@ export async function run (config, socket, runOptions) {
     }
 }
 
-    let protractorConfigPath = path.join(config.directory, 'protractor.conf.js');
-    let protractorArgs = [PROTRACTOR_PATH, protractorConfigPath];
-
-    let { baseUrl, debug, feature, tag } = options;
-
 async function startProtractor (config, socket, options) {
+    const { baseUrl, params } = options;
     if (!baseUrl) {
         throw new TractorError('`baseUrl` must be defined.');
     }
 
-    if (feature) {
-        debug = !!debug;
-    } else {
-        feature = '*';
-        debug = false;
+    const protractorConfigPath = path.join(config.directory, PROTRACTOR_CONFIG_FILE);
+    const protractorArgs = [PROTRACTOR_PATH, protractorConfigPath].concat(toArgs(options));
+    if (params && params.debug) {
+        protractorArgs.unshift(ENABLE_DEBUGGER);
     }
 
-    let specsGlob = path.join(config.directory, 'features', '**', `${feature}.feature`);
-
-    protractorArgs = protractorArgs.concat(['--specs', specsGlob]);
-    protractorArgs = protractorArgs.concat(['--params.debug', debug]);
-
-    if (tag) {
-        protractorArgs = protractorArgs.concat(['--cucumberOpts.tags', tag]);
-        info(`Running cucumber with tag: ${tag}`);
-     }
-
-    let protractor = childProcess.spawn('node', protractorArgs);
+    const protractor = childProcess.spawn(NODE_COMMAND, protractorArgs);
 
     protractor.stdout.on('data', sendDataToClient.bind(socket));
     protractor.stderr.on('data', sendDataToClient.bind(socket));
@@ -68,7 +56,7 @@ async function startProtractor (config, socket, options) {
     protractor.stderr.pipe(process.stderr);
 
     let resolve, reject;
-    let deferred = new Promise((...args) => [resolve, reject] = args);
+    const deferred = new Promise((...args) => [resolve, reject] = args);
 
     protractor.on('error', error => reject(new TractorError(error.message)));
     protractor.on('exit', (code) => {
@@ -79,6 +67,19 @@ async function startProtractor (config, socket, options) {
         }
     });
     return deferred;
+}
+
+function toArgs (params, parent = '') {
+    let args = [];
+    Object.keys(params).forEach(param => {
+        const value = params[param];
+        if (typeof value === 'object') {
+            args = args.concat(toArgs(value, parent ? `${parent}.${param}.` : `${param}.`));
+        } else {
+            args = args.concat([`--${parent}${param}`, value]);
+        }
+    });
+    return args;
 }
 
 function sendDataToClient (data) {
