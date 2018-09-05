@@ -11,6 +11,7 @@ import { ReferenceManager } from './ReferenceManager';
 // Constants:
 const DEFAULT_URL = '/';
 const URL_SEPERATOR = '/';
+const FILE_STRUCTURE_DELETE_EVENTS = ['unlink', 'unlinkDir'];
 
 export class FileStructure {
     constructor (fsPath, url) {
@@ -68,17 +69,25 @@ export class FileStructure {
             ignoreInitial: true,
             awaitWriteFinish: true
         })
-        .on('all', (event, itemPath) => {
+        .on('all', async (event, itemPath) => {
             let changeDirectory;
             if (itemPath === this.path) {
                 changeDirectory = this.structure;
             } else {
                 changeDirectory = this.allDirectoriesByPath[path.dirname(itemPath)];
             }
-            changeDirectory.refresh()
-            .then(() => {
-                watcher.emit('change');
-            });
+            if (FILE_STRUCTURE_DELETE_EVENTS.includes(event)) {
+                const item = this.allDirectoriesByPath[itemPath] || this.allFilesByPath[itemPath];
+                if (item) {
+                    item.directory.removeItem(item);
+                    info(`"${itemPath} was deleted.`);
+                    return;
+                }
+            }
+            if (changeDirectory) {
+                await changeDirectory.read();
+                watcher.emit('change');    
+            }
         });
         return watcher;
     }

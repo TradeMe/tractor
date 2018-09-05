@@ -140,12 +140,12 @@ describe('@tractor/file-structure - FileStructure:', () => {
             tractorLogger.info.restore();
         });
 
-        it('should refresh the FileStructure when a file within it changes', done => {
+        it('should read the FileStructure when a file within it changes', done => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let file = new File(path.join(path.sep, 'file-structure', 'file.extension'), fileStructure);
             let eventEmitter = new EventEmitter();
 
-            sinon.stub(fileStructure.structure, 'refresh').resolves();
+            sinon.stub(fileStructure.structure, 'read').resolves();
             sinon.stub(tractorLogger, 'info');
             sinon.stub(chokidar, 'watch').returns(eventEmitter);
 
@@ -154,7 +154,7 @@ describe('@tractor/file-structure - FileStructure:', () => {
             eventEmitter.emit('all', null, file.path);
 
             watcher.on('change', () => {
-                expect(fileStructure.structure.refresh).to.have.been.called();
+                expect(fileStructure.structure.read).to.have.been.called();
 
                 chokidar.watch.restore();
                 tractorLogger.info.restore();
@@ -163,11 +163,11 @@ describe('@tractor/file-structure - FileStructure:', () => {
             });
         });
 
-        it('should refresh the FileStructure when the root changes', done => {
+        it('should read the FileStructure when the root changes', done => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let eventEmitter = new EventEmitter();
 
-            sinon.stub(fileStructure.structure, 'refresh').resolves();
+            sinon.stub(fileStructure.structure, 'read').resolves();
             sinon.stub(tractorLogger, 'info');
             sinon.stub(chokidar, 'watch').returns(eventEmitter);
 
@@ -176,7 +176,7 @@ describe('@tractor/file-structure - FileStructure:', () => {
             eventEmitter.emit('all', null, fileStructure.path);
 
             watcher.on('change', () => {
-                expect(fileStructure.structure.refresh).to.have.been.called();
+                expect(fileStructure.structure.read).to.have.been.called();
 
                 chokidar.watch.restore();
                 tractorLogger.info.restore();
