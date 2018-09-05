@@ -1,20 +1,29 @@
-// Constants:
-const DOT_FILE_REGEX = /(^|[/\\])\../;
-const EXTENSION_MATCH_REGEX = /[^.]*(\..*)?/;
-
 // Dependencies:
+import { info } from '@tractor/logger';
 import chokidar from 'chokidar';
 import { EventEmitter } from 'events';
 import path from 'path';
-import { info } from '@tractor/logger';
+import { DOT_FILE_REGEX, EXTENSION_MATCH_REGEX } from '../utilities';
 import { Directory } from './Directory';
 import { File } from './File';
 import { ReferenceManager } from './ReferenceManager';
 
+// Constants:
+const DEFAULT_URL = '/';
+const URL_SEPERATOR = '/';
+
 export class FileStructure {
-    constructor (fsPath) {
+    constructor (fsPath, url) {
         this.fileTypes = { };
         this.path = path.resolve(process.cwd(), fsPath);
+
+        this.url = url || DEFAULT_URL;
+        if (!this.url.startsWith(URL_SEPERATOR)) {
+            this.url = `${URL_SEPERATOR}${this.url}`;
+        }
+        if (!this.url.endsWith(URL_SEPERATOR)) {
+            this.url = `${this.url}${URL_SEPERATOR}`;
+        }
 
         this.init();
     }
