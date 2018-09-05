@@ -67,12 +67,20 @@ function fileEditorControllerFactory () {
             .finally(function () {
                 this.confirmOverWrite = null;
             }.bind(this));
+        } else {
+            confirm = this.fileStructureService.saveItem(fileUrl, { data: '' })
+            .then(function () {
+                return this.fileStructureService.openItem(fileUrl);
+            }.bind(this))
+            .then(function (file) {
+                this.fileModel.file = file;
+            }.bind(this));
         }
 
         return confirm.then(function () {
             return this.fileStructureService.saveItem(fileUrl, {
                 data: this.fileModel.data,
-                overwrite: exists
+                overwrite: true
             });
         }.bind(this))
         .then(function () {
