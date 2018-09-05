@@ -1,3 +1,4 @@
+/* global document:true */
 'use strict';
 
 // Module:
@@ -36,6 +37,7 @@ var RunnerService = function RunnerService (
 
     function log (data) {
         data = data.replace(/\n/g, '\r\n');
+        /* eslint-disable no-console */
         console.log(data);
         term.write(data);
     }
