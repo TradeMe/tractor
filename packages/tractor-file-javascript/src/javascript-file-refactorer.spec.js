@@ -53,6 +53,47 @@ describe('@tractor/file-javascript: JavaScriptFileRefactorer:', () => {
         });
     });
 
+    describe('JavaScriptFileRefactorer.literalChange:', () => {
+        it(`should update an literal in a file's AST`, () => {
+            let ast = esprima.parseScript(`var value = 'old'`);
+
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
+
+            let file = new JavaScriptFile(filePath, fileStructure);
+            file.ast = ast;
+
+            JavaScriptFileRefactorer.literalChange(file, {
+                oldValue: 'old',
+                newValue: 'new'
+            });
+
+            let [literal] = esquery(ast, 'Literal');
+
+            expect(literal.value).to.equal('new');
+        });
+
+        it(`should update an literal in a file's AST within a specific context`, () => {
+            let ast = esprima.parseScript(`var value = 'old'; function func () { var value = 'old'; }`);
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file.js');
+
+            let file = new JavaScriptFile(filePath, fileStructure);
+            file.ast = ast;
+
+            JavaScriptFileRefactorer.literalChange(file, {
+                oldValue: 'old',
+                newValue: 'new',
+                context: 'FunctionDeclaration > BlockStatement > VariableDeclaration > VariableDeclarator'
+            });
+
+            let [literal1, literal2] = esquery(ast, 'Literal');
+
+            expect(literal1.value).to.equal('old');
+            expect(literal2.value).to.equal('new');
+        });
+    });
+
     describe('JavaScriptFileRefactorer.metadataChange:', () => {
         it(`should update the name of a file in it's metadata`, () => {
             let ast = esprima.parseScript('// { "name": "old name" }', { comment: true });
@@ -194,6 +235,23 @@ describe('@tractor/file-javascript: JavaScriptFileRefactorer:', () => {
             expect(requirePath.value).to.equal('./new/reference/file.js');
 
             path.relative.restore();
+        });
+    });
+
+    describe('JavaScriptFileRefactorer.versionChange:', () => {
+        it(`should update the version in a file's metadata`, () => {
+            let ast = esprima.parse(`/* {"version":"0.1.0"} */`, { comment: true });
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let filePath = path.join(path.sep, 'file-structure', 'directory', 'file');
+            let file = new JavaScriptFile(filePath, fileStructure);
+            file.ast = ast;
+
+            JavaScriptFileRefactorer.versionChange(file, {
+                version: '0.2.0'
+            });
+
+            const [metaData] = file.ast.comments;
+            expect(metaData.value).to.equal('{"version":"0.2.0"}');
         });
     });
 });

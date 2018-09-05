@@ -36,6 +36,51 @@ describe('@tractor/file-javascript: JavaScriptFile:', () => {
         });
     });
 
+    describe('JavaScriptFile.meta:', () => {
+        it('should read the files metadata', async () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let file = new JavaScriptFile(path.join(path.sep, 'file-structure', 'directory', 'file'), fileStructure);
+
+            sinon.stub(File.prototype, 'read').resolves('/*{"version":"0.1.0"}*/');
+
+            try {
+                const { version } = await file.meta();
+                expect(version).to.equal('0.1.0');
+            } finally {
+                File.prototype.read.restore();
+            }
+        });
+
+        it('should return null if there is not metadata', async () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let file = new JavaScriptFile(path.join(path.sep, 'file-structure', 'directory', 'file'), fileStructure);
+
+            sinon.stub(File.prototype, 'read').resolves('');
+
+            try {
+                const meta = await file.meta();
+                expect(meta).to.equal(null);
+            } finally {
+                File.prototype.read.restore();
+            }
+        });
+
+        it(`should only read the file if it hasn't already been read`, async () => {
+            let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+            let file = new JavaScriptFile(path.join(path.sep, 'file-structure', 'directory', 'file'), fileStructure);
+
+            sinon.stub(File.prototype, 'read').resolves('/*{"version":"0.1.0"}*/');
+
+            try {
+                await file.read();
+                await file.meta();
+                expect(File.prototype.read).to.have.been.calledOnce();
+            } finally {
+                File.prototype.read.restore();
+            }
+        });
+    });
+
     describe('JavaScriptFile.read:', () => {
         it('should read the file from disk', async () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));

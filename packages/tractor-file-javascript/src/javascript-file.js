@@ -108,21 +108,13 @@ export class JavaScriptFile extends File {
     }
 }
 
-function rebuildRegExps (object) {
-    Object.keys(object)
-    .forEach(key => {
-        let value = object[key];
-        if (value && isRegexLiteral(value)) {
-            let regexContent = value.raw
-            .replace(LEADING_SLASH_REGEX, '')
-            .replace(TRAILING_SLASH_REGEX, '');
-            let [regexFlags] = REGEXP_FLAGS_REGEX.exec(value.raw);
-            value.value = new RegExp(regexContent, regexFlags);
-        } else if (Array.isArray(value) || isObject(value)) {
-            rebuildRegExps(value);
-        }
-    });
-    return object;
+async function getMetaToken () {
+    if (!this.ast) {
+        await this.read();
+    }
+    const { ast } = this;
+    const [firstComment] = ast.comments;
+    return firstComment;
 }
 
 function getReferences () {
@@ -146,6 +138,24 @@ function isRegexLiteral (object) {
     let { raw, type } = object;
     return type === LITERAL && raw && REGEXP_CONTENT_REGEX.test(raw);
 }
+
+function rebuildRegExps (object) {
+    Object.keys(object)
+    .forEach(key => {
+        let value = object[key];
+        if (value && isRegexLiteral(value)) {
+            let regexContent = value.raw
+            .replace(LEADING_SLASH_REGEX, '')
+            .replace(TRAILING_SLASH_REGEX, '');
+            let [regexFlags] = REGEXP_FLAGS_REGEX.exec(value.raw);
+            value.value = new RegExp(regexContent, regexFlags);
+        } else if (Array.isArray(value) || isObject(value)) {
+            rebuildRegExps(value);
+        }
+    });
+    return object;
+}
+
 
 function setAST (content) {
     this.ast = esprima.parseScript(content, {

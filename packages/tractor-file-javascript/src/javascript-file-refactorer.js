@@ -4,12 +4,14 @@ import path from 'path';
 
 export const JavaScriptFileRefactorer = {
     identifierChange,
+    literalChange,
     metadataChange,
-    referencePathChange
-}
+    referencePathChange,
+    versionChange
+};
 
 function identifierChange (file, data) {
-    let { oldName, newName, context } = data;
+    const { oldName, newName, context } = data;
 
     let query = `Identifier[name="${oldName}"]`;
 
@@ -20,19 +22,29 @@ function identifierChange (file, data) {
     esquery(file.ast, query).forEach(identifier => identifier.name = newName);
 }
 
-function metadataChange (file, data) {
-    let { oldName, newName, type } = data;
-    let { comments } = file.ast;
-    if (!comments) {
-        return;
+function literalChange (file, data) {
+    const { oldValue, newValue, context } = data;
+
+    let query = `Literal[value="${oldValue}"]`;
+
+    if (context) {
+        query = `${context} > ${query}`;
     }
 
-    let [comment] = comments;
+    esquery(file.ast, query).forEach(literal => {
+        literal.value = newValue;
+        literal.raw = `'${newValue}'`;
+    });
+}
+
+function metadataChange (file, data) {
+    const { oldName, newName, type } = data;
+    const comment = getMetaToken(file);
     if (!comment) {
         return;
     }
 
-    let metaData = JSON.parse(comment.value);
+    const metaData = JSON.parse(comment.value);
     let item = metaData;
     if (type) {
         item = item[type].find(item => item.name === oldName);
@@ -52,18 +64,36 @@ function referencePathChange (file, data) {
         oldToPath = newToPath = data.toPath;
     }
 
-    let oldRequirePath = getRelativeRequirePath(path.dirname(oldFromPath), oldToPath);
-    let newRequirePath = getRelativeRequirePath(path.dirname(newFromPath), newToPath);
+    const oldRequirePath = getRelativeRequirePath(path.dirname(oldFromPath), oldToPath);
+    const newRequirePath = getRelativeRequirePath(path.dirname(newFromPath), newToPath);
     updatePaths(file, oldRequirePath, newRequirePath);
 }
 
+function versionChange (file, data) {
+    const { version } = data;
+    const metaToken = getMetaToken(file);
+    const metaData = JSON.parse(metaToken.value);
+    metaData.version = version;
+    metaToken.value = JSON.stringify(metaData);
+}
+
 function getRelativeRequirePath (from, to) {
-    let relativePath = path.relative(from, to).replace(/\\/g, '/');
+    const relativePath = path.relative(from, to).replace(/\\/g, '/');
     return /^\./.test(relativePath) ? relativePath : `./${relativePath}`;
 }
 
+function getMetaToken (file) {
+    const { comments } = file.ast;
+    if (!comments) {
+        return;
+    }
+
+    const [comment] = comments;
+    return comment;
+}
+
 function updatePaths (file, oldRequirePath, newRequirePath) {
-    let query = `CallExpression[callee.name="require"] Literal[value="${oldRequirePath}"]`;
+    const query = `CallExpression[callee.name="require"] Literal[value="${oldRequirePath}"]`;
     esquery(file.ast, query).forEach(requirePathLiteral => {
         requirePathLiteral.value = newRequirePath;
         requirePathLiteral.raw = `'${newRequirePath}'`;
