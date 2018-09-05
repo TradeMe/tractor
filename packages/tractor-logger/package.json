@@ -1,6 +1,6 @@
 {
   "name": "@tractor/logger",
-  "version": "1.0.0-alpha.15",
+  "version": "1.0.0-beta.0",
   "description": "File structure handler for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -36,6 +36,6 @@
     "npmlog": "^4.1.2"
   },
   "devDependencies": {
-    "@tractor/unit-test": "^1.0.0-alpha.15"
+    "@tractor/unit-test": "^1.0.0-beta.0"
   }
 }

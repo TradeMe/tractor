@@ -1,6 +1,6 @@
 {
   "name": "@tractor/ui",
-  "version": "1.0.0-alpha.15",
+  "version": "1.0.0-beta.0",
   "description": "UI for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
