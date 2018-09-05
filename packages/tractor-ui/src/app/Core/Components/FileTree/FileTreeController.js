@@ -12,8 +12,6 @@ var path = require('path');
 var Core = require('../../Core');
 
 // Dependencies:
-var camel = require('change-case').camel;
-var title = require('change-case').title;
 require('../../Services/FileStructureService');
 
 var FileTreeController = (function () {
@@ -46,7 +44,7 @@ var FileTreeController = (function () {
     };
 
     FileTreeController.prototype.openItem = function (file) {
-        this.$state.go('tractor.file', { file: { url: file.url } });
+        this.$state.go('tractor.file', { file: file });
     };
 
     FileTreeController.prototype.copyItem = function (item) {
