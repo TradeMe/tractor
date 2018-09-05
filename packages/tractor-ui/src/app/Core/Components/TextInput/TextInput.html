@@ -1,15 +1,24 @@
 <label>{{ label }}: </label>
 <input name="text-{{ id }}" type="text" placeholder="e.g. {{ example }}"
-    ng-if="!validateFileName"
+    ng-if="!validateFileName && required"
     ng-model="model[property]"
     ng-model-options="{ allowInvalid: true }"
-    required />
+    required/>
 <input name="text-{{ id }}" type="text" placeholder="e.g. {{ example }}"
-    ng-if="validateFileName"
+    ng-if="!validateFileName && !required"
+    ng-model="model[property]"
+    ng-model-options="{ allowInvalid: true }"/>
+<input name="text-{{ id }}" type="text" placeholder="e.g. {{ example }}"
+    ng-if="validateFileName && required"
     ng-model="model[property]"
     ng-model-options="{ allowInvalid: true }"
     file-name
-    required />
+    required/>
+<input name="text-{{ id }}" type="text" placeholder="e.g. {{ example }}"
+    ng-if="validateFileName && !required"
+    ng-model="model[property]"
+    ng-model-options="{ allowInvalid: true }"
+    file-name/>
 <div
     ng-if="form['text-' + id].$touched"
     ng-messages="form['text-' + id].$error">

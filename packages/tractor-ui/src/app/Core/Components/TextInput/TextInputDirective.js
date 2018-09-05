@@ -17,7 +17,8 @@ var TextInputDirective = function () {
         scope: {
             model: '=',
             label: '@',
-            example: '@'
+            example: '@',
+            required: '@'
         },
 
         /* eslint-disable no-path-concat */
@@ -45,6 +46,10 @@ var TextInputDirective = function () {
 
         $scope.validateFileName = Object.prototype.hasOwnProperty.call($attrs, 'validateFileName');
         $scope.property = camelcase($scope.label);
+
+        if ($scope.required == null) {
+            $scope.required = true;
+        }
     }
 };
 
