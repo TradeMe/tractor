@@ -1,7 +1,7 @@
 {
-  "name": "@tractor/unit-test",
+  "name": "@tractor/dev",
   "version": "1.0.0-alpha.15",
-  "description": "Unit test utilities for the tractor monorepo",
+  "description": "Development module for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
   "publishConfig": {
@@ -15,29 +15,22 @@
     "url": "https://github.com/TradeMe/tractor/issues",
     "email": "craigspence0@gmail.com"
   },
-  "main": "dist/index.js",
+  "bin": {
+    "tractor-dev": "./bin/tractor-dev"
+  },
   "scripts": {
     "prepare": "npm run build",
-    "build": "npm run clean && npm run lint && npm run cover && npm run compile",
+    "build": "npm run clean && npm run lint && npm run compile",
     "clean": "rimraf dist && rimraf reports",
     "compile": "babel src/ --out-dir dist --ignore *.spec.js",
-    "cover": "istanbul cover --config ../../.istanbulrc.json ../../node_modules/.bin/_mocha -- --opts ../../.mocharc 'src/**/*.spec.js'",
     "lint": "eslint src",
-    "test": "mocha --opts ../../.mocharc 'src/**/*.spec.js'",
     "watch": "npm-watch"
   },
   "watch": {
     "build": "src/**/*.js"
   },
   "dependencies": {
-    "chai": "^4.1.2",
-    "dedent": "^0.7.0",
-    "dirty-chai": "^2.0.1",
-    "ineeda": "^0.11.1",
-    "sinon": "^4.2.2",
-    "sinon-chai": "^2.14.0"
-  },
-  "peerDependencies": {
-    "@tractor/core": "^1.0.0-alpha.11"
+    "babel-polyfill": "^6.26.0",
+    "commander": "^2.13.0"
   }
 }

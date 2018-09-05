@@ -19,6 +19,7 @@
     "@tractor/config-loader": "^1.0.0-alpha.15",
     "@tractor/dependency-injection": "^1.0.0-alpha.15",
     "@tractor/error-handler": "^1.0.0-alpha.15",
+    "@tractor/file-javascript": "^1.0.0-alpha.15",
     "@tractor/file-structure": "^1.0.0-alpha.15",
     "@tractor/logger": "^1.0.0-alpha.15",
     "@tractor/plugin-loader": "^1.0.0-alpha.15",

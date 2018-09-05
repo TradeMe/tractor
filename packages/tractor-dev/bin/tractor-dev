@@ -1,0 +1,25 @@
+#!/usr/bin/env node
+'use strict';
+
+// Polyfill:
+require('babel-polyfill');
+
+// Dependencies:
+const tractorDev = require('commander');
+const { version } = require('../package.json');
+
+// Actions:
+const { link } = require('../dist/link');
+
+tractorDev
+.version(version);
+
+tractorDev
+.command('link')
+.description('link all tractor devDependencies')
+.option('-m, --manager [value]', 'Name of the package manager to use (defaults to npm)')
+.action((options) => {
+    link(options.manager);
+});
+
+tractorDev.parse(process.argv);

@@ -7,10 +7,10 @@ import sinonChai from 'sinon-chai';
 export const NOOP = () => {};
 
 export { expect } from 'chai';
-export dedent from 'dedent';
+import dedent from 'dedent';
+export { dedent };
 export { ineeda } from 'ineeda';
-export sinon from 'sinon';
-
+export { sinon };
 
 // Test setup:
 chai.use(dirtyChai);
