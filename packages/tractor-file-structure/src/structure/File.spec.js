@@ -575,8 +575,6 @@ describe('@tractor/file-structure - File:', () => {
         it('should do nothing by default', async () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
-            // eslint-disable-next-line
-            console.log(Promise);
             sinon.spy(Promise, 'resolve');
 
             let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
