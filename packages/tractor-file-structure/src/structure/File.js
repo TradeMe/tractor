@@ -1,10 +1,9 @@
 // Dependencies:
+import { TractorError } from '@tractor/error-handler';
 import fs from 'graceful-fs';
 import path from 'path';
 import { Directory } from './Directory';
-
-// Errors:
-import { TractorError } from '@tractor/error-handler';
+import { pathToUrl } from '../utilities';
 
 export class File {
     constructor (filePath, fileStructure) {
@@ -17,10 +16,12 @@ export class File {
             throw new TractorError(`Cannot create "${this.path}" because it is outside of the root of the FileStructure`);
         }
 
-        this.url = `/${path.relative(this.fileStructure.path, this.path)}`.replace(/\\/g, '/');
         this.name = path.basename(this.path);
         this.extension = this.extension || path.extname(this.path);
         this.basename = path.basename(this.path, this.extension);
+
+        let relativePath = path.relative(this.fileStructure.path, this.path);
+        this.url = pathToUrl(this.fileStructure, relativePath);
 
         let parentPath = path.dirname(this.path);
         let parent = fileStructure.allDirectoriesByPath[parentPath];
@@ -33,11 +34,11 @@ export class File {
     }
 
     get references () {
-        return this.fileStructure.referenceManager.getReferences(this.path)
+        return this.fileStructure.referenceManager.getReferences(this.path);
     }
 
     get referencedBy () {
-        return this.fileStructure.referenceManager.getReferencedBy(this.path)
+        return this.fileStructure.referenceManager.getReferencedBy(this.path);
     }
 
     addReference (reference) {

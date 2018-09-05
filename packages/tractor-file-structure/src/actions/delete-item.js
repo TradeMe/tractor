@@ -1,6 +1,7 @@
 // Dependencies:
 import { Directory } from '../structure/Directory';
-import { getItemPath, respondOkay, respondItemNotFound } from './utilities';
+import { respondOkay, respondItemNotFound } from './utilities';
+import { urlToPath } from '../utilities';
 
 // Errors:
 import { TractorError, handleError } from '@tractor/error-handler';
@@ -9,7 +10,7 @@ export function createDeleteItemHandler (fileStructure) {
     return async function deleteItem (request, response) {
         let { cleanup, rimraf } = request.query;
         let itemUrl = request.params[0];
-        let itemPath = getItemPath(fileStructure, itemUrl);
+        let itemPath = urlToPath(fileStructure, itemUrl);
 
         let toDelete = fileStructure.allFilesByPath[itemPath] || fileStructure.allDirectoriesByPath[itemPath];
         if (!toDelete) {

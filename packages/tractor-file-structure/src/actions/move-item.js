@@ -1,5 +1,6 @@
 // Dependencies:
-import { getCopyPath, getItemPath, respondOkay, respondItemNotFound } from './utilities';
+import { getCopyPath, respondOkay, respondItemNotFound } from './utilities';
+import { urlToPath } from '../utilities';
 
 // Errors:
 import { TractorError, handleError } from '@tractor/error-handler';
@@ -8,7 +9,7 @@ export function createMoveItemHandler (fileStructure) {
     return async function moveItem (request, response) {
         let { copy, newUrl } = request.body;
         let itemUrl = request.params[0];
-        let itemPath = getItemPath(fileStructure, itemUrl);
+        let itemPath = urlToPath(fileStructure, itemUrl);
 
         let file = fileStructure.allFilesByPath[itemPath];
         let directory = fileStructure.allDirectoriesByPath[itemPath];
@@ -24,7 +25,7 @@ export function createMoveItemHandler (fileStructure) {
         if (copy) {
             newPath = getCopyPath(toMove);
         } else {
-            newPath = getItemPath(fileStructure, newUrl);
+            newPath = urlToPath(fileStructure, newUrl);
         }
 
         try {

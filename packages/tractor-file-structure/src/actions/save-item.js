@@ -1,6 +1,7 @@
 // Dependencies:
 import { Directory } from '../structure/Directory';
-import { getItemPath, getCopyPath, respondOkay } from './utilities';
+import { getCopyPath, respondOkay } from './utilities';
+import { urlToPath } from '../utilities';
 
 // Errors:
 import { TractorError, handleError } from '@tractor/error-handler';
@@ -9,7 +10,7 @@ export function createSaveItemHandler (fileStructure) {
     return async function saveItem (request, response) {
         let { data, overwrite } = request.body;
         let itemUrl = request.params[0];
-        let itemPath = getItemPath(fileStructure, itemUrl);
+        let itemPath = urlToPath(fileStructure, itemUrl);
 
         let file = fileStructure.allFilesByPath[itemPath];
         let directory = fileStructure.allDirectoriesByPath[itemPath];

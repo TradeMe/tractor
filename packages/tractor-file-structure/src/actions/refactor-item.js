@@ -1,5 +1,6 @@
 // Dependencies:
-import { getItemPath, respondOkay, respondItemNotFound } from './utilities';
+import { respondOkay, respondItemNotFound } from './utilities';
+import { urlToPath } from '../utilities';
 
 // Errors:
 import { TractorError, handleError } from '@tractor/error-handler';
@@ -8,7 +9,7 @@ export function createRefactorItemHandler (fileStructure) {
     return async function refactorItem (request, response) {
         let { update } = request.body;
         let itemUrl = request.params[0];
-        let itemPath = getItemPath(fileStructure, itemUrl);
+        let itemPath = urlToPath(fileStructure, itemUrl);
 
         let toRefactor = fileStructure.allFilesByPath[itemPath];
 

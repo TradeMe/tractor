@@ -1,10 +1,11 @@
 // Dependencies:
-import { getItemPath, respondItemNotFound } from './utilities';
+import { respondItemNotFound } from './utilities';
+import { urlToPath } from '../utilities';
 
 export function createOpenItemHandler (fileStructure) {
     return function openItem (request, response) {
         let itemUrl = request.params[0];
-        let itemPath = getItemPath(fileStructure, itemUrl);
+        let itemPath = urlToPath(fileStructure, itemUrl);
 
         let file = fileStructure.allFilesByPath[itemPath];
         let directory = fileStructure.allDirectoriesByPath[itemPath];
@@ -16,5 +17,5 @@ export function createOpenItemHandler (fileStructure) {
         }
 
         response.send(item.serialise());
-    }
+    };
 }

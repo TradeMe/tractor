@@ -1,10 +1,9 @@
 // Dependencies:
+import { TractorError } from '@tractor/error-handler';
 import fs from 'graceful-fs';
 import path from 'path';
 import { File } from './File';
-
-// Errors:
-import { TractorError } from '@tractor/error-handler';
+import { pathToUrl, ALREADY_EXISTS, EXTENSION_MATCH_REGEX } from '../utilities';
 
 export class Directory {
     constructor (directoryPath, fileStructure) {
@@ -20,10 +19,11 @@ export class Directory {
 
         this.init();
 
-        let relativePath = path.relative(this.fileStructure.path, this.path);
         this.name = path.basename(this.path);
         this.basename = this.name;
-        this.url = path.normalize(`/${relativePath}`).replace(/\\/, '/');
+
+        let relativePath = path.relative(this.fileStructure.path, this.path);
+        this.url = pathToUrl(this.fileStructure, relativePath);
 
         if (isRoot) {
             this.parent = this.fileStructure;
