@@ -1,6 +1,6 @@
 {
   "name": "@tractor-plugins/page-objects",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "tractor plugin for manipulating Page Objects",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -40,27 +40,27 @@
     "build": "src/**/*.js"
   },
   "dependencies": {
-    "@tractor-plugins/browser": "^0.2.4",
+    "@tractor-plugins/browser": "^0.2.5",
     "babel-polyfill": "^6.26.0",
     "esprima": "^4.0.1",
     "esquery": "^1.0.1",
     "pascal-case": "^2.0.1"
   },
   "peerDependencies": {
-    "@tractor/core": "^1.0.1-beta.2"
+    "@tractor/core": "^1.0.1-beta.3"
   },
   "devDependencies": {
-    "@babel/cli": "^7.0.0-beta.39",
-    "@babel/core": "^7.0.0-beta.39",
-    "@babel/plugin-proposal-export-default-from": "^7.0.0-beta.39",
-    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.39",
-    "@babel/polyfill": "^7.0.0-beta.39",
-    "@babel/preset-env": "^7.0.0-beta.39",
-    "@babel/register": "^7.0.0-beta.39",
-    "@tractor/cli": "^1.0.1-beta.2",
-    "@tractor/core": "^1.0.1-beta.2",
-    "@tractor/unit-test": "^1.0.1-beta.2",
-    "@tractor-plugins/mocha-specs": "^0.1.0",
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-proposal-export-default-from": "^7.0.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "@babel/polyfill": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/register": "^7.0.0",
+    "@tractor/cli": "^1.0.1-beta.3",
+    "@tractor/core": "^1.0.1-beta.3",
+    "@tractor/unit-test": "^1.0.1-beta.3",
+    "@tractor-plugins/mocha-specs": "^0.2.0",
     "babel-eslint": "^8.2.6",
     "babel-loader": "8.0.0-beta.2",
     "camel-case": "^3.0.0",
