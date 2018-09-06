@@ -6,6 +6,9 @@ module.exports = {
         directory: './src/tractor/client',
         reportsDirectory: './reports/tractor'
     },
+    mockRequests: {
+        directory: './test'
+    },
     pageObjects: {
         directory: './src/tractor/client/',
         include: {
