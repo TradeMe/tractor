@@ -48,3 +48,10 @@ tractor-page-objects > div {
     display: inline-block;
     margin-bottom: .5rem;
 }
+
+.unused {
+    background: rgba(255, 100, 0, 1);
+    padding: 0.5rem;
+    color: white;
+    margin-bottom: .5rem;
+}

@@ -7,6 +7,7 @@ import { ELEMENT_ACTIONS } from '../models/meta/element-actions';
 import './filter';
 
 function createDeprecatedElementModelConstructor (
+    ActionMetaModel,
     DeprecatedFilterModel,
     astCreatorService,
     stringToLiteralService
@@ -45,7 +46,7 @@ function createDeprecatedElementModelConstructor (
             }
         });
 
-        this.actions = ELEMENT_ACTIONS;
+        this.actions = ELEMENT_ACTIONS.map(action => new ActionMetaModel(action));
         this.name = '';
         this.filters = [];
         this.sortableFilters = [];

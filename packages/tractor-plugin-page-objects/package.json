@@ -1,6 +1,6 @@
 {
   "name": "@tractor-plugins/page-objects",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "tractor plugin for manipulating Page Objects",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -47,7 +47,7 @@
     "pascal-case": "^2.0.1"
   },
   "peerDependencies": {
-    "@tractor/core": "^1.0.0-alpha.15"
+    "@tractor/core": "^1.0.1-beta.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.39",
@@ -57,9 +57,10 @@
     "@babel/polyfill": "^7.0.0-beta.39",
     "@babel/preset-env": "^7.0.0-beta.39",
     "@babel/register": "^7.0.0-beta.39",
-    "@tractor/cli": "^1.0.0-alpha.15",
-    "@tractor/core": "^1.0.0-alpha.15",
-    "@tractor/unit-test": "^1.0.0-alpha.15",
+    "@tractor/cli": "^1.0.1-beta.2",
+    "@tractor/core": "^1.0.1-beta.2",
+    "@tractor/unit-test": "^1.0.1-beta.2",
+    "@tractor-plugins/mocha-specs": "^0.1.0",
     "babel-eslint": "^8.2.6",
     "babel-loader": "8.0.0-beta.2",
     "camel-case": "^3.0.0",

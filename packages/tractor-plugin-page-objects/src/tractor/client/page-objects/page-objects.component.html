@@ -83,10 +83,19 @@
                                 <li
                                     class="file-editor__list-item"
                                     ng-repeat="domElement in $ctrl.fileModel.domElements"
-                                    ng-class="{ 'file-editor__list-item--minimised': domElement.minimised }"
+                                    ng-class="{ 
+                                        'file-editor__list-item--minimised': domElement.minimised
+                                    }"
                                     as-sortable-item>
 
                                     <h3 class="file-editor__list-item-name">{{ domElement.name }}</h3>
+                                    <!-- TODO: Implement this server-side -->
+                                    <!-- <div
+                                        ng-if="!domElement.unused"
+                                        class="unused">
+                                        <p>This element is not currently used by any actions.</p>
+                                        <p>You might want to delete it.</p>
+                                    </div> -->
 
                                     <tractor-action
                                         model="$ctrl.fileModel"
@@ -117,8 +126,7 @@
 
                                     <div
                                         ng-if="!domElement.isUnparseable">
-                                        <section
-                                            class="file-editor__list-item"
+                                        <div
                                             ng-if="domElement.isDeprecated">
                                             <div
                                                 class="deprecated">
@@ -191,7 +199,7 @@
                                                     action="Add filter">
                                                 </tractor-action>
                                             </section>
-                                        </section>
+                                        </div>
 
                                         <section
                                             ng-if="!domElement.isDeprecated">

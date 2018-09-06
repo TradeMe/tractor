@@ -7,11 +7,13 @@ Plugin for [**tractor**](https://github.com/TradeMe/tractor) for creating [**Pag
 [![Code Climate](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-page-objects/badges/gpa.svg)](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-page-objects)
 [![Test Coverage](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-page-objects/coverage.svg)](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-page-objects/coverage)
 
-# How to install:
+## How to install
 
-`npm install @tractor-plugins/page-objects --dev`
+```sh
+npm install @tractor-plugins/page-objects --dev
+```
 
-# Config:
+## Config
 
 ```javascript
 // tractor.conf.js
@@ -29,7 +31,7 @@ module.exports = {
 
 For more information [see here](./docs/configuration.md)∏
 
-# What does this plugin do?
+## What does this plugin do?
 
 A **Page Object** is a class that describes the behaviour of a part of a application. There has been a [lot](https://github.com/SeleniumHQ/selenium/wiki/PageObjects) [of](https://martinfowler.com/bliki/PageObject.html) [stuff](https://www.pluralsight.com/guides/software-engineering-best-practices/getting-started-with-page-object-pattern-for-your-selenium-tests) written about them already! This plugin encapsulates the best ideas of Page Objects and makes it really, really easy to create and modify them.
 
@@ -39,7 +41,7 @@ This plugin provides a UI for describing **Page Object** classes with **Elements
 
 ![tractor-page-objects action parameter](https://github.com/phenomnomnominal/tractor-plugin-page-objects/tree/master/docs/assets/tractor-page-objects%20action%20parameter.png)
 
-```
+```javascript
 /*{"name":"tractor-page-objects action parameter","elements":[{"name":"name input"},{"name":"remove parameter button"}],"actions":[{"name":"add parameter","parameters":[{"name":"name"}]},{"name":"remove parameter","parameters":[]}],"version":"0.5.2"}*/
 module.exports = function () {
     var TractorPageObjectsActionParameter = function TractorPageObjectsActionParameter(parent) {
@@ -67,30 +69,30 @@ module.exports = function () {
 }();
 ```
 
-# Development:
+You'll probably want to use it with [@tractor-plugins/mocha-specs](https://github.com/phenomnomnominal/tractor-plugin-mocha-specs).
+
+## Development
 
 To set up development:
 
-```
-npm install // install dependencies
-npm run dev // link dependencies
+```sh
+npm install # install dependencies
+npm run dev # link dependencies
 tractor init
 ```
 
 To run plugin:
 
-```
-mkdir test
-npm run tractor:test // in one tab
-npm run tractor // in another tab
+```sh
+npm run tractor:test # in one tab
+npm run tractor # in another tab
 ```
 
 To run tests:
 
-```
-mkdir test
-npm run tractor:test // in one tab
-npm run test:e2e // in another tab
+```sh
+npm run tractor:test # in one tab
+npm run test:e2e # in another tab
 ```
 
 If you care, maybe check out the [design decisions document](https://github.com/phenomnomnominal/tractor-plugin-page-objects/tree/master/docs/design%20decisions.md) 😎
