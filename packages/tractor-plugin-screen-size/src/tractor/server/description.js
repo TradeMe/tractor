@@ -9,5 +9,15 @@ export const description = {
             required: true
         }],
         returns: 'promise'
+    }, {
+        name: 'get height',
+        description: 'Get the height of the viewport',
+        parameters: [],
+        returns: 'promise'
+    }, {
+        name: 'get width',
+        description: 'Get the width of the viewport',
+        parameters: [],
+        returns: 'promise'
     }]
 };

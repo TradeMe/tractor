@@ -1,7 +1,5 @@
-/* global describe:true, it:true */
-
 // Test setup:
-import { expect, Promise, sinon } from '@tractor/unit-test';
+import { expect, ineeda } from '@tractor/unit-test';
 
 // Dependencies:
 import { TractorError } from '@tractor/error-handler';
@@ -9,97 +7,87 @@ import { TractorError } from '@tractor/error-handler';
 // Under test:
 import { ScreenSize } from './screen-size';
 
-describe('tractor-plugin-screen-size - ScreenSize:', () => {
+describe('@tractor-plugins/screen-size - ScreenSize:', () => {
     describe('ScreenSize.setSize', () => {
-        it('should set the size of the browser window', () => {
-            let window = {
-                setSize: () => {}
-            };
-            let browser = {
+        it('should set the size of the browser window', async () => {
+            const window = ineeda({
+                setSize: () => Promise.resolve(),
+                getSize: () => Promise.resolve({ width: 320, height: 480 })
+            });
+            const browser = {
                 driver: {
                     manage: () => ({
                         window: () => window
                     })
                 }
             };
-            let config = {
+            const config = {
                 screenSizes: {
                     sm: { width: 320, height: 480 }
                 }
             };
-            let screenSize = new ScreenSize(browser, config);
+            const screenSize = new ScreenSize(browser, config);
 
-            sinon.stub(window, 'setSize').returns(Promise.resolve());
-
-            return screenSize.setSize('sm')
-            .then(() => {
-                expect(window.setSize).to.have.been.calledWith(320, 480);
-            });
+            await screenSize.setSize('sm');
+            expect(window.setSize).to.have.been.calledWith(320, 480);
         });
 
-        it('should fall back to the default height', () => {
-            let window = {
-                setSize: () => {}
-            };
-            let browser = {
+        it('should fall back to the default height', async () => {
+            const window = ineeda({
+                setSize: () => Promise.resolve(),
+                getSize: () => Promise.resolve({ width: 480, height: 1000 })
+            });
+            const browser = {
                 driver: {
                     manage: () => ({
                         window: () => window
                     })
                 }
             };
-            let config = {
+            const config = {
                 screenSizes: {
-                    sm: { width: 320 }
+                    sm: { width: 480 }
                 }
             };
-            let screenSize = new ScreenSize(browser, config);
+            const screenSize = new ScreenSize(browser, config);
 
-            sinon.stub(window, 'setSize').returns(Promise.resolve());
-
-            return screenSize.setSize('sm')
-            .then(() => {
-                expect(window.setSize).to.have.been.calledWith(320, 1000);
-            });
+            await screenSize.setSize('sm');
+            expect(window.setSize).to.have.been.calledWith(480, 1000);
         });
 
-        it('should set just the width if only one number is given', () => {
-            let window = {
-                setSize: () => {}
-            };
-            let browser = {
+        it('should set just the width if only one number is given', async () => {
+            const window = ineeda({
+                setSize: () => Promise.resolve(),
+                getSize: () => Promise.resolve({ width: 480, height: 1000 })
+            });
+            const browser = {
                 driver: {
                     manage: () => ({
                         window: () => window
                     })
                 }
             };
-            let config = {
+            const config = {
                 screenSizes: {
-                    sm: 320
+                    sm: 480
                 }
             };
-            let screenSize = new ScreenSize(browser, config);
+            const screenSize = new ScreenSize(browser, config);
 
-            sinon.stub(window, 'setSize').returns(Promise.resolve());
-
-            return screenSize.setSize('sm')
-            .then(() => {
-                expect(window.setSize).to.have.been.calledWith(320, 1000);
-            });
+            await screenSize.setSize('sm');
+            expect(window.setSize).to.have.been.calledWith(480, 1000);
         });
 
-        it(`should throw an error if dimensions aren't given for a size`, () => {
-            let browser = {};
-            let config = {
-                screenSizes: {}
-            };
-            let screenSize = new ScreenSize(browser, config);
+        it(`should throw an error if dimensions aren't given for a size`, async () => {
+            const browser = ineeda();
+            const config = ineeda();
+            const screenSize = new ScreenSize(browser, config);
 
-            return screenSize.setSize('sm')
-            .catch(e => {
-                expect(e).to.deep.equal(new TractorError('Cannot find a screen size configuration for "sm"'));
-            });
+            try {
+                await screenSize.setSize('sm');
+            } catch (error) {
+                expect(error).to.deep.equal(new TractorError('Cannot find a screen size configuration for "sm"'));
+            }
         });
-    })
+    });
 });

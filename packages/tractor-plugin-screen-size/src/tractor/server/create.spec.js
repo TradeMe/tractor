@@ -1,5 +1,3 @@
-/* global describe:true, it:true */
-
 // Test setup:
 import { expect } from '@tractor/unit-test';
 
@@ -9,7 +7,7 @@ import { ScreenSize } from './screen-size/screen-size';
 // Under test:
 import { create } from './create';
 
-describe('tractor-plugin-screen-size - create:', () => {
+describe('@tractor-plugins/screen-size - create:', () => {
     it('should make a new ScreenSize', () => {
         let browser = {};
         let config = {};
