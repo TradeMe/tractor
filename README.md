@@ -8,11 +8,11 @@ A UI around [Protractor](http://angular.github.io/protractor/) to help write E2E
 [![Test Coverage](https://codeclimate.com/github/TradeMe/tractor/coverage.svg)](https://codeclimate.com/github/TradeMe/tractor/coverage)
 [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://github.com/TradeMe/tractor)
 
-## Install:
+## Install
 
 To install the cli, run the following:
 
-```
+```sh
 npm install -g @tractor/cli
 ```
 
@@ -20,7 +20,7 @@ That will install the global binary, which will allow you to run the `tractor` c
 
 From there, you should navigate to the root directory of your Angular app and run:
 
-```
+```sh
 tractor init
 ```
 
@@ -29,13 +29,13 @@ The initialisation can be configured with a `tractor.conf.js` file (described in
 
 Once everything has been initialised, you need to start the `tractor` application from the root directory of your app with:
 
-```
+```sh
 tractor start
 ```
 
 The app should then be available running at [http://localhost:4000](http://localhost:4000). The port can be configured in the `tractor.conf.js` file.
 
-## Config:
+## Config
 
 If you want to change the port that `tractor` runs at, or the file where it stores the generated files, you need to add a `tractor.conf.js` file in the root of your app directory, which should look something like the following:
 

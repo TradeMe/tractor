@@ -36,7 +36,7 @@
     "title-case": "^2.1.1"
   },
   "peerDependencies": {
-    "@tractor/core": "^1.0.0-alpha.15"
+    "@tractor/core": "^1.0.1-beta.2"
   },
   "devDependencies": {
     "@tractor/error-handler": "^1.0.1-beta.2",
