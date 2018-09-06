@@ -21,7 +21,6 @@ export function plugin (protractorConfig) {
     let specGlob = path.join(process.cwd(), tractorConfig.mochaSpecs.directory, '**/*.e2e-spec.js');
 
     protractorConfig.framework = 'mocha';
-    const originalSpecs = protractorConfig.specs ? [...protractorConfig.specs]: null;
     protractorConfig.specs = protractorConfig.specs || [specGlob];
 
     protractorConfig.mochaOpts = protractorConfig.mochaOpts || {};

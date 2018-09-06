@@ -1,9 +1,9 @@
 /*{"name":"Tests","tests":[{"name":"Create test"},{"name":"Create test with \"only\""},{"name":"Create test with \"skip\""}],"version":"0.1.0"}*/
 describe('Tests', function () {
     it('Create test', function () {
+        var TractorMochaSpecs = require('./tractor-mocha-specs.po.js'), tractorMochaSpecs = new TractorMochaSpecs();
         var Tractor = require('../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
         var ControlPanel = require('../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
-        var TractorMochaSpecs = require('./tractor-mocha-specs.po.js'), tractorMochaSpecs = new TractorMochaSpecs();
         var step = Promise.resolve();
         step = step.then(function () {
             var element;
@@ -39,9 +39,9 @@ describe('Tests', function () {
         return step;
     });
     it('Create test with "only"', function () {
+        var TractorMochaSpecs = require('./tractor-mocha-specs.po.js'), tractorMochaSpecs = new TractorMochaSpecs();
         var Tractor = require('../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
         var ControlPanel = require('../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
-        var TractorMochaSpecs = require('./tractor-mocha-specs.po.js'), tractorMochaSpecs = new TractorMochaSpecs();
         var step = Promise.resolve();
         step = step.then(function () {
             var element;
@@ -89,9 +89,9 @@ describe('Tests', function () {
         return step;
     });
     it('Create test with "skip"', function () {
+        var TractorMochaSpecs = require('./tractor-mocha-specs.po.js'), tractorMochaSpecs = new TractorMochaSpecs();
         var Tractor = require('../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
         var ControlPanel = require('../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
-        var TractorMochaSpecs = require('./tractor-mocha-specs.po.js'), tractorMochaSpecs = new TractorMochaSpecs();
         var step = Promise.resolve();
         step = step.then(function () {
             var element;

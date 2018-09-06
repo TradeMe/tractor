@@ -21,11 +21,13 @@ function createSelectorModelConstructor (
         }
 
         set elementGroup (newElementGroup) {
-            this._elementGroup = newElementGroup;
-            this._type = this.step.test.spec.availablePageObjects.find(pageObject => {
-                return pageObject.name === this.elementGroup.type;
-            });
-            this.step.elementType = this.type;
+            if (newElementGroup) {
+                this._elementGroup = newElementGroup;
+                this._type = this.step.test.spec.availablePageObjects.find(pageObject => {
+                    return pageObject.name === this.elementGroup.type;
+                });
+                this.step.elementType = this.type;    
+            }
         }
 
         get type () {

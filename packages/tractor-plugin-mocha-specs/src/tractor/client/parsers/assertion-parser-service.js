@@ -23,7 +23,7 @@ function AssertionParserService (
 
     function _parseAssertion (assertion, astObject) {
         let [argument] = esquery(astObject, ASSERTION_ARGUMENT_QUERY);
-        assertion.expectedResult.value = argument && argument.value.toString();
+        assertion.expectedResult.value = argument && argument.value ? argument.value.toString() : null;
 
         let [condition] = esquery(astObject, ASSERTION_CONDITION_QUERY);
         assertion.condition = condition && condition.name;

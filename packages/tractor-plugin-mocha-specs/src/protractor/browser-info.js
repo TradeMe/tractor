@@ -16,7 +16,7 @@ async function getBrowserLog (browser, test) {
         if (browserLog.length > 0) {
             info('Browser console output:');
             browserLog.forEach(log => {
-                consoleOutput += `{log.message}\n`;
+                consoleOutput += `${log.message}\n`;
                 error(log.message);
             });
         }

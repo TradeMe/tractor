@@ -44,6 +44,12 @@ function StepParserService (
 
     function _stepParser (test, astObject) {
         let step = new SpecStepModel(test);
+        
+        let [mockRequest] = esquery(astObject, MOCK_REQUEST_QUERY);
+        if (mockRequest) {
+            step = mockRequestParserService.parse(test, mockRequest);
+            return step;
+        }
 
         let [pageObject] = esquery(astObject, PAGE_OBJECT_QUERY);
         if (!pageObject) {
@@ -67,12 +73,6 @@ function StepParserService (
             _parseStepPageObject(step, pageObject);
             selectors.forEach(selector => _parseSelector(step, selector));
             _parseStepAction(step, interaction);
-            return step;
-        }
-        
-        let [mockRequest] = esquery(astObject, MOCK_REQUEST_QUERY);
-        if (mockRequest) {
-            step = mockRequestParserService.parse(test, mockRequest);
             return step;
         }
 

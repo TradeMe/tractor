@@ -30,9 +30,11 @@ function createStepModelConstructor (
         }
 
         set pageObject (newPageObject) {
-            this._pageObject = newPageObject;
-            this.selectors = [];
-            [this.action] = this.pageObject.actions;
+            if (newPageObject) {
+                this._pageObject = newPageObject;
+                this.selectors = [];
+                [this.action] = this.pageObject.actions;    
+            }
         }
 
         get action () {
@@ -40,8 +42,10 @@ function createStepModelConstructor (
         }
 
         set action (newAction) {
-            this._action = newAction;
-            this.arguments = this._parseArguments();
+            if (newAction) {
+                this._action = newAction;
+                this.arguments = this._parseArguments();    
+            }
         }
 
         get arguments () {
@@ -49,7 +53,9 @@ function createStepModelConstructor (
         }
 
         set arguments (newArguments) {
-            this._arguments = newArguments;
+            if (newArguments) {
+                this._arguments = newArguments;
+            }
         }
 
         get elementType () {
@@ -57,12 +63,14 @@ function createStepModelConstructor (
         }
 
         set elementType (newElementType) {
-            this._elementType = newElementType;
-            const lastSelectorIndex = this.selectors.findIndex(selector => selector.type === this.elementType);
-            if (lastSelectorIndex >= 0 && lastSelectorIndex < this.selectors.length) {
-                this.selectors.length = lastSelectorIndex + 1;
+            if (newElementType) {
+                this._elementType = newElementType;
+                const lastSelectorIndex = this.selectors.findIndex(selector => selector.type === this.elementType);
+                if (lastSelectorIndex >= 0 && lastSelectorIndex < this.selectors.length) {
+                    this.selectors.length = lastSelectorIndex + 1;
+                }
+                [this.action] = this.elementType.actions;    
             }
-            [this.action] = this.elementType.actions;
         }
 
         addSelector () {

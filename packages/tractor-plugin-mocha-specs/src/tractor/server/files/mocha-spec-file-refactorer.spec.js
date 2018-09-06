@@ -15,7 +15,7 @@ import { MochaSpecFile } from './mocha-spec-file';
 import { MochaSpecFileRefactorer } from './mocha-spec-file-refactorer';
 
 describe('@tractor-plugins/mocha-spec: mocha-spec-file-refactorer:', () => {
-    describe('MochaSpecFileRefactorer.referenceNameChange', () => {
+    describe('MochaSpecFileRefactorer.fileNameChange', () => {
         it('should update the name of the file in a mocha spec', async () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
             let file = new MochaSpecFile(path.join(path.sep, 'file-structure', 'directory', 'file.e2e-spec.js'), fileStructure);

@@ -2,7 +2,9 @@
 import { MochaSpecsModule } from '../mocha-specs.module';
 
 // Queries:
-const TEST_QUERY = 'ExpressionStatement > CallExpression[callee.name="describe"] > FunctionExpression > BlockStatement > ExpressionStatement';
+const SUITE_QUERY = 'ExpressionStatement > CallExpression[callee.name="describe"]';
+const SUITE_NAME_QUERY = `${SUITE_QUERY} > Literal`;
+const TEST_QUERY = `${SUITE_QUERY} > FunctionExpression > BlockStatement > ExpressionStatement`;
 
 // Dependencies:
 import esquery from 'esquery';
@@ -42,11 +44,17 @@ function MochaSpecParserService (
 
         let state = persistentStateService.get(mochaSpec.name);
 
+        let [suiteName] = esquery(astObject, SUITE_NAME_QUERY);
+        if (suiteName) {
+            mochaSpec.suiteName = suiteName.value;
+        }
+
         let tests = esquery(astObject, TEST_QUERY);
         tests.forEach(testASTObject => {
             let testMeta = meta.tests[mochaSpec.tests.length];
             let test = testParserService.parse(mochaSpec, testASTObject, testMeta);
-            test.minimised = !!state[test.name];
+            const minimised = state[test.name];
+            test.minimised = minimised == null ? true : !!minimised;
             mochaSpec.tests.push(test);
         });
 

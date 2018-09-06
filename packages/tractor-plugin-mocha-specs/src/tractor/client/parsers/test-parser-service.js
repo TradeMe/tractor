@@ -21,7 +21,9 @@ function TestParserService (
     function parse (spec, astObject, meta) {
         let test = new TestModel(spec);
 
-        test.name = meta.name;
+        if (meta && meta.name) {
+            test.name = meta.name;
+        }
 
         let [only] = esquery(astObject, ONLY_QUERY);
         test.only = !!only;

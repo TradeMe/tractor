@@ -7,17 +7,19 @@ Plugin for [**tractor**](https://github.com/TradeMe/tractor) for creating E2E te
 [![Code Climate](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-mocha-specs/badges/gpa.svg)](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-mocha-specs)
 [![Test Coverage](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-mocha-specs/coverage.svg)](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-mocha-specs/coverage)
 
-# How to install:
+## How to install
 
-`npm install @tractor-plugins/mocha-specs --dev`
+```sh
+npm install @tractor-plugins/mocha-specs --dev
+```
 
-# Config:
+## Config
 
 ```javascript
 // tractor.conf.js
 module.exports = {
     // ...
-    mocha: {
+    mochaSpecs: {
 
     },
     // ...
@@ -26,29 +28,26 @@ module.exports = {
 
 For more information [see here](./docs/configuration.md)
 
-# Development:
+## Development
 
 To set up development:
 
-```
-npm install // install dependencies
-npm link // enable linking
-npm link "@tractor-plugins/mocha-specs" // link plugin to use itself
+```sh
+npm install # install dependencies
+npm run dev # link dependencies
 tractor init
 ```
 
 To run plugin:
 
-```
-mkdir test
-npm run tractor:test // in one tab
-npm run tractor // in another tab
+```sh
+npm run tractor:test # in one tab
+npm run tractor # in another tab
 ```
 
 To run tests:
 
-```
-mkdir test
-npm run tractor:test // in one tab
-npm run test:e2e // in another tab
+```sh
+npm run tractor:test # in one tab
+npm run test:e2e # in another tab
 ```

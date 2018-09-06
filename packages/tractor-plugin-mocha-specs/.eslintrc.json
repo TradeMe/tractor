@@ -5,6 +5,7 @@
     "extends": "eslint:recommended",
     "parser": "babel-eslint",
     "globals": {
+        "Map": true,
         "Promise": true,
         "Set": true,
         "describe": true,

@@ -85,7 +85,16 @@
                 <p>
             </div>
             <section
-                ng-if="!$ctrl.fileModel.isUnparseable && $ctrl.fileModel.name"
+                ng-if="!$ctrl.fileModel.isUnparseable && $ctrl.fileModel.name">
+                <section
+                    class="file-editor__container">
+                    <tractor-text-input
+                        form="fileEditor"
+                        label="Suite name"
+                        model="$ctrl.fileModel"
+                        example="Suite">
+                    </tractor-text-input>
+                </section>
                 <section
                     class="file-editor__container">
                     <h2>
@@ -127,7 +136,7 @@
                             </div>
 
                             <section
-                                ng-if="!test.isUnparseable">
+                                ng-if="!test.isUnparseable && !test.minimised">
 
                                 <tractor-text-input
                                     form="fileEditor"
@@ -157,7 +166,7 @@
                                 </tractor-text-input>
                             </section>
                             <section
-                                ng-if="!test.isUnparseable">
+                                ng-if="!test.isUnparseable && !test.minimised">
 
                                 <h3>
                                     Steps:
@@ -276,6 +285,12 @@
                                                 title="Drag to sort">
                                             </div>
 
+
+                                            <a
+                                                class="file-editor__list-item-reference file-editor__list-item-reference--element-type"
+                                                title="{{ step.pageObject.name }}"
+                                                ui-sref="tractor.file({ file: step.pageObject })">
+                                            </a>
                                             <tractor-select
                                                 form="fileEditor"
                                                 label="Page Object"
@@ -285,6 +300,11 @@
                                             </tractor-select>
                                             <div
                                                 ng-repeat="selector in step.selectors">
+                                                <a
+                                                    class="file-editor__list-item-reference file-editor__list-item-reference--element-type"
+                                                    title="{{ selector.elementGroup.type.name }}"
+                                                    ui-sref="tractor.file({ file: selector.type })">
+                                                </a>
                                                 <tractor-select
                                                     form="fileEditor"
                                                     label="Element Group"

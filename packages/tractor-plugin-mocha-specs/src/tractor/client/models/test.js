@@ -57,7 +57,7 @@ function createTestModelConstructor (
         _toAST () {
             let ast = astCreatorService;
 
-            let mockData = this._toMockDataASTs();
+            let mockRequests = this._toMockRequestASTs();
             let pageObjects = this._toPageObjectASTs();
             let name = ast.literal(this.name);
             let steps = this.steps.map(step => step.ast);
@@ -71,7 +71,7 @@ function createTestModelConstructor (
             }
 
             template += `(<%= name %>, function () {
-                    %= mockData %;
+                    %= mockRequests %;
                     %= pageObjects %;
 
                     var step = Promise.resolve();
@@ -80,15 +80,16 @@ function createTestModelConstructor (
                 });
             `;
 
-            return ast.template(template, { mockData, name, pageObjects, steps });
+            return ast.template(template, { mockRequests, name, pageObjects, steps });
         }
 
-        _toMockDataASTs () {
+        _toMockRequestASTs () {
             let ast = astCreatorService;
 
             let template = 'var <%= variableName %> = require(<%= url %>);';
 
-            let mockRequests = Array.from(new Set(this.steps.filter(step => step.data).map(step => step.data)));
+            let mockRequests = Array.from(new Set(this.steps.filter(step => step.data && !step.passThrough).map(step => step.data)));
+            mockRequests.sort((a, b) => this._sortByPaths(a, b));
             return mockRequests.map(mockRequest => {
                 let variableName = ast.identifier(mockRequest.variableName);
                 let url = ast.literal(this._getRelativePath(mockRequest));
@@ -101,11 +102,12 @@ function createTestModelConstructor (
 
             let template = 'var <%= variableName %> = require(<%= url %>), <%= instanceName %> = new <%= variableName %> ();';
 
-            let pageObjects = this.steps
+            let pageObjects = Array.from(new Set(this.steps
                 .filter(step => step.pageObject)
                 .map(step => step.pageObject)
-                .filter(pageObject => !pageObject.isPlugin);
-            return Array.from(new Set(pageObjects)).map(pageObject => {
+                .filter(pageObject => !pageObject.isPlugin)));
+            pageObjects.sort((a, b) => this._sortByPaths(a, b));
+            return pageObjects.map(pageObject => {
                 let variableName = ast.identifier(pageObject.variableName);
                 let instanceName = ast.identifier(pageObject.instanceName);
                 let url = ast.literal(this._getRelativePath(pageObject));
@@ -130,6 +132,14 @@ function createTestModelConstructor (
                 relative = `./${relative}`;
             }
             return relative;
+        }
+
+        _sortByPaths (a, b) {
+            const pathA = this._getRelativePath(a);
+            const pathB = this._getRelativePath(b);
+            if(pathA > pathB) return -1;
+            if(pathA < pathB) return 1;
+            return 0;
         }
     };
 }

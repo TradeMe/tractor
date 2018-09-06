@@ -34,6 +34,14 @@ function createMochaSpecModelConstructor (
             return this.name ? this._toMeta() : null;
         }
 
+        get suiteName () {
+            return this._suiteName ? this._suiteName : this.name;
+        }
+
+        set suiteName (newSuiteName) {
+            this._suiteName = newSuiteName;
+        }
+
         addTest () {
             this.tests.push(new TestModel(this));
         }
@@ -53,7 +61,7 @@ function createMochaSpecModelConstructor (
         _toAST () {
             let ast = astCreatorService;
 
-            let name = ast.literal(this.name);
+            let name = ast.literal(this.suiteName);
             let tests = this.tests.map(test => test.ast);
 
             let template = `
