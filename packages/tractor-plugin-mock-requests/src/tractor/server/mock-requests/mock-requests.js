@@ -16,13 +16,13 @@ export class MockRequests {
     ) {
         this.browser = browser;
         this.config = config;
-        this.initialised = false;
 
         addMethods.call(this);
         monkeypatchGet.call(this);
     }
 
     clear () {
+        this.initialised = false;
         return this.browser.executeScript(INIT);
     }
 }

@@ -11,6 +11,9 @@ export function plugin (protractorConfig) {
             setup () {
                 return serve(global.browser.baseUrl, tractorConfig.mockRequests);
             },
+            postTest () {
+                global.mockRequests.clear();
+            },
             teardown () {
                 return close();
             }
