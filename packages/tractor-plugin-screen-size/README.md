@@ -26,26 +26,26 @@ module.exports = {
 
 You can also use the `screenSize.setSize` method in a test. It takes a `string` which should be the name of the size from your config, e.g. 'sm' or 'md' with the config from above.
 
-# Development
+## Development
 
 To set up development:
 
-```
-npm install // install dependencies
-npm run dev // link dependencies
+```sh
+npm install # install dependencies
+npm run dev # link dependencies
 tractor init
 ```
 
 To run plugin:
 
-```
-npm run tractor:test // in one tab
-npm run tractor // in another tab
+```sh
+npm run tractor:test # in one tab
+npm run tractor # in another tab
 ```
 
 To run tests:
 
-```
-npm run tractor:test // in one tab
-npm run test:e2e // in another tab
+```sh
+npm run tractor:test # in one tab
+npm run test:e2e # in another tab
 ```
