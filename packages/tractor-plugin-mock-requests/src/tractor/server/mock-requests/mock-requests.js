@@ -2,7 +2,7 @@
 const METHODS = ['DELETE', 'GET', 'HEAD', 'PATCH', 'POST', 'PUT'];
 
 // Dependencies:
-import fs from 'graceful-fs';
+import fs from 'fs';
 import path from 'path';
 import { setProxyConfig } from '../utilities';
 

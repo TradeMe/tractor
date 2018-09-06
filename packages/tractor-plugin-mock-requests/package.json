@@ -1,6 +1,6 @@
 {
   "name": "@tractor-plugins/mock-requests",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "tractor plugin for mocking HTTP/Fetch requests",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -41,7 +41,6 @@
     "build": "src/**/*.js"
   },
   "dependencies": {
-    "bluebird": "^3.5.1",
     "body-parser": "^1.18.3",
     "camel-case": "^3.0.0",
     "cheerio": "^1.0.0-rc.2",
@@ -50,40 +49,39 @@
     "express-http-proxy": "^1.2.0",
     "fake-xml-http-request": "^1.6.0",
     "fetch-mock": "^5.13.1",
-    "mochawesome": "^3.0.2",
     "pascal-case": "^2.0.1",
     "pem": "^1.12.5",
-    "request": "^2.87.0",
+    "request": "^2.88.0",
     "request-promise-native": "^1.0.5"
   },
   "peerDependencies": {
-    "@tractor/core": "^1.0.1-beta.2"
+    "@tractor/core": "^1.0.1-beta.3"
   },
   "devDependencies": {
-    "@babel/cli": "^7.0.0-beta.39",
-    "@babel/core": "^7.0.0-beta.39",
-    "@babel/plugin-proposal-export-default-from": "^7.0.0-beta.39",
-    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.39",
-    "@babel/polyfill": "^7.0.0-beta.39",
-    "@babel/preset-env": "^7.0.0-beta.39",
-    "@babel/register": "^7.0.0-beta.39",
-    "@tractor-plugins/page-objects": "^0.5.2",
-    "@tractor-plugins/mocha-specs": "^0.1.0",
-    "@tractor/cli": "^1.0.1-beta.2",
-    "@tractor/unit-test": "^1.0.1-beta.2",
-    "babel-eslint": "^8.2.5",
-    "babel-loader": "^8.0.0-beta.0",
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-proposal-export-default-from": "^7.0.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "@babel/polyfill": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/register": "^7.0.0",
+    "@tractor-plugins/mocha-specs": "^0.2.0",
+    "@tractor-plugins/page-objects": "^0.5.3",
+    "@tractor/cli": "^1.0.1-beta.3",
+    "@tractor/unit-test": "^1.0.1-beta.3",
+    "babel-eslint": "^9.0.0",
+    "babel-loader": "^8.0.2",
+    "babel-plugin-angularjs-annotate": "^0.9.0",
     "css-loader": "^1.0.0",
-    "eslint": "^5.0.1",
+    "eslint": "^5.5.0",
     "html-loader": "^0.5.1",
     "istanbul": "^1.1.0-alpha.1",
     "mkdirp": "^0.5.1",
     "mocha": "^5.2.0",
-    "ng-annotate-loader": "^0.6.1",
     "npm-watch": "^0.3.0",
     "rimraf": "^2.6.2",
-    "url-loader": "^1.0.1",
-    "webpack": "^4.15.1",
-    "webpack-cli": "^3.0.8"
+    "url-loader": "^1.1.1",
+    "webpack": "^4.17.2",
+    "webpack-cli": "^3.1.0"
   }
 }

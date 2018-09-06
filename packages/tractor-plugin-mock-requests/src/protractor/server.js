@@ -1,11 +1,10 @@
 // Dependencies:
 import { info } from '@tractor/logger';
-import Promise from 'bluebird';
 import bodyParser from 'body-parser';
 import cheerio from 'cheerio';
 import express from 'express';
 import proxy from 'express-http-proxy';
-import fs from 'graceful-fs';
+import fs from 'fs';
 import http from 'http';
 import path from 'path';
 import zlib from 'zlib';
