@@ -1,6 +1,6 @@
 {
   "name": "@tractor-plugins/page-objects",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "description": "tractor plugin for manipulating Page Objects",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -34,7 +34,7 @@
     "pretractor:test": "npm run test:setup",
     "tractor:test": "tractor start --config=\"./test.tractor.conf.js\"",
     "watch": "npm-watch",
-    "webdriver": "webdriver-manager update"
+    "webdriver": "webdriver-manager update && tractor patch"
   },
   "watch": {
     "build": "src/**/*.js"
@@ -63,6 +63,7 @@
     "@tractor/unit-test": "^1.0.1-beta.3",
     "babel-eslint": "^9.0.0",
     "babel-loader": "^8.0.2",
+    "babel-plugin-angularjs-annotate": "^0.9.0",
     "camel-case": "^3.0.0",
     "css-loader": "^1.0.0",
     "escodegen": "^1.11.0",
@@ -71,7 +72,6 @@
     "istanbul": "1.1.0-alpha.1",
     "mkdirp": "^0.5.1",
     "mocha": "^5.2.0",
-    "ng-annotate-loader": "^0.6.1",
     "npm-watch": "^0.3.0",
     "rimraf": "^2.6.2",
     "url-loader": "^1.1.1",
