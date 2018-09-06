@@ -1,6 +1,6 @@
 {
   "name": "@tractor/file-structure",
-  "version": "1.0.1-beta.2",
+  "version": "1.0.1-beta.3",
   "description": "File structure handler for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -40,7 +40,7 @@
     "@tractor/core": "^1.0.1-beta.2"
   },
   "devDependencies": {
-    "@tractor/error-handler": "^1.0.1-beta.2",
-    "@tractor/logger": "^1.0.1-beta.2"
+    "@tractor/error-handler": "^1.0.1-beta.3",
+    "@tractor/logger": "^1.0.1-beta.3"
   }
 }
