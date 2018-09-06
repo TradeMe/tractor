@@ -20,20 +20,20 @@ module.exports = {
 };
 ```
 
-## Options:
+## Options
 
-### `directory: string`:
+### `directory: string`
 
 The path to where your *.mock.json* files will be saved. This defaults to `'./tractor/mock-requests/'`.
 
-### `domain: string`:
+### `domain: string`
 
 The domain to use for the intercepting proxy. This defaults to `'localhost'`.
 
-### `headers: { [name: string]: string }`:
+### `headers: { [name: string]: string }`
 
 Any headers which should be set on all proxied requests. This defaults to `{}`.
 
-### `port: number`:
+### `port: number`
 
 The port to use for the intercepting proxy. This defaults to `8765`.
