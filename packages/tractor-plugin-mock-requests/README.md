@@ -37,7 +37,7 @@ When testing an application, it is often useful to use fake API data. This can s
 
 This plugin provides a mechanism for intercepting XHR and Fetch requests, and allows you to respond with pre-defined responses, based on the request URL. This is done with a proxy that injects the pre-defined responses into your running app, greatly reducing the overhead of a real request. It also provides a UI for creating **JSON** data files which are used as the response.
 
-You'll probably want to us it with [@tractor-plugins/mocha-specs](https://github.com/phenomnomnominal/tractor-plugin-mocha-specs).
+You'll probably want to use it with [@tractor-plugins/mocha-specs](https://github.com/phenomnomnominal/tractor-plugin-mocha-specs).
 
 ## Development
 
