@@ -10,7 +10,7 @@ import * as tractorLogger from '@tractor/logger';
 import { init } from './init';
 
 describe('@tractor-plugins/mock-requests - init:', () => {
-    xit('should create the mock-requests directory', () => {
+    it.skip('should create the mock-requests directory', () => {
         sinon.stub(tractorFileStructure, 'createDir').returns(Promise.resolve());
 
         return init({
@@ -24,7 +24,7 @@ describe('@tractor-plugins/mock-requests - init:', () => {
         });
     });
 
-    xit('should tell the user if the directory already exists', () => {
+    it.skip('should tell the user if the directory already exists', () => {
         sinon.stub(tractorFileStructure, 'createDir').returns(Promise.reject(new TractorError('"/tractor/mock-requests" already exists.')));
         sinon.stub(tractorLogger, 'warn');
 
