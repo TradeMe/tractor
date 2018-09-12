@@ -8,14 +8,14 @@ import { TractorError, handleError } from '@tractor/error-handler';
 
 export function createSaveItemHandler (fileStructure) {
     return async function saveItem (request, response) {
-        let { data, overwrite } = request.body;
-        let itemUrl = request.params[0];
+        const { data, overwrite } = request.body;
+        const itemUrl = request.params[0];
         let itemPath = urlToPath(fileStructure, itemUrl);
 
-        let file = fileStructure.allFilesByPath[itemPath];
-        let directory = fileStructure.allDirectoriesByPath[itemPath];
+        const file = fileStructure.allFilesByPath[itemPath];
+        const directory = fileStructure.allDirectoriesByPath[itemPath];
+        const isDirectory = directory || data == null;
         let toSave = file || directory;
-        let isDirectory = directory || data == null;
 
         if (toSave && !overwrite) {
             itemPath = getCopyPath(toSave);
@@ -23,13 +23,13 @@ export function createSaveItemHandler (fileStructure) {
         }
 
         if (!toSave) {
-            if (isDirectory) {
-                toSave = new Directory(itemPath, fileStructure);
-            } else {
-                let fileConstructor = fileStructure.getFileConstructor(itemPath);
-                toSave = new fileConstructor(itemPath, fileStructure);
-            }
+            toSave = isDirectory ? new Directory(itemPath, fileStructure) : getNewFile(itemPath, fileStructure);
         }
+
+        if (!toSave) {
+            handleError(response, new TractorError(`Could not save "${itemPath}" as it is not a supported file type.`));
+        }
+
         try {
             await toSave.save(data);
             respondOkay(response);
@@ -37,4 +37,12 @@ export function createSaveItemHandler (fileStructure) {
             handleError(response, TractorError.isTractorError(error) ? error : new TractorError(`Could not save "${itemPath}"`));
         }
     };
+}
+
+function getNewFile (itemPath, fileStructure) {
+    const fileConstructor = fileStructure.getFileConstructor(itemPath);
+    if (fileConstructor) {
+        return new fileConstructor(itemPath, fileStructure);
+    }
+    return null;
 }

@@ -5,7 +5,6 @@ import { EventEmitter } from 'events';
 import path from 'path';
 import { DOT_FILE_REGEX, EXTENSION_MATCH_REGEX } from '../utilities';
 import { Directory } from './Directory';
-import { File } from './File';
 import { ReferenceManager } from './ReferenceManager';
 
 // Constants:
@@ -42,7 +41,7 @@ export class FileStructure {
         let fileName = path.basename(filePath);
         let [, fullExtension] = fileName.match(EXTENSION_MATCH_REGEX);
         let extension = path.extname(fileName);
-        return this.fileTypes[fullExtension] || this.fileTypes[extension] || File;
+        return this.fileTypes[fullExtension] || this.fileTypes[extension] || null;
     }
 
     init () {

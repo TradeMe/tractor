@@ -1,5 +1,5 @@
 // Test setup:
-import { expect, sinon } from '@tractor/unit-test';
+import { expect, NOOP, sinon } from '@tractor/unit-test';
 
 // Dependencies:
 import path from 'path';
@@ -70,26 +70,27 @@ describe('@tractor/file-structure - actions/save-item:', () => {
         expect(SpecialTestFile.prototype.save).to.have.been.calledWith('data');
     });
 
-    it('should fall back to the default File', async () => {
-        let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-        let request = {
+    it.skip('should throw if it is an unknown file type', async () => {
+        const fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
+        const filePath = '/directory/file.ext';
+        const request = {
             body: {
                 data: 'data'
             },
-            params: ['/directory/file.ext']
+            params: [filePath]
         };
-        let response = {
-            sendStatus: () => { }
+        const response = {
+            send: NOOP,
+            status: NOOP
         };
-
-        sinon.stub(File.prototype, 'save').resolves();
+        sinon.stub(tractorErrorHandler, 'handleError');
 
         let saveItem = createSaveItemHandler(fileStructure);
         await saveItem(request, response);
 
-        expect(File.prototype.save).to.have.been.calledWith('data');
+        expect(tractorErrorHandler.handleError).to.have.been.calledWith(response, new TractorError(`Could not save "${path.join(fileStructure.path, filePath)}" as it is not a supported file type.`));
 
-        File.prototype.save.restore();
+        tractorErrorHandler.handleError.restore();
     });
 
     it('should save a copy of a file if it already exists', async () => {

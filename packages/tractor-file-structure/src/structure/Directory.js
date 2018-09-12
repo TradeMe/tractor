@@ -2,7 +2,6 @@
 import { TractorError } from '@tractor/error-handler';
 import fs from 'graceful-fs';
 import path from 'path';
-import { File } from './File';
 import { pathToUrl, ALREADY_EXISTS, EXTENSION_MATCH_REGEX } from '../utilities';
 
 export class Directory {
@@ -183,10 +182,8 @@ function handleItem (itemPath, stat) {
         return directory.read();
     } else {
         let fileConstructor = this.fileStructure.getFileConstructor(itemPath);
-        let file = new fileConstructor(itemPath, this.fileStructure);
-        if (fileConstructor === File) {
-            return file;
-        } else {
+        if (fileConstructor) {
+            let file = new fileConstructor(itemPath, this.fileStructure);
             return file.read();
         }
     }
@@ -196,9 +193,7 @@ function readItems (itemPaths) {
     return Promise.all(itemPaths.filter(itemPath => {
         const [, fullExtension] = itemPath.match(EXTENSION_MATCH_REGEX);
         return !fullExtension || !!this.fileStructure.fileTypes[fullExtension];
-    }).map(itemPath => {
-        return getItemInfo.call(this, path.join(this.path, itemPath));
-    }));
+    }).map(itemPath => getItemInfo.call(this, path.join(this.path, itemPath))));
 }
 
 function sortNames (a, b) {

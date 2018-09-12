@@ -121,12 +121,14 @@ describe('@tractor/file-structure - File:', () => {
             }).to.throw(TractorError, `Cannot create "${path.join(path.sep, 'outside', 'file.ext')}" because it is outside of the root of the FileStructure`);
         });
 
-        it('should throw an error if the File path is outside the root of the FileStructure', () => {
+        it('should throw an error if a File has already been created for that path', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
+            new File(path.join(path.sep, 'file-structure', 'file.extension'), fileStructure);
+
             expect(() => {
-                new File(path.join(path.sep, 'outside', 'file.ext'), fileStructure);
-            }).to.throw(TractorError, `Cannot create "${path.join(path.sep, 'outside', 'file.ext')}" because it is outside of the root of the FileStructure`);
+                new File(path.join(path.sep, 'file-structure', 'file.extension'), fileStructure);
+            }).to.throw(TractorError, `Cannot create "${path.join(path.sep, 'file-structure', 'file.extension')}" because it already exists`);
         });
 
         it('should be added to its directory', () => {

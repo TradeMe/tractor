@@ -699,7 +699,7 @@ describe('@tractor/file-structure - Directory:', () => {
             let file1 = new File(path.join(path.sep, 'file-structure', 'directory', 'file-z.ext'), fileStructure);
             let file2 = new File(path.join(path.sep, 'file-structure', 'directory', 'file-a.ext'), fileStructure);
             let file3 = new File(path.join(path.sep, 'file-structure', 'directory', 'file-f.ext'), fileStructure);
-            let file4 = new File(path.join(path.sep, 'file-structure', 'directory', 'file-a.ext'), fileStructure);
+            let file4 = new File(path.join(path.sep, 'file-structure', 'directory', 'file-b.ext'), fileStructure);
 
             expect(directory.toJSON()).to.deep.equal({
                 basename: 'directory',

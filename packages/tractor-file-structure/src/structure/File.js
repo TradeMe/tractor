@@ -16,6 +16,10 @@ export class File {
             throw new TractorError(`Cannot create "${this.path}" because it is outside of the root of the FileStructure`);
         }
 
+        if (fileStructure.allFilesByPath[this.path]) {
+            throw new TractorError(`Cannot create "${this.path}" because it already exists`);
+        }
+
         this.name = path.basename(this.path);
         this.extension = this.extension || path.extname(this.path);
         this.basename = path.basename(this.path, this.extension);

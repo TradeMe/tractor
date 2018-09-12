@@ -70,20 +70,6 @@ describe('@tractor/file-structure - ReferenceManager:', () => {
                 expect(referenceManager.getReferences(file.path)).to.deep.equal([otherFile]);
             });
 
-            it('should only be added once when there are two files objects with the same path', () => {
-                let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-                let file = new File(path.join(path.sep, 'file-structure', 'file'), fileStructure);
-                let otherFile = new File(path.join(path.sep, 'file-structure', 'other-file'), fileStructure);
-                let otherFileWithSamePath = new File(path.join(path.sep, 'file-structure', 'other-file'), fileStructure);
-
-                let { referenceManager } = fileStructure;
-
-                referenceManager.addReference(file, otherFile);
-                referenceManager.addReference(file, otherFileWithSamePath);
-
-                expect(referenceManager.getReferences(file.path)).to.deep.equal([otherFile]);
-            });
-
             it('should append to the list of referencesTo', () => {
                 let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
                 let file = new File(path.join(path.sep, 'file-structure', 'file'), fileStructure);
@@ -121,20 +107,6 @@ describe('@tractor/file-structure - ReferenceManager:', () => {
 
                 referenceManager.addReference(file, otherFile);
                 referenceManager.addReference(file, otherFile);
-
-                expect(referenceManager.getReferencedBy(otherFile.path)).to.deep.equal([file]);
-            });
-
-            it('should only be added once when there are two files objects with the same path', () => {
-                let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-                let file = new File(path.join(path.sep, 'file-structure', 'file'), fileStructure);
-                let otherFile = new File(path.join(path.sep, 'file-structure', 'other-file'), fileStructure);
-                let otherFileWithSamePath = new File(path.join(path.sep, 'file-structure', 'other-file'), fileStructure);
-
-                let { referenceManager } = fileStructure;
-
-                referenceManager.addReference(file, otherFile);
-                referenceManager.addReference(file, otherFileWithSamePath);
 
                 expect(referenceManager.getReferencedBy(otherFile.path)).to.deep.equal([file]);
             });
