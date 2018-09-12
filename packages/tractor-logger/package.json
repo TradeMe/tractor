@@ -1,6 +1,6 @@
 {
   "name": "@tractor/logger",
-  "version": "1.0.1-beta.6",
+  "version": "1.0.1-beta.7",
   "description": "File structure handler for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -36,7 +36,7 @@
     "npmlog": "^4.1.2"
   },
   "devDependencies": {
-    "@tractor/unit-test": "^1.0.1-beta.6"
+    "@tractor/unit-test": "^1.0.1-beta.7"
   },
   "gitHead": "a69b85a05041a98711180d0e6bcba20be9b19c1d"
 }

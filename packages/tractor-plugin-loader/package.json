@@ -1,6 +1,6 @@
 {
   "name": "@tractor/plugin-loader",
-  "version": "1.0.1-beta.6",
+  "version": "1.0.1-beta.7",
   "description": "File structure handler for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -39,8 +39,8 @@
     "@tractor/core": "^1.0.1-beta.6"
   },
   "devDependencies": {
-    "@tractor/error-handler": "^1.0.1-beta.6",
-    "@tractor/logger": "^1.0.1-beta.6"
+    "@tractor/error-handler": "^1.0.1-beta.7",
+    "@tractor/logger": "^1.0.1-beta.7"
   },
   "gitHead": "a69b85a05041a98711180d0e6bcba20be9b19c1d"
 }
