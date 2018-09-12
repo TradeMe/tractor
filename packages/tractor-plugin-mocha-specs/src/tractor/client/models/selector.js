@@ -5,29 +5,35 @@ function createSelectorModelConstructor (
     astCreatorService
 ) {
     return class SelectorModel {
-        constructor (step, parentElementType) {
+        constructor (step, parentElement) {
             this.step = step;
-            this.parentElementType = parentElementType;
+            this.parentElement = parentElement;
 
-            this._elementGroup = null;
+            this._element = null;
+            this._group = false;
             this._type = null;
 
-            [this.elementGroup] = this.parentElementType.elementGroups;
+            [this.element] = this.parentElement.elementsWithType;
             this.value = '';
         }
 
-        get elementGroup () {
-            return this._elementGroup;
+        get element () {
+            return this._element;
         }
 
-        set elementGroup (newElementGroup) {
-            if (newElementGroup) {
-                this._elementGroup = newElementGroup;
+        set element (newElement) {
+            if (newElement) {
+                this._element = newElement;
+                this._group = this.parentElement.elementGroups.includes(this.element);
                 this._type = this.step.test.spec.availablePageObjects.find(pageObject => {
-                    return pageObject.name === this.elementGroup.type;
+                    return pageObject.name === this.element.type;
                 });
-                this.step.elementType = this.type;    
+                this.step.elementType = this.type;
             }
+        }
+
+        get group () {
+            return this._group;
         }
 
         get type () {
@@ -41,14 +47,21 @@ function createSelectorModelConstructor (
         _toAST () {
             const ast = astCreatorService;
 
-            const elementGroup = this.elementGroup.ast;
+            const element = this.element.ast;
             const selector = ast.literal(this.value);
 
-            const template = `
-                element = element.<%= elementGroup %>(%= selector %);
-            `;
+            let template;
+            if (this.group) {
+                template = `
+                    element = element.<%= element %>(%= selector %);
+                `;
+            } else {
+                template = `
+                    element = element.<%= element %>;
+                `;
+            }
 
-            return ast.template(template, { elementGroup, selector });
+            return ast.template(template, { element, selector });
         }
     };
 }

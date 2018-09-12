@@ -4,7 +4,9 @@ import { MochaSpecsModule } from '../mocha-specs.module';
 // Queries:
 const STEP_QUERY = 'AssignmentExpression > CallExpression[callee.object.name="step"][callee.property.name="then"] > FunctionExpression > BlockStatement';
 const PAGE_OBJECT_QUERY = 'AssignmentExpression > Identifier[name!="element"]';
-const SELECTOR_QUERY = 'AssignmentExpression > CallExpression[callee.object.name="element"]';
+const SELECTOR_QUERY = 'AssignmentExpression:has(MemberExpression[object.name="element"])';
+const GROUP_SELECTOR_QUERY = 'AssignmentExpression > CallExpression[callee.object.name="element"]';
+const ELEMENT_SELECTOR_QUERY = 'AssignmentExpression > MemberExpression[object.name="element"]';
 const ASSERTION_QUERY = `ReturnStatement > CallExpression > MemberExpression[property.name=/equal|contain/] > MemberExpression[property.name="eventually"] > MemberExpression[property.name="to"] > CallExpression[callee.name="expect"] > CallExpression`;
 const INTERACTION_QUERY = 'ReturnStatement > CallExpression[callee.object.name="element"]';
 const MOCK_REQUEST_QUERY = 'ReturnStatement > CallExpression[callee.object.name="mockRequests"]';
@@ -62,7 +64,7 @@ function StepParserService (
         if (assertion) {
             step = assertionParserService.parse(test, astObject);
             _parseStepPageObject(step, pageObject);
-            selectors.forEach(selector => _parseSelector(step, selector));
+            selectors.forEach((selector, i) => _parseSelector(step, selector, i));
             _parseStepAction(step, assertion);
             return step;
         }
@@ -71,7 +73,7 @@ function StepParserService (
         if (interaction) {
             step = new SpecInteractionModel(test);
             _parseStepPageObject(step, pageObject);
-            selectors.forEach(selector => _parseSelector(step, selector));
+            selectors.forEach((selector, i) => _parseSelector(step, selector, i));
             _parseStepAction(step, interaction);
             return step;
         }
@@ -85,14 +87,29 @@ function StepParserService (
         });
     }
 
-    function _parseSelector (step, astObject) {
-        step.addSelector();
-        const selector = step.selectors[step.selectors.length - 1];
-        selector.elementGroup = selector.parentElementType.elementGroups.find(elementGroup => {
-            return elementGroup.name === astObject.callee.property.name;
-        });
-        const [selectorArgument] = astObject.arguments;
-        selector.value = selectorArgument.value;
+    function _parseSelector (step, astObject, i) {
+        let selector = step.selectors[i];
+        if (!selector) {
+            step.addSelector();
+            selector = step.selectors[step.selectors.length - 1];
+        }
+
+        const [groupSelector] = esquery(astObject, GROUP_SELECTOR_QUERY);
+        if (groupSelector) {
+            selector.element = selector.parentElement.elements.find(element => {
+                return element.variableName === groupSelector.callee.property.name;
+            });
+            const [selectorArgument] = groupSelector.arguments;
+            selector.value = selectorArgument.value;    
+            return;
+        }
+
+        const [elementSelector] = esquery(astObject, ELEMENT_SELECTOR_QUERY);
+        if (elementSelector) {
+            selector.element = selector.parentElement.elements.find(element => {
+                return element.variableName === elementSelector.property.name;
+            });
+        }
     }
 
     function _parseStepAction (step, astObject) {

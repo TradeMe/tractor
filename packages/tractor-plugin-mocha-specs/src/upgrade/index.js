@@ -2,6 +2,7 @@
 import { getConfig } from '@tractor/config-loader';
 import { readFiles } from '@tractor/file-structure';
 import { MochaSpecFile } from '../tractor/server/files/mocha-spec-file';
+import { MochaSpecFileRefactorer } from '../tractor/server/files/mocha-spec-file-refactorer';
 
 // Versions:
 const VERSIONS = [];
@@ -25,7 +26,8 @@ export async function upgrade () {
 
         return await upgradeVersions.reduce(async (p, upgradeVersion) => {
             await p;
-            await require(`./${upgradeVersion}`).upgradeFile(file);
+            MochaSpecFileRefactorer[upgradeVersion] = require(`./${upgradeVersion}`).upgrade;
+            await file.refactor(upgradeVersion);
             return file.refactor('versionChange', { version: upgradeVersion });
         }, null);
     }, null);

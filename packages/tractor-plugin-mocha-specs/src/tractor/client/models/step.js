@@ -33,7 +33,14 @@ function createStepModelConstructor (
             if (newPageObject) {
                 this._pageObject = newPageObject;
                 this.selectors = [];
-                [this.action] = this.pageObject.actions;    
+
+                if (!this.pageObject.actions.length) {
+                    this.addSelector();
+                    return;
+                } 
+                
+                [this.action] = this.pageObject.actions;
+                this.elementType = this.pageObject;
             }
         }
 
@@ -44,7 +51,8 @@ function createStepModelConstructor (
         set action (newAction) {
             if (newAction) {
                 this._action = newAction;
-                this.arguments = this._parseArguments();    
+                this.arguments = this._parseArguments();
+                return;
             }
         }
 
@@ -69,7 +77,7 @@ function createStepModelConstructor (
                 if (lastSelectorIndex >= 0 && lastSelectorIndex < this.selectors.length) {
                     this.selectors.length = lastSelectorIndex + 1;
                 }
-                [this.action] = this.elementType.actions;    
+                [this.action] = this.elementType.actions;
             }
         }
 
@@ -81,7 +89,7 @@ function createStepModelConstructor (
         removeSelector (selector) {
             this.selectors.length = this.selectors.indexOf(selector);
             const lastSelector = this.selectors[this.selectors.length - 1];
-            this.elementType = lastSelector && lastSelector.type || null;
+            this.elementType = lastSelector && lastSelector.type || this.pageObject;
         }
 
         _parseArguments () {

@@ -285,9 +285,8 @@
                                                 title="Drag to sort">
                                             </div>
 
-
                                             <a
-                                                class="file-editor__list-item-reference file-editor__list-item-reference--element-type"
+                                                class="file-editor__list-item-reference file-editor__list-item-reference--page-object"
                                                 title="{{ step.pageObject.name }}"
                                                 ui-sref="tractor.file({ file: step.pageObject })">
                                             </a>
@@ -301,18 +300,19 @@
                                             <div
                                                 ng-repeat="selector in step.selectors">
                                                 <a
-                                                    class="file-editor__list-item-reference file-editor__list-item-reference--element-type"
-                                                    title="{{ selector.elementGroup.type.name }}"
+                                                    class="file-editor__list-item-reference file-editor__list-item-reference--page-object"
+                                                    title="{{ selector.element.type.name }}"
                                                     ui-sref="tractor.file({ file: selector.type })">
                                                 </a>
                                                 <tractor-select
                                                     form="fileEditor"
-                                                    label="Element Group"
+                                                    label="Element"
                                                     model="selector"
-                                                    options="selector.parentElementType.elementGroups"
+                                                    options="selector.parentElement.elementsWithType"
                                                     as="name">
                                                 </tractor-select>
                                                 <tractor-literal-input
+                                                    ng-if="selector.group"
                                                     form="fileEditor"
                                                     name="'Selector'"
                                                     model="selector"
@@ -320,18 +320,20 @@
                                                     required="true">
                                                 </tractor-literal-input>
                                                 <tractor-action
+                                                    ng-if="selector.parentElement.actions.length > 0"
                                                     model="step"
                                                     argument="selector"
                                                     action="Remove selector">
                                                 </tractor-action>
                                             </div>
                                             <tractor-action
-                                                ng-if="step.elementType.elementGroups.length > 0"
+                                                ng-if="step.elementType.elementsWithType.length > 0"
                                                 model="step"
                                                 action="Add selector">
                                             </tractor-action>
                                             <br>
                                             <tractor-select
+                                                ng-if="step.elementType.actions.length > 0"
                                                 form="fileEditor"
                                                 label="Action"
                                                 model="step"
@@ -357,6 +359,11 @@
                                                 title="Drag to sort">
                                             </div>
 
+                                            <a
+                                                class="file-editor__list-item-reference file-editor__list-item-reference--page-object"
+                                                title="{{ step.pageObject.name }}"
+                                                ui-sref="tractor.file({ file: step.pageObject })">
+                                            </a>
                                             <tractor-select
                                                 form="fileEditor"
                                                 label="Page Object"
@@ -366,14 +373,20 @@
                                             </tractor-select>
                                             <div
                                                 ng-repeat="selector in step.selectors">
+                                                <a
+                                                    class="file-editor__list-item-reference file-editor__list-item-reference--page-object"
+                                                    title="{{ selector.element.type.name }}"
+                                                    ui-sref="tractor.file({ file: selector.type })">
+                                                </a>
                                                 <tractor-select
                                                     form="fileEditor"
-                                                    label="Element Group"
+                                                    label="Element"
                                                     model="selector"
-                                                    options="selector.parentElementType.elementGroups"
+                                                    options="selector.parentElement.elementsWithType"
                                                     as="name">
                                                 </tractor-select>
                                                 <tractor-literal-input
+                                                    ng-if="selector.group"
                                                     form="fileEditor"
                                                     name="'Selector'"
                                                     model="selector"
@@ -381,18 +394,20 @@
                                                     required="true">
                                                 </tractor-literal-input>
                                                 <tractor-action
+                                                    ng-if="selector.parentElement.actions.length > 0"
                                                     model="step"
                                                     argument="selector"
                                                     action="Remove selector">
                                                 </tractor-action>
                                             </div>
                                             <tractor-action
-                                                ng-if="step.elementType.elementGroups.length > 0"
+                                                ng-if="step.elementType.elementsWithType.length > 0"
                                                 model="step"
                                                 action="Add selector">
                                             </tractor-action>
                                             <br>
                                             <tractor-select
+                                                ng-if="step.elementType.actions.length > 0"
                                                 form="fileEditor"
                                                 label="Action"
                                                 model="step"
