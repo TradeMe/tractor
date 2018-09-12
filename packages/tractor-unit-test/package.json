@@ -40,5 +40,5 @@
   "peerDependencies": {
     "@tractor/core": "^1.0.1-beta.6"
   },
-  "gitHead": "a69b85a05041a98711180d0e6bcba20be9b19c1d"
+  "gitHead": "167cb8c360bbe528df58a3ef4bde56e4477f12f2"
 }
