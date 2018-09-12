@@ -1,6 +1,6 @@
 {
   "name": "@tractor/ui",
-  "version": "1.0.1-beta.3",
+  "version": "1.0.1-beta.5",
   "description": "UI for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -26,7 +26,7 @@
     "build": "src/**/*.js"
   },
   "peerDependencies": {
-    "@tractor/core": "^1.0.1-beta.2"
+    "@tractor/core": "^1.0.1-beta.6"
   },
   "devDependencies": {
     "@uirouter/angularjs": "1.0.3",

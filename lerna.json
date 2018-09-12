@@ -1,13 +1,12 @@
 {
-  "lerna": "2.8.0",
   "hoist": true,
-  "commands": {
-    "bootstrap": {
-      "nohoist": "@tractor/ui"
-    }
-  },
   "packages": [
     "packages/*"
   ],
-  "version": "1.0.1-beta.4"
+  "version": "1.0.1-beta.5",
+  "command": {
+    "bootstrap": {
+      "nohoist": "@tractor/ui"
+    }
+  }
 }
