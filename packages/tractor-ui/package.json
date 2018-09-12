@@ -71,5 +71,6 @@
   },
   "browserify-shim": {
     "angular": "angular"
-  }
+  },
+  "gitHead": "a69b85a05041a98711180d0e6bcba20be9b19c1d"
 }

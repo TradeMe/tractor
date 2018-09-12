@@ -37,7 +37,7 @@
     "@tractor-plugins/mocha-specs": "^0.1.0",
     "@tractor-plugins/page-objects": "^0.5.0",
     "@tractor/cli": "^1.0.1-beta.4",
-    "@tractor/unit-test": "^1.0.1-beta.4",
+    "@tractor/unit-test": "^1.0.1-beta.3",
     "babel-eslint": "^8.2.5",
     "eslint": "^5.0.1",
     "istanbul": "^1.1.0-alpha.1",

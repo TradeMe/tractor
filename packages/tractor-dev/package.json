@@ -32,5 +32,6 @@
   "dependencies": {
     "babel-polyfill": "^6.26.0",
     "commander": "^2.13.0"
-  }
+  },
+  "gitHead": "a69b85a05041a98711180d0e6bcba20be9b19c1d"
 }

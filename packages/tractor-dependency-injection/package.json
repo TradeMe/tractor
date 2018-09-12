@@ -35,5 +35,6 @@
   "devDependencies": {
     "@tractor/error-handler": "^1.0.1-beta.6",
     "@tractor/logger": "^1.0.1-beta.6"
-  }
+  },
+  "gitHead": "a69b85a05041a98711180d0e6bcba20be9b19c1d"
 }
