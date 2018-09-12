@@ -2,9 +2,10 @@
 import { getConfig } from '@tractor/config-loader';
 import { readFiles } from '@tractor/file-structure';
 import { PageObjectFile } from '../tractor/server/files/page-object-file';
+import { PageObjectFileRefactorer } from '../tractor/server/files/page-object-file-refactorer';
 
 // Versions:
-const VERSIONS = ['0.5.0', '0.5.2'];
+const VERSIONS = ['0.5.0', '0.5.2', '0.6.0'];
 
 export async function upgrade () {
     const config = getConfig();
@@ -20,7 +21,8 @@ export async function upgrade () {
 
         return await upgradeVersions.reduce(async (p, upgradeVersion) => {
             await p;
-            await require(`./${upgradeVersion}`).upgradeFile(file);
+            PageObjectFileRefactorer[upgradeVersion] = require(`./${upgradeVersion}`).upgrade;
+            await file.refactor(upgradeVersion);
             return file.refactor('versionChange', { version: upgradeVersion });
         }, null);
     }, null);

@@ -16,7 +16,7 @@ An **Element** is the basic building block of a **Page Object**. It describes a 
 
 ### Creating Elements
 
-**Try to keep selectors as simple as possible.**
+#### Try to keep selectors as simple as possible
 
 **@tractor-plugins/page-objects** enforces the use of CSS selectors. This is because they are powerful, flexible, well-documented, and well-understood. They will also work across different frameworks.
 
@@ -24,27 +24,27 @@ If you find yourself writing overly complex CSS selectors, have a look at your c
 
 It is often suggested to use `data-*` attributes to help with creating selectors, and this is a valid option. However, note that you will have to choose between shipping that code to production, or stripping it out for production and having difference code in test and production. Good composition can often avoid the need for specific helper attributes.
 
-**Use groups when you have repeated components.**
+#### Use groups when you have repeated components
 
-Repeated components (e.g. `<li>`) are often used to encapsulate complexity. Rather than select individual items using `:nth-child(n)` or similar, you can indicate that the selector matches several elements with the **"is group"** checkbox.
+Repeated components (e.g. `<li>`) are often used to encapsulate complexity. Rather than select individual items using `:nth-child(n)` or similar, you can indicate that the selector matches several elements with the **"group"** checkbox.
 
 Once you have marked an **Element** as a group, you will then be able to select from the group using either the expected text content or an ordinal number, e.g. "1st", "2nd", "25th", or the special value "last".
 
-**Use types to embrace composability.**
+#### Use types to embrace composability
 
 **Elements** that do not have a type set will default to the `ElementFinder` interface. This applies to both single elements and elements that are a group. You can set the type to specify that the result of the selector is represented by another **Page Object** class. The available types will be other **Page Objects** that you have defined, but can be [configured using the `include` option](https://github.com/phenomnomnominal/tractor-plugin-page-objects/tree/master/docs/configuration.md) to use **PageObjects** from another library.
 
 ### Creating Actions
 
-**Use Parameters**
+#### Use Parameters
 
 If you hard-code a value to an **Action** within a **Page Object** it instantly becomes less reusable. Use a parameter so that you can pass a value in from your actual test.
 
-**Use Optional Actions to reduce duplication**
+#### Use Optional Actions to reduce duplication
 
 If you have an **Action** where one of the Interactions does not always happen, for example, a "confirm" dialog, you can mark the **Action** as "optional". Instead of throwing an error, the interaction will just be ignored.
 
-**Describe *what* the Page Object does, not *how*.**
+#### Describe *what* the Page Object does, not *how*.
 
 It can be tempting to have a 1-1 mapping from **Element** action to **Page Object** action, but this is often not what you want to do. As an example, let's look at a "Log in" component.
 
@@ -56,6 +56,6 @@ That said, there are definitely cases where a 1-1 mapping is appropriate, such a
 
 ### Other advice
 
-**Keep naming consistent**
+* **Keep naming consistent**
 
-**Re-order your element and actions sensibly**
+* **Re-order your element and actions sensibly**

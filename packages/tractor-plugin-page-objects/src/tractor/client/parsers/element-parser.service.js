@@ -64,7 +64,7 @@ function ElementParserService (
     }
 
     function _elementMultipleParser (element, astObject) {
-        element.isGroup = true;
+        element.group = true;
         _elementParser(element, astObject);
     }
 
@@ -83,7 +83,7 @@ function ElementParserService (
     }
 
     function _pageObjectMultipleParser (element, astObject) {
-        element.isGroup = true;
+        element.group = true;
         _pageObjectParser(element, astObject);
     }
 }

@@ -9,15 +9,8 @@ const INTERACTION_CALL_EXPRESSION = 'CallExpression[callee.property.name!="then"
 // Dependencies:
 import * as esprima from 'esprima';
 import esquery from 'esquery';
-import { PageObjectFileRefactorer } from '../tractor/server/files/page-object-file-refactorer';
 
-PageObjectFileRefactorer['0.5.0'] = upgrade;
-
-export function upgradeFile (file) {
-    return file.refactor('0.5.0');
-}
-
-function upgrade (file) {
+export async function upgrade (file) {
     const FIND = {
         type: esprima.Syntax.Identifier,
         name: 'find'

@@ -73,7 +73,7 @@ describe('Elements', function () {
             var element;
             element = tractorPageObjects;
             element = element.elements('last');
-            return element.toggleIsGroup();
+            return element.toggleGroup();
         });
         step = step.then(function () {
             var element;
@@ -96,7 +96,7 @@ describe('Elements', function () {
             var element;
             element = tractorPageObjects;
             element = element.elements('last');
-            return expect(element.getIsGroup()).to.eventually.equal(true);
+            return expect(element.getGroup()).to.eventually.equal(true);
         });
         return step;
     });
@@ -195,7 +195,7 @@ describe('Elements', function () {
             var element;
             element = tractorPageObjects;
             element = element.elements('last');
-            return element.toggleIsGroup();
+            return element.toggleGroup();
         });
         step = step.then(function () {
             var element;
@@ -230,7 +230,7 @@ describe('Elements', function () {
             var element;
             element = tractorPageObjects;
             element = element.elements('last');
-            return expect(element.getIsGroup()).to.eventually.equal(true);
+            return expect(element.getGroup()).to.eventually.equal(true);
         });
         return step;
     });

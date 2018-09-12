@@ -99,9 +99,9 @@ function createPageObjectModelConstructor (
 
             let pageObject = ast.identifier(this.variableName);
             let elements = this.domElements.map(element => ast.expressionStatement(element.ast));
-            let hasElements = this.domElements.find(element => !element.isGroup);
+            let hasElements = this.domElements.find(element => !element.group);
             let hasOnlyDeprecatedElements = this.domElements.filter(element => element.isDeprecated).length === this.domElements.length;
-            let hasElementGroups = this.domElements.find(element => element.isGroup);
+            let hasElementGroups = this.domElements.find(element => element.group);
 
             let actions = this.actions.map(action => ast.expressionStatement(action.ast));
 

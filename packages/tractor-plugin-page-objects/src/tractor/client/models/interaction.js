@@ -79,7 +79,7 @@ function createInteractionModelConstructor (
         _interactionAST () {
             let template = !this.element.pageObject ? '<%= plugin %>' : 'self.<%= element %>';
 
-            if (this.element.isGroup) {
+            if (this.element.group) {
                 template += '(<%= selector %>)';
             }
             template += '.<%= action %>(%= argumentValues %)';

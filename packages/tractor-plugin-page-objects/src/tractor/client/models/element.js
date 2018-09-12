@@ -13,7 +13,7 @@ function createElementModelConstructor (
         constructor (pageObject) {
             this.pageObject = pageObject;
 
-            this.isGroup = false;
+            this.group = false;
             this.name = '';
             this.selector = '';
 
@@ -52,7 +52,7 @@ function createElementModelConstructor (
             if (this.type) {
                 type = ast.identifier(this.type.variableName);
 
-                if (this.isGroup) {
+                if (this.group) {
                     template = `
                         this.<%= element %> = function (groupSelector) {
                             return new <%= type %>(findAll(by.css(<%= selector %>)).getFromGroup(groupSelector));
@@ -64,7 +64,7 @@ function createElementModelConstructor (
                     `;
                 }
             } else {
-                if (this.isGroup) {
+                if (this.group) {
                     template = `
                         this.<%= element %> = function (groupSelector) {
                             return findAll(by.css(<%= selector %>)).getFromGroup(groupSelector);
@@ -81,8 +81,11 @@ function createElementModelConstructor (
 
         _toMeta () {
             const meta = { name: this.name };
-            if (this.isGroup) {
-                meta.type = this.type && this.type.name || true;
+            if (this.group) {
+                meta.group = this.group;
+            }
+            if (this.type) {
+                meta.type = this.type.name;
             }
             return meta;
         }

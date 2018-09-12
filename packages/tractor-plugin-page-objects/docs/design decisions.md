@@ -39,6 +39,7 @@ PageObject.prototype.action = function () {
     });
 };
 ```
+
 ---
 
 ### Always generate ES5 code

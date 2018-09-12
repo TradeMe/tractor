@@ -21,7 +21,8 @@ function createPageObjectMetaModelConstructor (
                 returns: 'promise'
             }));
             this.elements = meta.elements.map(element => new ValueModel(element));
-            this.elementGroups = this.elements.filter(element => element.type);
+            this.elementsWithType = this.elements.filter((_, i) => meta.elements[i].type);
+            this.elementGroups = this.elements.filter((_, i) => meta.elements[i].group);
 
             this.name = meta.name;
             this.path = path;

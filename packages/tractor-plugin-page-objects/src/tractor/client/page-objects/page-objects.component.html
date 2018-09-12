@@ -178,7 +178,7 @@
                                                         <div
                                                             ng-if="!filter.isUnparseable">
                                                             <tractor-select
-                                                                ng-if="!domElement.filters[$index].isGroup"
+                                                                ng-if="!domElement.filters[$index].group"
                                                                 form="fileEditor"
                                                                 label="selector"
                                                                 model="filter"
@@ -217,7 +217,7 @@
                                                 example="some.css[selector]">
                                             </tractor-text-input>
                                             <tractor-checkbox
-                                                label="Is Group"
+                                                label="Group"
                                                 model="domElement">
                                             </tractor-checkbox>
 
@@ -398,7 +398,7 @@
                                                             required>
                                                         </tractor-select>
                                                         <tractor-literal-input
-                                                            ng-if="interaction.element.isGroup"
+                                                            ng-if="interaction.element.group"
                                                             form="fileEditor"
                                                             name="interaction.selector.name"
                                                             model="interaction.selector"
