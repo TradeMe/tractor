@@ -8,3 +8,4 @@ lerna-debug.log
 .vscode
 .DS_Store
 packages/**/*.tgz
+package.json.lerna_backup
