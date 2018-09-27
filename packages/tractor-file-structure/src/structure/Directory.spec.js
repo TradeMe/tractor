@@ -681,7 +681,7 @@ describe('@tractor/file-structure - Directory:', () => {
             let subdirectory1 = new Directory(path.join(path.sep, 'file-structure', 'directory', 'sub-directory-z'), fileStructure);
             let subdirectory2 = new Directory(path.join(path.sep, 'file-structure', 'directory', 'sub-directory-a'), fileStructure);
             let subdirectory3 = new Directory(path.join(path.sep, 'file-structure', 'directory', 'sub-directory-f'), fileStructure);
-            let subdirectory4 = new Directory(path.join(path.sep, 'file-structure', 'directory', 'sub-directory-a'), fileStructure);
+            let subdirectory4 = new Directory(path.join(path.sep, 'file-structure', 'directory', 'sub-directory-b'), fileStructure);
 
             expect(directory.toJSON()).to.deep.equal({
                 basename: 'directory',

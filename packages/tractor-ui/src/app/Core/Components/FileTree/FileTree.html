@@ -19,6 +19,18 @@
             argument="item">
         </tractor-action>
         <tractor-action
+            ng-if="!fileTree.readonly && item.isDirectory"
+            model="fileTree"
+            action="Create directory"
+            argument="item">
+        </tractor-action>
+        <tractor-action
+            ng-if="!fileTree.readonly && item.isDirectory"
+            model="fileTree"
+            action="Create file"
+            argument="item">
+        </tractor-action>
+        <tractor-action
             model="fileTree"
             action="Delete item"
             argument="item">
@@ -33,8 +45,7 @@
         ng-blur="fileTree.saveNewName(item)"
         ng-keypress="fileTree.renameOnEnter($event, item)"
         tractor-give-focus
-        focus-on="item.editingName">
-    </input>
+        focus-on="item.editingName"/>
 </script>
 
 <script type="text/ng-template" id="file-structure.html">
@@ -51,14 +62,6 @@
     <ul
         class="file-tree__file-list"
         ng-if="(item || fileTree.fileStructure).open">
-        <li class="file-tree__file-list-item file-tree__file-list-item--new-directory">
-            <tractor-action
-                model="fileTree"
-                action="Add directory"
-                argument="item || fileTree.fileStructure">
-            </tractor-action>
-        </li>
-
         <li class="file-tree__file-list-item file-tree__file-list-item--directory"
             ng-class="{
                 'file-tree__file-list-item--open-directory': item.open

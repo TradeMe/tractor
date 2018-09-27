@@ -116,8 +116,8 @@ function fileEditorControllerFactory () {
         this.persistentStateService.set(this.fileModel.name, displayState);
     };
 
-    FileEditorController.prototype.createDirectory = function (newDirectoryUrl) {
-        return this.fileStructureService.saveItem(newDirectoryUrl);
+    FileEditorController.prototype.createDirectory = function (newItemUrl, options) {
+        return this.fileStructureService.saveItem(newItemUrl, options);
     };
 
     FileEditorController.prototype.move = function (itemUrl, options) {

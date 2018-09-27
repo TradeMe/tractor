@@ -61,7 +61,7 @@ export class FileStructure {
     }
 
     watch () {
-        info(`Watching ${this.path} for changes...`);
+        info(`Watching "${this.path}" for changes...`);
         let watcher = new EventEmitter();
         chokidar.watch(this.path, {
             ignored: DOT_FILE_REGEX,

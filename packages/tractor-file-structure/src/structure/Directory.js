@@ -9,11 +9,15 @@ export class Directory {
         this.path = path.resolve(process.cwd(), directoryPath);
         this.fileStructure = fileStructure;
 
-        let isRoot = this.path === fileStructure.path;
-        let isWithinRoot = this.path.indexOf(`${fileStructure.path}${path.sep}`) === 0;
+        const isRoot = this.path === fileStructure.path;
+        const isWithinRoot = this.path.indexOf(`${fileStructure.path}${path.sep}`) === 0;
 
         if (!isRoot && !isWithinRoot)  {
             throw new TractorError(`Cannot create "${this.path}" because it is outside of the root of the FileStructure`);
+        }
+
+        if (fileStructure.allDirectoriesByPath[this.path]) {
+            throw new TractorError(`Cannot create "${this.path}" because it already exists`);
         }
 
         this.init();
@@ -21,28 +25,23 @@ export class Directory {
         this.name = path.basename(this.path);
         this.basename = this.name;
 
-        let relativePath = path.relative(this.fileStructure.path, this.path);
+        const relativePath = path.relative(this.fileStructure.path, this.path);
         this.url = pathToUrl(this.fileStructure, relativePath);
 
         if (isRoot) {
             this.parent = this.fileStructure;
         } else {
-            let parentPath = path.dirname(this.path);
-            let parent = fileStructure.allDirectoriesByPath[parentPath];
-            if (parent) {
-                this.directory = parent;
-            } else {
-                this.directory = new Directory(parentPath, fileStructure);
-            }
+            const parentPath = path.dirname(this.path);
+            this.directory = fileStructure.allDirectoriesByPath[parentPath] || new Directory(parentPath, fileStructure);
             this.parent = this.directory;
         }
         this.parent.addItem(this);
     }
 
     addItem (item) {
-        let itemIsDirectory = item instanceof Directory;
-        let collection = itemIsDirectory ? this.directories : this.files;
-        let allCollection = itemIsDirectory ? this.allDirectories : this.allFiles;
+        const itemIsDirectory = item instanceof Directory;
+        const collection = itemIsDirectory ? this.directories : this.files;
+        const allCollection = itemIsDirectory ? this.allDirectories : this.allFiles;
 
         if (item.directory === this && collection.indexOf(item) === -1) {
             collection.push(item);
@@ -89,15 +88,15 @@ export class Directory {
     }
 
     async move (update, options = { }) {
-        let { isCopy } = options;
+        const { isCopy } = options;
         update.oldPath = this.path;
 
-        let newDirectory = new this.constructor(update.newPath, this.fileStructure);
+        const newDirectory = new this.constructor(update.newPath, this.fileStructure);
         await newDirectory.save();
 
-        let items = this.directories.concat(this.files);
+        const items = this.directories.concat(this.files);
         await Promise.all(items.map(item => {
-            let newPath = item.path.replace(update.oldPath, update.newPath);
+            const newPath = item.path.replace(update.oldPath, update.newPath);
             return item.move({ newPath }, options);
         }));
         await isCopy ? null : this.delete();
@@ -108,7 +107,6 @@ export class Directory {
         if (this.reading) {
             return this.reading;
         }
-        this.init();
         try {
             this.reading = fs.readdirAsync(this.path);
             let itemPaths = await this.reading;
@@ -121,14 +119,14 @@ export class Directory {
     }
 
     removeItem (item) {
-        let itemIsDirectory = item instanceof Directory;
-        let collection = itemIsDirectory ? this.directories : this.files;
-        let allCollection = itemIsDirectory ? this.allDirectories : this.allFiles;
+        const itemIsDirectory = item instanceof Directory;
+        const collection = itemIsDirectory ? this.directories : this.files;
+        const allCollection = itemIsDirectory ? this.allDirectories : this.allFiles;
 
-        let removeIndex = allCollection.indexOf(item);
+        const removeIndex = allCollection.indexOf(item);
         allCollection.splice(removeIndex, 1);
         if (item.directory === this) {
-            let removeIndex = collection.indexOf(item);
+            const removeIndex = collection.indexOf(item);
             collection.splice(removeIndex, 1);
         }
 
@@ -172,19 +170,24 @@ export class Directory {
 }
 
 async function getItemInfo (itemPath) {
-    let stat = await fs.statAsync(itemPath);
+    const stat = await fs.statAsync(itemPath);
     return handleItem.call(this, itemPath, stat);
 }
 
 function handleItem (itemPath, stat) {
     if (stat.isDirectory()) {
-        let directory = new this.constructor(itemPath, this.fileStructure);
+        const directory = this.fileStructure.allDirectoriesByPath[itemPath] || new this.constructor(itemPath, this.fileStructure);
         return directory.read();
     } else {
-        let fileConstructor = this.fileStructure.getFileConstructor(itemPath);
+        const existingFile = this.fileStructure.allFilesByPath[itemPath];
+        if (existingFile) {
+            return existingFile.read();
+        }
+
+        const fileConstructor = this.fileStructure.getFileConstructor(itemPath);
         if (fileConstructor) {
-            let file = new fileConstructor(itemPath, this.fileStructure);
-            return file.read();
+            const newFile = new fileConstructor(itemPath, this.fileStructure);
+            return newFile.read();
         }
     }
 }
@@ -197,8 +200,8 @@ function readItems (itemPaths) {
 }
 
 function sortNames (a, b) {
-    let aName = a.name;
-    let bName = b.name;
+    const aName = a.name;
+    const bName = b.name;
     if (aName === bName) {
         return 0;
     } else if (aName > bName) {

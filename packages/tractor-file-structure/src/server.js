@@ -1,4 +1,5 @@
 // Dependencies:
+import { info } from '@tractor/logger';
 import express from 'express';
 
 // Actions:
@@ -15,7 +16,10 @@ export function serveFileStructure (application, sockets) {
         let createItemEndpoint = itemEndpointFactory(createEndpoint);
         let createItemHandler = itemHandlerFactory(fileStructure);
 
-        application.use(createEndpoint('/fs/static'), express.static(fileStructure.path));
+        const staticEndPoint = createEndpoint('/fs/static');
+        info(`Serving "${fileStructure.path}" from "${staticEndPoint}".`);
+        
+        application.use(staticEndPoint, express.static(fileStructure.path));
 
         application.delete(createItemEndpoint('/fs'), createItemHandler(createDeleteItemHandler));
         application.post(createItemEndpoint('/fs/move'), createItemHandler(createMoveItemHandler));

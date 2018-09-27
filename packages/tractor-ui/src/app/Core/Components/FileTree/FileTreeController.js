@@ -2,6 +2,7 @@
 
 // Constants:
 var NEW_DIRECTORY_NAME = 'New directory';
+var NEW_FILE_NAME = 'New file';
 var OPEN_DIRECTORIES = 'OpenDirectories';
 
 // Utilities:
@@ -38,9 +39,14 @@ var FileTreeController = (function () {
         }.bind(this));
     };
 
-    FileTreeController.prototype.addDirectory = function (directory) {
+    FileTreeController.prototype.createDirectory = function (directory) {
         var newDirectoryUrl = path.join(directory.url, NEW_DIRECTORY_NAME);
         this.create(newDirectoryUrl);
+    };
+
+    FileTreeController.prototype.createFile = function (directory) {
+        var newFileUrl = path.join(directory.url, `${NEW_FILE_NAME}${this.extension}`);
+        this.create(newFileUrl, { data: '' });
     };
 
     FileTreeController.prototype.openItem = function (file) {

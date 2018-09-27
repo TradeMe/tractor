@@ -59,7 +59,6 @@ tractor-file-tree .file-tree__file-list .file-tree__file-list {
 tractor-file-tree .file-tree__file-list-item {
     position: relative;
     list-style: none;
-    margin: 0.1rem 0;
     margin-left: -$large-spacing;
     padding-left: $ridiculous-spacing;
     background-repeat: no-repeat;
@@ -67,6 +66,7 @@ tractor-file-tree .file-tree__file-list-item {
     line-height: $huge-spacing;
     font-family: $body-type;
     cursor: pointer;
+    border-left: 1px solid rgba(205, 205, 205, 1);
 
     &:hover > p, &.active > p {
         font-weight: bolder;
@@ -83,10 +83,6 @@ tractor-file-tree .file-tree__file-list-item {
     &.active {
         display: block;
         transform: translateX($large-spacing);
-    }
-
-    &.file-tree__file-list-item--new-directory {
-        background-image: url('./images/new-directory.png');
     }
 
     &.file-tree__file-list-item--directory {
