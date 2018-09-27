@@ -38,7 +38,7 @@
     "sinon-chai": "^2.14.0"
   },
   "peerDependencies": {
-    "@tractor/core": "^1.0.1-beta.6"
+    "@tractor/core": "^1.0.1-beta.8"
   },
   "gitHead": "167cb8c360bbe528df58a3ef4bde56e4477f12f2"
 }

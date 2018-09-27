@@ -30,7 +30,7 @@
     "build": "src/**/*.js"
   },
   "peerDependencies": {
-    "@tractor/core": "^1.0.1-beta.6"
+    "@tractor/core": "^1.0.1-beta.8"
   },
   "dependencies": {
     "npmlog": "^4.1.2"
