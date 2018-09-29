@@ -1,9 +1,9 @@
-/*{"name":"tractor-page-objects action interaction","elements":[{"name":"element select"},{"name":"group selector"},{"name":"action select"},{"name":"arguments","type":"tractor-page-objects action interaction argument"}],"actions":[{"name":"add interaction","parameters":[{"name":"element"},{"name":"action"}]},{"name":"select element","parameters":[{"name":"element"}]},{"name":"select action","parameters":[{"name":"action"}]},{"name":"add argument","parameters":[{"name":"name"},{"name":"value"}]},{"name":"get element","parameters":[]},{"name":"get action","parameters":[]}],"version":"0.5.2"}*/
+/*{"name":"tractor-page-objects action interaction","elements":[{"name":"element select"},{"name":"group selector"},{"name":"action select"},{"name":"arguments","type":"tractor-page-objects action interaction argument","group":true}],"actions":[{"name":"add interaction","parameters":[{"name":"element"},{"name":"action"}]},{"name":"select element","parameters":[{"name":"element"}]},{"name":"select action","parameters":[{"name":"action"}]},{"name":"add argument","parameters":[{"name":"name"},{"name":"value"}]},{"name":"get element","parameters":[]},{"name":"get action","parameters":[]}],"version":"0.7.0"}*/
 module.exports = function () {
     var TractorPageObjectsActionInteractionArgument = require('./tractor-page-objects action interaction argument.po.js');
-    var TractorPageObjectsActionInteraction = function TractorPageObjectsActionInteraction(parent) {
-        var find = parent ? parent.element.bind(parent) : element;
-        var findAll = parent ? parent.all.bind(parent) : element.all.bind(element);
+    var TractorPageObjectsActionInteraction = function TractorPageObjectsActionInteraction(host) {
+        var find = host ? host.element.bind(host) : element;
+        var findAll = host ? host.all.bind(host) : element.all.bind(element);
         this.elementSelect = find(by.css('tractor-select[label="Element"] select'));
         this.groupSelector = find(by.css('tractor-literal-input[name="interaction.selector.name"] input'));
         this.actionSelect = find(by.css('tractor-select[label="Action"] select'));

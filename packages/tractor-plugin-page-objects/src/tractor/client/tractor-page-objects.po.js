@@ -1,11 +1,11 @@
-/*{"name":"tractor-page-objects","elements":[{"name":"name"},{"name":"name input"},{"name":"name validation"},{"name":"save button"},{"name":"confirm save dialog"},{"name":"new file button"},{"name":"add element button"},{"name":"elements","type":"tractor-page-objects element"},{"name":"add action button"},{"name":"actions","type":"tractor-page-objects action"}],"actions":[{"name":"create and save page object","parameters":[{"name":"name"}]},{"name":"save page object file","parameters":[]},{"name":"add element","parameters":[{"name":"name"},{"name":"selector"}]},{"name":"add action","parameters":[{"name":"name"}]},{"name":"get name","parameters":[]},{"name":"get name validation","parameters":[]}],"version":"0.5.2"}*/
+/*{"name":"tractor-page-objects","elements":[{"name":"name"},{"name":"name input"},{"name":"name validation"},{"name":"save button"},{"name":"confirm save dialog","type":"tractor-confirm-dialog"},{"name":"new file button"},{"name":"add element button"},{"name":"elements","type":"tractor-page-objects element","group":true},{"name":"add action button"},{"name":"actions","type":"tractor-page-objects action","group":true}],"actions":[{"name":"create and save page object","parameters":[{"name":"name"}]},{"name":"save page object file","parameters":[]},{"name":"add element","parameters":[{"name":"name"},{"name":"selector"}]},{"name":"add action","parameters":[{"name":"name"}]},{"name":"get name","parameters":[]},{"name":"get name validation","parameters":[]}],"version":"0.7.0"}*/
 module.exports = function () {
     var TractorConfirmDialog = require('../../../node_modules/@tractor/ui/dist/page-objects/Core/Components/ConfirmDialog/tractor-confirm-dialog.po.js');
     var TractorPageObjectsElement = require('./tractor-page-objects element.po.js');
     var TractorPageObjectsAction = require('./tractor-page-objects action.po.js');
-    var TractorPageObjects = function TractorPageObjects(parent) {
-        var find = parent ? parent.element.bind(parent) : element;
-        var findAll = parent ? parent.all.bind(parent) : element.all.bind(element);
+    var TractorPageObjects = function TractorPageObjects(host) {
+        var find = host ? host.element.bind(host) : element;
+        var findAll = host ? host.all.bind(host) : element.all.bind(element);
         this.name = find(by.css('tractor-page-objects .file-options__name'));
         this.nameInput = find(by.css('tractor-page-objects form tractor-variable-input[label="Name"] input'));
         this.nameValidation = find(by.css('tractor-page-objects tractor-variable-input[label="Name"] ng-message'));

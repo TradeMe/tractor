@@ -1,10 +1,10 @@
-/*{"name":"tractor-page-objects action","elements":[{"name":"name input"},{"name":"name validation"},{"name":"remove action button"},{"name":"add parameter button"},{"name":"parameters","type":"tractor-page-objects action parameter"},{"name":"add interaction button"},{"name":"interactions","type":"tractor-page-objects action interaction"}],"actions":[{"name":"add action","parameters":[{"name":"name"}]},{"name":"add parameter","parameters":[{"name":"name"}]},{"name":"add interaction","parameters":[{"name":"element"},{"name":"action"}]},{"name":"add argument","parameters":[{"name":"name"},{"name":"value"}]},{"name":"get name","parameters":[]},{"name":"get name validation","parameters":[]}],"version":"0.5.2"}*/
+/*{"name":"tractor-page-objects action","elements":[{"name":"name input"},{"name":"name validation"},{"name":"remove action button"},{"name":"add parameter button"},{"name":"parameters","type":"tractor-page-objects action parameter","group":true},{"name":"add interaction button"},{"name":"interactions","type":"tractor-page-objects action interaction","group":true}],"actions":[{"name":"add action","parameters":[{"name":"name"}]},{"name":"add parameter","parameters":[{"name":"name"}]},{"name":"add interaction","parameters":[{"name":"element"},{"name":"action"}]},{"name":"add argument","parameters":[{"name":"name"},{"name":"value"}]},{"name":"get name","parameters":[]},{"name":"get name validation","parameters":[]}],"version":"0.7.0"}*/
 module.exports = function () {
     var TractorPageObjectsActionParameter = require('./tractor-page-objects action parameter.po.js');
     var TractorPageObjectsActionInteraction = require('./tractor-page-objects action interaction.po.js');
-    var TractorPageObjectsAction = function TractorPageObjectsAction(parent) {
-        var find = parent ? parent.element.bind(parent) : element;
-        var findAll = parent ? parent.all.bind(parent) : element.all.bind(element);
+    var TractorPageObjectsAction = function TractorPageObjectsAction(host) {
+        var find = host ? host.element.bind(host) : element;
+        var findAll = host ? host.all.bind(host) : element.all.bind(element);
         this.nameInput = find(by.css('tractor-variable-input[label="Name"] input'));
         this.nameValidation = find(by.css('tractor-variable-input[label="Name"] ng-message'));
         this.removeActionButton = find(by.css('tractor-action[action="Remove action"] button'));

@@ -1,7 +1,7 @@
-/*{"name":"tractor-page-objects element","elements":[{"name":"name input"},{"name":"name validation"},{"name":"remove element button"},{"name":"selector input"},{"name":"selector validation"},{"name":"group checkbox"},{"name":"add type button"},{"name":"type select"}],"actions":[{"name":"add element","parameters":[{"name":"name"},{"name":"selector"}]},{"name":"add type","parameters":[{"name":"type"}]},{"name":"toggle group","parameters":[]},{"name":"get name","parameters":[]},{"name":"get name validation","parameters":[]},{"name":"get selector","parameters":[]},{"name":"get selector validation","parameters":[]},{"name":"get group","parameters":[]},{"name":"get type","parameters":[]}],"version":"0.5.2"}*/
+/*{"name":"tractor-page-objects element","elements":[{"name":"name input"},{"name":"name validation"},{"name":"remove element button"},{"name":"selector input"},{"name":"selector validation"},{"name":"group checkbox"},{"name":"add type button"},{"name":"type select"}],"actions":[{"name":"add element","parameters":[{"name":"name"},{"name":"selector"}]},{"name":"add type","parameters":[{"name":"type"}]},{"name":"toggle group","parameters":[]},{"name":"get name","parameters":[]},{"name":"get name validation","parameters":[]},{"name":"get selector","parameters":[]},{"name":"get selector validation","parameters":[]},{"name":"get group","parameters":[]},{"name":"get type","parameters":[]}],"version":"0.7.0"}*/
 module.exports = function () {
-    var TractorPageObjectsElement = function TractorPageObjectsElement(parent) {
-        var find = parent ? parent.element.bind(parent) : element;
+    var TractorPageObjectsElement = function TractorPageObjectsElement(host) {
+        var find = host ? host.element.bind(host) : element;
         this.nameInput = find(by.css('tractor-variable-input[label="Name"] input'));
         this.nameValidation = find(by.css('tractor-variable-input[label="Name"] ng-message'));
         this.removeElementButton = find(by.css('tractor-action[action="Remove element"] button'));

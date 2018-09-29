@@ -1,7 +1,7 @@
-/*{"name":"tractor-page-objects action parameter","elements":[{"name":"name input"},{"name":"name validation"},{"name":"remove parameter button"}],"actions":[{"name":"add parameter","parameters":[{"name":"name"}]},{"name":"remove parameter","parameters":[]},{"name":"get name","parameters":[]},{"name":"get name validation","parameters":[]}],"version":"0.5.2"}*/
+/*{"name":"tractor-page-objects action parameter","elements":[{"name":"name input"},{"name":"name validation"},{"name":"remove parameter button"}],"actions":[{"name":"add parameter","parameters":[{"name":"name"}]},{"name":"remove parameter","parameters":[]},{"name":"get name","parameters":[]},{"name":"get name validation","parameters":[]}],"version":"0.7.0"}*/
 module.exports = function () {
-    var TractorPageObjectsActionParameter = function TractorPageObjectsActionParameter(parent) {
-        var find = parent ? parent.element.bind(parent) : element;
+    var TractorPageObjectsActionParameter = function TractorPageObjectsActionParameter(host) {
+        var find = host ? host.element.bind(host) : element;
         this.nameInput = find(by.css('tractor-variable-input[label="Name"] input'));
         this.nameValidation = find(by.css('tractor-variable-input[label="Name"] ng-message'));
         this.removeParameterButton = find(by.css('tractor-action[action="Remove parameter"] button'));

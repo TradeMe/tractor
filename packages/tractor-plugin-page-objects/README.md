@@ -42,7 +42,7 @@ This plugin provides a UI for describing **Page Object** classes with **Elements
 ![tractor-page-objects action parameter](https://github.com/phenomnomnominal/tractor-plugin-page-objects/tree/master/docs/assets/tractor-page-objects%20action%20parameter.png)
 
 ```javascript
-/*{"name":"tractor-page-objects action parameter","elements":[{"name":"name input"},{"name":"remove parameter button"}],"actions":[{"name":"add parameter","parameters":[{"name":"name"}]},{"name":"remove parameter","parameters":[]}],"version":"0.5.2"}*/
+/*{"name":"tractor-page-objects action parameter","elements":[{"name":"name input"},{"name":"remove parameter button"}],"actions":[{"name":"add parameter","parameters":[{"name":"name"}]},{"name":"remove parameter","parameters":[]}],"version":"0.7.0"}*/
 module.exports = function () {
     var TractorPageObjectsActionParameter = function TractorPageObjectsActionParameter(parent) {
         var find = parent ? parent.element.bind(parent) : element;
