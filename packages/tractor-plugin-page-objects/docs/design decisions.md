@@ -49,10 +49,10 @@ This may change in the future, but for now it makes things easier from a tooling
 #### Do
 
 ```javascript
-/*{"name":"page object","version":"0.5.2"}*/
+/*{"name":"page object","version":"0.7.0"}*/
 module.exports = function () {
-    var PageObject = function PageObject(parent) {
-        var find = parent ? parent.element.bind(parent) : element;
+    var PageObject = function PageObject(host) {
+        var find = host ? host.element.bind(host) : element;
     };
     return PageObject;
 }();
@@ -61,13 +61,14 @@ module.exports = function () {
 #### Don't
 
 ```javascript
-/*{"name":"page object","version":"0.5.2"}*/
+/*{"name":"page object","version":"0.7.0"}*/
 export class PageObject {
-    constructor (parent) {
-        const find = parent ? parent.element.bind(parent) : element;
+    constructor (host) {
+        const find = host ? host.element.bind(host) : element;
     }
 }
 ```
+
 ___
 
 ### Store name meta-data *only* when necessary
