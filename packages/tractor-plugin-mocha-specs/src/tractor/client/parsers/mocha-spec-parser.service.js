@@ -15,30 +15,38 @@ function MochaSpecParserService (
     MochaSpecModel,
     astCompareService,
     persistentStateService,
+    plugins,
     testParserService
 ) {
     return { parse };
 
     function parse (mochaSpecFile, availablePageObjects, availableMockRequests) {
         let mochaSpec = new MochaSpecModel(mochaSpecFile);
-
-        // Give the spec an initial name, in case parsing the metadata fails:
         mochaSpec.name = mochaSpecFile.basename;
 
         let astObject = mochaSpecFile.ast;
 
+        // If this is a brand new, empty .po.js file, the AST will be empty:
+        const isNewFile = isEmptyAST(astObject);
+
         let meta;
-        try {
-            let [metaComment] = astObject.comments;
-            meta = JSON.parse(metaComment.value);
-        } catch (e) {
-            // If we can't parse the meta comment, we just bail straight away:
-            mochaSpec.isUnparseable = astObject;
-            return mochaSpec;
+        if (!isNewFile) {
+            try {
+                let [metaComment] = astObject.comments;
+                meta = JSON.parse(metaComment.value);
+            } catch (e) {
+                // If we can't parse the meta comment, we just bail straight away:
+                mochaSpec.isUnparseable = astObject;
+                return mochaSpec;
+            }
         }
 
-        mochaSpec.name = meta.name;
-        mochaSpec.version = meta.version;
+        const tests = isNewFile ? [] : meta.tests;
+        const name = isNewFile ? mochaSpec.name : meta.name;
+        const version = isNewFile ? _getMochaSpecsVersion(plugins) : meta.version;
+
+        mochaSpec.name = name;
+        mochaSpec.version = version;
         mochaSpec.availablePageObjects = availablePageObjects;
         mochaSpec.availableMockRequests = availableMockRequests;
 
@@ -49,24 +57,31 @@ function MochaSpecParserService (
             mochaSpec.suiteName = suiteName.value;
         }
 
-        let tests = esquery(astObject, TEST_QUERY);
-        tests.forEach(testASTObject => {
-            let testMeta = meta.tests[mochaSpec.tests.length];
+        esquery(astObject, TEST_QUERY).forEach(testASTObject => {
+            let testMeta = tests[mochaSpec.tests.length];
             let test = testParserService.parse(mochaSpec, testASTObject, testMeta);
             const minimised = state[test.name];
             test.minimised = minimised == null ? true : !!minimised;
             mochaSpec.tests.push(test);
         });
 
-        let parsedCorrectly = astCompareService.compare(astObject, mochaSpec.ast);
+        let parsedCorrectly = isNewFile || astCompareService.compare(astObject, mochaSpec.ast);
         if (!parsedCorrectly) {
             mochaSpec.isUnparseable = astObject;
-            if (meta.version !== mochaSpec.version) {
+            if (version !== mochaSpec.version) {
                 mochaSpec.outdated = true;
             }
         }
 
         return mochaSpec;
+    }
+
+    function isEmptyAST (ast) {
+        return ast.body.length === 0 && ast.comments.length === 0;
+    }
+
+    function _getMochaSpecsVersion (plugins) {
+        return plugins.find(plugin => plugin.name === 'Mocha Specs').version;
     }
 }
 

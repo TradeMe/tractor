@@ -2,7 +2,6 @@
 import { MochaSpecsModule } from '../mocha-specs.module';
 
 // Dependencies:
-import './meta/mocha-spec-meta';
 import './test';
 
 function createMochaSpecModelConstructor (

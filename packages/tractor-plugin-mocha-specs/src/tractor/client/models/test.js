@@ -126,12 +126,16 @@ function createTestModelConstructor (
         }
 
         _getRelativePath (file) {
-            let directory = this.spec.file ? path.dirname(this.spec.file.path) : mochaSpecsFileStructureService.fileStructure.path;
-            let relative = path.relative(directory, file.path);
+            let directory = this.spec.file ? path.dirname(this._fixWindows(this.spec.file.path)) : this._fixWindows(mochaSpecsFileStructureService.fileStructure.path);
+            let relative = path.relative(directory, this._fixWindows(file.path));
             if (!relative.match(/^\./)) {
                 relative = `./${relative}`;
             }
             return relative;
+        }
+
+        _fixWindows (itemPath) {
+            return itemPath.replace(/\\/g, '/');
         }
 
         _sortByPaths (a, b) {

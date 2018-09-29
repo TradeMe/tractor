@@ -6,7 +6,6 @@ import { MochaSpecsModule } from './mocha-specs.module';
 // Dependencies:
 import './mocha-specs/mocha-specs.component';
 import './mocha-specs-file-structure.service';
-import './models/meta/mocha-spec-meta';
 import './parsers/mocha-spec-parser.service';
 
 let tractor = angular.module('tractor');
