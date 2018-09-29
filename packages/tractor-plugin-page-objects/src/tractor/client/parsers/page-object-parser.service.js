@@ -3,7 +3,7 @@ import { PageObjectsModule } from '../page-objects.module';
 
 // Queries:
 const PAGE_OBJECT_QUERY = 'AssignmentExpression[left.object.name="module"] > CallExpression > FunctionExpression > BlockStatement';
-const ELEMENTS_QUERY = `${PAGE_OBJECT_QUERY} > VariableDeclaration > VariableDeclarator > FunctionExpression > BlockStatement > ExpressionStatement > AssignmentExpression[left.property]`;
+const ELEMENTS_QUERY = `${PAGE_OBJECT_QUERY} > VariableDeclaration > VariableDeclarator > FunctionExpression > BlockStatement > ExpressionStatement > AssignmentExpression[left.property]:has(CallExpression)`;
 const ACTIONS_QUERY = `${PAGE_OBJECT_QUERY} > ExpressionStatement > AssignmentExpression[left.property]`;
 
 // Dependencies:
@@ -17,61 +17,78 @@ function PageObjectParserService (
     actionParserService,
     astCompareService,
     elementParserService,
-    persistentStateService
+    persistentStateService,
+    plugins
 ) {
     return { parse };
 
     function parse (pageObjectFile, availablePageObjects, isIncluded) {
         let pageObject = new PageObjectModel(pageObjectFile);
-        pageObject.name = pageObjectFile.name;
+        pageObject.name = pageObjectFile.basename;
         pageObject.isIncluded = isIncluded;
 
         let astObject = pageObjectFile.ast;
 
+        // If this is a brand new, empty .po.js file, the AST will be empty:
+        const isNewFile = isEmptyAST(astObject);
+
         let meta;
-        try {
-            let [metaComment] = astObject.comments;
-            meta = JSON.parse(metaComment.value);
-        } catch (e) {
-            // If we can't parse the meta comment, we just bail straight away:
-            pageObject.isUnparseable = astObject;
-            return pageObject;
+        if (!isNewFile) {
+            try {
+                let [metaComment] = astObject.comments;
+                meta = JSON.parse(metaComment.value);
+            } catch (e) {
+                // If we can't parse the meta comment, we just bail straight away:
+                pageObject.isUnparseable = astObject;
+                return pageObject;
+            }
         }
 
-        pageObject.name = meta.name;
-        pageObject.version = meta.version;
+        const actions = isNewFile ? [] : meta.actions;
+        const elements = isNewFile ? [] : meta.elements;
+        const name = isNewFile ? pageObject.name : meta.name;
+        const version = isNewFile ? _getPageObjectsVersion(plugins) : meta.version;
+
+        pageObject.name = name;
+        pageObject.version = version;
         pageObject.availablePageObjects = availablePageObjects.filter(availablePageObject => {
             return availablePageObject.name !== pageObject.name;
         });
 
         let state = persistentStateService.get(pageObject.name);
 
-        let elements = esquery(astObject, ELEMENTS_QUERY);
-        elements.forEach(elementASTObject => {
-            let elementMeta = meta.elements[pageObject.domElements.length];
+        esquery(astObject, ELEMENTS_QUERY).forEach(elementASTObject => {
+            let elementMeta = elements[pageObject.domElements.length];
             let domElement = elementParserService.parse(pageObject, elementASTObject, elementMeta);
             domElement.minimised = !!state[domElement.name];
             pageObject.elements.push(domElement);
             pageObject.domElements.push(domElement);
         });
 
-        let actions = esquery(astObject, ACTIONS_QUERY);
-        actions.forEach(actionASTObject => {
-            let actionMeta = meta.actions[pageObject.actions.length];
+        esquery(astObject, ACTIONS_QUERY).forEach(actionASTObject => {
+            let actionMeta = actions[pageObject.actions.length];
             let action = actionParserService.parse(pageObject, actionASTObject, actionMeta);
             action.minimised = !!state[action.name];
             pageObject.actions.push(action);
         });
 
-        let parsedCorrectly = astCompareService.compare(astObject, pageObject.ast);
+        let parsedCorrectly = isNewFile || astCompareService.compare(astObject, pageObject.ast);
         if (!parsedCorrectly) {
             pageObject.isUnparseable = astObject;
-            if (meta.version !== pageObject.version) {
+            if (version !== pageObject.version) {
                 pageObject.outdated = true;
             }
         }
 
         return pageObject;
+    }
+
+    function isEmptyAST (ast) {
+        return ast.body.length === 0 && ast.comments.length === 0;
+    }
+
+    function _getPageObjectsVersion (plugins) {
+        return plugins.find(plugin => plugin.name === 'Page Objects').version;
     }
 }
 
