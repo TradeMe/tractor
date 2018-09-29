@@ -1,10 +1,10 @@
-/*{"name":"tractor-mocha-specs test","elements":[{"name":"name input"},{"name":"name validation"},{"name":"remove test button"},{"name":"only checkbox"},{"name":"skip checkbox"},{"name":"skip reason input"},{"name":"add interaction button"},{"name":"add assertion button"},{"name":"interactions","type":"tractor-mocha-specs interaction"},{"name":"assertions","type":"tractor-mocha-specs assertion"}],"actions":[{"name":"add test","parameters":[{"name":"name"}]},{"name":"toggle only","parameters":[]},{"name":"get only","parameters":[]},{"name":"toggle skip","parameters":[]},{"name":"get skip","parameters":[]},{"name":"set skip reason","parameters":[{"name":"skip reason"}]},{"name":"get skip reason","parameters":[]},{"name":"get name","parameters":[]},{"name":"get name validation","parameters":[]}],"version":"0.5.2"}*/
+/*{"name":"tractor-mocha-specs test","elements":[{"name":"name input"},{"name":"name validation"},{"name":"remove test button"},{"name":"only checkbox"},{"name":"skip checkbox"},{"name":"skip reason input"},{"name":"add interaction button"},{"name":"add assertion button"},{"name":"interactions","type":"tractor-mocha-specs interaction","group":true},{"name":"assertions","type":"tractor-mocha-specs assertion","group":true}],"actions":[{"name":"add test","parameters":[{"name":"name"}]},{"name":"toggle only","parameters":[]},{"name":"get only","parameters":[]},{"name":"toggle skip","parameters":[]},{"name":"get skip","parameters":[]},{"name":"set skip reason","parameters":[{"name":"skip reason"}]},{"name":"get skip reason","parameters":[]},{"name":"get name","parameters":[]},{"name":"get name validation","parameters":[]}],"version":"0.7.0"}*/
 module.exports = function () {
     var TractorMochaSpecsInteraction = require('./tractor-mocha-specs interaction.po.js');
     var TractorMochaSpecsAssertion = require('./tractor-mocha-specs assertion.po.js');
-    var TractorMochaSpecsTest = function TractorMochaSpecsTest(parent) {
-        var find = parent ? parent.element.bind(parent) : element;
-        var findAll = parent ? parent.all.bind(parent) : element.all.bind(element);
+    var TractorMochaSpecsTest = function TractorMochaSpecsTest(host) {
+        var find = host ? host.element.bind(host) : element;
+        var findAll = host ? host.all.bind(host) : element.all.bind(element);
         this.nameInput = find(by.css('tractor-text-input[label="Name"] input'));
         this.nameValidation = find(by.css('tractor-text-input[label="Name"] ng-message'));
         this.removeTestButton = find(by.css('tractor-action[action="Remove test"] button'));

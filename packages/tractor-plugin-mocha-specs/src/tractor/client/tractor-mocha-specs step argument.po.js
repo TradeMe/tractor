@@ -1,7 +1,7 @@
-/*{"name":"tractor-mocha-specs step argument","elements":[{"name":"input"},{"name":"name"},{"name":"validation"}],"actions":[{"name":"set value","parameters":[{"name":"value"}]},{"name":"get name","parameters":[]},{"name":"get value","parameters":[]},{"name":"get validation","parameters":[]}],"version":"0.5.2"}*/
+/*{"name":"tractor-mocha-specs step argument","elements":[{"name":"input"},{"name":"name"},{"name":"validation"}],"actions":[{"name":"set value","parameters":[{"name":"value"}]},{"name":"get name","parameters":[]},{"name":"get value","parameters":[]},{"name":"get validation","parameters":[]}],"version":"0.7.0"}*/
 module.exports = function () {
-    var TractorMochaSpecsStepArgument = function TractorMochaSpecsStepArgument(parent) {
-        var find = parent ? parent.element.bind(parent) : element;
+    var TractorMochaSpecsStepArgument = function TractorMochaSpecsStepArgument(host) {
+        var find = host ? host.element.bind(host) : element;
         this.input = find(by.css('input'));
         this.name = find(by.css('label'));
         this.validation = find(by.css('ng-message'));

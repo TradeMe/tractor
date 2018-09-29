@@ -1,9 +1,9 @@
-/*{"name":"tractor-mocha-specs interaction","elements":[{"name":"page object select"},{"name":"action select"},{"name":"arguments","type":"tractor-mocha-specs step argument"}],"actions":[{"name":"add interaction","parameters":[{"name":"page object"},{"name":"action"}]},{"name":"select page object","parameters":[{"name":"page object"}]},{"name":"select action","parameters":[{"name":"action"}]},{"name":"add argument","parameters":[{"name":"name"},{"name":"value"}]},{"name":"get page object","parameters":[]},{"name":"get action","parameters":[]}],"version":"0.5.2"}*/
+/*{"name":"tractor-mocha-specs interaction","elements":[{"name":"page object select"},{"name":"action select"},{"name":"arguments","type":"tractor-mocha-specs step argument","group":true}],"actions":[{"name":"add interaction","parameters":[{"name":"page object"},{"name":"action"}]},{"name":"select page object","parameters":[{"name":"page object"}]},{"name":"select action","parameters":[{"name":"action"}]},{"name":"add argument","parameters":[{"name":"name"},{"name":"value"}]},{"name":"get page object","parameters":[]},{"name":"get action","parameters":[]}],"version":"0.7.0"}*/
 module.exports = function () {
     var TractorMochaSpecsStepArgument = require('./tractor-mocha-specs step argument.po.js');
-    var TractorMochaSpecsInteraction = function TractorMochaSpecsInteraction(parent) {
-        var find = parent ? parent.element.bind(parent) : element;
-        var findAll = parent ? parent.all.bind(parent) : element.all.bind(element);
+    var TractorMochaSpecsInteraction = function TractorMochaSpecsInteraction(host) {
+        var find = host ? host.element.bind(host) : element;
+        var findAll = host ? host.all.bind(host) : element.all.bind(element);
         this.pageObjectSelect = find(by.css('tractor-select[label="Page Object"] select'));
         this.actionSelect = find(by.css('tractor-select[label="Action"] select'));
         this.arguments = function (groupSelector) {

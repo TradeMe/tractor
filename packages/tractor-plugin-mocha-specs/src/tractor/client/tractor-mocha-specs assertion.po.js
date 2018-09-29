@@ -1,9 +1,9 @@
-/*{"name":"tractor-mocha-specs assertion","elements":[{"name":"page object select"},{"name":"action select"},{"name":"arguments","type":"tractor-mocha-specs step argument"},{"name":"expected result input"},{"name":"expected result validation"}],"actions":[{"name":"add assertion","parameters":[{"name":"page object"},{"name":"action"},{"name":"expected result"}]},{"name":"select page object","parameters":[{"name":"page object"}]},{"name":"select action","parameters":[{"name":"action"}]},{"name":"set expected result","parameters":[{"name":"expected result"}]},{"name":"add argument","parameters":[{"name":"name"},{"name":"value"}]},{"name":"get page object","parameters":[]},{"name":"get action","parameters":[]},{"name":"get expected result","parameters":[]},{"name":"get expected result validation","parameters":[]}],"version":"0.5.2"}*/
+/*{"name":"tractor-mocha-specs assertion","elements":[{"name":"page object select"},{"name":"action select"},{"name":"arguments","type":"tractor-mocha-specs step argument","group":true},{"name":"expected result input"},{"name":"expected result validation"}],"actions":[{"name":"add assertion","parameters":[{"name":"page object"},{"name":"action"},{"name":"expected result"}]},{"name":"select page object","parameters":[{"name":"page object"}]},{"name":"select action","parameters":[{"name":"action"}]},{"name":"set expected result","parameters":[{"name":"expected result"}]},{"name":"add argument","parameters":[{"name":"name"},{"name":"value"}]},{"name":"get page object","parameters":[]},{"name":"get action","parameters":[]},{"name":"get expected result","parameters":[]},{"name":"get expected result validation","parameters":[]}],"version":"0.7.0"}*/
 module.exports = function () {
     var TractorMochaSpecsStepArgument = require('./tractor-mocha-specs step argument.po.js');
-    var TractorMochaSpecsAssertion = function TractorMochaSpecsAssertion(parent) {
-        var find = parent ? parent.element.bind(parent) : element;
-        var findAll = parent ? parent.all.bind(parent) : element.all.bind(element);
+    var TractorMochaSpecsAssertion = function TractorMochaSpecsAssertion(host) {
+        var find = host ? host.element.bind(host) : element;
+        var findAll = host ? host.all.bind(host) : element.all.bind(element);
         this.pageObjectSelect = find(by.css('tractor-select[label="Page Object"] select'));
         this.actionSelect = find(by.css('tractor-select[label="Action"] select'));
         this.arguments = function (groupSelector) {
