@@ -18,6 +18,10 @@ export async function upgrade (file) {
     await Promise.all(esquery(file.ast, ELEMENT_ASSIGNMENT).map(async (assignment, index) => {
         const elementMetaData = metaData.elements[index];
 
+        if (!elementMetaData) {
+            return;
+        }
+
         const [elementGroup] = esquery(assignment, ELEMENT_GROUP_QUERY);
         const [typedElementGroup] = esquery(assignment, ELEMENT_GROUP_TYPE_QUERY);
         if (elementGroup) {
