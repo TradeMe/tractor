@@ -5,7 +5,7 @@ import { PageObjectFile } from '../tractor/server/files/page-object-file';
 import { PageObjectFileRefactorer } from '../tractor/server/files/page-object-file-refactorer';
 
 // Versions:
-const VERSIONS = ['0.5.0', '0.5.2', '0.6.0'];
+const VERSIONS = ['0.5.0', '0.5.2', '0.6.0', '0.7.0'];
 
 export async function upgrade () {
     const config = getConfig();

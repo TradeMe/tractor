@@ -17,6 +17,7 @@ function createElementModelConstructor (
             this.name = '';
             this.selector = '';
 
+            this._type = null;
             this.removeType();
         }
 
@@ -32,14 +33,25 @@ function createElementModelConstructor (
             return camelcase(this.name);
         }
 
+        get type () {
+            return this._type;
+        }
+
+        set type (newType) {
+            this._type = newType;
+            if (this.type) {
+                this.actions = this.type.actions;
+            } else {
+                this.actions = ELEMENT_ACTIONS.map(action => new ActionMetaModel(action));
+            }
+        }
+
         addType () {
             [this.type] = this.pageObject.availablePageObjects;
-            this.actions = this.type.actions;
         }
 
         removeType () {
             this.type = null;
-            this.actions = ELEMENT_ACTIONS.map(action => new ActionMetaModel(action));
         }
 
         _toAST () {

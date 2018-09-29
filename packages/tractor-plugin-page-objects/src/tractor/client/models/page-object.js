@@ -21,7 +21,8 @@ function createPageObjectModelConstructor (
             this.file = file;
 
             this.plugins = pageObjectsService.getPluginPageObjects();
-            this.elements = [...this.plugins];
+            this.host = this._getHost();
+            this.elements = [...this.plugins, this.host];
             this.browser = this._getBrowser(this.elements);
 
             this.domElements = [];
@@ -104,6 +105,7 @@ function createPageObjectModelConstructor (
             let hasElementGroups = this.domElements.find(element => element.group);
 
             let actions = this.actions.map(action => ast.expressionStatement(action.ast));
+            let usesHost = !!this.actions.filter(action => action.interactions.find(interaction => interaction.element === this.host)).length;
 
             let template = `
                 module.exports = (function () {
@@ -116,18 +118,23 @@ function createPageObjectModelConstructor (
                     `;
                 } else {
                     template += `
-                        var <%= pageObject %> = function <%= pageObject %> (parent) {
+                        var <%= pageObject %> = function <%= pageObject %> (host) {
                     `;
                 }
 
                 if (hasElements && !hasOnlyDeprecatedElements) {
                     template += `
-                        var find = parent ? parent.element.bind(parent) : element;
+                        var find = host ? host.element.bind(host) : element;
                     `;
                 }
                 if (hasElementGroups) {
                     template += `
-                        var findAll = parent ? parent.all.bind(parent) : element.all.bind(element);
+                        var findAll = host ? host.all.bind(host) : element.all.bind(element);
+                    `;
+                }
+                if (usesHost) {
+                    template += `
+                        this.host = host;
                     `;
                 }
                 template += `
@@ -135,9 +142,17 @@ function createPageObjectModelConstructor (
                     };
                 `;
             } else {
-                template += `
-                    var <%= pageObject %> = function <%= pageObject %> () {};
+                if (usesHost) {
+                    template += `
+                    var <%= pageObject %> = function <%= pageObject %> (host) {
+                        this.host = host;
+                    };
                 `;
+                } else {
+                    template += `
+                    var <%= pageObject %> = function <%= pageObject %> () {};
+                    `;
+                }
             }
             template += `
                     %= actions %;
@@ -149,11 +164,15 @@ function createPageObjectModelConstructor (
         }
 
         _getRelativePath (pageObject) {
-            let relative = path.relative(path.dirname(this.file.path), pageObject.path);
+            let relative = path.relative(path.dirname(this._fixWindows(this.file.path)), this._fixWindows(pageObject.path));
             if (!relative.match(/^\./)) {
                 relative = `./${relative}`;
             }
             return relative;
+        }
+
+        _fixWindows (itemPath) {
+            return itemPath.replace(/\\/g, '/');
         }
 
         _getPageObjectsVersion (plugins) {
@@ -162,6 +181,12 @@ function createPageObjectModelConstructor (
 
         _getBrowser (elements) {
             return elements.find(element => element.name === 'Browser');
+        }
+
+        _getHost () {
+            const host = new ElementModel(this);
+            host.name = 'host';
+            return host;
         }
     };
 }
