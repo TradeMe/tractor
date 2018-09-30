@@ -12,19 +12,19 @@
 	"bugs": {
 		"url": "https://github.com/TradeMe/tractor/issues",
 		"email": "craigspence0@gmail.com"
-  },
-  "scripts": {
-    "clean": "rimraf reports",
-    "clean:node_modules": "rimraf ./packages/*/node_modules && rimraf node_modules",
-    "build": "npm run clean && lerna bootstrap && lerna run build && npm run cover",
-    "cover": "istanbul cover --config .istanbulrc.json node_modules/.bin/_mocha -- --opts .mocharc 'packages/**/src/**/*.spec.js'",
-    "link": "lerna exec npm link && lerna exec rm package-lock.json",
-    "pretest:e2e": "npm run webdriver",
-    "test:e2e": "protractor ./tractor/protractor.conf.js --baseUrl=\"http://localhost:4444\"",
-    "tractor": "tractor start",
-    "tractor:init": "tractor init",
-    "webdriver": "webdriver-manager update && tractor patch"
-  },
+	},
+	"scripts": {
+		"clean": "rimraf reports",
+		"clean:node_modules": "rimraf ./packages/*/node_modules && rimraf node_modules",
+		"build": "npm run clean && lerna bootstrap && lerna run build && npm run cover",
+		"cover": "istanbul cover --config .istanbulrc.json node_modules/.bin/_mocha -- --opts .mocharc 'packages/**/src/**/*.spec.js'",
+		"link": "lerna exec npm link && lerna exec rm package-lock.json",
+		"pretest:e2e": "npm run webdriver",
+		"test:e2e": "protractor ./tractor/protractor.conf.js --baseUrl=\"http://localhost:4444\"",
+		"tractor": "tractor start",
+		"tractor:init": "tractor init",
+		"webdriver": "webdriver-manager update && tractor patch"
+	},
 	"devDependencies": {
 		"@babel/cli": "7.0.0-beta.39",
 		"@babel/core": "7.0.0-beta.39",
@@ -91,7 +91,6 @@
 		"lodash.debounce": "^4.0.8",
 		"lodash.defaults": "^4.2.0",
 		"lodash.template": "^4.4.0",
-		"moment": "2.14.1",
 		"monkeypatch": "^1.0.0",
 		"ng-sortable": "1.2.2",
 		"normalize.css": "3.0.3",
