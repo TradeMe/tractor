@@ -189,7 +189,7 @@ The **Page Object** from `<tractor-text-input>` could have several **Actions**:
 
 Interacting with the `<input>` is slightly more complicated.
 
-* There could be a "set value" **Action** with a **Parameter** called "value". It would use the "send keys" method on the "input" **Element**, and pass the "value" **Parameter".
+* There could be a "set value" **Action** with a **Parameter** called "value". It would use the "send keys" method on the "input" **Element**, and pass the "value" **Parameter**.
 
 * The could also be a "clear value" **Action**, which would use the "clear" method on the "input" **Element**.
 
