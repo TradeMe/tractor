@@ -7,4 +7,3 @@ src/
 .istanbulrc.json
 .mocharc
 .travis.yml
-travis-after-build.sh

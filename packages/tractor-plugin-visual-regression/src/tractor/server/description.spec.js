@@ -1,12 +1,10 @@
-/* global describe:true, it:true */
-
 // Test setup:
-import { expect } from '../../../test-setup';
+import { expect } from '@tractor/unit-test';
 
 // Under test:
 import { description } from './description';
 
-describe('tractor-plugin-visual-regression - description:', () => {
+describe('@tractor-plugins/visual-regression - description:', () => {
     it('should have the `ignoreElement` action', () => {
         let ignoreElement = description.actions.find(action => action.name === 'ignore element');
         expect(ignoreElement).to.not.be.undefined();

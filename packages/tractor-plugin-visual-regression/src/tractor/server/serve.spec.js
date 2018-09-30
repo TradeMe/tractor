@@ -1,10 +1,8 @@
-/* global describe:true, it:true */
-
 // Test setup:
-import { expect, ineeda, NOOP, sinon } from '../../../test-setup';
+import { expect, ineeda, NOOP, sinon } from '@tractor/unit-test';
 
 // Dependencies:
-import { FileStructure } from 'tractor-file-structure';
+import { FileStructure } from '@tractor/file-structure';
 import * as getDiffs from './actions/get-diffs';
 import * as takeChanges from './actions/take-changes';
 import { DiffPNGFile } from './files/diff-png-file';
@@ -13,7 +11,7 @@ import { PNGFile } from './files/png-file';
 // Under test:
 import { serve } from './serve';
 
-describe('tractor-plugin-visual-regression - serve:', () => {
+describe('@tractor-plugins/visual-regression - serve:', () => {
     it('should create a new FileStructure', () => {
         let visualRegressionFileStructure = null;
 

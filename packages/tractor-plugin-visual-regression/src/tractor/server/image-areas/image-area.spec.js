@@ -1,12 +1,10 @@
-/* global describe:true, it:true */
-
 // Test setup:
-import { expect } from '../../../../test-setup';
+import { expect } from '@tractor/unit-test';
 
 // Under test:
 import { ImageArea } from './image-area';
 
-describe('tractor-plugin-visual-regression - image-area:', () => {
+describe('@tractor-plugins/visual-regression - image-area:', () => {
     describe('ImageArea constructor:', () => {
         it('it should contain the bounding box', () => {
             let imageArea = new ImageArea(1, 2, 3, 4);

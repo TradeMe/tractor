@@ -2,17 +2,20 @@
     "env": {
         "node": true
     },
-    "globals": {
-        "Promise": true
-    },
     "extends": "eslint:recommended",
     "parser": "babel-eslint",
-    "parserOptions": {
-        "ecmaVersion": 2017,
-        "sourceType": "module",
-        "ecmaFeatures": {
-            "impliedStrict": true,
-            "experimentalObjectRestSpread": true
-        }
+    "globals": {
+        "Promise": true,
+        "describe": true,
+        "it": true,
+        "expect": true,
+        "browser": true,
+        "beforeEach": true
+    },
+    "rules": {
+        "no-extra-parens": 2,
+        "no-prototype-builtins": 2,
+        "no-template-curly-in-string": 2,
+        "semi": [2, "always"]
     }
 }

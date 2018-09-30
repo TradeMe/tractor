@@ -1,5 +1,5 @@
 // Dependencies:
-import { File } from 'tractor-file-structure';
+import { File } from '@tractor/file-structure';
 
 export class PNGFile extends File { }
 

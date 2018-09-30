@@ -1,7 +1,12 @@
 {
-  "name": "tractor-plugin-visual-regression",
+  "name": "@tractor-plugins/visual-regression",
   "version": "0.3.0",
+  "description": "tractor plugin for visual regression testing",
   "author": "Craig Spence <craigspence0@gmail.com>",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/phenomnomnominal/tractor-plugin-visual-regression.git"
@@ -11,9 +16,6 @@
     "email": "craigspence0@gmail.com"
   },
   "main": "dist/index.js",
-  "watch": {
-    "build": "src/**/*.js"
-  },
   "scripts": {
     "prepublish": "npm run build",
     "build": "npm run clean && npm run lint && npm run cover && npm run compile && npm run bundle",
@@ -26,47 +28,43 @@
     "test:debug": "mocha --inspect --debug-brk --opts ./.mocharc 'src/**/*.spec.js'",
     "watch": "npm-watch"
   },
-  "license": "MIT",
-  "engines": {
-    "node": ">=0.10"
-  },
-  "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
-    "babel-eslint": "^8.0.1",
-    "babel-loader": "^7.1.1",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-es2017": "^6.24.1",
-    "babel-preset-stage-0": "^6.24.1",
-    "babel-register": "^6.26.0",
-    "chai": "^4.1.2",
-    "css-loader": "^0.28.5",
-    "dedent": "^0.7.0",
-    "dirty-chai": "^2.0.1",
-    "eslint": "^4.8.0",
-    "html-loader": "^0.5.1",
-    "ineeda": "^0.11.0",
-    "istanbul": "^1.0.0-alpha.2",
-    "mkdirp": "^0.5.1",
-    "mocha": "^4.0.1",
-    "ng-annotate-loader": "^0.6.1",
-    "npm-watch": "^0.3.0",
-    "rimraf": "^2.6.2",
-    "sinon": "^4.0.1",
-    "sinon-chai": "^2.14.0",
-    "tractor-config-loader": "^0.4.4",
-    "tractor-error-handler": "^0.2.4",
-    "tractor-file-structure": "^0.5.4",
-    "tractor-logger": "^0.1.1",
-    "url-loader": "^0.6.2",
-    "webpack": "^3.6.0"
+  "watch": {
+    "build": "src/**/*.js"
   },
   "dependencies": {
-    "babel-polyfill": "^6.26.0",
+    "@babel/polyfill": "^7.0.0",
     "pixelmatch": "^4.0.2",
-    "pngjs": "^3.3.0"
+    "pngjs": "^3.3.3"
   },
   "peerDependencies": {
-    "tractor": "^0.12.1"
+    "@tractor/core": "^1.0.1-beta.8"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.1.2",
+    "@babel/core": "^7.1.2",
+    "@babel/plugin-proposal-export-default-from": "^7.0.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "@babel/plugin-proposal-optional-catch-binding": "^7.0.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/register": "^7.0.0",
+    "@tractor/config-loader": "^1.0.1-beta.8",
+    "@tractor/error-handler": "^1.0.1-beta.8",
+    "@tractor/file-structure": "^1.0.1-beta.8",
+    "@tractor/logger": "^1.0.1-beta.8",
+    "@tractor/unit-test": "^1.0.1-beta.8",
+    "babel-eslint": "^10.0.1",
+    "babel-loader": "^8.0.4",
+    "babel-plugin-angularjs-annotate": "^0.9.0",
+    "css-loader": "^1.0.0",
+    "eslint": "^5.6.1",
+    "html-loader": "^0.5.5",
+    "istanbul": "^1.1.0-alpha.1",
+    "mkdirp": "^0.5.1",
+    "mocha": "^5.0.1",
+    "npm-watch": "^0.4.0",
+    "rimraf": "^2.6.2",
+    "url-loader": "^1.1.1",
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.2"
   }
 }

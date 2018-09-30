@@ -1,4 +1,5 @@
 // Dependencies:
+import path from 'path';
 import { DiffPNGFile } from '../files/diff-png-file';
 import { PNGFile } from '../files/png-file';
 
@@ -6,25 +7,22 @@ import { PNGFile } from '../files/png-file';
 import { BASELINE_DIRECTORY, CHANGES_DIRECTORY, DIFFS_DIRECTORY } from '../constants';
 
 export function createGetDiffsHandler (fileStructure) {
-    let { allFilesByPath, structure } = fileStructure;
+    const { allFilesByPath, structure } = fileStructure;
 
     return function getDiffs (request, response) {
-        let diffFiles = structure.allFiles.filter(file => file.extension === DiffPNGFile.prototype.extension);
-        let diffs = diffFiles.map(diffFile => {
-            let baselineFile = allFilesByPath[getBaselinePath(diffFile)];
-            let changesFile = allFilesByPath[getChangesPath(diffFile)];
-            if (baselineFile && changesFile) {
-                return {
-                    name: diffFile.basename,
-                    baseline: baselineFile,
-                    changes: changesFile,
-                    diff: diffFile
-                };
+        const diffFiles = structure.allFiles.filter(file => file.extension === DiffPNGFile.prototype.extension);
+
+        const diffs = diffFiles.map(diff => {
+            const name = diff.path.replace(path.join(structure.path, DIFFS_DIRECTORY), '');
+            const baseline = allFilesByPath[getBaselinePath(diff)];
+            const changes = allFilesByPath[getChangesPath(diff)];
+            if (baseline && changes) {
+                return { name, baseline, changes, diff };
             }
         })
         .filter(Boolean);
         response.json({ diffs });
-    }
+    };
 }
 
 function getBaselinePath (diffFile) {

@@ -40,22 +40,22 @@
                     <li
                         class="tractor-visual-regression__image"
                         ng-attr-title="{{ diff.name }} baseline">
-                        <a href="/fs/static/visual-regression{{ diff.baseline.url }}" target="_blank">
-                            <img ng-src="/fs/static/visual-regression{{ diff.baseline.url }}"/>
+                        <a href="/fs/static{{ diff.baseline.url }}" target="_blank">
+                            <img ng-src="/fs/static{{ diff.baseline.url }}"/>
                         </a>
                     </li>
                     <li
                         class="tractor-visual-regression__image"
                         ng-attr-title="{{ diff.name }} changes">
-                        <a href="/fs/static/visual-regression{{ diff.changes.url }}" target="_blank">
-                            <img ng-src="/fs/static/visual-regression{{ diff.changes.url }}"/>
+                        <a href="/fs/static{{ diff.changes.url }}" target="_blank">
+                            <img ng-src="/fs/static{{ diff.changes.url }}"/>
                         </a>
                     </li>
                     <li
                         class="tractor-visual-regression__image"
                         ng-attr-title="{{ diff.name }} diff">
-                        <a href="/fs/static/visual-regression{{ diff.diff.url }}" target="_blank">
-                            <img ng-src="/fs/static/visual-regression{{ diff.diff.url }}"/>
+                        <a href="/fs/static{{ diff.diff.url }}" target="_blank">
+                            <img ng-src="/fs/static{{ diff.diff.url }}"/>
                         </a>
                     </li>
                 </ul>

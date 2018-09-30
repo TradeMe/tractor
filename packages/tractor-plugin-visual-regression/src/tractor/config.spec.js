@@ -1,12 +1,10 @@
-/* global describe:true, it:true */
-
 // Test setup:
-import { expect } from '../../test-setup';
+import { expect } from '@tractor/unit-test';
 
 // Under test:
 import { config } from './config';
 
-describe('tractor-plugin-visual-regressions - tractor/config:', () => {
+describe('@tractor-plugins/visual-regressions - tractor/config:', () => {
     describe('addConfig', () => {
         it('should process the config object', () => {
             let visualRegressionConfig = {};

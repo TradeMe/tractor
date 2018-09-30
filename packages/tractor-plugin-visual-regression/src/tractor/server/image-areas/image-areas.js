@@ -13,12 +13,12 @@ export function createIncludedArea (...coordinates) {
 }
 
 export function updateAreas (rawPngData, areas, ratio) {
-    let png = PNG.sync.read(new Buffer(rawPngData, 'base64'));
+    let png = PNG.sync.read(Buffer.from(rawPngData, 'base64'));
 
     if (areas.length) {
         areas.forEach(area => area.updateRatio(ratio));
 
-        let areaData = calculateAreas(areas)
+        let areaData = calculateAreas(areas);
         updateData(png, areaData);
 
         let [firstArea] = areas;
@@ -63,7 +63,7 @@ function calculateAreas (areas) {
 }
 
 function createImageArea (left, top, right, bottom) {
-    return new ImageArea(left, top, right, bottom)
+    return new ImageArea(left, top, right, bottom);
 }
 
 function createImageData () {
@@ -89,7 +89,7 @@ function updateData (png, areaData) {
     for (let y = areaData.minY; y < areaData.maxY; y += 1) {
         for (let x = areaData.minX; x < areaData.maxX; x += 1) {
             if (!areaData.positions[y][x]) {
-                let index = (png.width * y + x) << 2;
+                let index = png.width * y + x << 2;
                 paintItBlack(png.data, index);
             }
         }
@@ -105,7 +105,7 @@ function paintItBlack (data, index) {
 
 function validateArea (area) {
     let { left, top, right, bottom } = area;
-    return validateNumber(left) && validateNumber(top) && validateNumber(right) && validateNumber(bottom)
+    return validateNumber(left) && validateNumber(top) && validateNumber(right) && validateNumber(bottom);
 }
 
 function validateNumber (number) {

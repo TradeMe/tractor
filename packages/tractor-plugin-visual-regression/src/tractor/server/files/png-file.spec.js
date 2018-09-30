@@ -1,16 +1,14 @@
-/* global describe:true, it:true */
-
 // Dependencies:
 import path from 'path';
-import { File, FileStructure } from 'tractor-file-structure';
+import { File, FileStructure } from '@tractor/file-structure';
 
 // Test setup:
-import { expect } from '../../../../test-setup';
+import { expect } from '@tractor/unit-test';
 
 // Under test:
 import { PNGFile } from './png-file';
 
-describe('tractor-plugin-visual-regression - png-file:', () => {
+describe('@tractor-plugins/visual-regression - png-file:', () => {
     describe('PNGFile constructor:', () => {
         it('should create a new PageObjectFile', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));

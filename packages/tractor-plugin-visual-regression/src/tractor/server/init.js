@@ -1,11 +1,11 @@
 // Dependencies:
-import { warn } from 'tractor-logger';
-import { createDir } from 'tractor-file-structure';
+import { warn } from '@tractor/logger';
+import { createDir } from '@tractor/file-structure';
 
 import { getBaselinePath, getChangesPath, getDiffsPath, getVisualRegressionPath } from './utilities';
 
 // Errors:
-import { TractorError } from 'tractor-error-handler';
+import { TractorError } from '@tractor/error-handler';
 
 export async function init (config) {
     try {
@@ -15,7 +15,7 @@ export async function init (config) {
         await createDir(getDiffsPath(config));
     } catch (error) {
         if (TractorError.isTractorError(error)) {
-            warn(`${error.message} Moving on...`)
+            warn(`${error.message} Moving on...`);
         } else {
             throw error;
         }

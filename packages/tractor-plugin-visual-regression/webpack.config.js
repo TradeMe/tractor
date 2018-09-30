@@ -12,12 +12,7 @@ module.exports = {
                 test: /\.js$/,
                 exclude: /(node_modules)/,
                 use: [{
-                    loader: 'ng-annotate-loader'
-                }, {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: [['es2015', { modules: false }]]
-                    }
+                    loader: 'babel-loader'
                 }]
             },
             { test: /\.(png|jpg)$/, loader: 'url-loader' },
@@ -25,22 +20,6 @@ module.exports = {
             { test: /\.html$/, use: 'html-loader' }
         ]
     },
-    plugins: [
-        new webpack.LoaderOptionsPlugin({
-            minimize: true,
-            debug: false
-        }),
-        new webpack.optimize.UglifyJsPlugin({
-            mangle: {
-                screw_ie8: true,
-                keep_fnames: true
-            },
-            compress: {
-                screw_ie8: true,
-                unsafe: true
-            },
-            comments: false
-        })
-    ],
+    mode: 'production',
     node: { Buffer: 'mock' }
 };

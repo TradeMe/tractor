@@ -1,5 +1,5 @@
 // Dependencies:
-import { FileStructure, serveFileStructure } from 'tractor-file-structure';
+import { FileStructure, serveFileStructure } from '@tractor/file-structure';
 import { createGetDiffsHandler } from './actions/get-diffs';
 import { createTakeChangesHandler } from './actions/take-changes';
 import { getVisualRegressionPath } from './utilities';
@@ -7,7 +7,7 @@ import { DiffPNGFile } from './files/diff-png-file';
 import { PNGFile } from './files/png-file';
 
 export function serve (application, config, di) {
-    let visualRegressionFileStructure = new FileStructure(getVisualRegressionPath(config));
+    const visualRegressionFileStructure = new FileStructure(getVisualRegressionPath(config), 'visual-regression');
     visualRegressionFileStructure.addFileType(DiffPNGFile);
     visualRegressionFileStructure.addFileType(PNGFile);
 
@@ -15,6 +15,6 @@ export function serve (application, config, di) {
     application.put('/visual-regression/take-changes', createTakeChangesHandler(visualRegressionFileStructure));
 
     di.constant({ visualRegressionFileStructure });
-    di.call(serveFileStructure)(visualRegressionFileStructure, 'visual-regression');
+    di.call(serveFileStructure)(visualRegressionFileStructure);
 }
 serve['@Inject'] = ['application', 'config', 'di', 'sockets'];

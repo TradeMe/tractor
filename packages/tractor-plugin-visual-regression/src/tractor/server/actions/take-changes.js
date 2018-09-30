@@ -2,7 +2,7 @@
 const OKAY_STATUS = 200;
 
 // Errors:
-import { TractorError, handleError } from 'tractor-error-handler';
+import { TractorError, handleError } from '@tractor/error-handler';
 
 export function createTakeChangesHandler (fileStructure) {
     let { allFilesByPath } = fileStructure;
@@ -20,10 +20,11 @@ export function createTakeChangesHandler (fileStructure) {
                 await diffFile.delete();
                 response.sendStatus(OKAY_STATUS);
             } catch (error) {
-                handleError(response, new TractorError('Could not take changes'))
+                handleError(response, new TractorError('Could not take changes'));
             }
+            return;
         }
 
         handleError(response, new TractorError('Could not take changes, the files no longer exist.'));
-    }
+    };
 }

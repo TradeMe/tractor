@@ -1,19 +1,17 @@
-/* global describe:true, xit:true */
-
 // Dependencies:
 import path from 'path';
-import { TractorError } from 'tractor-error-handler';
-import * as tractorFileStructure from 'tractor-file-structure';
-import * as tractorLogger from 'tractor-logger';
+import { TractorError } from '@tractor/error-handler';
+import * as tractorFileStructure from '@tractor/file-structure';
+import * as tractorLogger from '@tractor/logger';
 
 // Test setup:
-import { expect, sinon } from '../../../test-setup';
+import { expect, sinon } from '@tractor/unit-test';
 
 // Under test:
 import { init } from './init';
 
-describe('tractor-plugin-visual-regression - init:', () => {
-    xit('should create the visual regression file structure', async () => {
+describe('@tractor-plugins/visual-regression - init:', () => {
+    it.skip('should create the visual regression file structure', async () => {
         let config = {};
 
         sinon.stub(process, 'cwd').returns(path.sep);
@@ -30,7 +28,7 @@ describe('tractor-plugin-visual-regression - init:', () => {
         tractorFileStructure.createDir.restore();
     });
 
-    xit('should handle the error when a directory already exists', async () => {
+    it.skip('should handle the error when a directory already exists', async () => {
         let config = {};
 
         sinon.stub(process, 'cwd').returns(path.sep);
@@ -46,7 +44,7 @@ describe('tractor-plugin-visual-regression - init:', () => {
         tractorLogger.warn.restore();
     });
 
-    xit('should throw any other errors', async () => {
+    it.skip('should throw any other errors', async () => {
         let config = {};
         let error = new Error();
 
@@ -54,7 +52,7 @@ describe('tractor-plugin-visual-regression - init:', () => {
         sinon.stub(tractorFileStructure, 'createDir').returns(Promise.reject(error));
 
         try {
-            await init(config)
+            await init(config);
         } catch(e) {
             expect(e).to.equal(error);
         }
