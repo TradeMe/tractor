@@ -30,7 +30,7 @@ tractor.config((
             pageObject ($stateParams, pageObjectsService, pageObjectParserService, availablePageObjects) {
                 let { file } = $stateParams;
                 let pageObjectUrl = file && file.url;
-                if (!pageObjectUrl) {
+                if (!pageObjectUrl || pageObjectUrl === '/') {
                     return null;
                 }
                 let fileStructureService = pageObjectsService.getPageObjectFileStructureService(file);

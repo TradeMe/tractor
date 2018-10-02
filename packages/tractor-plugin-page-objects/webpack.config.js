@@ -1,5 +1,3 @@
-const webpack = require('webpack');
-
 module.exports = {
     entry: './src/tractor/client/index.js',
     output: {
@@ -20,6 +18,6 @@ module.exports = {
             { test: /\.html$/, use: 'html-loader' }
         ]
     },
-    mode: 'development',
+    mode: 'production',
     node: { Buffer: 'mock' }
 };
