@@ -1,0 +1,34 @@
+<label
+    ng-if="model[property].description"
+    title="{{ model[property].description }}">{{ label }}:
+</label>
+<label
+    ng-if="!model[property].description">{{ label }}:
+</label>
+<input 
+    name="autocomplete-{{ id }}"
+    list="autcompleteList"
+    ng-change="updateModel($event)"
+    ng-model="value"
+    ng-required="required"/>
+<datalist
+    ng-if="as"
+    id="autcompleteList">
+    <option 
+        ng-repeat="option in selectOptions">{{ option[as] }}
+    </option>
+</datalist>
+<datalist 
+    ng-if="!as"
+    id="autcompleteList">
+    <option 
+        ng-repeat="option in selectOptions">{{ option.name }}
+    </option>
+</datalist>
+<div
+    ng-if="form['select-' + id].$touched"
+    ng-messages="form['select-' + id].$error">
+    <ng-message
+        when="required">Required
+    </ng-message>
+</div>

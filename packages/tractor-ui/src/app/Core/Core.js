@@ -10,6 +10,7 @@ module.exports = Core;
 require('./Directives/KeyboardEvents');
 
 require('./Components/Action/ActionDirective');
+require('./Components/Autocomplete/AutocompleteDirective');
 require('./Components/Checkbox/CheckboxDirective');
 require('./Components/ConfirmDialog/ConfirmDialogDirective');
 require('./Components/DragFile/DragFileDirective');
