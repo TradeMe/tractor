@@ -1,6 +1,6 @@
 {
   "name": "@tractor-plugins/mocha-specs",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "tractor plugin for creating tests with Mocha",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -53,7 +53,7 @@
     "pascal-case": "^2.0.1"
   },
   "peerDependencies": {
-    "@tractor/core": "^1.0.1-beta.8",
+    "@tractor/core": "^1.0.1-beta.9",
     "@tractor-plugins/page-objects": "^0.7.0"
   },
   "devDependencies": {
@@ -67,9 +67,9 @@
     "@babel/register": "^7.0.0",
     "@tractor-plugins/mock-requests": "^0.4.2",
     "@tractor-plugins/page-objects": "^0.7.0",
-    "@tractor/cli": "^1.0.1-beta.8",
-    "@tractor/core": "1.0.1-beta.8",
-    "@tractor/unit-test": "^1.0.1-beta.8",
+    "@tractor/cli": "^1.0.1-beta.9",
+    "@tractor/core": "1.0.1-beta.9",
+    "@tractor/unit-test": "^1.0.1-beta.9",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.4",
     "babel-plugin-angularjs-annotate": "^0.9.0",
