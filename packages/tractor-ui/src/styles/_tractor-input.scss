@@ -1,3 +1,4 @@
+tractor-autocomplete,
 tractor-variable-input,
 tractor-text-input,
 tractor-literal-input,
@@ -10,6 +11,11 @@ tractor-checkbox {
     padding-right: 0.5rem;
 }
 
+tractor-autocomplete {
+    display: inline-block;
+}
+
+tractor-autocomplete,
 tractor-variable-input,
 tractor-text-input,
 tractor-literal-input,
@@ -17,6 +23,7 @@ tractor-step-input {
     width: 40%;
 }
 
+tractor-autocomplete label,
 tractor-variable-input label,
 tractor-text-input label,
 tractor-literal-input label,
@@ -30,6 +37,7 @@ tractor-checkbox label {
     padding: 0.25rem 0;
 }
 
+tractor-autocomplete input,
 tractor-variable-input input,
 tractor-text-input input,
 tractor-literal-input input,
@@ -48,6 +56,7 @@ tractor-checkbox input {
     padding-left: 1rem;
 }
 
+tractor-autocomplete input:active,
 tractor-variable-input input:active,
 tractor-text-input input:active,
 tractor-literal-input input:active,
@@ -61,6 +70,7 @@ tractor-step-input input:focus {
     outline: none;
 }
 
+tractor-autocomplete [ng-messages],
 tractor-variable-input [ng-messages],
 tractor-text-input [ng-messages],
 tractor-literal-input [ng-messages],

@@ -7,22 +7,14 @@
 </label>
 <input 
     name="autocomplete-{{ id }}"
-    list="autcompleteList"
+    list="autcompleteList-{{ id }}"
     ng-change="updateModel($event)"
     ng-model="value"
     ng-required="required"/>
 <datalist
-    ng-if="as"
-    id="autcompleteList">
+    id="autcompleteList-{{ id }}">
     <option 
-        ng-repeat="option in selectOptions">{{ option[as] }}
-    </option>
-</datalist>
-<datalist 
-    ng-if="!as"
-    id="autcompleteList">
-    <option 
-        ng-repeat="option in selectOptions">{{ option.name }}
+        ng-repeat="option in autocompleteOptions track by option">{{ option }}
     </option>
 </datalist>
 <div

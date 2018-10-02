@@ -45,28 +45,52 @@ var AutocompleteDirective = function () {
             throw new Error('The "tractor-autocomplete" directive requires an "options" attribute, or a "label" attribute that matches a set of options on the "model".');
         }
 
-        $scope.$watchCollection('options', function () {
-            $scope.selectOptions = $scope.options || getOptionsFromProperty($scope);
-        });
-
-        $scope.form = $scope.$parent[$attrs.form] || $scope.$parent.$ctrl[$attrs.form];
-        $scope.id = Math.floor(Math.random() * Date.now());
-
         $scope.value = $scope.model[$scope.property];
         if ($scope.as) {
             $scope.value = $scope.value[$scope.as];
         }
 
+        $scope.form = $scope.$parent[$attrs.form] || $scope.$parent.$ctrl[$attrs.form];
+        $scope.id = Math.floor(Math.random() * Date.now());
+
         $scope.updateModel = function () {
-            $scope.model[$scope.property] = $scope.selectOptions.find(function (option) {
-                const value = $scope.as ? option[$scope.as] : option;
-                return value === $scope.value;
-            });
-        }
+            $scope.autocompleteOptions = getAutocompleteOptions($scope.autocompleteValues, $scope.selectValues, $scope.value);
+            var valueIndex = $scope.selectValues.indexOf($scope.value);
+            var value = $scope.selectOptions[valueIndex];
+            if (value && $scope.model[$scope.property] !== value) {
+                $scope.model[$scope.property] = value;
+            }
+        };
+
+        $scope.$watchCollection('options', function () {
+            $scope.selectOptions = $scope.options || getOptionsFromProperty($scope);
+            $scope.selectValues = getValues($scope.selectOptions, $scope.as);
+            $scope.autocompleteValues = $scope.selectValues.map(function (value) { return value.toLowerCase(); });
+            $scope.updateModel();
+        });
     }
 
     function getOptionsFromProperty ($scope) {
         return $scope.model[$scope.property + 's'];
+    }
+
+    function getValues (options, as) {
+        return options.map(function (option) { return as ? option[as] : option; });
+    }
+
+    function getAutocompleteOptions (autocompleteValues, selectValues, search) {
+        var results = [];
+        search = (search || '').toLowerCase();
+        for (var i = 0; i < autocompleteValues.length; i += 1) {
+            if (results.length === 20) {
+                break;
+            }
+            var value = autocompleteValues[i];
+            if (value.indexOf(search) !== -1) {
+                results.push(selectValues[i]);
+            }
+        }
+        return results;
     }
 };
 
