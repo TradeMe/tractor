@@ -1,6 +1,6 @@
 {
   "name": "@tractor/core",
-  "version": "1.0.1-beta.9",
+  "version": "1.0.1-beta.10",
   "description": "Core module for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -16,15 +16,15 @@
     "email": "craigspence0@gmail.com"
   },
   "dependencies": {
-    "@tractor/config-loader": "^1.0.1-beta.9",
-    "@tractor/dependency-injection": "^1.0.1-beta.9",
-    "@tractor/error-handler": "^1.0.1-beta.9",
-    "@tractor/file-javascript": "^1.0.1-beta.9",
-    "@tractor/file-structure": "^1.0.1-beta.9",
-    "@tractor/logger": "^1.0.1-beta.9",
-    "@tractor/plugin-loader": "^1.0.1-beta.9",
-    "@tractor/server": "^1.0.1-beta.9",
-    "@tractor/ui": "^1.0.1-beta.9"
+    "@tractor/config-loader": "^1.0.1-beta.10",
+    "@tractor/dependency-injection": "^1.0.1-beta.10",
+    "@tractor/error-handler": "^1.0.1-beta.10",
+    "@tractor/file-javascript": "^1.0.1-beta.10",
+    "@tractor/file-structure": "^1.0.1-beta.10",
+    "@tractor/logger": "^1.0.1-beta.10",
+    "@tractor/plugin-loader": "^1.0.1-beta.10",
+    "@tractor/server": "^1.0.1-beta.10",
+    "@tractor/ui": "^1.0.1-beta.10"
   },
   "gitHead": "5692dee7a04173c9362b7122217b685d3c81029d"
 }
