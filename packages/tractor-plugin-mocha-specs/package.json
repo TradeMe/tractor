@@ -53,8 +53,8 @@
     "pascal-case": "^2.0.1"
   },
   "peerDependencies": {
-    "@tractor/core": "^1.0.1-beta.9",
-    "@tractor-plugins/page-objects": "^0.7.0"
+    "@tractor/core": "^1.0.1-beta.10",
+    "@tractor-plugins/page-objects": "^0.7.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.2",
@@ -67,9 +67,9 @@
     "@babel/register": "^7.0.0",
     "@tractor-plugins/mock-requests": "^0.4.2",
     "@tractor-plugins/page-objects": "^0.7.0",
-    "@tractor/cli": "^1.0.1-beta.9",
-    "@tractor/core": "1.0.1-beta.9",
-    "@tractor/unit-test": "^1.0.1-beta.9",
+    "@tractor/cli": "^1.0.1-beta.10",
+    "@tractor/core": "1.0.1-beta.10",
+    "@tractor/unit-test": "^1.0.1-beta.10",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.4",
     "babel-plugin-angularjs-annotate": "^0.9.0",
