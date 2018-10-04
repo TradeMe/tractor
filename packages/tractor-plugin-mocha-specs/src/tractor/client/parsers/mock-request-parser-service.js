@@ -36,7 +36,9 @@ function MockRequestParserService (
 
         let [url, options] = astObject.arguments;
         if (url && options) {
-            mockRequest.url = url.regex.pattern;
+            // We escape parts of the RegExp when we save it, so we need to un-escape
+            // it before it goes back into the UI:
+            mockRequest.url = url.regex.pattern.replace(/\\\?/g, '?');
 
             let [passThrough] = esquery(options, MOCK_REQUEST_PASSTHROUGH_QUERY);
             if (passThrough) {
