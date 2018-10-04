@@ -5,6 +5,7 @@ import { VisualRegressionModule } from './visual-regression.module';
 
 // Dependencies:
 import './visual-regression/visual-regression.component';
+import './visual-regression/image-load/image-load.directive';
 
 let tractor = angular.module('tractor');
 tractor.requires.push(VisualRegressionModule.name);

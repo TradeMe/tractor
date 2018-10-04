@@ -47,6 +47,11 @@ VisualRegressionController.prototype.takeChanges = function (diff) {
     }.bind(this));
 };
 
+VisualRegressionController.prototype.setSize = function (image, $event) {
+    image.width = $event.target.naturalWidth;
+    image.height = $event.target.naturalHeight;
+};
+
 VisualRegressionModule.component('tractorVisualRegression', {
     controller: VisualRegressionController,
     template

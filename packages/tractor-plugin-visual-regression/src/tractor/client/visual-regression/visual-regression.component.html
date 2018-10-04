@@ -23,35 +23,37 @@
                 Diff
             </h2>
         </section>
-        <section
+        <ul
             class="tractor-visual-regression__diffs">
-            <div
+            <li
+                class="tractor-visual-regression__diff"
                 ng-repeat="diff in $ctrl.diffs">
                 <h4>
                     {{ diff.name }}
                 </h4>
-                <tractor-action
-                    model="$ctrl"
-                    action="Take changes"
-                    argument="diff">
-                </tractor-action>
-                <ul
-                    class="tractor-visual-regression__diff">
+                <ul>
                     <li
                         class="tractor-visual-regression__image"
                         ng-attr-title="{{ diff.name }} baseline">
                         <a href="/fs/static{{ diff.baseline.url }}" target="_blank">
-                            <img ng-src="/fs/static{{ diff.baseline.url }}"/>
+                            <img ng-src="/fs/static{{ diff.baseline.url }}" imageload="$ctrl.setSize(diff.baseline, $event)"/>
                         </a>
+                        <span
+                            ng-if="diff.baseline.width && diff.baseline.height">{{ diff.baseline.width }} x {{ diff.baseline.height }}
+                        </span>
                     </li>
                     <li
                         class="tractor-visual-regression__image"
                         ng-attr-title="{{ diff.name }} changes">
                         <a href="/fs/static{{ diff.changes.url }}" target="_blank">
-                            <img ng-src="/fs/static{{ diff.changes.url }}"/>
+                            <img ng-src="/fs/static{{ diff.changes.url }}" imageload="$ctrl.setSize(diff.changes, $event)"/>
                         </a>
+                        <span
+                            ng-if="diff.changes.width && diff.changes.height">{{ diff.changes.width }} x {{ diff.changes.height }}
+                        </span>
                     </li>
                     <li
+                        ng-if="diff.changes.width - diff.baseline.width === 0 && diff.changes.height - diff.baseline.height === 0"
                         class="tractor-visual-regression__image"
                         ng-attr-title="{{ diff.name }} diff">
                         <a href="/fs/static{{ diff.diff.url }}" target="_blank">
@@ -59,7 +61,12 @@
                         </a>
                     </li>
                 </ul>
-            <div>
-        <section>
+                <tractor-action
+                    model="$ctrl"
+                    action="Take changes"
+                    argument="diff">
+                </tractor-action>
+            </li>
+        </ul>
     </div>
 </div>
