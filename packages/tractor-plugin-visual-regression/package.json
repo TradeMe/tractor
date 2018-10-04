@@ -23,6 +23,7 @@
     "clean": "rimraf dist",
     "compile": "babel src/ --out-dir dist/ --ignore *.spec.js,src/tractor/client",
     "cover": "istanbul cover --config .istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ./.mocharc 'src/**/*.spec.js'",
+    "dev": "npm link && npm link \"@tractor-plugins/mocha-specs\"",
     "lint": "eslint src",
     "test": "mocha --opts ./.mocharc 'src/**/*.spec.js'",
     "test:debug": "mocha --inspect --debug-brk --opts ./.mocharc 'src/**/*.spec.js'",
