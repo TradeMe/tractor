@@ -1,6 +1,6 @@
 {
   "name": "@tractor-plugins/page-objects",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "tractor plugin for manipulating Page Objects",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -48,7 +48,7 @@
     "pascal-case": "^2.0.1"
   },
   "peerDependencies": {
-    "@tractor/core": "^1.0.1-beta.9"
+    "@tractor/core": "^1.0.1-beta.10"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.0",
@@ -58,10 +58,10 @@
     "@babel/polyfill": "^7.0.0",
     "@babel/preset-env": "^7.1.0",
     "@babel/register": "^7.0.0",
-    "@tractor-plugins/mocha-specs": "^0.2.3",
-    "@tractor/cli": "^1.0.1-beta.9",
-    "@tractor/core": "^1.0.1-beta.9",
-    "@tractor/unit-test": "^1.0.1-beta.9",
+    "@tractor-plugins/mocha-specs": "^0.2.5",
+    "@tractor/cli": "^1.0.1-beta.10",
+    "@tractor/core": "^1.0.1-beta.10",
+    "@tractor/unit-test": "^1.0.1-beta.10",
     "babel-eslint": "^10.0.0",
     "babel-loader": "^8.0.2",
     "babel-plugin-angularjs-annotate": "^0.9.0",

@@ -223,14 +223,14 @@
 
                                             <section
                                                 ng-if="domElement.type">
-                                                <tractor-select
+                                                <tractor-autocomplete
                                                     form="fileEditor"
                                                     label="Type"
                                                     as="displayName"
                                                     options="domElement.pageObject.availablePageObjects"
                                                     model="domElement"
                                                     required>
-                                                </tractor-select>
+                                                </tractor-autocomplete>
                                                 <a
                                                     class="file-editor__list-item-reference file-editor__list-item-reference--element-type"
                                                     title="{{ domElement.type.name }}"
