@@ -57,7 +57,7 @@
 		"bluebird": "^3.5.1",
 		"body-parser": "^1.18.2",
 		"brfs": "1.4.1",
-		"browser-sync": "2.9.11",
+		"browser-sync": "2.25.0",
 		"browserify": "11.2.0",
 		"browserify-shim": "3.8.10",
 		"camel-case": "^3.0.0",
