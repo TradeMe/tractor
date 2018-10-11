@@ -15,7 +15,7 @@
 	},
 	"scripts": {
 		"clean": "rimraf reports",
-		"clean:node_modules": "rimraf ./packages/*/node_modules && rimraf node_modules",
+		"clean:node_modules": "rimraf ./plugins/*/node_modules && rimraf ./packages/*/node_modules && rimraf node_modules",
 		"build": "npm run clean && lerna bootstrap && lerna run build && npm run cover",
 		"cover": "istanbul cover --config .istanbulrc.json node_modules/.bin/_mocha -- --opts .mocharc 'packages/**/src/**/*.spec.js'",
 		"link": "lerna exec npm link && lerna exec rm package-lock.json",

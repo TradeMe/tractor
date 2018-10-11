@@ -47,6 +47,6 @@
   "devDependencies": {
     "@tractor/cli": "^1.0.1-beta.10",
     "@tractor/core": "^1.0.1-beta.10",
-    "@tractor/unit-test": "^1.0.1-beta.10",
+    "@tractor/unit-test": "^1.0.1-beta.10"
   }
 }
