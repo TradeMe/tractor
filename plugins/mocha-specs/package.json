@@ -1,0 +1,70 @@
+{
+  "name": "@tractor-plugins/mocha-specs",
+  "version": "0.2.5",
+  "description": "tractor plugin for creating tests with Mocha",
+  "author": "Craig Spence <craigspence0@gmail.com>",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TradeMe/tractor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TradeMe/tractor/issues",
+    "email": "craigspence0@gmail.com"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "prepare": "npm run build",
+    "build": "npm run clean && npm run lint && npm run cover && npm run compile && npm run bundle",
+    "bundle": "webpack --config webpack.config.js",
+    "clean": "rimraf dist && rimraf reports",
+    "compile": "babel src/ --out-dir dist/ --ignore *.spec.js,src/tractor/client",
+    "cover": "istanbul cover --config ../../.istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ../../.mocharc 'src/**/*.spec.js'",
+    "dev": "npm link && npm link \"@tractor-plugins/mocha-specs\"",
+    "lint": "eslint src",
+    "test": "mocha --opts ../../.mocharc 'src/**/*.spec.js'",
+    "pretest:e2e": "npm run test:setup",
+    "test:e2e": "protractor ./tractor/protractor.conf.js --baseUrl=\"http://localhost:4321\"",
+    "test:e2e:debug": "node --inspect-brk node_modules/.bin/protractor ./tractor/protractor.conf.js --baseUrl=\"http://localhost:4321\"",
+    "test:setup": "rimraf test && mkdirp test && npm run webdriver",
+    "tractor": "tractor start",
+    "tractor:init": "tractor init",
+    "pretractor:test": "npm run test:setup",
+    "tractor:test": "tractor start --config=\"./test.tractor.conf.js\"",
+    "watch": "npm-watch",
+    "webdriver": "webdriver-manager update && tractor patch"
+  },
+  "watch": {
+    "build": "src/**/*.js"
+  },
+  "dependencies": {
+    "camel-case": "^3.0.0",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "esprima": "^4.0.1",
+    "esquery": "^1.0.1",
+    "estemplate": "^0.5.1",
+    "mocha": "^5.2.0",
+    "mochawesome": "^3.0.3",
+    "optimist": "^0.6.1",
+    "pascal-case": "^2.0.1"
+  },
+  "peerDependencies": {
+    "@tractor/core": "^1.0.1-beta.10",
+    "@tractor-plugins/page-objects": "^0.7.1"
+  },
+  "devDependencies": {
+    "@tractor-plugins/mock-requests": "^0.4.2",
+    "@tractor-plugins/page-objects": "^0.7.0",
+    "@tractor/cli": "^1.0.1-beta.10",
+    "@tractor/core": "1.0.1-beta.10",
+    "@tractor/unit-test": "^1.0.1-beta.10"
+  }
+}

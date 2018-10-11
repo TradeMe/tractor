@@ -1,0 +1,59 @@
+{
+  "name": "@tractor-plugins/screen-size",
+  "version": "0.4.1",
+  "description": "tractor plugin for manipulating screen size",
+  "author": "Craig Spence <craigspence0@gmail.com>",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TradeMe/tractor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TradeMe/tractor/issues",
+    "email": "craigspence0@gmail.com"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "prepare": "npm run build",
+    "build": "npm run clean && npm run lint && npm run cover && npm run compile",
+    "clean": "rimraf dist && rimraf reports",
+    "compile": "babel src/ --out-dir dist/ --ignore *.spec.js,src/tractor/client",
+    "cover": "istanbul cover --config ../../.istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ../../.mocharc 'src/**/*.spec.js'",
+    "dev": "npm link && npm link \"@tractor-plugins/screen-size\"",
+    "lint": "eslint src",
+    "test": "mocha --opts ../../.mocharc 'src/**/*.spec.js'",
+    "pretest:e2e": "npm run test:setup",
+    "test:e2e": "protractor ./tractor/protractor.conf.js --baseUrl=\"http://localhost:4321\"",
+    "test:e2e:debug": "node --inspect-brk node_modules/.bin/protractor ./tractor/protractor.conf.js --baseUrl=\"http://localhost:4321\"",
+    "test:setup": "rimraf test && mkdirp test && npm run webdriver",
+    "tractor": "tractor start",
+    "tractor:init": "tractor init",
+    "pretractor:test": "npm run test:setup",
+    "tractor:test": "tractor start --config=\"./test.tractor.conf.js\"",
+    "watch": "npm-watch",
+    "webdriver": "webdriver-manager update && tractor patch"
+  },
+  "watch": {
+    "build": "src/**/*.js"
+  },
+  "dependencies": {
+    "mochawesome": "^3.0.3"
+  },
+  "peerDependencies": {
+    "@tractor/core": "^1.0.1-beta.8"
+  },
+  "devDependencies": {
+    "@tractor-plugins/mocha-specs": "^0.2.2",
+    "@tractor-plugins/page-objects": "^0.7.0",
+    "@tractor/core": "^1.0.1-beta.8",
+    "@tractor/cli": "^1.0.1-beta.8",
+    "@tractor/unit-test": "^1.0.1-beta.8"
+  }
+}

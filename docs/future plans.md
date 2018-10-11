@@ -10,7 +10,7 @@ I ([phenomnomnominal](https://github.com/phenomnomnominal)) have been toiling aw
 
 * Make it an Electron app?
 
-* Automate the installing of Java SDK, hostfile modifications for `[@tractor-plugins/mock-requests](https://github.com/phenomnomnominal/tractor-plugin-mock-requests)` etc.
+* Automate the installing of Java SDK, hostfile modifications for `@tractor-plugins/mock-requests` etc.
 
 * Make it type-safe, by rewriting in TypeScript. This would probably enable removing the janky as `@tractor/dependency-injection`.
 
