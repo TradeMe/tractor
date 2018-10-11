@@ -3,10 +3,7 @@
 Plugin for [tractor](http://github.com/TradeMe/tractor) that contains a subset of [Protractor](http://www.protractortest.org/#/api)
 browser methods.
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/phenomnomnominal/tractor-plugin-browser.svg)](https://greenkeeper.io/)
 [![npm version](https://img.shields.io/npm/v/@tractor-plugins/browser.svg)](https://www.npmjs.com/package/@tractor-plugins/browser)
-[![Code Climate](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-browser/badges/gpa.svg)](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-browser)
-[![Test Coverage](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-browser/badges/coverage.svg)](https://codeclimate.com/github/phenomnomnominal/tractor-plugin-browser/coverage)
 
 ## Currently implemented methods
 

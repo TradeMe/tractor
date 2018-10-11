@@ -9,39 +9,32 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/phenomnomnominal/tractor-plugin-browser.git"
+    "url": "https://github.com/TradeMe/tractor.git"
   },
   "bugs": {
-    "url": "https://github.com/phenomnomnominal/tractor-plugin-browser/issues",
+    "url": "https://github.com/TradeMe/tractor/issues",
     "email": "craigspence0@gmail.com"
   },
   "main": "dist/index.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "prepare": "npm run build",
     "build": "npm run clean && npm run lint && npm run cover && npm run compile",
     "clean": "rimraf dist && rimraf reports",
     "compile": "babel src/ --out-dir dist --ignore *.spec.js",
-    "cover": "istanbul cover --config .istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ./.mocharc 'src/**/*.spec.js'",
+    "cover": "istanbul cover --config ../../.istanbulrc.json ../../node_modules/.bin/_mocha -- --opts ../../.mocharc 'src/**/*.spec.js'",
     "lint": "eslint src",
-    "test": "mocha --opts ./.mocharc 'src/**/*.spec.js'",
+    "test": "mocha --opts ../../.mocharc 'src/**/*.spec.js'",
     "watch": "npm-watch"
   },
   "watch": {
     "build": "src/**/*.js"
   },
   "devDependencies": {
-    "@babel/cli": "^7.1.2",
-    "@babel/core": "^7.1.2",
-    "@babel/plugin-proposal-export-default-from": "^7.0.0",
-    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
-    "@babel/preset-env": "^7.1.0",
-    "@babel/register": "^7.0.0",
-    "@tractor/unit-test": "^1.0.1-beta.8",
-    "babel-eslint": "^10.0.1",
-    "eslint": "^5.6.1",
-    "istanbul": "^1.1.0-alpha.1",
-    "mocha": "^5.2.0",
-    "npm-watch": "^0.4.0"
+    "@tractor/unit-test": "^1.0.1-beta.8"
   },
   "peerDependencies": {
     "@tractor/core": "^1.0.1-beta.8"
