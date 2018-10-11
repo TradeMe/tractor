@@ -16,6 +16,9 @@
     "email": "craigspence0@gmail.com"
   },
   "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "prepare": "npm run build",
     "build": "npm run clean && npm run lint && npm run cover && npm run compile",

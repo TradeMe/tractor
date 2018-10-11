@@ -1,9 +1,0 @@
-node_modules/
-reports/
-src/
-
-npm-debug.log
-.idea/*
-.sass-cache
-.vscode
-.DS_Store

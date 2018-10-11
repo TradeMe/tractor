@@ -18,6 +18,10 @@
   "bin": {
     "tractor": "./bin/tractor"
   },
+  "files": [
+    "bin",
+    "dist"
+  ],
   "scripts": {
     "prepare": "npm run build",
     "build": "npm run clean && npm run lint && npm run cover && npm run compile",
