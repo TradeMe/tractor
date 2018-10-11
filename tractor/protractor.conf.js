@@ -1,8 +1,4 @@
-'use strict';
-
-// Plugins:
 var tractorPluginLoader = require('@tractor/plugin-loader');
-var plugins = tractorPluginLoader.getPlugins();
 
 var protractorConfig = {
     allScriptsTimeout: 11000,
@@ -20,8 +16,4 @@ var protractorConfig = {
     SELENIUM_PROMISE_MANAGER: false
 };
 
-plugins.forEach(function (plugin) {
-    plugin.plugin(protractorConfig);
-});
-
-exports.config = protractorConfig;
+exports.config = tractorPluginLoader.plugin(protractorConfig);

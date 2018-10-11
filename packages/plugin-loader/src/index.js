@@ -13,3 +13,8 @@ export function getPlugins () {
     plugins = plugins || loadPlugins();
     return plugins;
 }
+
+export function plugin (protractorConfig) {
+    getPlugins().forEach(plugin => plugin.plugin(protractorConfig));
+    return protractorConfig;
+}
