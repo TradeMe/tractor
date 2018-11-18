@@ -23,11 +23,11 @@
   "scripts": {
     "prepare": "npm run build",
     "build": "npm run clean && npm run lint && npm run cover && npm run compile",
-    "clean": "rimraf dist && rimraf reports",
+    "clean": "rimraf dist",
     "compile": "babel src/ --out-dir dist --ignore *.spec.js",
-    "cover": "nyc mocha --opts ../../mocha.opts 'src/**/*.spec.js'",
+    "cover": "nyc npm run test",
     "lint": "eslint src --ignore-path ../../.eslintignore",
-    "test": "mocha --opts ../../mocha.opts 'src/**/*.spec.js'",
+    "test": "cd ../../ && mocha --opts mocha.opts './plugins/browser/src/**/*.spec.js'",
     "watch": "npm-watch"
   },
   "watch": {

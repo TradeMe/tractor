@@ -57,10 +57,8 @@ The `tractor.conf.js` file is also used to configure any plugins you have instal
 To set up development:
 
 ```sh
-lerna bootstrap # install dependencies
+lerna bootstrap --ignore-scripts # install dependencies
 lerna run build # build all the packages
-tractor-dev link
-tractor init
 ```
 
 To run e2e tests:

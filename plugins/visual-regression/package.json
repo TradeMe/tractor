@@ -21,16 +21,15 @@
     "README.md"
   ],
   "scripts": {
-    "prepublish": "npm run build",
+    "prepare": "npm run build",
     "build": "npm run clean && npm run lint && npm run cover && npm run compile && npm run bundle",
     "bundle": "webpack --config webpack.config.js",
     "clean": "rimraf dist",
     "compile": "babel src/ --out-dir dist/ --ignore *.spec.js,src/tractor/client",
-    "cover": "nyc mocha --opts ../../mocha.opts 'src/**/*.spec.js'",
-    "dev": "npm link && npm link \"@tractor-plugins/mocha-specs\"",
+    "cover": "nyc npm run test",
     "lint": "eslint src --ignore-path ../../.eslintignore",
-    "test": "mocha --opts ../../mocha.opts 'src/**/*.spec.js'",
-    "test:debug": "mocha --inspect --debug-brk --opts ./.mocharc 'src/**/*.spec.js'",
+    "test": "cd ../../ && mocha --opts mocha.opts 'plugins/visual-regression/src/**/*.spec.js'",
+    "test:debug": "cd ../../ && mocha --inspect --debug-brk --opts mocha.opts 'plugins/visual-regression/src/**/*.spec.js''",
     "watch": "npm-watch"
   },
   "watch": {

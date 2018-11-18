@@ -60,5 +60,7 @@ describe('@tractor-plugins/mock-requests - serve:', () => {
         serve(config, di);
 
         expect(FileStructure.prototype.addFileType).to.have.been.calledWith(MockRequestFile);
+
+        FileStructure.prototype.addFileType.restore();
     });
 });

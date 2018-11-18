@@ -14,10 +14,11 @@
 		"email": "craigspence0@gmail.com"
 	},
 	"scripts": {
-		"clean": "rimraf reports",
-		"clean:node_modules": "rimraf ./plugins/*/node_modules && rimraf ./packages/*/node_modules && rimraf node_modules",
-		"build": "npm run clean && lerna bootstrap && lerna run build && npm run cover",
-		"cover": "nyc mocha --opts mocha.opts 'packages/**/src/**/*.spec.js'",
+		"clean": "rimraf reports && rimraf './+(packages|plugins)/**/.nyc_output' && rimraf './+(packages/plugins)/**/etc",
+		"clean:node_modules": "rimraf node_modules && rimraf './+(packages|plugins)/*/node_modules'",
+		"build": "npm run clean && lerna bootstrap --ignore-scripts && lerna run build && npm run cover",
+		"cover": "nyc npm run test",
+		"test": "mocha --opts mocha.opts '+(packages|plugins)/**/src/**/*.spec.js'",
 		"pretest:e2e": "npm run webdriver",
 		"test:e2e": "protractor ./tractor/protractor.conf.js --baseUrl=\"http://localhost:4444\"",
 		"tractor": "tractor start",
@@ -30,7 +31,6 @@
 		"@babel/plugin-proposal-export-default-from": "^7.0.0",
 		"@babel/plugin-proposal-object-rest-spread": "^7.0.0",
 		"@babel/plugin-proposal-optional-catch-binding": "^7.0.0",
-		"@babel/polyfill": "^7.0.0",
 		"@babel/preset-env": "^7.1.6",
 		"@babel/register": "^7.0.0",
 		"@tractor-plugins/mocha-specs": "^0.2.2",
@@ -39,12 +39,19 @@
 		"@tractor/unit-test": "^1.0.1-beta.8",
 		"babel-eslint": "^8.2.5",
 		"babel-plugin-istanbul": "^5.1.0",
+		"babel-loader": "^8.0.4",
+		"babel-plugin-angularjs-annotate": "^0.9.0",	
+		"css-loader": "^1.0.0",
 		"eslint": "^5.6.0",
+		"html-loader": "^0.5.5",
 		"lerna": "^3.3.1",
 		"mocha": "^5.2.0",
 		"npm-watch": "^0.4.0",
 		"nyc": "^13.1.0",
-		"rimraf": "^2.6.2"
+		"rimraf": "^2.6.2",
+		"url-loader": "^1.1.1",
+		"webpack": "^4.20.2",
+		"webpack-cli": "^3.1.2"
 	},
 	"dependencies": {
 		"@babel/polyfill": "^7.0.0",
@@ -109,24 +116,16 @@
 		"xterm": "^2.9.2"
 	},
 	"nyc": {
-		"check-coverage": true,
-		"per-file": true,
-		"lines": 90,
-		"statements": 90,
-		"functions": 90,
-		"branches": 90,
-		"include": [
-		  "src/**/*.{js}"
-		],
+		"report-dir": "./reports/coverage",
 		"reporter": [
-		  "lcov",
-		  "text",
-		  "text-summary"
+			"text",
+			"lcov",
+			"html"
 		],
-		"extension": [
-		  ".js"
+		"exclude": [
+			"**/*.spec.js",
+			"**/dist/**"
 		],
-		"cache": true,
-		"all": true
-	  }
+		"cache": true
+	}
 }

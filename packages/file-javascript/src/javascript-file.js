@@ -31,8 +31,6 @@ export class JavaScriptFile extends File {
     }
 
     async read () {
-        // Hack to fix coverage bug: https://github.com/gotwarlost/istanbul/issues/690
-        /* istanbul ignore next */
         const read = super.read();
 
         try {
@@ -46,8 +44,6 @@ export class JavaScriptFile extends File {
     }
 
     async refactor (type, data) {
-        // Hack to fix coverage bug: https://github.com/gotwarlost/istanbul/issues/690
-        /* istanbul ignore next */
         const refactor = super.refactor(type, data);
 
         await refactor;
@@ -68,8 +64,6 @@ export class JavaScriptFile extends File {
             });
         }
 
-        // Hack to fix coverage bug: https://github.com/gotwarlost/istanbul/issues/690
-        /* istanbul ignore next */
         const save = super.save(javascript);
 
         try {
@@ -83,8 +77,6 @@ export class JavaScriptFile extends File {
     }
 
     serialise () {
-        // Hack to fix coverage bug: https://github.com/gotwarlost/istanbul/issues/690
-        /* istanbul ignore next */
         let serialised = super.serialise();
 
         serialised.ast = this.ast;
@@ -92,8 +84,6 @@ export class JavaScriptFile extends File {
     }
 
     toJSON () {
-        // Hack to fix coverage bug: https://github.com/gotwarlost/istanbul/issues/690
-        /* istanbul ignore next */
         let json = super.toJSON();
 
         let meta;

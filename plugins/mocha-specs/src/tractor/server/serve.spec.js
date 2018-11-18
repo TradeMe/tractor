@@ -62,5 +62,7 @@ describe('@tractor-plugins/mocha-specs - serve:', () => {
         serve(config, di);
 
         expect(FileStructure.prototype.addFileType).to.have.been.calledWith(MochaSpecFile);
+
+        FileStructure.prototype.addFileType.restore();
     });
 });
