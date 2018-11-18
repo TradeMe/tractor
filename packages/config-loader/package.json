@@ -25,9 +25,9 @@
     "build": "npm run clean && npm run lint && npm run cover && npm run compile",
     "clean": "rimraf dist && rimraf reports",
     "compile": "babel src/ --out-dir dist --ignore *.spec.js",
-    "cover": "istanbul cover --config ../../.istanbulrc.json ../../node_modules/.bin/_mocha -- --opts ../../.mocharc 'src/**/*.spec.js'",
-    "lint": "eslint src",
-    "test": "mocha --opts ../../.mocharc 'src/**/*.spec.js'",
+    "cover": "nyc mocha --opts ../../mocha.opts 'src/**/*.spec.js'",
+    "lint": "eslint src --ignore-path ../../.eslintignore",
+    "test": "mocha --opts ../../mocha.opts 'src/**/*.spec.js'",
     "watch": "npm-watch"
   },
   "watch": {
@@ -37,7 +37,7 @@
     "lodash.defaults": "^4.2.0"
   },
   "peerDependencies": {
-    "@tractor/core": "^1.0.1-beta.8"
+    "@tractor/core": "^1.0.1-beta.10"
   },
   "devDependencies": {
     "@tractor/logger": "^1.0.1-beta.10"

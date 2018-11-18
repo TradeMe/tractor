@@ -25,16 +25,16 @@
     "build": "npm run clean && npm run lint && npm run cover && npm run compile",
     "clean": "rimraf dist && rimraf reports",
     "compile": "babel src/ --out-dir dist --ignore *.spec.js",
-    "cover": "istanbul cover --config ../../.istanbulrc.json ../../node_modules/.bin/_mocha -- --opts ../../.mocharc 'src/**/*.spec.js'",
-    "lint": "eslint src",
-    "test": "mocha --opts ../../.mocharc 'src/**/*.spec.js'",
+    "cover": "nyc mocha --opts ../../mocha.opts 'src/**/*.spec.js'",
+    "lint": "eslint src --ignore-path ../../.eslintignore",
+    "test": "mocha --opts ../../mocha.opts 'src/**/*.spec.js'",
     "watch": "npm-watch"
   },
   "watch": {
     "build": "src/**/*.js"
   },
   "dependencies": {
-    "babel-polyfill": "^6.26.0",
+    "@babel/polyfill": "^7.0.0",
     "camel-case": "^3.0.0",
     "param-case": "^2.1.1",
     "title-case": "^2.1.1"

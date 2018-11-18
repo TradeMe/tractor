@@ -25,18 +25,18 @@
     "build": "npm run clean && npm run lint && npm run cover && npm run compile",
     "clean": "rimraf dist && rimraf reports",
     "compile": "babel src/ --out-dir dist --ignore *.spec.js",
-    "cover": "istanbul cover --config ../../.istanbulrc.json ../../node_modules/.bin/_mocha -- --opts ../../.mocharc 'src/**/*.spec.js'",
-    "lint": "eslint src",
-    "test": "mocha --opts ../../.mocharc 'src/**/*.spec.js'",
+    "cover": "nyc mocha --opts ../../mocha.opts 'src/**/*.spec.js'",
+    "lint": "eslint src --ignore-path ../../.eslintignore",
+    "test": "mocha --opts ../../mocha.opts 'src/**/*.spec.js'",
     "watch": "npm-watch"
   },
   "watch": {
     "build": "src/**/*.js"
   },
   "dependencies": {
-    "body-parser": "^1.18.2",
+    "body-parser": "^1.18.3",
     "cors": "^2.8.1",
-    "express": "^4.16.2",
+    "express": "^4.16.3",
     "js-search": "^1.4.2",
     "lodash.debounce": "^4.0.8",
     "lodash.template": "^4.4.0",

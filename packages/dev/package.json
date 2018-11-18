@@ -27,14 +27,14 @@
     "build": "npm run clean && npm run lint && npm run compile",
     "clean": "rimraf dist && rimraf reports",
     "compile": "babel src/ --out-dir dist --ignore *.spec.js",
-    "lint": "eslint src",
+    "lint": "eslint src --ignore-path ../../.eslintignore",
     "watch": "npm-watch"
   },
   "watch": {
     "build": "src/**/*.js"
   },
   "dependencies": {
-    "babel-polyfill": "^6.26.0",
+    "@babel/polyfill": "^7.0.0",
     "commander": "^2.13.0"
   },
   "gitHead": "75f58824a7a14b8012a99e91ed23a80ab090e093"

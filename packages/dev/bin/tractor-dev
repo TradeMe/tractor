@@ -2,7 +2,7 @@
 'use strict';
 
 // Polyfill:
-require('babel-polyfill');
+require('@babel/polyfill');
 
 // Dependencies:
 const tractorDev = require('commander');

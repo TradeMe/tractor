@@ -26,10 +26,10 @@
     "bundle": "webpack --config webpack.config.js",
     "clean": "rimraf dist",
     "compile": "babel src/ --out-dir dist/ --ignore *.spec.js,src/tractor/client",
-    "cover": "istanbul cover --config ../../.istanbulrc.json node_modules/mocha/bin/_mocha -- --opts ../../.mocharc 'src/**/*.spec.js'",
+    "cover": "nyc mocha --opts ../../mocha.opts 'src/**/*.spec.js'",
     "dev": "npm link && npm link \"@tractor-plugins/mocha-specs\"",
-    "lint": "eslint src",
-    "test": "mocha --opts ../../.mocharc 'src/**/*.spec.js'",
+    "lint": "eslint src --ignore-path ../../.eslintignore",
+    "test": "mocha --opts ../../mocha.opts 'src/**/*.spec.js'",
     "test:debug": "mocha --inspect --debug-brk --opts ./.mocharc 'src/**/*.spec.js'",
     "watch": "npm-watch"
   },
@@ -43,10 +43,5 @@
   },
   "peerDependencies": {
     "@tractor/core": "^1.0.1-beta.10"
-  },
-  "devDependencies": {
-    "@tractor/cli": "^1.0.1-beta.10",
-    "@tractor/core": "^1.0.1-beta.10",
-    "@tractor/unit-test": "^1.0.1-beta.10"
   }
 }

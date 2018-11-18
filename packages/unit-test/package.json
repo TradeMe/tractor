@@ -24,16 +24,16 @@
     "build": "npm run clean && npm run lint && npm run cover && npm run compile",
     "clean": "rimraf dist && rimraf reports",
     "compile": "babel src/ --out-dir dist --ignore *.spec.js",
-    "cover": "istanbul cover --config ../../.istanbulrc.json ../../node_modules/.bin/_mocha -- --opts ../../.mocharc 'src/**/*.spec.js'",
-    "lint": "eslint src",
-    "test": "mocha --opts ../../.mocharc 'src/**/*.spec.js'",
+    "cover": "nyc mocha --opts ../../mocha.opts 'src/**/*.spec.js'",
+    "lint": "eslint src --ignore-path ../../.eslintignore",
+    "test": "mocha --opts ../../mocha.opts 'src/**/*.spec.js'",
     "watch": "npm-watch"
   },
   "watch": {
     "build": "src/**/*.js"
   },
   "dependencies": {
-    "chai": "^4.1.2",
+    "chai": "^4.2.0",
     "dedent": "^0.7.0",
     "dirty-chai": "^2.0.1",
     "ineeda": "^0.11.1",

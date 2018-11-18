@@ -2,7 +2,7 @@
 // Ignoring polyfill from coverage as it should hopefully go away soon:
 /* istanbul ignore next */
 if (!global._babelPolyfill) {
-    require('babel-polyfill');
+    require('@babel/polyfill');
 }
 
 // Dependencies:

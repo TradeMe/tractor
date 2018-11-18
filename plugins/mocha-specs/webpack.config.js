@@ -1,5 +1,3 @@
-const webpack = require('webpack');
-
 module.exports = {
     entry: './src/tractor/client/index.js',
     output: {

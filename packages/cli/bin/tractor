@@ -2,7 +2,7 @@
 'use strict';
 
 // Polyfill:
-require('babel-polyfill');
+require('@babel/polyfill');
 
 // Promisify:
 const { promisifyAll } = require('bluebird');

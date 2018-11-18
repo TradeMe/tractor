@@ -12,3 +12,4 @@ packages/**/*.tgz
 plugins/**/etc
 plugins/**/*.tgz
 package.json.lerna_backup
+.nyc_output
