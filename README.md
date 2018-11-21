@@ -57,7 +57,7 @@ The `tractor.conf.js` file is also used to configure any plugins you have instal
 To set up development:
 
 ```sh
-lerna bootstrap --ignore-scripts # install dependencies
+lerna bootstrap # install dependencies
 lerna run build # build all the packages
 ```
 

@@ -17,7 +17,7 @@
   },
   "main": "dist/app/index.html",
   "scripts": {
-    "prepare": "gulp build",
+    "prepublishOnly": "gulp build",
     "build": "npm run clean && gulp build",
     "clean": "rimraf dist && rimraf reports",
     "watch": "npm-watch"
