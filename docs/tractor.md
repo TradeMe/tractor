@@ -8,7 +8,7 @@
 
 E2E tests are notoriously hard to build and maintain. We can minimise the pain by centralising the tooling, and generating as much of the code as possible. Tests should be able to be written and modified by anyone, not just those with years of experience with JavaScript.
 
-**tractor** should
+## **tractor** should
 
 * Leverage standard patterns for E2E tests, e.g. [Page Objects](https://github.com/phenomnomnominal/tractor-plugin-page-objects)
 

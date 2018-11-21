@@ -6,7 +6,7 @@ Plugin loader for [**tractor**](https://github.com/TradeMe/tractor) to provide a
 
 ## How it works:
 
-**@tractor/plugin-loader** is automatically installed whenever you run `tractor init` in a project. Then, whenever `tractor start` is run on that project, the loader looks through your installed node modules, and finds any that are called **tractor-plugin-whatever**. Those plugins could provide new actions for Page Objects, new report generators, or entirely new bits of UI/Functionality for the [**@tractor/ui**](https://github.com/TradeMe/tractor/tree/master/packages/tractor-ui) application, all depending on what the plugin exports.
+**@tractor/plugin-loader** is automatically installed whenever you run `tractor init` in a project. Then, whenever `tractor start` is run on that project, the loader looks through your installed node modules, and finds any that are called **tractor-plugin-whatever**. Those plugins could provide new actions for Page Objects, new report generators, or entirely new bits of UI/Functionality for the [**@tractor/ui**](https://github.com/TradeMe/tractor/tree/master/packages/ui) application, all depending on what the plugin exports.
 
 ## API:
 
@@ -39,7 +39,7 @@ A **tractor** plugin is just a plain old node module, with a few specially named
 
 ### `serve` (optional):
 
-> Define any new endpoints that you want to attach to the [**@tractor/server**](https://github.com/TradeMe/tractor/tree/master/packages/tractor-server), typically for consuming from the [**@tractor/ui**](https://github.com/TradeMe/tractor/tree/master/packages/tractor-ui).
+> Define any new endpoints that you want to attach to the [**@tractor/server**](https://github.com/TradeMe/tractor/tree/master/packages/tractor-server), typically for consuming from the [**@tractor/ui**](https://github.com/TradeMe/tractor/tree/master/packages/ui).
 
 > #### Returns:
 > * `promise?: Promise`

@@ -1,5 +1,3 @@
-const webpack = require('webpack');
-
 module.exports = {
     entry: {
         "add-mocking": './src/scripts/add-mocking.js',

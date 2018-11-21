@@ -1,3 +1,3 @@
 **/*.po.js
 **/*.e2e-spec.js
-tractor-ui/
+packages/ui/

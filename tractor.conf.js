@@ -6,6 +6,6 @@ module.exports = {
         'http://localhost:4444'
     ],
     pageObjects: {
-        directory: './packages/tractor-ui/src/app'
+        directory: './packages/ui/src/app'
     }
 };

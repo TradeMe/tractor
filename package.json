@@ -14,7 +14,7 @@
 		"email": "craigspence0@gmail.com"
 	},
 	"scripts": {
-		"clean": "rimraf reports && rimraf './+(packages|plugins)/**/.nyc_output' && rimraf './+(packages/plugins)/**/etc",
+		"clean": "rimraf reports && rimraf './+(packages|plugins)/**/.nyc_output' && rimraf './+(packages/plugins)/**/etc'",
 		"clean:node_modules": "rimraf node_modules && rimraf './+(packages|plugins)/*/node_modules'",
 		"build": "npm run clean && lerna bootstrap --ignore-scripts && lerna run build && npm run cover",
 		"cover": "nyc npm run test",
