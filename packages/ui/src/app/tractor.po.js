@@ -1,4 +1,4 @@
-/*{"name":"tractor","elements":[],"actions":[{"name":"go home","parameters":[]}],"version":"0.5.2"}*/
+/*{"name":"tractor","elements":[],"actions":[{"name":"go home","parameters":[]}],"version":"0.7.0"}*/
 module.exports = function () {
     var Tractor = function Tractor() {
     };

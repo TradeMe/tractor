@@ -1,8 +1,8 @@
-/*{"name":"control-panel","elements":[{"name":"environment select"},{"name":"run protractor button"},{"name":"tag input"},{"name":"plugin links","type":true},{"name":"show search button"},{"name":"show terminal button"},{"name":"hide terminal button"},{"name":"terminal"}],"actions":[{"name":"set tag","parameters":[{"name":"tag"}]},{"name":"select environment","parameters":[{"name":"environment"}]},{"name":"run protractor","parameters":[]},{"name":"plugin is loaded","parameters":[{"name":"plugin"}]},{"name":"open plugin","parameters":[{"name":"plugin"}]},{"name":"show search","parameters":[]},{"name":"show terminal","parameters":[]},{"name":"hide terminal","parameters":[]},{"name":"get terminal is displayed","parameters":[]}],"version":"0.5.2"}*/
+/*{"name":"control-panel","elements":[{"name":"environment select"},{"name":"run protractor button"},{"name":"tag input"},{"name":"plugin links","group":true},{"name":"show search button"},{"name":"show terminal button"},{"name":"hide terminal button"},{"name":"terminal"}],"actions":[{"name":"set tag","parameters":[{"name":"tag"}]},{"name":"select environment","parameters":[{"name":"environment"}]},{"name":"run protractor","parameters":[]},{"name":"plugin is loaded","parameters":[{"name":"plugin"}]},{"name":"open plugin","parameters":[{"name":"plugin"}]},{"name":"show search","parameters":[]},{"name":"show terminal","parameters":[]},{"name":"hide terminal","parameters":[]},{"name":"get terminal is displayed","parameters":[]}],"version":"0.7.0"}*/
 module.exports = function () {
-    var ControlPanel = function ControlPanel(parent) {
-        var find = parent ? parent.element.bind(parent) : element;
-        var findAll = parent ? parent.all.bind(parent) : element.all.bind(element);
+    var ControlPanel = function ControlPanel(host) {
+        var find = host ? host.element.bind(host) : element;
+        var findAll = host ? host.all.bind(host) : element.all.bind(element);
         this.environmentSelect = find(by.css('.control-panel__run-options tractor-select[label="environment"] select'));
         this.runProtractorButton = find(by.css('.control-panel__run-options tractor-submit[action="run protractor"] button'));
         this.tagInput = find(by.css('.control-panel__run-options tractor-text-input[label="tag"] input'));

@@ -1,7 +1,7 @@
-/*{"name":"tractor-confirm-dialog","elements":[{"name":"confirm message"},{"name":"ok button"},{"name":"cancel button"}],"actions":[{"name":"ok","parameters":[]},{"name":"cancel","parameters":[]},{"name":"get confirm message","parameters":[]}],"version":"0.5.2"}*/
+/*{"name":"tractor-confirm-dialog","elements":[{"name":"confirm message"},{"name":"ok button"},{"name":"cancel button"}],"actions":[{"name":"ok","parameters":[]},{"name":"cancel","parameters":[]},{"name":"get confirm message","parameters":[]}],"version":"0.7.0"}*/
 module.exports = function () {
-    var TractorConfirmDialog = function TractorConfirmDialog(parent) {
-        var find = parent ? parent.element.bind(parent) : element;
+    var TractorConfirmDialog = function TractorConfirmDialog(host) {
+        var find = host ? host.element.bind(host) : element;
         this.confirmMessage = find(by.css('.dialog__wrapper .dialog__content p'));
         this.okButton = find(by.css('.dialog__wrapper tractor-action[action="Ok"] button'));
         this.cancelButton = find(by.css('.dialog__wrapper tractor-action[action="Cancel"] button'));

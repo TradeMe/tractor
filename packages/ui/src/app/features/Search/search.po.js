@@ -1,9 +1,9 @@
-/*{"name":"search","elements":[{"name":"search input"},{"name":"search results","type":"search result"},{"name":"overlay"}],"actions":[{"name":"search","parameters":[{"name":"searchString"}]},{"name":"go to result","parameters":[{"name":"name"}]}],"version":"0.5.2"}*/
+/*{"name":"search","elements":[{"name":"search input"},{"name":"search results","type":"search result","group":true},{"name":"overlay"}],"actions":[{"name":"search","parameters":[{"name":"searchString"}]},{"name":"go to result","parameters":[{"name":"name"}]}],"version":"0.7.0"}*/
 module.exports = function () {
     var SearchResult = require('./search result.po.js');
-    var Search = function Search(parent) {
-        var find = parent ? parent.element.bind(parent) : element;
-        var findAll = parent ? parent.all.bind(parent) : element.all.bind(element);
+    var Search = function Search(host) {
+        var find = host ? host.element.bind(host) : element;
+        var findAll = host ? host.all.bind(host) : element.all.bind(element);
         this.searchInput = find(by.css('tractor-search form[name="search"] input'));
         this.searchResults = function (groupSelector) {
             return new SearchResult(findAll(by.css('tractor-search ul li')).getFromGroup(groupSelector));
