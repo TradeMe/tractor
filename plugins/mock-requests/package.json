@@ -22,7 +22,7 @@
   ],
   "scripts": {
     "build": "npm run clean && npm run lint && npm run cover && npm run compile && npm run bundle:server && npm run bundle:client",
-    "bundle:client": "webpack --config webpack.client.config.js",
+    "bundle:client": "webpack --config webpack.config.js",
     "bundle:server": "webpack --config webpack.server.config.js",
     "clean": "rimraf dist",
     "compile": "babel src/ --out-dir dist/ --ignore *.spec.js,src/tractor/server/scripts,src/tractor/client",
@@ -48,7 +48,7 @@
     "camel-case": "^3.0.0",
     "cheerio": "^1.0.0-rc.2",
     "dedent": "^0.7.0",
-    "express": "^4.16.3",
+    "express": "^4.16.4",
     "express-http-proxy": "^1.4.0",
     "fake-xml-http-request": "^1.6.0",
     "fetch-mock": "^5.13.1",

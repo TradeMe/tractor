@@ -36,8 +36,8 @@
   "dependencies": {
     "bluebird": "^3.5.1",
     "chokidar": "^2.0.0",
-    "express": "^4.16.3",
-    "graceful-fs": "^4.1.11",
+    "express": "^4.16.4",
+    "graceful-fs": "^4.1.15",
     "lodash.debounce": "^4.0.8"
   },
   "peerDependencies": {

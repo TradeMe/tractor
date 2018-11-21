@@ -59,8 +59,8 @@
     "normalize.css": "3.0.3",
     "socket.io-client": "^2.0.3",
     "text-diff": "^1.0.1",
-    "vinyl-buffer": "1.0.0",
-    "vinyl-source-stream": "1.1.0",
+    "vinyl-buffer": "^1.0.1",
+    "vinyl-source-stream": "^1.1.0",
     "xterm": "^2.9.2"
   },
   "browserify": {},

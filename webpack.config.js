@@ -1,9 +1,4 @@
 module.exports = {
-    entry: './src/tractor/client/index.js',
-    output: {
-        filename: 'bundle.js',
-        path: __dirname + '/dist/client/'
-    },
     module: {
         rules: [
             {
@@ -19,5 +14,7 @@ module.exports = {
         ]
     },
     mode: 'production',
-    node: { Buffer: 'mock' }
+    node: {
+        Buffer: 'mock'
+    }
 };
