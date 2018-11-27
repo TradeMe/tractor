@@ -24,17 +24,17 @@
     "prepublishOnly": "npm run build",
     "build": "npm run clean && npm run lint && npm run cover && npm run compile",
     "clean": "rimraf dist",
-    "compile": "babel src/ --out-dir dist --ignore *.spec.js",
+    "compile": "babel src/ --out-dir dist --ignore *.spec.js --config-file ../../babel.config.js",
     "cover": "nyc npm run test",
     "lint": "eslint src --ignore-path ../../.eslintignore",
-    "test": "cd ../../ && mocha --opts mocha.opts 'packages/dependency-injection/src/**/*.spec.js'",
+    "test": "cd ../../ && mocha --opts mocha.opts 'packages/dependency-injection/src/**/*.spec.js' && cd ./packages/dependency-injection",
     "watch": "npm-watch"
   },
   "watch": {
     "build": "src/**/*.js"
   },
   "peerDependencies": {
-    "@tractor/core": "^1.0.1-beta.8"
+    "@tractor/core": "^1.0.1-beta.10"
   },
   "devDependencies": {
     "@tractor/error-handler": "^1.0.1-beta.10",

@@ -25,11 +25,10 @@
     "build": "npm run clean && npm run lint && npm run cover && npm run compile && npm run bundle",
     "bundle": "webpack --config webpack.config.js",
     "clean": "rimraf dist",
-    "compile": "babel src/ --out-dir dist/ --ignore *.spec.js,src/tractor/client",
+    "compile": "babel src/ --out-dir dist/ --ignore *.spec.js,src/tractor/client --config-file ../../babel.config.js",
     "cover": "nyc npm run test",
     "lint": "eslint src --ignore-path ../../.eslintignore",
-    "test": "cd ../../ && mocha --opts mocha.opts 'plugins/visual-regression/src/**/*.spec.js'",
-    "test:debug": "cd ../../ && mocha --inspect --debug-brk --opts mocha.opts 'plugins/visual-regression/src/**/*.spec.js''",
+    "test": "cd ../../ && mocha --opts mocha.opts 'plugins/visual-regression/src/**/*.spec.js' && cd ./plugins/visual-regression",
     "watch": "npm-watch"
   },
   "watch": {
@@ -42,5 +41,11 @@
   },
   "peerDependencies": {
     "@tractor/core": "^1.0.1-beta.10"
+  },
+  "devDependencies": {
+    "@tractor/error-handler": "^1.0.1-beta.10",
+    "@tractor/file-structure": "^1.0.1-beta.10",
+    "@tractor/logger": "^1.0.1-beta.10",
+    "@tractor/unit-test": "^1.0.1-beta.10"
   }
 }

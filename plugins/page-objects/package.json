@@ -25,10 +25,10 @@
     "build": "npm run clean && npm run lint && npm run cover && npm run compile && npm run bundle",
     "bundle": "webpack --config webpack.config.js",
     "clean": "rimraf dist",
-    "compile": "babel src/ --out-dir dist/ --ignore *.spec.js,src/tractor/client",
+    "compile": "babel src/ --out-dir dist/ --ignore *.spec.js,src/tractor/client --config-file ../../babel.config.js",
     "cover": "nyc npm run test",
     "lint": "eslint src --ignore-path ../../.eslintignore",
-    "test": "cd ../../ && mocha --opts mocha.opts 'plugins/page-objects/src/**/*.spec.js'",
+    "test": "cd ../../ && mocha --opts mocha.opts 'plugins/page-objects/src/**/*.spec.js' && cd ./plugins/page-objects",
     "pretest:e2e": "npm run test:setup",
     "test:e2e": "protractor ./tractor/protractor.conf.js --baseUrl=\"http://localhost:4321\"",
     "test:e2e:debug": "node --inspect-brk node_modules/.bin/protractor ./tractor/protractor.conf.js --baseUrl=\"http://localhost:4321\"",
@@ -51,5 +51,12 @@
   },
   "peerDependencies": {
     "@tractor/core": "^1.0.1-beta.10"
+  },
+  "devDependencies": {
+    "@tractor/error-handler": "^1.0.1-beta.10",
+    "@tractor/file-javascript": "^1.0.1-beta.10",
+    "@tractor/file-structure": "^1.0.1-beta.10",
+    "@tractor/logger": "^1.0.1-beta.10",
+    "@tractor/unit-test": "^1.0.1-beta.10"
   }
 }

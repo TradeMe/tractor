@@ -16,6 +16,12 @@ const PACKAGES = [
     '@tractor/server',
     '@tractor/ui',
     '@tractor/unit-test',
+    '@tractor-plugins/browser',
+    '@tractor-plugins/mocha-specs',
+    '@tractor-plugins/mock-requests',
+    '@tractor-plugins/page-objects',
+    '@tractor-plugins/screen-size',
+    '@tractor-plugins/visual-regression'
 ];
 
 export async function link (manager = 'npm') {

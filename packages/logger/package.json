@@ -1,7 +1,7 @@
 {
   "name": "@tractor/logger",
   "version": "1.0.1-beta.10",
-  "description": "File structure handler for tractor",
+  "description": "Logging utilities for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
   "publishConfig": {
@@ -24,20 +24,20 @@
     "prepublishOnly": "npm run build",
     "build": "npm run clean && npm run lint && npm run cover && npm run compile",
     "clean": "rimraf dist",
-    "compile": "babel src/ --out-dir dist --ignore *.spec.js",
+    "compile": "babel src/ --out-dir dist --ignore *.spec.js --config-file ../../babel.config.js",
     "cover": "nyc npm run test",
     "lint": "eslint src --ignore-path ../../.eslintignore",
-    "test": "cd ../../ && mocha --opts mocha.opts 'packages/logger/src/**/*.spec.js'",
+    "test": "cd ../../ && mocha --opts mocha.opts 'packages/logger/src/**/*.spec.js' && cd ./packages/logger",
     "watch": "npm-watch"
   },
   "watch": {
     "build": "src/**/*.js"
   },
-  "peerDependencies": {
-    "@tractor/core": "^1.0.1-beta.8"
-  },
   "dependencies": {
     "npmlog": "^4.1.2"
+  },
+  "peerDependencies": {
+    "@tractor/core": "^1.0.1-beta.8"
   },
   "devDependencies": {
     "@tractor/unit-test": "^1.0.1-beta.10"

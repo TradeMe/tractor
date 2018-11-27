@@ -24,10 +24,10 @@
     "prepublishOnly": "npm run build",
     "build": "npm run clean && npm run lint && npm run cover && npm run compile",
     "clean": "rimraf dist",
-    "compile": "babel src/ --out-dir dist --ignore *.spec.js",
+    "compile": "babel src/ --out-dir dist --ignore *.spec.js --config-file ../../babel.config.js",
     "cover": "nyc npm run test",
     "lint": "eslint src --ignore-path ../../.eslintignore",
-    "test": "cd ../../ && mocha --opts mocha.opts './plugins/browser/src/**/*.spec.js'",
+    "test": "cd ../../ && mocha --opts mocha.opts './plugins/browser/src/**/*.spec.js' && cd ./plugins/browser",
     "watch": "npm-watch"
   },
   "watch": {
@@ -35,5 +35,8 @@
   },
   "peerDependencies": {
     "@tractor/core": "^1.0.1-beta.10"
+  },
+  "devDependencies": {
+    "@tractor/unit-test": "^1.0.1-beta.10"
   }
 }

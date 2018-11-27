@@ -59,6 +59,7 @@ To set up development:
 ```sh
 lerna bootstrap # install dependencies
 lerna run build # build all the packages
+npm run dev # link dependencies
 ```
 
 To run e2e tests:
