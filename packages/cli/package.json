@@ -49,7 +49,8 @@
     "@tractor/file-structure": "^1.0.1-beta.10",
     "@tractor/logger": "^1.0.1-beta.10",
     "@tractor/plugin-loader": "^1.0.1-beta.10",
-    "@tractor/server": "^1.0.1-beta.10"
+    "@tractor/server": "^1.0.1-beta.10",
+    "@tractor/unit-test": "^1.0.1-beta.10"
   },
   "gitHead": "75f58824a7a14b8012a99e91ed23a80ab090e093"
 }

@@ -53,10 +53,15 @@
     "@tractor/core": "^1.0.1-beta.10"
   },
   "devDependencies": {
+    "@tractor/config-loader": "^1.0.1-beta.10",
     "@tractor/error-handler": "^1.0.1-beta.10",
     "@tractor/file-javascript": "^1.0.1-beta.10",
     "@tractor/file-structure": "^1.0.1-beta.10",
     "@tractor/logger": "^1.0.1-beta.10",
-    "@tractor/unit-test": "^1.0.1-beta.10"
+    "@tractor/plugin-loader": "^1.0.1-beta.10",
+    "@tractor/ui": "^1.0.1-beta.10",
+    "@tractor/unit-test": "^1.0.1-beta.10",
+    "@tractor-plugins/mocha-specs": "^0.2.5",
+    "@tractor-plugins/page-objects": "^0.7.2"
   }
 }
