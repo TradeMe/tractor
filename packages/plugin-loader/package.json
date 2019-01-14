@@ -36,7 +36,10 @@
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
     "camel-case": "^3.0.0",
+    "find-up": "^3.0.0",
     "param-case": "^2.1.1",
+    "pkg-up": "^2.0.0",
+    "resolve-from": "^4.0.0",
     "title-case": "^2.1.1"
   },
   "peerDependencies": {
@@ -44,7 +47,8 @@
   },
   "devDependencies": {
     "@tractor/error-handler": "^1.0.1-beta.10",
-    "@tractor/logger": "^1.0.1-beta.10"
+    "@tractor/logger": "^1.0.1-beta.10",
+    "@tractor/unit-test": "^1.0.1-beta.10"
   },
   "gitHead": "75f58824a7a14b8012a99e91ed23a80ab090e093"
 }

@@ -1,4 +1,3 @@
-'use strict';
 exports.config = require('@tractor/plugin-loader').plugin({
   allScriptsTimeout: 11000,
   capabilities: {
@@ -7,9 +6,6 @@ exports.config = require('@tractor/plugin-loader').plugin({
   directConnect: true,
   params: {
     debug: false
-  },
-  mochaOpts: {
-    timeout: 30000
   },
   SELENIUM_PROMISE_MANAGER: false
 });
