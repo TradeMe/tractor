@@ -9,8 +9,9 @@ if (!global._babelPolyfill) {
 import { loadPlugins } from './load-plugins';
 
 let plugins;
-export function getPlugins (directory) {
-    plugins = plugins || loadPlugins(directory || process.cwd());
+export function getPlugins (config = {}) {
+    config.cwd = config.cwd || process.cwd();
+    plugins = plugins || loadPlugins(config);
     return plugins;
 }
 

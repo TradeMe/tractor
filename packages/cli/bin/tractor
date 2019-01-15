@@ -58,6 +58,6 @@ tractor.parse(process.argv);
 
 function initDIConstants (configPath) {
     const config = getConfig(configPath);
-    const plugins = getPlugins();
+    const plugins = getPlugins(config);
     di.constant({ config, plugins });
 }

@@ -31,7 +31,8 @@
 		"test:e2e": "protractor ./tractor/protractor.conf.js --baseUrl=\"http://localhost:4444\"",
 		"tractor": "tractor start",
 		"tractor:init": "tractor init",
-		"webdriver": "webdriver-manager update && tractor patch"
+		"webdriver": "webdriver-manager update && tractor patch",
+		"postinstall": "npm run webdriver"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.1.5",
@@ -53,6 +54,7 @@
 		"npm-watch": "^0.4.0",
 		"nyc": "^13.1.0",
 		"rimraf": "^2.6.2",
+		"start-server-and-test": "^1.7.11",
 		"url-loader": "^1.1.1",
 		"webpack": "^4.20.2",
 		"webpack-cli": "^3.1.2"

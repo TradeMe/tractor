@@ -11,7 +11,12 @@ import defaults from 'lodash.defaults';
 
 let config;
 export function getConfig (configPath) {
-    config = config || loadConfig(configPath);
+    if (configPath) {
+        config = loadConfig(configPath);
+    }
+    if (!config) {
+        config = loadConfig();
+    }
     return config;
 }
 

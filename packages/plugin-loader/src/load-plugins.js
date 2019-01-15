@@ -18,9 +18,10 @@ import titleCase from 'title-case';
 // Errors:
 import { TractorError } from '@tractor/error-handler';
 
-export function loadPlugins (cwd) {
+export function loadPlugins (config) {
     info('Loading plugins...');
-    const plugins = requirePlugins(cwd);
+    const { cwd } = config;
+    const plugins = requirePlugins(config);
 
     plugins.forEach(plugin => {
         const { description, name } = plugin;
@@ -29,7 +30,8 @@ export function loadPlugins (cwd) {
         description.url = paramCase(name);
 
         const { fullName } = plugin;
-        const script = path.resolve(cwd, path.join(NODE_MODULES, fullName, 'dist', 'client', 'bundle.js'));
+        const modulePath = resolveFrom(cwd, fullName);
+        const script = path.resolve(modulePath, '../client/bundle.js');
         try {
             fs.accessSync(script);
             plugin.script = script;
@@ -60,8 +62,12 @@ export function loadPlugins (cwd) {
     return plugins;
 }
 
-function requirePlugins (cwd) {
-    return getInstalledPluginNames(cwd).map(pluginName => {
+function requirePlugins (config) {
+    const { cwd, plugins } = config;
+
+    return getInstalledPluginNames(cwd)
+    .filter(pluginName => !plugins || plugins.includes(pluginName))
+    .map(pluginName => {
         const fullName = `${TRACTOR_PLUGINS_SCOPE}/${pluginName}`;
         try {
             const modulePath = resolveFrom(cwd, fullName);

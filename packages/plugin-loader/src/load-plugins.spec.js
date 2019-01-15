@@ -14,17 +14,22 @@ describe('@tractor/plugin-loader:', () => {
         it('should do nothing if there is not any installed plugins', () => {
             sinon.stub(tractorLogger, 'info');
 
-            let plugins = loadPlugins(path.parse(__dirname).root);
+            let plugins = loadPlugins({ cwd: path.parse(__dirname).root });
 
             expect(plugins.length).to.equal(0);
 
             tractorLogger.info.restore();
         });
 
-        it('should create a plugin for each installed plugin', () => {
+        // TODO: This test can take quite a while to run!
+        // Should figure out why. Need to keep this as a function expression
+        // so that the `this` binding is correct:
+        it('should create a plugin for each installed plugin', function () {
+            this.timeout(3000);
+
             sinon.stub(tractorLogger, 'info');
 
-            const [plugin] = loadPlugins(path.resolve(__dirname, '../fixtures/basic'));
+            const [plugin] = loadPlugins({ cwd: path.resolve(__dirname, '../fixtures/basic') });
 
             expect(plugin.fullName).to.equal('@tractor-plugins/test-plugin');
             expect(plugin.name).to.equal('test-plugin');
@@ -35,7 +40,7 @@ describe('@tractor/plugin-loader:', () => {
         it('should create a plugin for an ES2015 module', () => {
             sinon.stub(tractorLogger, 'info');
 
-            const [plugin] = loadPlugins(path.resolve(__dirname, '../fixtures/esm'));
+            const [plugin] = loadPlugins({ cwd: path.resolve(__dirname, '../fixtures/esm') });
 
             expect(plugin.fullName).to.equal('@tractor-plugins/test-plugin');
             expect(plugin.name).to.equal('test-plugin');
@@ -47,7 +52,7 @@ describe('@tractor/plugin-loader:', () => {
             sinon.stub(tractorLogger, 'info');
 
             expect(() => {
-                loadPlugins(path.resolve(__dirname, '../fixtures/broken'));
+                loadPlugins({ cwd: path.resolve(__dirname, '../fixtures/broken') });
             }).to.throw(TractorError, `could not require '@tractor-plugins/test-plugin'`);
 
             tractorLogger.info.restore();
@@ -56,7 +61,7 @@ describe('@tractor/plugin-loader:', () => {
         it('should decorate the `description` with display values', () => {
             sinon.stub(tractorLogger, 'info');
 
-            const [plugin] = loadPlugins(path.resolve(__dirname, '../fixtures/basic'));
+            const [plugin] = loadPlugins({ cwd: path.resolve(__dirname, '../fixtures/basic') });
 
             expect(plugin.description.name).to.equal('Test Plugin');
             expect(plugin.description.variableName).to.equal('testPlugin');
@@ -70,7 +75,7 @@ describe('@tractor/plugin-loader:', () => {
 
             sinon.stub(tractorLogger, 'info');
 
-            const [plugin] = loadPlugins(path.resolve(__dirname, '../fixtures/complex'));
+            const [plugin] = loadPlugins({ cwd: path.resolve(__dirname, '../fixtures/complex') });
 
             expect(plugin.description).to.equal(requiredPlugin.description);
 
@@ -80,7 +85,7 @@ describe('@tractor/plugin-loader:', () => {
         it('should decorate the `description` with the version', () => {
             sinon.stub(tractorLogger, 'info');
 
-            const [plugin] = loadPlugins(path.resolve(__dirname, '../fixtures/basic'));
+            const [plugin] = loadPlugins({ cwd: path.resolve(__dirname, '../fixtures/basic') });
 
             expect(plugin.description.version).to.equal('1.0.0');
 
@@ -90,7 +95,7 @@ describe('@tractor/plugin-loader:', () => {
         it('should have a default `create` function that is a noop', () => {
             sinon.stub(tractorLogger, 'info');
 
-            const [plugin] = loadPlugins(path.resolve(__dirname, '../fixtures/basic'));
+            const [plugin] = loadPlugins({ cwd: path.resolve(__dirname, '../fixtures/basic') });
 
             expect(() => {
                 plugin.create();
@@ -105,7 +110,7 @@ describe('@tractor/plugin-loader:', () => {
             sinon.stub(requiredPlugin, 'create');
             sinon.stub(tractorLogger, 'info');
 
-            const [plugin] = loadPlugins(path.resolve(__dirname, '../fixtures/complex'));
+            const [plugin] = loadPlugins({ cwd: path.resolve(__dirname, '../fixtures/complex') });
             plugin.create();
 
             expect(requiredPlugin.create).to.have.been.called();
@@ -116,7 +121,7 @@ describe('@tractor/plugin-loader:', () => {
         it('should have a default `init` function that is a noop', () => {
             sinon.stub(tractorLogger, 'info');
 
-            const [plugin] = loadPlugins(path.resolve(__dirname, '../fixtures/basic'));
+            const [plugin] = loadPlugins({ cwd: path.resolve(__dirname, '../fixtures/basic') });
 
             expect(() => {
                 plugin.init();
@@ -131,7 +136,7 @@ describe('@tractor/plugin-loader:', () => {
             sinon.stub(requiredPlugin, 'init');
             sinon.stub(tractorLogger, 'info');
 
-            const [plugin] = loadPlugins(path.resolve(__dirname, '../fixtures/complex'));
+            const [plugin] = loadPlugins({ cwd: path.resolve(__dirname, '../fixtures/complex') });
             plugin.init();
 
             expect(requiredPlugin.init).to.have.been.called();
@@ -142,7 +147,7 @@ describe('@tractor/plugin-loader:', () => {
         it('should have a default `plugin` function that is a noop', () => {
             sinon.stub(tractorLogger, 'info');
 
-            const [plugin] = loadPlugins(path.resolve(__dirname, '../fixtures/basic'));
+            const [plugin] = loadPlugins({ cwd: path.resolve(__dirname, '../fixtures/basic') });
 
             expect(() => {
                 plugin.plugin();
@@ -157,7 +162,7 @@ describe('@tractor/plugin-loader:', () => {
             sinon.stub(requiredPlugin, 'plugin');
             sinon.stub(tractorLogger, 'info');
 
-            const [plugin] = loadPlugins(path.resolve(__dirname, '../fixtures/complex'));
+            const [plugin] = loadPlugins({ cwd: path.resolve(__dirname, '../fixtures/complex') });
             plugin.plugin();
 
             expect(requiredPlugin.plugin).to.have.been.called();
@@ -168,7 +173,7 @@ describe('@tractor/plugin-loader:', () => {
         it('should have a default `run` function that is a noop', () => {
             sinon.stub(tractorLogger, 'info');
 
-            const [plugin] = loadPlugins(path.resolve(__dirname, '../fixtures/basic'));
+            const [plugin] = loadPlugins({ cwd: path.resolve(__dirname, '../fixtures/basic') });
 
             expect(() => {
                 plugin.run();
@@ -183,7 +188,7 @@ describe('@tractor/plugin-loader:', () => {
             sinon.stub(requiredPlugin, 'run');
             sinon.stub(tractorLogger, 'info');
 
-            const [plugin] = loadPlugins(path.resolve(__dirname, '../fixtures/complex'));
+            const [plugin] = loadPlugins({ cwd: path.resolve(__dirname, '../fixtures/complex') });
             plugin.run();
 
             expect(requiredPlugin.run).to.have.been.called();
@@ -194,7 +199,7 @@ describe('@tractor/plugin-loader:', () => {
         it('should have a default `serve` function that is a noop', () => {
             sinon.stub(tractorLogger, 'info');
 
-            const [plugin] = loadPlugins(path.resolve(__dirname, '../fixtures/basic'));
+            const [plugin] = loadPlugins({ cwd: path.resolve(__dirname, '../fixtures/basic') });
 
             expect(() => {
                 plugin.serve();
@@ -209,7 +214,7 @@ describe('@tractor/plugin-loader:', () => {
             sinon.stub(requiredPlugin, 'serve');
             sinon.stub(tractorLogger, 'info');
 
-            const [plugin] = loadPlugins(path.resolve(__dirname, '../fixtures/complex'));
+            const [plugin] = loadPlugins({ cwd: path.resolve(__dirname, '../fixtures/complex') });
             plugin.serve();
 
             expect(requiredPlugin.serve).to.have.been.called();
@@ -220,7 +225,7 @@ describe('@tractor/plugin-loader:', () => {
         it('should have a default `upgrade` function that is a noop', () => {
             sinon.stub(tractorLogger, 'info');
 
-            const [plugin] = loadPlugins(path.resolve(__dirname, '../fixtures/basic'));
+            const [plugin] = loadPlugins({ cwd: path.resolve(__dirname, '../fixtures/basic') });
 
             expect(() => {
                 plugin.upgrade();
@@ -235,7 +240,7 @@ describe('@tractor/plugin-loader:', () => {
             sinon.stub(requiredPlugin, 'upgrade');
             sinon.stub(tractorLogger, 'info');
 
-            const [plugin] = loadPlugins(path.resolve(__dirname, '../fixtures/complex'));
+            const [plugin] = loadPlugins({ cwd: path.resolve(__dirname, '../fixtures/complex') });
             plugin.upgrade();
 
             expect(requiredPlugin.upgrade).to.have.been.called();
@@ -246,7 +251,7 @@ describe('@tractor/plugin-loader:', () => {
         it('should try to load the UI bundle and set the `hasUI` flag to true if it works', () => {
             sinon.stub(tractorLogger, 'info');
 
-            const [plugin] = loadPlugins(path.resolve(__dirname, '../fixtures/complex'));
+            const [plugin] = loadPlugins({ cwd: path.resolve(__dirname, '../fixtures/complex') });
 
             expect(plugin.script.includes(path.join('node_modules', '@tractor-plugins', 'test-plugin', 'dist', 'client', 'bundle.js'))).to.equal(true);
             expect(plugin.description.hasUI).to.equal(true);
@@ -257,7 +262,7 @@ describe('@tractor/plugin-loader:', () => {
         it('should try to load the UI bundle and set the `hasUI` flag to false if it fails', () => {
             sinon.stub(tractorLogger, 'info');
 
-            const [plugin] = loadPlugins(path.resolve(__dirname, '../fixtures/basic'));
+            const [plugin] = loadPlugins({ cwd: path.resolve(__dirname, '../fixtures/basic') });
 
             expect(plugin.description.hasUI).to.equal(false);
 

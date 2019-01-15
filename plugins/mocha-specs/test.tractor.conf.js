@@ -1,12 +1,17 @@
 module.exports = {
-    port: 4321,
+    port: 4401,
     environments: [
-        'http://localhost:4321'
+        'http://localhost:4401'
+    ],
+    plugins: [
+        'page-objects',
+        'mocha-specs',
+        'mock-requests'
     ],
     pageObjects: {
         directory: './test',
         include: {
-            tractor: './node_modules/@tractor/ui/dist/page-objects/'
+            tractor: '../../node_modules/@tractor/ui/dist/page-objects/'
         }
     },
     mochaSpecs: {

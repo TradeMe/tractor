@@ -41,6 +41,7 @@
     "lodash.debounce": "^4.0.8",
     "lodash.template": "^4.4.0",
     "monkeypatch": "^1.0.0",
+    "npm-which": "^3.0.1",
     "porter-stemmer": "^0.9.1",
     "socket.io": "^2.0.4"
   },
