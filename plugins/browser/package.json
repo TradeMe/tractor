@@ -35,8 +35,5 @@
   },
   "peerDependencies": {
     "@tractor/core": "^1.0.1-beta.10"
-  },
-  "devDependencies": {
-    "@tractor/unit-test": "^1.0.1-beta.10"
   }
 }

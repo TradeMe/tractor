@@ -41,11 +41,5 @@
   },
   "peerDependencies": {
     "@tractor/core": "^1.0.1-beta.10"
-  },
-  "devDependencies": {
-    "@tractor/error-handler": "^1.0.1-beta.10",
-    "@tractor/file-structure": "^1.0.1-beta.10",
-    "@tractor/logger": "^1.0.1-beta.10",
-    "@tractor/unit-test": "^1.0.1-beta.10"
   }
 }

@@ -1,13 +1,9 @@
 {
-  "hoist": true,
   "packages": [
     "packages/*",
     "plugins/*"
   ],
   "version": "1.0.1-beta.10",
-  "command": {
-    "bootstrap": {
-      "nohoist": "@tractor/ui"
-    }
-  }
+  "npmClient": "yarn",
+  "useWorkspaces": true
 }

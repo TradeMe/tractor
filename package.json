@@ -5,6 +5,10 @@
 	"description": "A UI around Protractor to help write E2E tests for Angular applications without needing to know JavaScript",
 	"author": "Craig Spence <craigspence0@gmail.com>",
 	"license": "MIT",
+	"workspaces": [
+		"packages/*",
+		"plugins/*"
+	],
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/TradeMe/tractor.git"
@@ -14,16 +18,13 @@
 		"email": "craigspence0@gmail.com"
 	},
 	"scripts": {
-		"clean": "npm run clean:coverage && npm run clean:etc && npm run clean:package-lock && npm run clean:reports",
+		"clean": "npm run clean:coverage && npm run clean:dist && npm run clean:etc && npm run clean:reports",
 		"clean:coverage": "rimraf './+(packages|plugins)/*/.nyc_output' && rimraf .nyc_output",
 		"clean:dist": "rimraf './+(packages|plugins)/*/dist'",
 		"clean:etc": "rimraf './+(packages|plugins)/*/etc'",
 		"clean:node_modules": "rimraf './+(packages|plugins)/*/node_modules' && rimraf node_modules",
-		"clean:package-lock": "rimraf './+(packages|plugins)/*/package-lock.json'",
 		"clean:reports": "rimraf reports",
-		"dev": "tractor-dev link && lerna link",
-		"link": "lerna exec npm link && npm run clean:package-lock",
-		"build": "lerna bootstrap && lerna run build && npm run cover",
+		"build": "yarn && yarn clean && lerna run clean && lerna run compile && lerna run lint && lerna run bundle && npm run cover",
 		"cover": "nyc npm run test",
 		"test": "mocha --opts mocha.opts '+(packages|plugins)/**/src/**/*.spec.js'",
 		"pretest:e2e": "npm run webdriver",
