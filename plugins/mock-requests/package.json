@@ -21,7 +21,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "npm run clean && npm run lint && npm run cover && npm run compile && npm run bundle:server && npm run bundle:client",
+    "build": "npm run clean && npm run lint && npm run compile && npm run cover && npm run bundle:server && npm run bundle:client",
     "bundle:client": "webpack --config webpack.config.js",
     "bundle:server": "webpack --config webpack.server.config.js",
     "clean": "rimraf dist",
