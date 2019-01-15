@@ -1,5 +1,5 @@
 dist
-node_modules
+/node_modules
 reports
 npm-debug.log
 lerna-debug.log
@@ -7,9 +7,15 @@ lerna-debug.log
 .idea/*
 .vscode
 .DS_Store
+packages/*/node_modules
 packages/**/etc
 packages/**/*.tgz
+plugins/*/node_modules
 plugins/**/etc
 plugins/**/*.tgz
 package.json.lerna_backup
 .nyc_output
+
+plugins/mocha-specs/test
+plugins/mock-requests/test
+plugins/page-objects/test
