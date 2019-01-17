@@ -1,6 +1,13 @@
 module.exports = {
+    port: 4500,
     environments: [
-        'http://localhost:4321'
+        'http://localhost:5401'
+    ],
+    plugins: [
+        'browser',
+        'mocha-specs',
+        'page-objects',
+        'screen-size'
     ],
     mochaSpecs: {
         directory: './src/tractor/client',
@@ -9,11 +16,11 @@ module.exports = {
     pageObjects: {
         directory: './src/tractor/client/',
         include: {
-            tractor: './node_modules/@tractor/ui/dist/page-objects/'
+            tractor: '../../node_modules/@tractor/ui/dist/page-objects/'
         }
     },
     screenSizes: {
-        sm: 360,
+        sm: 400,
         md: 768,
         lg: 1024
     }

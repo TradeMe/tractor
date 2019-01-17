@@ -1,12 +1,9 @@
 module.exports = {
-    port: 4321,
+    port: 4501,
     environments: [
-        'http://localhost:4321'
+        'http://localhost:5401'
     ],
-    mochaSpecs: {
-        directory: './src'
-    },
-    pageObjects: {
-        directory: './src'
-    }
+    plugins: [
+        'screen-size'
+    ]
 };
