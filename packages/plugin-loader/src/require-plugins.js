@@ -5,7 +5,6 @@ const NODE_MODULES = 'node_modules';
 // Utilities:
 import fs from 'fs';
 import path from 'path';
-import { info } from '@tractor/logger';
 
 // Dependencies:
 import camelCase from 'camel-case';
@@ -18,12 +17,34 @@ import titleCase from 'title-case';
 // Errors:
 import { TractorError } from '@tractor/error-handler';
 
-export function loadPlugins (config) {
-    info('Loading plugins...');
-    const { cwd } = config;
-    const plugins = requirePlugins(config);
+export function requirePlugins (cwd, enabledPlugins) {
+    return getInstalledPluginNames(cwd)
+    .filter(pluginName => {
+        return !enabledPlugins || enabledPlugins.includes(pluginName);
+    })
+    .map(pluginName => {
+        const fullName = `${TRACTOR_PLUGINS_SCOPE}/${pluginName}`;
+        try {
+            const modulePath = resolveFrom(cwd, fullName);
+            let plugin = require(modulePath);
+      
+            plugin = plugin.default ? plugin.default : plugin;
 
-    plugins.forEach(plugin => {
+            if (!plugin.description) {
+                plugin.description = {};
+            }
+
+            const packagePath = pkgUp.sync(modulePath);
+            plugin.description.version = require(packagePath).version;
+
+            plugin.fullName = fullName;
+            plugin.name = pluginName;
+            return plugin;
+        } catch (e) {
+            throw new TractorError(`could not require '${fullName}'`);
+        }
+    })
+    .map(plugin => {
         const { description, name } = plugin;
         description.name = titleCase(name);
         description.variableName = camelCase(name);
@@ -32,6 +53,7 @@ export function loadPlugins (config) {
         const { fullName } = plugin;
         const modulePath = resolveFrom(cwd, fullName);
         const script = path.resolve(modulePath, '../client/bundle.js');
+
         try {
             fs.accessSync(script);
             plugin.script = script;
@@ -58,36 +80,8 @@ export function loadPlugins (config) {
         if (!plugin.upgrade) {
             plugin.upgrade = () => {};
         }
-    });
-    return plugins;
-}
 
-function requirePlugins (config) {
-    const { cwd, plugins } = config;
-
-    return getInstalledPluginNames(cwd)
-    .filter(pluginName => !plugins || plugins.includes(pluginName))
-    .map(pluginName => {
-        const fullName = `${TRACTOR_PLUGINS_SCOPE}/${pluginName}`;
-        try {
-            const modulePath = resolveFrom(cwd, fullName);
-            let plugin = require(modulePath);
-      
-            plugin = plugin.default ? plugin.default : plugin;
-
-            if (!plugin.description) {
-                plugin.description = {};
-            }
-
-            const packagePath = pkgUp.sync(modulePath);
-            plugin.description.version = require(packagePath).version;
-
-            plugin.fullName = fullName;
-            plugin.name = pluginName;
-            return plugin;
-        } catch (e) {
-            throw new TractorError(`could not require '${fullName}'`);
-        }
+        return plugin;
     });
 }
 

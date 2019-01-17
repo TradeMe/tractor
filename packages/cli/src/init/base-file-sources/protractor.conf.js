@@ -1,15 +1,11 @@
-exports.config = require('@tractor/plugin-loader').plugin({
+const { tractor } = require('tractor/core');
+
+exports.config = tractor().plugin({
     allScriptsTimeout: 11000,
     capabilities: {
         browserName: 'chrome'
     },
     directConnect: true,
-    params: {
-        debug: false
-    },
-    mochaOpts: {
-        timeout: 30000
-    },
     SELENIUM_PROMISE_MANAGER: false
   });
   

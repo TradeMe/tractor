@@ -1,21 +1,33 @@
-// Polyfill:
-// Ignoring polyfill from coverage as it should hopefully go away soon:
-/* istanbul ignore next */
-if (!global._babelPolyfill) {
-    require('@babel/polyfill');
-}
+// Utilities:
+import { info } from '@tractor/logger';
 
 // Dependencies:
-import { loadPlugins } from './load-plugins';
+import { requirePlugins } from './require-plugins';
 
-let plugins;
-export function getPlugins (config = {}) {
-    config.cwd = config.cwd || process.cwd();
-    plugins = plugins || loadPlugins(config);
-    return plugins;
+// Errors:
+import { TractorError } from '@tractor/error-handler';
+
+let loadedPlugins;
+export function getPlugins () {
+    if (!loadedPlugins) {
+        throw new TractorError(`
+            You must call \`loadPlugins()\` before you can use \`getPlugins()\`!
+
+            Example:
+
+                import { loadConfig } from '@tractor/config-loader';
+                import { loadPlugins } from '@tractor/plugin-loader';
+
+                const config = loadConfig(process.cwd(), './path/to/tractor.config.js');
+                const plugins = loadPlugins(config);
+        `);
+    }
+    return loadedPlugins;
 }
 
-export function plugin (protractorConfig) {
-    getPlugins().forEach(plugin => plugin.plugin(protractorConfig));
-    return protractorConfig;
+export function loadPlugins (config) {
+    info('Loading plugins...');
+    const { cwd, plugins } = config;
+    loadedPlugins = requirePlugins(cwd, plugins);
+    return loadedPlugins;
 }

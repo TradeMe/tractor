@@ -9,29 +9,37 @@ import { info } from '@tractor/logger';
 // Dependencies:
 import defaults from 'lodash.defaults';
 
+// Errors:
+import { TractorError } from '@tractor/error-handler';
+
 let config;
-export function getConfig (configPath) {
-    if (configPath) {
-        config = loadConfig(configPath);
-    }
+export function getConfig () {
     if (!config) {
-        config = loadConfig();
+        throw new TractorError(`
+            You must call \`loadConfig()\` before you can use \`getConfig()\`!
+
+            Example:
+
+                import { loadConfig } from '@tractor/config-loader';
+
+                const config = loadConfig(process.cwd(), 'path/to/my/config');
+        `);
     }
     return config;
 }
 
-export function loadConfig (configPath = CONFIG_FILE_NAME) {
+export function loadConfig (cwd, configPath = CONFIG_FILE_NAME) {
     info('Loading config...');
-    configPath = path.resolve(process.cwd(), configPath);
+    const fullConfigPath = path.resolve(cwd, configPath);
 
-    let config;
     try {
-        config = require(configPath);
+        config = require(fullConfigPath);
         config = config.default ? config.default : config;
     } catch (e) {
         config = {};
     }
     config = defaults(config, DEFAULT_CONFIG);
+    config.cwd = cwd;
 
     return config;
 }

@@ -1,63 +1,41 @@
 #!/usr/bin/env node
 'use strict';
 
-// Polyfill:
-require('@babel/polyfill');
-
-// Promisify:
-const { promisifyAll } = require('bluebird');
-promisifyAll(require('fs'));
-
 // Dependencies:
-const tractor = require('commander');
+const { Tractor } = require('@tractor/core');
+const cli = require('commander');
 const { version } = require('../package.json');
 
 // Actions:
 const { init, patch, start, upgrade } = require('../dist');
 
-const { getConfig } = require('@tractor/config-loader');
-const { container } = require('@tractor/dependency-injection');
-const { getPlugins } = require('@tractor/plugin-loader');
-
-const di = container();
-
-tractor
+cli
 .version(version)
-.option('-c, --config [value]', 'Path to configuration file (defaults to ./tractor.conf.js)');
+.option('-c, --config [value]', 'Path to configuration file from CWD (defaults to ./tractor.conf.js)');
 
-tractor
+cli
 .command('init')
 .description('initialise tractor in a project')
-.action(() => {
-    initDIConstants(tractor.config);
-    return di.call(init);
-});
+.action(() => run(cli.config, init));
 
-tractor
+cli
 .command('patch')
 .description('Patch protractor/selenium to resolve issues')
 .action(patch);
 
-tractor
+cli
 .command('start', { isDefault: true })
 .description('Start the tractor server')
-.action(() => {
-    initDIConstants(tractor.config);
-    return di.call(start);
-});
+.action(() => run(cli.config, start));
 
-tractor
+cli
 .command('upgrade')
 .description('Upgrade tractor plugin files')
-.action(() => {
-    initDIConstants(tractor.config);
-    return di.call(upgrade);
-});
+.action(() => run(cli.config, upgrade));
 
-tractor.parse(process.argv);
+cli.parse(process.argv);
 
-function initDIConstants (configPath) {
-    const config = getConfig(configPath);
-    const plugins = getPlugins(config);
-    di.constant({ config, plugins });
+function run (configPath, command) {
+    const tractor = new Tractor(process.cwd(), configPath);
+    return tractor.call(command);
 }

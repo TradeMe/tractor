@@ -2,19 +2,17 @@
 const { promisify } = require('bluebird');
 const mkdir = promisify(require('fs').mkdir);
 const rimraf = promisify(require('rimraf'));
+const { tractor } = require('@tractor/core');
 
 // Constants:
 const TEST_DIRECTORY = './test';
 
-exports.config = require('@tractor/plugin-loader').plugin({
+exports.config = tractor('../tractor.conf.js').plugin({
     allScriptsTimeout: 11000,
     capabilities: {
         browserName: 'chrome'
     },
     directConnect: true,
-    params: {
-        debug: false
-    },
     mochaOpts: {
         timeout: 30000
     },
