@@ -30,7 +30,7 @@ export async function start (config, di, plugins) {
 }
 start['@Inject'] = ['config', 'di', 'plugins'];
 
-export async function init (config, di, plugins) {
+export async function init (di, plugins) {
     let application = express();
     /* eslint-disable new-cap */
     server = http.Server(application);
@@ -79,7 +79,7 @@ export async function init (config, di, plugins) {
     // Always make sure the '*' handler happens last:
     application.get('*', renderIndex);
 }
-init['@Inject'] = ['config', 'di', 'plugins'];
+init['@Inject'] = ['di', 'plugins'];
 
 function injectPlugins (plugins, application, templatePath) {
     plugins = plugins.filter(plugin => plugin.description.hasUI);
