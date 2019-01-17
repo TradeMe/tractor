@@ -1,11 +1,16 @@
 'use strict';
 
 module.exports = {
-    port: 4444,
+    port: 4800,
     environments: [
-        'http://localhost:4444'
+        'http://localhost:4800'
+    ],
+    plugins: [
+        'browser',
+        'mocha-specs',
+        'page-objects'
     ],
     pageObjects: {
-        directory: './packages/ui/src/app'
+        directory: './src/app'
     }
 };

@@ -17,7 +17,7 @@ describe('Protractor', function () {
         step = step.then(function () {
             var element;
             element = controlPanel;
-            return element.selectEnvironment('http://localhost:4444');
+            return element.selectEnvironment('http://localhost:4800');
         });
         step = step.then(function () {
             var element;
