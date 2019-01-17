@@ -4,7 +4,7 @@
 var Core = require('../Core');
 
 // Dependencies:
-var charFunk = require('charfunk');
+var isValidIdentifier = require('is-valid-identifier')
 
 var ValidationService = function () {
     return {
@@ -12,7 +12,7 @@ var ValidationService = function () {
     };
 
     function validateVariableName (variableName) {
-        return charFunk.isValidName(variableName, true) ? variableName : false;
+        return isValidIdentifier(variableName) ? variableName : false;
     }
 };
 
