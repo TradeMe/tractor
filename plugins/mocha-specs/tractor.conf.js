@@ -4,17 +4,18 @@ module.exports = {
         'http://localhost:4401'
     ],
     plugins: [
-        'page-objects',
-        'mocha-specs'
+        'browser',
+        'mocha-specs',
+        'page-objects'
     ],
+    mochaSpecs: {
+        directory: './src/tractor/client/',
+        reportsDirectory: './reports/tractor'
+    },
     pageObjects: {
         directory: './src/tractor/client/',
         include: {
             tractor: '../../node_modules/@tractor/ui/dist/page-objects/'
         }
-    },
-    mochaSpecs: {
-        directory: './src/tractor/client/',
-        reportsDirectory: './reports/tractor'
     }
 };
