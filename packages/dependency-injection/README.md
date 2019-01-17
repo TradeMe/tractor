@@ -4,68 +4,71 @@ Dependency Injection container for [**tractor**](https://github.com/TradeMe/trac
 
 [![npm version](https://img.shields.io/npm/v/@tractor/dependency-injection.svg)](https://www.npmjs.com/package/@tractor/dependency-injection)
 
-## API:
+## API
 
-### `constant`:
+### `constant`
 
-> Adds a constant reference to the container by name.
+Adds a constant reference to the container by name.
 
-> #### Usage:
-> ```javascript
-> import { DI } from '@tractor/dependency-injection';
->
-> DI.constant({ config: { my: 'config' }});
-> ```
+#### Usage
 
-### `factory`:
+```javascript
+import { DI } from '@tractor/dependency-injection';
 
-> Adds a factory function to the container by name.
+DI.constant({ config: { my: 'config' }});
+```
 
-> #### Usage:
-> ```javascript
-> import { DI } from '@tractor/dependency-injection';
->
-> DI.factory(function myFunction () {});
-> ```
+### `factory`
 
-### `call`:
+Adds a factory function to the container by name.
 
-> calls a function with injected dependencies.
+#### Usage
 
-> #### Usage:
-> ```javascript
-> import { DI } from '@tractor/dependency-injection';
->
-> let config = {};
-> DI.constant({ config });
->
-> function init (config) {}
-> init['@Inject'] = ['config'];
->
-> DI.call(init);
-> ```
+```javascript
+import { DI } from '@tractor/dependency-injection';
 
+DI.factory(function myFunction () {});
+```
 
-### `instantiate`:
+### `call`
 
-> Creates a new instance of a factory with injected dependencies.
+calls a function with injected dependencies.
 
-> #### Usage:
-> ```javascript
-> import { DI } from '@tractor/dependency-injection';
->
-> let config = {};
-> DI.constant({ config });
->
-> function Engine () {}
-> DI.factory(Engine);
->
-> function Tractor (config, engine) {
->     this.config = config;
->     this.engine = engine;
-> }
-> Tractor['@Inject'] = ['config', 'Engine'];
-> DI.factory(Tractor);
->
-> let tractor = DI.instantiate(Tractor);
-> ```
+#### Usage
+
+```javascript
+import { DI } from '@tractor/dependency-injection';
+
+let config = {};
+DI.constant({ config });
+
+function init (config) {}
+init['@Inject'] = ['config'];
+
+DI.call(init);
+```
+
+### `instantiate`
+
+Creates a new instance of a factory with injected dependencies.
+
+#### Usage
+
+```javascript
+import { DI } from '@tractor/dependency-injection';
+
+let config = {};
+DI.constant({ config });
+
+function Engine () {}
+DI.factory(Engine);
+
+function Tractor (config, engine) {
+    this.config = config;
+    this.engine = engine;
+}
+Tractor['@Inject'] = ['config', 'Engine'];
+DI.factory(Tractor);
+
+let tractor = DI.instantiate(Tractor);
+```

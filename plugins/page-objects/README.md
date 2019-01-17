@@ -70,26 +70,42 @@ You'll probably want to use it with [@tractor-plugins/mocha-specs](https://githu
 
 ## Development
 
-To set up development:
+To set up development, just run `yarn` from the root of the repository. You can then run the following commands from within the directory, or use [`lerna run`](https://github.com/lerna/lerna/tree/master/commands/run) with [`--scope="@tractor-plugins/page-objects`](https://www.npmjs.com/package/@lerna/filter-options).
+
+### Build
+
+To build the whole package:
 
 ```sh
-npm install # install dependencies
-npm run dev # link dependencies
-tractor init
+yarn build
 ```
 
-To run plugin:
+### Test
+
+To run unit tests:
 
 ```sh
-npm run tractor:test # in one tab
-npm run tractor # in another tab
+yarn test
+yarn cover # with coverage
 ```
 
-To run tests:
+To run end-to-end tests:
 
 ```sh
-npm run tractor:test # in one tab
-npm run test:e2e # in another tab
+yarn tractor:test # in one tab
+yarn test:e2e # in another tab
+```
+
+To run end-to-end tests in CI mode:
+
+```sh
+yarn test:e2e:ci # handles the starting and killing of the application for testing
+```
+
+To start `tractor`:
+
+```sh
+yarn tractor
 ```
 
 If you care, maybe check out the [design decisions document](https://github.com/phenomnomnominal/tractor-plugin-page-objects/tree/master/docs/design%20decisions.md) 😎

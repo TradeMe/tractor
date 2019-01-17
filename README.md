@@ -8,7 +8,7 @@ A UI around [Protractor](http://angular.github.io/protractor/) to help write E2E
 [![Test Coverage](https://codeclimate.com/github/TradeMe/tractor/coverage.svg)](https://codeclimate.com/github/TradeMe/tractor/coverage)
 [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://github.com/TradeMe/tractor)
 
-This repository contains the code for the underlying infrastructure of tractor. Most of the actual functionality is built as [plugins](https://www.npmjs.com/org/tractor-plugins).
+This repository contains the code for the underlying infrastructure of tractor, as well as some [plugins](https://www.npmjs.com/org/tractor-plugins) that contain the main functionality.
 
 ## Install
 
@@ -40,13 +40,12 @@ The app should then be available running at [http://localhost:4000](http://local
 
 ## Config
 
-If you want to change the port that `tractor` runs at, or the file where it stores the generated files, you need to add a `tractor.conf.js` file in the root of your app directory. It should look something like the following:
+If you want to change the port that `tractor` runs at, or the different environments you can target, you need to add a `tractor.conf.js` file in the root of your app directory. It might look something like the following:
 
 ```javascript
 module.exports = {
-    directory: './path/to/test/directory', // defaults to root/tractor
-    port: number,                          // defaults to 4000
-    environments: Array<string>            // a list of URLs for the environments to run the tests in
+    port: number,                // defaults to 4000
+    environments: Array<string>  // a list of URLs for the environments to run the tests in
 };
 ```
 
@@ -57,14 +56,18 @@ The `tractor.conf.js` file is also used to configure any plugins you have instal
 To set up development:
 
 ```sh
-lerna bootstrap # install dependencies
-lerna run build # build all the packages
-npm run dev # link dependencies
+yarn # install dependencies and initialise workspaces
+lerna run build # build and test all the packages
 ```
 
-To run e2e tests:
+[More information on `yarn` workspaces](https://yarnpkg.com/en/docs/workspaces).
+
+[More information on `lerna`](https://lernajs.io/).
+
+You can use `lerna` to run commands across all packages, or groups of packages:
 
 ```sh
-npm run tractor # in one tab
-npm run test:e2e # in another tab
+lerna run test # run unit test in all packages
+lerna run compile --scope="@tractor-plugins/*" # runs JavaScript compiler in all @tractor-plugin packages
+lerna run test:e2e:ci --scope="@tractor/ui" # run end-to-end tests in the @tractor/ui package only
 ```

@@ -4,51 +4,57 @@ A general HTTP request error handler for [**tractor**](https://github.com/TradeM
 
 [![npm version](https://img.shields.io/npm/v/@tractor/error-handler.svg)](https://www.npmjs.com/package/@tractor/error-handler)
 
-## API:
+## API
 
-### `TractorError`:
+### `TractorError`
 
-> Creates a new `TractorError`.
+Creates a new `TractorError`.
 
-> #### Arguments:
-> * `message: string` - the error message
-> * `status?: number` - the HTTP status of the error
+#### Arguments
 
-> #### Usage:
-> ```javascript
->let error = new TractorError('something bad happened', 500);
->```
+* `message: string` - the error message
+* `status?: number` - the HTTP status of the error
 
-### `TractorError.isTractorError`:
+#### Usage
 
-> Checks if something is a `TractorError`.
+```javascript
+let error = new TractorError('something bad happened', 500);
+```
 
-> #### Arguments:
-> * `e: any` - thing to test
+### `TractorError.isTractorError`
 
-> #### Usage:
-> ```javascript
->TractorError.isTractorError(new TractorError('something bad happened')); // true;
->TractorError.isTractorError(new Error('something bad happened')); // false;
->```
+Checks if something is a `TractorError`.
 
-### `handleError`:
+#### Arguments
 
-> Sends an error back to the client
+* `e: any` - thing to test
 
-> #### Arguments:
-> * `response:` [Response](http://expressjs.com/es/api.html#res) - the Express HTTP response object
-> * `error: TractorError` - the TractorError that was thrown
+#### Usage
 
-> #### Usage:
-> ```javascript
-> import { TractorError, handleError } from '@tractor/error-handler';
->
-> export function myApiEndpoint (request, response) {
->     if (somethingBad) {
->        handleError(response, new TractorError('something bad happened'));
->    } else {
->        response.sendStatus(200);
->    }
->}
->```
+```javascript
+TractorError.isTractorError(new TractorError('something bad happened')); // true;
+TractorError.isTractorError(new Error('something bad happened')); // false;
+```
+
+### `handleError`
+
+Sends an error back to the client
+
+#### Arguments
+
+* `response:` [Response](http://expressjs.com/es/api.html#res) - the Express HTTP response object
+* `error: TractorError` - the TractorError that was thrown
+
+#### Usage
+
+```javascript
+import { TractorError, handleError } from '@tractor/error-handler';
+
+export function myApiEndpoint (request, response) {
+     if (somethingBad) {
+        handleError(response, new TractorError('something bad happened'));
+    } else {
+        response.sendStatus(200);
+    }
+}
+```

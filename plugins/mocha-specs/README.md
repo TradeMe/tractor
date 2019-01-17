@@ -27,6 +27,8 @@ For more information [see here](./docs/configuration.md)
 
 ## Development
 
+To set up development, just run `yarn` from the root of the repository. You can then run the following commands from within the directory, or use [`lerna run`](https://github.com/lerna/lerna/tree/master/commands/run) with [`--scope="@tractor-plugins/mocha-specs`](https://www.npmjs.com/package/@lerna/filter-options).
+
 ### Build
 
 To build the whole package:
@@ -57,7 +59,7 @@ To run end-to-end tests in CI mode:
 yarn test:e2e:ci # handles the starting and killing of the application for testing
 ```
 
-To start `**tractor**`:
+To start `tractor`:
 
 ```sh
 yarn tractor

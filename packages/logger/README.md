@@ -4,34 +4,37 @@ A general logger for [**tractor**](https://github.com/TradeMe/tractor).
 
 [![npm version](https://img.shields.io/npm/v/@tractor/logger.svg)](https://www.npmjs.com/package/@tractor/logger)
 
-## API:
+## API
 
-### `error`:
+### `error`
 
-> Logs errors to the console. Passes through to [`npmlog.error`](https://github.com/npm/npmlog#logloglevel-prefix-message-).
+Logs errors to the console. Passes through to [`npmlog.error`](https://github.com/npm/npmlog#logloglevel-prefix-message-).
 
-> #### Usage:
-> ```javascript
-> import { error } from '@tractor/logger';
-> error('error'); // 🚜 tractor ERR! error
-> ```
+#### Usage
 
-### `info`:
+```javascript
+import { error } from '@tractor/logger';
+error('error'); // 🚜 tractor ERR! error
+```
 
-> Logs information to the console. Passes through to [`npmlog.info`](https://github.com/npm/npmlog#logloglevel-prefix-message-).
+### `info`
 
-> #### Usage:
-> ```javascript
-> import { info } from '@tractor/logger';
-> info('info'); // 🚜 tractor info info;
-> ```
+Logs information to the console. Passes through to [`npmlog.info`](https://github.com/npm/npmlog#logloglevel-prefix-message-).
 
-### `warn`:
+#### Usage
 
-> Logs information to the console. Passes through to [`npmlog.warn`](https://github.com/npm/npmlog#logloglevel-prefix-message-).
+```javascript
+import { info } from '@tractor/logger';
+info('info'); // 🚜 tractor info info;
+```
 
-> #### Usage:
-> ```javascript
-> import { warn } from '@tractor/logger';
-> warn('warn'); // 🚜 tractor WARN warn;
-> ```
+### `warn`
+
+Logs information to the console. Passes through to [`npmlog.warn`](https://github.com/npm/npmlog#logloglevel-prefix-message-).
+
+#### Usage
+
+```javascript
+import { warn } from '@tractor/logger';
+warn('warn'); // 🚜 tractor WARN warn;
+```
