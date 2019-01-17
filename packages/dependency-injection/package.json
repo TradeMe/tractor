@@ -24,7 +24,7 @@
     "prepublishOnly": "npm run build",
     "build": "npm run clean && npm run lint && npm run compile && npm run cover",
     "clean": "rimraf dist",
-    "compile": "babel src/ --out-dir dist --ignore *.spec.js --config-file ../../babel.config.js",
+    "compile": "babel src/ --out-dir dist --ignore src/**/*.spec.js --config-file ../../babel.config.js",
     "cover": "nyc npm run test",
     "lint": "eslint src --ignore-path ../../.eslintignore",
     "test": "cd ../../ && mocha --opts mocha.opts 'packages/dependency-injection/src/**/*.spec.js' && cd ./packages/dependency-injection",

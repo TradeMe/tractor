@@ -25,7 +25,7 @@
     "bundle:client": "webpack --config webpack.config.js",
     "bundle:server": "webpack --config webpack.server.config.js",
     "clean": "rimraf dist",
-    "compile": "babel src/ --out-dir dist/ --ignore *.spec.js,src/tractor/server/scripts,src/tractor/client --config-file ../../babel.config.js",
+    "compile": "babel src/ --out-dir dist/ --ignore src/**/*.spec.js,src/tractor/server/scripts,src/tractor/client --config-file ../../babel.config.js",
     "cover": "nyc npm run test",
     "lint": "eslint src --ignore-path ../../.eslintignore",
     "test": "cd ../../ && mocha --opts mocha.opts 'plugins/mock-requests/src/**/*.spec.js' && cd ./plugins/mock-requests",
