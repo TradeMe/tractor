@@ -27,10 +27,6 @@
 		"build": "yarn && yarn clean && lerna run clean && lerna run compile && lerna run lint && lerna run bundle && npm run cover",
 		"cover": "nyc npm run test",
 		"test": "mocha --opts mocha.opts '+(packages|plugins)/**/src/**/*.spec.js'",
-		"pretest:e2e": "npm run webdriver",
-		"test:e2e": "protractor ./tractor/protractor.conf.js --baseUrl=\"http://localhost:4444\"",
-		"tractor": "tractor start",
-		"tractor:init": "tractor init",
 		"webdriver": "webdriver-manager update && tractor patch",
 		"postinstall": "npm run webdriver"
 	},
