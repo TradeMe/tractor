@@ -1,7 +1,12 @@
 module.exports = {
-    port: 4321,
+    port: 4601,
     environments: [
-        'http://localhost:4321'
+        'http://localhost:4601'
+    ],
+    plugins: [
+        'browser',
+        'mocha-specs',
+        'page-objects'
     ],
     mochaSpecs: {
         directory: './test'

@@ -2,8 +2,8 @@
 describe('Actions', function () {
     it('add Action', function () {
         var TractorPageObjects = require('./tractor-page-objects.po.js'), tractorPageObjects = new TractorPageObjects();
-        var Tractor = require('../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
-        var ControlPanel = require('../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
+        var Tractor = require('../../../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
+        var ControlPanel = require('../../../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
         var step = Promise.resolve();
         step = step.then(function () {
             var element;
@@ -69,8 +69,8 @@ describe('Actions', function () {
     });
     it('add Action on element', function () {
         var TractorPageObjects = require('./tractor-page-objects.po.js'), tractorPageObjects = new TractorPageObjects();
-        var Tractor = require('../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
-        var ControlPanel = require('../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
+        var Tractor = require('../../../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
+        var ControlPanel = require('../../../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
         var step = Promise.resolve();
         step = step.then(function () {
             var element;
@@ -160,8 +160,8 @@ describe('Actions', function () {
     });
     it('Invalid name - required', function () {
         var TractorPageObjects = require('./tractor-page-objects.po.js'), tractorPageObjects = new TractorPageObjects();
-        var Tractor = require('../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
-        var ControlPanel = require('../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
+        var Tractor = require('../../../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
+        var ControlPanel = require('../../../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
         var step = Promise.resolve();
         step = step.then(function () {
             var element;
@@ -198,8 +198,8 @@ describe('Actions', function () {
     });
     it('Invalid name - valid identifier', function () {
         var TractorPageObjects = require('./tractor-page-objects.po.js'), tractorPageObjects = new TractorPageObjects();
-        var Tractor = require('../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
-        var ControlPanel = require('../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
+        var Tractor = require('../../../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
+        var ControlPanel = require('../../../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
         var step = Promise.resolve();
         step = step.then(function () {
             var element;
@@ -236,8 +236,8 @@ describe('Actions', function () {
     });
     it('Invalid name - unique', function () {
         var TractorPageObjects = require('./tractor-page-objects.po.js'), tractorPageObjects = new TractorPageObjects();
-        var Tractor = require('../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
-        var ControlPanel = require('../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
+        var Tractor = require('../../../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
+        var ControlPanel = require('../../../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
         var step = Promise.resolve();
         step = step.then(function () {
             var element;
@@ -279,8 +279,8 @@ describe('Actions', function () {
     });
     it('Invalid Parameter name - required', function () {
         var TractorPageObjects = require('./tractor-page-objects.po.js'), tractorPageObjects = new TractorPageObjects();
-        var Tractor = require('../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
-        var ControlPanel = require('../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
+        var Tractor = require('../../../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
+        var ControlPanel = require('../../../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
         var step = Promise.resolve();
         step = step.then(function () {
             var element;
@@ -324,8 +324,8 @@ describe('Actions', function () {
     });
     it('Invalid Parameter name - valid identifier', function () {
         var TractorPageObjects = require('./tractor-page-objects.po.js'), tractorPageObjects = new TractorPageObjects();
-        var Tractor = require('../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
-        var ControlPanel = require('../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
+        var Tractor = require('../../../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
+        var ControlPanel = require('../../../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
         var step = Promise.resolve();
         step = step.then(function () {
             var element;
@@ -369,8 +369,8 @@ describe('Actions', function () {
     });
     it('Invalid Parameter name - unique', function () {
         var TractorPageObjects = require('./tractor-page-objects.po.js'), tractorPageObjects = new TractorPageObjects();
-        var Tractor = require('../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
-        var ControlPanel = require('../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
+        var Tractor = require('../../../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
+        var ControlPanel = require('../../../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
         var step = Promise.resolve();
         step = step.then(function () {
             var element;
@@ -420,8 +420,8 @@ describe('Actions', function () {
     });
     it('Invalid Interaction Argument - required', function () {
         var TractorPageObjects = require('./tractor-page-objects.po.js'), tractorPageObjects = new TractorPageObjects();
-        var Tractor = require('../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
-        var ControlPanel = require('../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
+        var Tractor = require('../../../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
+        var ControlPanel = require('../../../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
         var step = Promise.resolve();
         step = step.then(function () {
             var element;
