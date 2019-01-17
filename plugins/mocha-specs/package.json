@@ -24,7 +24,7 @@
     "prepublishOnly": "npm run build",
     "build": "npm run clean && npm run lint && npm run compile && npm run cover && npm run bundle",
     "bundle": "webpack --config webpack.config.js",
-    "clean": "rimraf dist",
+    "clean": "rimraf dist && rimraf reports",
     "compile": "babel src/ --out-dir dist/ --ignore src/**/*.spec.js,src/tractor/client --config-file ../../babel.config.js",
     "cover": "nyc npm run test",
     "lint": "eslint src --ignore-path ../../.eslintignore",
