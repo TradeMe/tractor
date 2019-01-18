@@ -27,7 +27,7 @@
 		"build": "yarn && yarn clean && lerna run clean && lerna run compile && lerna run lint && lerna run bundle && npm run cover && lerna run test:e2e:ci",
 		"cover": "nyc npm run test",
 		"test": "mocha --opts mocha.opts '+(packages|plugins)/**/src/**/*.spec.js'",
-		"webdriver": "webdriver-manager update --gecko=false && tractor patch",
+		"webdriver": "webdriver-manager update --gecko=false",
 		"postinstall": "npm run webdriver"
 	},
 	"devDependencies": {
