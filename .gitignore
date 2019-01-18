@@ -1,4 +1,4 @@
-dist
+/dist
 /node_modules
 reports
 npm-debug.log
@@ -8,9 +8,11 @@ lerna-debug.log
 .vscode
 .DS_Store
 packages/*/node_modules
+packages/*/dist
 packages/**/etc
 packages/**/*.tgz
 plugins/*/node_modules
+plugins/*/dist
 plugins/**/etc
 plugins/**/*.tgz
 package.json.lerna_backup
