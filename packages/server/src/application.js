@@ -1,5 +1,4 @@
 // Dependencies:
-import { TractorError } from '@tractor/error-handler';
 import { info } from '@tractor/logger';
 import bodyParser from 'body-parser';
 import cors from 'cors';
@@ -21,10 +20,21 @@ import { socketHandler } from './sockets/connect';
 const PARAMETER_LIMIT = 50000;
 const UPLOAD_SIZE_LIMIT = '50mb';
 
+// Errors:
+import { TractorError } from '@tractor/error-handler';
+
 let server;
 
 export async function start (config, di, plugins) {
-    await Promise.all(plugins.map(plugin => di.call(plugin.run)));
+    try {
+        await Promise.all(plugins.map(plugin => di.call(plugin.run)));
+    } catch (e) {
+        /* eslint-disable no-console */
+        console.error(e);
+        /* eslint-enable no-console */
+        throw new TractorError('Could not run plugin.');
+    }
+
     let tractor = server.listen(config.port, () => {
         const link = terminalLink('tractor', `http://localhost:${tractor.address().port}`, {
             fallback: (_, url) => url
@@ -61,6 +71,9 @@ export async function init (di, plugins) {
         templatePath = require.resolve('@tractor/ui');
         dir = path.dirname(templatePath);
     } catch (e) {
+        /* eslint-disable no-console */
+        console.error(e);
+        /* eslint-enable no-console */
         throw new TractorError('"@tractor/ui" is not installed.');
     }
 
@@ -78,7 +91,14 @@ export async function init (di, plugins) {
 
     sockets.of('/server-status');
 
-    await Promise.all(plugins.map(plugin => di.call(plugin.serve)));
+    try {
+        await Promise.all(plugins.map(plugin => di.call(plugin.serve)));
+    } catch (e) {
+        /* eslint-disable no-console */
+        console.error(e);
+        /* eslint-enable no-console */
+        throw new TractorError('Could not serve plugin.');
+    }
 
     // Always make sure the '*' handler happens last:
     application.get('*', renderIndex);
