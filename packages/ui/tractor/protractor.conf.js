@@ -7,5 +7,8 @@ exports.config = tractor('../tractor.conf.js').plugin({
     browserName: 'chrome'
   },
   directConnect: true,
+  mochaOpts: {
+      timeout: 30000
+  },
   SELENIUM_PROMISE_MANAGER: false
 });
