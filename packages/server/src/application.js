@@ -9,6 +9,7 @@ import http from 'http';
 import template from 'lodash.template';
 import path from 'path';
 import io from 'socket.io';
+import terminalLink from 'terminal-link';
 
 // Endpoints:
 import { getConfigHandler } from './api/get-config';
@@ -25,7 +26,10 @@ let server;
 export async function start (config, di, plugins) {
     await Promise.all(plugins.map(plugin => di.call(plugin.run)));
     let tractor = server.listen(config.port, () => {
-        info(`tractor is running at port ${tractor.address().port}`);
+        const link = terminalLink('tractor', `http://localhost:${tractor.address().port}`, {
+            fallback: (_, url) => url
+        });
+        info(`tractor is running at ${link}`);
     });
 }
 start['@Inject'] = ['config', 'di', 'plugins'];
