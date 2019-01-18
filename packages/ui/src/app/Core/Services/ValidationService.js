@@ -4,7 +4,7 @@
 var Core = require('../Core');
 
 // Dependencies:
-var isValidIdentifier = require('is-valid-identifier')
+var isValidVariableName = require('is-valid-var-name')
 
 var ValidationService = function () {
     return {
@@ -12,7 +12,7 @@ var ValidationService = function () {
     };
 
     function validateVariableName (variableName) {
-        return isValidIdentifier(variableName) ? variableName : false;
+        return isValidVariableName(variableName) ? variableName : false;
     }
 };
 

@@ -59,7 +59,7 @@
     "gulp-notify": "2.2.0",
     "gulp-ruby-sass": "2.0.5",
     "gulp-sourcemaps": "1.6.0",
-    "is-valid-identifier": "2.0.0",
+    "is-valid-var-name": "1.0.2",
     "lodash": "3.10.1",
     "ng-sortable": "1.2.2",
     "normalize.css": "3.0.3",

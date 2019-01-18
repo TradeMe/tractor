@@ -1939,7 +1939,7 @@ assert-plus@1.0.0, assert-plus@^1.0.0:
   resolved "https://registry.yarnpkg.com/assert-plus/-/assert-plus-1.0.0.tgz#f12e0f3c5d77b0b1cdd9146942e4e96c1e4dd525"
   integrity sha1-8S4PPF13sLHN2RRpQuTpbB5N1SU=
 
-assert@^1.1.1, assert@^1.4.1:
+assert@^1.1.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/assert/-/assert-1.4.1.tgz#99912d591836b5a6f5b345c0f07eefc08fc65d91"
   integrity sha1-mZEtWRg2tab1s0XA8H7vwI/GXZE=
@@ -6945,12 +6945,12 @@ is-utf8@^0.2.0:
   resolved "https://registry.yarnpkg.com/is-utf8/-/is-utf8-0.2.1.tgz#4b0da1442104d1b336340e80797e865cf39f7d72"
   integrity sha1-Sw2hRCEE0bM2NA6AeX6GXPOffXI=
 
-is-valid-identifier@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/is-valid-identifier/-/is-valid-identifier-2.0.0.tgz#605bdcfaef020a3dc7be905ae2b6a3b49886c8e3"
-  integrity sha1-YFvc+u8CCj3HvpBa4rajtJiGyOM=
+is-valid-var-name@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/is-valid-var-name/-/is-valid-var-name-1.0.2.tgz#a302adc01ba5083695c21ec8a4157280e734c405"
+  integrity sha1-owKtwBulCDaVwh7IpBVygOc0xAU=
   dependencies:
-    assert "^1.4.1"
+    unicode-categories "^0.9.1"
 
 is-windows@^1.0.1, is-windows@^1.0.2:
   version "1.0.2"
@@ -11918,6 +11918,14 @@ term-size@^1.2.0:
   dependencies:
     execa "^0.7.0"
 
+terminal-link@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/terminal-link/-/terminal-link-1.2.0.tgz#ed1ac495da75a8c3eadc8a5db985226e451edffd"
+  integrity sha512-nkM6NjuohxfZGA/jkAnM1zl2qjhdm8vZTG0Q36t+5O6msGwZ/ieJW+XxbIlLpUBQEUeGswg4XiB/QhcEVI23Rg==
+  dependencies:
+    ansi-escapes "^3.1.0"
+    supports-hyperlinks "^1.0.1"
+
 ternary@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/ternary/-/ternary-1.0.0.tgz#45702725608c9499d46a9610e9b0e49ff26f789e"
@@ -12329,6 +12337,11 @@ unicode-canonical-property-names-ecmascript@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/unicode-canonical-property-names-ecmascript/-/unicode-canonical-property-names-ecmascript-1.0.4.tgz#2619800c4c825800efdd8343af7dd9933cbe2818"
   integrity sha512-jDrNnXWHd4oHiTZnx/ZG7gtUTVp+gCcTTKr8L0HjlwphROEW3+Him+IpvC+xcJEFegapiMZyZe02CyuOnRmbnQ==
+
+unicode-categories@^0.9.1:
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/unicode-categories/-/unicode-categories-0.9.1.tgz#ead892c07ebc108f2dcea0d4326ffb850969c9c8"
+  integrity sha1-6tiSwH68EI8tzqDUMm/7hQlpycg=
 
 unicode-match-property-ecmascript@^1.0.4:
   version "1.0.4"
