@@ -322,7 +322,7 @@ describe('@tractor/file-structure - File:', () => {
             sinon.stub(File.prototype, 'save').resolves();
 
             let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
-            let buffer = new Buffer('data');
+            let buffer = Buffer.from('data');
             file.buffer = buffer;
 
             await file.move({
@@ -559,7 +559,7 @@ describe('@tractor/file-structure - File:', () => {
         it('should read the file', async () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
-            sinon.stub(fs, 'readFileAsync').resolves(new Buffer('content'));
+            sinon.stub(fs, 'readFileAsync').resolves(Buffer.from('content'));
 
             let file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
@@ -567,7 +567,7 @@ describe('@tractor/file-structure - File:', () => {
 
             expect(fs.readFileAsync).to.have.been.calledWith(path.join(path.sep, 'file-structure', 'directory', 'file.ext'));
             expect(file.content).to.equal('content');
-            expect(file.buffer.equals(new Buffer('content'))).to.equal(true);
+            expect(file.buffer.equals(Buffer.from('content'))).to.equal(true);
 
             fs.readFileAsync.restore();
         });
@@ -602,7 +602,7 @@ describe('@tractor/file-structure - File:', () => {
 
             expect(fs.writeFileAsync).to.have.been.calledWith(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), 'content');
             expect(file.content).to.equal('content');
-            expect(file.buffer.equals(new Buffer('content'))).to.equal(true);
+            expect(file.buffer.equals(Buffer.from('content'))).to.equal(true);
 
             fs.mkdirAsync.restore();
             fs.writeFileAsync.restore();

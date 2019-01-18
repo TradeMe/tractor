@@ -147,7 +147,7 @@ export class File {
         await this.directory.save();
         try {
             await fs.writeFileAsync(this.path, data);
-            setData.call(this, new Buffer(data));
+            setData.call(this, Buffer.from(data));
             return this.content;
         } catch {
             throw new TractorError(`Cannot save ${this.path}. Something went wrong.`);
