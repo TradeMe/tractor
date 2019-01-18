@@ -11,6 +11,9 @@ addons:
       - google-chrome-stable
   code_climate:
     repo_token: 8d10d6cde56517aeddfa424ac22bd46d319dc75a86570077a690a2f6ef51f92f
+before_install:
+  - gem install sass
+  - gem install compass
 install:
   - yarn
 before_script:
