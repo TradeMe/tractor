@@ -34,6 +34,7 @@
     "test:e2e:debug": "node --inspect-brk ../../node_modules/.bin/protractor ./tractor/protractor.conf.js --baseUrl=\"http://localhost:4601\"",
     "tractor": "tractor start",
     "tractor:init": "tractor init",
+    "pretractor:test": "rimraf test && mkdir test",
     "tractor:test": "tractor start --config=\"./test.tractor.conf.js\"",
     "watch": "npm-watch"
   },
