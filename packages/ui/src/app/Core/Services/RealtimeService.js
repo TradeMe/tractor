@@ -10,7 +10,8 @@ var socket = require('socket.io-client');
 var Core = require('../Core');
 
 var RealTimeService = function RealTimeService (
-    config
+    config,
+    $rootScope
 ) {
     return {
         connect: connect
@@ -22,7 +23,10 @@ var RealTimeService = function RealTimeService (
             forceNew: true
         });
         _.each(events, function (handler, event) {
-            connection.on(event, handler);
+            connection.on(event, function () {
+                handler.apply(this, arguments);
+                $rootScope.$apply();
+            });
         });
         return connection;
     }
