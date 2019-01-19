@@ -26,19 +26,19 @@ export function plugin (protractorConfig) {
     protractorConfig.mochaOpts = protractorConfig.mochaOpts || {};
     let { mochaOpts } = protractorConfig;
 
-    if (!mochaOpts.reporter) {
-        const { capabilities, multiCapabilities } = protractorConfig;
-        const isSharded = capabilities && capabilities.shardTestFiles;
-        const isMultiSharded = multiCapabilities && multiCapabilities.some(capability => capability.shardTestFiles);
-        mochaOpts.reporter = isSharded || isMultiSharded ? DEFAULT_PARALLEL_REPORTER : DEFAULT_SERIAL_REPORTER;
-    }
-    if (mochaOpts.reporter === DEFAULT_SERIAL_REPORTER) {
-        mochaOpts.reporterOptions = {
-            autoOpen: true,
-            reportDir: tractorConfig.mochaSpecs.reportsDirectory,
-            ...mochaOpts.reporterOptions
-        };
-    }
+    // if (!mochaOpts.reporter) {
+    //     const { capabilities, multiCapabilities } = protractorConfig;
+    //     const isSharded = capabilities && capabilities.shardTestFiles;
+    //     const isMultiSharded = multiCapabilities && multiCapabilities.some(capability => capability.shardTestFiles);
+    //     mochaOpts.reporter = isSharded || isMultiSharded ? DEFAULT_PARALLEL_REPORTER : DEFAULT_SERIAL_REPORTER;
+    // }
+    // if (mochaOpts.reporter === DEFAULT_SERIAL_REPORTER) {
+    //     mochaOpts.reporterOptions = {
+    //         autoOpen: true,
+    //         reportDir: tractorConfig.mochaSpecs.reportsDirectory,
+    //         ...mochaOpts.reporterOptions
+    //     };
+    // }
 
     let args = optimist.parse(process.argv.slice(2));
     let params = args && args.params || {};
