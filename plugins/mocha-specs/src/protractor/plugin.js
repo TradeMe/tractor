@@ -7,8 +7,8 @@ import { setTags } from './tags';
 import { world } from './world';
 
 // Constants:
-const DEFAULT_SERIAL_REPORTER = 'mochawesome';
-const DEFAULT_PARALLEL_REPORTER = 'spec';
+// const DEFAULT_SERIAL_REPORTER = 'mochawesome';
+// const DEFAULT_PARALLEL_REPORTER = 'spec';
 const HOOKS_FILE_PATH = path.resolve(__dirname, './hooks.js');
 
 export function plugin (protractorConfig) {
