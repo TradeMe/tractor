@@ -24,7 +24,7 @@
 		"clean:etc": "rimraf './+(packages|plugins)/*/etc'",
 		"clean:node_modules": "rimraf './+(packages|plugins)/*/node_modules' && rimraf node_modules",
 		"clean:reports": "rimraf reports",
-		"build": "yarn && yarn clean && lerna run clean && lerna run compile && lerna run lint && lerna run bundle && npm run cover && lerna run test:e2e:ci --scope=\"@tractor-plugins/screen-size\" --stream",
+		"build": "yarn && yarn clean && lerna run clean && lerna run compile && lerna run lint && lerna run bundle && npm run cover && lerna run test:e2e:ci --stream",
 		"cover": "nyc npm run test",
 		"test": "mocha --opts mocha.opts '+(packages|plugins)/**/src/**/*.spec.js'",
 		"webdriver": "webdriver-manager update --gecko=false",
