@@ -1,6 +1,6 @@
 {
   "name": "@tractor-plugins/visual-regression",
-  "version": "0.3.1",
+  "version": "1.0.0",
   "description": "tractor plugin for visual regression testing",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -21,7 +21,6 @@
     "README.md"
   ],
   "scripts": {
-    "prepublishOnly": "npm run build",
     "build": "npm run clean && npm run lint && npm run compile && npm run cover && npm run bundle",
     "bundle": "webpack --config webpack.config.js",
     "clean": "rimraf dist",
@@ -40,6 +39,6 @@
     "pngjs": "^3.3.3"
   },
   "peerDependencies": {
-    "@tractor/core": "^1.0.1-beta.10"
+    "@tractor/core": "^1.0.0"
   }
 }

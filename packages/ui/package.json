@@ -1,6 +1,6 @@
 {
   "name": "@tractor/ui",
-  "version": "1.0.1-beta.10",
+  "version": "1.0.0",
   "description": "UI for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -17,7 +17,6 @@
   },
   "main": "dist/app/index.html",
   "scripts": {
-    "prepublishOnly": "npm run build",
     "build": "npm run clean && npm run bundle",
     "bundle": "gulp build",
     "clean": "rimraf dist && rimraf reports",
@@ -32,7 +31,7 @@
     "build": "src/**/*.js"
   },
   "peerDependencies": {
-    "@tractor/core": "^1.0.1-beta.10"
+    "@tractor/core": "^1.0.0"
   },
   "devDependencies": {
     "@uirouter/angularjs": "1.0.3",

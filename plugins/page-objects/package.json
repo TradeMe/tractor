@@ -1,6 +1,6 @@
 {
   "name": "@tractor-plugins/page-objects",
-  "version": "0.7.2",
+  "version": "1.0.0",
   "description": "tractor plugin for manipulating Page Objects",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -21,7 +21,6 @@
     "README.md"
   ],
   "scripts": {
-    "prepublishOnly": "npm run build",
     "build": "npm run clean && npm run lint && npm run compile && npm run cover && npm run bundle",
     "bundle": "webpack --config webpack.config.js",
     "clean": "rimraf dist && rimraf reports",
@@ -42,12 +41,12 @@
     "build": "src/**/*.js"
   },
   "dependencies": {
-    "@tractor-plugins/browser": "^0.2.5",
+    "@tractor-plugins/browser": "^1.0.0",
     "esprima": "^4.0.1",
     "esquery": "^1.0.1",
     "pascal-case": "^2.0.1"
   },
   "peerDependencies": {
-    "@tractor/core": "^1.0.1-beta.10"
+    "@tractor/core": "^1.0.0"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@tractor-plugins/mocha-specs",
-  "version": "0.2.5",
+  "version": "1.0.0",
   "description": "tractor plugin for creating tests with Mocha",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -21,7 +21,6 @@
     "README.md"
   ],
   "scripts": {
-    "prepublishOnly": "npm run build",
     "build": "npm run clean && npm run lint && npm run compile && npm run cover && npm run bundle",
     "bundle": "webpack --config webpack.config.js",
     "clean": "rimraf dist && rimraf reports",
@@ -54,7 +53,7 @@
     "pascal-case": "^2.0.1"
   },
   "peerDependencies": {
-    "@tractor/core": "^1.0.1-beta.10",
-    "@tractor-plugins/page-objects": "^0.7.1"
+    "@tractor/core": "^1.0.0",
+    "@tractor-plugins/page-objects": "^1.0.0"
   }
 }

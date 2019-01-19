@@ -1,6 +1,6 @@
 {
   "name": "@tractor-plugins/browser",
-  "version": "0.2.5",
+  "version": "1.0.0",
   "description": "tractor plugin wrapping the Protractor `browser` object",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -21,7 +21,6 @@
     "README.md"
   ],
   "scripts": {
-    "prepublishOnly": "npm run build",
     "build": "npm run clean && npm run lint && npm run compile && npm run cover",
     "clean": "rimraf dist",
     "compile": "babel src/ --out-dir dist --ignore src/**/*.spec.js --config-file ../../babel.config.js",
@@ -34,6 +33,6 @@
     "build": "src/**/*.js"
   },
   "peerDependencies": {
-    "@tractor/core": "^1.0.1-beta.10"
+    "@tractor/core": "^1.0.0"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@tractor/cli",
-  "version": "1.0.1-beta.10",
+  "version": "1.0.0",
   "description": "CLI for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -23,7 +23,6 @@
     "dist"
   ],
   "scripts": {
-    "prepublishOnly": "npm run build",
     "build": "npm run clean && npm run lint && npm run compile && npm run cover",
     "clean": "rimraf dist",
     "compile": "babel src/ --out-dir dist --ignore src/**/*.spec.js --config-file ../../babel.config.js",
@@ -36,7 +35,7 @@
     "build": "src/**/*.js"
   },
   "dependencies": {
-    "@tractor/core": "^1.0.1-beta.10",
+    "@tractor/core": "^1.0.0",
     "@babel/polyfill": "^7.0.0",
     "bluebird": "^3.5.1",
     "commander": "^2.13.0",
