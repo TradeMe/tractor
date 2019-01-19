@@ -1,6 +1,6 @@
 {
   "name": "@tractor/cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "CLI for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -35,8 +35,8 @@
     "build": "src/**/*.js"
   },
   "dependencies": {
-    "@tractor/core": "^1.0.0",
     "@babel/polyfill": "^7.0.0",
+    "@tractor/core": "^1.0.1",
     "bluebird": "^3.5.1",
     "commander": "^2.13.0",
     "protractor": "^5.3.0"

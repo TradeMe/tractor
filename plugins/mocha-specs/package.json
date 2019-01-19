@@ -1,6 +1,6 @@
 {
   "name": "@tractor-plugins/mocha-specs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "tractor plugin for creating tests with Mocha",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -53,7 +53,7 @@
     "pascal-case": "^2.0.1"
   },
   "peerDependencies": {
-    "@tractor/core": "^1.0.0",
-    "@tractor-plugins/page-objects": "^1.0.0"
+    "@tractor-plugins/page-objects": "^1.0.0",
+    "@tractor/core": "^1.0.0"
   }
 }

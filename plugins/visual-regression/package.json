@@ -1,6 +1,6 @@
 {
   "name": "@tractor-plugins/visual-regression",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "tractor plugin for visual regression testing",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
