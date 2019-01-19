@@ -11,7 +11,7 @@ describe('Screen Size', function () {
         step = step.then(function () {
             var element;
             element = screenSize;
-            return expect(element.getWidth()).to.eventually.equal(456);
+            return expect(element.getWidth()).to.eventually.equal(576);
         });
         return step;
     });
