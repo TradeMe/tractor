@@ -2,14 +2,15 @@
 import path from 'path';
 import { FileStructure } from '@tractor/file-structure';
 import { checkDiff } from '../differ/check-diff';
-import { createIgnoredArea, createIncludedArea, updateAreas } from '../image-areas/image-areas';
+import { createIgnoredElement, createIncludedElement, excludeElements, validateElements } from './elements';
 import { DiffPNGFile } from '../files/diff-png-file';
 import { PNGFile } from '../files/png-file';
 import { getBaselinePath, getChangesPath, getVisualRegressionPath } from '../utilities';
 
 // Constants:
 const GET_PIXEL_RATIO = 'return window.devicePixelRatio';
-const SCROLL_TO_TOP = 'return document.body.scrollIntoView()';
+const GET_WINDOW_SCROLL = 'return { y: window.scrollY || window.pageYOffset || 0, x: window.scrollX || window.pageXOffSet || 0 };';
+const SCROLL_TO_ELEMENT = 'return arguments[0].scrollIntoView();';
 let fileStructure;
 
 export class VisualRegression {
@@ -19,42 +20,49 @@ export class VisualRegression {
     ) {
         this.browser = browser;
         this.config = config;
-        this.areas = [];
+        this.elements = [];
     }
 
     async ignoreElement (element) {
-        let { left, top, right, bottom } = await this._getElementSize(element);
-        this.areas.push(createIgnoredArea(left, top, right, bottom));
+        this.elements.push(createIgnoredElement(element));
     }
 
     async includeElement (element) {
-        let { left, top, right, bottom } = await this._getElementSize(element);
-        this.areas.push(createIncludedArea(left, top, right, bottom));
+        this.elements.push(createIncludedElement(element));
+    }
+
+    async takeScreenshotOfElement (element, name, description) {
+        await this.includeElement(element);
+        return this.takeScreenshot(name, description);
     }
 
     async takeScreenshot (name, description) {
-        let pixelRatio = await this.browser.executeScript(GET_PIXEL_RATIO);
-        let capabilities = await this.browser.getCapabilities();
-        let platform = capabilities.get('platform');
-        let browser = capabilities.get('browserName');
+        const pixelRatio = await this.browser.executeScript(GET_PIXEL_RATIO);
+        const capabilities = await this.browser.getCapabilities();
+        const platform = capabilities.get('platform');
+        const browser = capabilities.get('browserName');
 
-        let imageName = `${platform} - ${browser} @ ${pixelRatio}x`;
+        const imageName = `${platform} - ${browser} @ ${pixelRatio}x`;
 
-        let filePath = this._createFilePath(path.join(name, description, imageName));
-        let baselineFilePath = getBaselinePath(this.config, filePath);
-        let changesFilePath =  getChangesPath(this.config, filePath);
+        const filePath = this._createFilePath(path.join(name, description, imageName));
+        const baselineFilePath = getBaselinePath(this.config, filePath);
+        const changesFilePath =  getChangesPath(this.config, filePath);
 
-        let visualRegressionPath = getVisualRegressionPath(this.config);
+        const visualRegressionPath = getVisualRegressionPath(this.config);
         await this._createFileStructure(visualRegressionPath);
 
-        let hasBaseline = this._checkForBaseline(baselineFilePath);
-        let savePath = hasBaseline ? changesFilePath : baselineFilePath;
+        const hasBaseline = this._checkForBaseline(baselineFilePath);
+        const savePath = hasBaseline ? changesFilePath : baselineFilePath;
 
-        await this.browser.executeScript(SCROLL_TO_TOP);
+        const [element] = this.elements.filter(element => element.included).map(element => element.element);
+        await this.browser.executeScript(SCROLL_TO_ELEMENT, await element.getWebElement());
         await this.browser.sleep(1000);
 
-        let rawPngData = await this.browser.takeScreenshot();
-        await this._saveScreenshot(savePath, updateAreas(rawPngData, this.areas, pixelRatio));
+        validateElements(this.elements, this._getWindowSize());
+
+        const rawPngData = await this.browser.takeScreenshot();
+        const screenShot = await excludeElements(rawPngData, this.elements, await this._getWindowScroll(), pixelRatio);
+        await this._saveScreenshot(screenShot, savePath);
 
         let result = true;
         try {
@@ -65,7 +73,7 @@ export class VisualRegression {
             result = false;
             throw error;
         } finally {
-            this.areas = [];
+            this.elements = [];
         }
         return result;
     }
@@ -89,18 +97,16 @@ export class VisualRegression {
         return fileStructure;
     }
 
-    async _getElementSize (element) {
-        let location = await element.getLocation();
-        let left = location.x;
-        let top = location.y;
-        let size = await element.getSize();
-        let right = left + size.width;
-        let bottom = top + size.height;
-        return { left, top, right, bottom };
+    async _getWindowSize () {
+        return this.browser.driver.manage().window().getSize();
     }
 
-    _saveScreenshot (savePath, png) {
-        let pngFile = fileStructure.allFilesByPath[savePath] || new PNGFile(savePath, fileStructure);
+    async _getWindowScroll () {
+        return this.browser.executeScript(GET_WINDOW_SCROLL);
+    }
+
+    _saveScreenshot (png, savePath) {
+        const pngFile = fileStructure.allFilesByPath[savePath] || new PNGFile(savePath, fileStructure);
         return pngFile.save(png);
     }
 }
