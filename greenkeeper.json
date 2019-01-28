@@ -1,0 +1,26 @@
+{
+  "groups": {
+    "default": {
+      "packages": [
+        "package.json",
+        "packages/cli/package.json",
+        "packages/config-loader/package.json",
+        "packages/core/package.json",
+        "packages/dependency-injection/package.json",
+        "packages/error-handler/package.json",
+        "packages/file-javascript/package.json",
+        "packages/file-structure/package.json",
+        "packages/logger/package.json",
+        "packages/plugin-loader/package.json",
+        "packages/server/package.json",
+        "packages/ui/package.json",
+        "plugins/browser/package.json",
+        "plugins/mocha-specs/package.json",
+        "plugins/mock-requests/package.json",
+        "plugins/page-objects/package.json",
+        "plugins/screen-size/package.json",
+        "plugins/visual-regression/package.json"
+      ]
+    }
+  }
+}
