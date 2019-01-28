@@ -1,15 +1,16 @@
 version: "2"
 checks:
   file-lines:
-    exclude_patterns:
-    - "**/*.spec.js"
+    config:
+      threshold: 1000
+exclude_patterns:
+- "**/*.po.js"
+- "**/*.e2e-spec.js"
 plugins:
   duplication:
     enabled: true
     exclude_patterns:
     - "**/*.spec.js"
-    - "**/*.po.js"
-    - "**/*.e2e-spec.js"
     config:
       languages:
       - javascript
