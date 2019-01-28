@@ -7,5 +7,5 @@ exports.config = tractor().plugin({
     },
     directConnect: true,
     SELENIUM_PROMISE_MANAGER: false
-  });
+});
   

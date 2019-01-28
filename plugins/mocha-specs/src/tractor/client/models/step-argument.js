@@ -9,7 +9,7 @@ function createStepArgumentModelConstructor (
         constructor (argument) {
             this.name = argument.name;
 
-            // Don't think `argumnet.required` is ever set, but might be?
+            // Don't think `argument.required` is ever set, but might be?
             // Should default to true any way, unless we add optional args:
             this.required = argument.required != null ? argument.required : true;
             this.value = '';

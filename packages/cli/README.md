@@ -1,4 +1,4 @@
-# @tractor/core
+# @tractor/cli
 
 CLI for [**tractor**](https://github.com/TradeMe/tractor).
 
