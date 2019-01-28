@@ -6,17 +6,22 @@ import { description } from './description';
 
 describe('@tractor-plugins/visual-regression - description:', () => {
     it('should have the `ignoreElement` action', () => {
-        let ignoreElement = description.actions.find(action => action.name === 'ignore element');
+        const ignoreElement = description.actions.find(action => action.name === 'ignore element');
         expect(ignoreElement).to.not.be.undefined();
     });
 
     it('should have the `includeElement` action', () => {
-        let includeElement = description.actions.find(action => action.name === 'include element');
+        const includeElement = description.actions.find(action => action.name === 'include element');
         expect(includeElement).to.not.be.undefined();
     });
 
     it('should have the `takeScreenshot` action', () => {
-        let takeScreenshot = description.actions.find(action => action.name === 'take screenshot');
+        const takeScreenshot = description.actions.find(action => action.name === 'take screenshot');
         expect(takeScreenshot).to.not.be.undefined();
+    });
+
+    it('should have the `takeScreenshotOfElement` action', () => {
+        const takeScreenshotOfElement = description.actions.find(action => action.name === 'take screenshot of element');
+        expect(takeScreenshotOfElement).to.not.be.undefined();
     });
 });

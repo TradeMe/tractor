@@ -7,23 +7,24 @@ import { PNGFile } from '../files/png-file';
 import { getBaselinePath, getChangesPath, getDiffsPath } from '../utilities';
 
 export async function checkDiff (config, fileStructure, filePath) {
-    let baselinePath = getBaselinePath(config, filePath);
-    let changesPath = getChangesPath(config, filePath);
-    let diffsPath = replaceExtension(getDiffsPath(config, filePath));
+    const baselinePath = getBaselinePath(config, filePath);
+    const changesPath = getChangesPath(config, filePath);
+    const diffsPath = replaceExtension(getDiffsPath(config, filePath));
 
-    let baselinePNGFile = fileStructure.allFilesByPath[baselinePath];
-    let changesPNGFile = fileStructure.allFilesByPath[changesPath];
-    let diffPNGFile = fileStructure.allFilesByPath[diffsPath];
+    const baselinePNGFile = fileStructure.allFilesByPath[baselinePath];
+    const changesPNGFile = fileStructure.allFilesByPath[changesPath];
+    const diffPNGFile = fileStructure.allFilesByPath[diffsPath];
+
+    if (diffPNGFile){
+        await diffPNGFile.delete();
+    }
     
-    let baselinePNG = PNG.sync.read(baselinePNGFile.buffer);
-    let changesPNG = PNG.sync.read(changesPNGFile.buffer);
-    let { width, height } = baselinePNG;
-    let diffPNG = new PNG({ width, height });
+    const baselinePNG = PNG.sync.read(baselinePNGFile.buffer);
+    const changesPNG = PNG.sync.read(changesPNGFile.buffer);
+    const { width, height } = baselinePNG;
+    const diffPNG = new PNG({ width, height });
 
     if (baselinePNGFile.buffer.equals(changesPNGFile.buffer)) {
-        if (diffPNGFile) {
-            await diffPNGFile.delete();
-        }
         return;
     }
 
@@ -33,19 +34,18 @@ export async function checkDiff (config, fileStructure, filePath) {
         if (diffPixelCount === 0) {
             return;
         }
-
     } else {
         error = new TractorError(`New screenshot for ${filePath} is not the same size as baseline.`);    
     }
 
-    diffPNGFile = diffPNGFile || new DiffPNGFile(diffsPath, fileStructure);
-    await diffPNGFile.save(PNG.sync.write(diffPNG));
+    const newDiffPNGFile = new DiffPNGFile(diffsPath, fileStructure);
+    await newDiffPNGFile.save(PNG.sync.write(diffPNG));
     throw error;
 }
 
 function imagesAreSameSize (baselinePNG, changePNG) {
-    let sameWidth = baselinePNG.width === changePNG.width;
-    let sameHeight = baselinePNG.height === changePNG.height;
+    const sameWidth = baselinePNG.width === changePNG.width;
+    const sameHeight = baselinePNG.height === changePNG.height;
     return sameWidth && sameHeight;
 }
 
