@@ -32,6 +32,7 @@ export function plugin (protractorConfig) {
         const isMultiSharded = multiCapabilities && multiCapabilities.some(capability => capability.shardTestFiles);
         mochaOpts.reporter = isSharded || isMultiSharded ? DEFAULT_PARALLEL_REPORTER : DEFAULT_SERIAL_REPORTER;
     }
+
     if (mochaOpts.reporter === DEFAULT_SERIAL_REPORTER) {
         mochaOpts.reporterOptions = {
             autoOpen: true,
