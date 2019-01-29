@@ -57,7 +57,7 @@
 	},
 	"dependencies": {
 		"@babel/polyfill": "^7.0.0",
-		"@uirouter/angularjs": "1.0.3",
+		"@uirouter/angularjs": "1.0.22",
 		"angular": "1.6.6",
 		"angular-local-storage": "0.2.2",
 		"angular-messages": "1.6.6",
