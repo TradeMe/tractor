@@ -1,12 +1,11 @@
 // Utilities:
 import childProcess from 'child_process';
 import path from 'path';
-import which from 'npm-which';
 import { error, info } from '@tractor/logger';
 
 // Constants:
 const PROTRACTOR_CONFIG_FILE = 'protractor.conf.js';
-const PROTRACTOR_PATH = which(process.cwd()).sync('protractor');
+const PROTRACTOR_PATH = path.resolve(require.resolve('protractor'), '../../bin/protractor');
 const ENABLE_DEBUGGER = '--inspect-brk';
 const NODE_COMMAND = 'node';
 
