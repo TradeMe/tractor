@@ -118,7 +118,7 @@ describe('@tractor/file-structure - actions/save-item:', () => {
         let saveItem = createSaveItemHandler(fileStructure);
         await saveItem(request, response);
 
-        expect(file.save).to.not.have.been.called();
+        expect(file.save.callCount).to.equal(0);
         expect(TestFile.prototype.save).to.have.been.calledWith('data');
     });
 
@@ -165,7 +165,7 @@ describe('@tractor/file-structure - actions/save-item:', () => {
         let saveItem = createSaveItemHandler(fileStructure);
         await saveItem(request, response);
 
-        expect(Directory.prototype.save).to.have.been.called();
+        expect(Directory.prototype.save.callCount > 0).to.equal(true);
 
         Directory.prototype.save.restore();
     });
@@ -187,8 +187,8 @@ describe('@tractor/file-structure - actions/save-item:', () => {
         let saveItem = createSaveItemHandler(fileStructure);
         await saveItem(request, response);
 
-        expect(directory.save).to.not.have.been.called();
-        expect(Directory.prototype.save).to.have.been.called();
+        expect(directory.save.callCount).to.equal(0);
+        expect(Directory.prototype.save.callCount).to.equal(1);
 
         Directory.prototype.save.restore();
     });
@@ -211,7 +211,7 @@ describe('@tractor/file-structure - actions/save-item:', () => {
         let saveItem = createSaveItemHandler(fileStructure);
         await saveItem(request, response);
 
-        expect(Directory.prototype.save).to.have.been.called();
+        expect(Directory.prototype.save.callCount > 0).to.equal(true);
 
         Directory.prototype.save.restore();
     });

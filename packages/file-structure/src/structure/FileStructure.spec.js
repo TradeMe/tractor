@@ -95,7 +95,7 @@ describe('@tractor/file-structure - FileStructure:', () => {
             let fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
 
             await fileStructure.read();
-            expect(Directory.prototype.read).to.have.been.called();
+            expect(Directory.prototype.read.callCount > 0).to.equal(true);
 
             Directory.prototype.read.restore();
         });
@@ -110,7 +110,7 @@ describe('@tractor/file-structure - FileStructure:', () => {
 
             fileStructure.removeItem(file);
 
-            expect(fileStructure.allFilesByPath[path.join(path.sep, 'file-structure', 'file.extension')]).to.be.null();
+            expect(fileStructure.allFilesByPath[path.join(path.sep, 'file-structure', 'file.extension')]).to.equal(null);
         });
 
         it('should remove a directory from the fileStructure', () => {
@@ -121,7 +121,7 @@ describe('@tractor/file-structure - FileStructure:', () => {
 
             fileStructure.removeItem(directory);
 
-            expect(fileStructure.allDirectoriesByPath[path.join(path.sep, 'file-structure', 'directory')]).to.be.null();
+            expect(fileStructure.allDirectoriesByPath[path.join(path.sep, 'file-structure', 'directory')]).to.equal(null);
         });
     });
 
@@ -154,7 +154,7 @@ describe('@tractor/file-structure - FileStructure:', () => {
             eventEmitter.emit('all', null, file.path);
 
             watcher.on('change', () => {
-                expect(fileStructure.structure.read).to.have.been.called();
+                expect(fileStructure.structure.read.callCount > 0).to.equal(true);
 
                 chokidar.watch.restore();
                 tractorLogger.info.restore();
@@ -176,7 +176,7 @@ describe('@tractor/file-structure - FileStructure:', () => {
             eventEmitter.emit('all', null, fileStructure.path);
 
             watcher.on('change', () => {
-                expect(fileStructure.structure.read).to.have.been.called();
+                expect(fileStructure.structure.read.callCount > 0).to.equal(true);
 
                 chokidar.watch.restore();
                 tractorLogger.info.restore();

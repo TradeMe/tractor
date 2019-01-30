@@ -33,7 +33,7 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
         let deleteItem = createDeleteItemHandler(fileStructure);
         await deleteItem(request, response);
 
-        expect(File.prototype.delete).to.have.been.called();
+        expect(File.prototype.delete.callCount > 0).to.equal(true);
 
         File.prototype.delete.restore();
     });
@@ -55,7 +55,7 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
         let deleteItem = createDeleteItemHandler(fileStructure);
         await deleteItem(request, response);
 
-        expect(Directory.prototype.delete).to.have.been.called();
+        expect(Directory.prototype.delete.callCount > 0).to.equal(true);
 
         Directory.prototype.delete.restore();
     });
@@ -100,7 +100,7 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
         let deleteItem = createDeleteItemHandler(fileStructure);
         await deleteItem(request, response);
 
-        expect(Directory.prototype.rimraf).to.have.been.called();
+        expect(Directory.prototype.rimraf.callCount > 0).to.equal(true);
 
         Directory.prototype.rimraf.restore();
     });
@@ -147,7 +147,7 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
         let deleteItem = createDeleteItemHandler(fileStructure);
         await deleteItem(request, response);
 
-        expect(File.prototype.delete).to.have.been.called();
+        expect(File.prototype.delete.callCount > 0).to.equal(true);
 
         File.prototype.delete.restore();
     });
@@ -171,7 +171,7 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
         let deleteItem = createDeleteItemHandler(fileStructure);
         await deleteItem(request, response);
 
-        expect(File.prototype.cleanup).to.have.been.called();
+        expect(File.prototype.cleanup.callCount > 0).to.equal(true);
 
         File.prototype.cleanup.restore();
     });
@@ -195,7 +195,7 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
         let deleteItem = createDeleteItemHandler(fileStructure);
         await deleteItem(request, response);
 
-        expect(Directory.prototype.cleanup).to.have.been.called();
+        expect(Directory.prototype.cleanup.callCount > 0).to.equal(true);
 
         Directory.prototype.cleanup.restore();
     });
@@ -218,7 +218,7 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
         let deleteItem = createDeleteItemHandler(fileStructure);
         await deleteItem(request, response);
 
-        expect(File.prototype.delete).to.have.been.called();
+        expect(File.prototype.delete.callCount > 0).to.equal(true);
         expect(tractorErrorHandler.handleError).to.have.been.calledWith(response, error);
 
         File.prototype.delete.restore();

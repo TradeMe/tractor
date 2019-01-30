@@ -18,7 +18,7 @@ describe('@tractor-plugins/browser - keyboard-helpers:', () => {
             browser.sendDeleteKey();
 
             expect(actions.sendKeys).to.have.been.calledWith(DELETE);
-            expect(action.perform).to.have.been.called();
+            expect(action.perform.callCount > 0).to.equal(true);
         });
     });
 
@@ -35,7 +35,7 @@ describe('@tractor-plugins/browser - keyboard-helpers:', () => {
             browser.sendEnterKey();
 
             expect(actions.sendKeys).to.have.been.calledWith(ENTER);
-            expect(action.perform).to.have.been.called();
+            expect(action.perform.callCount > 0).to.equal(true);
         });
     });
 });

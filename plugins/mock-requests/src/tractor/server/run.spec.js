@@ -12,6 +12,6 @@ describe('@tractor-plugins/mock-requests - run:', () => {
 
         run(mockRequestsFileStructure);
 
-        expect(mockRequestsFileStructure.read).to.have.been.called();
+        expect(mockRequestsFileStructure.read.callCount > 0).to.equal(true);
     });
 });

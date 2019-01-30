@@ -20,7 +20,7 @@ describe('@tractor-plugins/browser - plugin:', () => {
 
         const [inlinePlugin] = config.plugins;
 
-        expect(inlinePlugin.inline.onPrepare).to.not.be.undefined();
+        expect(inlinePlugin.inline.onPrepare).to.not.equal(undefined);
     });
 
     it('should add keyboard helpers', () => {
@@ -34,7 +34,7 @@ describe('@tractor-plugins/browser - plugin:', () => {
         const [inlinePlugin] = config.plugins;
         inlinePlugin.inline.onPrepare();
 
-        expect(browser.sendDeleteKey).to.not.be.undefined();
-        expect(browser.sendEnterKey).to.not.be.undefined();
+        expect(browser.sendDeleteKey).to.not.equal(undefined);
+        expect(browser.sendEnterKey).to.not.equal(undefined);
     });
 });

@@ -18,7 +18,7 @@ describe('@tractor/server - sockets: connect:', () => {
         socketHandler(config)(socket);
         socket.emit('run');
 
-        expect(protractorRunner.run).to.have.been.called.with(config, socket);
+        expect(protractorRunner.run).to.have.been.calledWith(config, socket);
 
         protractorRunner.run.restore();
     });

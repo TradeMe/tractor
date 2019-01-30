@@ -41,7 +41,7 @@ describe('@tractor/error-handler: TractorError:', () => {
             let error = new TractorError();
             /* eslint-enable */
 
-            expect(Error.captureStackTrace).to.have.been.called();
+            expect(Error.captureStackTrace.callCount > 0).to.equal(true);
 
             Error.captureStackTrace.restore();
         });

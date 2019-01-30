@@ -26,7 +26,7 @@ describe('@tractor/file-structure - actions/watch-file-structure:', () => {
         watcher.emit('change');
         timers.tick(100);
 
-        expect(fileStructure.watch).to.have.been.called();
+        expect(fileStructure.watch.callCount > 0).to.equal(true);
         expect(watcher.on).to.have.been.calledWith('change');
         expect(sockets.emit).to.have.been.calledWith('file-structure-change');
 

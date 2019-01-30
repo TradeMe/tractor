@@ -193,7 +193,7 @@ describe('@tractor/server - sockets: protractor-runner:', () => {
 
         try {
             await running;
-            expect(socket.disconnect).to.have.been.calledOnce();
+            expect(socket.disconnect.callCount).to.equal(1);
         } finally {
             childProcess.spawn.restore();
             tractorLogger.info.restore();
@@ -231,7 +231,7 @@ describe('@tractor/server - sockets: protractor-runner:', () => {
 
         try {
             await running;
-            expect(tractorLogger.error).to.have.been.calledOnce();
+            expect(tractorLogger.error.callCount).to.equal(1);
         } finally {
             childProcess.spawn.restore();
             tractorLogger.error.restore();
@@ -270,7 +270,7 @@ describe('@tractor/server - sockets: protractor-runner:', () => {
 
         try {
             await running;
-            expect(tractorLogger.error).to.have.been.calledOnce();
+            expect(tractorLogger.error.callCount).to.equal(1);
         } finally {
             childProcess.spawn.restore();
             tractorLogger.error.restore();

@@ -74,7 +74,7 @@ describe('@tractor/dependency-injection - Container:', () => {
 
             container.call(wrap.test);
 
-            expect(wrap.test).to.have.been.called();
+            expect(wrap.test.callCount > 0).to.equal(true);
         });
 
         it('should append any extra given arguments', () => {

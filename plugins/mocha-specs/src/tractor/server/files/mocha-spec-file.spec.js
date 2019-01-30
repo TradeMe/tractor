@@ -109,7 +109,7 @@ describe('@tractor-plugins/mocha-spec - mocha-spec-file:', () => {
 
             await file.refactor('refactor');
 
-            expect(MochaSpecFile.prototype.save).to.have.been.called();
+            expect(MochaSpecFile.prototype.save.callCount > 0).to.equal(true);
 
             JavaScriptFile.prototype.refactor.restore();
             MochaSpecFile.prototype.save.restore();

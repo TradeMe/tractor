@@ -170,7 +170,7 @@ describe('@tractor-plugins/mocha-spec: mocha-spec-file-refactorer:', () => {
                 extension: '.js'
             });
 
-            expect(MochaSpecFile.prototype.refactor).to.not.have.been.called();
+            expect(MochaSpecFile.prototype.refactor.callCount).to.equal(0);
 
             MochaSpecFile.prototype.refactor.restore();
         });

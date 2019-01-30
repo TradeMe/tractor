@@ -29,7 +29,7 @@ describe('@tractor/file-structure - actions/open-item:', () => {
         let openItem = createOpenItemHandler(fileStructure);
         openItem(request, response);
 
-        expect(File.prototype.serialise).to.have.been.called();
+        expect(File.prototype.serialise.callCount > 0).to.equal(true);
         expect(response.send).to.have.been.calledWith(serialised);
 
         File.prototype.serialise.restore();
@@ -52,7 +52,7 @@ describe('@tractor/file-structure - actions/open-item:', () => {
         let openItem = createOpenItemHandler(fileStructure);
         openItem(request, response);
 
-        expect(Directory.prototype.serialise).to.have.been.called();
+        expect(Directory.prototype.serialise.callCount > 0).to.equal(true);
         expect(response.send).to.have.been.calledWith(serialised);
 
         Directory.prototype.serialise.restore();

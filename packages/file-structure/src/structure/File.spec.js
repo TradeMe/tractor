@@ -108,9 +108,9 @@ describe('@tractor/file-structure - File:', () => {
 
             let file = new File(path.join(path.sep, 'file-structure', 'parent-directory', 'directory', 'file.ext'), fileStructure);
 
-            expect(file.directory).to.not.be.undefined();
-            expect(fileStructure.allDirectoriesByPath[path.join(path.sep, 'file-structure', 'parent-directory')]).to.not.be.undefined();
-            expect(fileStructure.allDirectoriesByPath[path.join(path.sep, 'file-structure', 'parent-directory', 'directory')]).to.not.be.undefined();
+            expect(file.directory).to.not.equal(undefined);
+            expect(fileStructure.allDirectoriesByPath[path.join(path.sep, 'file-structure', 'parent-directory')]).to.not.equal(undefined);
+            expect(fileStructure.allDirectoriesByPath[path.join(path.sep, 'file-structure', 'parent-directory', 'directory')]).to.not.equal(undefined);
         });
 
         it('should throw an error if the File path is outside the root of the FileStructure', () => {
@@ -166,7 +166,7 @@ describe('@tractor/file-structure - File:', () => {
 
             await directory.cleanup();
 
-            expect(directory.delete).to.have.been.called();
+            expect(directory.delete.callCount > 0).to.equal(true);
         });
 
         it('should cleanup the parent directory', async () => {
@@ -178,7 +178,7 @@ describe('@tractor/file-structure - File:', () => {
 
             await file.cleanup();
 
-            expect(file.directory.cleanup).to.have.been.called();
+            expect(file.directory.cleanup.callCount > 0).to.equal(true);
         });
 
         it('should stop once it gets to a directory that is not empty', async () => {
@@ -194,10 +194,10 @@ describe('@tractor/file-structure - File:', () => {
 
             await file1.cleanup();
 
-            expect(file1.delete).to.have.been.called();
-            expect(fs.unlinkAsync).to.have.been.calledOnce();
-            expect(directory.delete).to.have.been.called();
-            expect(file2.delete).to.not.have.been.called();
+            expect(file1.delete.callCount).to.equal(1);
+            expect(fs.unlinkAsync.callCount).to.equal(1);
+            expect(directory.delete.callCount).to.equal(1);
+            expect(file2.delete.callCount).to.equal(0);
 
             fs.unlinkAsync.restore();
         });
@@ -247,7 +247,7 @@ describe('@tractor/file-structure - File:', () => {
 
             await file.delete();
 
-            expect(directory.removeItem).to.have.been.calledOnce();
+            expect(directory.removeItem.callCount).to.equal(1);
 
             fs.unlinkAsync.restore();
         });
@@ -269,7 +269,7 @@ describe('@tractor/file-structure - File:', () => {
                 expect(error).to.deep.equal(new TractorError(`Cannot delete ${path.join(path.sep, 'file-structure', 'directory', 'file.ext')} as it is referenced by another file.`));
             }
 
-            expect(directory.removeItem).to.not.have.been.called();
+            expect(directory.removeItem.callCount).to.equal(0);
 
             fs.unlinkAsync.restore();
         });
@@ -285,7 +285,7 @@ describe('@tractor/file-structure - File:', () => {
 
             await file.delete({ isMove: true });
 
-            expect(directory.removeItem).to.have.been.called();
+            expect(directory.removeItem.callCount > 0).to.equal(true);
 
             fs.unlinkAsync.restore();
         });
@@ -306,8 +306,8 @@ describe('@tractor/file-structure - File:', () => {
             });
 
             expect(File.prototype.constructor).to.have.been.calledWith(path.join(path.sep, 'file-structure', 'other-directory', 'file.ext'), fileStructure);
-            expect(File.prototype.save).to.have.been.called();
-            expect(File.prototype.delete).to.have.been.called();
+            expect(File.prototype.save.callCount > 0).to.equal(true);
+            expect(File.prototype.delete.callCount > 0).to.equal(true);
 
             File.prototype.constructor.restore();
             File.prototype.delete.restore();
@@ -354,8 +354,8 @@ describe('@tractor/file-structure - File:', () => {
             });
 
             expect(File.prototype.constructor).to.have.been.calledWith(path.join(path.sep, 'file-structure', 'other-directory', 'file.ext'), fileStructure);
-            expect(File.prototype.save).to.have.been.called();
-            expect(File.prototype.delete).to.not.have.been.called();
+            expect(File.prototype.save.callCount).to.equal(1);
+            expect(File.prototype.delete.callCount).to.equal(0);
 
             File.prototype.constructor.restore();
             File.prototype.delete.restore();
@@ -375,7 +375,7 @@ describe('@tractor/file-structure - File:', () => {
                 newPath: path.join(path.sep, 'file-structure', 'other-directory', 'renamed.ext')
             });
 
-            expect(file.clearReferences).to.have.been.called();
+            expect(file.clearReferences.callCount > 0).to.equal(true);
 
             File.prototype.constructor.restore();
             File.prototype.clearReferences.restore();
@@ -399,7 +399,7 @@ describe('@tractor/file-structure - File:', () => {
                 newPath: path.join(path.sep, 'file-structure', 'other-directory', 'renamed.ext')
             });
 
-            expect(reference.addReference).to.have.been.called();
+            expect(reference.addReference.callCount > 0).to.equal(true);
 
             File.prototype.constructor.restore();
             File.prototype.delete.restore();
@@ -422,7 +422,7 @@ describe('@tractor/file-structure - File:', () => {
                 isCopy: true
             });
 
-            expect(file.clearReferences).to.not.have.been.called();
+            expect(file.clearReferences.callCount).to.equal(0);
 
             File.prototype.constructor.restore();
             File.prototype.clearReferences.restore();
@@ -583,7 +583,7 @@ describe('@tractor/file-structure - File:', () => {
 
             await file.refactor();
 
-            expect(Promise.resolve).to.have.been.called();
+            expect(Promise.resolve.callCount > 0).to.equal(true);
 
             Promise.resolve.restore();
         });
@@ -618,7 +618,7 @@ describe('@tractor/file-structure - File:', () => {
 
             await file.save('content');
 
-            expect(Directory.prototype.save).to.have.been.called();
+            expect(Directory.prototype.save.callCount > 0).to.equal(true);
 
             Directory.prototype.save.restore();
             fs.writeFileAsync.restore();

@@ -46,7 +46,7 @@ describe('@tractor-plugins/visual-regression - serve:', () => {
 
         serve(application, config, di);
 
-        expect(di.constant).to.have.been.called();
+        expect(di.constant.callCount > 0).to.equal(true);
     });
 
     it('should add the DiffPNGFile type to the FileStructure', () => {

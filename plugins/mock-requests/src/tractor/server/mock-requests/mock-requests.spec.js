@@ -15,12 +15,12 @@ describe('@tractor-plugins/mock-requests - MockRequests:', () => {
 
             let mockRequest = new MockRequests(browser, config);
 
-            expect(mockRequest.whenDELETE).not.to.be.undefined();
-            expect(mockRequest.whenGET).not.to.be.undefined();
-            expect(mockRequest.whenHEAD).not.to.be.undefined();
-            expect(mockRequest.whenPATCH).not.to.be.undefined();
-            expect(mockRequest.whenPOST).not.to.be.undefined();
-            expect(mockRequest.whenPUT).not.to.be.undefined();
+            expect(mockRequest.whenDELETE).to.not.equal(undefined);
+            expect(mockRequest.whenGET).to.not.equal(undefined);
+            expect(mockRequest.whenHEAD).to.not.equal(undefined);
+            expect(mockRequest.whenPATCH).to.not.equal(undefined);
+            expect(mockRequest.whenPOST).to.not.equal(undefined);
+            expect(mockRequest.whenPUT).to.not.equal(undefined);
         });
 
         describe('`browser.get`:', () => {
@@ -57,7 +57,7 @@ describe('@tractor-plugins/mock-requests - MockRequests:', () => {
 
                 return browser.get('/')
                 .then(() => {
-                    expect(mockRequests.initialised).to.be.true();
+                    expect(mockRequests.initialised).to.equal(true);
                 });
             });
 

@@ -43,7 +43,7 @@ describe('@tractor-plugins/mocha-specs - serve:', () => {
 
         serve(config, di);
 
-        expect(di.constant).to.have.been.called();
+        expect(di.constant.callCount > 0).to.equal(true);
     });
 
     it('should add the MochaSpecFile type to the FileStructure', () => {

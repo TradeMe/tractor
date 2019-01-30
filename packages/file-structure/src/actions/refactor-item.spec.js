@@ -32,7 +32,7 @@ describe('@tractor/file-structure - actions/refactor-item:', () => {
         let refactorItem = createRefactorItemHandler(fileStructure);
         await refactorItem(request, response);
 
-        expect(File.prototype.refactor).to.have.been.called();
+        expect(File.prototype.refactor.callCount > 0).to.equal(true);
 
         File.prototype.refactor.restore();
     });
@@ -98,7 +98,7 @@ describe('@tractor/file-structure - actions/refactor-item:', () => {
         let refactorItem = createRefactorItemHandler(fileStructure);
         await refactorItem(request, response);
 
-        expect(File.prototype.refactor).to.have.been.called();
+        expect(File.prototype.refactor.callCount > 0).to.equal(true);
         expect(tractorErrorHandler.handleError).to.have.been.calledWith(response, error);
 
         File.prototype.refactor.restore();

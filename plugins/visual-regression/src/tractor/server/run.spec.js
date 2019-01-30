@@ -12,6 +12,6 @@ describe('@tractor-plugins/visual-regression - run:', () => {
 
         run(visualRegressionFileStructure);
 
-        expect(visualRegressionFileStructure.read).to.have.been.called();
+        expect(visualRegressionFileStructure.read.callCount > 0).to.equal(true);
     });
 });

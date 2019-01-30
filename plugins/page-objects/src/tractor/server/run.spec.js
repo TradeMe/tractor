@@ -15,8 +15,8 @@ describe('@tractor-plugins/page-objects - run:', () => {
 
         await run(pageObjectsFileStructure, includeFileStructures);
 
-        expect(includeFileStructure1.read).to.have.been.called();
-        expect(includeFileStructure2.read).to.have.been.called();
-        expect(pageObjectsFileStructure.read).to.have.been.called();
+        expect(includeFileStructure1.read.callCount > 0).to.equal(true);
+        expect(includeFileStructure2.read.callCount > 0).to.equal(true);
+        expect(pageObjectsFileStructure.read.callCount > 0).to.equal(true);
     });
 });

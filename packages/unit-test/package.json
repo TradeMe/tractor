@@ -16,28 +16,34 @@
     "email": "craigspence0@gmail.com"
   },
   "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
     "build": "npm run clean && npm run lint && npm run compile && npm run cover",
     "clean": "rimraf dist",
-    "compile": "babel src/ --out-dir dist --ignore src/**/*.spec.js --config-file ../../babel.config.js",
-    "cover": "nyc npm run test",
-    "lint": "eslint src --ignore-path ../../.eslintignore",
-    "test": "cd ../../ && mocha --opts mocha.opts 'packages/unit-test/src/**/*.spec.js' && cd ./packages/unit-test",
+    "compile": "tsc --project ./tsconfig.json",
+    "cover": "npm run test -- --collectCoverage",
+    "lint": "tslint --project ./tsconfig.json",
+    "test": "jest --testPathPattern=.*\/unit-test\/src.*.spec.ts --config=../../jest.config.js",
     "watch": "npm-watch"
   },
   "watch": {
-    "build": "src/**/*.js"
+    "build": "src/**/*.ts"
   },
   "dependencies": {
     "chai": "^4.2.0",
     "dedent": "^0.7.0",
-    "dirty-chai": "^2.0.1",
     "ineeda": "^0.11.1",
-    "sinon": "^4.2.2",
-    "sinon-chai": "^2.14.0"
+    "sinon": "^7.2.3",
+    "sinon-chai": "^3.3.0"
   },
-  "gitHead": "75f58824a7a14b8012a99e91ed23a80ab090e093"
+  "gitHead": "75f58824a7a14b8012a99e91ed23a80ab090e093",
+  "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/dedent": "^0.7.0",
+    "@types/sinon": "^7.0.5",
+    "@types/sinon-chai": "^3.2.2"
+  }
 }

@@ -137,7 +137,7 @@ describe('@tractor/plugin-loader:', () => {
             });
             plugin.create();
 
-            expect(requiredPlugin.create).to.have.been.called();
+            expect(requiredPlugin.create.callCount > 0).to.equal(true);
 
             tractorLogger.info.restore();
         });
@@ -169,7 +169,7 @@ describe('@tractor/plugin-loader:', () => {
             });
             plugin.init();
 
-            expect(requiredPlugin.init).to.have.been.called();
+            expect(requiredPlugin.init.callCount > 0).to.equal(true);
 
             tractorLogger.info.restore();
         });
@@ -201,7 +201,7 @@ describe('@tractor/plugin-loader:', () => {
             });
             plugin.plugin();
 
-            expect(requiredPlugin.plugin).to.have.been.called();
+            expect(requiredPlugin.plugin.callCount > 0).to.equal(true);
 
             tractorLogger.info.restore();
         });
@@ -233,7 +233,7 @@ describe('@tractor/plugin-loader:', () => {
             });
             plugin.run();
 
-            expect(requiredPlugin.run).to.have.been.called();
+            expect(requiredPlugin.run.callCount > 0).to.equal(true);
 
             tractorLogger.info.restore();
         });
@@ -265,7 +265,7 @@ describe('@tractor/plugin-loader:', () => {
             });
             plugin.serve();
 
-            expect(requiredPlugin.serve).to.have.been.called();
+            expect(requiredPlugin.serve.callCount > 0).to.equal(true);
 
             tractorLogger.info.restore();
         });
@@ -297,7 +297,7 @@ describe('@tractor/plugin-loader:', () => {
             });
             plugin.upgrade();
 
-            expect(requiredPlugin.upgrade).to.have.been.called();
+            expect(requiredPlugin.upgrade.callCount > 0).to.equal(true);
 
             tractorLogger.info.restore();
         });

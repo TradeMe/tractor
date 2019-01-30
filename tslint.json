@@ -1,0 +1,20 @@
+{
+    "lintOptions": {
+        "typeCheck": true
+    },
+    "extends": ["tslint:all"],
+    "rules": {
+        "completed-docs": false,
+        "newline-before-return": false,
+        "newline-per-chained-call": false,
+        "no-implicit-dependencies": false,
+        "no-null-keyword": false,
+        "only-arrow-functions": false,
+
+        "array-type": [true, "generic"],
+        "typedef": [true, "call-signature", "arrow-call-signature", "parameter"],
+        "quotemark": [true, "single"],
+        "space-before-function-paren": [true, "always"],
+        "trailing-comma": [true, "never"]
+    }
+}

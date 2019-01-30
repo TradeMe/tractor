@@ -109,7 +109,7 @@ describe('@tractor-plugins/page-objects - page-object-file:', () => {
 
             await file.refactor('refactor');
 
-            expect(PageObjectFile.prototype.save).to.have.been.called();
+            expect(PageObjectFile.prototype.save.callCount > 0).to.equal(true);
 
             JavaScriptFile.prototype.refactor.restore();
             PageObjectFile.prototype.save.restore();

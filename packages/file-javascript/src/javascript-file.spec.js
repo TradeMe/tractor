@@ -74,7 +74,7 @@ describe('@tractor/file-javascript: JavaScriptFile:', () => {
             try {
                 await file.read();
                 await file.meta();
-                expect(File.prototype.read).to.have.been.calledOnce();
+                expect(File.prototype.read.callCount).to.equal(1);
             } finally {
                 File.prototype.read.restore();
             }
@@ -93,7 +93,7 @@ describe('@tractor/file-javascript: JavaScriptFile:', () => {
 
             try {
                 await file.read();
-                expect(File.prototype.read).to.have.been.called();    
+                expect(File.prototype.read.callCount > 0).to.equal(true);    
             } finally {
                 esprima.parseScript.restore();
                 File.prototype.read.restore();
@@ -146,7 +146,7 @@ describe('@tractor/file-javascript: JavaScriptFile:', () => {
 
             try {
                 await file.read();
-                expect(ReferenceManager.prototype.clearReferences).to.not.have.been.called();
+                expect(ReferenceManager.prototype.clearReferences.callCount).to.equal(0);
             } finally {
                 File.prototype.read.restore();
                 ReferenceManager.prototype.clearReferences.restore();
@@ -164,7 +164,7 @@ describe('@tractor/file-javascript: JavaScriptFile:', () => {
 
             try {
                 await file.read();
-                expect(ReferenceManager.prototype.clearReferences).to.have.been.called();
+                expect(ReferenceManager.prototype.clearReferences.callCount > 0).to.equal(true);
             } finally {
                 File.prototype.read.restore();
                 ReferenceManager.prototype.clearReferences.restore();
@@ -245,7 +245,7 @@ describe('@tractor/file-javascript: JavaScriptFile:', () => {
 
             try {
                 await file.refactor('someRefactorAction', data);
-                expect(JavaScriptFile.prototype.save).to.not.have.been.called();
+                expect(JavaScriptFile.prototype.save.callCount).to.equal(0);
             } finally {
                 File.prototype.refactor.restore();
                 JavaScriptFile.prototype.save.restore();
@@ -264,7 +264,7 @@ describe('@tractor/file-javascript: JavaScriptFile:', () => {
 
             try {
                 await file.refactor('identifierChange');
-                expect(JavaScriptFile.prototype.save).to.have.been.called();
+                expect(JavaScriptFile.prototype.save.callCount > 0).to.equal(true);
             } finally {
                 File.prototype.refactor.restore();
                 JavaScriptFile.prototype.save.restore();
@@ -287,7 +287,7 @@ describe('@tractor/file-javascript: JavaScriptFile:', () => {
             
             try {
                 await file.save(javascript);
-                expect(File.prototype.save).to.have.been.called();
+                expect(File.prototype.save.callCount > 0).to.equal(true);
             } finally {
                 esprima.parseScript.restore();
                 File.prototype.save.restore();

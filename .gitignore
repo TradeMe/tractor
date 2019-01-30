@@ -4,7 +4,7 @@ reports
 npm-debug.log
 lerna-debug.log
 .sass-cache
-.idea/*
+.idea
 .vscode
 .DS_Store
 packages/*/node_modules
