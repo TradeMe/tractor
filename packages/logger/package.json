@@ -23,14 +23,14 @@
   "scripts": {
     "build": "npm run clean && npm run lint && npm run compile && npm run cover",
     "clean": "rimraf dist",
-    "compile": "babel src/ --out-dir dist --ignore src/**/*.spec.js --config-file ../../babel.config.js",
-    "cover": "nyc npm run test",
-    "lint": "eslint src --ignore-path ../../.eslintignore",
-    "test": "cd ../../ && mocha --opts mocha.opts 'packages/logger/src/**/*.spec.js' && cd ./packages/logger",
+    "compile": "tsc --project ./tsconfig.json",
+    "cover": "npm run test -- --collectCoverage",
+    "lint": "tslint --project ./tsconfig.json",
+    "test": "jest --testPathPattern=.*\/logger\/src.*.spec.ts --config=../../jest.config.js",
     "watch": "npm-watch"
   },
   "watch": {
-    "build": "src/**/*.js"
+    "build": "src/**/*.ts"
   },
   "dependencies": {
     "npmlog": "^4.1.2"
@@ -38,5 +38,8 @@
   "peerDependencies": {
     "@tractor/core": "^1.0.0"
   },
-  "gitHead": "75f58824a7a14b8012a99e91ed23a80ab090e093"
+  "gitHead": "75f58824a7a14b8012a99e91ed23a80ab090e093",
+  "devDependencies": {
+    "@types/npmlog": "^4.1.1"
+  }
 }

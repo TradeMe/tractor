@@ -2,7 +2,7 @@
 import { expect, sinon } from '@tractor/unit-test';
 
 // Dependencies:
-import npmlog from 'npmlog';
+import * as npmlog from 'npmlog';
 
 // Under test:
 import { error, info, warn } from './index';
@@ -14,37 +14,37 @@ describe('@tractor/logger:', () => {
 
     describe('@tractor/logger: error:', () => {
         it('should pass through to npmlog', () => {
-            sinon.stub(npmlog, 'error');
+            sinon.stub(npmlog, 'log');
 
             error('error');
 
-            expect(npmlog.error).to.have.been.calledWith('', 'error');
+            expect(npmlog.log).to.have.been.calledWith('tractor-error', '', 'error');
 
-            npmlog.error.restore();
+            (npmlog.log as sinon.SinonStub).restore();
         });
     });
 
     describe('@tractor/logger: info:', () => {
         it('should pass through to npmlog', () => {
-            sinon.stub(npmlog, 'info');
+            sinon.stub(npmlog, 'log');
 
             info('info');
 
-            expect(npmlog.info).to.have.been.calledWith('', 'info');
+            expect(npmlog.log).to.have.been.calledWith('tractor-info', '', 'info');
 
-            npmlog.info.restore();
+            (npmlog.log as sinon.SinonStub).restore();
         });
     });
 
     describe('@tractor/logger: warn:', () => {
         it('should pass through to npmlog', () => {
-            sinon.stub(npmlog, 'warn');
+            sinon.stub(npmlog, 'log');
 
             warn('warn');
 
-            expect(npmlog.warn).to.have.been.calledWith('', 'warn');
+            expect(npmlog.log).to.have.been.calledWith('tractor-warn', '', 'warn');
 
-            npmlog.warn.restore();
+            (npmlog.log as sinon.SinonStub).restore();
         });
     });
 });
