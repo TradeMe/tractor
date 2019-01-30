@@ -1,6 +1,6 @@
 {
   "name": "@tractor/logger",
-  "version": "1.0.1",
+  "version": "1.0.6",
   "description": "Logging utilities for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -26,7 +26,7 @@
     "compile": "tsc --project ./tsconfig.json",
     "cover": "npm run test -- --collectCoverage",
     "lint": "tslint --project ./tsconfig.json",
-    "test": "jest --testPathPattern=.*\/logger\/src.*.spec.ts --config=../../jest.config.js",
+    "test": "jest --testPathPattern=.*/logger/src.*.spec.ts --config=../../jest.config.js",
     "watch": "npm-watch"
   },
   "watch": {

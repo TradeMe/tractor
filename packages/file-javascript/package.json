@@ -1,6 +1,6 @@
 {
   "name": "@tractor/file-javascript",
-  "version": "1.0.1",
+  "version": "1.0.6",
   "description": "JavaScript file handler for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
