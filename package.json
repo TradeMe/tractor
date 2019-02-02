@@ -133,7 +133,7 @@
 		"title-case": "^2.1.1",
 		"vinyl-buffer": "^1.0.1",
 		"vinyl-source-stream": "^1.1.0",
-		"xterm": "^2.9.2"
+		"xterm": "^3.11.0"
 	},
 	"nyc": {
 		"report-dir": "./reports/coverage",
