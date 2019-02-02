@@ -1,12 +1,14 @@
 // Dependencies:
 import { addLevel, enableColor, enableUnicode, log, StyleObject } from 'npmlog';
 
-// Global settings:
-// tslint:disable-next-line:no-duplicate-imports - import npmlog global settings:
+// HACK:
+// Need to import npmlog as a module to override global settings.
+// tslint:disable-next-line:no-duplicate-imports
 import * as npmlog from 'npmlog';
 
+// HACK:
+// The lint rule is broken, this assertion is necessary to overwriting "readonly".
 // tslint:disable:no-unnecessary-type-assertion
-// The lint rule is broken, this assertion is necessary to overwriting "readonly"
 (npmlog.heading as string) = '🚜  tractor';
 (npmlog.headingStyle as StyleObject) = {
     bg: 'black',

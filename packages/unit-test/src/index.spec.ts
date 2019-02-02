@@ -4,7 +4,9 @@ import { ineeda } from 'ineeda';
 import { spy } from 'sinon';
 
 // Dependencies:
-// tslint:disable-next-line:no-duplicate-imports - import chai namespace:
+// HACK:
+// Need to import chai as a module to spy on global functions.
+// tslint:disable-next-line:no-duplicate-imports
 import * as chai from 'chai';
 import * as sinonChai from 'sinon-chai';
 

@@ -6,35 +6,29 @@ A general logger for [**tractor**](https://github.com/TradeMe/tractor).
 
 ## API
 
-### `error`
+### `error (...args: Array<string>) => void`
 
 Logs errors to the console. Passes through to [`npmlog.error`](https://github.com/npm/npmlog#logloglevel-prefix-message-).
 
-#### Usage
-
-```javascript
+```typescript
 import { error } from '@tractor/logger';
 error('error'); // 🚜 tractor ERR! error
 ```
 
-### `info`
+### `info (...args: Array<string>) => void`
 
 Logs information to the console. Passes through to [`npmlog.info`](https://github.com/npm/npmlog#logloglevel-prefix-message-).
 
-#### Usage
-
-```javascript
+```typescript
 import { info } from '@tractor/logger';
 info('info'); // 🚜 tractor info info;
 ```
 
-### `warn`
+### `warn (...args: Array<string>) => void`
 
 Logs information to the console. Passes through to [`npmlog.warn`](https://github.com/npm/npmlog#logloglevel-prefix-message-).
 
-#### Usage
-
-```javascript
+```typescript
 import { warn } from '@tractor/logger';
 warn('warn'); // 🚜 tractor WARN warn;
 ```

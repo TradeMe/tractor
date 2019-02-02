@@ -1,55 +1,61 @@
-// Constants:
-import { SERVER_ERROR } from './constants';
-
 // Test setup:
 import { expect, sinon } from '@tractor/unit-test';
 
 // Under test:
-import { TractorError } from './TractorError';
+import { TractorError } from './tractor-error';
 
 describe('@tractor/error-handler: TractorError:', () => {
     describe('TractorError constructor:', () => {
         it('should create a new TractorError', () => {
-            let error = new TractorError();
+            const error = new TractorError('error');
 
             expect(error).to.be.an.instanceof(TractorError);
             expect(error.name).to.equal('TractorError');
         });
 
         it('should inherit from Error', () => {
-            let error = new TractorError();
+            const error = new TractorError('error');
 
             expect(error).to.be.an.instanceof(Error);
         });
 
         it('should have an error message', () => {
-            let error = new TractorError('message');
+            const error = new TractorError('message');
 
             expect(error.message).to.equal('message');
         });
 
         it('should have an default status of 500', () => {
-            let error = new TractorError();
+            const error = new TractorError('error');
 
-            expect(error.status).to.equal(SERVER_ERROR);
+            const expectedError = 500;
+            expect(error.status).to.equal(expectedError);
+        });
+
+        it('should let you override the status', () => {
+            const expectedError = 404;
+            const error = new TractorError('error', expectedError);
+
+            expect(error.status).to.equal(expectedError);
         });
 
         it('should capture the stack trace', () => {
-            sinon.stub(Error, 'captureStackTrace');
+            const captureStackTrace = sinon.stub(Error, 'captureStackTrace');
 
-            /* eslint-disable */
-            let error = new TractorError();
-            /* eslint-enable */
+            // HACK:
+            // Don't need to do anything with the constructed `TractorError`!
+            // tslint:disable-next-line:no-unused-expression
+            new TractorError('error');
 
-            expect(Error.captureStackTrace.callCount > 0).to.equal(true);
+            expect(captureStackTrace.callCount > 0).to.equal(true);
 
-            Error.captureStackTrace.restore();
+            captureStackTrace.restore();
         });
     });
 
     describe('TractorError.isTractorError:', () => {
         it('should be `true` for instances of TractorError', () => {
-            expect(TractorError.isTractorError(new TractorError())).to.equal(true);
+            expect(TractorError.isTractorError(new TractorError('error'))).to.equal(true);
         });
 
         it('should be `true` for TractorError-like objects', () => {

@@ -16,6 +16,7 @@
     "email": "craigspence0@gmail.com"
   },
   "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "files": [
     "dist",
     "README.md"
@@ -23,17 +24,16 @@
   "scripts": {
     "build": "npm run clean && npm run lint && npm run compile && npm run cover",
     "clean": "rimraf dist",
-    "compile": "babel src/ --out-dir dist --ignore src/**/*.spec.js --config-file ../../babel.config.js",
-    "cover": "nyc npm run test",
-    "lint": "eslint src --ignore-path ../../.eslintignore",
-    "test": "cd ../../ && mocha --opts mocha.opts 'packages/plugin-loader/src/**/*.spec.js' && cd ./packages/plugin-loader",
+    "compile": "tsc --project ./tsconfig.json",
+    "cover": "npm run test -- --collectCoverage",
+    "lint": "tslint --project ./tsconfig.json",
+    "test": "jest --testPathPattern=.*/plugin-loader/src.*.spec.ts --config=../../jest.config.js",
     "watch": "npm-watch"
   },
   "watch": {
-    "build": "src/**/*.js"
+    "build": "src/**/*.ts"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.0.0",
     "camel-case": "^3.0.0",
     "find-up": "^3.0.0",
     "param-case": "^2.1.1",
@@ -43,6 +43,15 @@
   },
   "peerDependencies": {
     "@tractor/core": "^1.0.0"
+  },
+  "devDependencies": {
+    "@tractor/config-loader": "^1.0.0",
+    "@tractor/error-handler": "^1.0.0",
+    "@tractor/logger": "^1.0.0",
+    "@tractor/unit-test": "^1.0.0",
+    "@types/find-up": "^2.1.1",
+    "@types/pkg-up": "^2.0.0",
+    "@types/resolve-from": "^4.0.0"
   },
   "gitHead": "75f58824a7a14b8012a99e91ed23a80ab090e093"
 }

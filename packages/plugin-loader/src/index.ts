@@ -3,12 +3,13 @@ import { info } from '@tractor/logger';
 
 // Dependencies:
 import { requirePlugins } from './require-plugins';
+import { TractorPlugin, TractorPluginConfig } from './tractor-plugin';
 
 // Errors:
 import { TractorError } from '@tractor/error-handler';
 
-let loadedPlugins;
-export function getPlugins () {
+let loadedPlugins: Array<TractorPlugin>;
+export function getPlugins (): Array<TractorPlugin> {
     if (!loadedPlugins) {
         throw new TractorError(`
             You must call \`loadPlugins()\` before you can use \`getPlugins()\`!
@@ -25,7 +26,7 @@ export function getPlugins () {
     return loadedPlugins;
 }
 
-export function loadPlugins (config) {
+export function loadPlugins (config: TractorPluginConfig): Array<TractorPlugin> {
     info('Loading plugins...');
     const { cwd, plugins } = config;
     loadedPlugins = requirePlugins(cwd, plugins);

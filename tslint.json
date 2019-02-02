@@ -5,16 +5,26 @@
     "extends": ["tslint:all"],
     "rules": {
         "completed-docs": false,
+        "interface-name": false,
+        "interface-over-type-literal": false,
         "newline-before-return": false,
         "newline-per-chained-call": false,
         "no-implicit-dependencies": false,
         "no-null-keyword": false,
+        "no-object-literal-type-assertion": false,
+        "no-parameter-properties": false,        
         "only-arrow-functions": false,
+        "prefer-function-over-method": false,
+        "strict-boolean-expressions": [false],
 
         "array-type": [true, "generic"],
-        "typedef": [true, "call-signature", "arrow-call-signature", "parameter"],
+        "arrow-parens": [true, "ban-single-arg-parens"],
+        "comment-format": [true, "check-space"],
+        "file-name-casing": [true, "kebab-case"],
         "quotemark": [true, "single"],
         "space-before-function-paren": [true, "always"],
-        "trailing-comma": [true, "never"]
+        "trailing-comma": [true, "never"],
+        "typedef": [true, "call-signature", "arrow-call-signature", "parameter"],
+        "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"]
     }
 }

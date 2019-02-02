@@ -6,52 +6,32 @@ A general HTTP request error handler for [**tractor**](https://github.com/TradeM
 
 ## API
 
-### `TractorError`
+### `new TractorError (message: string, status?: number)`
 
-Creates a new `TractorError`.
+Create a new `TractorError`.
 
-#### Arguments
-
-* `message: string` - the error message
-* `status?: number` - the HTTP status of the error
-
-#### Usage
-
-```javascript
-let error = new TractorError('something bad happened', 500);
+```typescript
+const error = new TractorError('something bad happened', 500);
 ```
 
-### `TractorError.isTractorError`
+### `TractorError.isTractorError (err: TractorError | any): boolean`
 
 Checks if something is a `TractorError`.
 
-#### Arguments
-
-* `e: any` - thing to test
-
-#### Usage
-
-```javascript
+```typescript
 TractorError.isTractorError(new TractorError('something bad happened')); // true;
 TractorError.isTractorError(new Error('something bad happened')); // false;
 ```
 
-### `handleError`
+### `handleError (response: Response, err: TractorError, message?: string): void`
 
-Sends an error back to the client
+Sends an error back to the client, via the [Express HTTP response object](http://expressjs.com/es/api.html#res).
 
-#### Arguments
-
-* `response:` [Response](http://expressjs.com/es/api.html#res) - the Express HTTP response object
-* `error: TractorError` - the TractorError that was thrown
-
-#### Usage
-
-```javascript
+```typescript
 import { TractorError, handleError } from '@tractor/error-handler';
 
-export function myApiEndpoint (request, response) {
-     if (somethingBad) {
+export function myApiEndpoint (request: Request, response: Response): void {
+    if (somethingBad) {
         handleError(response, new TractorError('something bad happened'));
     } else {
         response.sendStatus(200);

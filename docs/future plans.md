@@ -4,8 +4,6 @@ I ([phenomnomnominal](https://github.com/phenomnomnominal)) have been toiling aw
 
 * More test types! We should be able to write plugins to enable performance testing, accessibility testing, chaos testing, etc.
 
-* Make the plugins useful without **tractor**. Improve the `[@tractor/plugin-loader]` to just accept a Protractor config object.
-
 * Make it pretty. It's currently pretty damn ugly. Probably rewrite in Angular at the same time.
 
 * Make it an Electron app?
@@ -15,8 +13,6 @@ I ([phenomnomnominal](https://github.com/phenomnomnominal)) have been toiling aw
 * Make it type-safe, by rewriting in TypeScript. This would probably enable removing the janky as `@tractor/dependency-injection`.
 
 * Introduce more JS. That way we can get users used to seeing the actual underlying code, rather than the UI.
-
-* Move (all?) the plugins to this repo. They're a bit annoying to develop as they are right now.
 
 * Move parsing/codegen from the client to the server. There's no need for it to be on the client, and passing huge files between client/server is a bit silly.
 

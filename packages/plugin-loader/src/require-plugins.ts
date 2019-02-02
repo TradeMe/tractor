@@ -3,43 +3,48 @@ const TRACTOR_PLUGINS_SCOPE = '@tractor-plugins';
 const NODE_MODULES = 'node_modules';
 
 // Utilities:
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 
 // Dependencies:
-import camelCase from 'camel-case';
-import findUp from 'find-up';
-import paramCase from 'param-case';
-import pkgUp from 'pkg-up';
-import resolveFrom from 'resolve-from';
-import titleCase from 'title-case';
+// HACK:
+// The types for 'camel-case', 'param-case', and 'title-case' are a bit borked:
+// tslint:disable:no-require-imports
+import camelCase = require('camel-case');
+import paramCase = require('param-case');
+import titleCase = require('title-case');
+// tslint:enable:no-require-imports
+
+import * as findUp from 'find-up';
+import * as pkgUp from 'pkg-up';
+import { Config } from 'protractor';
+import * as resolveFrom from 'resolve-from';
+import { TractorDescription, TractorPlugin, UserTractorPluginESM, UserTractorPluginModule } from './tractor-plugin';
 
 // Errors:
 import { TractorError } from '@tractor/error-handler';
 
-export function requirePlugins (cwd, enabledPlugins) {
+export function requirePlugins (cwd: string, enabledPlugins: Array<string> = []): Array<TractorPlugin> {
     return getInstalledPluginNames(cwd)
-    .filter(pluginName => {
-        return !enabledPlugins || enabledPlugins.includes(pluginName);
-    })
+    .filter(pluginName => enabledPlugins.length && enabledPlugins.includes(pluginName))
     .map(pluginName => {
         const fullName = `${TRACTOR_PLUGINS_SCOPE}/${pluginName}`;
         try {
             const modulePath = resolveFrom(cwd, fullName);
-            let plugin = require(modulePath);
-      
-            plugin = plugin.default ? plugin.default : plugin;
+            const userPlugin = require(modulePath) as UserTractorPluginModule;
+
+            const plugin = isESM(userPlugin) ? userPlugin.default : userPlugin;
 
             if (!plugin.description) {
                 plugin.description = {};
             }
 
             const packagePath = pkgUp.sync(modulePath);
-            plugin.description.version = require(packagePath).version;
+            (plugin.description as TractorDescription).version = (require(packagePath) as { version: string }).version;
 
-            plugin.fullName = fullName;
-            plugin.name = pluginName;
-            return plugin;
+            (plugin as TractorPlugin).fullName = fullName;
+            (plugin as TractorPlugin).name = pluginName;
+            return plugin as TractorPlugin;
         } catch (e) {
             throw new TractorError(`could not require '${fullName}'`);
         }
@@ -63,35 +68,35 @@ export function requirePlugins (cwd, enabledPlugins) {
         }
 
         if (!plugin.create) {
-            plugin.create = () => {};
+            plugin.create = (): void => void 0;
         }
         if (!plugin.init) {
-            plugin.init = () => {};
+            plugin.init = (): void => void 0;
         }
         if (!plugin.plugin) {
-            plugin.plugin = () => {};
+            plugin.plugin = (config: Config): Config => config;
         }
         if (!plugin.run) {
-            plugin.run = () => {};
+            plugin.run = (): void => void 0;
         }
         if (!plugin.serve) {
-            plugin.serve = () => {};
+            plugin.serve = (): void => void 0;
         }
         if (!plugin.upgrade) {
-            plugin.upgrade = () => {};
+            plugin.upgrade = (): void => void 0;
         }
 
         return plugin;
     });
 }
 
-function getInstalledPluginNames (cwd) {
-    const nodeModulesDirs = [];
+function getInstalledPluginNames (cwd: string): Array<string> {
+    const nodeModulesDirs: Array<string> = [];
     let closest = findNodeModules(cwd);
-    while (closest) {
+    while (closest !== null) {
         try {
             nodeModulesDirs.push(...fs.readdirSync(path.join(closest, TRACTOR_PLUGINS_SCOPE)));
-        } catch { 
+        } catch {
             // No plugins installed at this level, moving on.
         }
         closest = findNodeModules(path.resolve(closest, '../../'));
@@ -99,6 +104,10 @@ function getInstalledPluginNames (cwd) {
     return Array.from(new Set(nodeModulesDirs));
 }
 
-function findNodeModules (from) {
+function findNodeModules (from: string): string | null {
     return findUp.sync(NODE_MODULES, { cwd: from });
+}
+
+function isESM (plugin: UserTractorPluginModule): plugin is UserTractorPluginESM {
+    return !!(plugin as UserTractorPluginESM).default;
 }

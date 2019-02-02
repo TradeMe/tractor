@@ -5,5 +5,5 @@ module.exports = {
   // Coverage is disabled by default, enabled with npm scripts
   collectCoverage: false,
   coverageDirectory: './reports',
-  coveragePathIgnorePatterns: ['node_modules', 'dist']
+  coveragePathIgnorePatterns: ['node_modules', 'dist', 'fixtures']
 };

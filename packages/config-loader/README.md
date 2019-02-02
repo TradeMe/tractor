@@ -6,18 +6,22 @@ A configuration loader utility for [**tractor**](https://github.com/TradeMe/trac
 
 ## API
 
-### `getConfig`
+### `loadConfig (cwd: string, configPath?: string): TractorConfig`
 
-Tries to load a **tractor** configuration file from a given path (defaults to *./tractor.conf.js*), before falling back to the default configuration.
+Load a [**tractor** configuration file](https://github.com/TradeMe/tractor#config) from a given directory and path (defaults to *./tractor.conf.js*), before falling back to the default configuration.
 
-#### Returns
+```typescript
+import { loadConfig } from '@tractor/config-loader';
 
-* `config:` [TractorConfig](https://github.com/TradeMe/tractor#config)
+const config = loadConfig(process.cwd(), './path/to/tractor.conf.js');
+```
 
-#### Usage
+### `getConfig (): TractorConfig`
 
-```javascript
+Retrieves the current config for the running Tractor instance. `loadConfig()` must be called befere calling `getConfig()`.
+
+```typescript
 import { getConfig } from '@tractor/config-loader';
 
-const config = getConfig('./path/to/tractor.conf.js');
+const config = getConfig();
 ```

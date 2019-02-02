@@ -1,0 +1,60 @@
+// Dependencies:
+import { TractorConfig } from '@tractor/config-loader';
+import { Config } from 'protractor';
+
+export type TractorPluginConfig = Pick<TractorConfig, 'cwd'> & Partial<Pick<TractorConfig, 'plugins'>>;
+
+export type TractorValue = {
+    description?: string;
+    name: string;
+    required?: boolean;
+    resolves?: 'boolean' | 'number' | 'string' | 'element';
+    type: 'promise' | 'boolean' | 'number' | 'string' | 'element';
+};
+
+export type TractorAction = {
+    description: string;
+    name: string;
+    parameters: Array<TractorValue>;
+    returns?: 'promise' | 'boolean' | 'number' | 'string' | 'element' | TractorValue;
+};
+
+export type TractorPluginFunction = () => Promise<void> | void;
+
+export type TractorDescription = {
+    actions: Array<TractorAction>;
+    hasUI: boolean;
+    name: string;
+    url: string;
+    variableName: string;
+    version: string;
+};
+
+// We can't know here what `T` might be, so we default to `unknown`.
+// But let's keep it generic cause it might be useful to be able
+// to know what type `create()` will return at some point.
+export type TractorPlugin<T = unknown> = {
+    description: TractorDescription;
+    fullName: string;
+    name: string;
+    script?: string;
+
+    create (): T;
+    init (): Promise<void> | void;
+    plugin (protractorConfig: Config): Config;
+    run (): Promise<void> | void;
+    serve (): Promise<void> | void;
+    upgrade (): Promise<void> | void;
+};
+
+export type UserTractorDescription = {
+    actions?: Array<TractorAction>;
+};
+
+export type UserTractorPlugin = {
+    description?: UserTractorDescription;
+};
+
+export type UserTractorPluginESM = { default: UserTractorPlugin };
+
+export type UserTractorPluginModule = UserTractorPlugin | UserTractorPluginESM;
