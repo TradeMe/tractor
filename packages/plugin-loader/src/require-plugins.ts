@@ -26,7 +26,7 @@ import { TractorError } from '@tractor/error-handler';
 
 export function requirePlugins (cwd: string, enabledPlugins: Array<string> = []): Array<TractorPlugin> {
     return getInstalledPluginNames(cwd)
-    .filter(pluginName => enabledPlugins.length && enabledPlugins.includes(pluginName))
+    .filter(pluginName => !enabledPlugins.length || enabledPlugins.includes(pluginName))
     .map(pluginName => {
         const fullName = `${TRACTOR_PLUGINS_SCOPE}/${pluginName}`;
         try {

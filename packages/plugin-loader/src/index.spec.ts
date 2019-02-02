@@ -4,6 +4,7 @@ import { expect, sinon } from '@tractor/unit-test';
 // Dependencies:
 import { TractorError } from '@tractor/error-handler';
 import * as tractorLogger from '@tractor/logger';
+import * as findUp from 'find-up';
 import * as path from 'path';
 
 // Under test:
@@ -21,8 +22,28 @@ describe('@tractor/plugin-loader:', () => {
             (tractorLogger.info as sinon.SinonStub).restore();
         });
 
-        it('should create a plugin for each installed plugin', function (): void {
+        it('should load all available plugins', () => {
+            sinon.stub(tractorLogger, 'info');
 
+            // NOTE -
+            // Stub `findUp.sync` so that the test doesn't keep search up
+            // through to the real node_modules directory. We just want it
+            // to look through the modules in the fixture.
+            const findUpSync = sinon.stub(findUp, 'sync');
+            findUpSync.onSecondCall().returns(null);
+            findUpSync.callThrough();
+
+            const plugins = loadPlugins({
+                cwd: path.resolve(__dirname, '../fixtures/basic')
+            });
+
+            const expectedLength = 2;
+            expect(plugins.length).to.equal(expectedLength);
+
+            (tractorLogger.info as sinon.SinonStub).restore();
+        });
+
+        it('should create a plugin for each installed plugin', function (): void {
             sinon.stub(tractorLogger, 'info');
 
             const [plugin] = loadPlugins({
