@@ -96,5 +96,25 @@ describe('@tractor/config-loader:', () => {
 
             (tractorLogger.info as sinon.SinonStub).restore();
         });
+
+        it('should have a default `afterProtractor()` function', () => {
+            sinon.stub(tractorLogger, 'info');
+
+            const config = loadConfig(__dirname, '../fixtures/empty.conf.js');
+
+            expect(config.afterProtractor).to.not.equal(undefined);
+
+            (tractorLogger.info as sinon.SinonStub).restore();
+        });
+
+        it('should have a default `beforeProtractor()` function', () => {
+            sinon.stub(tractorLogger, 'info');
+
+            const config = loadConfig(__dirname, '../fixtures/empty.conf.js');
+
+            expect(config.beforeProtractor).to.not.equal(undefined);
+
+            (tractorLogger.info as sinon.SinonStub).restore();
+        });
     });
 });

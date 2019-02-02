@@ -6,6 +6,7 @@ import { info } from '@tractor/logger';
 import * as path from 'path';
 
 // Dependencies:
+import { DEFAULT_TRACTOR_CONFIG } from './default.conf';
 import { TractorConfig, UserTractorConfig, UserTractorConfigESM, UserTractorConfigModule } from './tractor-config';
 
 // Errors:
@@ -39,7 +40,7 @@ export function loadConfig (cwd: string, configPath: string = CONFIG_FILE_NAME):
         userConfig = {};
     }
 
-    config = { ...new TractorConfig(), ...userConfig };
+    config = { ...DEFAULT_TRACTOR_CONFIG, ...userConfig };
     config.cwd = cwd;
 
     return config;

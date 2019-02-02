@@ -1,15 +1,13 @@
-export class TractorConfig {
-    public cwd = process.cwd();
-    public directory = './tractor';
-    public environments: Array<string> = [
-        'http://localhost:8080'
-    ];
-    public plugins: Array<string> = [];
-    public port = 4000;
+export type TractorConfig = {
+    cwd: string;
+    directory: string;
+    environments: Array<string>;
+    plugins: Array<string>;
+    port: number;
 
-    public afterProtractor? (): void | Promise<void> { return void 0; }
-    public beforeProtractor? (): void | Promise<void> { return void 0; }
-}
+    afterProtractor (): void | Promise<void>;
+    beforeProtractor (): void | Promise<void>;
+};
 
 export type UserTractorConfig = Partial<TractorConfig>;
 
