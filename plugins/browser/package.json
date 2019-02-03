@@ -16,6 +16,7 @@
     "email": "craigspence0@gmail.com"
   },
   "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "files": [
     "dist",
     "README.md"
@@ -23,14 +24,14 @@
   "scripts": {
     "build": "npm run clean && npm run lint && npm run compile && npm run cover",
     "clean": "rimraf dist",
-    "compile": "babel src/ --out-dir dist --ignore src/**/*.spec.js --config-file ../../babel.config.js",
-    "cover": "nyc npm run test",
-    "lint": "eslint src --ignore-path ../../.eslintignore",
-    "test": "cd ../../ && mocha --opts mocha.opts './plugins/browser/src/**/*.spec.js' && cd ./plugins/browser",
+    "compile": "tsc --project ./tsconfig.json",
+    "cover": "npm run test -- --collectCoverage",
+    "lint": "tslint --project ./tsconfig.json",
+    "test": "jest --testPathPattern=.*/plugins/browser/src.*.spec.ts --config=../../jest.config.js",
     "watch": "npm-watch"
   },
   "watch": {
-    "build": "src/**/*.js"
+    "build": "src/**/*.ts"
   },
   "peerDependencies": {
     "@tractor/core": "^1.0.0"
