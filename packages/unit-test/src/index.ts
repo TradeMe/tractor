@@ -28,7 +28,7 @@ ineeda.intercept<Promise<void>>({
 });
 
 // Intercept all values that are functions and turn it into a stub
-// Hack:
+// HACK:
 // Can't really predict the types here, so `any` makes the most sense.
 // tslint:disable no-any no-unsafe-any
 ineeda.intercept((value: any, key: keyof any, values: any, target: any): any => {
