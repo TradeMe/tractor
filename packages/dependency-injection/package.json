@@ -36,5 +36,8 @@
   "peerDependencies": {
     "@tractor/core": "^1.0.0"
   },
+  "devDependencies": {
+    "@tractor/error-handler": "^1.0.7"
+  },
   "gitHead": "75f58824a7a14b8012a99e91ed23a80ab090e093"
 }

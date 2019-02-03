@@ -33,6 +33,12 @@
   "watch": {
     "build": "src/**/*.ts"
   },
+  "devDependencies": {
+    "@tractor/dependency-injection": "^1.0.0",
+    "@tractor/error-handler": "^1.0.0",
+    "@tractor/plugin-loader": "^1.0.0",
+    "@tractor/unit-test": "^1.0.0"
+  },
   "peerDependencies": {
     "@tractor/core": "^1.0.0"
   }
