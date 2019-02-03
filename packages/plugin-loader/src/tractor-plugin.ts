@@ -13,16 +13,16 @@ export type TractorValue = {
 };
 
 export type TractorAction = {
+    deprecated?: boolean;
     description: string;
     name: string;
-    parameters: Array<TractorValue>;
+    parameters?: Array<TractorValue>;
     returns?: 'promise' | 'boolean' | 'number' | 'string' | 'element' | TractorValue;
 };
 
 export type TractorPluginFunction = () => Promise<void> | void;
 
-export type TractorDescription = {
-    actions: Array<TractorAction>;
+export type TractorDescriptionInternal = TractorDescription & {
     hasUI: boolean;
     name: string;
     url: string;
@@ -30,14 +30,22 @@ export type TractorDescription = {
     version: string;
 };
 
+export type TractorPluginInternal<T = unknown> = TractorPlugin<T> & {
+    description: TractorDescriptionInternal;
+    fullName: string;
+    name: string;
+    script?: string;
+};
+
+export type TractorDescription = {
+    actions: Array<TractorAction>;
+};
+
 // We can't know here what `T` might be, so we default to `unknown`.
 // But let's keep it generic cause it might be useful to be able
 // to know what type `create()` will return at some point.
 export type TractorPlugin<T = unknown> = {
     description: TractorDescription;
-    fullName: string;
-    name: string;
-    script?: string;
 
     create (): T;
     init (): Promise<void> | void;
@@ -47,14 +55,6 @@ export type TractorPlugin<T = unknown> = {
     upgrade (): Promise<void> | void;
 };
 
-export type UserTractorDescription = {
-    actions?: Array<TractorAction>;
-};
+export type UserTractorPluginESM = { default: TractorPlugin };
 
-export type UserTractorPlugin = {
-    description?: UserTractorDescription;
-};
-
-export type UserTractorPluginESM = { default: UserTractorPlugin };
-
-export type UserTractorPluginModule = UserTractorPlugin | UserTractorPluginESM;
+export type UserTractorPluginModule = TractorPlugin | UserTractorPluginESM;

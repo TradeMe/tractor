@@ -19,12 +19,12 @@ import * as findUp from 'find-up';
 import * as pkgUp from 'pkg-up';
 import { Config } from 'protractor';
 import * as resolveFrom from 'resolve-from';
-import { TractorDescription, TractorPlugin, UserTractorPluginESM, UserTractorPluginModule } from './tractor-plugin';
+import { TractorDescriptionInternal, TractorPluginInternal, UserTractorPluginESM, UserTractorPluginModule } from './tractor-plugin';
 
 // Errors:
 import { TractorError } from '@tractor/error-handler';
 
-export function requirePlugins (cwd: string, enabledPlugins: Array<string> = []): Array<TractorPlugin> {
+export function requirePlugins (cwd: string, enabledPlugins: Array<string> = []): Array<TractorPluginInternal> {
     return getInstalledPluginNames(cwd)
     .filter(pluginName => !enabledPlugins.length || enabledPlugins.includes(pluginName))
     .map(pluginName => {
@@ -36,15 +36,17 @@ export function requirePlugins (cwd: string, enabledPlugins: Array<string> = [])
             const plugin = isESM(userPlugin) ? userPlugin.default : userPlugin;
 
             if (!plugin.description) {
-                plugin.description = {};
+                plugin.description = {
+                    actions: []
+                };
             }
 
             const packagePath = pkgUp.sync(modulePath);
-            (plugin.description as TractorDescription).version = (require(packagePath) as { version: string }).version;
+            (plugin.description as TractorDescriptionInternal).version = (require(packagePath) as { version: string }).version;
 
-            (plugin as TractorPlugin).fullName = fullName;
-            (plugin as TractorPlugin).name = pluginName;
-            return plugin as TractorPlugin;
+            (plugin as TractorPluginInternal).fullName = fullName;
+            (plugin as TractorPluginInternal).name = pluginName;
+            return plugin as TractorPluginInternal;
         } catch (e) {
             throw new TractorError(`could not require '${fullName}'`);
         }
