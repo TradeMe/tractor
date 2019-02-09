@@ -23,10 +23,10 @@
   "scripts": {
     "build": "npm run clean && npm run lint && npm run compile && npm run cover",
     "clean": "rimraf dist && rimraf reports",
-    "compile": "babel src/ --out-dir dist/ --ignore src/**/*.spec.js,src/tractor/client --config-file ../../babel.config.js",
-    "cover": "nyc npm run test",
-    "lint": "eslint src --ignore-path ../../.eslintignore",
-    "test": "cd ../../ && mocha --opts mocha.opts 'plugins/screen-size/src/**/*.spec.js' && cd ./plugins/screen-size",
+    "compile": "tsc --project ./tsconfig.json",
+    "cover": "npm run test -- --collectCoverage",
+    "lint": "tslint --project ./tsconfig.json",
+    "test": "jest --testPathPattern=.*/plugins/screen-size/src.*.spec.ts --config=../../jest.config.js",
     "test:e2e": "protractor ./tractor/protractor.conf.js --baseUrl=\"http://localhost:4501\" --mochaOpts.reporter=\"spec\"",
     "test:e2e:dev": "protractor ./tractor/protractor.conf.js --baseUrl=\"http://localhost:4501\"",
     "test:e2e:ci": "start-server-and-test tractor:test:ci 4501 test:e2e",
@@ -45,5 +45,12 @@
   },
   "peerDependencies": {
     "@tractor/core": "^1.0.0"
+  },
+  "devDependencies": {
+    "@tractor/config-loader": "^1.0.0",
+    "@tractor/dependency-injection": "^1.0.0",
+    "@tractor/error-handler": "^1.0.0",
+    "@tractor/plugin-loader": "^1.0.0",
+    "@tractor/logger": "^1.0.0"
   }
 }

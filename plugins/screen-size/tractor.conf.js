@@ -22,6 +22,8 @@ module.exports = {
     screenSizes: {
         sm: 400,
         md: 768,
-        lg: 1024
+        lg: 1024,
+        xl: 'maximize',
+        default: 'lg'
     }
 };

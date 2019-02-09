@@ -14,7 +14,9 @@ You can add a `screenSizes` property to your "tractor.conf.js" file. Each size c
 module.exports = {
     screenSizes: {
         sm: { width: 360, height: 480 }, // When a test is tagged with #sm, it will run at 360x840
-        md: 768 // When a test is tagged with #md, it will run at 768x1000
+        md: 768, // When a test is tagged with #md, it will run at 768x1000
+        lg: 'maximise' // When a test is tagged with #lg, it will run at max browser size
+        default: 'lg' // When a test is not taggged, if will use the `lg` configuration and run at max browser size
     }
 };
 ```
@@ -22,7 +24,6 @@ module.exports = {
 ### Within a test
 
 You can also use the `screenSize.setSize` method in a test. It takes a `string` which should be the name of the size from your config, e.g. 'sm' or 'md' with the config from above.
-
 
 ## Development
 
