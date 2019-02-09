@@ -16,7 +16,10 @@
         ng-submit="$ctrl.showErrors() && $ctrl.saveFile()">
 
         <section class="file-options">
-            <h1 class="file-options__name">{{ $ctrl.fileModel.name }}</h1>
+            <h1 
+                class="file-options__name">
+                <a ng-href="vscode://file{{ $ctrl.fileModel.file.path }}">{{ $ctrl.fileModel.name }}</a>
+            </h1>
             <div>
                 <tractor-variable-input class="file-options__name-input"
                     ng-if="!$ctrl.fileModel.file"

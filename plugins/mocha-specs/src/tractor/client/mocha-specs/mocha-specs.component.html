@@ -23,7 +23,7 @@
             class="file-options">
             <h1
                 class="file-options__name">
-                {{ $ctrl.fileModel.name }}
+                <a ng-href="vscode://file{{ $ctrl.fileModel.file.path }}">{{ $ctrl.fileModel.name }}</a>
             </h1>
             <div>
                 <tractor-text-input

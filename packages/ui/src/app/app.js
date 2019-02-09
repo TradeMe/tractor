@@ -32,6 +32,7 @@ var tractor = angular.module('tractor', [
 ]);
 
 tractor.config(function (
+    $compileProvider,
     $stateProvider,
     $locationProvider,
     $urlMatcherFactoryProvider,
@@ -56,6 +57,10 @@ tractor.config(function (
             return a && a.url && b && b.url && a.url === b.url;
         }
     });
+
+    var hrefAllowlist = $compileProvider.aHrefSanitizationWhitelist();
+    // Add vscode:// to safe href list so we can open files in VSCODE
+    $compileProvider.aHrefSanitizationWhitelist(new RegExp(hrefAllowlist.source.replace('):', '|vscode):')))
 
     $stateProvider
     .state('tractor', {
