@@ -7,13 +7,13 @@ import * as path from 'path';
 
 // Dependencies:
 import { DEFAULT_TRACTOR_CONFIG } from './default.conf';
-import { TractorConfig, UserTractorConfig, UserTractorConfigESM, UserTractorConfigModule } from './tractor-config';
+import { TractorConfig, TractorConfigESM, TractorConfigInternal, TractorConfigModule } from './tractor-config';
 
 // Errors:
 import { TractorError } from '@tractor/error-handler';
 
-let config: TractorConfig;
-export function getConfig (): TractorConfig {
+let config: TractorConfigInternal;
+export function getConfig (): TractorConfigInternal {
     if (!config) {
         throw new TractorError(`
             You must call \`loadConfig()\` before you can use \`getConfig()\`!
@@ -28,24 +28,24 @@ export function getConfig (): TractorConfig {
     return config;
 }
 
-export function loadConfig (cwd: string, configPath: string = CONFIG_FILE_NAME): TractorConfig {
+export function loadConfig (cwd: string, configPath: string = CONFIG_FILE_NAME): TractorConfigInternal {
     info('Loading config...');
     const fullConfigPath = path.resolve(cwd, configPath);
 
-    let userConfig: UserTractorConfig;
+    let userConfig: TractorConfig;
     try {
-        const loadedConfig = require(fullConfigPath) as UserTractorConfigModule;
+        const loadedConfig = require(fullConfigPath) as TractorConfigModule;
         userConfig = isESM(loadedConfig) ? loadedConfig.default : loadedConfig;
     } catch (e) {
         userConfig = {};
     }
 
-    config = { ...DEFAULT_TRACTOR_CONFIG, ...userConfig };
+    config = { ...DEFAULT_TRACTOR_CONFIG, ...userConfig } as TractorConfigInternal;
     config.cwd = cwd;
 
     return config;
 }
 
-function isESM (userConfig: UserTractorConfigModule): userConfig is UserTractorConfigESM {
-    return !!(userConfig as UserTractorConfigESM).default;
+function isESM (userConfig: TractorConfigModule): userConfig is TractorConfigESM {
+    return !!(userConfig as TractorConfigESM).default;
 }

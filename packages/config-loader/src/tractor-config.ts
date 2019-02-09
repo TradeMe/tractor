@@ -1,4 +1,4 @@
-export type TractorConfig = {
+export type TractorConfigInternal = {
     cwd: string;
     directory: string;
     environments: Array<string>;
@@ -9,8 +9,8 @@ export type TractorConfig = {
     beforeProtractor (): void | Promise<void>;
 };
 
-export type UserTractorConfig = Partial<TractorConfig>;
+export type TractorConfig = Partial<TractorConfigInternal>;
 
-export type UserTractorConfigESM = { default: UserTractorConfig };
+export type TractorConfigESM = { default: TractorConfig };
 
-export type UserTractorConfigModule = UserTractorConfig | UserTractorConfigESM;
+export type TractorConfigModule = TractorConfig | TractorConfigESM;

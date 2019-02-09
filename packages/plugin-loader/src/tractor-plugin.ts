@@ -1,8 +1,8 @@
 // Dependencies:
-import { TractorConfig } from '@tractor/config-loader';
+import { TractorConfigInternal } from '@tractor/config-loader';
 import { Config } from 'protractor';
 
-export type TractorPluginConfig = Pick<TractorConfig, 'cwd'> & Partial<Pick<TractorConfig, 'plugins'>>;
+export type TractorPluginConfig = Pick<TractorConfigInternal, 'cwd'> & Partial<Pick<TractorConfigInternal, 'plugins'>>;
 
 export type TractorValue = {
     description?: string;

@@ -1,2 +1,2 @@
 export { getConfig, loadConfig } from './load-config';
-export { TractorConfig } from './tractor-config';
+export { TractorConfig, TractorConfigInternal } from './tractor-config';
