@@ -1,6 +1,6 @@
 {
   "name": "@tractor/config-loader",
-  "version": "1.0.10",
+  "version": "1.1.0",
   "description": "Config loader for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",

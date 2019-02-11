@@ -1,6 +1,6 @@
 {
   "name": "@tractor-plugins/browser",
-  "version": "1.0.10",
+  "version": "1.1.0",
   "description": "tractor plugin wrapping the Protractor `browser` object",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -36,7 +36,7 @@
   "devDependencies": {
     "@tractor/dependency-injection": "^1.0.10",
     "@tractor/error-handler": "^1.0.10",
-    "@tractor/plugin-loader": "^1.0.10",
+    "@tractor/plugin-loader": "^1.1.0",
     "@tractor/unit-test": "^1.0.10"
   },
   "peerDependencies": {
