@@ -13,6 +13,10 @@
 
     text-overflow: ellipsis;
     overflow: hidden;
+
+    a {
+        color: inherit;
+    }
 }
 
 .file-options > div {
