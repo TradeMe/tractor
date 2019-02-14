@@ -1,6 +1,6 @@
 {
   "name": "@tractor/core",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Core module for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -41,7 +41,7 @@
     "@tractor/logger": "^1.0.10",
     "@tractor/plugin-loader": "^1.1.0",
     "@tractor/server": "^1.0.6",
-    "@tractor/ui": "^1.1.0",
+    "@tractor/ui": "^1.1.1",
     "callsite": "^1.0.0"
   },
   "gitHead": "75f58824a7a14b8012a99e91ed23a80ab090e093"
