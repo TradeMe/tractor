@@ -48,7 +48,7 @@
     "esprima": "^4.0.1",
     "esquery": "^1.0.1",
     "estemplate": "^0.5.1",
-    "mocha": "^5.2.0",
+    "mocha": "^6.0.0",
     "mochawesome": "^3.0.3",
     "optimist": "^0.6.1",
     "pascal-case": "^2.0.1"
