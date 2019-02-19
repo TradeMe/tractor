@@ -42,7 +42,7 @@
     "angular-mocks": "1.6.6",
     "angular-sanitize": "1.6.6",
     "bluebird": "2.10.2",
-    "brfs": "1.4.1",
+    "brfs": "2.0.2",
     "browser-sync": "2.9.11",
     "browserify": "11.2.0",
     "browserify-shim": "3.8.10",
