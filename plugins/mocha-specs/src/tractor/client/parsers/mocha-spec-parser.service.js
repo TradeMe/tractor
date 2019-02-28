@@ -1,15 +1,16 @@
 // Module:
 import { MochaSpecsModule } from '../mocha-specs.module';
 
-// Queries:
-const SUITE_QUERY = 'ExpressionStatement > CallExpression[callee.name="describe"]';
-const SUITE_NAME_QUERY = `${SUITE_QUERY} > Literal`;
-const TEST_QUERY = `${SUITE_QUERY} > FunctionExpression > BlockStatement > ExpressionStatement`;
-
 // Dependencies:
-import esquery from 'esquery';
+import { match, parse } from 'esquery';
 import '../models/mocha-spec';
 import './test-parser-service';
+
+// Queries:
+const SUITE_QUERY = 'ExpressionStatement > CallExpression[callee.name="describe"]';
+const SUITE_NAME_QUERY = parse(`${SUITE_QUERY} > Literal`);
+const TEST_QUERY = parse(`${SUITE_QUERY} > FunctionExpression > BlockStatement > ExpressionStatement`);
+
 
 function MochaSpecParserService (
     MochaSpecModel,
@@ -52,12 +53,12 @@ function MochaSpecParserService (
 
         let state = persistentStateService.get(mochaSpec.name);
 
-        let [suiteName] = esquery(astObject, SUITE_NAME_QUERY);
+        let [suiteName] = match(astObject, SUITE_NAME_QUERY);
         if (suiteName) {
             mochaSpec.suiteName = suiteName.value;
         }
 
-        esquery(astObject, TEST_QUERY).forEach(testASTObject => {
+        match(astObject, TEST_QUERY).forEach(testASTObject => {
             let testMeta = tests[mochaSpec.tests.length];
             let test = testParserService.parse(mochaSpec, testASTObject, testMeta);
             const minimised = state[test.name];

@@ -1,15 +1,15 @@
 // Module:
 import { PageObjectsModule } from '../page-objects.module';
 
-// Queries:
-const ACTION_FUNCTION_QUERY = 'FunctionExpression[params]';
-const INTERACTION_QUERY = 'FunctionExpression > BlockStatement > ExpressionStatement[expression.left.name="result"]';
-
 // Dependencies:
-import esquery from 'esquery';
+import { match, parse } from 'esquery';
 import '../deprecated/action-parser.service';
 import '../models/action';
 import './interaction-parser.service';
+
+// Queries:
+const ACTION_FUNCTION_QUERY = parse('FunctionExpression[params]');
+const INTERACTION_QUERY = parse('FunctionExpression > BlockStatement > ExpressionStatement[expression.left.name="result"]');
 
 function ActionParserService (
     ActionModel,
@@ -24,7 +24,7 @@ function ActionParserService (
         let action = new ActionModel(pageObject);
         action.name = meta.name;
 
-        let [actionFunction] = esquery(astObject, ACTION_FUNCTION_QUERY);
+        let [actionFunction] = match(astObject, ACTION_FUNCTION_QUERY);
         actionFunction.params.forEach(param => {
             let parameterMeta = meta.parameters[action.parameters.length];
             let parameter = new ValueModel(parameterMeta);
@@ -34,7 +34,7 @@ function ActionParserService (
             action.parameters.push(parameter);
         });
 
-        let interactions = esquery(astObject, INTERACTION_QUERY);
+        let interactions = match(astObject, INTERACTION_QUERY);
         if (interactions.length) {
             interactions.forEach(interactionASTObject => {
                 let interaction = interactionParserService.parse(action, interactionASTObject);

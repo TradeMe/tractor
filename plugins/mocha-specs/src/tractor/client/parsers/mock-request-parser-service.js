@@ -1,20 +1,20 @@
 // Module:
 import { MochaSpecsModule } from '../mocha-specs.module';
 
-// Queries:
-const MOCK_REQUEST_ACTION_QUERY = 'CallExpression > MemberExpression > Identifier[name=/^when/]';
-const MOCK_REQUEST_PASSTHROUGH_QUERY = 'Property[key.name="passThrough"] > Literal';
-const MOCK_REQUEST_DATA_QUERY = 'Property[key.name="body"] > Identifier[name!="body"]';
-const MOCK_REQUEST_STATUS_QUERY = 'Property[key.name="status"] > Literal';
-const MOCK_REQUEST_HEADERS_QUERY = 'Property[key.name="headers"] > ObjectExpression > Property';
-
 // Constants:
 const MOCK_REQUEST_ACTION_REGEX = /when(.*)/;
 
 // Dependencies:
-import esquery from 'esquery';
+import { match, parse } from 'esquery';
 import '../models/mock-request';
 import './header-parser-service';
+
+// Queries:
+const MOCK_REQUEST_ACTION_QUERY = parse('CallExpression > MemberExpression > Identifier[name=/^when/]');
+const MOCK_REQUEST_PASSTHROUGH_QUERY = parse('Property[key.name="passThrough"] > Literal');
+const MOCK_REQUEST_DATA_QUERY = parse('Property[key.name="body"] > Identifier[name!="body"]');
+const MOCK_REQUEST_STATUS_QUERY = parse('Property[key.name="status"] > Literal');
+const MOCK_REQUEST_HEADERS_QUERY = parse('Property[key.name="headers"] > ObjectExpression > Property');
 
 function MockRequestParserService (
     SpecMockRequestModel,
@@ -29,7 +29,7 @@ function MockRequestParserService (
     }
 
     function _parseMockRequest (mockRequest, astObject) {
-        let [action] = esquery(astObject, MOCK_REQUEST_ACTION_QUERY);
+        let [action] = match(astObject, MOCK_REQUEST_ACTION_QUERY);
         if (action) {
             [, mockRequest.action] = action.name.match(MOCK_REQUEST_ACTION_REGEX);
         }
@@ -40,23 +40,23 @@ function MockRequestParserService (
             // it before it goes back into the UI:
             mockRequest.url = url.regex.pattern.replace(/\\\?/g, '?');
 
-            let [passThrough] = esquery(options, MOCK_REQUEST_PASSTHROUGH_QUERY);
+            let [passThrough] = match(options, MOCK_REQUEST_PASSTHROUGH_QUERY);
             if (passThrough) {
                 mockRequest.passThrough = passThrough.value;
                 return;
             }
     
-            let [data] = esquery(options, MOCK_REQUEST_DATA_QUERY);
+            let [data] = match(options, MOCK_REQUEST_DATA_QUERY);
             if (data) {
                 mockRequest.data = mockRequest.test.spec.availableMockRequests.find(mockRequest => mockRequest.variableName === data.name);
             }
     
-            let [status] = esquery(options, MOCK_REQUEST_STATUS_QUERY);
+            let [status] = match(options, MOCK_REQUEST_STATUS_QUERY);
             if (status) {
                 mockRequest.status = status.value;
             }
     
-            let headers = esquery(options, MOCK_REQUEST_HEADERS_QUERY);
+            let headers = match(options, MOCK_REQUEST_HEADERS_QUERY);
             headers.forEach(headerASTObject => {
                 let header = headerParserService.parse(mockRequest, headerASTObject);
                 mockRequest.headers.push(header);

@@ -1,23 +1,23 @@
 // Module:
 import { MochaSpecsModule } from '../mocha-specs.module';
 
-// Queries:
-const STEP_QUERY = 'AssignmentExpression > CallExpression[callee.object.name="step"][callee.property.name="then"] > FunctionExpression > BlockStatement';
-const PAGE_OBJECT_QUERY = 'AssignmentExpression > Identifier[name!="element"]';
-const SELECTOR_QUERY = 'AssignmentExpression:has(MemberExpression[object.name="element"])';
-const GROUP_SELECTOR_QUERY = 'AssignmentExpression > CallExpression[callee.object.name="element"]';
-const ELEMENT_SELECTOR_QUERY = 'AssignmentExpression > MemberExpression[object.name="element"]';
-const ASSERTION_QUERY = `ReturnStatement > CallExpression > MemberExpression[property.name=/equal|contain/] > MemberExpression[property.name="eventually"] > MemberExpression[property.name="to"] > CallExpression[callee.name="expect"] > CallExpression`;
-const INTERACTION_QUERY = 'ReturnStatement > CallExpression[callee.object.name="element"]';
-const MOCK_REQUEST_QUERY = 'ReturnStatement > CallExpression[callee.object.name="mockRequests"]';
-
 // Dependencies:
-import esquery from 'esquery';
+import { match, parse } from 'esquery';
 import '../models/interaction';
 import '../models/step';
 import '../models/step-argument';
 import './assertion-parser-service';
 import './mock-request-parser-service';
+
+// Queries:
+const STEP_QUERY = parse('AssignmentExpression > CallExpression[callee.object.name="step"][callee.property.name="then"] > FunctionExpression > BlockStatement');
+const PAGE_OBJECT_QUERY = parse('AssignmentExpression > Identifier[name!="element"]');
+const SELECTOR_QUERY = parse('AssignmentExpression:has(MemberExpression[object.name="element"])');
+const GROUP_SELECTOR_QUERY = parse('AssignmentExpression > CallExpression[callee.object.name="element"]');
+const ELEMENT_SELECTOR_QUERY = parse('AssignmentExpression > MemberExpression[object.name="element"]');
+const ASSERTION_QUERY = parse(`ReturnStatement > CallExpression > MemberExpression[property.name=/equal|contain/] > MemberExpression[property.name="eventually"] > MemberExpression[property.name="to"] > CallExpression[callee.name="expect"] > CallExpression`);
+const INTERACTION_QUERY = parse('ReturnStatement > CallExpression[callee.object.name="element"]');
+const MOCK_REQUEST_QUERY = parse('ReturnStatement > CallExpression[callee.object.name="mockRequests"]');
 
 function StepParserService (
     SpecInteractionModel,
@@ -31,7 +31,7 @@ function StepParserService (
 
     function parse (test, astObject) {
         let step;
-        let [result] = esquery(astObject, STEP_QUERY);
+        let [result] = match(astObject, STEP_QUERY);
         if (result) {
             step = _stepParser(test, result);
         }
@@ -47,20 +47,20 @@ function StepParserService (
     function _stepParser (test, astObject) {
         let step = new SpecStepModel(test);
         
-        let [mockRequest] = esquery(astObject, MOCK_REQUEST_QUERY);
+        let [mockRequest] = match(astObject, MOCK_REQUEST_QUERY);
         if (mockRequest) {
             step = mockRequestParserService.parse(test, mockRequest);
             return step;
         }
 
-        let [pageObject] = esquery(astObject, PAGE_OBJECT_QUERY);
+        let [pageObject] = match(astObject, PAGE_OBJECT_QUERY);
         if (!pageObject) {
             return step;
         }
 
-        let selectors = esquery(astObject, SELECTOR_QUERY);
+        let selectors = match(astObject, SELECTOR_QUERY);
         
-        let [assertion] = esquery(astObject, ASSERTION_QUERY);
+        let [assertion] = match(astObject, ASSERTION_QUERY);
         if (assertion) {
             step = assertionParserService.parse(test, astObject);
             _parseStepPageObject(step, pageObject);
@@ -69,7 +69,7 @@ function StepParserService (
             return step;
         }
 
-        let [interaction] = esquery(astObject, INTERACTION_QUERY);
+        let [interaction] = match(astObject, INTERACTION_QUERY);
         if (interaction) {
             step = new SpecInteractionModel(test);
             _parseStepPageObject(step, pageObject);
@@ -94,7 +94,7 @@ function StepParserService (
             selector = step.selectors[step.selectors.length - 1];
         }
 
-        const [groupSelector] = esquery(astObject, GROUP_SELECTOR_QUERY);
+        const [groupSelector] = match(astObject, GROUP_SELECTOR_QUERY);
         if (groupSelector) {
             selector.element = selector.parentElement.elements.find(element => {
                 return element.variableName === groupSelector.callee.property.name;
@@ -104,7 +104,7 @@ function StepParserService (
             return;
         }
 
-        const [elementSelector] = esquery(astObject, ELEMENT_SELECTOR_QUERY);
+        const [elementSelector] = match(astObject, ELEMENT_SELECTOR_QUERY);
         if (elementSelector) {
             selector.element = selector.parentElement.elements.find(element => {
                 return element.variableName === elementSelector.property.name;

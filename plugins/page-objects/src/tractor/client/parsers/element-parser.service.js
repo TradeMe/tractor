@@ -1,17 +1,17 @@
 // Module:
 import { PageObjectsModule } from '../page-objects.module';
 
-// Queries:
-const SELECTOR_QUERY = 'CallExpression[callee.object.name="by"][callee.property.name="css"] > Literal';
-const ELEMENT_QUERY = `AssignmentExpression > CallExpression[callee.name="find"]`;
-const ELEMENT_MULTIPLE_QUERY = 'AssignmentExpression > FunctionExpression ReturnStatement > CallExpression[callee.object.callee.name="findAll"]';
-const PAGE_OBJECT_QUERY = 'AssignmentExpression > NewExpression[arguments.0.callee.name="find"]';
-const PAGE_OBJECT_MULTIPLE_QUERY = 'AssignmentExpression > FunctionExpression ReturnStatement > NewExpression';
-
 // Dependencies:
-import esquery from 'esquery';
+import { match, parse } from 'esquery';
 import '../deprecated/element-parser.service';
 import '../models/element';
+
+// Queries:
+const SELECTOR_QUERY = parse('CallExpression[callee.object.name="by"][callee.property.name="css"] > Literal');
+const ELEMENT_QUERY = parse(`AssignmentExpression > CallExpression[callee.name="find"]`);
+const ELEMENT_MULTIPLE_QUERY = parse('AssignmentExpression > FunctionExpression ReturnStatement > CallExpression[callee.object.callee.name="findAll"]');
+const PAGE_OBJECT_QUERY = parse('AssignmentExpression > NewExpression[arguments.0.callee.name="find"]');
+const PAGE_OBJECT_MULTIPLE_QUERY = parse('AssignmentExpression > FunctionExpression ReturnStatement > NewExpression');
 
 function ElementParserService (
     ElementModel,
@@ -32,7 +32,7 @@ function ElementParserService (
         element.name = meta.name;
 
         Object.keys(QUERIES).find(query => {
-            let [result] = esquery(astObject, query);
+            let [result] = match(astObject, query);
             if (result) {
                 QUERIES[query](element, result);
                 return element;
@@ -57,7 +57,7 @@ function ElementParserService (
     }
 
     function _elementParser (element, astObject) {
-        let [selector] = esquery(astObject, SELECTOR_QUERY);
+        let [selector] = match(astObject, SELECTOR_QUERY);
         if (selector) {
             _selectorParser(element, selector);
         }
@@ -69,7 +69,7 @@ function ElementParserService (
     }
 
     function _pageObjectParser (element, astObject) {
-        let [selector] = esquery(astObject, SELECTOR_QUERY);
+        let [selector] = match(astObject, SELECTOR_QUERY);
         if (selector) {
             _selectorParser(element, selector);
         }

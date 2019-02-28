@@ -17,7 +17,8 @@
         "strict": true,
         "target": "ES5",
         "typeRoots": [
-            "./node_modules/@types"
+            "./node_modules/@types",
+            "./types"
         ]
     }
 }

@@ -1,16 +1,16 @@
 // Module:
 import { PageObjectsModule } from '../page-objects.module';
 
-// Queries:
-const PAGE_OBJECT_QUERY = 'AssignmentExpression[left.object.name="module"] > CallExpression > FunctionExpression > BlockStatement';
-const ELEMENTS_QUERY = `${PAGE_OBJECT_QUERY} > VariableDeclaration > VariableDeclarator > FunctionExpression > BlockStatement > ExpressionStatement > AssignmentExpression[left.property]:has(CallExpression)`;
-const ACTIONS_QUERY = `${PAGE_OBJECT_QUERY} > ExpressionStatement > AssignmentExpression[left.property]`;
-
 // Dependencies:
-import esquery from 'esquery';
+import { match, parse } from 'esquery';
 import '../models/page-object';
 import './action-parser.service';
 import './element-parser.service';
+
+// Queries:
+const PAGE_OBJECT_QUERY = 'AssignmentExpression[left.object.name="module"] > CallExpression > FunctionExpression > BlockStatement';
+const ELEMENTS_QUERY = parse(`${PAGE_OBJECT_QUERY} > VariableDeclaration > VariableDeclarator > FunctionExpression > BlockStatement > ExpressionStatement > AssignmentExpression[left.property]:has(CallExpression)`);
+const ACTIONS_QUERY = parse(`${PAGE_OBJECT_QUERY} > ExpressionStatement > AssignmentExpression[left.property]`);
 
 function PageObjectParserService (
     PageObjectModel,
@@ -57,7 +57,7 @@ function PageObjectParserService (
 
         let state = persistentStateService.get(pageObject.name);
 
-        esquery(astObject, ELEMENTS_QUERY).forEach(elementASTObject => {
+        match(astObject, ELEMENTS_QUERY).forEach(elementASTObject => {
             let elementMeta = elements[pageObject.domElements.length];
             let domElement = elementParserService.parse(pageObject, elementASTObject, elementMeta);
             domElement.minimised = !!state[domElement.name];
@@ -65,7 +65,7 @@ function PageObjectParserService (
             pageObject.domElements.push(domElement);
         });
 
-        esquery(astObject, ACTIONS_QUERY).forEach(actionASTObject => {
+        match(astObject, ACTIONS_QUERY).forEach(actionASTObject => {
             let actionMeta = actions[pageObject.actions.length];
             let action = actionParserService.parse(pageObject, actionASTObject, actionMeta);
             action.minimised = !!state[action.name];
