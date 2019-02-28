@@ -203,6 +203,8 @@ export class File implements Item {
     private _setData (data: Buffer, modifyTime: number): void {
         this.buffer = data;
         this.content = this.buffer.toString();
+        // tslint:disable-next-line
+        console.log(modifyTime);
         this._modifyTime = modifyTime;
     }
 }
