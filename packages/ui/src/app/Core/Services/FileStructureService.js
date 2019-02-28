@@ -12,6 +12,7 @@ function fileStructureServiceFactory (
 ) {
     return function (fileStructureUrl) {
         var _fileStructure = null;
+        var _syncing = null;
 
         if (!fileStructureUrl.startsWith(URL_SEPERATOR)) {
             fileStructureUrl = URL_SEPERATOR + fileStructureUrl;
@@ -37,9 +38,9 @@ function fileStructureServiceFactory (
         });
 
         realTimeService.connect('watch-file-structure' + fileStructureUrl, {
-            'file-structure-change': getFileStructure
+            'file-structure-change': syncFileStructure
         });
-        getFileStructure();
+        syncFileStructure();
 
         return service;
 
@@ -53,9 +54,13 @@ function fileStructureServiceFactory (
             });
         }
 
-        function getFileStructure () {
-            return $http.get('/fs' + fileStructureUrl)
+        function syncFileStructure (syncUrl) {
+            _syncing = $http.get('/fs' + (syncUrl || fileStructureUrl))
             .then(updateFileStructure);
+        }
+
+        function getFileStructure () {
+            return _syncing;
         }
 
         function moveItem (itemUrl, options) {
@@ -100,10 +105,44 @@ function fileStructureServiceFactory (
             });
         }
 
-        function updateFileStructure (fileStructure) {
-            getAllFiles(fileStructure);
-            getAllFilesByUrl(fileStructure);
-            _fileStructure = fileStructure;
+        function updateFileStructure (fileStructureChunk) {
+            getAllFiles(fileStructureChunk);
+
+            if (!_fileStructure) {
+                getAllFilesByUrl(fileStructureChunk);
+                _fileStructure = fileStructureChunk;
+                _fileStructure.modified = 0;
+                return;
+            }
+
+            var toReplace;
+            var searching = _fileStructure;
+            while (!toReplace && searching) {
+                toReplace = searching.directories.find(function (directory) {
+                    return fileStructureChunk.url === directory.url;
+                });
+                if (!toReplace) {
+                    searching = searching.directories.find(function (directory) {
+                        return fileStructureChunk.url.indexOf(directory.url) === 0;
+                    });
+                }
+            }
+            if (!toReplace) {
+                var oldModified = _fileStructure.modified;
+                _fileStructure = fileStructureChunk;
+                _fileStructure.modified = oldModified + 1;
+                return;
+            }
+            toReplace.allFiles.forEach(function (file) {
+                delete _fileStructure.allFilesByPath[file.path];
+                delete _fileStructure.allFilesByUrl[file.url];
+            });
+            fileStructureChunk.allFiles.forEach(function (file) {
+                _fileStructure.allFilesByUrl[file.url] = file;
+                _fileStructure.allFilesByPath[file.path] = file;
+            });
+            searching.directories.splice(searching.directories.indexOf(toReplace), 1, fileStructureChunk);
+            _fileStructure.modified += 1;
         }
     };
 }

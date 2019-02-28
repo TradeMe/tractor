@@ -33,7 +33,7 @@ var FileTreeController = (function () {
         this.moveItem = this.moveItem.bind(this);
 
         $scope.$watch(function () {
-            return this.fileStructure;
+            return this.fileStructure && this.fileStructure.modified;
         }.bind(this), function () {
             this.fileStructure = updateFileStructure.call(this);
         }.bind(this));
