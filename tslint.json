@@ -3,6 +3,11 @@
         "typeCheck": true
     },
     "extends": ["tslint:all"],
+    "linterOptions": {
+        "exclude": [
+            "**/fixtures/**"
+        ]
+    },
     "rules": {
         "completed-docs": false,
         "interface-name": false,
@@ -15,10 +20,12 @@
         "no-null-keyword": false,
         "no-object-literal-type-assertion": false,
         "no-parameter-properties": false,        
+        "no-this-assignment": false,
         "only-arrow-functions": false,
         "prefer-function-over-method": false,
         "strict-boolean-expressions": [false],
 
+        "align": [true, "parameters", "elements", "members", "statements"],
         "array-type": [true, "generic"],
         "arrow-parens": [true, "ban-single-arg-parens"],
         "comment-format": [true, "check-space"],
@@ -26,6 +33,7 @@
         "quotemark": [true, "single"],
         "space-before-function-paren": [true, "always"],
         "trailing-comma": [true, "never"],
+        "triple-equals": [true, "allow-null-check"],
         "typedef": [true, "call-signature", "arrow-call-signature", "parameter"],
         "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"]
     }

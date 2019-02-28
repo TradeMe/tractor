@@ -1,3 +1,4 @@
 **/*.po.js
 **/*.e2e-spec.js
+**/fixtures/**
 packages/ui/
