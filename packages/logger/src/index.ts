@@ -19,6 +19,13 @@ import * as npmlog from 'npmlog';
 enableColor();
 enableUnicode();
 
+export function mute (): void {
+    // HACK:
+    // The lint rule is broken, this assertion is necessary to overwriting "readonly".
+    // tslint:disable:no-unnecessary-type-assertion
+    (npmlog.level as string) = 'silent';
+}
+
 const INFO_LEVEL = 2000;
 const INFO_STYLE: StyleObject = {
     fg: 'blue'

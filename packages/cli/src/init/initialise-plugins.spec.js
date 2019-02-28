@@ -17,14 +17,8 @@ describe('tractor - initialise-plugins:', () => {
         });
         let plugins = [plugin];
 
-        sinon.stub(tractorLogger, 'info');
-
-        try {
-            await initialisePlugins(di, plugins);
-            expect(di.call).to.have.been.calledWith(plugin.init);
-        } finally {
-            tractorLogger.info.restore();
-        }
+        await initialisePlugins(di, plugins);
+        expect(di.call).to.have.been.calledWith(plugin.init);
     });
 
     it('should tell the user what it is doing', async () => {

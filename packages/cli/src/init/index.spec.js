@@ -16,16 +16,10 @@ describe('tractor - init:', () => {
             call: () => Promise.resolve()
         });
 
-        sinon.stub(tractorLogger, 'info');
-
-        try {
-            await init(di);
-            expect(di.call).to.have.been.calledWith(createTractorDirectory);
-            expect(di.call).to.have.been.calledWith(copyProtractorConfig);
-            expect(di.call).to.have.been.calledWith(initialisePlugins);
-        } finally {
-            tractorLogger.info.restore();
-        }
+        await init(di);
+        expect(di.call).to.have.been.calledWith(createTractorDirectory);
+        expect(di.call).to.have.been.calledWith(copyProtractorConfig);
+        expect(di.call).to.have.been.calledWith(initialisePlugins);
     });
 
     it('should tell the user what it is doing', async () => {

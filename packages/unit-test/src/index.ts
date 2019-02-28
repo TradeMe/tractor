@@ -1,7 +1,15 @@
 import * as chai from 'chai';
 import { ineeda } from 'ineeda';
+import * as npmlog from 'npmlog';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
+
+// HACK:
+// Duplicating `mute` logic from `@tractor/logger` so that we don't have a circular
+// module dependency.
+// The lint rule is broken, this assertion is necessary to overwriting "readonly".
+// tslint:disable:no-unnecessary-type-assertion
+(npmlog.level as string) = 'silent';
 
 export const NOOP: () => void = (): void => {
     return;

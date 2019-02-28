@@ -1,50 +1,68 @@
 // Test setup:
-import { expect, sinon } from '@tractor/unit-test';
+import { expect } from '@tractor/unit-test';
 
 // Dependencies:
 import * as npmlog from 'npmlog';
 
 // Under test:
-import { error, info, warn } from './index';
+import { error, info, mute, warn } from './index';
 
 describe('@tractor/logger:', () => {
     it('should have the correct heading', () => {
         expect(npmlog.heading).to.equal('🚜  tractor');
     });
 
+    describe('@tractor/logger: mute:', () => {
+        it('should set the npmlog level to silent', () => {
+            mute();
+
+            expect(npmlog.level).to.equal('silent');
+        });
+    });
+
     describe('@tractor/logger: error:', () => {
         it('should pass through to npmlog', () => {
-            sinon.stub(npmlog, 'log');
+            const log = jest.spyOn(npmlog, 'log');
 
             error('error');
 
-            expect(npmlog.log).to.have.been.calledWith('tractor-error', '', 'error');
+            expect(log.mock.calls).to.deep.equal([['tractor-error', '', 'error']]);
 
-            (npmlog.log as sinon.SinonStub).restore();
+            log.mockRestore();
+        });
+
+        it('should handle multiple messages', () => {
+            const log = jest.spyOn(npmlog, 'log');
+
+            error('error', 'details');
+
+            expect(log.mock.calls).to.deep.equal([['tractor-error', '', 'error', 'details']]);
+
+            log.mockRestore();
         });
     });
 
     describe('@tractor/logger: info:', () => {
         it('should pass through to npmlog', () => {
-            sinon.stub(npmlog, 'log');
+            const log = jest.spyOn(npmlog, 'log');
 
             info('info');
 
-            expect(npmlog.log).to.have.been.calledWith('tractor-info', '', 'info');
+            expect(log.mock.calls).to.deep.equal([['tractor-info', '', 'info']]);
 
-            (npmlog.log as sinon.SinonStub).restore();
+            log.mockRestore();
         });
     });
 
     describe('@tractor/logger: warn:', () => {
         it('should pass through to npmlog', () => {
-            sinon.stub(npmlog, 'log');
+            const log = jest.spyOn(npmlog, 'log');
 
             warn('warn');
 
-            expect(npmlog.log).to.have.been.calledWith('tractor-warn', '', 'warn');
+            expect(log.mock.calls).to.deep.equal([['tractor-warn', '', 'warn']]);
 
-            (npmlog.log as sinon.SinonStub).restore();
+            log.mockRestore();
         });
     });
 });

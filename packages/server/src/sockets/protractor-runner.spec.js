@@ -31,7 +31,6 @@ describe('@tractor/server - sockets: protractor-runner:', () => {
         };
 
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
-        sinon.stub(tractorLogger, 'info');
 
         let options = {
             baseUrl: 'baseUrl'
@@ -50,7 +49,6 @@ describe('@tractor/server - sockets: protractor-runner:', () => {
             expect(childProcess.spawn).to.have.been.calledWith('node', [protractorPath, protractorConfigPath, '--baseUrl', 'baseUrl', '--specs', specs, '--params.debug', false]);
         } finally {
             childProcess.spawn.restore();
-            tractorLogger.info.restore();
         }
     });
 
@@ -71,7 +69,6 @@ describe('@tractor/server - sockets: protractor-runner:', () => {
         };
 
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
-        sinon.stub(tractorLogger, 'info');
 
         let options = {
             baseUrl: 'baseUrl',
@@ -93,7 +90,6 @@ describe('@tractor/server - sockets: protractor-runner:', () => {
             expect(childProcess.spawn).to.have.been.calledWith('node', [protractorPath, protractorConfPath, '--baseUrl', 'baseUrl', '--params.debug', false, '--params.tags', '#tag']);
         } finally  {
             childProcess.spawn.restore();
-            tractorLogger.info.restore();
         }
     });
 
@@ -108,7 +104,6 @@ describe('@tractor/server - sockets: protractor-runner:', () => {
         };
 
         sinon.stub(Promise, 'reject');
-        sinon.stub(tractorLogger, 'info');
 
         let options = {};
 
@@ -117,7 +112,6 @@ describe('@tractor/server - sockets: protractor-runner:', () => {
             expect(Promise.reject).to.have.been.calledWith(new TractorError('`baseUrl` must be defined.'));
         } finally {
             Promise.reject.restore();
-            tractorLogger.info.restore();
         }
     });
 
@@ -138,7 +132,6 @@ describe('@tractor/server - sockets: protractor-runner:', () => {
 
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
         sinon.spy(Promise, 'reject');
-        sinon.stub(tractorLogger, 'info');
 
         let options = {
             baseUrl: 'baseUrl'
@@ -159,7 +152,6 @@ describe('@tractor/server - sockets: protractor-runner:', () => {
         } finally {
             childProcess.spawn.restore();
             Promise.reject.restore();
-            tractorLogger.info.restore();
         }
     });
 
@@ -180,7 +172,6 @@ describe('@tractor/server - sockets: protractor-runner:', () => {
 
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
         sinon.spy(socket, 'disconnect');
-        sinon.stub(tractorLogger, 'info');
 
         let options = {
             baseUrl: 'baseUrl'
@@ -196,7 +187,6 @@ describe('@tractor/server - sockets: protractor-runner:', () => {
             expect(socket.disconnect.callCount).to.equal(1);
         } finally {
             childProcess.spawn.restore();
-            tractorLogger.info.restore();
         }
     });
 
@@ -218,7 +208,6 @@ describe('@tractor/server - sockets: protractor-runner:', () => {
 
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
         sinon.stub(tractorLogger, 'error');
-        sinon.stub(tractorLogger, 'info');
 
         let options = {
             baseUrl: 'baseUrl'
@@ -235,7 +224,6 @@ describe('@tractor/server - sockets: protractor-runner:', () => {
         } finally {
             childProcess.spawn.restore();
             tractorLogger.error.restore();
-            tractorLogger.info.restore();
         }
     });
 
@@ -257,7 +245,6 @@ describe('@tractor/server - sockets: protractor-runner:', () => {
 
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
         sinon.stub(tractorLogger, 'error');
-        sinon.stub(tractorLogger, 'info');
 
         let options = {
             baseUrl: 'baseUrl'
@@ -274,7 +261,6 @@ describe('@tractor/server - sockets: protractor-runner:', () => {
         } finally {
             childProcess.spawn.restore();
             tractorLogger.error.restore();
-            tractorLogger.info.restore();
         }
     });
 
@@ -296,7 +282,6 @@ describe('@tractor/server - sockets: protractor-runner:', () => {
 
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
         sinon.spy(socket, 'emit');
-        sinon.stub(tractorLogger, 'info');
 
         let options = {
             baseUrl: 'baseUrl'
@@ -313,7 +298,6 @@ describe('@tractor/server - sockets: protractor-runner:', () => {
             expect(socket.emit).to.have.been.calledWith('protractor-out', 'Scenario');
         } finally {
             childProcess.spawn.restore();
-            tractorLogger.info.restore();
         }
     });
 
@@ -335,7 +319,6 @@ describe('@tractor/server - sockets: protractor-runner:', () => {
 
         sinon.stub(childProcess, 'spawn').returns(spawnEmitter);
         sinon.spy(socket, 'emit');
-        sinon.stub(tractorLogger, 'info');
 
         let options = {
             baseUrl: 'baseUrl'
@@ -352,7 +335,6 @@ describe('@tractor/server - sockets: protractor-runner:', () => {
             expect(socket.emit).to.have.been.calledWith('protractor-out', 'error');
         } finally {
             childProcess.spawn.restore();
-            tractorLogger.info.restore();
         }
     });
 });

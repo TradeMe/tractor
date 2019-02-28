@@ -17,14 +17,8 @@ describe('tractor - upgrade-plugins:', () => {
         });
         let plugins = [plugin];
 
-        sinon.stub(tractorLogger, 'info');
-
-        try {
-            await upgradePlugins(di, plugins);
-            expect(di.call).to.have.been.calledWith(plugin.upgrade);
-        } finally {
-            tractorLogger.info.restore();
-        }
+        await upgradePlugins(di, plugins);
+        expect(di.call).to.have.been.calledWith(plugin.upgrade);
     });
 
     it('should tell the user what it is doing', async () => {
