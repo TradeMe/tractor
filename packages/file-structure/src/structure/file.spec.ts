@@ -572,14 +572,23 @@ describe('@tractor/file-structure - File:', () => {
             const fileStructure = new FileStructure(path.resolve(__dirname, '../../fixtures/file-read-modified'));
             const file = new File(path.join(fileStructure.path, 'file.ext'), fileStructure);
 
+            // tslint:disable-next-line
+            console.log('SAVING');
+
             await file.save('🚜');
 
+            // tslint:disable-next-line
+            console.log('READING');
             await file.read();
             const { buffer } = file;
 
+            // tslint:disable-next-line
+            console.log('WRITING FILE');
             // Write to file manually to force re-read:
             await writeFile(file.path, '🔥');
 
+            // tslint:disable-next-line
+            console.log('READING');
             await file.read();
             const bufferAgain = file.buffer;
 
