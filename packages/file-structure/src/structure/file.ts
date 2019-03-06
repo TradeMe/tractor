@@ -152,6 +152,8 @@ export class File implements Item {
 
     public async read (): Promise<string> {
         const { mtimeMs } = await stat(this.path);
+        // tslint:disable-next-line
+        console.log('STAT', this.path, mtimeMs);
         if (this._modifyTime && mtimeMs <= this._modifyTime) {
             return this.content!;
         }
@@ -204,7 +206,7 @@ export class File implements Item {
         this.buffer = data;
         this.content = this.buffer.toString();
         // tslint:disable-next-line
-        console.log(modifyTime);
+        console.log('SETTING', this.path, modifyTime);
         this._modifyTime = modifyTime;
     }
 }
