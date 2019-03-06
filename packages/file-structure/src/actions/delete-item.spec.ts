@@ -179,7 +179,7 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
 
     it('should cleanup a directory', async () => {
         const readdir = promisify(fs.readdir);
-        const fileStructure = new FileStructure(path.resolve(__dirname, '../../fixtures/actions-delete-item-cleanup-file'));
+        const fileStructure = new FileStructure(path.resolve(__dirname, '../../fixtures/actions-delete-item-cleanup-directory'));
         const directory = new Directory(path.join(fileStructure.path, 'directory'), fileStructure);
         const subdirectory = new Directory(path.join(directory.path, 'sub-directory'), fileStructure);
         await subdirectory.save();
