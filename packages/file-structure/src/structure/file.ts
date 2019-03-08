@@ -79,6 +79,8 @@ export class File implements Item {
     }
 
     public async delete (options: ItemDeleteOptions = { }): Promise<void> {
+        // tslint:disable
+        console.log('deleting file', this.path);
         const { isMove } = options;
 
         if (!isMove && this.referencedBy.length) {

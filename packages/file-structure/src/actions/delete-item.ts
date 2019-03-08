@@ -32,6 +32,8 @@ export function createDeleteItemHandler (fileStructure: FileStructure): Action {
             if (rimraf && toDelete instanceof Directory) {
                 await toDelete.rimraf();
             } else if (cleanup) {
+                // tslint:disable
+                console.log('starting cleanup', toDelete.path);
                 await toDelete.cleanup();
             } else {
                 await toDelete.delete();
