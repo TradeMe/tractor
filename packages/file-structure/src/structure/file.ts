@@ -158,6 +158,8 @@ export class File implements Item {
             return this.content!;
         }
         try {
+            // tslint:disable
+            console.log('reading', this.path);
             const buffer = await readFile(this.path);
             this._setData(buffer, mtimeMs);
             return this.content!;
