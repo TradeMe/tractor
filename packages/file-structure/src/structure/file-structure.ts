@@ -124,6 +124,7 @@ export class FileStructure implements Structure {
                 }
             }
             if (changeDirectory) {
+                console.log(changeDirectory.path);
                 await changeDirectory.read();
                 this.watcher.emit('change', changeDirectory);
             }
