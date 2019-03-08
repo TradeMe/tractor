@@ -24,14 +24,16 @@ describe('@tractor/file-structure - actions/watch-file-structure:', () => {
         });
 
         const url = await new Promise((resolve): void => {
-            connection.on('connect', () => directory.delete());
-            connection.on('file-structure-change', (url: string) => {
+            connection.on('connect', async () => {
+                await directory.delete();
+            });
+            connection.on('file-structure-change', (changeUrl: string) => {
                 connection.close();
-                resolve(url);
+                resolve(changeUrl);
             });
         });
 
-        expect(url).to.equal(fileStructure.url);;
+        expect(url).to.equal(fileStructure.url);
 
         await close();
         await fileStructure.structure.rimraf();

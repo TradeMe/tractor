@@ -23,7 +23,7 @@ export class FileStructure implements Structure {
     public referenceManager!: ReferenceManager;
     public structure!: Directory;
     public url: string;
-    public watcher?: EventEmitter;
+    public watcher: EventEmitter | null = null;
 
     private _ready = false;
     private _watcher: FSWatcher | null = null;
@@ -91,9 +91,13 @@ export class FileStructure implements Structure {
     }
 
     public watch (): EventEmitter {
+        if (this.watcher) {
+            return this.watcher;
+        }
+
         info(`Watching "${this.path}" for changes...`);
-        const watcher = new EventEmitter();
         this._ready = false;
+        this.watcher = new EventEmitter();
         this._watcher = watch(this.path, {
             ignoreInitial: true,
             ignored: DOT_FILE_REGEX,
@@ -101,11 +105,11 @@ export class FileStructure implements Structure {
         })
         .on('ready', () => {
             this._ready = true;
-            watcher.emit('ready');
+            this.watcher!.emit('ready');
         })
         .on('all', async (event: string, itemPath: string) => {
             // Bail out if `unwatch` has been called already;
-            if (!this._watcher) {
+            if (!this.watcher) {
                 return;
             }
 
@@ -119,14 +123,17 @@ export class FileStructure implements Structure {
             }
             if (changeDirectory) {
                 await changeDirectory.read();
-                watcher.emit('change', changeDirectory);
+                this.watcher.emit('change', changeDirectory);
             }
         });
-        return watcher;
+        return this.watcher;
     }
 
     private _stopWatching (): void {
-        this._watcher!.close();
+        if (this._watcher) {
+            this._watcher.close();
+        }
         this._watcher = null;
+        this.watcher = null;
     }
 }
