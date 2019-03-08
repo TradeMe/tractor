@@ -101,6 +101,7 @@ export class Directory implements Item, Structure {
             try {
                 await rmdir(this.path);
                 this.parent.removeItem(this);
+                console.log('deleted directory', this.path);
             } catch {
                 throw new TractorError(`Cannot delete "${this.path}". Something went wrong.`);
             }
