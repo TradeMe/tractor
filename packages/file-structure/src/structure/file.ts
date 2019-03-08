@@ -79,8 +79,6 @@ export class File implements Item {
     }
 
     public async delete (options: ItemDeleteOptions = { }): Promise<void> {
-        // tslint:disable
-        console.log('deleting file', this.path);
         const { isMove } = options;
 
         if (!isMove && this.referencedBy.length) {
@@ -158,8 +156,6 @@ export class File implements Item {
             return this.content!;
         }
         try {
-            // tslint:disable
-            console.log('reading', this.path);
             const buffer = await readFile(this.path);
             this._setData(buffer, mtimeMs);
             return this.content!;

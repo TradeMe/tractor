@@ -95,13 +95,10 @@ export class Directory implements Item, Structure {
     }
 
     public async delete (): Promise<Directory | void> {
-        // tslint:disable
-        console.log('deleting directory', this.path);
         if (!this.directories.length && !this.files.length) {
             try {
                 await rmdir(this.path);
                 this.parent.removeItem(this);
-                console.log('deleted directory', this.path);
             } catch {
                 throw new TractorError(`Cannot delete "${this.path}". Something went wrong.`);
             }
