@@ -143,15 +143,21 @@ export class Directory implements Item, Structure {
     }
 
     public async read (): Promise<Array<string>> {
-        if (this._reading) {
-            return this._reading;
-        }
         try {
+            if (this._reading) {
+                // tslint:disable
+                console.log('already reading', this.path);
+                return this._reading;
+            }
+            // tslint:disable
+            console.log('reading', this.path);
             this._reading = readdir(this.path);
             const itemPaths = await this._reading;
             await this._readItems(itemPaths);
             return this._reading;
-        } catch {
+        } catch (e) {
+            // tslint:disable
+            console.log('error reading', e);
             throw new TractorError(`Cannot read "${this.path}". Something went wrong.`);
         } finally {
             this._reading = null;

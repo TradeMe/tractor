@@ -114,6 +114,8 @@ export class FileStructure implements Structure {
             }
 
             const changeDirectory = itemPath === this.path ? this.structure : this.allDirectoriesByPath[path.dirname(itemPath)];
+            // tslint:disable
+            console.log(event);
             if (FILE_STRUCTURE_DELETE_EVENTS.includes(event)) {
                 const item = this.allDirectoriesByPath[itemPath] || this.allFilesByPath[itemPath];
                 if (item) {
@@ -122,6 +124,7 @@ export class FileStructure implements Structure {
                 }
             }
             if (changeDirectory && await changeDirectory.exists()) {
+                console.log(changeDirectory.path);
                 await changeDirectory.read();
                 this.watcher.emit('change', changeDirectory);
             }
