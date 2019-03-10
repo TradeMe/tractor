@@ -94,6 +94,14 @@ export class File implements Item {
         }
     }
 
+    public async exists (): Promise<fs.Stats | null> {
+        try {
+            return stat(this.path);
+        } catch {
+            return null;
+        }
+    }
+
     public async move (update: ItemMoveUpdate, options: ItemDeleteOptions = { }): Promise<void> {
         const { isCopy } = options;
         update.oldPath = this.path;

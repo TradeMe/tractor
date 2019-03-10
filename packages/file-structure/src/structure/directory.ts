@@ -107,6 +107,14 @@ export class Directory implements Item, Structure {
         }
     }
 
+    public async exists (): Promise<fs.Stats | null> {
+        try {
+            return stat(this.path);
+        } catch {
+            return null;
+        }
+    }
+
     public init (): void {
         this.directories = [];
         this.allDirectories = [];
