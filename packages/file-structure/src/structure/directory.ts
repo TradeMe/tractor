@@ -154,13 +154,13 @@ export class Directory implements Item, Structure {
             this._reading = readdir(this.path);
             const itemPaths = await this._reading;
             await this._readItems(itemPaths);
-            return this._reading;
+            this._reading = null;
+            return itemPaths;
         } catch (e) {
+            this._reading = null;
             // tslint:disable
             console.log('error reading', e);
             throw new TractorError(`Cannot read "${this.path}". Something went wrong.`);
-        } finally {
-            this._reading = null;
         }
     }
 
