@@ -145,12 +145,8 @@ export class Directory implements Item, Structure {
     public async read (): Promise<Array<string>> {
         try {
             if (this._reading) {
-                // tslint:disable
-                console.log('already reading', this.path);
                 return this._reading;
             }
-            // tslint:disable
-            console.log('reading', this.path);
             this._reading = readdir(this.path);
             const itemPaths = await this._reading;
             await this._readItems(itemPaths);
@@ -158,8 +154,6 @@ export class Directory implements Item, Structure {
             return itemPaths;
         } catch (e) {
             this._reading = null;
-            // tslint:disable
-            console.log('error reading', e);
             throw new TractorError(`Cannot read "${this.path}". Something went wrong.`);
         }
     }
