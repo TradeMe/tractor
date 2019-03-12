@@ -54,6 +54,8 @@ export class ScreenSize {
         const actualSize = await this._getSize();
         const actualHeight = actualSize.height;
         const actualWidth = actualSize.width;
+        // tslint:disable
+        console.log(height, actualHeight, width, actualWidth);
         if (actualHeight !== height) {
             info(`Browser height could not be set to "${height}px". Actual height is ${actualHeight}px`);
         }
