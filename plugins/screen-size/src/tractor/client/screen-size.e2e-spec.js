@@ -43,7 +43,7 @@ describe('Screen Size', function () {
         step = step.then(function () {
             var element;
             element = screenSize;
-            return expect(element.getWidth()).to.eventually.equal(1024);
+            return expect(element.getWidth()).to.eventually.equal(1023);
         });
         return step;
     });
@@ -90,7 +90,7 @@ describe('Screen Size', function () {
         step = step.then(function () {
             var element;
             element = screenSize;
-            return expect(element.getWidth()).to.eventually.equal(1024);
+            return expect(element.getWidth()).to.eventually.equal(1023);
         });
         return step;
     });
