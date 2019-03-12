@@ -34,7 +34,9 @@ export class ScreenSize {
     }
 
     public async maximise (): Promise<void> {
-        return this._browser.driver.manage().window().maximize();
+        const height = await this.getScreenHeight();
+        const width = await this.getScreenWidth();
+        return this._browser.driver.manage().window().setSize(width, height);
     }
 
     public async setSize (size: string = DEFAULT): Promise<void> {
@@ -54,8 +56,6 @@ export class ScreenSize {
         const actualSize = await this._getSize();
         const actualHeight = actualSize.height;
         const actualWidth = actualSize.width;
-        // tslint:disable
-        console.log(height, actualHeight, width, actualWidth);
         if (actualHeight !== height) {
             info(`Browser height could not be set to "${height}px". Actual height is ${actualHeight}px`);
         }
