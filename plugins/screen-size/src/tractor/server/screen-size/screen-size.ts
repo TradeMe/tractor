@@ -36,6 +36,8 @@ export class ScreenSize {
     public async maximise (): Promise<void> {
         const height = await this.getScreenHeight();
         const width = await this.getScreenWidth();
+        // tslint:disable
+        console.log(height, width);
         return this._browser.driver.manage().window().setSize(width, height);
     }
 
