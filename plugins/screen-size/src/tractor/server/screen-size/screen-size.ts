@@ -34,11 +34,16 @@ export class ScreenSize {
     }
 
     public async maximise (): Promise<void> {
-        const height = await this.getScreenHeight();
-        const width = await this.getScreenWidth();
+        const screenHeight = await this.getScreenHeight();
+        const screenWidth = await this.getScreenWidth();
+        // tslint:disable
+        console.log(screenHeight, screenWidth);
+        const result = this._browser.driver.manage().window().setSize(screenWidth, screenHeight);
+        const height = await this.getHeight();
+        const width = await this.getWidth();
         // tslint:disable
         console.log(height, width);
-        return this._browser.driver.manage().window().setSize(width, height);
+        return result;
     }
 
     public async setSize (size: string = DEFAULT): Promise<void> {
