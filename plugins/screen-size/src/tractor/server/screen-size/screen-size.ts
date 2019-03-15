@@ -36,14 +36,9 @@ export class ScreenSize {
     public async maximise (): Promise<void> {
         const screenHeight = await this.getScreenHeight();
         const screenWidth = await this.getScreenWidth();
-        // tslint:disable
-        console.log(screenHeight, screenWidth);
-        const result = this._browser.driver.manage().window().setSize(screenWidth, screenHeight);
-        const height = await this.getHeight();
-        const width = await this.getWidth();
-        // tslint:disable
-        console.log(height, width);
-        return result;
+        // Cannot guarantee that `.window().maximize()` will be able to set to the
+        // total available height, so trying one pixel less??? 🙃🙃🙃
+        return this._browser.driver.manage().window().setSize(screenWidth - 1, screenHeight - 1);
     }
 
     public async setSize (size: string = DEFAULT): Promise<void> {
