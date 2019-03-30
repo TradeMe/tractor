@@ -1,4 +1,4 @@
-/*{"name":"Mocha Spec file","tests":[{"name":"Create Mocha Spec file"},{"name":"Rename Mocha Spec file","reason":"Test fails because of \"stale element\"},{"name":"Invalid name - required"}],"version":"0.1.0"}*/
+/*{"name":"Mocha Spec file","tests":[{"name":"Create Mocha Spec file"},{"name":"Rename Mocha Spec file"},{"name":"Invalid name - required"}],"version":"0.1.0"}*/
 describe('Mocha Spec file', function () {
     it('Create Mocha Spec file', function () {
         var TractorMochaSpecs = require('./tractor-mocha-specs.po.js'), tractorMochaSpecs = new TractorMochaSpecs();
@@ -38,7 +38,7 @@ describe('Mocha Spec file', function () {
         });
         return step;
     });
-    it.skip('Rename Mocha Spec file', function () {
+    it('Rename Mocha Spec file', function () {
         var TractorMochaSpecs = require('./tractor-mocha-specs.po.js'), tractorMochaSpecs = new TractorMochaSpecs();
         var Tractor = require('../../../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
         var ControlPanel = require('../../../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();

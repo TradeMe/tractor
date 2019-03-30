@@ -1,5 +1,5 @@
 // Dependencies:
-import { INJECTION, TractorDIFunc } from '@tractor/dependency-injection';
+import { inject } from '@tractor/dependency-injection';
 import { info } from '@tractor/logger';
 import { Express, Request, Response, static as expressStatic } from 'express';
 import { Server } from 'socket.io';
@@ -14,27 +14,24 @@ import { createRefactorItemHandler } from './actions/refactor-item';
 import { createSaveItemHandler } from './actions/save-item';
 import { watchFileStructure } from './actions/watch-file-structure';
 
-export function serveFileStructure (application: Express, sockets: Server): (fileStructure: FileStructure) => void {
-    return function (fileStructure: FileStructure): void {
-        const createEndpoint = createEndpointFactory(fileStructure);
-        const createItemEndpoint = createItemEndpointFactory(createEndpoint);
-        const createItemAction = createItemActionFactory(fileStructure);
+export const serveFileStructure = inject((application: Express, sockets: Server): (fileStructure: FileStructure) => void => function (fileStructure: FileStructure): void {
+    const createEndpoint = createEndpointFactory(fileStructure);
+    const createItemEndpoint = createItemEndpointFactory(createEndpoint);
+    const createItemAction = createItemActionFactory(fileStructure);
 
-        const staticEndPoint = createEndpoint('/fs/static');
-        info(`Serving "${fileStructure.path}" from "${staticEndPoint}".`);
+    const staticEndPoint = createEndpoint('/fs/static');
+    info(`Serving "${fileStructure.path}" from "${staticEndPoint}".`);
 
-        application.use(staticEndPoint, expressStatic(fileStructure.path));
+    application.use(staticEndPoint, expressStatic(fileStructure.path));
 
-        application.delete(createItemEndpoint('/fs'), createItemAction(createDeleteItemHandler));
-        application.post(createItemEndpoint('/fs/move'), createItemAction(createMoveItemHandler));
-        application.get(createItemEndpoint('/fs'), createItemAction(createOpenItemHandler));
-        application.post(createItemEndpoint('/fs/refactor'), createItemAction(createRefactorItemHandler));
-        application.put(createItemEndpoint('/fs'), createItemAction(createSaveItemHandler));
+    application.delete(createItemEndpoint('/fs'), createItemAction(createDeleteItemHandler));
+    application.post(createItemEndpoint('/fs/move'), createItemAction(createMoveItemHandler));
+    application.get(createItemEndpoint('/fs'), createItemAction(createOpenItemHandler));
+    application.post(createItemEndpoint('/fs/refactor'), createItemAction(createRefactorItemHandler));
+    application.put(createItemEndpoint('/fs'), createItemAction(createSaveItemHandler));
 
-        watchFileStructure(fileStructure, sockets.of(createEndpoint('/watch-file-structure')));
-    };
-}
-(serveFileStructure as TractorDIFunc<void>)[INJECTION] = ['application', 'sockets'];
+    watchFileStructure(fileStructure, sockets.of(createEndpoint('/watch-file-structure')));
+}, 'application', 'sockets');
 
 function createEndpointFactory (fileStructure: FileStructure): (prefix: string) => string {
     return function (prefix: string): string {

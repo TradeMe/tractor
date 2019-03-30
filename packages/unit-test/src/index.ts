@@ -18,6 +18,8 @@ export const NOOP: () => void = (): void => {
 export { expect } from 'chai';
 import * as dedent from 'dedent';
 export { dedent };
+import getPort from 'get-port';
+export { getPort };
 export { ineeda } from 'ineeda';
 export { sinon };
 
@@ -30,7 +32,7 @@ ineeda.intercept<sinon.SinonStub>({
     restore: null
 });
 
-// Prevent Bluebird from thinking ineeda mocks are Promises
+// Prevent libraries from thinking ineeda mocks are Promises
 ineeda.intercept<Promise<void>>({
     then: null
 });

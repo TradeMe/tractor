@@ -18,19 +18,19 @@
 		"email": "craigspence0@gmail.com"
 	},
 	"scripts": {
-		"clean": "npm run clean:coverage && npm run clean:dist && npm run clean:etc && npm run clean:reports",
+		"clean": "yarn clean:coverage && yarn clean:dist && yarn clean:etc && yarn clean:reports",
 		"clean:coverage": "rimraf './+(packages|plugins)/*/.nyc_output' && rimraf .nyc_output",
 		"clean:dist": "rimraf './+(packages|plugins)/*/dist'",
 		"clean:etc": "rimraf './+(packages|plugins)/*/etc'",
 		"clean:node_modules": "rimraf './+(packages|plugins)/*/node_modules' && rimraf node_modules",
 		"clean:reports": "rimraf reports",
-		"build": "yarn && yarn clean && lerna run clean && lerna run compile && lerna run lint && lerna run bundle && npm run cover && npm run cover:ts && lerna run test:e2e:ci --stream",
-		"cover": "nyc npm run test",
-		"test": "mocha --opts mocha.opts '+(packages|plugins)/**/src/**/*.spec.js'",
-		"cover:ts": "npm run test:ts -- --collectCoverage",
-		"test:ts": "jest --testPathPattern=.*/packages/.*/src/.*.spec.ts --config=./jest.config.js",
+		"build": "yarn && yarn clean && lerna run clean && lerna run compile && lerna run lint && lerna run bundle && yarn cover && yarn cover:ts && lerna run test:e2e:ci --stream",
+		"cover": "nyc yarn test",
+		"test": "mocha --opts mocha.opts '+(plugins)/**/src/**/*.spec.js'",
+		"cover:ts": "yarn test:ts -- --collectCoverage",
+		"test:ts": "jest --testPathPattern=.*/src/.*.spec.ts --config=./jest.config.js",
 		"webdriver": "webdriver-manager update --gecko=false",
-		"postinstall": "npm run webdriver",
+		"postinstall": "yarn webdriver",
 		"link:all": "yarn link && lerna exec yarn link",
 		"unlink:all": "yarn unlink && lerna exec yarn unlink"
 	},
@@ -61,7 +61,7 @@
 		"ts-jest": "^23.10.5",
 		"ts-node": "^8.0.2",
 		"tslint": "^5.12.1",
-		"typescript": "^3.2.4",
+		"typescript": "^3.3.4000",
 		"url-loader": "^1.1.1",
 		"webpack": "^4.20.2",
 		"webpack-cli": "^3.1.2"
@@ -74,7 +74,6 @@
 		"angular-messages": "1.6.6",
 		"angular-mocks": "1.6.6",
 		"angular-sanitize": "1.6.6",
-		"bluebird": "^3.5.1",
 		"body-parser": "^1.18.3",
 		"brfs": "1.4.1",
 		"browser-sync": "2.9.11",
@@ -141,7 +140,7 @@
 		"xterm": "^2.9.2"
 	},
 	"nyc": {
-		"report-dir": "./reports/coverage",
+		"report-dir": "./reports",
 		"reporter": [
 			"text",
 			"lcov",

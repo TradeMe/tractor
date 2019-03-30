@@ -21,10 +21,10 @@
     "README.md"
   ],
   "scripts": {
-    "build": "npm run clean && npm run lint && npm run compile && npm run cover",
+    "build": "yarn clean && yarn lint && yarn compile && yarn cover",
     "clean": "rimraf dist && rimraf reports",
     "compile": "tsc --project ./tsconfig.json",
-    "cover": "npm run test -- --collectCoverage",
+    "cover": "yarn test --collectCoverage",
     "lint": "tslint --project ./tsconfig.json",
     "test": "jest --testPathPattern=.*/plugins/screen-size/src.*.spec.ts --config=../../jest.config.js",
     "test:e2e": "protractor ./tractor/protractor.conf.js --baseUrl=\"http://localhost:4501\" --mochaOpts.reporter=\"spec\"",

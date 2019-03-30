@@ -18,17 +18,17 @@
   "bin": {
     "tractor": "./bin/tractor"
   },
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "files": [
     "bin",
     "dist"
   ],
   "scripts": {
-    "build": "npm run clean && npm run lint && npm run compile && npm run cover",
+    "build": "yarn clean && yarn lint && yarn compile",
     "clean": "rimraf dist",
-    "compile": "babel src/ --out-dir dist --ignore src/**/*.spec.js --config-file ../../babel.config.js",
-    "cover": "nyc npm run test",
-    "lint": "eslint src --ignore-path ../../.eslintignore",
-    "test": "cd ../../ && mocha --opts mocha.opts 'packages/cli/src/**/*.spec.js' && cd ./packages/cli",
+    "compile": "tsc --project ./tsconfig.json",
+    "lint": "tslint --project ./tsconfig.json",
     "watch": "npm-watch"
   },
   "watch": {
@@ -37,9 +37,18 @@
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
     "@tractor/core": "^1.1.1",
-    "bluebird": "^3.5.1",
     "commander": "^2.13.0",
     "protractor": "^5.3.0"
+  },
+  "devDependencies": {
+    "@tractor/config-loader": "^1.0.0",
+    "@tractor/dependency-injection": "^1.0.0",
+    "@tractor/error-handler": "^1.0.0",
+    "@tractor/file-structure": "^1.0.0",
+    "@tractor/logger": "^1.0.0",
+    "@tractor/server": "^1.0.0",
+    "@tractor/tractor": "^1.0.0",
+    "@tractor/unit-test": "^1.0.0"
   },
   "gitHead": "75f58824a7a14b8012a99e91ed23a80ab090e093"
 }

@@ -1,5 +1,5 @@
 // Test setup:
-import { expect } from '@tractor/unit-test';
+import { getPort, expect } from '@tractor/unit-test';
 
 // Dependencies:
 import { TractorError } from '@tractor/error-handler';
@@ -22,10 +22,10 @@ describe('@tractor/file-structure - actions/save-item:', () => {
         TestFile.prototype.extension = '.ext';
         const fileStructure = new FileStructure(path.resolve(__dirname, '../../fixtures/actions-save-file'));
         fileStructure.addFileType(TestFile);
-        const port = 3333;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
-        const response = await fetch('http://localhost:3333/fs/file.ext', {
+        const response = await fetch(`http://localhost:${port}/fs/file.ext`, {
             body: JSON.stringify({ data: '🚜' }),
             headers: {
                 'Content-Type': 'application/json'
@@ -53,10 +53,10 @@ describe('@tractor/file-structure - actions/save-item:', () => {
         TestMultiFile.prototype.extension = '.multi.ext';
         const fileStructure = new FileStructure(path.resolve(__dirname, '../../fixtures/actions-save-file-multi-extension'));
         fileStructure.addFileType(TestMultiFile);
-        const port = 3334;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
-        const response = await fetch('http://localhost:3334/fs/file.multi.ext', {
+        const response = await fetch(`http://localhost:${port}/fs/file.multi.ext`, {
             body: JSON.stringify({ data: '🚜' }),
             headers: {
                 'Content-Type': 'application/json'
@@ -79,10 +79,10 @@ describe('@tractor/file-structure - actions/save-item:', () => {
 
     it('should throw if it is an unknown file type', async () => {
         const fileStructure = new FileStructure(path.resolve(__dirname, '../../fixtures/actions-save-file-unknown-extension'));
-        const port = 3335;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
-        const response = await fetch('http://localhost:3335/fs/file.ext', {
+        const response = await fetch(`http://localhost:${port}/fs/file.ext`, {
             body: JSON.stringify({ data: '🚜' }),
             headers: {
                 'Content-Type': 'application/json'
@@ -105,10 +105,10 @@ describe('@tractor/file-structure - actions/save-item:', () => {
         fileStructure.addFileType(TestFile);
         const file = new File(path.join(fileStructure.path, 'file.ext'), fileStructure);
         await file.save('🚜');
-        const port = 3336;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
-        const response = await fetch(`http://localhost:3336/fs${file.url}`, {
+        const response = await fetch(`http://localhost:${port}/fs${file.url}`, {
             body: JSON.stringify({ data: '🚜' }),
             headers: {
                 'Content-Type': 'application/json'
@@ -138,10 +138,10 @@ describe('@tractor/file-structure - actions/save-item:', () => {
         fileStructure.addFileType(TestFile);
         const file = new File(path.join(fileStructure.path, 'file.ext'), fileStructure);
         await file.save('🚜');
-        const port = 3337;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
-        const response = await fetch(`http://localhost:3337/fs${file.url}`, {
+        const response = await fetch(`http://localhost:${port}/fs${file.url}`, {
             body: JSON.stringify({ data: '🔥', overwrite: true }),
             headers: {
                 'Content-Type': 'application/json'
@@ -165,10 +165,10 @@ describe('@tractor/file-structure - actions/save-item:', () => {
     it('should save a directory', async () => {
         const readdir = promisify(fs.readdir);
         const fileStructure = new FileStructure(path.resolve(__dirname, '../../fixtures/actions-save-directory'));
-        const port = 3338;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
-        const response = await fetch('http://localhost:3338/fs/directoryt', {
+        const response = await fetch(`http://localhost:${port}/fs/directory`, {
             body: JSON.stringify({ }),
             headers: {
                 'Content-Type': 'application/json'
@@ -179,7 +179,7 @@ describe('@tractor/file-structure - actions/save-item:', () => {
 
         expect(data).to.equal('OK');
         try {
-            const dir = await readdir(path.join(fileStructure.path, 'directoryt'));
+            const dir = await readdir(path.join(fileStructure.path, 'directory'));
             expect(dir).to.deep.equal([]);
         } catch {
             expect(true).to.equal('`readdir` should not throw');
@@ -194,10 +194,10 @@ describe('@tractor/file-structure - actions/save-item:', () => {
         const fileStructure = new FileStructure(path.resolve(__dirname, '../../fixtures/actions-save-directory-rename'));
         const directory = new Directory(path.join(fileStructure.path, 'directory'), fileStructure);
         await directory.save();
-        const port = 3339;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
-        const response = await fetch(`http://localhost:3339/fs${directory.url}`, {
+        const response = await fetch(`http://localhost:${port}/fs${directory.url}`, {
             body: JSON.stringify({ }),
             headers: {
                 'Content-Type': 'application/json'
@@ -226,7 +226,7 @@ describe('@tractor/file-structure - actions/save-item:', () => {
         fileStructure.addFileType(TestFile);
         const file = new TestFile(path.join(fileStructure.path, 'file.ext'), fileStructure);
         await file.save('🚜');
-        const port = 3340;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
         const expectedError = new TractorError(`Cannot save "${file.path}". Something went wrong.`);
@@ -234,7 +234,7 @@ describe('@tractor/file-structure - actions/save-item:', () => {
             throw expectedError;
         });
 
-        const response = await fetch(`http://localhost:3340/fs${file.url}`, {
+        const response = await fetch(`http://localhost:${port}/fs${file.url}`, {
             body: JSON.stringify({ data: '🔥', overwrite: true }),
             headers: {
                 'Content-Type': 'application/json'
@@ -257,14 +257,14 @@ describe('@tractor/file-structure - actions/save-item:', () => {
         fileStructure.addFileType(TestFile);
         const file = new TestFile(path.join(fileStructure.path, 'file.ext'), fileStructure);
         await file.save('🚜');
-        const port = 3341;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
         jest.spyOn(file, 'save').mockImplementation(async () => {
             throw new Error();
         });
 
-        const response = await fetch(`http://localhost:3341/fs${file.url}`, {
+        const response = await fetch(`http://localhost:${port}/fs${file.url}`, {
             body: JSON.stringify({ data: '🔥', overwrite: true }),
             headers: {
                 'Content-Type': 'application/json'

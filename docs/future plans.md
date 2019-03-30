@@ -6,17 +6,15 @@ I ([phenomnomnominal](https://github.com/phenomnomnominal)) have been toiling aw
 
 * Make it pretty. It's currently pretty damn ugly. Probably rewrite in Angular at the same time.
 
-* Make it an Electron app?
+* Make it an Electron app? Or more likely a browser extension!
 
 * Automate the installing of Java SDK, hostfile modifications for `@tractor-plugins/mock-requests` etc.
 
-* Make it type-safe, by rewriting in TypeScript. This would probably enable removing the janky as `@tractor/dependency-injection`.
+* Remove the janky as `@tractor/dependency-injection`.
 
 * Introduce more JS. That way we can get users used to seeing the actual underlying code, rather than the UI.
 
 * Move parsing/codegen from the client to the server. There's no need for it to be on the client, and passing huge files between client/server is a bit silly.
-
-* Moar speed! A lot of the implementation is fairly naive, and could definitely be made faster. `@tractor/file-structure` seems like an obvious place to start.
 
 * Moar docs.
 

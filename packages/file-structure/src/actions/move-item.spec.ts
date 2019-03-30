@@ -1,5 +1,5 @@
 // Test setup:
-import { expect } from '@tractor/unit-test';
+import { getPort, expect } from '@tractor/unit-test';
 
 // Dependencies:
 import { TractorError } from '@tractor/error-handler';
@@ -14,8 +14,8 @@ import { FileStructure } from '../structure/file-structure';
 // Under test:
 import { startTestServer } from '../../test/test-server';
 
-describe('@tractor/file-structure - actions/move-item:', () => {
-    it('should move a file', async () => {
+describe.only('@tractor/file-structure - actions/move-item:', () => {
+    it.only('should move a file', async () => {
         const readFile = promisify(fs.readFile);
         // tslint:disable-next-line:max-classes-per-file
         class TestFile extends File { }
@@ -24,10 +24,10 @@ describe('@tractor/file-structure - actions/move-item:', () => {
         fileStructure.addFileType(TestFile);
         const file = new File(path.join(fileStructure.path, 'file.ext'), fileStructure);
         await file.save('🚜');
-        const port = 8888;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
-        const response = await fetch('http://localhost:8888/fs/move/file.ext', {
+        const response = await fetch(`http://localhost:${port}/fs/move/file.ext`, {
             body: JSON.stringify({ newUrl: path.join(fileStructure.url, 'moved.ext') }),
             headers: {
                 'Content-Type': 'application/json'
@@ -63,10 +63,10 @@ describe('@tractor/file-structure - actions/move-item:', () => {
         fileStructure.addFileType(TestFile);
         const file = new File(path.join(fileStructure.path, 'file.ext'), fileStructure);
         await file.save('🚜');
-        const port = 8889;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
-        const response = await fetch('http://localhost:8889/fs/move/file.ext', {
+        const response = await fetch(`http://localhost:${port}/fs/move/file.ext`, {
             body: JSON.stringify({ copy: true }),
             headers: {
                 'Content-Type': 'application/json'
@@ -98,10 +98,10 @@ describe('@tractor/file-structure - actions/move-item:', () => {
         const fileStructure = new FileStructure(path.resolve(__dirname, '../../fixtures/actions-move-item-directory'));
         const directory = new Directory(path.join(fileStructure.path, 'directory'), fileStructure);
         await directory.save();
-        const port = 8890;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
-        const response = await fetch('http://localhost:8890/fs/move/directory', {
+        const response = await fetch(`http://localhost:${port}/fs/move/directory`, {
             body: JSON.stringify({ newUrl: path.join(fileStructure.url, 'moved') }),
             headers: {
                 'Content-Type': 'application/json'
@@ -133,10 +133,10 @@ describe('@tractor/file-structure - actions/move-item:', () => {
         const fileStructure = new FileStructure(path.resolve(__dirname, '../../fixtures/actions-move-item-copy-directory'));
         const directory = new Directory(path.join(fileStructure.path, 'directory'), fileStructure);
         await directory.save();
-        const port = 8891;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
-        const response = await fetch('http://localhost:8891/fs/move/directory', {
+        const response = await fetch(`http://localhost:${port}/fs/move/directory`, {
             body: JSON.stringify({ copy: true }),
             headers: {
                 'Content-Type': 'application/json'
@@ -166,10 +166,10 @@ describe('@tractor/file-structure - actions/move-item:', () => {
     it(`should throw an error if it can't find the item to move`, async () => {
         const fileStructure = new FileStructure(path.resolve(__dirname, '../../fixtures/actions-move-item-404'));
         await fileStructure.structure.save();
-        const port = 8892;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
-        const response = await fetch('http://localhost:8892/fs/move/directory', {
+        const response = await fetch(`http://localhost:${port}/fs/move/directory`, {
             body: JSON.stringify({ copy: true }),
             headers: {
                 'Content-Type': 'application/json'
@@ -188,7 +188,7 @@ describe('@tractor/file-structure - actions/move-item:', () => {
         const fileStructure = new FileStructure(path.resolve(__dirname, '../../fixtures/actions-move-item-known-error'));
         const directory = new Directory(path.join(fileStructure.path, 'directory'), fileStructure);
         await directory.save();
-        const port = 8893;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
         const expectedError = new TractorError(`Cannot save "${directory.path}". Something went wrong.`);
@@ -196,7 +196,7 @@ describe('@tractor/file-structure - actions/move-item:', () => {
             throw expectedError;
         });
 
-        const response = await fetch('http://localhost:8893/fs/move/directory', {
+        const response = await fetch(`http://localhost:${port}/fs/move/directory`, {
             body: JSON.stringify({ newUrl: path.join(fileStructure.url, 'moved') }),
             headers: {
                 'Content-Type': 'application/json'
@@ -215,14 +215,14 @@ describe('@tractor/file-structure - actions/move-item:', () => {
         const fileStructure = new FileStructure(path.resolve(__dirname, '../../fixtures/actions-move-item-known-error'));
         const directory = new Directory(path.join(fileStructure.path, 'directory'), fileStructure);
         await directory.save();
-        const port = 8894;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
         jest.spyOn(directory, 'move').mockImplementation(async () => {
             throw new Error();
         });
 
-        const response = await fetch('http://localhost:8894/fs/move/directory', {
+        const response = await fetch(`http://localhost:${port}/fs/move/directory`, {
             body: JSON.stringify({ newUrl: path.join(fileStructure.url, 'moved') }),
             headers: {
                 'Content-Type': 'application/json'

@@ -7,18 +7,13 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 // Dependencies:
-// HACK:
-// The types for 'camel-case', 'param-case', and 'title-case' are a bit borked:
-// tslint:disable:no-require-imports
 import camelCase = require('camel-case');
-import paramCase = require('param-case');
-import titleCase = require('title-case');
-// tslint:enable:no-require-imports
-
 import * as findUp from 'find-up';
+import paramCase = require('param-case');
 import * as pkgUp from 'pkg-up';
 import { Config } from 'protractor';
 import * as resolveFrom from 'resolve-from';
+import titleCase = require('title-case');
 import { TractorDescriptionInternal, TractorPluginInternal, UserTractorPluginESM, UserTractorPluginModule } from './tractor-plugin';
 
 // Errors:

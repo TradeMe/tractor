@@ -2,7 +2,7 @@
 'use strict';
 
 // Dependencies:
-const { Tractor } = require('@tractor/core');
+const { Tractor } = require('@tractor/tractor');
 const cli = require('commander');
 const { version } = require('../package.json');
 

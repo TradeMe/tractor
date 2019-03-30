@@ -21,11 +21,11 @@
     "README.md"
   ],
   "scripts": {
-    "build": "npm run clean && npm run lint && npm run compile && npm run cover && npm run bundle",
+    "build": "yarn clean && yarn lint && yarn compile && yarn cover && yarn bundle",
     "bundle": "webpack --config webpack.config.js",
     "clean": "rimraf dist && rimraf reports",
     "compile": "babel src/ --out-dir dist/ --ignore src/**/*.spec.js,src/tractor/client --config-file ../../babel.config.js",
-    "cover": "nyc npm run test",
+    "cover": "nyc yarn test",
     "lint": "eslint src --ignore-path ../../.eslintignore",
     "test": "cd ../../ && mocha --opts mocha.opts './plugins/mocha-specs/src/**/*.spec.js' && cd ./plugins/mocha-specs",
     "test:e2e": "protractor ./tractor/protractor.conf.js --baseUrl=\"http://localhost:4401\" --mochaOpts.reporter=\"spec\"",
@@ -42,6 +42,7 @@
     "build": "src/**/*.js"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.0.0",
     "camel-case": "^3.0.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",

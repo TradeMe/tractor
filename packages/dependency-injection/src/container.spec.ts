@@ -1,11 +1,12 @@
 // Test setup:
-import { expect, sinon } from '@tractor/unit-test';
+import { expect } from '@tractor/unit-test';
 
 // Dependencies:
 import { TractorError } from '@tractor/error-handler';
 
 // Under test:
-import { Container, INJECTION, TractorDIClass, TractorDIFunc } from './container';
+import { Container } from './container';
+import { inject } from './index';
 
 describe('@tractor/dependency-injection - Container:', () => {
     describe('constant:', () => {
@@ -50,58 +51,53 @@ describe('@tractor/dependency-injection - Container:', () => {
         it('should inject dependencies into an unregistered function', () => {
             const container = new Container();
 
-            const arg = {};
+            const arg = 1;
             container.constant({ arg });
 
-            function test (): void {
-                return void 0;
-            }
-            const t = test as TractorDIFunc<void>;
-            t[INJECTION] = ['arg'];
-            const wrap = { test: t };
+            let result: number | null = null;
+            const t = inject((arg: number): void => {
+                result = arg;
+                return;
+            }, 'arg');
 
-            sinon.stub(wrap, 'test');
+            container.call(t);
 
-            container.call(wrap.test);
-
-            expect(wrap.test).to.have.been.calledWith(arg);
+            expect(result).to.equal(arg);
         });
 
         it('should work if the function has no dependencies', () => {
             const container = new Container();
 
-            function test (): void {
-                return void 0;
-            }
-            const t = test as TractorDIFunc<void>;
-            const wrap = { test: t };
+            let result: number | null = null;
+            const t = inject((): void => {
+                result = 3;
+                return;
+            });
 
-            sinon.stub(wrap, 'test');
+            container.call(t);
 
-            container.call(wrap.test);
-
-            expect((wrap.test as sinon.SinonStub).callCount > 0).to.equal(true);
+            expect(result).to.equal(3);
         });
 
         it('should append any extra given arguments', () => {
             const container = new Container();
 
-            const arg1 = {};
+            const arg1 = 3;
             container.constant({ arg1 });
-            const arg2 = {};
+            const arg2 = 4;
 
-            function test (): void {
+            let result1: number | null = null;
+            let result2: number | null = null;
+            const t = inject((arg1: number, arg2: number): void => {
+                result1 = arg1;
+                result2 = arg2;
                 return void 0;
-            }
-            const t = test as TractorDIFunc<void>;
-            t[INJECTION] = ['arg1'];
-            const wrap = { test: t };
+            }, 'arg1');
 
-            sinon.stub(wrap, 'test');
+            container.call(t, arg2);
 
-            container.call(wrap.test, [arg2]);
-
-            expect(wrap.test).to.have.been.calledWith(arg1, arg2);
+            expect(result1).to.equal(3);
+            expect(result2).to.equal(4);
         });
     });
 
@@ -137,11 +133,10 @@ describe('@tractor/dependency-injection - Container:', () => {
                     public engine: TractorEngine
                 ) { }
             }
-            const t = Tractor as TractorDIClass<Tractor>;
-            t[INJECTION] = ['config', 'TractorEngine'];
+            const t = inject(Tractor, 'config', 'TractorEngine');
             container.factory(t);
 
-            const tractor = container.instantiate(t);
+            const tractor: Tractor = container.instantiate(t);
 
             expect(tractor).to.be.an.instanceof(Tractor);
             expect(tractor.config).to.equal(tractorConfig);
@@ -153,8 +148,7 @@ describe('@tractor/dependency-injection - Container:', () => {
 
             // tslint:disable-next-line:max-classes-per-file
             class Kitchen { }
-            const k = Kitchen as TractorDIClass<Kitchen>;
-            k[INJECTION] = ['Sink'];
+            const k = inject(Kitchen, 'Sink');
             container.factory(k);
 
             expect(() => {

@@ -24,7 +24,7 @@ export async function startTestServer (fileStructure: FileStructure, port: numbe
     const listen = promisify(server.listen.bind(server));
     await listen(port);
     return async (): Promise<void> => {
-        await promisify(server.close.bind(server));
+        await promisify(server.close.bind(server))();
         sockets.close();
         fileStructure.unwatch();
     };

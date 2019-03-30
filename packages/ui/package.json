@@ -17,7 +17,7 @@
   },
   "main": "dist/app/index.html",
   "scripts": {
-    "build": "npm run clean && npm run bundle",
+    "build": "yarn clean && yarn bundle",
     "bundle": "gulp build",
     "clean": "rimraf dist && rimraf reports",
     "test:e2e": "protractor ./tractor/protractor.conf.js --baseUrl=\"http://localhost:4800\" --mochaOpts.reporter=\"spec\"",

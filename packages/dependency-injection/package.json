@@ -22,10 +22,10 @@
     "README.md"
   ],
   "scripts": {
-    "build": "npm run clean && npm run lint && npm run compile && npm run cover",
+    "build": "yarn clean && yarn lint && yarn compile && yarn cover",
     "clean": "rimraf dist",
     "compile": "tsc --project ./tsconfig.json",
-    "cover": "npm run test -- --collectCoverage",
+    "cover": "yarn test --collectCoverage",
     "lint": "tslint --project ./tsconfig.json",
     "test": "jest --testPathPattern=.*/dependency-injection/src.*.spec.ts --config=../../jest.config.js",
     "watch": "npm-watch"

@@ -9,9 +9,12 @@ export const INJECTION = '@Inject';
 // Using strings for DI (😞) means they're definitely untyped...
 // So, here's to a lot of `any`:
 // tslint:disable:no-any
-type Injectable = { [INJECTION]?: Array<string> };
-export type TractorDIClass<T> = Injectable & (new (...args: Array<any>) => T);
-export type TractorDIFunc<T> = Injectable & ((...args: Array<any>) => T);
+export type AnyFunction = (this: null, ...args: Array<any>) => any;
+export type AnyClass = new (...args: Array<any>) => any;
+export type Injectable = { [INJECTION]?: Array<string> };
+export type TractorDIClass<T> = T extends AnyClass ? T & Injectable : never;
+export type TractorDIFunc<T> = T extends AnyFunction ? T & Injectable : never;
+export type TractorDIConstants = Record<string, any>;
 
 // TODO:
 // We need to get rid of this ASAP.
@@ -24,13 +27,13 @@ export class Container {
         this._factories = {};
     }
 
-    public call <T> (func: TractorDIFunc<T>, ...args: Array<any>): T {
+    public call <T extends AnyFunction> (func: TractorDIFunc<T>, ...args: Array<any>): ReturnType<T> {
         const toInject = func[INJECTION] || [];
         const dependencies = this._get(toInject);
-        return func.apply(null, dependencies.concat(...args));
+        return func.apply(null, dependencies.concat(args) as Parameters<T>) as ReturnType<T>;
     }
 
-    public constant (constants: Record<string, any>): void {
+    public constant (constants: TractorDIConstants): void {
         Object.keys(constants).forEach(key => {
             if (this._constants[key]) {
                 throw new TractorError(`Cannot register "${key}" with DI container, because there is already a constant registered with that name`);
@@ -40,7 +43,7 @@ export class Container {
         });
     }
 
-    public factory <T> (factory?: TractorDIFunc<T> | TractorDIClass<T>): void {
+    public factory <T extends AnyFunction | AnyClass> (factory?: T extends AnyFunction ? TractorDIFunc<T> : T extends AnyClass ? TractorDIClass<T> : never): void {
         if (!isFunc<T>(factory)) {
             throw new TractorError('Cannot register factory with DI container, because it is not a function');
         }
@@ -54,14 +57,14 @@ export class Container {
         this._factories[factory.name] = factory;
     }
 
-    public instantiate <T> (factory: TractorDIClass<T>): T {
+    public instantiate <T, U extends AnyClass> (factory: TractorDIClass<U>, ...args: Array<any>): T {
         const toInject = factory[INJECTION] || [];
         const dependencies = this._get(toInject);
         // HACK:
         // tslint complains about an unsafe `any` here. I assume it's right,
         // but can't figure out how to resolve it...
         // tslint:disable-next-line:no-unsafe-any
-        return new (Function.prototype.bind.apply(factory, [null, ...dependencies]))();
+        return new ((Function.prototype.bind.apply(factory, [null, ...dependencies.concat(args)])))();
     }
 
     private _get (dependencies: Array<string>): Array<any> {
@@ -76,7 +79,7 @@ export class Container {
         if (!factory) {
             throw new TractorError(`Could not find a factory for "${dependency}"`);
         }
-        return factory as TractorDIClass<any>;
+        return factory;
     }
 }
 

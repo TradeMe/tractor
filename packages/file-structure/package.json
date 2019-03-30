@@ -22,10 +22,10 @@
     "README.md"
   ],
   "scripts": {
-    "build": "npm run clean && npm run lint && npm run compile && npm run cover",
+    "build": "yarn clean && yarn lint && yarn compile && yarn cover",
     "clean": "rimraf dist",
     "compile": "tsc --project ./tsconfig.json",
-    "cover": "npm run test -- --collectCoverage",
+    "cover": "yarn test --collectCoverage",
     "lint": "tslint --project ./tsconfig.json",
     "test": "jest --testPathPattern=.*/file-structure/src.*.spec.ts --config=../../jest.config.js",
     "test:debug": "node --inspect-brk ../../node_modules/.bin/jest --testPathPattern=.*/file-structure/src.*.spec.ts --config=../../jest.config.js --runInBand",
@@ -48,6 +48,7 @@
     "@tractor/dependency-injection": "^1.0.10",
     "@tractor/error-handler": "^1.0.10",
     "@tractor/logger": "^1.0.10",
+    "@tractor/unit-test": "^1.0.0",
     "@types/body-parser": "^1.17.0",
     "@types/chokidar": "^1.7.5",
     "@types/graceful-fs": "^4.1.3",

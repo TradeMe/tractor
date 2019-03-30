@@ -75,9 +75,7 @@ describe('@tractor/plugin-loader:', () => {
         });
 
         it('should not overwrite an existing `description`', () => {
-            // HACK:
             // Manually require the plugin fixture to validate plugin loading:
-            // tslint:disable-next-line:no-require-imports
             const requiredPlugin = require('../fixtures/complex/node_modules/@tractor-plugins/test-plugin/dist');
 
             const [plugin] = loadPlugins({
@@ -109,9 +107,7 @@ describe('@tractor/plugin-loader:', () => {
         });
 
         it('should not overwrite an existing `create` function', () => {
-            // HACK:
             // Manually require the plugin fixture to validate plugin loading:
-            // tslint:disable-next-line:no-require-imports
             const requiredPlugin = require('../fixtures/complex/node_modules/@tractor-plugins/test-plugin/dist');
 
             sinon.stub(requiredPlugin, 'create');
@@ -137,9 +133,7 @@ describe('@tractor/plugin-loader:', () => {
         });
 
         it('should not overwrite an existing `init` function', () => {
-            // HACK:
             // Manually require the plugin fixture to validate plugin loading:
-            // tslint:disable-next-line:no-require-imports
             const requiredPlugin = require('../fixtures/complex/node_modules/@tractor-plugins/test-plugin/dist');
 
             sinon.stub(requiredPlugin, 'init');
@@ -165,9 +159,7 @@ describe('@tractor/plugin-loader:', () => {
         });
 
         it('should not overwrite an existing `plugin` function', () => {
-            // HACK:
             // Manually require the plugin fixture to validate plugin loading:
-            // tslint:disable-next-line:no-require-imports
             const requiredPlugin = require('../fixtures/complex/node_modules/@tractor-plugins/test-plugin/dist');
 
             sinon.stub(requiredPlugin, 'plugin');
@@ -193,9 +185,7 @@ describe('@tractor/plugin-loader:', () => {
         });
 
         it('should not overwrite an existing `run` function', () => {
-            // HACK:
             // Manually require the plugin fixture to validate plugin loading:
-            // tslint:disable-next-line:no-require-imports
             const requiredPlugin = require('../fixtures/complex/node_modules/@tractor-plugins/test-plugin/dist');
 
             sinon.stub(requiredPlugin, 'run');
@@ -221,9 +211,7 @@ describe('@tractor/plugin-loader:', () => {
         });
 
         it('should not overwrite an existing `serve` function', () => {
-            // HACK:
             // Manually require the plugin fixture to validate plugin loading:
-            // tslint:disable-next-line:no-require-imports
             const requiredPlugin = require('../fixtures/complex/node_modules/@tractor-plugins/test-plugin/dist');
 
             sinon.stub(requiredPlugin, 'serve');
@@ -249,9 +237,7 @@ describe('@tractor/plugin-loader:', () => {
         });
 
         it('should not overwrite an existing `upgrade` function', () => {
-            // HACK:
             // Manually require the plugin fixture to validate plugin loading:
-            // tslint:disable-next-line:no-require-imports
             const requiredPlugin = require('../fixtures/complex/node_modules/@tractor-plugins/test-plugin/dist');
 
             sinon.stub(requiredPlugin, 'upgrade');

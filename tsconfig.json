@@ -2,17 +2,23 @@
     "compileOnSave": false,
     "compilerOptions": {
         "declaration": true,
+        "declarationMap": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "forceConsistentCasingInFileNames": false,
         "lib": [
+            "es5",
+            "es2015",
+            "es2016",
             "es2017",
+            "es2018",
             "dom"
         ],
         "moduleResolution": "node",
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "pretty": true,
+        "resolveJsonModule": true,
         "sourceMap": true,
         "strict": true,
         "target": "ES5",

@@ -1,4 +1,4 @@
-/*{"name":"Mock Requests file","tests":[{"name":"Create Mock Request file"},{"name":"Rename Mock Request file","reason":"Test fails because of \"stale element\""},{"name":"Invalid name - required"}],"version":"0.1.0"}*/
+/*{"name":"Mock Requests file","tests":[{"name":"Create Mock Request file"},{"name":"Rename Mock Request file"},{"name":"Invalid name - required"}],"version":"0.1.0"}*/
 describe('Mock Requests file', function () {
     it('Create Mock Request file', function () {
         var TractorMockRequests = require('./tractor-mock-requests.po.js'), tractorMockRequests = new TractorMockRequests();
@@ -41,7 +41,7 @@ describe('Mock Requests file', function () {
         });
         return step;
     });
-    it.skip('Rename Mock Request file', function () {
+    it('Rename Mock Request file', function () {
         var TractorMockRequests = require('./tractor-mock-requests.po.js'), tractorMockRequests = new TractorMockRequests();
         var Tractor = require('../../../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
         var ControlPanel = require('../../../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();

@@ -20,12 +20,14 @@ export class ScreenSize {
         return height;
     }
 
+    // Cannot guarantee that `.window().maximize()` will be able to set to the
+    // total available height, so trying one pixel less??? 🙃🙃🙃
     public async getScreenHeight (): Promise<number> {
-        return this._browser.executeScript('return window.screen.availHeight');
+        return this._browser.executeScript('return window.screen.availHeight - 1');
     }
 
     public async getScreenWidth (): Promise<number> {
-        return this._browser.executeScript('return window.screen.availWidth');
+        return this._browser.executeScript('return window.screen.availWidth - 1');
     }
 
     public async getWidth (): Promise<number> {
@@ -36,9 +38,7 @@ export class ScreenSize {
     public async maximise (): Promise<void> {
         const screenHeight = await this.getScreenHeight();
         const screenWidth = await this.getScreenWidth();
-        // Cannot guarantee that `.window().maximize()` will be able to set to the
-        // total available height, so trying one pixel less??? 🙃🙃🙃
-        return this._browser.driver.manage().window().setSize(screenWidth - 1, screenHeight - 1);
+        return this._browser.driver.manage().window().setSize(screenWidth, screenHeight);
     }
 
     public async setSize (size: string = DEFAULT): Promise<void> {

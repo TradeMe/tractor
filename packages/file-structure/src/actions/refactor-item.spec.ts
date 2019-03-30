@@ -1,5 +1,5 @@
 // Test setup:
-import { expect } from '@tractor/unit-test';
+import { getPort, expect } from '@tractor/unit-test';
 
 // Dependencies:
 import { TractorError } from '@tractor/error-handler';
@@ -20,10 +20,10 @@ describe('@tractor/file-structure - actions/refactor-item:', () => {
         fileStructure.addFileType(TestFile);
         const file = new File(path.join(fileStructure.path, 'file.ext'), fileStructure);
         await file.save('🚜');
-        const port = 7777;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
-        const response = await fetch('http://localhost:7777/fs/refactor/file.ext', {
+        const response = await fetch(`http://localhost:${port}/fs/refactor/file.ext`, {
             method: 'POST'
         });
         const data = await response.text();
@@ -38,10 +38,10 @@ describe('@tractor/file-structure - actions/refactor-item:', () => {
         // tslint:disable-next-line:max-classes-per-file
         const fileStructure = new FileStructure(path.resolve(__dirname, '../../fixtures/actions-refactor-item-404'));
         await fileStructure.structure.save();
-        const port = 7778;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
-        const response = await fetch('http://localhost:7778/fs/refactor/file.ext', {
+        const response = await fetch(`http://localhost:${port}/fs/refactor/file.ext`, {
             method: 'POST'
         });
         const { error } = await response.json();
@@ -60,7 +60,7 @@ describe('@tractor/file-structure - actions/refactor-item:', () => {
         fileStructure.addFileType(TestFile);
         const file = new File(path.join(fileStructure.path, 'file.ext'), fileStructure);
         await file.save('🚜');
-        const port = 7779;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
         const expectedError = new TractorError(`Could not refactor "${file.path}". Something went wrong.`);
@@ -68,7 +68,7 @@ describe('@tractor/file-structure - actions/refactor-item:', () => {
             throw expectedError;
         });
 
-        const response = await fetch('http://localhost:7779/fs/refactor/file.ext', {
+        const response = await fetch(`http://localhost:${port}/fs/refactor/file.ext`, {
             method: 'POST'
         });
 
@@ -88,14 +88,14 @@ describe('@tractor/file-structure - actions/refactor-item:', () => {
         fileStructure.addFileType(TestFile);
         const file = new File(path.join(fileStructure.path, 'file.ext'), fileStructure);
         await file.save('🚜');
-        const port = 7780;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
         const refactor = jest.spyOn(file, 'refactor').mockImplementation(async () => {
             throw new Error();
         });
 
-        const response = await fetch('http://localhost:7780/fs/refactor/file.ext', {
+        const response = await fetch(`http://localhost:${port}/fs/refactor/file.ext`, {
             method: 'POST'
         });
 

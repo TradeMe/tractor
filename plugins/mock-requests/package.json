@@ -21,13 +21,13 @@
     "README.md"
   ],
   "scripts": {
-    "build": "npm run clean && npm run lint && npm run compile && npm run cover && npm run bundle",
-    "bundle": "npm run bundle:client && npm run bundle:server",
+    "build": "yarn clean && yarn lint && yarn compile && yarn cover && yarn bundle",
+    "bundle": "yarn bundle:client && yarn bundle:server",
     "bundle:client": "webpack --config webpack.config.js",
     "bundle:server": "webpack --config webpack.server.config.js",
     "clean": "rimraf dist && rimraf reports",
     "compile": "babel src/ --out-dir dist/ --ignore src/**/*.spec.js,src/tractor/server/scripts,src/tractor/client --config-file ../../babel.config.js",
-    "cover": "nyc npm run test",
+    "cover": "nyc yarn test",
     "lint": "eslint src --ignore-path ../../.eslintignore",
     "test": "cd ../../ && mocha --opts mocha.opts 'plugins/mock-requests/src/**/*.spec.js' && cd ./plugins/mock-requests",
     "test:e2e": "protractor ./tractor/protractor.conf.js --baseUrl=\"http://localhost:4701\" --mochaOpts.reporter=\"spec\"",
@@ -44,6 +44,7 @@
     "build": "src/**/*.js"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.0.0",
     "body-parser": "^1.18.3",
     "camel-case": "^3.0.0",
     "cheerio": "^1.0.0-rc.2",

@@ -1,11 +1,10 @@
 // Test setup:
-import { expect } from '@tractor/unit-test';
+import { getPort, expect } from '@tractor/unit-test';
 
 // Dependencies:
 import * as path from 'path';
 import * as socket from 'socket.io-client';
 import { Directory } from '../structure/directory';
-// import { File } from '../structure/file';
 import { FileStructure } from '../structure/file-structure';
 
 // Under test:
@@ -16,10 +15,10 @@ describe('@tractor/file-structure - actions/watch-file-structure:', () => {
         const fileStructure = new FileStructure(path.resolve(__dirname, '../../fixtures/actions-watch-file-structure'));
         const directory = new Directory(path.join(fileStructure.path, 'directory'), fileStructure);
         await directory.save();
-        const port = 6666;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
-        const connection = socket.connect('http://localhost:6666/watch-file-structure/', {
+        const connection = socket.connect(`http://localhost:${port}/watch-file-structure/`, {
             forceNew: true
         });
 

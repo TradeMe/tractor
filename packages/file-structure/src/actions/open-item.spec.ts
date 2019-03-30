@@ -1,5 +1,5 @@
 // Test setup:
-import { expect } from '@tractor/unit-test';
+import { getPort, expect } from '@tractor/unit-test';
 
 // // Dependencies:
 import fetch from 'node-fetch';
@@ -20,10 +20,10 @@ describe('@tractor/file-structure - actions/open-item:', () => {
         fileStructure.addFileType(TestFile);
         const file = new File(path.join(fileStructure.path, 'file.ext'), fileStructure);
         await file.save('🚜');
-        const port = 4444;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
-        const response = await fetch('http://localhost:4444/fs/file.ext');
+        const response = await fetch(`http://localhost:${port}/fs/file.ext`);
         const { basename, extension, url } = await response.json();
 
         expect(basename).to.equal('file');
@@ -38,10 +38,10 @@ describe('@tractor/file-structure - actions/open-item:', () => {
         const fileStructure = new FileStructure(path.resolve(__dirname, '../../fixtures/actions-open-item-directory'));
         const directory = new Directory(path.join(fileStructure.path, 'directory'), fileStructure);
         directory.save();
-        const port = 4445;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
-        const response = await fetch('http://localhost:4445/fs/directory');
+        const response = await fetch(`http://localhost:${port}/fs/directory`);
         const { basename, url } = await response.json();
 
         expect(basename).to.equal('directory');
@@ -54,10 +54,10 @@ describe('@tractor/file-structure - actions/open-item:', () => {
     it(`should throw an error if it can't find the file to open`, async () => {
         const fileStructure = new FileStructure(path.resolve(__dirname, '../../fixtures/actions-open-item-404'));
         await fileStructure.structure.save();
-        const port = 4446;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
-        const response = await fetch('http://localhost:4446/fs/directory');
+        const response = await fetch(`http://localhost:${port}/fs/directory`);
         const { error } = await response.json();
 
         expect(error).to.equal(`Could not find "${path.join(fileStructure.path, 'directory')}"`);

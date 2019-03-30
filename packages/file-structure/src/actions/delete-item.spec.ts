@@ -1,5 +1,5 @@
 // Test setup:
-import { expect } from '@tractor/unit-test';
+import { getPort, expect } from '@tractor/unit-test';
 
 // Dependencies:
 import { TractorError } from '@tractor/error-handler';
@@ -24,10 +24,10 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
         fileStructure.addFileType(TestFile);
         const file = new File(path.join(fileStructure.path, 'file.ext'), fileStructure);
         await file.save('🚜');
-        const port = 5555;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
-        const response = await fetch('http://localhost:5555/fs/file.ext', {
+        const response = await fetch(`http://localhost:${port}/fs/file.ext`, {
             method: 'DELETE'
         });
         const data = await response.text();
@@ -49,10 +49,10 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
         const fileStructure = new FileStructure(path.resolve(__dirname, '../../fixtures/actions-delete-item-directory'));
         const directory = new Directory(path.join(fileStructure.path, 'directory'), fileStructure);
         await directory.save();
-        const port = 5556;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
-        const response = await fetch('http://localhost:5556/fs/directory', {
+        const response = await fetch(`http://localhost:${port}/fs/directory`, {
             method: 'DELETE'
         });
         const data = await response.text();
@@ -72,10 +72,10 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
     it(`should throw an error if it can't find the item to delete`, async () => {
         const fileStructure = new FileStructure(path.resolve(__dirname, '../../fixtures/actions-delete-item-404'));
         await fileStructure.structure.save();
-        const port = 5557;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
-        const response = await fetch('http://localhost:5557/fs/directory', {
+        const response = await fetch(`http://localhost:${port}/fs/directory`, {
             method: 'DELETE'
         });
         const { error } = await response.json();
@@ -92,10 +92,10 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
         const directory = new Directory(path.join(fileStructure.path, 'directory'), fileStructure);
         const subdirectory = new Directory(path.join(directory.path, 'sub-directory'), fileStructure);
         await subdirectory.save();
-        const port = 5558;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
-        const response = await fetch('http://localhost:5558/fs/directory?rimraf=true', {
+        const response = await fetch(`http://localhost:${port}/fs/directory?rimraf=true`, {
             method: 'DELETE'
         });
         const data = await response.text();
@@ -121,10 +121,10 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
         fileStructure.addFileType(TestFile);
         const file = new File(path.join(fileStructure.path, 'file.ext'), fileStructure);
         await file.save('🚜');
-        const port = 5559;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
-        const response = await fetch('http://localhost:5559/fs/file.ext?rimraf', {
+        const response = await fetch(`http://localhost:${port}/fs/file.ext?rimraf`, {
             method: 'DELETE'
         });
         const data = await response.text();
@@ -154,10 +154,10 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
         const directory = new Directory(path.join(fileStructure.path, 'directory'), fileStructure);
         const file = new File(path.join(directory.path, 'file.ext'), fileStructure);
         await file.save('🚜');
-        const port = 5560;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
-        const response = await fetch('http://localhost:5560/fs/directory/file.ext?cleanup=true', {
+        const response = await fetch(`http://localhost:${port}/fs/directory/file.ext?cleanup=true`, {
             method: 'DELETE'
         });
         const data = await response.text();
@@ -187,10 +187,10 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
         const directory = new Directory(path.join(fileStructure.path, 'directory'), fileStructure);
         const subdirectory = new Directory(path.join(directory.path, 'sub-directory'), fileStructure);
         await subdirectory.save();
-        const port = 5561;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
-        const response = await fetch('http://localhost:5561/fs/directory/sub-directory?cleanup=true', {
+        const response = await fetch(`http://localhost:${port}/fs/directory/sub-directory?cleanup=true`, {
             method: 'DELETE'
         });
         const data = await response.text();
@@ -220,7 +220,7 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
         fileStructure.addFileType(TestFile);
         const file = new File(path.join(fileStructure.path, 'file.ext'), fileStructure);
         await file.save('🚜');
-        const port = 5562;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
         const expectedError = new TractorError(`Could not delete "${file.path}". Something went wrong.`);
@@ -228,7 +228,7 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
             throw expectedError;
         });
 
-        const response = await fetch('http://localhost:5562/fs/file.ext', {
+        const response = await fetch(`http://localhost:${port}/fs/file.ext`, {
             method: 'DELETE'
         });
 
@@ -248,14 +248,14 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
         fileStructure.addFileType(TestFile);
         const file = new File(path.join(fileStructure.path, 'file.ext'), fileStructure);
         await file.save('🚜');
-        const port = 5563;
+        const port = await getPort();
         const close = await startTestServer(fileStructure, port);
 
         const del = jest.spyOn(file, 'delete').mockImplementation(async () => {
             throw new Error();
         });
 
-        const response = await fetch('http://localhost:5563/fs/file.ext', {
+        const response = await fetch(`http://localhost:${port}/fs/file.ext`, {
             method: 'DELETE'
         });
 
