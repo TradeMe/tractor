@@ -245,10 +245,10 @@ export class Directory implements Item, Structure {
         const bName = b.name;
         if (aName === bName) {
             return 0;
-        } else if (aName > bName) {
-            return 1;
-        } else {
-            return -1;
         }
+        if (aName > bName) {
+            return 1;
+        }
+        return -1;
     }
 }

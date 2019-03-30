@@ -28,21 +28,21 @@ export async function run (config: TractorConfigInternal, socket: Socket, runOpt
     if (running) {
         info('Protractor already running.');
         throw new TractorError('Protractor already running.');
-    } else {
-        running = true;
+    }
 
-        try {
-            await config.beforeProtractor();
-            info('Starting Protractor...');
-            await startProtractor(config, socket, runOptions);
-        } catch (e) {
-            error((e as Error).message);
-        } finally {
-            socket.disconnect();
-            await config.afterProtractor();
-            running = false;
-            info('Protractor finished.');
-        }
+    running = true;
+
+    try {
+        await config.beforeProtractor();
+        info('Starting Protractor...');
+        await startProtractor(config, socket, runOptions);
+    } catch (e) {
+        error((e as Error).message);
+    } finally {
+        socket.disconnect();
+        await config.afterProtractor();
+        running = false;
+        info('Protractor finished.');
     }
 }
 
@@ -58,7 +58,7 @@ async function startProtractor (config: TractorConfigInternal, socket: Socket, o
         protractorArgs.unshift(ENABLE_DEBUGGER);
     }
 
-    const protractor = childProcess.spawn(NODE_COMMAND, protractorArgs, { detached: true });
+    const protractor = childProcess.spawn(NODE_COMMAND, protractorArgs);
 
     protractor.stdout.on('data', (data: Buffer) => {
         sendDataToClient(socket, data);

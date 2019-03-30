@@ -23,6 +23,7 @@
         "no-require-imports": false,
         "no-this-assignment": false,
         "only-arrow-functions": false,
+        "ordered-imports": false,
         "prefer-function-over-method": false,
         "strict-boolean-expressions": [false],
 
