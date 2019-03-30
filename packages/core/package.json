@@ -1,6 +1,6 @@
 {
   "name": "@tractor/core",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Core module for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -34,21 +34,21 @@
     "build": "src/**/*.js"
   },
   "dependencies": {
-    "@tractor/config-loader": "^1.1.0",
-    "@tractor/dependency-injection": "^1.0.10",
-    "@tractor/error-handler": "^1.0.10",
-    "@tractor/file-javascript": "^1.0.6",
-    "@tractor/file-structure": "^1.0.6",
-    "@tractor/logger": "^1.0.10",
-    "@tractor/plugin-loader": "^1.1.0",
-    "@tractor/server": "^1.0.6",
-    "@tractor/tractor": "^1.1.0",
-    "@tractor/ui": "^1.1.1",
+    "@tractor/config-loader": "^1.1.2",
+    "@tractor/dependency-injection": "^1.1.2",
+    "@tractor/error-handler": "^1.1.2",
+    "@tractor/file-javascript": "^1.1.2",
+    "@tractor/file-structure": "^1.1.2",
+    "@tractor/logger": "^1.1.2",
+    "@tractor/plugin-loader": "^1.1.2",
+    "@tractor/server": "^1.1.2",
+    "@tractor/tractor": "^1.1.2",
+    "@tractor/ui": "^1.1.2",
     "callsite": "^1.0.0",
     "pkg-up": "^2.0.0"
   },
   "devDependencies": {
-    "@tractor/unit-test": "^1.0.0",
+    "@tractor/unit-test": "^1.1.2",
     "@types/callsite": "^1.0.30",
     "@types/pkg-up": "^2.0.0"
   },
