@@ -1,6 +1,6 @@
 {
   "name": "@tractor/server",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "Server for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -51,7 +51,7 @@
     "@tractor/error-handler": "^1.1.2",
     "@tractor/file-structure": "^1.1.2",
     "@tractor/logger": "^1.1.2",
-    "@tractor/tractor": "^1.1.2",
+    "@tractor/tractor": "^1.2.0",
     "@tractor/unit-test": "^1.1.2",
     "@types/body-parser": "^1.17.0",
     "@types/cors": "^2.8.4",
