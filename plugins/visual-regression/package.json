@@ -34,7 +34,6 @@
     "build": "src/**/*.js"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.0.0",
     "pixelmatch": "^4.0.2",
     "pngjs": "^3.3.3"
   },

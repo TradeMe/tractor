@@ -1,6 +1,3 @@
-// Polyfills:
-import '@babel/polyfill';
-
 // Config:
 import { getConfig } from '@tractor/config-loader';
 import { config } from './tractor/config';

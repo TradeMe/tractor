@@ -44,7 +44,6 @@
     "build": "src/**/*.js"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.0.0",
     "body-parser": "^1.18.3",
     "camel-case": "^3.0.0",
     "cheerio": "^1.0.0-rc.2",
