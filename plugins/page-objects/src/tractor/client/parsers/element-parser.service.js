@@ -18,11 +18,17 @@ function ElementParserService (
     astCompareService,
     deprecatedElementParserService
 ) {
-    const QUERIES = {
-        [ELEMENT_QUERY]: _elementParser,
-        [ELEMENT_MULTIPLE_QUERY]: _elementMultipleParser,
-        [PAGE_OBJECT_QUERY]: _pageObjectParser,
-        [PAGE_OBJECT_MULTIPLE_QUERY]: _pageObjectMultipleParser,
+    const QUERY_SELECTOR = {
+        element: ELEMENT_QUERY,
+        elementMultiple: ELEMENT_MULTIPLE_QUERY,
+        pageObject: PAGE_OBJECT_QUERY,
+        pageObjectMultiple: PAGE_OBJECT_MULTIPLE_QUERY
+    };
+    const QUERY_HANDLER = {
+        element: _elementParser,
+        elementMultiple: _elementMultipleParser,
+        pageObject: _pageObjectParser,
+        pageObjectMultiple: _pageObjectMultipleParser
     };
 
     return { parse };
@@ -31,10 +37,10 @@ function ElementParserService (
         let element = new ElementModel(pageObject);
         element.name = meta.name;
 
-        Object.keys(QUERIES).find(query => {
-            let [result] = match(astObject, query);
+        Object.keys(QUERY_SELECTOR).find(key => {
+            let [result] = match(astObject, QUERY_SELECTOR[key]);
             if (result) {
-                QUERIES[query](element, result);
+                QUERY_HANDLER[key](element, result);
                 return element;
             }
         });
