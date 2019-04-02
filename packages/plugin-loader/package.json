@@ -34,6 +34,7 @@
     "build": "src/**/*.ts"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.4.0",
     "camel-case": "^3.0.0",
     "find-up": "^3.0.0",
     "param-case": "^2.1.1",
