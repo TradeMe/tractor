@@ -1,6 +1,7 @@
 // Constants:
 const LEADING_SLASH_REGEX = /^\//;
 const LITERAL = 'Literal';
+const REGEXP_SELECTOR = 'Literal[raw]';
 const REGEXP_CONTENT_REGEX = /^\/.*\/[gimuy]*?$/;
 const REGEXP_FLAGS_REGEX = /([gimuy]*)$/;
 const REQUEST_ERROR = 400;
@@ -127,30 +128,19 @@ export class JavaScriptFile <MetadataType extends JavaScriptFileMetaType = JavaS
         return !!(type === LITERAL && raw && REGEXP_CONTENT_REGEX.test(raw));
     }
 
-    // HACK:
-    // Can't figure out a better way to type this, as it has to recurse over the whole
-    // AST...
-    // tslint:disable:no-unsafe-any
-    // tslint:disable-next-line:no-any
-    private _rebuildRegExps (object: any): BaseNode {
-        Object.keys(object)
-        .forEach(key => {
-            const value = object[key];
-            if (value && this._isRegexLiteral(value as RegExpLiteral)) {
-                const regexContent = value.raw
-                .replace(LEADING_SLASH_REGEX, '')
-                .replace(TRAILING_SLASH_REGEX, '');
-                const [regexFlags] = REGEXP_FLAGS_REGEX.exec(value.raw)!;
-                value.value = new RegExp(regexContent, regexFlags);
-            } else if (Array.isArray(value)) {
-                value.map(val => this._rebuildRegExps(val));
-            } else if (value !== null && typeof value === 'object') {
-                this._rebuildRegExps(value);
+    private _rebuildRegExps (ast: Program): Program {
+        esquery(ast, REGEXP_SELECTOR).forEach((node: BaseNode) => {
+            if (this._isRegexLiteral(node)) {
+                const { raw } = node as RegExpLiteral;
+                const regexContent = raw!
+                    .replace(LEADING_SLASH_REGEX, '')
+                    .replace(TRAILING_SLASH_REGEX, '');
+                const [regexFlags] = REGEXP_FLAGS_REGEX.exec(raw!) || [''];
+                node.value = new RegExp(regexContent, regexFlags);
             }
         });
-        return object;
+        return ast;
     }
-    // tslint:enable:no-unsafe-any
 
     private _setAST (content: string): string {
         this.ast = parseScript(content, {

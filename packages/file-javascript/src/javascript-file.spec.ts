@@ -226,6 +226,34 @@ describe('@tractor/file-javascript: JavaScriptFile:', () => {
             await file.cleanup();
         });
 
+        it('should rebuild any complicated regular expressions in the AST', async () => {
+            const ast = parseScript('/\\/regex\\//ig', { comment: true });
+            const fileStructure = new FileStructure(path.resolve(__dirname, '../fixtures/save'));
+            const file = new JavaScriptFile(path.join(fileStructure.path, 'save-regex.js'), fileStructure);
+
+            await file.save(ast);
+            expect(ast).to.deep.equal({
+                body: [{
+                    expression: {
+                        raw: '/\\/regex\\//ig',
+                        regex: {
+                            flags: 'ig',
+                            pattern: '\\/regex\\/'
+                        },
+                        type: 'Literal',
+                        value: /\/regex\//gi,
+                    },
+                    type: 'ExpressionStatement'
+                }],
+                comments: [],
+                leadingComments: [],
+                sourceType: 'script',
+                type: 'Program'
+              });
+
+            await file.cleanup();
+        });
+
         it('should turn log any errors and create a TractorError', async () => {
             const ast = parseScript('');
             const fileStructure = new FileStructure(path.resolve(__dirname, '../fixtures/save'));
