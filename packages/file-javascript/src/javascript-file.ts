@@ -131,7 +131,7 @@ export class JavaScriptFile <MetadataType extends JavaScriptFileMetaType = JavaS
     private _rebuildRegExps (ast: Program): Program {
         esquery(ast, REGEXP_SELECTOR).forEach((node: BaseNode) => {
             if (this._isRegexLiteral(node)) {
-                const { raw } = node as RegExpLiteral;
+                const { raw } = node;
                 const regexContent = raw!
                     .replace(LEADING_SLASH_REGEX, '')
                     .replace(TRAILING_SLASH_REGEX, '');
