@@ -25,9 +25,7 @@
     "build": "yarn clean && yarn lint && yarn compile && yarn cover",
     "clean": "rimraf dist",
     "compile": "tsc --project ./tsconfig.json",
-    "cover": "yarn test -- --collectCoverage",
     "lint": "tslint --project ./tsconfig.json",
-    "test": "jest --testPathPattern=.*/packages/core/src.*.spec.ts --config=../../jest.config.js",
     "watch": "npm-watch"
   },
   "watch": {
