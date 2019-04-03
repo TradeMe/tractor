@@ -41,7 +41,7 @@
     "angular-messages": "1.6.6",
     "angular-mocks": "1.6.6",
     "angular-sanitize": "1.6.6",
-    "bluebird": "2.10.2",
+    "bluebird": "3.5.4",
     "brfs": "1.4.1",
     "browser-sync": "2.9.11",
     "browserify": "11.2.0",
