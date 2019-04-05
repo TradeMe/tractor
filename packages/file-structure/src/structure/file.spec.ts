@@ -123,8 +123,8 @@ describe('@tractor/file-structure - File:', () => {
         it('should throw an error if the File path is outside the root of the FileStructure', () => {
             const fileStructure = new FileStructure(path.resolve(__dirname, '../../fixtures/file'));
 
-            expect(() => new File(path.join(path.sep, 'file.ext'), fileStructure))
-            .to.throw(TractorError, `Cannot create "${path.join(path.sep, 'file.ext')}" because it is outside of the root of the FileStructure`);
+            expect(() => new File(path.join(path.parse(process.cwd()).root, 'file.ext'), fileStructure))
+            .to.throw(TractorError, `Cannot create "${path.join(path.parse(process.cwd()).root, 'file.ext')}" because it is outside of the root of the FileStructure`);
         });
 
         it('should throw an error if a File has already been created for that path', () => {

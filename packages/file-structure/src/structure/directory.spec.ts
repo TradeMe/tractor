@@ -70,8 +70,8 @@ describe('@tractor/file-structure - Directory:', () => {
         it('should throw an error if the Directory path is outside the root of the FileStructure', () => {
             const fileStructure = new FileStructure(path.resolve(__dirname, '../../fixtures'));
 
-            expect(() => new Directory(path.join(path.sep, 'outside'), fileStructure))
-            .to.throw(TractorError, `Cannot create "${path.join(path.sep, 'outside')}" because it is outside of the root of the FileStructure`);
+            expect(() => new Directory(path.join(path.parse(process.cwd()).root, 'outside'), fileStructure))
+            .to.throw(TractorError, `Cannot create "${path.join(path.parse(process.cwd()).root, 'outside')}" because it is outside of the root of the FileStructure`);
         });
 
         it('should throw an error if a Directory has already been created for that path', () => {
@@ -680,53 +680,56 @@ describe('@tractor/file-structure - Directory:', () => {
 
     describe('Directory.toJSON:', () => {
         it('should return important properties of the directory', () => {
-            const fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-            const directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
-            const subdirectory = new Directory(path.join(path.sep, 'file-structure', 'directory', 'sub-directory'), fileStructure);
-            const file = new File(path.join(path.sep, 'file-structure', 'directory', 'file.ext'), fileStructure);
+            const { root } = path.parse(process.cwd());
+            const fileStructure = new FileStructure(path.join(root, 'file-structure'));
+            const directory = new Directory(path.join(root, 'file-structure', 'directory'), fileStructure);
+            const subdirectory = new Directory(path.join(root, 'file-structure', 'directory', 'sub-directory'), fileStructure);
+            const file = new File(path.join(root, 'file-structure', 'directory', 'file.ext'), fileStructure);
 
             expect(directory.toJSON()).to.deep.equal({
                 basename: 'directory',
                 directories: [subdirectory.serialise()],
                 files: [file.serialise()],
                 isDirectory: true,
-                path: path.join(path.sep, 'file-structure', 'directory'),
+                path: path.join(root, 'file-structure', 'directory'),
                 url: '/directory'
             });
         });
 
         it('should order the directories in alphabetic order', () => {
-            const fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-            const directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
-            const subdirectory1 = new Directory(path.join(path.sep, 'file-structure', 'directory', 'sub-directory-z'), fileStructure);
-            const subdirectory2 = new Directory(path.join(path.sep, 'file-structure', 'directory', 'sub-directory-a'), fileStructure);
-            const subdirectory3 = new Directory(path.join(path.sep, 'file-structure', 'directory', 'sub-directory-f'), fileStructure);
-            const subdirectory4 = new Directory(path.join(path.sep, 'file-structure', 'directory', 'sub-directory-b'), fileStructure);
+            const { root } = path.parse(process.cwd());
+            const fileStructure = new FileStructure(path.join(root, 'file-structure'));
+            const directory = new Directory(path.join(root, 'file-structure', 'directory'), fileStructure);
+            const subdirectory1 = new Directory(path.join(root, 'file-structure', 'directory', 'sub-directory-z'), fileStructure);
+            const subdirectory2 = new Directory(path.join(root, 'file-structure', 'directory', 'sub-directory-a'), fileStructure);
+            const subdirectory3 = new Directory(path.join(root, 'file-structure', 'directory', 'sub-directory-f'), fileStructure);
+            const subdirectory4 = new Directory(path.join(root, 'file-structure', 'directory', 'sub-directory-b'), fileStructure);
 
             expect(directory.toJSON()).to.deep.equal({
                 basename: 'directory',
                 directories: [subdirectory2.serialise(), subdirectory4.serialise(), subdirectory3.serialise(), subdirectory1.serialise()],
                 files: [],
                 isDirectory: true,
-                path: path.join(path.sep, 'file-structure', 'directory'),
+                path: path.join(root, 'file-structure', 'directory'),
                 url: '/directory'
             });
         });
 
         it('should order the files in alphabetic order', () => {
-            const fileStructure = new FileStructure(path.join(path.sep, 'file-structure'));
-            const directory = new Directory(path.join(path.sep, 'file-structure', 'directory'), fileStructure);
-            const file1 = new File(path.join(path.sep, 'file-structure', 'directory', 'file-z.ext'), fileStructure);
-            const file2 = new File(path.join(path.sep, 'file-structure', 'directory', 'file-a.ext'), fileStructure);
-            const file3 = new File(path.join(path.sep, 'file-structure', 'directory', 'file-f.ext'), fileStructure);
-            const file4 = new File(path.join(path.sep, 'file-structure', 'directory', 'file-b.ext'), fileStructure);
+            const { root } = path.parse(process.cwd());
+            const fileStructure = new FileStructure(path.join(root, 'file-structure'));
+            const directory = new Directory(path.join(root, 'file-structure', 'directory'), fileStructure);
+            const file1 = new File(path.join(root, 'file-structure', 'directory', 'file-z.ext'), fileStructure);
+            const file2 = new File(path.join(root, 'file-structure', 'directory', 'file-a.ext'), fileStructure);
+            const file3 = new File(path.join(root, 'file-structure', 'directory', 'file-f.ext'), fileStructure);
+            const file4 = new File(path.join(root, 'file-structure', 'directory', 'file-b.ext'), fileStructure);
 
             expect(directory.toJSON()).to.deep.equal({
                 basename: 'directory',
                 directories: [],
                 files: [file2.serialise(), file4.serialise(), file3.serialise(), file1.serialise()],
                 isDirectory: true,
-                path: path.join(path.sep, 'file-structure', 'directory'),
+                path: path.join(root, 'file-structure', 'directory'),
                 url: '/directory'
             });
         });
