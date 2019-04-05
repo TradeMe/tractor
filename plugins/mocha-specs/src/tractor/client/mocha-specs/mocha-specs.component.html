@@ -201,7 +201,8 @@
                                         </div>
 
                                         <section
-                                            ng-if="!step.isUnparseable && step.isMockRequest">
+                                            ng-if="!step.isUnparseable && step.isMockRequest"
+                                            class="file-editor__mock-request">
                                             <a
                                                 class="file-editor__list-item-reference"
                                                 title="{{ step.data.name }}"
@@ -277,7 +278,9 @@
                                         </section>
 
                                         <section
-                                            ng-if="!step.isUnparseable && step.isInteraction">
+                                            ng-if="!step.isUnparseable && step.isInteraction"
+                                            style="background-color:lightblue"
+                                            class="file-editor__interaction">
                                             <div
                                                 ng-if="$ctrl.fileModel.test.step.length > 1"
                                                 class="file-editor__list-item-sort-handle"
@@ -351,8 +354,9 @@
                                         </section>
 
                                         <section
-                                            ng-if="!step.isUnparseable && step.isAssertion">
-                                            <div
+                                            ng-if="!step.isUnparseable && step.isAssertion"
+                                            class="file-editor__assertion">
+                                            <div 
                                                 ng-if="$ctrl.fileModel.test.step.length > 1"
                                                 class="file-editor__list-item-sort-handle"
                                                 as-sortable-item-handle
