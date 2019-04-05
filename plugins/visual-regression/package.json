@@ -27,7 +27,7 @@
     "compile": "babel src/ --out-dir dist/ --ignore src/**/*.spec.js,src/tractor/client --config-file ../../babel.config.js",
     "cover": "nyc yarn test",
     "lint": "eslint src --ignore-path ../../.eslintignore",
-    "test": "cd ../../ && mocha --opts mocha.opts 'plugins/visual-regression/src/**/*.spec.js' && cd ./plugins/visual-regression",
+    "test": "cd ../../ && mocha --opts mocha.opts \"plugins/visual-regression/src/**/*.spec.js\" && cd ./plugins/visual-regression",
     "watch": "npm-watch"
   },
   "watch": {
