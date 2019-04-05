@@ -24,8 +24,20 @@ tractor-mocha-specs > div {
 }
 
 .unparseable {
-    background: rgba(255, 255, 20, 1);
+    background: #FFE18D;
     padding: .5rem;
     display: inline-block;
     margin-bottom: .5rem;
+}
+
+.file-editor__mock-request {
+    background: #DC9ECE; 
+}
+
+.file-editor__interaction {
+    background: #8DCEFC;
+}
+
+.file-editor__assertion {
+    background: #D1A9DA;
 }
