@@ -57,4 +57,5 @@ export type TractorPlugin<T = unknown> = {
 
 export type UserTractorPluginESM = { default: TractorPlugin };
 
-export type UserTractorPluginModule = TractorPlugin | UserTractorPluginESM;
+export type UserTractorPluginInjectable = { new (...args: Array<any>): TractorPlugin };
+export type UserTractorPluginModule = TractorPlugin | UserTractorPluginESM | UserTractorPluginInjectable;

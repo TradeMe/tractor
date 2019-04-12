@@ -10,8 +10,8 @@ import { init, start } from '../src/application';
 export async function startTestServer (configPath: string, port: number): Promise<() => void> {
     const t = tractor(path.join( '../fixtures', configPath));
     t.config.port = port;
-    await t.call(init);
-    await t.call(start);
+    const server = await init(t);
+    await start(t, server);
 
     const close = inject(async function close (server: Server, sockets: SocketServer) {
         await promisify(server.close.bind(server))();

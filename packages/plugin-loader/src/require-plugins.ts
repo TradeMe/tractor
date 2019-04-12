@@ -14,7 +14,7 @@ import * as pkgUp from 'pkg-up';
 import { Config } from 'protractor';
 import * as resolveFrom from 'resolve-from';
 import titleCase = require('title-case');
-import { TractorDescriptionInternal, TractorPluginInternal, UserTractorPluginESM, UserTractorPluginModule } from './tractor-plugin';
+import { TractorDescriptionInternal, TractorPluginInternal, UserTractorPluginESM, UserTractorPluginInjectable, UserTractorPluginModule } from './tractor-plugin';
 
 // Errors:
 import { TractorError } from '@tractor/error-handler';
@@ -28,7 +28,14 @@ export function requirePlugins (cwd: string, enabledPlugins: Array<string> = [])
             const modulePath = resolveFrom(cwd, fullName);
             const userPlugin = require(modulePath) as UserTractorPluginModule;
 
-            const plugin = isESM(userPlugin) ? userPlugin.default : userPlugin;
+            let plugin;
+            if (isESM(userPlugin)) {
+                plugin = userPlugin.default;
+            } else if (isInjectable(userPlugin)) {
+                plugin = new userPlugin();
+            } else {
+                plugin = userPlugin;
+            };
 
             if (!plugin.description) {
                 plugin.description = {
@@ -107,4 +114,8 @@ function findNodeModules (from: string): string | null {
 
 function isESM (plugin: UserTractorPluginModule): plugin is UserTractorPluginESM {
     return !!(plugin as UserTractorPluginESM).default;
+}
+
+function isInjectable (plugin: UserTractorPluginModule): plugin is UserTractorPluginInjectable {
+    return typeof plugin === 'function';
 }

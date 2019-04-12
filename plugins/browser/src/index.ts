@@ -1,11 +1,28 @@
 // Dependencies:
-import { TractorPlugin } from '@tractor/plugin-loader';
+import { TractorDescription, TractorPlugin, TractorPluginInternal } from '@tractor/plugin-loader';
+import { Config } from 'protractor';
 import { TractorBrowser } from './tractor-browser';
 
 // Plugin:
-export { plugin } from './protractor/plugin';
+import { plugin } from './protractor/plugin';
+import { description } from './tractor/server/description';
 
-export { create } from './tractor/server/create';
-export { description } from './tractor/server/description';
+export class Plugin implements TractorPluginInternal<TractorBrowser> {
+    public readonly description: TractorDescription;
+
+    constructor (
+        private readonly _browser: TractorBrowser
+    ) {
+        this.description = description;
+    }
+    
+    plugin (protractorConfig: Config): Config {
+        return plugin(protractorConfig);
+    }
+
+    create (): TractorBrowser {
+        return this._browser as TractorBrowser;
+    }
+}
 
 export type TractorBrowserPlugin = TractorPlugin<TractorBrowser>;

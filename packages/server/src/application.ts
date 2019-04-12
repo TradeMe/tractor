@@ -1,5 +1,4 @@
 // Dependencies:
-import { inject } from '@tractor/dependency-injection';
 import { TractorError } from '@tractor/error-handler';
 import { info } from '@tractor/logger';
 import { Tractor } from '@tractor/tractor';
@@ -24,7 +23,7 @@ import { searchHandler } from './api/search';
 const PARAMETER_LIMIT = 50000;
 const UPLOAD_SIZE_LIMIT = '50mb';
 
-export const start = inject(async (tractor: Tractor, server: Server): Promise<void> => {
+export async function start (tractor: Tractor, server: Server): Promise<void> {
     try {
         // HACK:
         // Here's another reason to kill the custom DI stuff:
@@ -42,9 +41,9 @@ export const start = inject(async (tractor: Tractor, server: Server): Promise<vo
         });
         info(`tractor is running at ${link}`);
     });
-}, 'tractor', 'server');
+}
 
-export const init = inject(async (tractor: Tractor): Promise<void> => {
+export async function init (tractor: Tractor): Promise<Server> {
     const application = express();
     const server = new Server(application);
     const sockets = io(server);
@@ -101,7 +100,9 @@ export const init = inject(async (tractor: Tractor): Promise<void> => {
 
     // Always make sure the '*' handler happens last:
     application.get('*', renderIndex);
-}, 'tractor');
+
+    return server;
+}
 
 function injectPlugins (tractor: Tractor, application: express.Express, templatePath: string): express.RequestHandler {
     const pluginsWithUI = tractor.plugins.filter(plugin => plugin.description.hasUI);

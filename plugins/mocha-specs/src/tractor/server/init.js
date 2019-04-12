@@ -13,4 +13,3 @@ export async function init (config) {
         createDirIfMissing(mochaReportsDirectoryPath)
     ]);
 }
-init['@Inject'] = ['config'];

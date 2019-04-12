@@ -1,5 +1,4 @@
 // Dependencies:
-import { getConfig } from '@tractor/config-loader';
 import { readFiles } from '@tractor/file-structure';
 import { MochaSpecFile } from '../tractor/server/files/mocha-spec-file';
 import { MochaSpecFileRefactorer } from '../tractor/server/files/mocha-spec-file-refactorer';
@@ -7,8 +6,8 @@ import { MochaSpecFileRefactorer } from '../tractor/server/files/mocha-spec-file
 // Versions:
 const VERSIONS = [];
 
-export async function upgrade () {
-    const config = getConfig();
+export async function upgrade (tractor) {
+    const config = tractor.config;
 
     // Read all .e2e-spec.js files:
     const mochaSpecsFileStructure = await readFiles(config.mochaSpecs.directory, [MochaSpecFile]);

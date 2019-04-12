@@ -16,7 +16,7 @@ cli
 cli
 .command('init')
 .description('initialise tractor in a project')
-.action(() => run(cli.config, init));
+.action(() => init(create(cli.config)));
 
 cli
 .command('patch')
@@ -26,16 +26,15 @@ cli
 cli
 .command('start', { isDefault: true })
 .description('Start the tractor server')
-.action(() => run(cli.config, start));
+.action(() => start(create(cli.config)));
 
 cli
 .command('upgrade')
 .description('Upgrade tractor plugin files')
-.action(() => run(cli.config, upgrade));
+.action(() => upgrade(create(cli.config)));
 
 cli.parse(process.argv);
 
-function run (configPath, command) {
-    const tractor = new Tractor(process.cwd(), configPath);
-    return tractor.call(command);
+function create (configPath) {
+    return new Tractor(process.cwd(), configPath);
 }

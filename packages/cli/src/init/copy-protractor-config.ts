@@ -4,7 +4,6 @@ const PROTRACTOR_CONF_FILE_NAME = 'protractor.conf.js';
 
 // Dependencies:
 import { TractorConfigInternal } from '@tractor/config-loader';
-import { inject } from '@tractor/dependency-injection';
 import { copyFile } from '@tractor/file-structure';
 import { warn } from '@tractor/logger';
 import * as path from 'path';
@@ -12,7 +11,7 @@ import * as path from 'path';
 // Errors:
 import { TractorError } from '@tractor/error-handler';
 
-export const copyProtractorConfig = inject(async (config: TractorConfigInternal): Promise<void> => {
+export async function copyProtractorConfig (config: TractorConfigInternal): Promise<void> {
     const readPath = path.join(__dirname, BASE_FILE_SOURCES, PROTRACTOR_CONF_FILE_NAME);
     const writePath = path.join(process.cwd(), config.directory, PROTRACTOR_CONF_FILE_NAME);
 
@@ -24,4 +23,4 @@ export const copyProtractorConfig = inject(async (config: TractorConfigInternal)
             warn(`${error.message} Not copying...`);
         }
     }
-}, 'config');
+}

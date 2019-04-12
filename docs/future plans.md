@@ -10,8 +10,6 @@ I ([phenomnomnominal](https://github.com/phenomnomnominal)) have been toiling aw
 
 * Automate the installing of Java SDK, hostfile modifications for `@tractor-plugins/mock-requests` etc.
 
-* Remove the janky as `@tractor/dependency-injection`.
-
 * Introduce more JS. That way we can get users used to seeing the actual underlying code, rather than the UI.
 
 * Move parsing/codegen from the client to the server. There's no need for it to be on the client, and passing huge files between client/server is a bit silly.
