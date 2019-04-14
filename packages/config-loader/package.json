@@ -1,6 +1,6 @@
 {
   "name": "@tractor/config-loader",
-  "version": "1.1.2",
+  "version": "1.3.0",
   "description": "Config loader for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -37,9 +37,9 @@
     "@tractor/core": "^1.0.0"
   },
   "devDependencies": {
-    "@tractor/error-handler": "^1.1.2",
-    "@tractor/logger": "^1.1.2",
-    "@tractor/unit-test": "^1.1.2"
+    "@tractor/error-handler": "^1.3.0",
+    "@tractor/logger": "^1.3.0",
+    "@tractor/unit-test": "^1.3.0"
   },
   "gitHead": "75f58824a7a14b8012a99e91ed23a80ab090e093"
 }
