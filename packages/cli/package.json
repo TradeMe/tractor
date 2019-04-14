@@ -36,8 +36,7 @@
   },
   "dependencies": {
     "@tractor/core": "^1.2.3",
-    "commander": "^2.13.0",
-    "protractor": "^5.3.0"
+    "commander": "^2.13.0"
   },
   "devDependencies": {
     "@tractor/config-loader": "^1.1.2",

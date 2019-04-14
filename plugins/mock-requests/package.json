@@ -52,10 +52,17 @@
     "express-http-proxy": "^1.4.0",
     "fake-xml-http-request": "^1.6.0",
     "fetch-mock": "^5.13.1",
+    "get-port": "^4.2.0",
     "pascal-case": "^2.0.1",
     "pem": "^1.13.1",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.5"
+  },
+  "devDependencies": {
+    "@tractor/error-handler": "^1.0.0",
+    "@tractor/file-structure": "^1.0.0",
+    "@tractor/logger": "^1.0.0",
+    "@tractor/unit-test": "^1.0.0"
   },
   "peerDependencies": {
     "@tractor/core": "^1.0.0"
