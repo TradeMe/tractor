@@ -38,7 +38,9 @@ export class ScreenSize {
     public async maximise (): Promise<void> {
         const screenHeight = await this.getScreenHeight();
         const screenWidth = await this.getScreenWidth();
-        return this._browser.driver.manage().window().setSize(screenWidth, screenHeight);
+        const window = this._browser.driver.manage().window();
+        await window.setPosition(0, 0);
+        return window.setSize(screenWidth, screenHeight);
     }
 
     public async setSize (size: string = DEFAULT): Promise<void> {
