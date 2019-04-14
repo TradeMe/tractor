@@ -129,6 +129,7 @@ function fileStructureServiceFactory (
             }
             if (!toReplace) {
                 var oldModified = _fileStructure.modified;
+                getAllFilesByUrl(fileStructureChunk);
                 _fileStructure = fileStructureChunk;
                 _fileStructure.modified = oldModified + 1;
                 return;
