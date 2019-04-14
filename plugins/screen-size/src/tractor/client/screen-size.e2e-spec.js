@@ -1,5 +1,6 @@
 /*{"name":"Screen Size","tests":[{"name":"Resize based on tag #sm","reason":"Min possible screen size differs between browsers and platforms"},{"name":"Resize based on tag #md"},{"name":"Resize based on tag #lg"},{"name":"Maximize based on tag #xl"},{"name":"Resize without a tag to the default"}],"version":"0.1.0"}*/
 describe('Screen Size', function () {
+    this.retries(3);
     it.skip('Resize based on tag #sm', function () {
         var Tractor = require('../../../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
         var step = Promise.resolve();

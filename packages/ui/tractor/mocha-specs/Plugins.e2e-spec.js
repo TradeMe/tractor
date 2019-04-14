@@ -1,6 +1,7 @@
 /*{"name":"Plugins","tests":[{"name":"Load plugins"}],"version":"0.1.0"}*/
 describe('Plugins', function () {
     it('Load plugins', function () {
+        this.retries(3);
         var Tractor = require('../../src/app/tractor.po.js'), tractor = new Tractor();
         var ControlPanel = require('../../src/app/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
         var step = Promise.resolve();
