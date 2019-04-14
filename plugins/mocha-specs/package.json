@@ -49,9 +49,12 @@
     "esquery": "^1.0.1",
     "estemplate": "^0.5.1",
     "mocha": "^5.2.0",
-    "mochawesome": "^3.0.3",
+    "mochawesome": "^3.1.1",
+    "mochawesome-merge": "^1.0.7",
+    "mochawesome-report-generator": "^3.1.5",
     "optimist": "^0.6.1",
-    "pascal-case": "^2.0.1"
+    "pascal-case": "^2.0.1",
+    "rimraf": "^2.6.3"
   },
   "peerDependencies": {
     "@tractor-plugins/page-objects": "^1.0.0",
