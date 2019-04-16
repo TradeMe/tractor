@@ -52,7 +52,7 @@
     "@tractor/unit-test": "^1.1.2",
     "@types/find-up": "^2.1.1",
     "@types/pkg-up": "^2.0.0",
-    "@types/resolve-from": "^4.0.0"
+    "@types/resolve-from": "^5.0.0"
   },
   "gitHead": "75f58824a7a14b8012a99e91ed23a80ab090e093"
 }
