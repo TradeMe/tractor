@@ -48,7 +48,7 @@
   "devDependencies": {
     "@tractor/unit-test": "^1.1.2",
     "@types/callsite": "^1.0.30",
-    "@types/pkg-up": "^2.0.0"
+    "@types/pkg-up": "^3.1.0"
   },
   "gitHead": "75f58824a7a14b8012a99e91ed23a80ab090e093"
 }
