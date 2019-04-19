@@ -17,10 +17,13 @@ export async function browserInfo (test) {
 }
 
 const MAC_OS = 'Mac OS';
+const WINDOWS = 'Windows';
 const PLATFORM_NAMES = {
     'macOS': MAC_OS,
     'mac': MAC_OS,
-    'Mac OS X': MAC_OS
+    'Mac OS X': MAC_OS,
+    'windows': WINDOWS,
+    'Windows NT': WINDOWS
 };
 
 async function getBrowserInfo (browser) {

@@ -65,7 +65,7 @@ describe('Screen Size', function () {
         step = step.then(function (screenWidth) {
             var element;
             element = screenSize;
-            return expect(element.getWidth()).to.eventually.equal(screenWidth);
+            return expect(element.getWidth().then(function(width) { return screenWidth - width <= 1 })).to.eventually.equal(true);
         });
         step = step.then(function () {
             var element;
@@ -75,7 +75,7 @@ describe('Screen Size', function () {
         step = step.then(function (screenHeight) {
             var element;
             element = screenSize;
-            return expect(element.getHeight()).to.eventually.equal(screenHeight);
+            return expect(element.getHeight().then(function(height) { return screenHeight - height <= 1 })).to.eventually.equal(true);
         });
         return step;
     });

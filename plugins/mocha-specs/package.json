@@ -42,13 +42,14 @@
     "build": "src/**/*.js"
   },
   "dependencies": {
+    "@phenomnomnominal/protractor-use-mocha-hook": "^0.1.0",
     "camel-case": "^3.0.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "esprima": "^4.0.1",
     "esquery": "^1.0.1",
     "estemplate": "^0.5.1",
-    "mocha": "^5.2.0",
+    "mocha": "^6.1.4",
     "mochawesome": "^3.1.1",
     "mochawesome-merge": "^1.0.7",
     "mochawesome-report-generator": "^3.1.5",

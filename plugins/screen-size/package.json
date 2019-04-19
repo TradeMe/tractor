@@ -41,7 +41,7 @@
     "build": "src/**/*.js"
   },
   "dependencies": {
-    "mochawesome": "^3.0.3"
+    "@phenomnomnominal/protractor-use-mocha-hook": "^0.1.0"
   },
   "peerDependencies": {
     "@tractor/core": "^1.0.0"

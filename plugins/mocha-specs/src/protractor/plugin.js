@@ -1,4 +1,5 @@
 // Dependencies:
+import { useMochaHook } from '@phenomnomnominal/protractor-use-mocha-hook';
 import { getConfig } from '@tractor/config-loader';
 import { TractorError } from '@tractor/error-handler';
 import { exists } from 'fs';
@@ -8,7 +9,8 @@ import * as optimist from 'optimist';
 import path from 'path';
 import rimraf from 'rimraf';
 import { promisify } from 'util';
-import { attachAfterEach } from './hooks';
+import { browserInfo } from './browser-info';
+import { debug } from './debug';
 import { setTags } from './tags';
 import { world } from './world';
 
@@ -87,7 +89,11 @@ export function plugin (protractorConfig) {
                 world();
             },
             postTest: function () {
-                attachAfterEach();
+                // use `function` over `=>` to let Mocha set `this`:
+                useMochaHook('afterEach', async function () {
+                    await browserInfo(this);
+                    debug(this);
+                });
             }
         }
     });
