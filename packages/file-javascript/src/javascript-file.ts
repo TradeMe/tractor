@@ -111,7 +111,7 @@ export class JavaScriptFile <MetadataType extends JavaScriptFileMetaType = JavaS
         esquery(this.ast, REQUIRE_QUERY).forEach(requirePath => {
             const directoryPath = path.dirname(this.path);
             let referencePath = path.resolve(directoryPath, (requirePath as Literal).value as string);
-            if (!referencePath.endsWith(JavaScriptFile.prototype.extension)) {
+            if (!path.extname(referencePath)) {
                 referencePath = `${referencePath}${JavaScriptFile.prototype.extension}`;
             }
             const reference = this.fileStructure.referenceManager.getReference(referencePath);
