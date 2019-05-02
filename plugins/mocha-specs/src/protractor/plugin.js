@@ -88,7 +88,7 @@ export function plugin (protractorConfig) {
             onPrepare () {
                 world();
             },
-            postTest: function () {
+            setup () {
                 // use `function` over `=>` to let Mocha set `this`:
                 useMochaHook('afterEach', async function () {
                     await browserInfo(this);
