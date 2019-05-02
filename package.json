@@ -27,7 +27,7 @@
 		"build": "yarn && yarn clean && lerna run clean && lerna run compile && lerna run lint && lerna run bundle && yarn cover && yarn cover:ts && lerna run test:e2e:ci --stream",
 		"cover": "nyc yarn test",
 		"test": "mocha --opts mocha.opts \"+(plugins)/**/src/**/*.spec.js\"",
-		"cover:ts": "yarn test:ts -- --collectCoverage",
+		"cover:ts": "yarn test:ts --collectCoverage",
 		"test:ts": "jest --testPathPattern=.*/src/.*.spec.ts --config=./jest.config.js",
 		"webdriver": "webdriver-manager update --gecko=false",
 		"postinstall": "yarn webdriver",
