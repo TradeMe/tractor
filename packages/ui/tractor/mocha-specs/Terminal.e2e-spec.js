@@ -1,4 +1,4 @@
-/*{"name":"Terminal","tests":[{"name":"Show and hide terminal"}],"version":"0.1.0"}*/
+/*{"name":"Terminal","tests":[{"name":"Show and hide terminal"}],"version":"1.4.0"}*/
 describe('Terminal', function () {
     it('Show and hide terminal', function () {
         this.retries(3);

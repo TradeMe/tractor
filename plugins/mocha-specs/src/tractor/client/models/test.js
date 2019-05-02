@@ -1,6 +1,9 @@
 // Module:
 import { MochaSpecsModule } from '../mocha-specs.module';
 
+// Constants:
+const RELATIVE_NODE_MODULES = /^(\.\/)*(\.\.\/)*node_modules\//g;
+
 // Dependencies:
 import * as path from 'path';
 import './assertion';
@@ -137,6 +140,9 @@ function createTestModelConstructor (
             let relative = path.relative(directory, this._fixWindows(file.path));
             if (!relative.match(/^\./)) {
                 relative = `./${relative}`;
+            }
+            if (file.isIncluded) {
+                relative = relative.replace(RELATIVE_NODE_MODULES, '');
             }
             return relative;
         }

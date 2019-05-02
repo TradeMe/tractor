@@ -1,4 +1,4 @@
-/*{"name":"Plugins","tests":[{"name":"Load plugins"}],"version":"0.1.0"}*/
+/*{"name":"Plugins","tests":[{"name":"Load plugins"}],"version":"1.4.0"}*/
 describe('Plugins', function () {
     it('Load plugins', function () {
         this.retries(3);

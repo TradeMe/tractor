@@ -1,10 +1,10 @@
-/*{"name":"Page Object file","tests":[{"name":"Create Page Object file"},{"name":"Rename Page Object file"},{"name":"Invalid name - required"},{"name":"Invalid name - valid identifier"}],"version":"0.1.0"}*/
+/*{"name":"Page Object file","tests":[{"name":"Create Page Object file"},{"name":"Rename Page Object file"},{"name":"Invalid name - required"},{"name":"Invalid name - valid identifier"}],"version":"1.4.0"}*/
 describe('Page Object file', function () {
     it('Create Page Object file', function () {
+        var Tractor = require('@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
+        var ControlPanel = require('@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
+        var TractorFileTree = require('@tractor/ui/dist/page-objects/Core/Components/FileTree/tractor-file-tree.po.js'), tractorFileTree = new TractorFileTree();
         var TractorPageObjects = require('./tractor-page-objects.po.js'), tractorPageObjects = new TractorPageObjects();
-        var Tractor = require('../../../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
-        var ControlPanel = require('../../../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
-        var TractorFileTree = require('../../../../../node_modules/@tractor/ui/dist/page-objects/Core/Components/FileTree/tractor-file-tree.po.js'), tractorFileTree = new TractorFileTree();
         var step = Promise.resolve();
         step = step.then(function () {
             var element;
@@ -42,10 +42,10 @@ describe('Page Object file', function () {
         return step;
     });
     it('Rename Page Object file', function () {
+        var Tractor = require('@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
+        var ControlPanel = require('@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
+        var TractorFileTree = require('@tractor/ui/dist/page-objects/Core/Components/FileTree/tractor-file-tree.po.js'), tractorFileTree = new TractorFileTree();
         var TractorPageObjects = require('./tractor-page-objects.po.js'), tractorPageObjects = new TractorPageObjects();
-        var Tractor = require('../../../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
-        var ControlPanel = require('../../../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
-        var TractorFileTree = require('../../../../../node_modules/@tractor/ui/dist/page-objects/Core/Components/FileTree/tractor-file-tree.po.js'), tractorFileTree = new TractorFileTree();
         var step = Promise.resolve();
         step = step.then(function () {
             var element;
@@ -91,9 +91,9 @@ describe('Page Object file', function () {
         return step;
     });
     it('Invalid name - required', function () {
+        var Tractor = require('@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
+        var ControlPanel = require('@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
         var TractorPageObjects = require('./tractor-page-objects.po.js'), tractorPageObjects = new TractorPageObjects();
-        var Tractor = require('../../../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
-        var ControlPanel = require('../../../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
         var step = Promise.resolve();
         step = step.then(function () {
             var element;
@@ -118,9 +118,9 @@ describe('Page Object file', function () {
         return step;
     });
     it('Invalid name - valid identifier', function () {
+        var Tractor = require('@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
+        var ControlPanel = require('@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
         var TractorPageObjects = require('./tractor-page-objects.po.js'), tractorPageObjects = new TractorPageObjects();
-        var Tractor = require('../../../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
-        var ControlPanel = require('../../../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
         var step = Promise.resolve();
         step = step.then(function () {
             var element;

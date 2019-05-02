@@ -5,13 +5,19 @@ import { MochaSpecFile } from '../tractor/server/files/mocha-spec-file';
 import { MochaSpecFileRefactorer } from '../tractor/server/files/mocha-spec-file-refactorer';
 
 // Versions:
-const VERSIONS = [];
+const VERSIONS = ['1.4.0'];
 
 export async function upgrade () {
     const config = getConfig();
 
     // Read all .e2e-spec.js files:
-    const mochaSpecsFileStructure = await readFiles(config.mochaSpecs.directory, [MochaSpecFile]);
+    let mochaSpecsFileStructure;
+    try {
+        mochaSpecsFileStructure = await readFiles(config.mochaSpecs.directory, [MochaSpecFile]);
+    } catch {
+        // Can't read .e2e-spec.js files, giving up.
+        return;
+    }
     const { allFiles } = mochaSpecsFileStructure.structure;
 
     if (config.cucumber && config.features && config.stepDefinitions) {

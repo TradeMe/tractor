@@ -3,6 +3,9 @@
 // Module:
 import { PageObjectsModule } from '../page-objects.module';
 
+// Constants:
+const RELATIVE_NODE_MODULES = /^(\.\/)*(\.\.\/)*node_modules\//g;
+
 // Dependencies:
 import pascalcase from 'pascal-case';
 import * as path from 'path';
@@ -167,6 +170,9 @@ function createPageObjectModelConstructor (
             let relative = path.relative(path.dirname(this._fixWindows(this.file.path)), this._fixWindows(pageObject.path));
             if (!relative.match(/^\./)) {
                 relative = `./${relative}`;
+            }
+            if (pageObject.isIncluded) {
+                relative = relative.replace(RELATIVE_NODE_MODULES, '');
             }
             return relative;
         }
