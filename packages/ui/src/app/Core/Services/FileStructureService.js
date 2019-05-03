@@ -115,7 +115,9 @@ function fileStructureServiceFactory (
                 return;
             }
 
+            var searching = _fileStructure;
             var toReplace = fileStructureChunk.url.split('/').splice(2).reduce(function (p, n) {
+                searching = p;
                 return p.directories.find(function (d) {
                     return d.basename === n;
                 });
