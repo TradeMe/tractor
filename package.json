@@ -29,7 +29,7 @@
 		"test": "mocha --opts mocha.opts \"+(plugins)/**/src/**/*.spec.js\"",
 		"cover:ts": "yarn test:ts --collectCoverage",
 		"test:ts": "jest --testPathPattern=.*/src/.*.spec.ts --config=./jest.config.js",
-		"webdriver": "webdriver-manager update --gecko=false",
+		"webdriver": "webdriver-manager update --versions.standalone=3.141.5 --versions.gecko=v0.24.0",
 		"postinstall": "yarn webdriver",
 		"link:all": "yarn link && lerna exec yarn link",
 		"unlink:all": "yarn unlink && lerna exec yarn unlink"
