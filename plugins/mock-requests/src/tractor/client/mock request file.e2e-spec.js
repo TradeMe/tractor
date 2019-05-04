@@ -1,6 +1,7 @@
 /*{"name":"Mock Requests file","tests":[{"name":"Create Mock Request file"},{"name":"Rename Mock Request file"},{"name":"Invalid name - required"}],"version":"1.4.0"}*/
 describe('Mock Requests file', function () {
     it('Create Mock Request file', function () {
+        this.retries(3);
         var Tractor = require('@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
         var ControlPanel = require('@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
         var TractorFileTree = require('@tractor/ui/dist/page-objects/Core/Components/FileTree/tractor-file-tree.po.js'), tractorFileTree = new TractorFileTree();
@@ -42,6 +43,7 @@ describe('Mock Requests file', function () {
         return step;
     });
     it('Rename Mock Request file', function () {
+        this.retries(3);
         var Tractor = require('@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
         var ControlPanel = require('@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
         var TractorFileTree = require('@tractor/ui/dist/page-objects/Core/Components/FileTree/tractor-file-tree.po.js'), tractorFileTree = new TractorFileTree();

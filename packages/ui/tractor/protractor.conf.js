@@ -2,24 +2,22 @@
 const { tractor } = require('@tractor/core');
 
 exports.config = tractor('../tractor.conf.js').plugin({
-  allScriptsTimeout: 11000,
-  capabilities: {
-    browserName: 'chrome',
-    shardTestFiles: false,
-    maxInstances: 4,
-    chromeOptions: {
-      args: [
-        '--headless',
-        '--disable-gpu'
-      ]
-    }
-  },
-  directConnect: true,
-  mochaOpts: {
-    timeout: 30000,
-    reporterOptions: {
-      autoOpen: false
-    }
-  },
-  SELENIUM_PROMISE_MANAGER: false
+    allScriptsTimeout: 30000,
+    getPageTimeout: 30000,
+    multiCapabilities: [{
+        browserName: 'chrome',
+        shardTestFiles: true,
+        maxInstances: 2,
+        chromeOptions: {
+            args: [
+                '--headless',
+                '--disable-gpu'
+            ]
+        }
+    }],
+    mochaOpts: {
+        timeout: 30000
+    },
+    directConnect: true,
+    SELENIUM_PROMISE_MANAGER: false
 });

@@ -29,6 +29,10 @@ module.exports = function () {
             return self.saveButton.click();
         });
         result = result.then(function () {
+            return self.confirmSaveDialog.ok().catch(function () {
+            });
+        });
+        result = result.then(function () {
             return browser.sleep(5000);
         });
         return result;

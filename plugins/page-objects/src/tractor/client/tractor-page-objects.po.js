@@ -33,6 +33,10 @@ module.exports = function () {
         result = result.then(function () {
             return self.saveButton.click();
         });
+        result = result.then(function () {
+            return self.confirmSaveDialog.ok().catch(function () {                
+            });
+        });
         return result;
     };
     TractorPageObjects.prototype.savePageObjectFile = function () {
