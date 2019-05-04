@@ -11,7 +11,7 @@ import rimraf from 'rimraf';
 import { promisify } from 'util';
 import { browserInfo } from './browser-info';
 import { debug } from './debug';
-import { setTags } from './tags';
+import { setupTags } from './tags';
 import { world } from './world';
 
 // Constants:
@@ -44,11 +44,13 @@ export function plugin (protractorConfig) {
     let { mochaOpts } = protractorConfig;
     const reportDirOptions = { reportDir: tractorConfig.mochaSpecs.reportsDirectory };
 
+    let isSharded = false;
     if (!mochaOpts.reporter) {
         const { capabilities, multiCapabilities } = protractorConfig;
-        const isSharded = capabilities && capabilities.shardTestFiles && capabilities.maxInstances > 1;
-        const isMultiSharded = multiCapabilities && multiCapabilities.some(capability => capability.shardTestFiles && capabilities.maxInstances > 1);
-        mochaOpts.reporter = isSharded || isMultiSharded ? DEFAULT_PARALLEL_REPORTER : DEFAULT_SERIAL_REPORTER;
+        const isSingleSharded = capabilities && capabilities.shardTestFiles && capabilities.maxInstances > 1;
+        const isMultiSharded = multiCapabilities && multiCapabilities.some(capability => capability.shardTestFiles && capability.maxInstances > 1);
+        isSharded = isSingleSharded || isMultiSharded;
+        mochaOpts.reporter = isSharded ? DEFAULT_PARALLEL_REPORTER : DEFAULT_SERIAL_REPORTER;
     }
 
     let autoOpen = true;
@@ -76,7 +78,7 @@ export function plugin (protractorConfig) {
     let args = optimist.parse(process.argv.slice(2));
     let params = args && args.params || {};
     if (params && params.tag) {
-        setTags(mochaOpts, params.tag);
+        setupTags(params.tag, protractorConfig, isSharded);
     }
     if (params && params.spec) {
         protractorConfig.specs = [params.spec];
