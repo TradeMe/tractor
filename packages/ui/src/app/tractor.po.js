@@ -6,7 +6,7 @@ module.exports = function () {
         var self = this;
         var result = Promise.resolve();
         result = result.then(function () {
-            return browser.get('/', null);
+            return browser.get('/');
         });
         return result;
     };
