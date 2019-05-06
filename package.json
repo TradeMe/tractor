@@ -139,6 +139,9 @@
 		"vinyl-source-stream": "^1.1.0",
 		"xterm": "^2.9.2"
 	},
+	"resolutions": {
+	  "webdriver-manager": "^13.0.0"
+	},
 	"nyc": {
 		"report-dir": "./reports",
 		"reporter": [
