@@ -44,12 +44,11 @@ export function plugin (protractorConfig) {
     let { mochaOpts } = protractorConfig;
     const reportDirOptions = { reportDir: tractorConfig.mochaSpecs.reportsDirectory };
 
-    let isSharded = false;
+    const { capabilities, multiCapabilities } = protractorConfig;
+    const isSingleSharded = capabilities && capabilities.shardTestFiles && capabilities.maxInstances > 1;
+    const isMultiSharded = multiCapabilities && multiCapabilities.some(capability => capability.shardTestFiles && capability.maxInstances > 1);
+    const isSharded = isSingleSharded || isMultiSharded;
     if (!mochaOpts.reporter) {
-        const { capabilities, multiCapabilities } = protractorConfig;
-        const isSingleSharded = capabilities && capabilities.shardTestFiles && capabilities.maxInstances > 1;
-        const isMultiSharded = multiCapabilities && multiCapabilities.some(capability => capability.shardTestFiles && capability.maxInstances > 1);
-        isSharded = isSingleSharded || isMultiSharded;
         mochaOpts.reporter = isSharded ? DEFAULT_PARALLEL_REPORTER : DEFAULT_SERIAL_REPORTER;
     }
 
