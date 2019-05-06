@@ -29,7 +29,7 @@
 		"test": "mocha --opts mocha.opts \"+(plugins)/**/src/**/*.spec.js\"",
 		"cover:ts": "yarn test:ts --collectCoverage",
 		"test:ts": "jest --testPathPattern=.*/src/.*.spec.ts --config=./jest.config.js",
-		"webdriver": "webdriver-manager update --versions.standalone=3.141.5 --versions.gecko=v0.24.0",
+		"webdriver": "webdriver-manager update --versions.standalone=3.141.5 --gecko=false --chrome=false",
 		"postinstall": "yarn webdriver",
 		"link:all": "yarn link && lerna exec yarn link",
 		"unlink:all": "yarn unlink && lerna exec yarn unlink"
@@ -138,9 +138,6 @@
 		"vinyl-buffer": "^1.0.1",
 		"vinyl-source-stream": "^1.1.0",
 		"xterm": "^2.9.2"
-	},
-	"resolutions": {
-	  "webdriver-manager": "^13.0.0"
 	},
 	"nyc": {
 		"report-dir": "./reports",

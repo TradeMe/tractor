@@ -1,32 +1,16 @@
 'use strict';
 const { tractor } = require('@tractor/core');
+const { config } = require('../../../protractor.conf');
 
-exports.config = tractor('../tractor.conf.js').plugin({
-    allScriptsTimeout: 30000,
-    getPageTimeout: 30000,
-    multiCapabilities: [{
-        browserName: 'chrome',
-        shardTestFiles: true,
-        maxInstances: 2,
-        chromeOptions: {
-            args: [
-                '--headless',
-                '--disable-gpu'
-            ]
-        }
-    }, {
-        browserName: 'firefox',
-        shardTestFiles: true,
-        maxInstances: 2,
-        'moz:firefoxOptions': {
-            args: [
-                '--headless'
-            ]
-        }
-    }],
-    mochaOpts: {
-        timeout: 30000
-    },
-    directConnect: true,
-    SELENIUM_PROMISE_MANAGER: false
+config.multiCapabilities.push({
+    browserName: 'firefox',
+    shardTestFiles: true,
+    maxInstances: 2,
+    'moz:firefoxOptions': {
+        args: [
+            '--headless'
+        ]
+    }
 });
+
+exports.config = tractor('../tractor.conf.js').plugin(config);

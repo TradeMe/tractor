@@ -35,8 +35,10 @@
   },
   "dependencies": {
     "body-parser": "^1.18.3",
+    "chromedriver": "^74.0.0",
     "cors": "^2.8.5",
     "express": "^4.16.4",
+    "geckodriver": "^1.16.2",
     "js-search": "^1.4.2",
     "lodash.debounce": "^4.0.8",
     "lodash.template": "^4.4.0",
@@ -65,9 +67,6 @@
     "@types/socket.io-client": "^1.4.32",
     "node-fetch": "^2.3.0",
     "socket.io-client": "^2.2.0"
-  },
-  "resolutions": {
-    "webdriver-manager": "^13.0.0"
   },
   "peerDependencies": {
     "@tractor/core": "^1.0.0"
