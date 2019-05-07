@@ -9,7 +9,7 @@ import * as optimist from 'optimist';
 import path from 'path';
 import rimraf from 'rimraf';
 import { promisify } from 'util';
-import { browserInfo } from './browser-info';
+import { attachBrowserName } from './browser-info';
 import { debug } from './debug';
 import { setupTags } from './tags';
 import { world } from './world';
@@ -91,9 +91,12 @@ export function plugin (protractorConfig) {
             },
             setup () {
                 // use `function` over `=>` to let Mocha set `this`:
+                useMochaHook('beforeEach', async function () {
+                    await attachBrowserName(this);
+                });
+                // use `function` over `=>` to let Mocha set `this`:
                 useMochaHook('afterEach', async function () {
-                    await browserInfo(this);
-                    debug(this);
+                    await debug(this);
                 });
             }
         }

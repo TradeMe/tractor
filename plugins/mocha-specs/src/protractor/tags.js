@@ -26,7 +26,9 @@ export function setupTags (tag, protractorConf, isSharded) {
 
     // If we're running in parallel, we need to filter the specs before they get to Mocha.
     // Otherwise, it will spin up a bunch of browsers to run tests that don't match the grep.
-    if (isSharded) {
+    // This code is run by each parallel browser though, and we only want to run this once, so 
+    // we set a flag on `process.env` 😅
+    if (isSharded && !process.env[MOCHA_SPECS_SHARDED_FILTERED_KEY]) {
         protractorConf.specs = filterSpecs(protractorConf.specs, tag);
         if (protractorConf.specs.length === 0) {
             info(`No matching specs! 😔`);
@@ -39,10 +41,6 @@ export function setupTags (tag, protractorConf, isSharded) {
 }
 
 function filterSpecs (specs, tag) {
-    if (process.env[MOCHA_SPECS_SHARDED_FILTERED_KEY]) {
-        return specs;
-    }
-
     let files = [];
     specs.forEach(specsGlob => {
         files = [...files, ...glob.sync(specsGlob)];
