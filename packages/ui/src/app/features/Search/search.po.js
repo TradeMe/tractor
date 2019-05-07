@@ -14,7 +14,7 @@ module.exports = function () {
         var self = this;
         var result = Promise.resolve();
         result = result.then(function () {
-            return self.searchInput.sendKeys(searchString);
+            return browser.pasteText(self.searchInput, searchString);
         });
         return result;
     };

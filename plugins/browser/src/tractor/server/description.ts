@@ -102,6 +102,23 @@ export const description: TractorDescription = {
             description: '(tractor) Schedules a command to move focus to the previous element.',
             name: 'focus previous',
             returns: 'promise'
+        },
+        {
+            description: '(tractor) Schedules a command to paste some text into an element.',
+            name: 'paste text',
+            parameters: [
+                {
+                    description: 'The element to paste the text into',
+                    name: 'element',
+                    type: 'element'
+                },
+                {
+                    description: 'The text to paste into the element',
+                    name: 'text',
+                    type: 'string'
+                }
+            ],
+            returns: 'promise'
         }
     ]
 };
