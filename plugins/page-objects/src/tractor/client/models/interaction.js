@@ -90,7 +90,7 @@ function createInteractionModelConstructor (
             template += '';
 
             let action = ast.identifier(this.actionInstance.variableName);
-            let argumentValues = this.actionInstance.arguments.map(argument => argument.ast);
+            let argumentValues = this.actionInstance.arguments.map(argument => argument.ast).filter(Boolean);
             let element = ast.identifier(this.element.variableName);
             let plugin = ast.identifier(this.element.instanceName);
             let selector = this.selector.ast;

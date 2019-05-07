@@ -7,5 +7,7 @@ module.exports = {
   collectCoverage: false,
   coverageDirectory: './reports',
   coverageReporters: ['json', 'lcov', 'text', 'html'],
-  coveragePathIgnorePatterns: ['node_modules', 'dist', 'fixtures', 'test']
+  coveragePathIgnorePatterns: ['node_modules', 'dist', 'fixtures', 'test'],
+
+  testRunner: 'jest-circus/runner'
 };

@@ -19,8 +19,7 @@ module.exports = {
         domain: 'custom.domain.co.nz',
         headers: {
             'Custom Header': 'Custom Value'
-        },
-        port: 5000
+        }
     },
     // ...
 };

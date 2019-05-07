@@ -16,6 +16,7 @@ function createMochaSpecModelConstructor (
 
             this.plugins = pageObjectsService.getPluginPageObjects();
 
+            this.flakey = false;
             this.name = '';
 
             this.tests = [];
@@ -65,6 +66,13 @@ function createMochaSpecModelConstructor (
 
             let template = `
                 describe(<%= name %>, function () {
+            `;
+            if (this.flakey) {
+               template += `
+                    this.retries(3);
+               `;
+            }
+            template += `
                     %= tests %;
                 });
             `;

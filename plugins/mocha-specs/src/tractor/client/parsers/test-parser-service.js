@@ -10,6 +10,7 @@ import './step-parser-service';
 const ONLY_QUERY = parse('ExpressionStatement > CallExpression > MemberExpression > Identifier[name="only"]');
 const SKIP_QUERY = parse('ExpressionStatement > CallExpression > MemberExpression > Identifier[name="skip"]');
 const STEP_QUERY = parse('FunctionExpression > BlockStatement > ExpressionStatement[expression.left.name="step"]');
+const FLAKEY_QUERY = parse('FunctionExpression > BlockStatement > ExpressionStatement > CallExpression:has(MemberExpression[object.type="ThisExpression"][property.name="retries"])');
 
 function TestParserService (
     TestModel,
@@ -32,6 +33,9 @@ function TestParserService (
         if (test.skip) {
             test.reason = meta.reason;
         }
+
+        let [flakey] = match(astObject, FLAKEY_QUERY);
+        test.flakey = !!flakey;
 
         let steps = match(astObject, STEP_QUERY);
         steps.forEach(stepASTObject => {
