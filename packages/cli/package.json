@@ -1,6 +1,6 @@
 {
   "name": "@tractor/cli",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "description": "CLI for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -35,7 +35,7 @@
     "build": "src/**/*.js"
   },
   "dependencies": {
-    "@tractor/core": "^1.5.3",
+    "@tractor/core": "^1.5.4",
     "commander": "^2.13.0"
   },
   "devDependencies": {
