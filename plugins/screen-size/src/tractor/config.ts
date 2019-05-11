@@ -1,9 +1,9 @@
 // Dependencies:
 import { ISize } from 'selenium-webdriver';
-import { TractorScreenSizeConfig, TractorScreenSizeConfigInternal } from './screen-size-config';
+import { TractorScreenSizeConfig, TractorScreenSizeConfigInternal } from '../protractor/screen-size/screen-size-config';
 
 // Constants:
-import { DEFAULT, MAXIMIZE } from './server/screen-size/screen-size';
+import { DEFAULT, MAXIMIZE } from '../protractor/screen-size/screen-size';
 const DEFAULT_HEIGHT = 1000;
 
 export function config (tractorConfig: TractorScreenSizeConfig): TractorScreenSizeConfigInternal {

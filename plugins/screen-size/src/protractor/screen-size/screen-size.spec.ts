@@ -6,7 +6,7 @@ import { TractorError } from '@tractor/error-handler';
 import { ProtractorBrowser } from 'protractor';
 import { ISize, Options, Window } from 'selenium-webdriver';
 import { ExtendedWebDriver } from 'webdriver-js-extender';
-import { TractorScreenSizeConfigInternal } from '../../screen-size-config';
+import { TractorScreenSizeConfigInternal } from './screen-size-config';
 
 // Under test:
 import { ScreenSize } from './screen-size';
@@ -47,7 +47,7 @@ describe('@tractor-plugins/screen-size - ScreenSize:', () => {
             try {
                 await screenSize.setSize('sm');
             } catch (error) {
-                expect(error).to.deep.equal(new TractorError('Cannot find a screen size configuration for "sm"'));
+                expect(error).to.deep.equal(new TractorError('Cannot find a screen size configuration for "sm".'));
             }
         });
     });

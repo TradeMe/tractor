@@ -1,9 +1,9 @@
 // Dependencies:
 import { TractorError } from '@tractor/error-handler';
-import { info } from '@tractor/logger';
+import { info, warn } from '@tractor/logger';
 import { ProtractorBrowser } from 'protractor';
 import { ISize } from 'selenium-webdriver';
-import { TractorScreenSizeConfigInternal } from '../../screen-size-config';
+import { TractorScreenSizeConfigInternal } from './screen-size-config';
 
 // Constants:
 export const MAXIMIZE = 'maximize';
@@ -42,36 +42,44 @@ export class ScreenSize {
         if (height === availableHeight && width === availableWidth) {
             return;
         }
+        warn(`Browser could not be maximised. Attempting manual fallback...`);
         await window.setPosition(0, 0);
-        return window.setSize(availableWidth - 1, availableHeight - 1);
+        await this._setSize(availableWidth - 1, availableHeight - 1);
     }
 
     public async setSize (size: string = DEFAULT): Promise<void> {
         const dimensions = this._config.screenSizes[size];
 
         if (!dimensions) {
-            throw new TractorError(`Cannot find a screen size configuration for "${size}"`);
+            throw new TractorError(`Cannot find a screen size configuration for "${size}".`);
         }
 
+        info(`Found matching screen size configuration for "${size}".`);
+
         if (dimensions === MAXIMIZE) {
+            info(`Maximising!`);
             return this.maximise();
         }
 
         const { height, width } = dimensions;
-
-        await this._browser.driver.manage().window().setSize(width, height);
-        const actualSize = await this._getSize();
-        const actualHeight = actualSize.height;
-        const actualWidth = actualSize.width;
-        if (actualHeight !== height) {
-            info(`Browser height could not be set to "${height}px". Actual height is ${actualHeight}px`);
-        }
-        if (actualWidth !== width) {
-            info(`Browser width could not be set to "${width}px". Actual width is ${actualWidth}px`);
-        }
+        await this._setSize(width, height);
     }
 
     private async _getSize (): Promise<ISize> {
         return this._browser.driver.manage().window().getSize() as Promise<ISize>;
+    }
+
+    private async _setSize (width: number, height: number): Promise<void> {
+        info(`Setting browser width to "${width}px". Setting browser height to "${height}px".`);
+        await this._browser.driver.manage().window().setSize(width, height);
+        const actualSize = await this._getSize();
+        const actualHeight = actualSize.height;
+        const actualWidth = actualSize.width;
+        if (actualWidth !== width) {
+            warn(`Browser width could not be set to "${width}px". Actual width is ${actualWidth}px.`);
+        }
+        if (actualHeight !== height) {
+            warn(`Browser height could not be set to "${height}px". Actual height is ${actualHeight}px.`);
+        }
     }
 }

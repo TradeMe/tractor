@@ -4,6 +4,10 @@ exports.config = {
     multiCapabilities: [{
         browserName: 'chrome',
         shardTestFiles: true,
+        maxInstances: 2
+    }, {
+        browserName: 'chrome',
+        shardTestFiles: true,
         maxInstances: 2,
         chromeOptions: {
             args: [
