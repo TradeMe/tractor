@@ -1,7 +1,10 @@
+// Dependencies:
+import { ProtractorBrowser } from 'protractor';
+
 // Constants:
 const MAC_OS = 'Mac OS';
 const WINDOWS = 'Windows';
-const PLATFORM_NAMES = {
+const PLATFORM_NAMES: Record<string, string> = {
     'macOS': MAC_OS,
     'mac': MAC_OS,
     'Mac OS X': MAC_OS,
@@ -19,7 +22,7 @@ export async function attachBrowserName (test) {
     }
 }
 
-async function getBrowserName (browser) {
+async function getBrowserName (browser: ProtractorBrowser) {
     const caps = await browser.driver.getCapabilities();
     const name = caps.get('browserName');
     const [start, ...rest] = name;

@@ -15,8 +15,8 @@ describe('@tractor-plugins/mocha-specs - tractor/config:', () => {
             let processed = config(tractorConfig);
 
             expect(processed).to.equal(mochaSpecsConfig);
-            expect(processed.directory).to.equal('./tractor/mocha-specs');
-            expect(processed.reportsDirectory).to.equal('./tractor/reports');
+            expect(processed.mochaSpecs.directory).to.equal('./tractor/mocha-specs');
+            expect(processed.mochaSpecs.reportsDirectory).to.equal('./tractor/reports');
         });
 
         it('should allow for a custom directory to be set', () => {
@@ -28,7 +28,7 @@ describe('@tractor-plugins/mocha-specs - tractor/config:', () => {
 
             let processed = config(tractorConfig);
 
-            expect(processed.directory).to.equal('./src');
+            expect(processed.mochaSpecs.directory).to.equal('./src');
         });
 
         it('should allow for a custom report directory to be set', () => {
@@ -40,7 +40,7 @@ describe('@tractor-plugins/mocha-specs - tractor/config:', () => {
 
             let processed = config(tractorConfig);
 
-            expect(processed.reportsDirectory).to.equal('./reports');
+            expect(processed.mochaSpecs.reportsDirectory).to.equal('./reports');
         });
     });
 });
