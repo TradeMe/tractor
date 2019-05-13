@@ -35,6 +35,8 @@ describe('@tractor/file-structure - actions/open-item:', () => {
     });
 
     it('should open a directory', async () => {
+        jest.retryTimes(3);
+
         const fileStructure = new FileStructure(path.resolve(__dirname, '../../fixtures/actions-open-item-directory'));
         const directory = new Directory(path.join(fileStructure.path, 'directory'), fileStructure);
         directory.save();

@@ -1,4 +1,4 @@
-/*{"name":"search result","elements":[{"name":"link"}],"actions":[{"name":"go to result","parameters":[]}],"version":"0.7.0"}*/
+/*{"name":"search result","elements":[{"name":"link"}],"actions":[{"name":"go to result","parameters":[]}],"version":"1.4.0"}*/
 module.exports = function () {
     var SearchResult = function SearchResult(host) {
         var find = host ? host.element.bind(host) : element;

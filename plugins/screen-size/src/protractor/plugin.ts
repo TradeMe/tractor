@@ -1,12 +1,18 @@
 // Dependencies:
 import { Config } from 'protractor';
-import { mocha } from './hooks';
+import { setupMocha } from './frameworks/mocha';
 
 export function plugin (protractorConfig: Config): Config {
     protractorConfig.plugins = protractorConfig.plugins || [];
 
     if (protractorConfig.framework === 'mocha') {
-        mocha(protractorConfig);
+        protractorConfig.plugins.push({
+            inline: {
+                setup (): void {
+                    setupMocha();
+                }
+            }
+        });
     }
 
     return protractorConfig;

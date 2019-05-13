@@ -5,6 +5,7 @@ import cheerio from 'cheerio';
 import express from 'express';
 import proxy from 'express-http-proxy';
 import fs from 'fs';
+import getPort from 'get-port';
 import http from 'http';
 import path from 'path';
 import zlib from 'zlib';
@@ -17,7 +18,16 @@ const SHIM_XHR = fs.readFileSync(path.resolve(__dirname, '../scripts/shim-xhr.js
 const MOCKS = [];
 
 let server;
-export function serve (baseUrl, mockRequestsConfig) {
+export async function serve (baseUrl, mockRequestsConfig) {
+    // Another test run has started the server already:
+    if (server) {
+        return;
+    }
+
+    // Server not already running, so let's start it:
+    const port = await getPort();
+    mockRequestsConfig.port = port;
+
     shimZlib();
 
     let application = express();
@@ -34,8 +44,6 @@ export function serve (baseUrl, mockRequestsConfig) {
         proxyReqOptDecorator: createRequestDecorator(host, mockRequestsConfig),
         userResDecorator: createResponseDecorator(host)
     }));
-
-    let { port } = mockRequestsConfig;
 
     return new Promise(resolve => {
         server.listen(port, () => {

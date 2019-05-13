@@ -1,5 +1,5 @@
 // Test setup:
-import { expect } from '@tractor/unit-test';
+import { getPort, expect } from '@tractor/unit-test';
 
 // Dependencies:
 import fetch from 'node-fetch';
@@ -9,7 +9,7 @@ import { startTestServer } from '../../test/test-server';
 
 describe('@tractor/server - api: get-plugins', () => {
     it('should respond with the descriptions of all installed plugins', async () => {
-        const port = 10000;
+        const port = await getPort();
         const close = await startTestServer('test.tractor.conf.js', port);
 
         const response = await fetch(`http://localhost:${port}/plugins`, {

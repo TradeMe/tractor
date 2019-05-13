@@ -1,4 +1,4 @@
-/*{"name":"tractor-page-objects action parameter","elements":[{"name":"name input"},{"name":"name validation"},{"name":"remove parameter button"}],"actions":[{"name":"add parameter","parameters":[{"name":"name"}]},{"name":"remove parameter","parameters":[]},{"name":"get name","parameters":[]},{"name":"get name validation","parameters":[]}],"version":"0.7.0"}*/
+/*{"name":"tractor-page-objects action parameter","elements":[{"name":"name input"},{"name":"name validation"},{"name":"remove parameter button"}],"actions":[{"name":"add parameter","parameters":[{"name":"name"}]},{"name":"remove parameter","parameters":[]},{"name":"get name","parameters":[]},{"name":"get name validation","parameters":[]}],"version":"1.4.0"}*/
 module.exports = function () {
     var TractorPageObjectsActionParameter = function TractorPageObjectsActionParameter(host) {
         var find = host ? host.element.bind(host) : element;
