@@ -59,7 +59,7 @@ var ControlPanelController = (function () {
         this.terminalVisible = false;
 
         $scope.$on('keyboard:KeyF', function (event, keyboardEvent) {
-            if (keyboardEvent.shiftKey && keyboardEvent.metaKey || keyboardEvent.ctrlKey) {
+            if (keyboardEvent.shiftKey && (keyboardEvent.metaKey || keyboardEvent.ctrlKey)) {
                 this.showSearch();
                 $scope.$digest();
             }

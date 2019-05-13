@@ -1,4 +1,4 @@
-/*{"name":"search","elements":[{"name":"search input"},{"name":"search results","type":"search result","group":true},{"name":"overlay"}],"actions":[{"name":"search","parameters":[{"name":"searchString"}]},{"name":"go to result","parameters":[{"name":"name"}]}],"version":"1.4.0"}*/
+/*{"name":"search","elements":[{"name":"search input"},{"name":"search results","group":true,"type":"search result"},{"name":"overlay"}],"actions":[{"name":"search","parameters":[{"name":"searchString"}]},{"name":"go to result","parameters":[{"name":"name"}]},{"name":"is present","parameters":[]}],"version":"1.4.0"}*/
 module.exports = function () {
     var SearchResult = require('./search result.po.js');
     var Search = function Search(host) {
@@ -26,6 +26,14 @@ module.exports = function () {
         });
         result = result.then(function () {
             return self.overlay.click();
+        });
+        return result;
+    };
+    Search.prototype.isPresent = function () {
+        var self = this;
+        var result = Promise.resolve();
+        result = result.then(function () {
+            return self.searchInput.isPresent();
         });
         return result;
     };
