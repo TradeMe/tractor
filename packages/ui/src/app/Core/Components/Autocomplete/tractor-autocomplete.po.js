@@ -1,4 +1,4 @@
-/*{"name":"tractor-autocomplete","elements":[{"name":"label"},{"name":"input"},{"name":"options","group":true}],"actions":[{"name":"send keys","parameters":[{"name":"value"}]},{"name":"get input value","parameters":[]}],"version":"1.4.0"}*/
+/*{"name":"tractor-autocomplete","elements":[{"name":"label"},{"name":"input"},{"name":"options","group":true}],"actions":[{"name":"send keys","parameters":[{"name":"value"}]},{"name":"get input value","parameters":[]}],"version":"1.7.0"}*/
 module.exports = function () {
     var TractorAutocomplete = function TractorAutocomplete(host) {
         var find = host ? host.element.bind(host) : element;

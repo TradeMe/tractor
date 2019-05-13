@@ -1,4 +1,4 @@
-/*{"name":"tractor-page-objects","elements":[{"name":"name"},{"name":"name input"},{"name":"name validation"},{"name":"save button"},{"name":"confirm save dialog","type":"tractor-confirm-dialog"},{"name":"new file button"},{"name":"add element button"},{"name":"elements","type":"tractor-page-objects element","group":true},{"name":"add action button"},{"name":"actions","type":"tractor-page-objects action","group":true}],"actions":[{"name":"create and save page object","parameters":[{"name":"name"}]},{"name":"save page object file","parameters":[]},{"name":"add element","parameters":[{"name":"name"},{"name":"selector"}]},{"name":"add action","parameters":[{"name":"name"}]},{"name":"get name","parameters":[]},{"name":"get name validation","parameters":[]}],"version":"1.4.0"}*/
+/*{"name":"tractor-page-objects","elements":[{"name":"name"},{"name":"name input"},{"name":"name validation"},{"name":"save button"},{"name":"confirm save dialog","type":"tractor-confirm-dialog"},{"name":"new file button"},{"name":"add element button"},{"name":"elements","type":"tractor-page-objects element","group":true},{"name":"add action button"},{"name":"actions","type":"tractor-page-objects action","group":true}],"actions":[{"name":"create and save page object","parameters":[{"name":"name"}]},{"name":"save page object file","parameters":[]},{"name":"add element","parameters":[{"name":"name"},{"name":"selector"}]},{"name":"add action","parameters":[{"name":"name"}]},{"name":"get name","parameters":[]},{"name":"get name validation","parameters":[]}],"version":"1.7.0"}*/
 module.exports = function () {
     var TractorConfirmDialog = require('@tractor/ui/dist/page-objects/Core/Components/ConfirmDialog/tractor-confirm-dialog.po.js');
     var TractorPageObjectsElement = require('./tractor-page-objects element.po.js');
@@ -34,7 +34,8 @@ module.exports = function () {
             return self.saveButton.click();
         });
         result = result.then(function () {
-            return self.confirmSaveDialog.ok().catch(function () {                
+            var interaction = self.confirmSaveDialog.ok();
+            return interaction.then(null, function () {
             });
         });
         return result;
@@ -46,7 +47,8 @@ module.exports = function () {
             return self.saveButton.click();
         });
         result = result.then(function () {
-            return self.confirmSaveDialog.ok().catch(function () {
+            var interaction = self.confirmSaveDialog.ok();
+            return interaction.then(null, function () {
             });
         });
         return result;
