@@ -1,6 +1,6 @@
 {
   "name": "@tractor-plugins/screen-size",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "tractor plugin for manipulating screen size",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -51,6 +51,6 @@
     "@tractor/dependency-injection": "^1.3.0",
     "@tractor/error-handler": "^1.3.0",
     "@tractor/logger": "^1.3.0",
-    "@tractor/plugin-loader": "^1.3.0"
+    "@tractor/plugin-loader": "^1.6.1"
   }
 }
