@@ -36,7 +36,7 @@ export function requirePlugins (cwd: string, enabledPlugins: Array<string> = [])
                 };
             }
 
-            const packagePath = pkgUp.sync(modulePath);
+            const packagePath = pkgUp.sync({ cwd: modulePath })!;
             (plugin.description as TractorDescriptionInternal).version = (require(packagePath) as { version: string }).version;
 
             (plugin as TractorPluginInternal).fullName = fullName;
