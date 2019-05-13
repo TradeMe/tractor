@@ -84,7 +84,6 @@
 		"chai-as-promised": "^7.1.1",
 		"change-case": "2.3.0",
 		"cheerio": "^1.0.0-rc.2",
-		"chokidar": "^2.1.5",
 		"commander": "^2.13.0",
 		"cors": "^2.8.5",
 		"dedent": "^0.7.0",
