@@ -96,7 +96,6 @@
 		"express-http-proxy": "^1.5.1",
 		"fake-xml-http-request": "^1.6.0",
 		"fetch-mock": "^5.13.1",
-		"find-up": "^3.0.0",
 		"graceful-fs": "^4.1.15",
 		"gulp": "3.9.1",
 		"gulp-autoprefixer": "3.1.0",

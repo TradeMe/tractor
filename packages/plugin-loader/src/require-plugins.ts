@@ -102,7 +102,7 @@ function getInstalledPluginNames (cwd: string): Array<string> {
 }
 
 function findNodeModules (from: string): string | null {
-    return findUp.sync(NODE_MODULES, { cwd: from });
+    return findUp.sync(NODE_MODULES, { cwd: from, type: 'directory' }) || null;
 }
 
 function isESM (plugin: UserTractorPluginModule): plugin is UserTractorPluginESM {
