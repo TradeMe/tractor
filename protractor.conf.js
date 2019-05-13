@@ -1,4 +1,4 @@
-var TIMEOUT = 40000;
+var TIMEOUT = 60000;
 
 exports.config = {
     allScriptsTimeout: TIMEOUT,
