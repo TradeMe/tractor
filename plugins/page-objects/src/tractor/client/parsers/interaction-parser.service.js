@@ -101,9 +101,9 @@ function InteractionParserService (
 
         if (interaction.action) {
             let { parameters } = interaction.action;
-            interaction.actionInstance.arguments = astObject.arguments.map((argument, index) => {
-                return actionArgumentParserService.parse(interaction, parameters[index], argument);
-            });    
+            astObject.arguments.forEach((argument, index) => {
+                interaction.actionInstance.arguments[index] = actionArgumentParserService.parse(interaction, parameters[index], argument);
+            });
         }
     }
 

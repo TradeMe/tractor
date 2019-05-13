@@ -1,6 +1,9 @@
 // Module:
 import { MochaSpecsModule } from '../mocha-specs.module';
 
+// Constants:
+const RELATIVE_NODE_MODULES = /^(\.\/)*(\.\.\/)*node_modules\//g;
+
 // Dependencies:
 import * as path from 'path';
 import './assertion';
@@ -22,6 +25,7 @@ function createTestModelConstructor (
             this.only = false;
             this.skip = false;
             this.reason = null;
+            this.flakey = false;
 
             this.steps = [];
         }
@@ -70,7 +74,13 @@ function createTestModelConstructor (
                 template += '.skip';
             }
 
-            template += `(<%= name %>, function () {
+            template += `(<%= name %>, function () {`;
+            if (this.flakey) {
+                template += `
+                    this.retries(3);
+                `;
+            }
+            template += `
                     %= mockRequests %;
                     %= pageObjects %;
 
@@ -130,6 +140,9 @@ function createTestModelConstructor (
             let relative = path.relative(directory, this._fixWindows(file.path));
             if (!relative.match(/^\./)) {
                 relative = `./${relative}`;
+            }
+            if (file.isIncluded) {
+                relative = relative.replace(RELATIVE_NODE_MODULES, '');
             }
             return relative;
         }

@@ -1,4 +1,4 @@
-/*{"name":"tractor","elements":[],"actions":[{"name":"go home","parameters":[]}],"version":"0.7.0"}*/
+/*{"name":"tractor","elements":[],"actions":[{"name":"go home","parameters":[]}],"version":"1.4.0"}*/
 module.exports = function () {
     var Tractor = function Tractor() {
     };
@@ -6,7 +6,7 @@ module.exports = function () {
         var self = this;
         var result = Promise.resolve();
         result = result.then(function () {
-            return browser.get('/', null);
+            return browser.get('/');
         });
         return result;
     };

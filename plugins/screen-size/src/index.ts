@@ -1,6 +1,6 @@
 // Dependencies:
 import { TractorPlugin } from '@tractor/plugin-loader';
-import { ScreenSize } from './tractor/server/screen-size/screen-size';
+import { ScreenSize } from './protractor/screen-size/screen-size';
 
 // Config:
 import { getConfig } from '@tractor/config-loader';

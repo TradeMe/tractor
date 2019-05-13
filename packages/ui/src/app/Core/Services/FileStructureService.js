@@ -115,20 +115,17 @@ function fileStructureServiceFactory (
                 return;
             }
 
-            var toReplace;
             var searching = _fileStructure;
-            while (!toReplace && searching) {
-                toReplace = searching.directories.find(function (directory) {
-                    return fileStructureChunk.url === directory.url;
+            var toReplace = fileStructureChunk.url.split('/').splice(2).reduce(function (p, n) {
+                searching = p;
+                return p.directories.find(function (d) {
+                    return d.basename === n;
                 });
-                if (!toReplace) {
-                    searching = searching.directories.find(function (directory) {
-                        return fileStructureChunk.url.indexOf(directory.url) === 0;
-                    });
-                }
-            }
+            }, _fileStructure);
+
             if (!toReplace) {
                 var oldModified = _fileStructure.modified;
+                getAllFilesByUrl(fileStructureChunk);
                 _fileStructure = fileStructureChunk;
                 _fileStructure.modified = oldModified + 1;
                 return;

@@ -15,9 +15,9 @@ export async function upgrade (file) {
     const { ast } = file;
 
     [
-        match(ast, PARENT_ARGUMENT_QUERY),
-        match(ast, FIND_DECLARATION_PARENT_QUERY),
-        match(ast, FIND_ALL_DECLARATION_PARENT_QUERY)
+        ...match(ast, PARENT_ARGUMENT_QUERY),
+        ...match(ast, FIND_DECLARATION_PARENT_QUERY),
+        ...match(ast, FIND_ALL_DECLARATION_PARENT_QUERY)
     ]
-    .flatten().forEach(identifier => identifier.name = 'host');
+    .forEach(identifier => identifier.name = 'host');
 }

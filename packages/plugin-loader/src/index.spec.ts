@@ -23,7 +23,7 @@ describe('@tractor/plugin-loader:', () => {
             // through to the real node_modules directory. We just want it
             // to look through the modules in the fixture.
             const findUpSync = sinon.stub(findUp, 'sync');
-            findUpSync.onSecondCall().returns(null);
+            findUpSync.onSecondCall().returns(undefined);
             findUpSync.callThrough();
 
             const plugins = loadPlugins({

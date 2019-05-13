@@ -19,7 +19,7 @@ export class Tractor {
         this.config = loadConfig(cwd, configPath);
         this.plugins = loadPlugins(this.config);
 
-        const { version } = require(pkgUp.sync(__dirname)) as { version: string };
+        const { version } = require(pkgUp.sync({ cwd: __dirname })!) as { version: string };
         this.version = version;
 
         this._di = this._setUpDI({

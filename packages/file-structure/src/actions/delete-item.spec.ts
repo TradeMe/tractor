@@ -45,6 +45,8 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
     });
 
     it('should delete a directory', async () => {
+        jest.retryTimes(3);
+
         const readdir = promisify(fs.readdir);
         const fileStructure = new FileStructure(path.resolve(__dirname, '../../fixtures/actions-delete-item-directory'));
         const directory = new Directory(path.join(fileStructure.path, 'directory'), fileStructure);
