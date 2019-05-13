@@ -1,4 +1,4 @@
-/*{"name":"tractor-file-tree","elements":[{"name":"page object file","type":"tractor-file-tree item","group":true}],"actions":[{"name":"open file","parameters":[{"name":"selector"}]},{"name":"edit file name","parameters":[{"name":"selector"},{"name":"new name"}]},{"name":"get file name","parameters":[{"name":"selector"}]},{"name":"get file status text","parameters":[{"name":"selector"}]}],"version":"1.4.0"}*/
+/*{"name":"tractor-file-tree","elements":[{"name":"page object file","type":"tractor-file-tree item","group":true}],"actions":[{"name":"open file","parameters":[{"name":"selector"}]},{"name":"edit file name","parameters":[{"name":"selector"},{"name":"new name"}]},{"name":"get file name","parameters":[{"name":"selector"}]},{"name":"get file status text","parameters":[{"name":"selector"}]}],"version":"1.7.0"}*/
 module.exports = function () {
     var TractorFileTreeItem = require('./tractor-file-tree item.po.js');
     var TractorFileTree = function TractorFileTree(host) {

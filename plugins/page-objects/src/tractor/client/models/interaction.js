@@ -55,20 +55,17 @@ function createInteractionModelConstructor (
         _toAST () {
             let previousResult = this._getPreviousInteractionResult();
 
-            let template;
+            let template = 'result = result.then(function (';
             if (previousResult) {
-                template = `
-                    result = result.then(function (%= previousResult %) {
-                        return <%= interaction %>;
-                    });
-                `;
-            } else {
-                template = `
-                    result = result.then(function () {
-                        return <%= interaction %>;
-                    });
-                `;
+                template += '%= previousResult %';
             }
+            template += ') {';
+            if (this.isOptional) {
+                template += 'var interaction = <%= interaction %>; return interaction.then(null, function () {})';
+            } else {
+                template += 'return <%= interaction %>';
+            }
+            template += '});';
 
             let interaction = this._interactionAST();
             previousResult = previousResult ? ast.identifier(previousResult) : null;
@@ -83,11 +80,6 @@ function createInteractionModelConstructor (
                 template += '(<%= selector %>)';
             }
             template += '.<%= action %>(%= argumentValues %)';
-
-            if (this.isOptional) {
-                template += '.catch(function () {})';
-            }
-            template += '';
 
             let action = ast.identifier(this.actionInstance.variableName);
             let argumentValues = this.actionInstance.arguments.map(argument => argument.ast).filter(Boolean);

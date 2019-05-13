@@ -1,4 +1,4 @@
-/*{"name":"tractor-confirm-dialog","elements":[{"name":"confirm message"},{"name":"ok button"},{"name":"cancel button"}],"actions":[{"name":"ok","parameters":[]},{"name":"cancel","parameters":[]},{"name":"get confirm message","parameters":[]}],"version":"1.4.0"}*/
+/*{"name":"tractor-confirm-dialog","elements":[{"name":"confirm message"},{"name":"ok button"},{"name":"cancel button"}],"actions":[{"name":"ok","parameters":[]},{"name":"cancel","parameters":[]},{"name":"get confirm message","parameters":[]}],"version":"1.7.0"}*/
 module.exports = function () {
     var TractorConfirmDialog = function TractorConfirmDialog(host) {
         var find = host ? host.element.bind(host) : element;

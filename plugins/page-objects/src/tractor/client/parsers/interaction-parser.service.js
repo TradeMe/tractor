@@ -10,9 +10,9 @@ import '../models/interaction';
 import './action-argument-parser.service';
 
 // Queries:
-const ACTION_CALL_EXPRESSION_QUERY = 'CallExpression[callee.object.name="result"] > FunctionExpression > BlockStatement > ReturnStatement >';
-const ACTION_CALL_EXPRESSION_NOT_OPTIONAL_QUERY = parse(`${ACTION_CALL_EXPRESSION_QUERY} CallExpression[callee.property.name!="catch"]`);
-const ACTION_CALL_EXPRESSION_OPTIONAL_QUERY = parse(`${ACTION_CALL_EXPRESSION_QUERY} CallExpression[callee.property.name="catch"]`);
+const ACTION_CALL_EXPRESSION_QUERY = 'CallExpression[callee.object.name="result"] > FunctionExpression > BlockStatement >';
+const ACTION_CALL_EXPRESSION_NOT_OPTIONAL_QUERY = parse(`${ACTION_CALL_EXPRESSION_QUERY} ReturnStatement > CallExpression[callee.property.name!="then"]`);
+const ACTION_CALL_EXPRESSION_OPTIONAL_QUERY = parse(`${ACTION_CALL_EXPRESSION_QUERY} VariableDeclaration CallExpression`);
 const ACTION_MEMBER_EXPRESSION_QUERY = parse('MemberExpression[object.name!="self"][property.type="Identifier"]');
 const ELEMENT_MEMBER_EXPRESSION_QUERY = parse('MemberExpression > MemberExpression[object.type="Identifier"][property.type="Identifier"]');
 const ELEMENT_GROUP_MEMBER_EXPRESSION_QUERY = parse('MemberExpression > CallExpression > MemberExpression[object.type="Identifier"][property.type="Identifier"]');
@@ -109,7 +109,7 @@ function InteractionParserService (
 
     function _optionalInteractionParser (interaction, astObject) {
         interaction.isOptional = true;
-        _interactionParser(interaction, astObject.callee.object);
+        _interactionParser(interaction, astObject);
     }
 
     function _pluginParser (pageObject, astObject) {

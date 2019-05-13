@@ -1,4 +1,4 @@
-/*{"name":"file","elements":[{"name":"name"}],"actions":[{"name":"get name","parameters":[]}],"version":"1.4.0"}*/
+/*{"name":"file","elements":[{"name":"name"}],"actions":[{"name":"get name","parameters":[]}],"version":"1.7.0"}*/
 module.exports = function () {
     var File = function File(host) {
         var find = host ? host.element.bind(host) : element;

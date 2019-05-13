@@ -1,4 +1,4 @@
-/*{"name":"tractor-mocha-specs","elements":[{"name":"name"},{"name":"name input"},{"name":"name validation"},{"name":"save button"},{"name":"confirm save dialog","type":"tractor-confirm-dialog"},{"name":"new file button"},{"name":"add test button"},{"name":"tests","type":"tractor-mocha-specs test","group":true}],"actions":[{"name":"create and save mocha spec","parameters":[{"name":"name"}]},{"name":"save mocha spec","parameters":[]},{"name":"get name","parameters":[]},{"name":"get name validation","parameters":[]},{"name":"add test","parameters":[{"name":"name"}]}],"version":"1.4.0"}*/
+/*{"name":"tractor-mocha-specs","elements":[{"name":"name"},{"name":"name input"},{"name":"name validation"},{"name":"save button"},{"name":"confirm save dialog","type":"tractor-confirm-dialog"},{"name":"new file button"},{"name":"add test button"},{"name":"tests","type":"tractor-mocha-specs test","group":true}],"actions":[{"name":"create and save mocha spec","parameters":[{"name":"name"}]},{"name":"save mocha spec","parameters":[]},{"name":"get name","parameters":[]},{"name":"get name validation","parameters":[]},{"name":"add test","parameters":[{"name":"name"}]}],"version":"1.7.0"}*/
 module.exports = function () {
     var TractorConfirmDialog = require('@tractor/ui/dist/page-objects/Core/Components/ConfirmDialog/tractor-confirm-dialog.po.js');
     var TractorMochaSpecsTest = require('./tractor-mocha-specs test.po.js');
@@ -29,7 +29,8 @@ module.exports = function () {
             return self.saveButton.click();
         });
         result = result.then(function () {
-            return self.confirmSaveDialog.ok().catch(function () {
+            var interaction = self.confirmSaveDialog.ok();
+            return interaction.then(null, function () {
             });
         });
         result = result.then(function () {
@@ -44,7 +45,8 @@ module.exports = function () {
             return self.saveButton.click();
         });
         result = result.then(function () {
-            return self.confirmSaveDialog.ok().catch(function () {
+            var interaction = self.confirmSaveDialog.ok();
+            return interaction.then(null, function () {
             });
         });
         result = result.then(function () {
