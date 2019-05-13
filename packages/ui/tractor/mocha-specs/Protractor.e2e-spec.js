@@ -1,4 +1,4 @@
-/*{"name":"Protractor","tests":[{"name":"Run Protractor"}],"version":"0.1.0"}*/
+/*{"name":"Protractor","tests":[{"name":"Run Protractor"}],"version":"1.4.0"}*/
 describe('Protractor', function () {
     it('Run Protractor', function () {
         var Tractor = require('../../src/app/tractor.po.js'), tractor = new Tractor();

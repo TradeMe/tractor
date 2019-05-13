@@ -1,10 +1,11 @@
-/*{"name":"Mock Requests file","tests":[{"name":"Create Mock Request file"},{"name":"Rename Mock Request file"},{"name":"Invalid name - required"}],"version":"0.1.0"}*/
+/*{"name":"Mock Requests file","tests":[{"name":"Create Mock Request file"},{"name":"Rename Mock Request file"},{"name":"Invalid name - required"}],"version":"1.4.0"}*/
 describe('Mock Requests file', function () {
     it('Create Mock Request file', function () {
+        this.retries(3);
+        var Tractor = require('@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
+        var ControlPanel = require('@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
+        var TractorFileTree = require('@tractor/ui/dist/page-objects/Core/Components/FileTree/tractor-file-tree.po.js'), tractorFileTree = new TractorFileTree();
         var TractorMockRequests = require('./tractor-mock-requests.po.js'), tractorMockRequests = new TractorMockRequests();
-        var Tractor = require('../../../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
-        var ControlPanel = require('../../../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
-        var TractorFileTree = require('../../../../../node_modules/@tractor/ui/dist/page-objects/Core/Components/FileTree/tractor-file-tree.po.js'), tractorFileTree = new TractorFileTree();
         var step = Promise.resolve();
         step = step.then(function () {
             var element;
@@ -42,10 +43,11 @@ describe('Mock Requests file', function () {
         return step;
     });
     it('Rename Mock Request file', function () {
+        this.retries(3);
+        var Tractor = require('@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
+        var ControlPanel = require('@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
+        var TractorFileTree = require('@tractor/ui/dist/page-objects/Core/Components/FileTree/tractor-file-tree.po.js'), tractorFileTree = new TractorFileTree();
         var TractorMockRequests = require('./tractor-mock-requests.po.js'), tractorMockRequests = new TractorMockRequests();
-        var Tractor = require('../../../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
-        var ControlPanel = require('../../../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
-        var TractorFileTree = require('../../../../../node_modules/@tractor/ui/dist/page-objects/Core/Components/FileTree/tractor-file-tree.po.js'), tractorFileTree = new TractorFileTree();
         var step = Promise.resolve();
         step = step.then(function () {
             var element;
@@ -91,9 +93,9 @@ describe('Mock Requests file', function () {
         return step;
     });
     it('Invalid name - required', function () {
+        var Tractor = require('@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
+        var ControlPanel = require('@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
         var TractorMockRequests = require('./tractor-mock-requests.po.js'), tractorMockRequests = new TractorMockRequests();
-        var Tractor = require('../../../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
-        var ControlPanel = require('../../../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
         var step = Promise.resolve();
         step = step.then(function () {
             var element;

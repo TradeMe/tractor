@@ -94,6 +94,12 @@
                         model="$ctrl.fileModel"
                         example="Suite">
                     </tractor-text-input>
+                    <tractor-checkbox
+                        form="fileEditor"
+                        label="flakey"
+                        model="$ctrl.fileModel">
+                    </tractor-checkbox>
+
                 </section>
                 <section
                     class="file-editor__container">
@@ -145,6 +151,12 @@
                                     example="Test">
                                 </tractor-text-input>
 
+                                <tractor-checkbox
+                                    ng-if="!test.skip"
+                                    form="fileEditor"
+                                    label="flakey"
+                                    model="test">
+                                </tractor-checkbox>
                                 <tractor-checkbox
                                     ng-if="!test.skip"
                                     form="fileEditor"

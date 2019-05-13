@@ -1,10 +1,11 @@
-/*{"name":"Mocha Spec file","tests":[{"name":"Create Mocha Spec file"},{"name":"Rename Mocha Spec file"},{"name":"Invalid name - required"}],"version":"0.1.0"}*/
+/*{"name":"Mocha Spec file","tests":[{"name":"Create Mocha Spec file"},{"name":"Rename Mocha Spec file"},{"name":"Invalid name - required"}],"version":"1.4.0"}*/
 describe('Mocha Spec file', function () {
     it('Create Mocha Spec file', function () {
+        this.retries(3);
+        var Tractor = require('@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
+        var ControlPanel = require('@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
+        var TractorFileTree = require('@tractor/ui/dist/page-objects/Core/Components/FileTree/tractor-file-tree.po.js'), tractorFileTree = new TractorFileTree();
         var TractorMochaSpecs = require('./tractor-mocha-specs.po.js'), tractorMochaSpecs = new TractorMochaSpecs();
-        var Tractor = require('../../../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
-        var ControlPanel = require('../../../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
-        var TractorFileTree = require('../../../../../node_modules/@tractor/ui/dist/page-objects/Core/Components/FileTree/tractor-file-tree.po.js'), tractorFileTree = new TractorFileTree();
         var step = Promise.resolve();
         step = step.then(function () {
             var element;
@@ -39,10 +40,11 @@ describe('Mocha Spec file', function () {
         return step;
     });
     it('Rename Mocha Spec file', function () {
+        this.retries(3);
+        var Tractor = require('@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
+        var ControlPanel = require('@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
+        var TractorFileTree = require('@tractor/ui/dist/page-objects/Core/Components/FileTree/tractor-file-tree.po.js'), tractorFileTree = new TractorFileTree();
         var TractorMochaSpecs = require('./tractor-mocha-specs.po.js'), tractorMochaSpecs = new TractorMochaSpecs();
-        var Tractor = require('../../../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
-        var ControlPanel = require('../../../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
-        var TractorFileTree = require('../../../../../node_modules/@tractor/ui/dist/page-objects/Core/Components/FileTree/tractor-file-tree.po.js'), tractorFileTree = new TractorFileTree();
         var step = Promise.resolve();
         step = step.then(function () {
             var element;
@@ -88,9 +90,9 @@ describe('Mocha Spec file', function () {
         return step;
     });
     it('Invalid name - required', function () {
+        var Tractor = require('@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
+        var ControlPanel = require('@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
         var TractorMochaSpecs = require('./tractor-mocha-specs.po.js'), tractorMochaSpecs = new TractorMochaSpecs();
-        var Tractor = require('../../../../../node_modules/@tractor/ui/dist/page-objects/tractor.po.js'), tractor = new Tractor();
-        var ControlPanel = require('../../../../../node_modules/@tractor/ui/dist/page-objects/features/ControlPanel/control-panel.po.js'), controlPanel = new ControlPanel();
         var step = Promise.resolve();
         step = step.then(function () {
             var element;

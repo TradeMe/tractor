@@ -1,4 +1,4 @@
-/*{"name":"tractor-file-tree item","elements":[{"name":"name"},{"name":"options button"},{"name":"edit name button"},{"name":"edit name input"},{"name":"copy item button"},{"name":"delete item button"}],"actions":[{"name":"open","parameters":[]},{"name":"edit name","parameters":[{"name":"new name"}]},{"name":"get name","parameters":[]},{"name":"get status text","parameters":[]}],"version":"0.7.0"}*/
+/*{"name":"tractor-file-tree item","elements":[{"name":"name"},{"name":"options button"},{"name":"edit name button"},{"name":"edit name input"},{"name":"copy item button"},{"name":"delete item button"}],"actions":[{"name":"open","parameters":[]},{"name":"edit name","parameters":[{"name":"new name"}]},{"name":"get name","parameters":[]},{"name":"get status text","parameters":[]}],"version":"1.4.0"}*/
 module.exports = function () {
     var TractorFileTreeItem = function TractorFileTreeItem(host) {
         var find = host ? host.element.bind(host) : element;

@@ -36,7 +36,7 @@ export function requirePlugins (cwd: string, enabledPlugins: Array<string> = [])
                 };
             }
 
-            const packagePath = pkgUp.sync(modulePath);
+            const packagePath = pkgUp.sync({ cwd: modulePath })!;
             (plugin.description as TractorDescriptionInternal).version = (require(packagePath) as { version: string }).version;
 
             (plugin as TractorPluginInternal).fullName = fullName;
@@ -102,7 +102,7 @@ function getInstalledPluginNames (cwd: string): Array<string> {
 }
 
 function findNodeModules (from: string): string | null {
-    return findUp.sync(NODE_MODULES, { cwd: from });
+    return findUp.sync(NODE_MODULES, { cwd: from, type: 'directory' }) || null;
 }
 
 function isESM (plugin: UserTractorPluginModule): plugin is UserTractorPluginESM {

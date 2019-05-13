@@ -1,4 +1,4 @@
-/*{"name":"search","elements":[{"name":"search input"},{"name":"search results","type":"search result","group":true},{"name":"overlay"}],"actions":[{"name":"search","parameters":[{"name":"searchString"}]},{"name":"go to result","parameters":[{"name":"name"}]}],"version":"0.7.0"}*/
+/*{"name":"search","elements":[{"name":"search input"},{"name":"search results","type":"search result","group":true},{"name":"overlay"}],"actions":[{"name":"search","parameters":[{"name":"searchString"}]},{"name":"go to result","parameters":[{"name":"name"}]}],"version":"1.4.0"}*/
 module.exports = function () {
     var SearchResult = require('./search result.po.js');
     var Search = function Search(host) {
@@ -14,7 +14,7 @@ module.exports = function () {
         var self = this;
         var result = Promise.resolve();
         result = result.then(function () {
-            return self.searchInput.sendKeys(searchString);
+            return browser.pasteText(self.searchInput, searchString);
         });
         return result;
     };

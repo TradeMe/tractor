@@ -14,7 +14,7 @@ describe('@tractor-plugins/mock-requests - config:', () => {
             let processed = config(tractorConfig);
 
             expect(processed).to.equal(mockRequestsConfig);
-            expect(processed.port).to.equal(8765);
+            expect(processed.domain).to.equal('localhost');
         });
 
         it('should allow for a custom domain to be set', () => {
@@ -29,7 +29,7 @@ describe('@tractor-plugins/mock-requests - config:', () => {
             expect(processed.domain).to.equal('tractor.co.nz');
         });
 
-        it('should allow for a custom port to be set', () => {
+        it('should allow for a custom port to be set - deprecated', () => {
             let tractorConfig = {
                 mockRequests: {
                     port: 1000

@@ -8,9 +8,9 @@ import './test-parser-service';
 
 // Queries:
 const SUITE_QUERY = 'ExpressionStatement > CallExpression[callee.name="describe"]';
+const FLAKEY_SUITE_QUERY = parse(`${SUITE_QUERY} > FunctionExpression > BlockStatement > ExpressionStatement> CallExpression > MemberExpression[object.type="ThisExpression"][property.name="retries"]`);
 const SUITE_NAME_QUERY = parse(`${SUITE_QUERY} > Literal`);
-const TEST_QUERY = parse(`${SUITE_QUERY} > FunctionExpression > BlockStatement > ExpressionStatement`);
-
+const TEST_QUERY = parse(`${SUITE_QUERY} > FunctionExpression > BlockStatement > ExpressionStatement:has(Identifier[name="it"])`);
 
 function MochaSpecParserService (
     MochaSpecModel,
@@ -57,6 +57,9 @@ function MochaSpecParserService (
         if (suiteName) {
             mochaSpec.suiteName = suiteName.value;
         }
+
+        let [flakey] = match(astObject, FLAKEY_SUITE_QUERY);
+        mochaSpec.flakey = !!flakey;
 
         match(astObject, TEST_QUERY).forEach(testASTObject => {
             let testMeta = tests[mochaSpec.tests.length];

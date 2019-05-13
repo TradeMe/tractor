@@ -1,6 +1,6 @@
-/*{"name":"tractor-mocha-specs","elements":[{"name":"name"},{"name":"name input"},{"name":"name validation"},{"name":"save button"},{"name":"confirm save dialog","type":"tractor-confirm-dialog"},{"name":"new file button"},{"name":"add test button"},{"name":"tests","type":"tractor-mocha-specs test","group":true}],"actions":[{"name":"create and save mocha spec","parameters":[{"name":"name"}]},{"name":"save mocha spec","parameters":[]},{"name":"get name","parameters":[]},{"name":"get name validation","parameters":[]},{"name":"add test","parameters":[{"name":"name"}]}],"version":"0.7.0"}*/
+/*{"name":"tractor-mocha-specs","elements":[{"name":"name"},{"name":"name input"},{"name":"name validation"},{"name":"save button"},{"name":"confirm save dialog","type":"tractor-confirm-dialog"},{"name":"new file button"},{"name":"add test button"},{"name":"tests","type":"tractor-mocha-specs test","group":true}],"actions":[{"name":"create and save mocha spec","parameters":[{"name":"name"}]},{"name":"save mocha spec","parameters":[]},{"name":"get name","parameters":[]},{"name":"get name validation","parameters":[]},{"name":"add test","parameters":[{"name":"name"}]}],"version":"1.4.0"}*/
 module.exports = function () {
-    var TractorConfirmDialog = require('../../../../../node_modules/@tractor/ui/dist/page-objects/Core/Components/ConfirmDialog/tractor-confirm-dialog.po.js');
+    var TractorConfirmDialog = require('@tractor/ui/dist/page-objects/Core/Components/ConfirmDialog/tractor-confirm-dialog.po.js');
     var TractorMochaSpecsTest = require('./tractor-mocha-specs test.po.js');
     var TractorMochaSpecs = function TractorMochaSpecs(host) {
         var find = host ? host.element.bind(host) : element;
@@ -27,6 +27,10 @@ module.exports = function () {
         });
         result = result.then(function () {
             return self.saveButton.click();
+        });
+        result = result.then(function () {
+            return self.confirmSaveDialog.ok().catch(function () {
+            });
         });
         result = result.then(function () {
             return browser.sleep(5000);

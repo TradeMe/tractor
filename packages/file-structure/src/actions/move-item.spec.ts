@@ -14,8 +14,9 @@ import { FileStructure } from '../structure/file-structure';
 // Under test:
 import { startTestServer } from '../../test/test-server';
 
-describe.only('@tractor/file-structure - actions/move-item:', () => {
-    it.only('should move a file', async () => {
+describe('@tractor/file-structure - actions/move-item:', () => {
+    it('should move a file', async () => {
+        jest.retryTimes(3);
         const readFile = promisify(fs.readFile);
         // tslint:disable-next-line:max-classes-per-file
         class TestFile extends File { }

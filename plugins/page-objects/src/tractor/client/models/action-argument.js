@@ -40,28 +40,30 @@ function createActionArgumentModelConstructor (
 
             if (literal !== undefined && literal !== this.value) {
                 return ast.literal(literal);
+            }
 
             // The following ordering matters to the variable scoping
             // of the generated JS.
 
             // Try to find a matching parameter first:
-            } else if (parameter) {
+            if (parameter) {
                 return ast.identifier(parameter.variableName);
+            }
 
             // A result could have the same name as a parameter, but could
             // exist in a wrapping scope, so we check that next:
-            } else if (result) {
+            if (result) {
                 return ast.identifier(result.variableName);
+            }
 
             // An element could have the same name as a parameter or a result
             // but would be in a scope even further up, so we check that last:
-            } else if (element) {
+            if (element) {
                 return ast.memberExpression(ast.identifier('self'), ast.identifier(element.variableName));
+            }
 
-            } else if (this.value) {
+            if (this.value || this.value === null) {
                 return ast.literal(this.value);
-            } else {
-                return ast.literal(null);
             }
         }
 
