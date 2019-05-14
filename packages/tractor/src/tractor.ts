@@ -10,6 +10,7 @@ import { TractorProtractorParams } from './protractor-params.js';
 
 export class Tractor {
     public config: TractorConfigInternal;
+    public params: TractorProtractorParams;
     public plugins: Array<TractorPluginInternal>;
     public version: string;
 
@@ -18,6 +19,7 @@ export class Tractor {
     public constructor (cwd: string, configPath?: string) {
         this.config = loadConfig(cwd, configPath);
         this.plugins = loadPlugins(this.config);
+        this.params = this._setupParams();
 
         const { version } = require(pkgUp.sync({ cwd: __dirname })!) as { version: string };
         this.version = version;
@@ -44,15 +46,48 @@ export class Tractor {
 
     public plugin (protractorConfig: ProtractorConfig): ProtractorConfig {
         protractorConfig.params = protractorConfig.params || {};
-        (protractorConfig.params as TractorProtractorParams).debug = false;
+        // This is a bit confusing. The `params` object on `protractorConfig` tells
+        // Protractor that there are some parameters that might be passed in from the command line.
+        const paramsConfig = protractorConfig.params as TractorProtractorParams;
+        paramsConfig.debug = paramsConfig.debug || false;
+        // `this.params` refers to the actual parameters that are passed in.
+        if (this.params.debug) {
+            this._setupDebugMode(protractorConfig);
+        }
+
+        // Run the plugin step for each plugin.
         this.plugins.forEach(plugin => plugin.plugin(protractorConfig));
         return protractorConfig;
+    }
+
+    private _setupDebugMode (protractorConfig: ProtractorConfig): void {
+        if (protractorConfig.multiCapabilities) {
+            const [firstCapability] = protractorConfig.multiCapabilities;
+            protractorConfig.capabilities = firstCapability as typeof protractorConfig.capabilities;
+            delete protractorConfig.multiCapabilities;
+        }
+        if (protractorConfig.capabilities) {
+            protractorConfig.capabilities.shardTestFiles = false;
+            protractorConfig.capabilities.maxInstances = 1;
+        }
     }
 
     private _setUpDI (constants: TractorDIConstants): Container {
         const di = container();
         di.constant(constants);
         return di;
+    }
+
+    private _setupParams (): TractorProtractorParams {
+        // Hack:
+        // Let's lean on the fact that Protractor uses Optimist for its
+        // CLI parsing, and use the same params object.
+        // This could break in the future if the Protractor parameter parsing changes.
+        // tslint:disable-next-line:no-unsafe-any
+        const params = require('optimist').argv.params as Partial<TractorProtractorParams> || {};
+        return {
+            debug: params.debug || false
+        };
     }
 }
 
