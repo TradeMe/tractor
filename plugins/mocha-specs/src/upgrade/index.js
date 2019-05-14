@@ -27,7 +27,11 @@ export async function upgrade () {
 
     return await allFiles.reduce(async (p, file) => {
         await p;
-        const { version } = await file.meta();
+        const meta = await file.meta();
+        if (!meta) {
+            return;
+        }
+        const { version } = meta;
         const upgradeVersions = VERSIONS.slice(VERSIONS.indexOf(version) + 1);
 
         return await upgradeVersions.reduce(async (p, upgradeVersion) => {
