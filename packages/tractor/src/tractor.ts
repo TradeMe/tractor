@@ -1,8 +1,10 @@
 // Dependencies:
 import { loadConfig, TractorConfigInternal } from '@tractor/config-loader';
 import { Container, container, TractorDIConstants, TractorDIFunc } from '@tractor/dependency-injection';
+import { info } from '@tractor/logger';
 import { loadPlugins, TractorPluginInternal } from '@tractor/plugin-loader';
 import * as stack from 'callsite';
+import * as fkill from 'fkill';
 import * as path from 'path';
 import * as pkgUp from 'pkg-up';
 import { Config as ProtractorConfig } from 'protractor';
@@ -57,6 +59,29 @@ export class Tractor {
 
         // Run the plugin step for each plugin.
         this.plugins.forEach(plugin => plugin.plugin(protractorConfig));
+
+        // Add a failsafe for killing browser driver processes:
+        const afterLaunch = protractorConfig.afterLaunch;
+        protractorConfig.afterLaunch = async function (exitCode: number): Promise<void> {
+            if (afterLaunch) {
+                afterLaunch.call(this, exitCode);
+            }
+            const options = {
+                force: true,
+                ignoreCase: true
+            };
+            info('Attempting to kill any remaining browser driver proccesses');
+            try {
+                await fkill('chromedriver', options);
+            } catch { 
+                // Oh well.
+            }
+            try {
+                await fkill('geckodriver', options);
+            } catch {
+                // Oh well.
+            }
+        };
         return protractorConfig;
     }
 
