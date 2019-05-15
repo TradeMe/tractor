@@ -101,11 +101,11 @@ function toArgs (params: Record<string, unknown> | string, parent: string = ''):
     let args: Array<string> = [];
     Object.keys(params).forEach(param => {
         const value = params[param as keyof typeof params];
-        if (typeof value !== 'string') {
+        if (Array.isArray(value) || typeof value === 'object') {
             args = args.concat(toArgs(value as Record<string, unknown>, parent ? `${parent}.${param}.` : `${param}.`));
             return;
         }
-        args = args.concat([`--${parent}${param}`, value]);
+        args = args.concat([`--${parent}${param}`, (value as string)]);
     });
     return args;
 }
