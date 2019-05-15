@@ -8,7 +8,8 @@ import * as fkill from 'fkill';
 import * as path from 'path';
 import * as pkgUp from 'pkg-up';
 import { Config as ProtractorConfig } from 'protractor';
-import { TractorProtractorParams } from './protractor-params.js';
+import { BrowserOptions, HEADLESS_OPTION } from './browser-options';
+import { TractorProtractorParams } from './protractor-params';
 
 export class Tractor {
     public config: TractorConfigInternal;
@@ -90,14 +91,14 @@ export class Tractor {
         return protractorConfig;
     }
 
-    private _castParam (param: unknown): boolean {
+    private _castParam (param: unknown): boolean | unknown {
         if (param === 'false') {
             return false;
         }
         if (param === 'true') {
             return true;
         }
-        return !!param;
+        return param;
     }
 
     private _setupDebugMode (protractorConfig: ProtractorConfig): void {
@@ -107,8 +108,14 @@ export class Tractor {
             delete protractorConfig.multiCapabilities;
         }
         if (protractorConfig.capabilities) {
-            protractorConfig.capabilities.shardTestFiles = false;
-            protractorConfig.capabilities.maxInstances = 1;
+            const { capabilities } = protractorConfig;
+            capabilities.shardTestFiles = false;
+            capabilities.maxInstances = 1;
+
+            const options = (capabilities.chromeOptions || capabilities['moz:firefoxOptions']) as BrowserOptions;
+            if (options.args && options.args.includes(HEADLESS_OPTION as string)) {
+                options.args.splice(options.args.indexOf(HEADLESS_OPTION as string), 1);
+            }
         }
     }
 
@@ -123,13 +130,14 @@ export class Tractor {
         // Let's lean on the fact that Protractor uses Optimist for its
         // CLI parsing, and use the same params object.
         // This could break in the future if the Protractor parameter parsing changes.
-        // tslint:disable-next-line:no-unsafe-any
+        // tslint:disable:no-unsafe-any
         const params = require('optimist').argv.params || {};
         const kill = this._castParam(params.kill);
         const debug = this._castParam(params.debug);
+        // tslint:enable:no-unsafe-any
         return {
-            debug: debug !== null ? debug : false,
-            kill: kill !== null ? kill : true
+            debug: debug !== null ? !!debug : false,
+            kill: kill !== null ? !!kill : true
         };
     }
 }
