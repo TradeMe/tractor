@@ -90,6 +90,16 @@ export class Tractor {
         return protractorConfig;
     }
 
+    private _castParam (param: unknown): boolean {
+        if (param === 'false') {
+            return false;
+        }
+        if (param === 'true') {
+            return true;
+        }
+        return !!param;
+    }
+
     private _setupDebugMode (protractorConfig: ProtractorConfig): void {
         if (protractorConfig.multiCapabilities) {
             const [firstCapability] = protractorConfig.multiCapabilities;
@@ -118,19 +128,9 @@ export class Tractor {
         const kill = this._castParam(params.kill);
         const debug = this._castParam(params.debug);
         return {
-            debug: debug !== null ? !!debug : false,
-            kill: kill !== null ? !!kill : true
+            debug: debug !== null ? debug : false,
+            kill: kill !== null ? kill : true
         };
-    }
-
-    private _castParam (param: unknown): boolean | unknown {
-        if (param === 'false') {
-            return false;
-        }
-        if (param === 'true') {
-            return true;
-        }
-        return param;
     }
 }
 
