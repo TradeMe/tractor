@@ -104,8 +104,12 @@ export class FileStructure implements Structure {
             useFsEvents: false
         })
         .on('ready', () => {
+            // Bail out if `unwatch` has been called already;
+            if (!this.watcher) {
+                return;
+            }
             this._ready = true;
-            this.watcher!.emit('ready');
+            this.watcher.emit('ready');
         })
         .on('all', async (event: string, itemPath: string) => {
             // Bail out if `unwatch` has been called already;
