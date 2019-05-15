@@ -114,11 +114,23 @@ export class Tractor {
         // CLI parsing, and use the same params object.
         // This could break in the future if the Protractor parameter parsing changes.
         // tslint:disable-next-line:no-unsafe-any
-        const params = require('optimist').argv.params as Partial<TractorProtractorParams> || {};
+        const params = require('optimist').argv.params || {};
+        const kill = this._castParam(params.kill);
+        const debug = this._castParam(params.debug);
         return {
-            debug: params.debug !== undefined ? params.debug : false,
-            kill: params.kill !== undefined ? params.kill : true
+            debug: debug !== null ? !!debug : false,
+            kill: kill !== null ? !!kill : true
         };
+    }
+
+    private _castParam (param: unknown): boolean | unknown {
+        if (param === 'false') {
+            return false;
+        }
+        if (param === 'true') {
+            return true;
+        }
+        return param;
     }
 }
 
