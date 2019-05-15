@@ -1,6 +1,6 @@
 {
   "name": "@tractor/tractor",
-  "version": "1.6.1",
+  "version": "1.7.0-alpha.1",
   "description": "JS API for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",

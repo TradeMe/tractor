@@ -1,6 +1,6 @@
 {
   "name": "@tractor-plugins/page-objects",
-  "version": "1.7.0-alpha.0",
+  "version": "1.7.0-alpha.1",
   "description": "tractor plugin for manipulating Page Objects",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
