@@ -73,7 +73,7 @@ export class Tractor {
             info('Attempting to kill any remaining browser driver proccesses');
             try {
                 await fkill('chromedriver', options);
-            } catch { 
+            } catch {
                 // Oh well.
             }
             try {
