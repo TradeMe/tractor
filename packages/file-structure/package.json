@@ -35,7 +35,7 @@
     "build": "src/**/*.js"
   },
   "dependencies": {
-    "chokidar": "^3.0.0",
+    "chokidar": "^2.1.5",
     "express": "^4.16.4",
     "graceful-fs": "^4.1.15",
     "lodash.debounce": "^4.0.8",
