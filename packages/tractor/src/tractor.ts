@@ -47,11 +47,12 @@ export class Tractor {
     }
 
     public plugin (protractorConfig: ProtractorConfig): ProtractorConfig {
-        protractorConfig.params = protractorConfig.params || {};
         // This is a bit confusing. The `params` object on `protractorConfig` tells
         // Protractor that there are some parameters that might be passed in from the command line.
+        protractorConfig.params = protractorConfig.params || {};
         const paramsConfig = protractorConfig.params as TractorProtractorParams;
         paramsConfig.debug = paramsConfig.debug || false;
+
         // `this.params` refers to the actual parameters that are passed in.
         if (this.params.debug) {
             this._setupDebugMode(protractorConfig);
@@ -59,6 +60,10 @@ export class Tractor {
 
         // Run the plugin step for each plugin.
         this.plugins.forEach(plugin => plugin.plugin(protractorConfig));
+
+        if (!this.params.kill) {
+            return protractorConfig;
+        }
 
         // Add a failsafe for killing browser driver processes:
         const afterLaunch = protractorConfig.afterLaunch;
@@ -111,7 +116,8 @@ export class Tractor {
         // tslint:disable-next-line:no-unsafe-any
         const params = require('optimist').argv.params as Partial<TractorProtractorParams> || {};
         return {
-            debug: params.debug || false
+            debug: params.debug !== undefined ? params.debug : false,
+            kill: params.kill !== undefined ? params.kill : true
         };
     }
 }
