@@ -94,7 +94,7 @@ describe('@tractor/file-structure - actions/move-item:', () => {
         await fileStructure.structure.rimraf();
     });
 
-    it('should move a directory', async () => {
+    it.skip('should move a directory', async () => {
         jest.retryTimes(3);
         const readdir = promisify(fs.readdir);
         const fileStructure = new FileStructure(path.resolve(__dirname, '../../fixtures/actions-move-item-directory'));

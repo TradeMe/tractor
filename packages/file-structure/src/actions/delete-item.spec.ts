@@ -44,7 +44,7 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
         await fileStructure.structure.rimraf();
     });
 
-    it('should delete a directory', async () => {
+    it.skip('should delete a directory', async () => {
         jest.retryTimes(3);
 
         const readdir = promisify(fs.readdir);
@@ -88,7 +88,7 @@ describe('@tractor/file-structure - actions/delete-item:', () => {
         await fileStructure.structure.rimraf();
     });
 
-    it('should rimraf a directory', async () => {
+    it.skip('should rimraf a directory', async () => {
         jest.retryTimes(3);
         const readdir = promisify(fs.readdir);
         const fileStructure = new FileStructure(path.resolve(__dirname, '../../fixtures/actions-delete-item-rimraf'));
