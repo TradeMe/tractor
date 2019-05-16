@@ -32,9 +32,13 @@ export async function upgrade () {
         if (!meta) {
             return;
         }
+
+        let upgradeVersions = VERSIONS;
         const { version } = meta;
-        const closestVersion = VERSIONS.find(upgradeVersion => semver.gt(upgradeVersion, version));
-        const upgradeVersions = VERSIONS.slice(VERSIONS.indexOf(closestVersion));
+        if (version) {
+            const closestVersion = VERSIONS.find(upgradeVersion => semver.gt(upgradeVersion, version));
+            upgradeVersions = VERSIONS.slice(VERSIONS.indexOf(closestVersion));
+        }
         
         return await upgradeVersions.reduce(async (p, upgradeVersion) => {
             await p;
