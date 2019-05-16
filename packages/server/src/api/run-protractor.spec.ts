@@ -9,6 +9,7 @@ import { startTestServer } from '../../test/test-server';
 
 describe('@tractor/server - api: run-protractor:', () => {
     it(`should run protractor when a 'run' event is recieved:`, async () => {
+        jest.setTimeout(20000);
         const port = await getPort();
         const close = await startTestServer('test.tractor.conf.js', port);
 
