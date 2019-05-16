@@ -6,6 +6,7 @@ module.exports = {
         'http://localhost:4800'
     ],
     plugins: [
+        'accessibility',
         'browser',
         'mocha-specs',
         'page-objects'

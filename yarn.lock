@@ -1705,6 +1705,14 @@
     array-from "^2.1.1"
     lodash.get "^4.4.2"
 
+"@types/axe-webdriverjs@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@types/axe-webdriverjs/-/axe-webdriverjs-2.1.0.tgz#76370cf77e004b82e33b78d28a07ded2ddb62cc9"
+  integrity sha512-kReHzmOHt3/JRJtyG20xS7UpdO7zyD3wVw1/BiLkgPoo/ImTXNrjXyPOoTbY0hGnN/FK0syfczRII+xF4f3uRw==
+  dependencies:
+    "@types/selenium-webdriver" "*"
+    axe-core "^3.0.3"
+
 "@types/babel__core@^7.1.0":
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.1.tgz#ce9a9e5d92b7031421e1d0d74ae59f572ba48be6"
@@ -1913,6 +1921,11 @@
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/@types/range-parser/-/range-parser-1.2.3.tgz#7ee330ba7caafb98090bece86a5ee44115904c2c"
   integrity sha512-ewFXqrQHlFsgc09MK5jP5iR7vumV/BYayNC6PgJO2LPe8vrnNFyjQjSppfEngITi0qvfKtzFvgKymGheFM9UOA==
+
+"@types/selenium-webdriver@*":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@types/selenium-webdriver/-/selenium-webdriver-4.0.0.tgz#21aa550f08d2cca49f8537f6697288a0d4300f28"
+  integrity sha512-x/OwFhZaZBkucIl/SuooCmkdu1V6LBfHcBeBV5rj05Co8EenuL1KJiIRUU/Da2hscoqbXyF3QuWDOZZ4sLVA5Q==
 
 "@types/selenium-webdriver@^3.0.0":
   version "3.0.14"
@@ -2691,6 +2704,25 @@ aws4@^1.8.0:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.8.0.tgz#f0e003d9ca9e7f59c7a508945d7b2ef9a04a542f"
   integrity sha512-ReZxvNHIOv88FlT7rxcXIIC0fPt4KZqZbOlivyWtXLt8ESx84zd3kMC6iK5jVeS2qt+g7ftS7ye4fi06X5rtRQ==
+
+axe-core@^3.0.3, axe-core@^3.1.2:
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/axe-core/-/axe-core-3.2.2.tgz#b06d6e9ae4636d706068843272bfaeed3fe97362"
+  integrity sha512-gAy4kMSPpuRJV3mwictJqlg5LhE84Vw2CydKdC4tvrLhR6+G3KW51zbL/vYujcLA2jvWOq3HMHrVeNuw+mrLVA==
+
+axe-reports@^1.1.11:
+  version "1.1.11"
+  resolved "https://registry.yarnpkg.com/axe-reports/-/axe-reports-1.1.11.tgz#e96524970f7f654040cfd8b2f977afa131f69952"
+  integrity sha512-sXBP3ytd7Nihmge60EYIT8oH0vKyc25ENIQ+fKpbuNe0s4Y5VpPSfxKqCtiYlcr68B1ZA7ysk85CTDC69p5IpQ==
+
+axe-webdriverjs@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/axe-webdriverjs/-/axe-webdriverjs-2.2.0.tgz#4a63cd301b9b193207a03a3181e3be9cd6f15285"
+  integrity sha512-ckGIk3VaYkpXeESKSYYnPArSajlCVr+18wNFmBvms0H12thS5WaKK8nwtOzeN93SZB+EFn2M19VsGTy07XKxCw==
+  dependencies:
+    axe-core "^3.1.2"
+    babel-runtime "^6.26.0"
+    depd "^2.0.0"
 
 axios@0.17.1:
   version "0.17.1"
@@ -4710,6 +4742,11 @@ delegates@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/delegates/-/delegates-1.0.0.tgz#84c6e159b81904fdca59a0ef44cd870d31250f9a"
   integrity sha1-hMbhWbgZBP3KWaDvRM2HDTElD5o=
+
+depd@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/depd/-/depd-2.0.0.tgz#b696163cc757560d09cf22cc8fad1571b79e76df"
+  integrity sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==
 
 depd@~1.1.2:
   version "1.1.2"

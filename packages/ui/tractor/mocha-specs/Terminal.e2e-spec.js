@@ -1,4 +1,4 @@
-/*{"name":"Terminal","tests":[{"name":"Show and hide terminal"}],"version":"1.4.0"}*/
+/*{"name":"Terminal","tests":[{"name":"Show and hide terminal"},{"name":"accessibility"}],"version":"1.4.0"}*/
 describe('Terminal', function () {
     it('Show and hide terminal', function () {
         this.retries(3);
@@ -29,6 +29,15 @@ describe('Terminal', function () {
             var element;
             element = controlPanel;
             return expect(element.getTerminalIsDisplayed()).to.eventually.equal(false);
+        });
+        return step;
+    });
+    it.only('accessibility', function () {
+        var step = Promise.resolve();
+        step = step.then(function () {
+            var element;
+            element = accessibility;
+            return element.checkPage('blah');
         });
         return step;
     });
