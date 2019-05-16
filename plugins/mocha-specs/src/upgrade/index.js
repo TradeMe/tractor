@@ -3,6 +3,7 @@ import { getConfig } from '@tractor/config-loader';
 import { readFiles } from '@tractor/file-structure';
 import { MochaSpecFile } from '../tractor/server/files/mocha-spec-file';
 import { MochaSpecFileRefactorer } from '../tractor/server/files/mocha-spec-file-refactorer';
+import * as semver from 'semver';
 
 // Versions:
 const VERSIONS = ['1.4.0'];
@@ -32,8 +33,9 @@ export async function upgrade () {
             return;
         }
         const { version } = meta;
-        const upgradeVersions = VERSIONS.slice(VERSIONS.indexOf(version) + 1);
-
+        const closestVersion = VERSIONS.find(upgradeVersion => semver.gt(upgradeVersion, version));
+        const upgradeVersions = VERSIONS.slice(VERSIONS.indexOf(closestVersion));
+        
         return await upgradeVersions.reduce(async (p, upgradeVersion) => {
             await p;
             MochaSpecFileRefactorer[upgradeVersion] = require(`./${upgradeVersion}`).upgrade;

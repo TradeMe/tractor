@@ -45,7 +45,8 @@
     "@tractor-plugins/browser": "^1.6.1",
     "esprima": "^4.0.1",
     "esquery": "^1.0.1",
-    "pascal-case": "^2.0.1"
+    "pascal-case": "^2.0.1",
+    "semver": "^6.0.0"
   },
   "peerDependencies": {
     "@tractor/core": "^1.0.0"

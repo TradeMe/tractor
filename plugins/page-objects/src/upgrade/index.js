@@ -3,6 +3,7 @@ import { getConfig } from '@tractor/config-loader';
 import { readFiles } from '@tractor/file-structure';
 import { PageObjectFile } from '../tractor/server/files/page-object-file';
 import { PageObjectFileRefactorer } from '../tractor/server/files/page-object-file-refactorer';
+import * as semver from 'semver';
 
 // Versions:
 const VERSIONS = ['0.5.0', '0.5.2', '0.6.0', '0.7.0', '1.4.0', '1.7.0'];
@@ -27,7 +28,8 @@ export async function upgrade () {
             return;
         }
         const { version } = meta;
-        const upgradeVersions = VERSIONS.slice(VERSIONS.indexOf(version) + 1);
+        const closestVersion = VERSIONS.find(upgradeVersion => semver.gt(upgradeVersion, version));
+        const upgradeVersions = VERSIONS.slice(VERSIONS.indexOf(closestVersion));
 
         return await upgradeVersions.reduce(async (p, upgradeVersion) => {
             await p;
