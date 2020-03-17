@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "body-parser": "^1.18.3",
-    "chromedriver": "^74.0.0",
+    "chromedriver": "latest",
     "cors": "^2.8.5",
     "express": "^4.16.4",
     "geckodriver": "^1.16.2",
