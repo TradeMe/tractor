@@ -42,7 +42,8 @@ export async function serve (baseUrl, mockRequestsConfig) {
 
     application.use(proxy(host, {
         proxyReqOptDecorator: createRequestDecorator(host, mockRequestsConfig),
-        userResDecorator: createResponseDecorator(host)
+        userResDecorator: createResponseDecorator(host),
+        proxyReqBodyDecorator: createRequestBodyDecorator()
     }));
 
     return new Promise(resolve => {
@@ -106,6 +107,18 @@ function createResponseDecorator (host) {
             }
         }
         return result;
+    };
+}
+
+function createRequestBodyDecorator () { 
+    return function (body) {
+        // Get requests are being sent with a body of an empty object 
+        // This causes GCP load balancer to throw a 400 error
+        // In this situation replace with an empty string
+        const bodyIsEmptyObject = typeof body === 'object' && Object.keys(body).length === 0;
+        if (bodyIsEmptyObject) {
+            return '';
+        }
     };
 }
 
