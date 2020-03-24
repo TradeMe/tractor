@@ -1,6 +1,6 @@
 {
   "name": "@tractor/file-structure",
-  "version": "1.7.2-alpha.0",
+  "version": "1.7.3-alpha.0",
   "description": "File structure handler for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -45,10 +45,10 @@
     "@tractor/core": "^1.0.0"
   },
   "devDependencies": {
-    "@tractor/dependency-injection": "^1.7.2-alpha.0",
-    "@tractor/error-handler": "^1.7.2-alpha.0",
-    "@tractor/logger": "^1.7.2-alpha.0",
-    "@tractor/unit-test": "^1.7.2-alpha.0",
+    "@tractor/dependency-injection": "^1.7.3-alpha.0",
+    "@tractor/error-handler": "^1.7.3-alpha.0",
+    "@tractor/logger": "^1.7.3-alpha.0",
+    "@tractor/unit-test": "^1.7.3-alpha.0",
     "@types/body-parser": "^1.17.0",
     "@types/graceful-fs": "^4.1.3",
     "@types/node-fetch": "^2.1.6",
