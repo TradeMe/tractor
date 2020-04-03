@@ -58,5 +58,5 @@
     "node-fetch": "^2.3.0",
     "socket.io-client": "^2.2.0"
   },
-  "gitHead": "6c1c4be2a6d2956927e9c047cfd34dde3dc71283"
+  "gitHead": "aac58387d7addbeceb2683c730fd7801922f7426"
 }

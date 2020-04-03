@@ -41,7 +41,7 @@
     "sinon": "^7.2.3",
     "sinon-chai": "^3.3.0"
   },
-  "gitHead": "6c1c4be2a6d2956927e9c047cfd34dde3dc71283",
+  "gitHead": "aac58387d7addbeceb2683c730fd7801922f7426",
   "devDependencies": {
     "@types/chai": "^4.1.7",
     "@types/dedent": "^0.7.0",
