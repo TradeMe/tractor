@@ -1,6 +1,6 @@
 {
   "name": "@tractor/dependency-injection",
-  "version": "1.7.4-alpha.0",
+  "version": "1.7.5-alpha.0",
   "description": "DI container for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -37,7 +37,7 @@
     "@tractor/core": "^1.0.0"
   },
   "devDependencies": {
-    "@tractor/error-handler": "^1.7.4-alpha.0"
+    "@tractor/error-handler": "^1.7.5-alpha.0"
   },
   "gitHead": "6c1c4be2a6d2956927e9c047cfd34dde3dc71283"
 }
