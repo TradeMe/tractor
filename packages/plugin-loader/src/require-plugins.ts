@@ -43,6 +43,8 @@ export function requirePlugins (cwd: string, enabledPlugins: Array<string> = [])
             (plugin as TractorPluginInternal).name = pluginName;
             return plugin as TractorPluginInternal;
         } catch (e) {
+            /* tslint:disable-next-line:no-console */
+            console.error(e);
             throw new TractorError(`could not require '${fullName}'`);
         }
     })

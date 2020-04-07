@@ -22,7 +22,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "yarn clean && yarn lint && yarn compile && yarn cover",
+    "build": "yarn clean && yarn lint && yarn compile",
     "clean": "rimraf dist",
     "compile": "tsc --project ./tsconfig.json",
     "lint": "tslint --project ./tsconfig.json",
