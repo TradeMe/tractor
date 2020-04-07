@@ -71,4 +71,3 @@ lerna run test # run unit test in all packages
 lerna run compile --scope="@tractor-plugins/*" # runs JavaScript compiler in all @tractor-plugin packages
 lerna run test:e2e:ci --scope="@tractor/ui" # run end-to-end tests in the @tractor/ui package only
 ```
-
