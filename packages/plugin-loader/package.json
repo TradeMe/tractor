@@ -1,6 +1,6 @@
 {
   "name": "@tractor/plugin-loader",
-  "version": "1.7.6-alpha.0",
+  "version": "1.7.7-alpha.0",
   "description": "File structure handler for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",

@@ -1,6 +1,6 @@
 {
   "name": "@tractor/core",
-  "version": "1.7.6-alpha.0",
+  "version": "1.7.7-alpha.0",
   "description": "Core module for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -38,9 +38,9 @@
     "@tractor/file-javascript": "^1.7.6-alpha.0",
     "@tractor/file-structure": "^1.7.6-alpha.0",
     "@tractor/logger": "^1.7.6-alpha.0",
-    "@tractor/plugin-loader": "^1.7.6-alpha.0",
-    "@tractor/server": "^1.7.6-alpha.0",
-    "@tractor/tractor": "^1.7.6-alpha.0",
+    "@tractor/plugin-loader": "^1.7.7-alpha.0",
+    "@tractor/server": "^1.7.7-alpha.0",
+    "@tractor/tractor": "^1.7.7-alpha.0",
     "@tractor/ui": "^1.7.6-alpha.0"
   },
   "devDependencies": {

@@ -1,6 +1,6 @@
 {
   "name": "@tractor/tractor",
-  "version": "1.7.6-alpha.0",
+  "version": "1.7.7-alpha.0",
   "description": "JS API for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -36,7 +36,7 @@
   "dependencies": {
     "@tractor/config-loader": "^1.7.6-alpha.0",
     "@tractor/dependency-injection": "^1.7.6-alpha.0",
-    "@tractor/plugin-loader": "^1.7.6-alpha.0",
+    "@tractor/plugin-loader": "^1.7.7-alpha.0",
     "callsite": "^1.0.0",
     "fkill": "^6.1.0",
     "pkg-up": "^3.1.0"
