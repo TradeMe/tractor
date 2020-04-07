@@ -1,6 +1,6 @@
 {
   "name": "@tractor/logger",
-  "version": "1.7.8-alpha.0",
+  "version": "1.7.8-alpha.1",
   "description": "Logging utilities for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -40,7 +40,7 @@
     "@tractor/core": "^1.0.0"
   },
   "devDependencies": {
-    "@tractor/unit-test": "^1.7.8-alpha.0",
+    "@tractor/unit-test": "^1.7.8-alpha.1",
     "@types/npmlog": "^4.1.1"
   },
   "gitHead": "aac58387d7addbeceb2683c730fd7801922f7426"

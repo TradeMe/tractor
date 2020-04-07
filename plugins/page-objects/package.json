@@ -1,6 +1,6 @@
 {
   "name": "@tractor-plugins/page-objects",
-  "version": "1.7.8-alpha.0",
+  "version": "1.7.8-alpha.1",
   "description": "tractor plugin for manipulating Page Objects",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -42,7 +42,7 @@
     "build": "src/**/*.js"
   },
   "dependencies": {
-    "@tractor-plugins/browser": "^1.7.8-alpha.0",
+    "@tractor-plugins/browser": "^1.7.8-alpha.1",
     "esprima": "^4.0.1",
     "esquery": "^1.0.1",
     "pascal-case": "^2.0.1",
