@@ -60,7 +60,7 @@
     "gulp-ruby-sass": "2.0.5",
     "gulp-sourcemaps": "1.6.0",
     "is-valid-var-name": "1.0.2",
-    "lodash": "3.10.1",
+    "lodash": "4.17.13",
     "ng-sortable": "1.2.2",
     "normalize.css": "3.0.3",
     "socket.io-client": "^2.0.3",
