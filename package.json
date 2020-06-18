@@ -68,7 +68,7 @@
 	},
 	"dependencies": {
 		"@uirouter/angularjs": "1.0.3",
-		"angular": "1.6.6",
+		"angular": "1.8.0",
 		"angular-local-storage": "0.2.2",
 		"angular-messages": "1.6.6",
 		"angular-mocks": "1.6.6",
