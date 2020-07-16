@@ -107,7 +107,7 @@
 		"gulp-sourcemaps": "1.6.0",
 		"ineeda": "^0.11.1",
 		"js-search": "^1.4.2",
-		"lodash": "3.10.1",
+		"lodash": "4.17.19",
 		"lodash.debounce": "^4.0.8",
 		"lodash.defaults": "^4.2.0",
 		"lodash.template": "^4.4.0",
