@@ -32,7 +32,11 @@
 		"webdriver": "webdriver-manager update --versions.standalone=3.141.5 --gecko=false --chrome=false",
 		"postinstall": "yarn webdriver",
 		"link:all": "yarn link && lerna exec yarn link",
-		"unlink:all": "yarn unlink && lerna exec yarn unlink"
+		"unlink:all": "yarn unlink && lerna exec yarn unlink",
+		"publish:preminor": "lerna publish preminor --dist-tag next",
+		"publish:prerelease": "lerna publish prerelease --dist-tag next",
+		"prepublish:release": "lerna version --force-publish --no-git-tag-version",
+		"publish:release": "lerna publish from-package"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.1.5",
