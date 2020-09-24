@@ -25,7 +25,7 @@ export async function serve (baseUrl, mockRequestsConfig) {
     }
 
     // Server not already running, so let's start it:
-    const port = await getPort();
+    const port = mockRequestsConfig.port || await getPort();
     mockRequestsConfig.port = port;
 
     shimZlib();

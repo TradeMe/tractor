@@ -29,7 +29,7 @@ describe('@tractor-plugins/mock-requests - config:', () => {
             expect(processed.domain).to.equal('tractor.co.nz');
         });
 
-        it('should allow for a custom port to be set - deprecated', () => {
+        it('should allow for a custom port to be set', () => {
             let tractorConfig = {
                 mockRequests: {
                     port: 1000
