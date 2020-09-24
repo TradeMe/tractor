@@ -33,7 +33,9 @@
 		"postinstall": "yarn webdriver",
 		"link:all": "yarn link && lerna exec yarn link",
 		"unlink:all": "yarn unlink && lerna exec yarn unlink",
+		"publish:premajor": "lerna publish premajor --dist-tag next",
 		"publish:preminor": "lerna publish preminor --dist-tag next",
+		"publish:prepatch": "lerna publish prepatch --dist-tag next",
 		"publish:prerelease": "lerna publish prerelease --dist-tag next",
 		"prepublish:release": "lerna version --force-publish --no-git-tag-version",
 		"publish:release": "lerna publish from-package"
