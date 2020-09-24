@@ -37,7 +37,7 @@
 		"publish:preminor": "lerna publish preminor --dist-tag next",
 		"publish:prepatch": "lerna publish prepatch --dist-tag next",
 		"publish:prerelease": "lerna publish prerelease --dist-tag next",
-		"prepublish:release": "lerna version --force-publish --no-git-tag-version",
+		"select-version": "lerna version --force-publish --no-git-tag-version",
 		"publish:release": "lerna publish from-package"
 	},
 	"devDependencies": {

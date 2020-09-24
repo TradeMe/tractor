@@ -36,6 +36,9 @@ Once they’re good, and you’re all happy with the changes, merge your branch 
 
 IMPORTANT (AGAIN): Run the complete build locally with yarn build from the root of the project.
 
+Use yarn select-version to select the version you want to publish.
+Commit your changes (package.json changes).
+
 Use yarn publish:release to publish the release version.
 
 This will release a version 1.8.0
