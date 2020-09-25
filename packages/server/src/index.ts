@@ -8,6 +8,7 @@ export const server = inject(async (tractor: Tractor): Promise<void> => {
     info('Starting tractor... brrrrrrmmmmmmm');
 
     try {
+        // tslint:disable:no-unsafe-any
         await tractor.call(init);
         await tractor.call(start);
     } catch (e) {

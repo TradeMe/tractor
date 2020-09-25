@@ -80,6 +80,8 @@ async function startProtractor (config: TractorConfigInternal, socket: Socket, o
     type PromiseParameters = Parameters<Head<ConstructorParameters<typeof Promise>>>;
     let resolve: Head<PromiseParameters>;
     let reject: Head<Tail<PromiseParameters>>;
+    // tslint:disable ban-ts-ignore
+    // @ts-ignore TS2345
     const deferred = new Promise<{}>((...args: PromiseParameters): void => {
         [resolve, reject] = args;
     });

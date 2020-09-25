@@ -9,7 +9,7 @@ import { initialisePlugins } from './initialise-plugins';
 
 export const init = inject(async (tractor: Tractor): Promise<void> => {
     info('Setting up tractor...');
-
+    // tslint:disable:no-unsafe-any
     try {
         await tractor.call(createTractorDirectory);
         await tractor.call(copyProtractorConfig);

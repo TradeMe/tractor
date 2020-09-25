@@ -1,11 +1,11 @@
 // Dependencies:
-import { info } from '@tractor/logger';
+import { info, warn } from '@tractor/logger';
 import bodyParser from 'body-parser';
 import cheerio from 'cheerio';
 import express from 'express';
 import proxy from 'express-http-proxy';
 import fs from 'fs';
-import getPort from 'get-port';
+import * as getPort from 'get-port';
 import http from 'http';
 import path from 'path';
 import zlib from 'zlib';
@@ -25,7 +25,7 @@ export async function serve (baseUrl, mockRequestsConfig) {
     }
 
     // Server not already running, so let's start it:
-    const port = mockRequestsConfig.port || await getPort();
+    const port = await getSafePort(mockRequestsConfig.minPort, mockRequestsConfig.maxPort);
     mockRequestsConfig.port = port;
 
     shimZlib();
@@ -153,4 +153,20 @@ function shimZlib () {
         options.finishFlush = zlib.Z_SYNC_FLUSH;
         return originalGunzip.call(zlib, data, options);
     };
+}
+
+async function getSafePort (minPort, maxPort, iterations = 1) {
+    const port = await getPort({ port: getPort.makeRange(minPort, maxPort)});
+
+    if (port >= minPort || port <= maxPort) {
+        return port;
+    } 
+    
+    if (iterations == 10) {
+        warn(`Could not get port in range (${minPort}, ${maxPort}). Tried 10 times. Giving up. You are getting a random port.`);    
+        return port;
+    }
+    warn(`Could not get port in range (${minPort}, ${maxPort}). Trying again...`);
+    
+    return await getSafePort(minPort, maxPort, iterations += 1);
 }

@@ -14,7 +14,8 @@ module.exports = {
         headers: {
             'Custom Header': 'Custom Value'
         },
-        port: 1234
+        minPort: 1234,
+        maxPort: 5678
     },
     // ...
 };
@@ -34,6 +35,12 @@ The domain to use for the intercepting proxy. This defaults to `'localhost'`.
 
 Any headers which should be set on all proxied requests. This defaults to `{}`.
 
-### `port: number`
+### `minPort: number`
 
-The port used for the intercepting proxy. If omitted a random port is used.
+The min port used for the intercepting proxy.
+Default value is 30000
+
+### `maxPort: number`
+
+The max port used for the intercepting proxy.
+Default value is 40000

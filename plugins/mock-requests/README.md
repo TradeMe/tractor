@@ -20,7 +20,8 @@ module.exports = {
         headers: {
             'Custom Header': 'Custom Value'
         },
-        port: 1234
+        minPort: 1234,
+        maxPort: 5678
     },
     // ...
 };

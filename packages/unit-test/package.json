@@ -35,7 +35,7 @@
   "dependencies": {
     "chai": "^4.2.0",
     "dedent": "^0.7.0",
-    "get-port": "^4.2.0",
+    "get-port": "^5.1.1",
     "ineeda": "^0.11.1",
     "npmlog": "^4.1.2",
     "sinon": "^7.2.3",

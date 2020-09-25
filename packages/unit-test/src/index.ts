@@ -18,7 +18,7 @@ export const NOOP: () => void = (): void => {
 export { expect } from 'chai';
 import * as dedent from 'dedent';
 export { dedent };
-import getPort from 'get-port';
+import * as getPort from 'get-port';
 export { getPort };
 export { ineeda } from 'ineeda';
 export { sinon };
@@ -27,12 +27,16 @@ export { sinon };
 chai.use(sinonChai);
 
 // Prevent sinon from thinking ineeda mocks are already spies:
+// tslint:disable ban-ts-ignore
+// @ts-ignore TS2326
 ineeda.intercept<sinon.SinonStub>({
     calledBefore: null,
     restore: null
 });
 
 // Prevent libraries from thinking ineeda mocks are Promises
+// tslint:disable ban-ts-ignore
+// @ts-ignore TS2326
 ineeda.intercept<Promise<void>>({
     then: null
 });
