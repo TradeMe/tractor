@@ -18,7 +18,8 @@ export const NOOP: () => void = (): void => {
 export { expect } from 'chai';
 import * as dedent from 'dedent';
 export { dedent };
-import * as getPort from 'get-port';
+// tslint:disable:no-var-requires
+const getPort = require('get-port');
 export { getPort };
 export { ineeda } from 'ineeda';
 export { sinon };

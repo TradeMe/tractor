@@ -5,7 +5,7 @@ import cheerio from 'cheerio';
 import express from 'express';
 import proxy from 'express-http-proxy';
 import fs from 'fs';
-import * as getPort from 'get-port';
+import getPort from 'get-port';
 import http from 'http';
 import path from 'path';
 import zlib from 'zlib';
