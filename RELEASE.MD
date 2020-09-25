@@ -40,7 +40,6 @@ Use yarn select-version to select the version you want to publish.
 Commit your changes (package.json changes).
 
 Use yarn publish:release to publish the release version.
-
 This will release a version 1.8.0
 
 Now you can update your project to the released versions, and you should be good to go. 
