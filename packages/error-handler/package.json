@@ -1,6 +1,6 @@
 {
   "name": "@tractor/error-handler",
-  "version": "1.9.0",
+  "version": "1.9.1-alpha.0",
   "description": "JavaScript file handler for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -40,8 +40,8 @@
     "@tractor/core": "^1.0.0"
   },
   "devDependencies": {
-    "@tractor/logger": "^1.9.0",
-    "@tractor/unit-test": "^1.9.0",
+    "@tractor/logger": "^1.9.1-alpha.0",
+    "@tractor/unit-test": "^1.9.1-alpha.0",
     "@types/express": "^4.16.1"
   },
   "gitHead": "aac58387d7addbeceb2683c730fd7801922f7426"
