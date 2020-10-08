@@ -1,6 +1,6 @@
 {
   "name": "@tractor/tractor",
-  "version": "1.9.1",
+  "version": "1.9.2-alpha.0",
   "description": "JS API for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -34,15 +34,15 @@
     "build": "src/**/*.js"
   },
   "dependencies": {
-    "@tractor/config-loader": "^1.9.1",
-    "@tractor/dependency-injection": "^1.9.1",
-    "@tractor/plugin-loader": "^1.9.1",
+    "@tractor/config-loader": "^1.9.2-alpha.0",
+    "@tractor/dependency-injection": "^1.9.2-alpha.0",
+    "@tractor/plugin-loader": "^1.9.2-alpha.0",
     "callsite": "^1.0.0",
     "fkill": "^6.1.0",
     "pkg-up": "^3.1.0"
   },
   "devDependencies": {
-    "@tractor/unit-test": "^1.9.1",
+    "@tractor/unit-test": "^1.9.2-alpha.0",
     "@types/callsite": "^1.0.30"
   },
   "gitHead": "aac58387d7addbeceb2683c730fd7801922f7426"

@@ -1,6 +1,6 @@
 {
   "name": "@tractor-plugins/mock-requests",
-  "version": "1.9.1",
+  "version": "1.9.2-alpha.0",
   "description": "tractor plugin for mocking HTTP/Fetch requests",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -59,10 +59,10 @@
     "request-promise-native": "^1.0.5"
   },
   "devDependencies": {
-    "@tractor/error-handler": "^1.9.1",
-    "@tractor/file-structure": "^1.9.1",
-    "@tractor/logger": "^1.9.1",
-    "@tractor/unit-test": "^1.9.1"
+    "@tractor/error-handler": "^1.9.2-alpha.0",
+    "@tractor/file-structure": "^1.9.2-alpha.0",
+    "@tractor/logger": "^1.9.2-alpha.0",
+    "@tractor/unit-test": "^1.9.2-alpha.0"
   },
   "peerDependencies": {
     "@tractor/core": "^1.0.0"
