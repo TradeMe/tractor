@@ -1,6 +1,6 @@
 {
   "name": "@tractor-plugins/mocha-specs",
-  "version": "1.9.1-alpha.0",
+  "version": "1.9.1",
   "description": "tractor plugin for creating tests with Mocha",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",

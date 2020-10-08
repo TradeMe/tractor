@@ -1,6 +1,6 @@
 {
   "name": "@tractor/file-javascript",
-  "version": "1.9.1-alpha.0",
+  "version": "1.9.1",
   "description": "JavaScript file handler for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -43,7 +43,7 @@
     "@tractor/core": "^1.0.0"
   },
   "devDependencies": {
-    "@tractor/file-structure": "^1.9.1-alpha.0",
+    "@tractor/file-structure": "^1.9.1",
     "@types/escodegen": "^0.0.6",
     "@types/esprima": "^4.0.2"
   },
