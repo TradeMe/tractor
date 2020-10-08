@@ -54,18 +54,16 @@ export async function tryToRunServer(config, iterations = 1) {
     config.port = port;
 
     try {
-        const runningServer = new Promise(resolve => {
-            server.listen(port, () => {
+        const runningServer = await server.listen(port, () => {
                 info(`@tractor-plugins/mock-requests is proxying at port ${port}`);
-                resolve();
             });
-        });
         return runningServer;
     } catch (e) {
         if (iterations > 10) {
-            return Promise.reject('Could not start server because no open port could be found');
+            throw new Error('Could not start server because no open port could be found');
         }
-        return tryToRunServer(config, iterations++);
+        info(`Could not open server on port ${port}. Trying to get a new port...`);
+        return await tryToRunServer(config, iterations++);
     }
 }
 
