@@ -24,10 +24,6 @@ export async function serve (baseUrl, mockRequestsConfig) {
         return;
     }
 
-    // Server not already running, so let's start it:
-    const port = await getSafePort(mockRequestsConfig.minPort, mockRequestsConfig.maxPort);
-    mockRequestsConfig.port = port;
-
     shimZlib();
 
     let application = express();
@@ -46,12 +42,31 @@ export async function serve (baseUrl, mockRequestsConfig) {
         proxyReqBodyDecorator: createRequestBodyDecorator()
     }));
 
-    return new Promise(resolve => {
-        server.listen(port, () => {
-            info(`@tractor-plugins/mock-requests is proxying at port ${port}`);
-            resolve();
+    let runningServer = await tryToRunServer(mockRequestsConfig);
+    return runningServer;
+}
+
+export async function tryToRunServer(config, iterations = 1) {
+    // Server not already running, so let's start it:
+    const port = await getSafePort(config.minPort, config.maxPort);
+    
+    // important side effect !
+    config.port = port;
+
+    try {
+        const runningServer = new Promise(resolve => {
+            server.listen(port, () => {
+                info(`@tractor-plugins/mock-requests is proxying at port ${port}`);
+                resolve();
+            });
         });
-    });
+        return runningServer;
+    } catch (e) {
+        if (iterations > 10) {
+            return Promise.reject('Could not start server because no open port could be found');
+        }
+        return tryToRunServer(config, iterations++);
+    }
 }
 
 export function close () {
