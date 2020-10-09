@@ -8,6 +8,7 @@ import fs from 'fs';
 import http from 'http';
 import path from 'path';
 import zlib from 'zlib';
+var promiseRetry = require('promise-retry');
 
 // Scripts:
 const ADD_MOCKING = fs.readFileSync(path.resolve(__dirname, '../scripts/add-mocking.js'), 'utf8');
@@ -17,7 +18,7 @@ const SHIM_XHR = fs.readFileSync(path.resolve(__dirname, '../scripts/shim-xhr.js
 const MOCKS = [];
 
 let server;
-export async function serve (baseUrl, mockRequestsConfig) {
+export function serve (baseUrl, mockRequestsConfig) {
     // Another test run has started the server already:
     if (server) {
         return;
@@ -42,37 +43,30 @@ export async function serve (baseUrl, mockRequestsConfig) {
         proxyReqBodyDecorator: createRequestBodyDecorator()
     }));
 
-    let runningServer = await tryToRunServer(application, mockRequestsConfig);
-    return runningServer;
+    return promiseRetry(function (retry) {
+        return tryToRunServer(mockRequestsConfig).catch(retry);
+    }, { retries: 10 });
 }
 
-export async function tryToRunServer(application, config, iterations = 1) {
+export function tryToRunServer(config) {
     // Server not already running, so let's start it:
     const port = getRandomPort(config.minPort, config.maxPort);
     
     // important side effect !
     config.port = port;
-
-    try {
-        const runningServer = await new Promise((resolve, reject) => {
-            server.on('error', (e) => {
-                warn(e);
-                reject(e);
-            });
-            server.listen(port, () => {
-                info(`@tractor-plugins/mock-requests is proxying at port ${port}`);
-                resolve();
-            });
+    
+    const runningServer = new Promise((resolve, reject) => {
+        server.on('error', (e) => {
+            warn(`could not start server on port ${port}. trying again...`);
+            reject(e);
         });
+        server.listen(port, () => {
+            info(`@tractor-plugins/mock-requests is proxying at port ${port}`);
+            resolve();
+        });
+    });
         
-        return runningServer;
-    } catch (e) {
-        if (iterations > 10) {
-            throw new Error('Could not start server because no open port could be found');
-        }
-        warn(`Could not open server on port ${port}. Trying to get a new port...`);
-        return await tryToRunServer(application, config, iterations++);
-    }
+    return runningServer;
 }
 
 export function close () {
