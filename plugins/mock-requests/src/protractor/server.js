@@ -54,9 +54,13 @@ export async function tryToRunServer(config, iterations = 1) {
     config.port = port;
 
     try {
-        const runningServer = await server.listen(port, () => {
+        const runningServer = await new Promise((resolve) => {
+            server.listen(port, () => {
                 info(`@tractor-plugins/mock-requests is proxying at port ${port}`);
+                resolve();
             });
+        });
+        
         return runningServer;
     } catch (e) {
         if (iterations > 10) {
