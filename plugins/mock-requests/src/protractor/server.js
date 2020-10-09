@@ -40,13 +40,14 @@ export async function serve (baseUrl, mockRequestsConfig) {
         proxyReqBodyDecorator: createRequestBodyDecorator()
     }));
 
-    let runningServer = await tryToRunServer(mockRequestsConfig);
+    let runningServer = await tryToRunServer(application, mockRequestsConfig);
     return runningServer;
 }
 
-export async function tryToRunServer(config, iterations = 1) {
+export async function tryToRunServer(application, config, iterations = 1) {
+    if (server) server.close();
     server = http.createServer(application);
-    
+
     // Server not already running, so let's start it:
     const port = getRandomPort(config.minPort, config.maxPort);
     
@@ -55,7 +56,7 @@ export async function tryToRunServer(config, iterations = 1) {
 
     try {
         const runningServer = await new Promise((resolve, reject) => {
-            server.on('error', () => {
+            server.on('error', (e) => {
                 warn(e);
                 reject(e);
             });
@@ -71,7 +72,7 @@ export async function tryToRunServer(config, iterations = 1) {
             throw new Error('Could not start server because no open port could be found');
         }
         warn(`Could not open server on port ${port}. Trying to get a new port...`);
-        return await tryToRunServer(config, iterations++);
+        return await tryToRunServer(application, config, iterations++);
     }
 }
 
