@@ -28,7 +28,6 @@ export async function serve (baseUrl, mockRequestsConfig) {
     let application = express();
 
     let host = baseUrl;
-    server = http.createServer(application);
 
     application.use(bodyParser.json());
     application.set('etag', false);
@@ -46,6 +45,8 @@ export async function serve (baseUrl, mockRequestsConfig) {
 }
 
 export async function tryToRunServer(config, iterations = 1) {
+    server = http.createServer(application);
+    
     // Server not already running, so let's start it:
     const port = getRandomPort(config.minPort, config.maxPort);
     
@@ -53,7 +54,11 @@ export async function tryToRunServer(config, iterations = 1) {
     config.port = port;
 
     try {
-        const runningServer = await new Promise((resolve) => {
+        const runningServer = await new Promise((resolve, reject) => {
+            server.on('error', () => {
+                warn(e);
+                reject(e);
+            });
             server.listen(port, () => {
                 info(`@tractor-plugins/mock-requests is proxying at port ${port}`);
                 resolve();
