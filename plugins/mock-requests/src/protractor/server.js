@@ -27,6 +27,8 @@ export async function serve (baseUrl, mockRequestsConfig) {
 
     let application = express();
 
+    server = http.createServer(application);
+
     let host = baseUrl;
 
     application.use(bodyParser.json());
@@ -45,9 +47,6 @@ export async function serve (baseUrl, mockRequestsConfig) {
 }
 
 export async function tryToRunServer(application, config, iterations = 1) {
-    if (server) server.close();
-    server = http.createServer(application);
-
     // Server not already running, so let's start it:
     const port = getRandomPort(config.minPort, config.maxPort);
     
