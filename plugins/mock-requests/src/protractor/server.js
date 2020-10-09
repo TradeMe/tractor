@@ -5,7 +5,6 @@ import cheerio from 'cheerio';
 import express from 'express';
 import proxy from 'express-http-proxy';
 import fs from 'fs';
-import getPort from 'get-port';
 import http from 'http';
 import path from 'path';
 import zlib from 'zlib';
@@ -48,7 +47,7 @@ export async function serve (baseUrl, mockRequestsConfig) {
 
 export async function tryToRunServer(config, iterations = 1) {
     // Server not already running, so let's start it:
-    const port = await getSafePort(config.minPort, config.maxPort);
+    const port = getRandomPort(config.minPort, config.maxPort);
     
     // important side effect !
     config.port = port;
@@ -66,7 +65,7 @@ export async function tryToRunServer(config, iterations = 1) {
         if (iterations > 10) {
             throw new Error('Could not start server because no open port could be found');
         }
-        info(`Could not open server on port ${port}. Trying to get a new port...`);
+        warn(`Could not open server on port ${port}. Trying to get a new port...`);
         return await tryToRunServer(config, iterations++);
     }
 }
@@ -172,18 +171,8 @@ function shimZlib () {
     };
 }
 
-async function getSafePort (minPort, maxPort, iterations = 1) {
-    const port = await getPort({ port: getPort.makeRange(minPort, maxPort)});
-
-    if (port >= minPort || port <= maxPort) {
-        return port;
-    } 
-    
-    if (iterations == 10) {
-        warn(`Could not get port in range (${minPort}, ${maxPort}). Tried 10 times. Giving up. You are getting a random port.`);    
-        return port;
-    }
-    warn(`Could not get port in range (${minPort}, ${maxPort}). Trying again...`);
-    
-    return await getSafePort(minPort, maxPort, iterations += 1);
+function getRandomPort(minPort, maxPort) {
+    minPort = Math.ceil(minPort);
+    maxPort = Math.floor(maxPort);
+    return Math.floor(Math.random() * (maxPort - minPort + 1)) + minPort;
 }
