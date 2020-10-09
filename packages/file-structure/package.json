@@ -1,6 +1,6 @@
 {
   "name": "@tractor/file-structure",
-  "version": "1.9.2-alpha.0",
+  "version": "1.9.2-alpha.3",
   "description": "File structure handler for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
