@@ -83,8 +83,8 @@ describe('@tractor/file-structure - File:', () => {
             Object.keys(path.win32).forEach(key => {
                 const pathKey = key as keyof Path;
                 const pathKeyWin = key as keyof PathWin32;
-                origPath[pathKey] = path[pathKey];
-                (path as Writeable<PathWin32>)[pathKeyWin] = path.win32[pathKeyWin];
+                (origPath as any)[pathKey] = path[pathKey];
+                (path as any)[pathKeyWin] = path.win32[pathKeyWin];
             });
 
             const fileStructure = new FileStructure(path.win32.resolve(__dirname, '../../fixtures/file'));
@@ -97,7 +97,7 @@ describe('@tractor/file-structure - File:', () => {
             // Restore original versions of `path` methods:
             Object.keys(path.win32).forEach(key => {
                 const pathKey = key as keyof Path;
-                (path as Writeable<Path>)[pathKey] = origPath[pathKey] as Writeable<Path>;
+                (path as any)[pathKey] = origPath[pathKey] as Writeable<Path>;
             });
         });
 
