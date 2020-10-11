@@ -1,6 +1,6 @@
 {
   "name": "@tractor/server",
-  "version": "1.9.2-alpha.3",
+  "version": "1.9.2",
   "description": "Server for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -49,13 +49,13 @@
     "terminal-link": "^1.2.0"
   },
   "devDependencies": {
-    "@tractor/config-loader": "^1.9.2-alpha.0",
-    "@tractor/dependency-injection": "^1.9.2-alpha.0",
-    "@tractor/error-handler": "^1.9.2-alpha.0",
-    "@tractor/file-structure": "^1.9.2-alpha.3",
-    "@tractor/logger": "^1.9.2-alpha.0",
-    "@tractor/tractor": "^1.9.2-alpha.0",
-    "@tractor/unit-test": "^1.9.2-alpha.0",
+    "@tractor/config-loader": "^1.9.2",
+    "@tractor/dependency-injection": "^1.9.2",
+    "@tractor/error-handler": "^1.9.2",
+    "@tractor/file-structure": "^1.9.2",
+    "@tractor/logger": "^1.9.2",
+    "@tractor/tractor": "^1.9.2",
+    "@tractor/unit-test": "^1.9.2",
     "@types/body-parser": "^1.17.0",
     "@types/cors": "^2.8.4",
     "@types/express": "^4.16.1",
