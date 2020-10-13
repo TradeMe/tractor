@@ -82,7 +82,7 @@ function addMock (request, response) {
 
 function createRequestDecorator (host, mockRequestsConfig) {
     let { headers } = mockRequestsConfig;
-    return function (requestOptions) {
+    return function (requestOptions, srcReq) {
         Object.keys(headers).forEach(header => {
             if (!requestOptions.headers[header]) {
                 requestOptions.headers[header] = headers[header];
@@ -90,6 +90,7 @@ function createRequestDecorator (host, mockRequestsConfig) {
         });
         clearRequestCacheHeaders(requestOptions);
         requestOptions.headers['Referer'] = host;
+        requestOptions.headers['x-tractor-origin'] = srcReq.url;
         requestOptions.rejectUnauthorized = false;
         return requestOptions;
     };
