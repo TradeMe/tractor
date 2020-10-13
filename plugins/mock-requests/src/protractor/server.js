@@ -90,7 +90,7 @@ function createRequestDecorator (host, mockRequestsConfig) {
         });
         clearRequestCacheHeaders(requestOptions);
         requestOptions.headers['Referer'] = host;
-        requestOptions.headers['x-tractor-origin'] = srcReq.url;
+        requestOptions.headers['x-tractor-origin'] = srcReq.protocol + '://' + srcReq.hostname + ':' + srcReq.connection.localPort;
         requestOptions.rejectUnauthorized = false;
         return requestOptions;
     };
