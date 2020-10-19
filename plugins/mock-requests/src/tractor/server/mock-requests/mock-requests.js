@@ -8,6 +8,7 @@ import { setProxyConfig } from '../utilities';
 
 // Scripts:
 const INIT = fs.readFileSync(path.resolve(__dirname, '../../../scripts/init.js'), 'utf8');
+const INIT_SERVICEWORKER = fs.readFileSync(path.resolve(__dirname, '../../../scripts/init_serviceworker.js'), 'utf8');
 
 export class MockRequests {
     constructor (
@@ -23,7 +24,11 @@ export class MockRequests {
 
     clear () {
         this.initialised = false;
-        return this.browser.executeScript(INIT);
+        if (this.config.mode === 'proxy') {
+            return this.browser.executeScript(INIT);
+        } else if (this.config.mode === 'serviceworker') {
+            return this.browser.executeScript(INIT_SERVICEWORKER);
+        }
     }
 }
 
@@ -62,17 +67,31 @@ function when (method, matcher, options = {}) {
     body = JSON.stringify(body);
     let key = JSON.stringify({ method, matcher });
     let response = JSON.stringify({ body, headers, matcher, method, passThrough, status });
-    let mock = createMockResponseScript(key, response);
 
-    if (!this.initialised) {
-        return setProxyConfig({ mock }, createProxyUrl(config, '/mock-requests/add-mock'));
-    } else {
-        return this.browser.executeScript(mock);
+    if (config.mode === 'proxy') {
+        let mock = createMockResponseScript(key, response);
+        if (!this.initialised) {
+            return setProxyConfig({ mock }, createProxyUrl(config, '/mock-requests/add-mock'));
+        } else {
+            return this.browser.executeScript(mock);
+        }
+    } else if (config.mode === 'serviceworker') {
+        return this.browser.executeScript(getServiceWorkerMockResponseScript(key, response));
     }
+    
 }
 
 function createMockResponseScript (key, response) {
     return `window.__tractor__.mockResponses['${key}'] = ${response};`;
+}
+
+function getServiceWorkerMockResponseScript (key, response) {
+    return `
+    if (navigator.serviceWorker) {
+        navigator.serviceWorker.ready.then(registration => {
+          registration.active.postMessage({ type: 'mock', key: '${key}', response: '${response}' });
+        });
+    }`;
 }
 
 export function createProxyUrl (config, url) {

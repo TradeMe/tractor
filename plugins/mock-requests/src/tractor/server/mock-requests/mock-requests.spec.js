@@ -11,7 +11,9 @@ describe('@tractor-plugins/mock-requests - MockRequests:', () => {
     describe('constructor', () => {
         it('should add specific methods for each method', () => {
             let browser = {};
-            let config = {};
+            let config = {
+                mode: 'proxy'
+            };
 
             let mockRequest = new MockRequests(browser, config);
 
@@ -27,7 +29,9 @@ describe('@tractor-plugins/mock-requests - MockRequests:', () => {
             it('should be overwritten', () => {
                 let get = NOOP;
                 let browser = { get };
-                let config = {};
+                let config = {
+                    mode: 'proxy'
+                };
 
                 new MockRequests(browser, config);
 
@@ -38,7 +42,9 @@ describe('@tractor-plugins/mock-requests - MockRequests:', () => {
             it('should be overwritten only once', () => {
                 let get = NOOP;
                 let browser = { get };
-                let config = {};
+                let config = {
+                    mode: 'proxy'
+                };
 
                 new MockRequests(browser, config);
                 new MockRequests(browser, config);
@@ -51,7 +57,9 @@ describe('@tractor-plugins/mock-requests - MockRequests:', () => {
                 let browser = {
                     get: () => Promise.resolve()
                 };
-                let config = {};
+                let config = {
+                    mode: 'proxy'
+                };
 
                 let mockRequests = new MockRequests(browser, config);
 
@@ -68,7 +76,8 @@ describe('@tractor-plugins/mock-requests - MockRequests:', () => {
                 };
                 let config = {
                     domain: 'localhost',
-                    port: 8765
+                    port: 8765,
+                    mode: 'proxy'
                 };
 
                 new MockRequests(browser, config);
@@ -88,7 +97,9 @@ describe('@tractor-plugins/mock-requests - MockRequests:', () => {
             let browser = {
                 executeScript: NOOP
             };
-            let config = {};
+            let config = {
+                mode: 'proxy'
+            };
 
             let mockRequests = new MockRequests(browser, config);
 
@@ -113,7 +124,9 @@ describe('@tractor-plugins/mock-requests - MockRequests:', () => {
             let browser = {
                 executeScript: NOOP
             };
-            let config = {};
+            let config = {
+                mode: 'proxy'
+            };
 
             let mockRequests = new MockRequests(browser, config);
             mockRequests.initialised = true;
@@ -132,7 +145,9 @@ describe('@tractor-plugins/mock-requests - MockRequests:', () => {
             let browser = {
                 executeScript: NOOP
             };
-            let config = {};
+            let config = {
+                mode: 'proxy'
+            };
 
             let mockRequests = new MockRequests(browser, config);
             mockRequests.initialised = true;
@@ -155,7 +170,9 @@ describe('@tractor-plugins/mock-requests - MockRequests:', () => {
             let browser = {
                 executeScript: NOOP
             };
-            let config = {};
+            let config = {
+                mode: 'proxy'
+            };
 
             sinon.stub(browser, 'executeScript').returns(Promise.resolve());
 
@@ -176,7 +193,8 @@ describe('@tractor-plugins/mock-requests - MockRequests:', () => {
             let browser = {};
             let config = {
                 domain: 'localhost',
-                port: 8765
+                port: 8765,
+                mode: 'proxy'
             };
 
             sinon.stub(utilities, 'setProxyConfig').returns(Promise.resolve());
