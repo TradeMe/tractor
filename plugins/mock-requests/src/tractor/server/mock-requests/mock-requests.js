@@ -19,7 +19,10 @@ export class MockRequests {
         this.config = config;
 
         addMethods.call(this);
-        monkeypatchGet.call(this);
+
+        if (this.config.mode === 'proxy') {
+            monkeypatchGet.call(this);
+        }
     }
 
     clear () {
