@@ -5,7 +5,7 @@ const DEFAULT_HEADERS = {};
 const DEFAULT_MINPORT = 30000;
 const DEFAULT_MAXPORT = 40000;
 const DEFAULT_MODE = 'proxy'; // 'proxy' or 'serviceworker'
-const DEFAULT_SERVICEWORKERINSTALLROUTE = '/install-tractor-service-worker';
+const DEFAULT_SERVICEWORKERINSTALLROUTE = 'install-tractor-service-worker';
 
 export function config (tractorConfig) {
     tractorConfig.mockRequests = tractorConfig.mockRequests || {};
