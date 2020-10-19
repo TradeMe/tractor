@@ -17,7 +17,9 @@ export function plugin (protractorConfig) {
                 } else if (tractorConfig.mockRequests.mode === 'serviceworker') {
                     useMochaHook('before', async function () {
                         /* eslint-disable no-undef */
-                        return await browser.driver.get(protractor.browser.baseUrl + tractorConfig.mockRequests.serviceWorkerInstallRoute);
+                        const installRoute = (protractor.browser.baseUrl + tractorConfig.mockRequests.serviceWorkerInstallRoute).replace('//', '/');
+                        await browser.driver.get(installRoute);
+                        return await browser.sleep(2000);
                     });
                 }
 
