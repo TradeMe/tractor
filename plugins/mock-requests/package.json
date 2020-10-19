@@ -1,6 +1,6 @@
 {
   "name": "@tractor-plugins/mock-requests",
-  "version": "1.9.4-alpha.0",
+  "version": "1.9.4-alpha.1",
   "description": "tractor plugin for mocking HTTP/Fetch requests",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
