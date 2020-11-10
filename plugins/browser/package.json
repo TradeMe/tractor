@@ -1,6 +1,6 @@
 {
   "name": "@tractor-plugins/browser",
-  "version": "1.9.4-alpha.1",
+  "version": "1.9.4-alpha.2",
   "description": "tractor plugin wrapping the Protractor `browser` object",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -34,10 +34,10 @@
     "build": "src/**/*.ts"
   },
   "devDependencies": {
-    "@tractor/dependency-injection": "^1.9.4-alpha.1",
-    "@tractor/error-handler": "^1.9.4-alpha.1",
-    "@tractor/plugin-loader": "^1.9.4-alpha.1",
-    "@tractor/unit-test": "^1.9.4-alpha.1"
+    "@tractor/dependency-injection": "^1.9.4-alpha.2",
+    "@tractor/error-handler": "^1.9.4-alpha.2",
+    "@tractor/plugin-loader": "^1.9.4-alpha.2",
+    "@tractor/unit-test": "^1.9.4-alpha.2"
   },
   "peerDependencies": {
     "@tractor/core": "^1.0.0"
