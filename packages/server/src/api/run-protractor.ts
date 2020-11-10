@@ -58,6 +58,8 @@ async function startProtractor (config: TractorConfigInternal, socket: Socket, o
         protractorArgs.unshift(ENABLE_DEBUGGER);
     }
 
+    protractorArgs.unshift('--max-http-header-size=80000');
+
     const protractor = childProcess.spawn(NODE_COMMAND, protractorArgs);
 
     protractor.stdout.on('data', (data: Buffer) => {

@@ -1,5 +1,5 @@
 // Dependencies:
-import { info, warn } from '@tractor/logger';
+import { info, warn, error } from '@tractor/logger';
 import bodyParser from 'body-parser';
 import cheerio from 'cheerio';
 import express from 'express';
@@ -40,7 +40,11 @@ export function serve (baseUrl, mockRequestsConfig) {
     application.use(proxy(host, {
         proxyReqOptDecorator: createRequestDecorator(host, mockRequestsConfig),
         userResDecorator: createResponseDecorator(host),
-        proxyReqBodyDecorator: createRequestBodyDecorator()
+        proxyReqBodyDecorator: createRequestBodyDecorator(),
+        proxyErrorHandler: function(err, res, next) {
+            error('Error proxying request: ' + err.code);
+            next(err);
+        }
     }));
 
     return promiseRetry(function (retry) {
