@@ -1,6 +1,6 @@
 {
   "name": "@tractor/core",
-  "version": "1.9.5-alpha.0",
+  "version": "1.9.6-alpha.0",
   "description": "Core module for tractor",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -32,19 +32,19 @@
     "build": "src/**/*.js"
   },
   "dependencies": {
-    "@tractor/config-loader": "^1.9.4-alpha.4",
-    "@tractor/dependency-injection": "^1.9.4-alpha.4",
-    "@tractor/error-handler": "^1.9.4-alpha.4",
-    "@tractor/file-javascript": "^1.9.5-alpha.0",
-    "@tractor/file-structure": "^1.9.5-alpha.0",
-    "@tractor/logger": "^1.9.4-alpha.4",
-    "@tractor/plugin-loader": "^1.9.4-alpha.4",
-    "@tractor/server": "^1.9.5-alpha.0",
-    "@tractor/tractor": "^1.9.4-alpha.4",
-    "@tractor/ui": "^1.9.4-alpha.4"
+    "@tractor/config-loader": "^1.9.6-alpha.0",
+    "@tractor/dependency-injection": "^1.9.6-alpha.0",
+    "@tractor/error-handler": "^1.9.6-alpha.0",
+    "@tractor/file-javascript": "^1.9.6-alpha.0",
+    "@tractor/file-structure": "^1.9.6-alpha.0",
+    "@tractor/logger": "^1.9.6-alpha.0",
+    "@tractor/plugin-loader": "^1.9.6-alpha.0",
+    "@tractor/server": "^1.9.6-alpha.0",
+    "@tractor/tractor": "^1.9.6-alpha.0",
+    "@tractor/ui": "^1.9.6-alpha.0"
   },
   "devDependencies": {
-    "@tractor/unit-test": "^1.9.4-alpha.4"
+    "@tractor/unit-test": "^1.9.6-alpha.0"
   },
-  "gitHead": "aac58387d7addbeceb2683c730fd7801922f7426"
+  "gitHead": "3d6df28ac69e6858f97281a034066c603541bbcb"
 }
