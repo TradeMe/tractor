@@ -1,8 +1,8 @@
 // Dependencies:
-import { JavaScriptFile } from '@tractor/file-javascript';
+import { TypeScriptFile } from '@tractor/file-javascript';
 import { PageObjectFileRefactorer } from './page-object-file-refactorer';
 
-export class PageObjectFile extends JavaScriptFile {
+export class PageObjectTypeScriptFile extends TypeScriptFile {
     async refactor (type, data) {
         await super.refactor(type, data);
 
@@ -17,4 +17,4 @@ export class PageObjectFile extends JavaScriptFile {
     }
 }
 
-PageObjectFile.prototype.extension = '.po.js';
+PageObjectTypeScriptFile.prototype.extension = '.page.ts';

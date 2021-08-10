@@ -42,6 +42,8 @@
     "build": "src/**/*.js"
   },
   "dependencies": {
+    "@phenomnomnominal/tsquery": "^4.1.1",
+    "@phenomnomnominal/tstemplate": "^0.1.0",
     "@tractor-plugins/browser": "^1.9.4-alpha.4",
     "esprima": "^4.0.1",
     "esquery": "^1.0.1",

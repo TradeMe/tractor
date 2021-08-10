@@ -41,8 +41,10 @@
   "watch": {
     "build": "src/**/*.js"
   },
-  "dependencies": {
+  "dependencies": {    
     "@phenomnomnominal/protractor-use-mocha-hook": "^0.1.0",
+    "@phenomnomnominal/tsquery": "^4.1.1",
+    "@phenomnomnominal/tstemplate": "^0.1.0",
     "camel-case": "^3.0.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",

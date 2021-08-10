@@ -1,8 +1,8 @@
 // Dependencies:
-import { JavaScriptFile } from '@tractor/file-javascript';
+import { TypeScriptFile } from '@tractor/file-javascript';
 import { MochaSpecFileRefactorer } from './mocha-spec-file-refactorer';
 
-export class MochaSpecFile extends JavaScriptFile {
+export class MochaSpecTypeScriptFile extends TypeScriptFile {
     async refactor (type, data) {
         await super.refactor(type, data);
 
@@ -17,4 +17,4 @@ export class MochaSpecFile extends JavaScriptFile {
     }
 }
 
-MochaSpecFile.prototype.extension = '.e2e-spec.js';
+MochaSpecTypeScriptFile.prototype.extension = '.e2e.spec.ts';

@@ -577,7 +577,7 @@ describe('@tractor/file-structure - File:', () => {
             // HACK:
             // Wait a little bit, should make test less flakey...
             const wait = 100;
-            await new Promise((resolve): number => setTimeout(resolve, wait));
+            await new Promise((resolve): NodeJS.Timeout => setTimeout(resolve, wait));
 
             await file.read();
             const { buffer } = file;

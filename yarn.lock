@@ -1900,6 +1900,18 @@
   resolved "https://registry.yarnpkg.com/@phenomnomnominal/protractor-use-mocha-hook/-/protractor-use-mocha-hook-0.1.5.tgz#fc91ab6dbd45c7145651a0ff117d033cd9bc66a2"
   integrity sha512-fo1KuMIBhUReL1fpN/OtuRdZQYKnFCSnMFBwJgfgU4oaF00heWzCBd7VQfDQW/I2vv24s9ekPqKTiywlwhRv3A==
 
+"@phenomnomnominal/tsquery@^4.1.1":
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/@phenomnomnominal/tsquery/-/tsquery-4.1.1.tgz#42971b83590e9d853d024ddb04a18085a36518df"
+  integrity sha512-jjMmK1tnZbm1Jq5a7fBliM4gQwjxMU7TFoRNwIyzwlO+eHPRCFv/Nv+H/Gi1jc3WR7QURG8D5d0Tn12YGrUqBQ==
+  dependencies:
+    esquery "^1.0.1"
+
+"@phenomnomnominal/tstemplate@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@phenomnomnominal/tstemplate/-/tstemplate-0.1.0.tgz#125b2617fa8cead47433bbf34ba7ef4e30a7c0f2"
+  integrity sha512-/v+GIVNFHAz4+nQtgy9e5ZAXK3xj6TbP5s9JTpnFuqkcLB+gB2lJ6x/nsDhkKhzR6o4REuzhsYoWYnXqKC/UnQ==
+
 "@sinonjs/commons@^1.0.2", "@sinonjs/commons@^1.3.0":
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.3.0.tgz#50a2754016b6f30a994ceda6d9a0a8c36adda849"
@@ -2150,6 +2162,11 @@
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/@types/npmlog/-/npmlog-4.1.1.tgz#b51cf39a6324a4ede17ef72dfa58a64fbefb39c7"
   integrity sha512-uCZpakN0HrNsX+rZeXwCPByanpTN+dB3iApOrV4uggG955GZOw1YVziEpH6YDE60/+H95Jztg48UQ0NGZ6TPag==
+
+"@types/prettier@^2.3.2":
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/@types/prettier/-/prettier-2.3.2.tgz#fc8c2825e4ed2142473b4a81064e6e081463d1b3"
+  integrity sha512-eI5Yrz3Qv4KPUa/nSIAi0h+qX0XyewOliug5F2QAtuRg6Kjg6jfmxe1GIwoIRhZspD1A0RP8ANrPwvEXXtRFog==
 
 "@types/q@^0.0.32":
   version "0.0.32"
@@ -12253,6 +12270,11 @@ preserve@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/preserve/-/preserve-0.2.0.tgz#815ed1f6ebc65926f865b310c0713bcb3315ce4b"
   integrity sha1-gV7R9uvGWSb4ZbMQwHE7yzMVzks=
+
+prettier@^2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.3.2.tgz#ef280a05ec253712e486233db5c6f23441e7342d"
+  integrity sha512-lnJzDfJ66zkMy58OL5/NY5zp70S7Nz6KqcKkXYzn2tMVrNxvbqaBpg7H3qHaLxCJ5lNMsGuM8+ohS7cZrthdLQ==
 
 pretty-format@^24.8.0:
   version "24.8.0"
