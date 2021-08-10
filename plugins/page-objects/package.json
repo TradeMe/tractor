@@ -1,6 +1,6 @@
 {
   "name": "@tractor-plugins/page-objects",
-  "version": "1.9.4-alpha.4",
+  "version": "1.9.4-tractor-to-playwright.0",
   "description": "tractor plugin for manipulating Page Objects",
   "author": "Craig Spence <craigspence0@gmail.com>",
   "license": "MIT",
@@ -44,7 +44,7 @@
   "dependencies": {
     "@phenomnomnominal/tsquery": "^4.1.1",
     "@phenomnomnominal/tstemplate": "^0.1.0",
-    "@tractor-plugins/browser": "^1.9.4-alpha.4",
+    "@tractor-plugins/browser": "^1.9.4-tractor-to-playwright.0",
     "esprima": "^4.0.1",
     "esquery": "^1.0.1",
     "pascal-case": "^2.0.1",
