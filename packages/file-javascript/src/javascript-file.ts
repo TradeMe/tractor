@@ -50,10 +50,12 @@ export class JavaScriptFile <MetadataType extends JavaScriptFileMetaType = JavaS
 
         await refactor;
         const change = JAVASCRIPT_FILE_REFACTORER[type];
-        if (!change) {
-            return;
+        if (change) {
+            const result = await change(this, data);
+            if (result === null) {
+                return;
+            }
         }
-        await change(this, data);
         await this.save(this.ast as Program);
     }
 

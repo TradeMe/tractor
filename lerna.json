@@ -3,7 +3,7 @@
     "packages/*",
     "plugins/*"
   ],
-  "version": "1.9.4-alpha.4",
+  "version": "1.9.4-tractor-to-playwright.0",
   "npmClient": "yarn",
   "useWorkspaces": true
 }

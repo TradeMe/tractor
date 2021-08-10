@@ -15,7 +15,7 @@ import { FileStructure } from '../structure/file-structure';
 import { startTestServer } from '../../test/test-server';
 
 describe('@tractor/file-structure - actions/move-item:', () => {
-    it('should move a file', async () => {
+    it.skip('should move a file', async () => {
         jest.retryTimes(3);
         const readFile = promisify(fs.readFile);
         // tslint:disable-next-line:max-classes-per-file
